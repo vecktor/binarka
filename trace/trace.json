@@ -305,8 +305,7 @@
       "id": "FR-51",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-size-selector/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -474,8 +473,7 @@
       "id": "FR-31",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-size-selector/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -530,8 +528,7 @@
     {
       "id": "FR-36",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-size-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -553,8 +550,7 @@
     {
       "id": "FR-38",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-size-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -576,8 +572,7 @@
     {
       "id": "FR-40",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-size-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -601,8 +596,7 @@
     {
       "id": "FR-42",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-size-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -614,8 +608,7 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-size-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -823,10 +816,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-43 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-size-selector\" is not archived"
     }
   ]
 }

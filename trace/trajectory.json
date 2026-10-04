@@ -18,6 +18,15 @@
         "engine"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-04-add-size-selector",
+      "reviewEvidence": "clean",
+      "trailerCommits": 7,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [],
