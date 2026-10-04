@@ -1,0 +1,35 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "add-play-page",
+  "change": "add-play-page",
+  "baseRef": "step-20-s2-red",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 3
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 2,
+      "contested": 0,
+      "rejected": 0
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "tasks.md section 4 names test files that do not exist; the real test files are named differently",
+    "Task 3.2 is ticked but the 'one mapping helper' it names does not exist"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-04T15:11:59Z"
+}
