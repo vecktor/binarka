@@ -248,7 +248,7 @@ describe('play-page hint premises, computed with the real engine on the fixtures
 
   it('the engine sentences used as literals are the ones the engine returns', () => {
     expect(hint(boardOf(6, { cells: [[1, 1, 0], [1, 2, 0], [1, 3, 0]] })).sentence).toBe(BROKEN_SENTENCE);
-    expect(hint(PAIR_ROW.givens).sentence).toBe('Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця.');
+    expect(hint(PAIR_ROW.givens).sentence).toBe('Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.');
   });
 });
 

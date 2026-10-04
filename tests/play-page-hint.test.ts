@@ -185,12 +185,12 @@ describe('@trace FR-40 the hint button shows the engine sentence', () => {
   it('Sentence shown with a fill: equals the engine sentence, unaltered', () => {
     const root = mountFixture(PAIR_ROW);
     const h = expectedHint(root);
-    expect(h.sentence).toBe('Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця.');
+    expect(h.sentence).toBe('Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.');
 
     pressHint(root);
 
     expect(hintMessage(root)).toBe(h.sentence);
-    expect(hintMessage(root)).toBe('Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця.');
+    expect(hintMessage(root)).toBe('Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.');
   });
 
   it('Board breaks a rule: shows the broken-board sentence and fills nothing', () => {
@@ -232,7 +232,7 @@ describe('@trace FR-40 the hint button shows the engine sentence', () => {
     const second = expectedHint(root);
     expect(second.kind).toBe('fill');
     expect(second.sentence).not.toBe(first.sentence);
-    expect(second.sentence).toBe('Дві одиниці поспіль у рядку 5, тож поруч може стояти лише нуль.');
+    expect(second.sentence).toBe('Дві одиниці поспіль у рядку 5, тож поруч може стояти лише нуль, бо три однакові цифри поспіль заборонені.');
 
     pressHint(root);
 

@@ -57,8 +57,18 @@ describe('@trace NFR-4 every hint sentence is exactly one sentence', () => {
   it('number words, comma and dash are not breaks: the count sentence for row 5 is one sentence', () => {
     const result = hint(boardOf(6, { rows: { 5: '0 1 0 1 . 0' } }));
     expect(result).toMatchObject({ kind: 'fill', rule: 'count' });
-    expect(result.sentence).toBe('У рядку 5 вже три нулі, тож решта клітинок — одиниці.');
+    expect(result.sentence).toBe('У рядку 5 вже три нулі, а нулів і одиниць має бути порівну, тож остання порожня клітинка — одиниця.');
     expect(isOneSentence(result.sentence)).toBe(true);
+  });
+});
+
+describe('@trace NFR-4 reason clauses are not sentence breaks', () => {
+  it('a pair sentence with the «бо» clause is one sentence', () => {
+    const result = hint(boardOf(6, { cells: [[3, 1, 0], [3, 2, 0]] }));
+    expect(result).toMatchObject({ kind: 'fill', rule: 'pair' });
+    expect(result.sentence).toBe('Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.');
+    expect(isOneSentence(result.sentence)).toBe(true);
+    expect(terminalMarkCount(result.sentence)).toBe(1);
   });
 });
 

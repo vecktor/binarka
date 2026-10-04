@@ -19,14 +19,14 @@ const BROKEN_HINT: Hint = { kind: 'broken', sentence: BROKEN };
 
 /** Boards on which a hint applies, shared by the determinism and no-mutation checks. */
 const FILL_BOARDS: Array<[string, Grid, Hint]> = [
-  ['pair of zeros in a row', boardOf(6, { cells: [[3, 1, 0], [3, 2, 0]] }), fill(3, 3, 1, 'pair', 'Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця.')],
-  ['pair of ones in a column', boardOf(6, { cells: [[1, 4, 1], [2, 4, 1]] }), fill(3, 4, 0, 'pair', 'Дві одиниці поспіль у стовпці 4, тож поруч може стояти лише нуль.')],
-  ['pair of ones in a row', boardOf(6, { cells: [[2, 4, 1], [2, 5, 1]] }), fill(2, 3, 0, 'pair', 'Дві одиниці поспіль у рядку 2, тож поруч може стояти лише нуль.')],
-  ['pair of zeros in a column', boardOf(6, { cells: [[4, 6, 0], [5, 6, 0]] }), fill(3, 6, 1, 'pair', 'Два нулі поспіль у стовпці 6, тож поруч може стояти лише одиниця.')],
-  ['sandwich of zeros in a column', boardOf(6, { cells: [[1, 2, 0], [3, 2, 0]] }), fill(2, 2, 1, 'sandwich', 'Між двома нулями у стовпці 2 може стояти лише одиниця.')],
-  ['sandwich of ones in a row', boardOf(6, { cells: [[1, 1, 1], [1, 3, 1]] }), fill(1, 2, 0, 'sandwich', 'Між двома одиницями у рядку 1 може стояти лише нуль.')],
-  ['count of zeros in a 6-wide row', boardOf(6, { rows: { 5: '0 1 0 1 . 0' } }), fill(5, 5, 1, 'count', 'У рядку 5 вже три нулі, тож решта клітинок — одиниці.')],
-  ['count of ones in a column', boardOf(6, { cols: { 2: '1 0 1 0 . 1' } }), fill(5, 2, 0, 'count', 'У стовпці 2 вже три одиниці, тож решта клітинок — нулі.')],
+  ['pair of zeros in a row', boardOf(6, { cells: [[3, 1, 0], [3, 2, 0]] }), fill(3, 3, 1, 'pair', 'Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.')],
+  ['pair of ones in a column', boardOf(6, { cells: [[1, 4, 1], [2, 4, 1]] }), fill(3, 4, 0, 'pair', 'Дві одиниці поспіль у стовпці 4, тож поруч може стояти лише нуль, бо три однакові цифри поспіль заборонені.')],
+  ['pair of ones in a row', boardOf(6, { cells: [[2, 4, 1], [2, 5, 1]] }), fill(2, 3, 0, 'pair', 'Дві одиниці поспіль у рядку 2, тож поруч може стояти лише нуль, бо три однакові цифри поспіль заборонені.')],
+  ['pair of zeros in a column', boardOf(6, { cells: [[4, 6, 0], [5, 6, 0]] }), fill(3, 6, 1, 'pair', 'Два нулі поспіль у стовпці 6, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.')],
+  ['sandwich of zeros in a column', boardOf(6, { cells: [[1, 2, 0], [3, 2, 0]] }), fill(2, 2, 1, 'sandwich', 'Між двома нулями у стовпці 2 може стояти лише одиниця, бо три однакові цифри поспіль заборонені.')],
+  ['sandwich of ones in a row', boardOf(6, { cells: [[1, 1, 1], [1, 3, 1]] }), fill(1, 2, 0, 'sandwich', 'Між двома одиницями у рядку 1 може стояти лише нуль, бо три однакові цифри поспіль заборонені.')],
+  ['count of zeros in a 6-wide row', boardOf(6, { rows: { 5: '0 1 0 1 . 0' } }), fill(5, 5, 1, 'count', 'У рядку 5 вже три нулі, а нулів і одиниць має бути порівну, тож остання порожня клітинка — одиниця.')],
+  ['count of ones in a column', boardOf(6, { cols: { 2: '1 0 1 0 . 1' } }), fill(5, 2, 0, 'count', 'У стовпці 2 вже три одиниці, а нулів і одиниць має бути порівну, тож остання порожня клітинка — нуль.')],
 ];
 
 describe('@trace FR-19 pair hint', () => {
@@ -48,19 +48,25 @@ describe('@trace FR-21 count hint', () => {
 
   it('number word for N = 4: два нулі and дві одиниці', () => {
     expect(hint(boardOf(4, { rows: { 2: '0 1 0 .' } }))).toEqual(
-      fill(2, 4, 1, 'count', 'У рядку 2 вже два нулі, тож решта клітинок — одиниці.'),
+      fill(2, 4, 1, 'count', 'У рядку 2 вже два нулі, а нулів і одиниць має бути порівну, тож остання порожня клітинка — одиниця.'),
     );
     expect(hint(boardOf(4, { rows: { 2: '1 0 1 .' } }))).toEqual(
-      fill(2, 4, 0, 'count', 'У рядку 2 вже дві одиниці, тож решта клітинок — нулі.'),
+      fill(2, 4, 0, 'count', 'У рядку 2 вже дві одиниці, а нулів і одиниць має бути порівну, тож остання порожня клітинка — нуль.'),
     );
   });
 
   it('number word for N = 8: чотири нулі and чотири одиниці', () => {
     expect(hint(boardOf(8, { rows: { 1: '0 1 0 1 0 1 0 .' } }))).toEqual(
-      fill(1, 8, 1, 'count', 'У рядку 1 вже чотири нулі, тож решта клітинок — одиниці.'),
+      fill(1, 8, 1, 'count', 'У рядку 1 вже чотири нулі, а нулів і одиниць має бути порівну, тож остання порожня клітинка — одиниця.'),
     );
     expect(hint(boardOf(8, { rows: { 1: '1 0 1 0 1 0 1 .' } }))).toEqual(
-      fill(1, 8, 0, 'count', 'У рядку 1 вже чотири одиниці, тож решта клітинок — нулі.'),
+      fill(1, 8, 0, 'count', 'У рядку 1 вже чотири одиниці, а нулів і одиниць має бути порівну, тож остання порожня клітинка — нуль.'),
+    );
+  });
+
+  it('two empty cells in the line use the plural ending (решта порожніх клітинок)', () => {
+    expect(hint(boardOf(6, { rows: { 2: '0 1 0 . . 0' } }))).toEqual(
+      fill(2, 4, 1, 'count', 'У рядку 2 вже три нулі, а нулів і одиниць має бути порівну, тож решта порожніх клітинок — одиниці.'),
     );
   });
 
@@ -86,13 +92,13 @@ describe('@trace FR-22 the explanation names the line type and number', () => {
 
   it('row numbering starts at 1: pair at row 1 columns 1 and 2', () => {
     const result = hint(boardOf(6, { cells: [[1, 1, 0], [1, 2, 0]] }));
-    expect(result).toEqual(fill(1, 3, 1, 'pair', 'Два нулі поспіль у рядку 1, тож поруч може стояти лише одиниця.'));
+    expect(result).toEqual(fill(1, 3, 1, 'pair', 'Два нулі поспіль у рядку 1, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.'));
     expect(result.sentence).not.toContain('рядку 0');
   });
 
   it('column numbering starts at 1: sandwich in column 1', () => {
     const result = hint(boardOf(6, { cells: [[1, 1, 0], [3, 1, 0]] }));
-    expect(result).toEqual(fill(2, 1, 1, 'sandwich', 'Між двома нулями у стовпці 1 може стояти лише одиниця.'));
+    expect(result).toEqual(fill(2, 1, 1, 'sandwich', 'Між двома нулями у стовпці 1 може стояти лише одиниця, бо три однакові цифри поспіль заборонені.'));
     expect(result.sentence).not.toContain('стовпці 0');
   });
 });
@@ -187,7 +193,7 @@ describe('@trace FR-26 broken-board hint', () => {
     const board = boardOf(4, { cells: [[1, 1, 1], [1, 2, 1]] });
     expect(VALID_4X4[0]?.[2]).toBe(1);
     expect(hint(board)).toEqual(
-      fill(1, 3, 0, 'pair', 'Дві одиниці поспіль у рядку 1, тож поруч може стояти лише нуль.'),
+      fill(1, 3, 0, 'pair', 'Дві одиниці поспіль у рядку 1, тож поруч може стояти лише нуль, бо три однакові цифри поспіль заборонені.'),
     );
   });
 });
