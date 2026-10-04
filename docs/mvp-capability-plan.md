@@ -47,7 +47,7 @@ flowchart LR
 ### 4.2 `add-play-page` (session C, Sonnet 5.5 medium)
 
 - **Scope in:** a 6×6 page from the generator with an injectable seed source (FR-31), distinct and locked givens (FR-32, FR-33), click cycle (FR-34), rule highlighting recomputed after every change (FR-35 to FR-38), hint button that fills one cell and shows the sentence (FR-39, FR-40), win message (FR-41), new-puzzle button (FR-42), Ukrainian page text (NFR-5).
-- **Scope out:** size selector (FR-43, cut 0, reported NOT-EARNED), bilingual page (FR-55), difficulty, timer, saved progress, undo, daily puzzle (FR-44 to FR-48), real-browser tests (NFR-7), keyboard and screen-reader support (A-20).
+- **Scope out:** size selector (FR-43, cut 0, reported NOT-EARNED; a stretch item, see section 6), bilingual page (FR-55), difficulty, timer, saved progress, undo, daily puzzle (FR-44 to FR-48), real-browser tests (NFR-7), keyboard and screen-reader support (A-20).
 - **Baseline spec impact:** none expected.
 - **Definition of done:**
   1. jsdom tests written first from the spec and seen red; every FR above and NFR-5 (page part) has a test tagged `@trace <id>`.
@@ -94,6 +94,7 @@ Re-baselined 2026-10-04 18:40 (autonomy-log row 10; user time, UTC+5:30):
 | P3 plan sign-off | 19:25 | B (Opus 5.5 medium) |
 | Slice 1 `add-puzzle-engine`, archived | 21:25 (hard limit 22:00, cut line 4) | C (Sonnet 5.5 medium) |
 | Slice 2 `add-play-page`, archived | 23:25 | C |
+| Stretch, only if slice 2 is archived before about 23:00: restore the size selector (FR-43) as a small follow-up change; the user decides at that point. The spec text is at tag `step-08-p2-draft` (labels «Поле 4×4», «Поле 6×6», «Поле 8×8», A-24); restoring it is a requirements amendment, a spec section, tests and code, about 30 minutes | before 00:00 | C |
 | Feature freeze | 00:00 (21:30 Kyiv) | — |
 | Eval (optional), gate status, retro, PR text, README branch | after the slices; PR open by 02:29 (23:59 Kyiv) | C or D |
 

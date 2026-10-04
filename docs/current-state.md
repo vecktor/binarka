@@ -24,7 +24,7 @@
   4. Run the per-slice `review-gate`, one fix round and one confirming run.
   5. Archive the change.
 
-  Commits touching `src/` carry `Slice: add-puzzle-engine` and `Refs: FR-x`. Ask the user to cache the GPG passphrase before each signed commit (the cache lasts about 10 minutes; autonomy-log M6). Read the clock before any time claim (M7). Then slice 2 `add-play-page` (plan 4.2).
+  Commits touching `src/` carry `Slice: add-puzzle-engine` and `Refs: FR-x`. Ask the user to cache the GPG passphrase before each signed commit (the cache lasts about 10 minutes; autonomy-log M6). Read the clock before any time claim (M7). Then slice 2 `add-play-page` (plan 4.2). **Stretch:** if slice 2 is archived before about 23:00, ask the user whether to restore the size selector FR-43 (plan section 6; autonomy-log row 13); do not restore it without asking.
 - **Claims:**
   - G0 passes: lint, build, hooks fire, `core.hooksPath` is `.githooks` — evidence: `npm run gate:status`, commits `cbc84fa` and `4ed10a8`, tag `step-02-factory-init`
   - Factory integrity lock holds 23 gate-bearing files with 6 recorded adaptations — evidence: `factory-lock.json`
