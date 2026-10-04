@@ -1,6 +1,6 @@
 # Бінарка — Requirements
 
-Status: **SIGNED OFF by the user on 2026-10-04 at 16:13 (UTC+5:30; Kyiv 13:43)**, P1 scope sign-off (`docs/autonomy-log.md` row 7). The user answered all 14 clarifications; every default pinned in `## Assumptions & Notes` (A-x keys) is now a user decision, including the cut order. The draft is tag `step-06-p1-draft`. IDs are assigned once and never renumbered; later changes append new IDs and mark changed rows.
+Status: **SIGNED OFF 2026-10-04 16:13, AMENDED 2026-10-04 18:41 after a scope change** (autonomy-log rows 9 and 10); amended rows are marked "(amended 2026-10-04: …)"; **the amendment was re-signed by the user on 2026-10-04 at 18:45 (UTC+5:30)** (autonomy-log row 11).
 
 Narrative: `docs/product-brief.md`. Stack: `docs/adr/0001-stack.md`.
 
@@ -39,7 +39,10 @@ Conventions used below: N is the grid size (even); "line" means a row or a colum
 | FR-15 | MVP | Generator | Every generated puzzle has exactly one solution (the solver reports 1), tested for N = 4, 6 and 8 over a fixed set of seeds. | verify: local-verifiable |
 | FR-16 | MVP | Generator | An odd N is rejected with an error and no puzzle is returned. | verify: local-verifiable |
 | FR-17 | MVP | Generator | An N below 4 is rejected with an error and no puzzle is returned (minimum pinned to 4, see A-9). | verify: local-verifiable |
-| FR-18 | Future | Generator | Grid sizes N of 10 and above are supported, tested and offered on the page. | — |
+| FR-18 | Future | Generator | Grid sizes 10 to 16 are tested and offered on the page. (amended 2026-10-04: was "N of 10 and above are supported, tested and offered"; sizes are capped at 16 by FR-49) | — |
+| FR-49 | MVP | Generator | An N above 16 is rejected with an error and no puzzle is returned (maximum pinned to 16, see A-9). | verify: local-verifiable |
+| FR-50 | MVP | Generator | A size that is not an integer (for example 4.5, NaN, Infinity) is rejected with an error and no puzzle is returned. | verify: local-verifiable |
+| FR-51 | MVP | Generator | A seed that is not an integer from 0 to 2147483647 (2^31 − 1) is rejected with an error and no puzzle is returned. | verify: local-verifiable |
 
 ### Hints (hint engine)
 
@@ -54,6 +57,7 @@ Conventions used below: N is the grid size (even); "line" means a row or a colum
 | FR-25 | MVP | Hints | When none of the three rules applies, the hint targets no cell and returns one Ukrainian sentence saying so, e.g. «Жодне з трьох правил зараз не підказує наступного ходу.» (user decision, A-5). | verify: local-verifiable |
 | FR-26 | MVP | Hints | When the board currently breaks a rule, the hint targets no cell and returns one Ukrainian sentence asking the player to fix the highlighted rule first, e.g. «Спершу виправте порушення правил, підсвічене на полі.»; this takes precedence over FR-19 to FR-21 and FR-25 (user decision, A-6). | verify: local-verifiable |
 | FR-27 | Future | Hints | The generator guarantees that every puzzle can be solved from its givens using only the pair, sandwich and count rules, so a hint is always available on a correct board. | — |
+| FR-56 | Future | Hints | Hint sentences are also available in English. | — |
 
 ### CLI
 
@@ -61,7 +65,10 @@ Conventions used below: N is the grid size (even); "line" means a row or a colum
 |---|---|---|---|---|
 | FR-28 | MVP | CLI | `npm run cli -- --size 6 --seed 42` prints the puzzle for that size and seed as N lines of N space-separated tokens, `0` or `1` for givens and `.` for empty cells (shape pinned in A-10). | verify: local-verifiable |
 | FR-29 | MVP | CLI | When `--size` or `--seed` is omitted, the CLI uses size 6 and seed 1 respectively (pinned in A-10). | verify: local-verifiable |
-| FR-30 | MVP | CLI | An invalid size (odd, below 4 or not a number) makes the CLI print a one-sentence Ukrainian error and exit with a non-zero code. | verify: local-verifiable |
+| FR-30 | MVP | CLI | An invalid size (odd, below 4, above 16, or not a number by the grammar in FR-53) makes the CLI print a one-sentence English error to stderr and exit with a non-zero code. (amended 2026-10-04: error is English and goes to stderr; above 16 added; "not a number" follows FR-53) | verify: local-verifiable |
+| FR-52 | MVP | CLI | An invalid seed (not valid by the grammar in FR-53, or above 2147483647) makes the CLI print a one-sentence English error to stderr, exit with a non-zero code and print nothing on stdout. | verify: local-verifiable |
+| FR-53 | MVP | CLI | The CLI accepts a `--size` or `--seed` value only when the whole value is ASCII digits (`^[0-9]+$`); leading zeros are allowed (`06` means 6); anything else (`6.5`, `+6`, `-2`, `1e1`, `0x6`, an empty value) is invalid. | verify: local-verifiable |
+| FR-54 | MVP | CLI | A CLI option given without a value (for example `--size` as the last argument) or an unknown option makes the CLI print a one-sentence English error to stderr and exit with a non-zero code. | verify: local-verifiable |
 
 ### Play page
 
@@ -79,12 +86,13 @@ Conventions used below: N is the grid size (even); "line" means a row or a colum
 | FR-40 | MVP | Play page | Pressing the hint button shows the hint engine's sentence on the page, including the no-hint and broken-rule sentences when no cell is filled. | verify: local-verifiable |
 | FR-41 | MVP | Play page | When the grid becomes solved, the page shows a Ukrainian win message, e.g. «Вітаємо, головоломку розв'язано!» | verify: local-verifiable |
 | FR-42 | MVP | Play page | The «Нова головоломка» button replaces the board with a newly generated puzzle of the current size and clears the hint and win messages. | verify: local-verifiable |
-| FR-43 | MVP | Play page | A size selector offers 4×4, 6×6 and 8×8; choosing a size starts a new puzzle of that size (first item cut if the schedule slips, see Cut order). | verify: local-verifiable |
+| FR-43 | Future | Play page | A size selector offers 4×4, 6×6 and 8×8; choosing a size starts a new puzzle of that size (first item cut if the schedule slips, see Cut order). (amended 2026-10-04: cut 0 applied at 18:40; out of tonight's plan and reported NOT-EARNED in the final report) | — |
 | FR-44 | Future | Play page | Difficulty grading of puzzles. | — |
 | FR-45 | Future | Play page | A timer. | — |
 | FR-46 | Future | Play page | Saved progress across page reloads. | — |
 | FR-47 | Future | Play page | Undo of the player's moves. | — |
 | FR-48 | Future | Play page | A daily puzzle. | — |
+| FR-55 | Future | Play page | The page offers Ukrainian (default) and English, with a language switch. | — |
 
 ## Non-Functional Requirements (NFR)
 
@@ -96,9 +104,10 @@ All MVP NFRs are measured in Vitest (unit or jsdom). No server, accounts, hostin
 | NFR-2 | MVP | Performance | Generating one 6×6 puzzle takes under 500 ms, worst case over the fixed seed set, measured in Vitest on the test machine (bound pinned in A-13). | verify: local-verifiable |
 | NFR-3 | MVP | Performance | Generating one 8×8 puzzle takes under 3 s, worst case over the fixed seed set, measured in Vitest on the test machine (bound pinned in A-13). | verify: local-verifiable |
 | NFR-4 | MVP | Usability | Every sentence the hint engine returns (rule explanations, the no-hint sentence and the broken-rule sentence) is exactly one sentence: one terminal mark at the end and no other sentence break. | verify: local-verifiable |
-| NFR-5 | MVP | Localization | All user-facing text (page labels and buttons, hint sentences, win message, CLI errors) is Ukrainian: it contains Cyrillic and no Latin letters. | verify: local-verifiable |
-| NFR-6 | MVP | Usability | Hint explanations are clear and correct for a player: an eval-judge grades 2–3 hint cases (pair, sandwich, count) against a rubric (optional, cut line 2). | verify: eval |
+| NFR-5 | MVP | Localization | Page text (labels and buttons, win message) and hint sentences are Ukrainian: they contain Cyrillic and no Latin letters. (amended 2026-10-04: CLI errors removed; they are English, NFR-8) | verify: local-verifiable |
+| NFR-6 | MVP | Usability | Hint explanations are clear and correct for a player: an eval-judge grades 2–3 Ukrainian hint sentences (pair, sandwich, count) against a rubric, and each graded case must score at least 80 out of 100 (optional, cut line 2). (amended 2026-10-04: pass bar of at least 80 out of 100 per case; the eval grades the Ukrainian hint sentences) | verify: eval |
 | NFR-7 | Future | Compatibility | Playwright end-to-end browser tests of the play page in a real browser. | — |
+| NFR-8 | MVP | Localization | Every CLI error is one English sentence containing no Cyrillic letters. | verify: local-verifiable |
 
 ## Constraints
 
@@ -138,17 +147,19 @@ All MVP NFRs are measured in Vitest (unit or jsdom). No server, accounts, hostin
 
 Applied in this order when the build is more than 30 minutes behind (BC-3). Cut rows move to Future or are reported NOT-EARNED; their IDs stay. The user confirmed this order at sign-off: the size selector is cut 0 (clarification 13), and the "new puzzle" button stays in the shrunken slice 2 (clarification 14).
 
-0. **Before cut line 1 (autonomy-log row 2a; confirmed at sign-off, clarification 13):** drop the size selector, FR-43. The engine stays generic (FR-13 to FR-17, FR-15 still tested for N = 4, 6, 8); the page stays at 6×6.
+0. **Before cut line 1 (autonomy-log row 2a; confirmed at sign-off, clarification 13): APPLIED 2026-10-04 18:40** (about 70 minutes behind; autonomy-log row 10): drop the size selector, FR-43. The engine stays generic (FR-13 to FR-17, FR-15 still tested for N = 4, 6, 8); the page stays at 6×6.
 1. **Skip the global review-gate.** Process only; no FR or NFR removed. Per-slice reviews stay.
 2. **Drop the eval.** NFR-6 is reported NOT-EARNED.
 3. **Shrink slice 2 to the grid, rule highlighting, the win message and the "new puzzle" button.** FR-39 and FR-40 (page hint button) move to Future. FR-42 ("new puzzle" button) stays in the shrunken slice (user decision, clarification 14); FR-43 is already gone at cut 0. The hint engine (FR-19 to FR-26) stays in slice 1.
-4. **If slice 1 (`add-puzzle-engine`) is not archived by 18:00 Kyiv, drop slice 2.** All Play page rows FR-31 to FR-43 are reported NOT-EARNED; the video shows the CLI (FR-28 to FR-30).
+4. **If slice 1 (`add-puzzle-engine`) is not archived by 22:00 user time (19:30 Kyiv), drop slice 2.** (Deadline moved from 20:30 user time / 18:00 Kyiv by the user at the re-sign-off, autonomy-log row 11.) All Play page rows FR-31 to FR-43 are reported NOT-EARNED; the video shows the CLI (FR-28 to FR-30).
+
+Schedule re-baselined 2026-10-04 18:40 (autonomy-log row 10): P3 ends about 19:25, slice 1 about 21:25, slice 2 about 23:25 (all user time, UTC+5:30); the feature freeze stays at 00:00 user time, which is 21:30 Kyiv (BC-2), and the deadline stays 23:59 Kyiv (BC-1). The cut line 4 deadline is 22:00 user time, decided by the user at the re-sign-off.
 
 ## Assumptions & Notes
 
 Each item is keyed to its clarification number. At the P1 sign-off (2026-10-04) the user accepted every default as written below, with these notes: clarification 1, Ukrainian (the user first wrote "US language" and then confirmed Ukrainian); clarification 3, "new puzzle for now" (difficulty grading stays Future, FR-44); clarification 9, keep the eval. These items are now decisions, not assumptions.
 
-- **A-1 (clarification 1):** UI language is Ukrainian (NFR-5).
+- **A-1 (clarification 1):** page text and hint sentences are Ukrainian (NFR-5); CLI output and errors are English (NFR-8); a bilingual page is Future (FR-55, FR-56). (amended 2026-10-04: was "UI language is Ukrainian")
 - **A-2 (clarification 2):** cells show the digits 0 and 1, not colours (FR-34).
 - **A-3 (clarification 3):** no levels; a "new puzzle" button only (FR-42).
 - **A-4 (clarification 4):** puzzles are generated in the browser from a seed; the seed is not shown on the page in MVP. The page chooses a new seed outside the engine (the `Math.random` ban in TC-8 applies only to `src/engine/`), and the page code accepts an injected seed so jsdom tests are deterministic.
@@ -156,7 +167,7 @@ Each item is keyed to its clarification number. At the P1 sign-off (2026-10-04) 
 - **A-6 (clarification 7):** the hint engine reasons from the board as it is (givens plus the player's entries) and does not consult the solution. If the board currently breaks a rule, the hint fills nothing (FR-26). A wrong entry that breaks no rule yet can still lead to a correct-looking rule deduction that is not part of the solution. FR-26 is removable if the user chooses another option.
 - **A-7 (clarification 10):** hint selection order when several apply (FR-23): rule order pair, then sandwich, then count; within a rule, rows before columns; then lower line number; then lower cell position in the line.
 - **A-8 (clarification 5):** a hint fills the cell and shows the explanation (FR-39, FR-40). For the count rule the explanation speaks of "the rest of the cells", but one hint fills one cell (the first empty one in the line). A hint-filled cell behaves like a player entry (it can be changed by clicking).
-- **A-9:** the minimum grid size is 4 (FR-17). N ≥ 10 is not rejected by the engine in MVP; it is simply untested and not offered on the page (FR-18 is Future).
+- **A-9:** the minimum grid size is 4 (FR-17) and the maximum is 16 (FR-49). An even N from 10 to 16 is accepted by the engine but untested and not offered on the page (FR-18 is Future). (amended 2026-10-04: maximum 16 added; was "N ≥ 10 is not rejected")
 - **A-10 (clarification 10):** CLI shape (FR-28, FR-29): `npm run cli -- --size <N> --seed <integer>`, defaults size 6 and seed 1, output N lines of N space-separated tokens with `.` for empty cells, nothing else printed. The CLI does not print the solution.
 - **A-11 (clarification 10):** given cells are locked on the page (FR-33).
 - **A-12 (clarification 10):** rule highlighting is immediate after every board change, a click or a hint fill (FR-38), not on demand.
@@ -169,4 +180,9 @@ Each item is keyed to its clarification number. At the P1 sign-off (2026-10-04) 
 - **A-19:** after the win message the board is not locked; the player can start a new puzzle.
 - **A-20:** no keyboard play or screen-reader requirements are set for MVP; none were in the brief.
 - **A-21:** the engine-purity constraints TC-7 and TC-8 may be enforced by a Vitest test that scans `src/engine/` sources, but they are constraints, not traced behaviours.
+- **A-22:** CLI error wording is chosen during the build; each error is one English sentence (FR-30, FR-52, FR-54, NFR-8).
+- **A-23:** the hint message on the page stays until the next hint or a new puzzle (FR-40, FR-42).
+- **A-24:** if FR-43 is ever restored, its option labels are «Поле 4×4», «Поле 6×6», «Поле 8×8», and the page need not handle values outside the offered sizes.
+- **A-25:** the seed domain, integers from 0 to 2147483647 (2^31 − 1), applies to the generator (FR-51), the CLI (FR-52) and the page (the page picks its new seeds in that range, A-4).
+- **Note (2026-10-04 amendment):** the size cap of 16, English CLI errors, the seed domain, the CLI number grammar, the CLI option errors, the eval pass bar, the bilingual page as Future, and cut 0 came from the user on 2026-10-04 (autonomy-log rows 9 and 10). New IDs: FR-49 to FR-56, NFR-8. Amended: FR-18, FR-30, FR-43, NFR-5, NFR-6, A-1, A-9.
 - **Note:** verification tags are only those built tonight: `local-verifiable` (Vitest unit and jsdom tests with `@trace`), plus `eval` for NFR-6 if kept. No real-browser, hosting or uptime checks are declared.

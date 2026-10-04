@@ -1,6 +1,8 @@
 # Бінарка — Product Brief
 
-Status: **SIGNED OFF by the user on 2026-10-04** (P1 scope sign-off, `docs/autonomy-log.md` row 7). The user's answers to the 14 clarifications are recorded in `docs/requirements.md` under Assumptions & Notes; `docs/requirements.md` is canonical where the two differ.
+Status: **SIGNED OFF by the user on 2026-10-04** (P1 scope sign-off, `docs/autonomy-log.md` row 7). The user's answers to the 14 clarifications are recorded in `docs/requirements.md` under Assumptions & Notes; `docs/requirements.md` is canonical where the two differ. **AMENDED on 2026-10-04 after a scope change** (autonomy-log rows 9 and 10); the amendment was re-signed by the user on 2026-10-04 at 18:45 (autonomy-log row 11).
+
+Amendment summary: the page and the hint sentences are Ukrainian; the CLI prints English errors; a bilingual page (Ukrainian and English) is Future. The size selector was cut tonight (cut 0, applied 18:40), so the page stays 6×6. Grid sizes are capped at 16.
 
 ## What it is
 
@@ -27,7 +29,7 @@ Nothing is reused from the user's older puzzle project or from the playable prev
 
 ## Key workflows
 
-**Start a puzzle.** The page opens with a generated 6×6 puzzle. Given cells are shown distinctly and cannot be changed. Puzzles are generated in the browser from a seed, so the same seed and size always give the same puzzle. If the size selector survives the schedule, the player can switch to 4×4 or 8×8, which starts a new puzzle of that size.
+**Start a puzzle.** The page opens with a generated 6×6 puzzle. Given cells are shown distinctly and cannot be changed. Puzzles are generated in the browser from a seed, so the same seed and size always give the same puzzle. The size selector (4×4, 6×6, 8×8) was cut tonight (cut 0), so the page stays 6×6.
 
 **Fill cells.** Clicking an empty cell cycles it empty → 0 → 1 → empty.
 
@@ -39,18 +41,18 @@ Nothing is reused from the user's older puzzle project or from the playable prev
 
 **New puzzle.** The "new puzzle" button replaces the board with a freshly generated puzzle. There are no levels.
 
-**CLI.** The developer runs the CLI with a size and a seed and gets the puzzle printed as text, one line per row, with a dot for each empty cell.
+**CLI.** The developer runs the CLI with a size and a seed and gets the puzzle printed as text, one line per row, with a dot for each empty cell. CLI errors (bad size, seed or option) are one English sentence each.
 
 ## MVP tonight vs Future
 
 **MVP (tonight, deadline 23:59 Kyiv, feature freeze 21:30 Kyiv):**
 
 - Slice 1 `add-puzzle-engine`: rule checker, solver that counts solutions and stops at 2, seeded generator of uniquely solvable puzzles (N = 4, 6, 8 tested), hint engine with Ukrainian explanations, CLI.
-- Slice 2 `add-play-page`: one page with the grid, click cycling, rule highlighting, hint button, win message, "new puzzle" button, and a size selector (the first thing cut if the schedule slips).
+- Slice 2 `add-play-page`: one page with the grid, click cycling, rule highlighting, hint button, win message, "new puzzle" button. The size selector was cut at 18:40 (cut 0) and is reported NOT-EARNED.
 
 Pre-agreed cut lines shrink this in a fixed order if the build runs more than 30 minutes behind: the size selector goes first, and if slice 2 shrinks it keeps the grid, rule highlighting, the win message and the "new puzzle" button. Every cut is logged and reported to the user; anything unfinished is reported NOT-EARNED or FAIL, never silently dropped.
 
-**Future (not tonight):** grid sizes N ≥ 10, difficulty grading, a timer, saved progress, undo, a daily puzzle, Playwright end-to-end browser tests, and a guarantee that every puzzle can be solved by the three hint rules alone.
+**Future (not tonight):** grid sizes 10 to 16 on the page, the size selector, a bilingual page (Ukrainian and English, with English hints), difficulty grading, a timer, saved progress, undo, a daily puzzle, Playwright end-to-end browser tests, and a guarantee that every puzzle can be solved by the three hint rules alone.
 
 ## How quality is shown
 
