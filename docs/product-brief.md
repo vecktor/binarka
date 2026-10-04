@@ -1,6 +1,6 @@
 # Бінарка — Product Brief
 
-Status: **DRAFT for the user's scope sign-off** (P1, 2026-10-04). Pinned defaults are listed as assumptions in `docs/requirements.md` and as clarifications in the P1 handoff; nothing here is settled until the user signs off.
+Status: **SIGNED OFF by the user on 2026-10-04** (P1 scope sign-off, `docs/autonomy-log.md` row 7). The user's answers to the 14 clarifications are recorded in `docs/requirements.md` under Assumptions & Notes; `docs/requirements.md` is canonical where the two differ.
 
 ## What it is
 
@@ -33,7 +33,7 @@ Nothing is reused from the user's older puzzle project or from the playable prev
 
 **See broken rules.** After every change the page highlights broken rules: three equal digits side by side, a row or column with more than half of one digit, and two identical complete rows or columns. Partially filled lines are never flagged falsely.
 
-**Ask for a hint.** The hint button fills one cell and shows why, in one Ukrainian sentence, using one of three rules: Pair («0 0 _»), Sandwich («0 _ 0») or Count (half of the line is already one digit). If no rule applies, the hint says so and fills nothing (pinned default, to be confirmed).
+**Ask for a hint.** The hint button fills one cell and shows why, in one Ukrainian sentence, using one of three rules: Pair («0 0 _»), Sandwich («0 _ 0») or Count (half of the line is already one digit). If no rule applies, the hint says so and fills nothing. If the board breaks a rule, the hint asks the player to fix it first.
 
 **Win.** When the grid is full and breaks no rule, the page shows a win message.
 
@@ -48,7 +48,7 @@ Nothing is reused from the user's older puzzle project or from the playable prev
 - Slice 1 `add-puzzle-engine`: rule checker, solver that counts solutions and stops at 2, seeded generator of uniquely solvable puzzles (N = 4, 6, 8 tested), hint engine with Ukrainian explanations, CLI.
 - Slice 2 `add-play-page`: one page with the grid, click cycling, rule highlighting, hint button, win message, "new puzzle" button, and a size selector (the first thing cut if the schedule slips).
 
-Pre-agreed cut lines shrink this in a fixed order if the build runs more than 30 minutes behind; anything unfinished is reported NOT-EARNED or FAIL, never silently dropped.
+Pre-agreed cut lines shrink this in a fixed order if the build runs more than 30 minutes behind: the size selector goes first, and if slice 2 shrinks it keeps the grid, rule highlighting, the win message and the "new puzzle" button. Every cut is logged and reported to the user; anything unfinished is reported NOT-EARNED or FAIL, never silently dropped.
 
 **Future (not tonight):** grid sizes N ≥ 10, difficulty grading, a timer, saved progress, undo, a daily puzzle, Playwright end-to-end browser tests, and a guarantee that every puzzle can be solved by the three hint rules alone.
 

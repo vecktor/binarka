@@ -1,6 +1,6 @@
 # Бінарка — Requirements
 
-Status: **DRAFT for the user's scope sign-off** (P1, 2026-10-04). Rows marked as pinned defaults depend on the clarification list in the P1 handoff; see `## Assumptions & Notes` (A-x keys). IDs are assigned once and never renumbered; later changes append new IDs and mark changed rows.
+Status: **SIGNED OFF by the user on 2026-10-04 at 16:13 (UTC+5:30; Kyiv 13:43)**, P1 scope sign-off (`docs/autonomy-log.md` row 7). The user answered all 14 clarifications; every default pinned in `## Assumptions & Notes` (A-x keys) is now a user decision, including the cut order. The draft is tag `step-06-p1-draft`. IDs are assigned once and never renumbered; later changes append new IDs and mark changed rows.
 
 Narrative: `docs/product-brief.md`. Stack: `docs/adr/0001-stack.md`.
 
@@ -51,8 +51,8 @@ Conventions used below: N is the grid size (even); "line" means a row or a colum
 | FR-22 | MVP | Hints | Each hint explanation names the line type (рядок or стовпець) and its 1-based number, matching the target cell's line. | verify: local-verifiable |
 | FR-23 | MVP | Hints | When several hints apply, the choice is deterministic: repeated calls on the same board return the same cell, value and explanation (selection order pinned in A-7). | verify: local-verifiable |
 | FR-24 | MVP | Hints | A hint only ever targets an empty cell; it never changes a given or an already filled cell. | verify: local-verifiable |
-| FR-25 | MVP | Hints | When none of the three rules applies, the hint targets no cell and returns one Ukrainian sentence saying so, e.g. «Жодне з трьох правил зараз не підказує наступного ходу.» (pinned default, A-5). | verify: local-verifiable |
-| FR-26 | MVP | Hints | When the board currently breaks a rule, the hint targets no cell and returns one Ukrainian sentence asking the player to fix the highlighted rule first, e.g. «Спершу виправте порушення правил, підсвічене на полі.»; this takes precedence over FR-19 to FR-21 and FR-25 (pinned default, A-6). | verify: local-verifiable |
+| FR-25 | MVP | Hints | When none of the three rules applies, the hint targets no cell and returns one Ukrainian sentence saying so, e.g. «Жодне з трьох правил зараз не підказує наступного ходу.» (user decision, A-5). | verify: local-verifiable |
+| FR-26 | MVP | Hints | When the board currently breaks a rule, the hint targets no cell and returns one Ukrainian sentence asking the player to fix the highlighted rule first, e.g. «Спершу виправте порушення правил, підсвічене на полі.»; this takes precedence over FR-19 to FR-21 and FR-25 (user decision, A-6). | verify: local-verifiable |
 | FR-27 | Future | Hints | The generator guarantees that every puzzle can be solved from its givens using only the pair, sandwich and count rules, so a hint is always available on a correct board. | — |
 
 ### CLI
@@ -69,7 +69,7 @@ Conventions used below: N is the grid size (even); "line" means a row or a colum
 |---|---|---|---|---|
 | FR-31 | MVP | Play page | The page renders an N×N grid of a generated puzzle; N is 6 by default. | verify: local-verifiable |
 | FR-32 | MVP | Play page | Given cells are rendered distinctly from player cells (a distinct marker on the cell element). | verify: local-verifiable |
-| FR-33 | MVP | Play page | Clicking a given cell does not change it (pinned default, A-11). | verify: local-verifiable |
+| FR-33 | MVP | Play page | Clicking a given cell does not change it (user decision, A-11). | verify: local-verifiable |
 | FR-34 | MVP | Play page | Clicking a non-given cell cycles its shown text empty → «0» → «1» → empty; cells show the digits 0 and 1, not colours. | verify: local-verifiable |
 | FR-35 | MVP | Play page | Cells that form three or more equal digits side by side in a row or column are highlighted. | verify: local-verifiable |
 | FR-36 | MVP | Play page | A row or column holding more than N/2 of one digit is highlighted. | verify: local-verifiable |
@@ -127,7 +127,7 @@ All MVP NFRs are measured in Vitest (unit or jsdom). No server, accounts, hostin
 |---|---|---|
 | BC-1 | MVP | Deadline: 2026-10-04 23:59 Kyiv time (EEST, UTC+3). |
 | BC-2 | MVP | Hard freeze for feature work at 21:30 Kyiv time; after it only reporting, fixes to the proof pack and the video. |
-| BC-3 | MVP | When the build is more than 30 minutes behind, the pre-agreed cut lines are applied in order (see Cut order) and logged in `docs/autonomy-log.md` without asking the user. |
+| BC-3 | MVP | When the build is more than 30 minutes behind, the pre-agreed cut lines are applied in order (see Cut order) without waiting for approval; each cut is logged in `docs/autonomy-log.md` and `docs/budget.md`, and the user is told. |
 | BC-4 | MVP | The user's older puzzle project and the playable preview shown while choosing the game are off-limits; nothing is read, copied or reused. |
 | BC-5 | MVP | Phases run in order: requirements, specs, plan, build; the user signs off at scope (end of P1) and at the plan. |
 | BC-6 | MVP | Anything unfinished at the deadline is reported NOT-EARNED or FAIL, never silently dropped or reported as passing. |
@@ -136,23 +136,23 @@ All MVP NFRs are measured in Vitest (unit or jsdom). No server, accounts, hostin
 
 ## Cut order
 
-Applied in this order when the build is more than 30 minutes behind (BC-3). Cut rows move to Future or are reported NOT-EARNED; their IDs stay.
+Applied in this order when the build is more than 30 minutes behind (BC-3). Cut rows move to Future or are reported NOT-EARNED; their IDs stay. The user confirmed this order at sign-off: the size selector is cut 0 (clarification 13), and the "new puzzle" button stays in the shrunken slice 2 (clarification 14).
 
-0. **Before cut line 1 (autonomy-log row 2a):** drop the size selector, FR-43. The engine stays generic (FR-13 to FR-17, FR-15 still tested for N = 4, 6, 8); the page stays at 6×6.
+0. **Before cut line 1 (autonomy-log row 2a; confirmed at sign-off, clarification 13):** drop the size selector, FR-43. The engine stays generic (FR-13 to FR-17, FR-15 still tested for N = 4, 6, 8); the page stays at 6×6.
 1. **Skip the global review-gate.** Process only; no FR or NFR removed. Per-slice reviews stay.
 2. **Drop the eval.** NFR-6 is reported NOT-EARNED.
-3. **Shrink slice 2 to the grid, rule highlighting and the win message.** FR-39 and FR-40 (page hint button) move to Future; FR-42 ("new puzzle" button) and FR-43 are not in the shrunken slice either and would be reported NOT-EARNED unless kept (to confirm, see handoff). The hint engine (FR-19 to FR-26) stays in slice 1.
+3. **Shrink slice 2 to the grid, rule highlighting, the win message and the "new puzzle" button.** FR-39 and FR-40 (page hint button) move to Future. FR-42 ("new puzzle" button) stays in the shrunken slice (user decision, clarification 14); FR-43 is already gone at cut 0. The hint engine (FR-19 to FR-26) stays in slice 1.
 4. **If slice 1 (`add-puzzle-engine`) is not archived by 18:00 Kyiv, drop slice 2.** All Play page rows FR-31 to FR-43 are reported NOT-EARNED; the video shows the CLI (FR-28 to FR-30).
 
 ## Assumptions & Notes
 
-Each pinned default is keyed to the clarification number in the P1 handoff so the user can flip it at sign-off.
+Each item is keyed to its clarification number. At the P1 sign-off (2026-10-04) the user accepted every default as written below, with these notes: clarification 1, Ukrainian (the user first wrote "US language" and then confirmed Ukrainian); clarification 3, "new puzzle for now" (difficulty grading stays Future, FR-44); clarification 9, keep the eval. These items are now decisions, not assumptions.
 
 - **A-1 (clarification 1):** UI language is Ukrainian (NFR-5).
 - **A-2 (clarification 2):** cells show the digits 0 and 1, not colours (FR-34).
 - **A-3 (clarification 3):** no levels; a "new puzzle" button only (FR-42).
 - **A-4 (clarification 4):** puzzles are generated in the browser from a seed; the seed is not shown on the page in MVP. The page chooses a new seed outside the engine (the `Math.random` ban in TC-8 applies only to `src/engine/`), and the page code accepts an injected seed so jsdom tests are deterministic.
-- **A-5 (clarification 6):** uniqueness of the solution does not guarantee that the three hint rules can solve a puzzle. Pinned default: when no rule applies, the hint says so in one sentence and fills nothing (FR-25); the rule-solvable guarantee is Future (FR-27).
+- **A-5 (clarification 6):** uniqueness of the solution does not guarantee that the three hint rules can solve a puzzle. Decided (option a): when no rule applies, the hint says so in one sentence and fills nothing (FR-25); the rule-solvable guarantee is Future (FR-27).
 - **A-6 (clarification 7):** the hint engine reasons from the board as it is (givens plus the player's entries) and does not consult the solution. If the board currently breaks a rule, the hint fills nothing (FR-26). A wrong entry that breaks no rule yet can still lead to a correct-looking rule deduction that is not part of the solution. FR-26 is removable if the user chooses another option.
 - **A-7 (clarification 10):** hint selection order when several apply (FR-23): rule order pair, then sandwich, then count; within a rule, rows before columns; then lower line number; then lower cell position in the line.
 - **A-8 (clarification 5):** a hint fills the cell and shows the explanation (FR-39, FR-40). For the count rule the explanation speaks of "the rest of the cells", but one hint fills one cell (the first empty one in the line). A hint-filled cell behaves like a player entry (it can be changed by clicking).
