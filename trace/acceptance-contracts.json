@@ -1,0 +1,383 @@
+{
+  "generatedBy": "scripts/check-acceptance-methods.mjs",
+  "mode": "artifact",
+  "productCode": true,
+  "contracts": {
+    "FR-1": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-2": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-3": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-4": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-5": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-6": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-7": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-8": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-9": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-10": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-11": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-12": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-13": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-14": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-15": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-16": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-17": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-19": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-20": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-21": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-22": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-23": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-24": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-25": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-26": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-28": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-29": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-30": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-31": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-32": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-33": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-34": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-35": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-36": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-37": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-38": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-39": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-40": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-41": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-42": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-43": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "NFR-1": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "NFR-2": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "NFR-3": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "NFR-4": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "NFR-5": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "NFR-6": [
+      {
+        "method": "eval",
+        "mechanism": "file:scripts/check-eval-ratchet.mjs",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ]
+  }
+}
