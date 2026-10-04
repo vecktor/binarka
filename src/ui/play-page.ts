@@ -8,6 +8,11 @@ export interface PlayPageOptions {
 }
 
 const SIZES = [4, 6, 8];
+const RULES_ITEMS = [
+  'Не більше двох однакових цифр поспіль у рядку чи стовпці.',
+  'У кожному рядку та стовпці порівну нулів і одиниць.',
+  'Усі рядки різні, і всі стовпці різні.',
+];
 const WIN_TEXT = "Вітаємо, головоломку розв'язано!";
 
 function copyGrid(grid: Grid): Grid {
@@ -38,11 +43,16 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (n === 6) option.selected = true;
     sizeSelect.appendChild(option);
   }
+  const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, 'Скинути');
   const buttons = el('div', { class: 'buttons' });
-  buttons.append(hintButton, newButton);
+  buttons.append(hintButton, resetButton, newButton);
+  const rules = el('section', { 'data-section': 'rules', class: 'rules' });
+  const rulesList = el('ul');
+  for (const text of RULES_ITEMS) rulesList.appendChild(el('li', {}, text));
+  rules.append(el('h2', {}, 'Правила'), rulesList);
   const hintMessage = el('p', { 'data-message': 'hint', class: 'message' });
   const winMessage = el('p', { 'data-message': 'win', class: 'message message-win' });
-  root.replaceChildren(heading, sizeSelect, boardHost, buttons, hintMessage, winMessage);
+  root.replaceChildren(heading, sizeSelect, boardHost, rules, buttons, hintMessage, winMessage);
 
   let size = 6;
   let givens: Grid = [];
@@ -136,6 +146,15 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     renderCell(h.row, h.col);
     refreshHighlights();
     updateWin();
+  });
+
+  resetButton.addEventListener('click', () => {
+    if (board.length === 0) return;
+    board = copyGrid(givens);
+    for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
+    refreshHighlights();
+    hintMessage.textContent = '';
+    winMessage.textContent = '';
   });
 
   function restoreSelect(): void {
