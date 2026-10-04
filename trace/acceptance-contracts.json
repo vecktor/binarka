@@ -139,6 +139,30 @@
         "status": "missing-artifact"
       }
     ],
+    "FR-49": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-50": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-51": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
     "FR-19": [
       {
         "method": "local-verifiable",
@@ -220,6 +244,30 @@
       }
     ],
     "FR-30": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-52": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-53": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "FR-54": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
@@ -323,14 +371,6 @@
         "status": "missing-artifact"
       }
     ],
-    "FR-43": [
-      {
-        "method": "local-verifiable",
-        "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
-      }
-    ],
     "NFR-1": [
       {
         "method": "local-verifiable",
@@ -375,6 +415,14 @@
       {
         "method": "eval",
         "mechanism": "file:scripts/check-eval-ratchet.mjs",
+        "artifact": null,
+        "status": "missing-artifact"
+      }
+    ],
+    "NFR-8": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
         "artifact": null,
         "status": "missing-artifact"
       }

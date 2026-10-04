@@ -10,6 +10,7 @@ Pinned test conventions:
 
 - **Solver result.** The solver returns a number that is 0, 1 or 2, where 2 stands for "2 or more"; a value above 2 is never returned. Scenarios write the value 2 as "2 or more".
 - **Fixed seed set.** The "fixed seed set" used by FR-15 and NFR-1 to NFR-3 is the integer seeds 1 to 20 inclusive, used for each of N = 4, 6 and 8 (20 seeds per size).
+- **Engine interface (spec-made contract).** `generate(size: number, seed: number): Puzzle`, where `Puzzle` has `size`, `givens` (an N×N grid of 0, 1 or null) and `solution` (an N×N grid of 0 and 1). `hint(board)` takes a board shaped like `givens` and returns either `{ kind: 'fill', row, col, value, rule, sentence }` or `{ kind: 'none' | 'broken', sentence }`; `rule` is 'pair', 'sandwich' or 'count'. `row` and `col` are 0-based indices, while sentences number lines from 1; rule-checker violations also use 0-based indices. Scenarios below write 1-based numbers, so scenario row 3 column 3 is `row` 2, `col` 2 in the interface. The play-page capability refers to this contract; the change design may rename these names only together with this spec.
 - **CLI invocation.** Tests call the CLI as `npm run --silent cli -- <arguments>` (npm's own banner lines are suppressed; this runs the same `tsx src/cli.ts <arguments>`), and "no arguments" means `npm run --silent cli`. "Prints" means stdout unless a scenario says stderr. On success the CLI writes the puzzle to stdout and nothing to stderr; on an error it writes the error sentence to stderr and nothing to stdout.
 
 ## Requirements
@@ -279,6 +280,71 @@ Traces: FR-17
 - **WHEN** the generator runs
 - **THEN** a 4×4 puzzle is returned
 
+### Requirement: Size above the maximum is rejected
+The generator SHALL reject an N above 16 with an error and return no puzzle; the maximum is pinned to 16 (A-9). An even N from 10 to 16 passes size validation but is untested and not offered.
+
+Traces: FR-49
+
+#### Scenario: Even size above 16
+- **GIVEN** size 18 and any valid seed
+- **WHEN** the generator runs
+- **THEN** it raises an error and returns no puzzle
+
+#### Scenario: Very large size
+- **GIVEN** size 1000 and any valid seed
+- **WHEN** the generator runs
+- **THEN** it raises an error and returns no puzzle
+
+#### Scenario: Largest tested size is still accepted
+- **GIVEN** size 8 and any valid seed
+- **WHEN** the generator runs
+- **THEN** an 8×8 puzzle is returned (sizes 10 to 16 are accepted by validation but no scenario generates at them)
+
+### Requirement: A size that is not an integer is rejected
+The generator SHALL reject a size that is not an integer (for example 4.5, NaN or Infinity) with an error and return no puzzle.
+
+Traces: FR-50
+
+#### Scenario: Fractional size
+- **GIVEN** size 4.5 and any valid seed
+- **WHEN** the generator runs
+- **THEN** it raises an error and returns no puzzle
+
+#### Scenario: NaN and infinite sizes
+- **GIVEN** size NaN, separately size Infinity, and separately size -Infinity, each with any valid seed
+- **WHEN** the generator runs
+- **THEN** each raises an error and returns no puzzle
+
+#### Scenario: Whole-number size is accepted
+- **GIVEN** size 6 and any valid seed
+- **WHEN** the generator runs
+- **THEN** a 6×6 puzzle is returned
+
+### Requirement: A seed outside the seed domain is rejected
+The generator SHALL reject a seed that is not an integer from 0 to 2147483647 (2^31 - 1) with an error and return no puzzle; the seed domain applies to the generator, the CLI and the page (A-25).
+
+Traces: FR-51
+
+#### Scenario: Lowest and highest valid seeds
+- **GIVEN** size 4 with seed 0, and separately size 4 with seed 2147483647
+- **WHEN** the generator runs
+- **THEN** each returns a 4×4 puzzle
+
+#### Scenario: Negative seed
+- **GIVEN** size 4 and seed -1
+- **WHEN** the generator runs
+- **THEN** it raises an error and returns no puzzle
+
+#### Scenario: Seed above the domain
+- **GIVEN** size 4 and seed 2147483648
+- **WHEN** the generator runs
+- **THEN** it raises an error and returns no puzzle
+
+#### Scenario: Fractional, NaN and infinite seeds
+- **GIVEN** size 4 with seed 1.5, separately with seed NaN, and separately with seed Infinity
+- **WHEN** the generator runs
+- **THEN** each raises an error and returns no puzzle
+
 ### Requirement: Pair hint
 The hint engine SHALL, when two equal digits stand side by side in a line and a cell next to the pair is empty, target that cell with the opposite digit and explain it in one Ukrainian sentence.
 
@@ -515,24 +581,109 @@ Traces: FR-29
 - **THEN** its stdout is a 4×4 puzzle equal to the stdout of `npm run --silent cli -- --size 4 --seed 1`
 
 ### Requirement: CLI rejects an invalid size
-The CLI SHALL, for an invalid size (odd, below 4 or not a number), write a one-sentence Ukrainian error to stderr, exit with a non-zero code, and write nothing to stdout (so no puzzle line is printed). Which tokens count as "not a number" beyond a token with no digit at all is an open point (see GAP).
+The CLI SHALL, for an invalid size (odd, below 4, above 16, or not a number by the grammar in FR-53), write a one-sentence English error to stderr, exit with a non-zero code, and write nothing to stdout (so no puzzle line is printed).
 
 Traces: FR-30
 
 #### Scenario: Odd size
 - **GIVEN** the command `npm run --silent cli -- --size 5`
 - **WHEN** it runs
-- **THEN** stderr holds one Ukrainian error sentence, the exit code is non-zero and stdout is empty
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
 
 #### Scenario: Size below 4
 - **GIVEN** the command `npm run --silent cli -- --size 2`
 - **WHEN** it runs
-- **THEN** stderr holds one Ukrainian error sentence, the exit code is non-zero and stdout is empty
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Size above 16
+- **GIVEN** the command `npm run --silent cli -- --size 18`
+- **WHEN** it runs
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
 
 #### Scenario: Non-numeric size
 - **GIVEN** the command `npm run --silent cli -- --size abc`
 - **WHEN** it runs
-- **THEN** stderr holds one Ukrainian error sentence, the exit code is non-zero and stdout is empty
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Size that breaks the number grammar
+- **GIVEN** the command `npm run --silent cli -- --size 6.5`
+- **WHEN** it runs
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+### Requirement: CLI rejects an invalid seed
+The CLI SHALL, for an invalid seed (not valid by the grammar in FR-53, or above 2147483647), write a one-sentence English error to stderr, exit with a non-zero code, and write nothing to stdout.
+
+Traces: FR-52
+
+#### Scenario: Non-numeric seed
+- **GIVEN** the command `npm run --silent cli -- --seed abc`
+- **WHEN** it runs
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Seed above the domain
+- **GIVEN** the command `npm run --silent cli -- --seed 2147483648`
+- **WHEN** it runs
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Negative and fractional seeds
+- **GIVEN** the commands `npm run --silent cli -- --seed -1` and `npm run --silent cli -- --seed 1.5`
+- **WHEN** each runs
+- **THEN** for each, stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Lowest and highest valid seeds
+- **GIVEN** the commands `npm run --silent cli -- --size 4 --seed 0` and `npm run --silent cli -- --size 4 --seed 2147483647`
+- **WHEN** each runs
+- **THEN** each exits with code 0, prints a 4×4 puzzle to stdout and writes nothing to stderr
+
+### Requirement: CLI number grammar
+The CLI SHALL accept a `--size` or `--seed` value only when the whole value matches `^[0-9]+$` (ASCII digits only); leading zeros are allowed and `06` means 6; any other value, including `6.5`, `+6`, `-2`, `1e1`, `0x6` and an empty value, MUST be rejected as invalid with the error behaviour of FR-30 (size) or FR-52 (seed).
+
+Traces: FR-53
+
+#### Scenario: Leading zeros are accepted
+- **GIVEN** the commands `npm run --silent cli -- --size 06 --seed 7` and `npm run --silent cli -- --size 6 --seed 7`
+- **WHEN** each runs
+- **THEN** both exit with code 0 and their stdout outputs are identical
+
+#### Scenario: Leading zeros in the seed
+- **GIVEN** the commands `npm run --silent cli -- --size 4 --seed 007` and `npm run --silent cli -- --size 4 --seed 7`
+- **WHEN** each runs
+- **THEN** both exit with code 0 and their stdout outputs are identical
+
+#### Scenario: Invalid size tokens
+- **GIVEN** the size values `6.5`, `+6`, `-2`, `1e1`, `0x6` and the empty value (passed as `--size ""`), each tried in turn
+- **WHEN** the CLI runs with each
+- **THEN** for each, stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Invalid seed tokens
+- **GIVEN** the seed values `6.5`, `+6`, `-2`, `1e1`, `0x6` and the empty value (passed as `--seed ""`), each tried in turn
+- **WHEN** the CLI runs with each
+- **THEN** for each, stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+### Requirement: CLI rejects a missing option value and an unknown option
+The CLI SHALL, for an option given without a value (for example `--size` as the last argument) or for an unknown option, write a one-sentence English error to stderr and exit with a non-zero code.
+
+Traces: FR-54
+
+#### Scenario: Size without a value
+- **GIVEN** the command `npm run --silent cli -- --size`
+- **WHEN** it runs
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Seed without a value after another option
+- **GIVEN** the command `npm run --silent cli -- --size 6 --seed`
+- **WHEN** it runs
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Unknown option
+- **GIVEN** the command `npm run --silent cli -- --level 3`
+- **WHEN** it runs
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
+
+#### Scenario: Unknown option next to valid ones
+- **GIVEN** the command `npm run --silent cli -- --size 6 --seed 1 --verbose`
+- **WHEN** it runs
+- **THEN** stderr holds one English error sentence, the exit code is non-zero and stdout is empty
 
 ### Requirement: Generating a 4×4 puzzle is fast
 The generator SHALL produce one 4×4 puzzle in under 200 ms, worst case over the fixed seed set (seeds 1 to 20) used for the uniqueness requirement, measured in Vitest on the test machine.
@@ -584,8 +735,8 @@ Traces: NFR-4
 - **WHEN** the sentence is inspected
 - **THEN** the dash and the comma are not sentence breaks and the sentence counts as one
 
-### Requirement: Hint sentences and CLI errors are Ukrainian
-The engine and CLI SHALL write every hint sentence and every CLI error (on stderr) in Ukrainian: the text contains Cyrillic and no Latin letters. Page text belongs to the play-page capability and is out of scope here.
+### Requirement: Hint sentences are Ukrainian
+The hint engine SHALL write every hint sentence in Ukrainian: the text contains Cyrillic and no Latin letters (digits are allowed). CLI errors are English (NFR-8) and are not covered here. Page text belongs to the play-page capability and is out of scope here.
 
 Traces: NFR-5
 
@@ -594,20 +745,31 @@ Traces: NFR-5
 - **WHEN** each is inspected
 - **THEN** each contains Cyrillic letters and no Latin letters (digits for line numbers are allowed)
 
-#### Scenario: CLI errors
-- **GIVEN** the CLI error for an odd size, for a size below 4, and for a non-numeric size
-- **WHEN** each is inspected
-- **THEN** each contains Cyrillic letters and no Latin letters, so no message echoes an option name or a Latin-letter input value
+### Requirement: CLI errors are English
+The CLI SHALL write every error as one English sentence that contains no Cyrillic letters; the exact wording is not pinned (A-22).
+
+Traces: NFR-8
+
+#### Scenario: Every kind of CLI error
+- **GIVEN** the CLI errors for an odd size, a size above 16, a non-numeric seed, a seed above 2147483647, a `--size` option without a value and an unknown option
+- **WHEN** each stderr text is inspected
+- **THEN** each is a single line that contains Latin letters, does not match `/\p{Script=Cyrillic}/u`, and ends with a single terminal mark with no earlier full stop, exclamation mark or question mark
+
+#### Scenario: Wording is not asserted
+- **GIVEN** any CLI error
+- **WHEN** a test inspects its text
+- **THEN** it checks only the language and one-sentence shape above, never specific words
 
 ### Requirement: Hint explanations are clear and correct for a player
-The hint engine SHALL give explanations that a player finds clear and correct: the sentence states the rule that applies, names the right line, and agrees with the board and the target cell and value. This quality is graded by an eval-judge on a 0 to 100 scale against a rubric on 2 to 3 cases (pair, sandwich and count), and the grading is optional (cut line 2 of the cut order); if it is cut, this requirement is reported NOT-EARNED, not passed.
+The hint engine SHALL give explanations that a player finds clear and correct: the sentence states the rule that applies, names the right line, and agrees with the board and the target cell and value. This quality is graded by an eval-judge on a 0 to 100 scale against a rubric on 2 to 3 Ukrainian hint sentences (pair, sandwich and count), each case must score at least 80 out of 100, and the grading is optional (cut line 2 of the cut order); if it is cut, this requirement is reported NOT-EARNED, not passed.
 
 Traces: NFR-6
 
 #### Scenario: Pair, sandwich and count cases are graded
 - **GIVEN** one hint case each for the pair, sandwich and count rules, with the board, the target and the sentence
 - **WHEN** the eval-judge scores each case against the rubric
-- **THEN** a score from 0 to 100 is recorded for each case, with the rubric items scored being: the sentence names the rule, names the correct line type and number, names the correct digit, and is understandable to a player without game knowledge; the pass threshold for the score is an open point (see GAP), so until it is pinned this scenario asserts that the scores exist and are recorded, not that they pass
+- **THEN** a score from 0 to 100 is recorded for each case, with the rubric items scored being: the sentence names the rule, names the correct line type and number, names the correct digit, and is understandable to a player without game knowledge
+- **AND** each recorded score is at least 80 out of 100
 
 #### Scenario: Grading is not run
 - **GIVEN** the eval is dropped under the cut order
@@ -618,26 +780,16 @@ Traces: NFR-6
 
 These are intentional and are not defects:
 
-- There is no server, no authentication, no accounts, no persistence and no network. The engine and CLI have no unauthorized, forbidden or permission paths, so no such scenarios exist. The specified error paths are: odd N, N below 4 (including 0 and negative N), an invalid CLI size (odd, below 4, or a token with no digit), a hint on a board that already breaks a rule, a hint when no rule applies, and a solver result of 0 on a board with no completion. All other malformed input is either excluded below or an open point (GAP).
-- FR-18 (grid sizes N of 10 and above supported, tested and offered) is Future. The engine does not reject an even N of 10 or more, but such sizes are untested, carry no time bound and are not offered anywhere.
+- There is no server, no authentication, no accounts, no persistence and no network. The engine and CLI have no unauthorized, forbidden or permission paths, so no such scenarios exist. The specified error paths are: odd N, N below 4 (including 0 and negative N), N above 16, a size that is not an integer, a seed outside 0 to 2147483647, an invalid CLI size or seed (odd, below 4, above 16, above the seed domain, or a value outside the number grammar), a CLI option without a value, an unknown CLI option, a hint on a board that already breaks a rule, a hint when no rule applies, and a solver result of 0 on a board with no completion. All other malformed input is excluded below.
+- FR-18 (grid sizes 10 to 16 tested and offered on the page) is Future. The engine accepts an even N from 10 to 16 (FR-49), but such sizes are untested, carry no time bound and are not offered anywhere; an N above 16 is rejected (FR-49).
+- FR-56 (English hint sentences) is Future; hint sentences are Ukrainian only.
 - FR-27 (a guarantee that every puzzle is solvable from its givens by the pair, sandwich and count rules alone, so that a hint is always available on a correct board) is Future. Until then the no-rule hint (FR-25) is the defined outcome when no rule applies.
-- All play-page behaviour (FR-31 to FR-48: rendering, clicking, highlighting, the hint button, the win message, new puzzle, size selector) belongs to the play-page capability. This capability supplies the engine results the page uses, not the page itself.
+- All play-page behaviour (FR-31 to FR-48: rendering, clicking, highlighting, the hint button, the win message, new puzzle, and the size selector, which is cut) belongs to the play-page capability. This capability supplies the engine results the page uses, not the page itself.
 - Difficulty grading, a timer, saved progress, undo and a daily puzzle (Future) are not part of this capability. The generator takes no difficulty parameter.
 - The CLI never prints the solution and has no options other than the size and the seed.
 - Different seeds are expected, not guaranteed, to give different puzzles (A-18); no requirement or scenario asserts that two seeds differ.
 - The engine-purity constraints TC-7 (no DOM imports or browser globals in `src/engine/`) and TC-8 (no `Math.random`) are constraints, not traced behaviours (A-21). A test that scans `src/engine/` sources for them may exist, but it carries no `@trace FR-x` tag and does not count as evidence for any FR.
-- Even N of 10 or more is not rejected by size validation (A-9), but generation time, uniqueness and page support at those sizes are not claimed, no time bound exists, and no scenario generates at N = 10 or above.
-- Malformed engine input is assumed well-formed and its behaviour is unspecified: a board that is not square, whose side differs from N, or that holds a cell value other than 0, 1 or empty, passed to the rule checker, solver or hint engine; a non-integer seed passed to the generator.
+- Even N from 10 to 16 is accepted by size validation (A-9, FR-49), but generation time, uniqueness and page support at those sizes are not claimed, no time bound exists, and no scenario generates at N = 10 or above.
+- Malformed engine input is assumed well-formed and its behaviour is unspecified: a board that is not square, whose side differs from N, or that holds a cell value other than 0, 1 or empty, passed to the rule checker, solver or hint engine.
+- The exact wording of the CLI error sentences is not pinned (A-22) and no scenario asserts specific words; only the language (English, NFR-8) and the one-sentence shape are asserted.
 - The timing bounds of NFR-1 to NFR-3 are generous first guesses (A-13) and may need margin on shared CI machines; changing a bound is a change-control decision, not a tested behaviour.
-
-## Open points (GAP)
-
-Each item below is not pinned by the signed-off requirements; no scenario asserts it. Proposed defaults are for the user to decide, not decisions (scope additions wait for the user, BC-7).
-
-- GAP: the CLI seed error behaviour. FR-30 covers only an invalid size and A-10 says only `--seed <integer>`. Proposed default: a non-numeric seed (for example `abc`), a non-integer seed (1.5), a negative seed and a seed above 9007199254740991 are rejected exactly as an invalid size is (one Ukrainian sentence on stderr, non-zero exit, empty stdout). The user decides whether negative integer seeds are valid.
-- GAP: the grammar of a "number" for `--size` and `--seed`. Tokens such as `6abc`, `6,5`, `6.5`, `1e1`, `0x6`, ` 6 ` (with spaces), fullwidth `６`, `+6`, `-2`, `06` and an empty value behave differently under different parsers, and only a token with no digit at all (`abc`) is pinned as invalid. Proposed default: a token is a valid number only when the whole token matches an unsigned decimal integer of ASCII digits (`^[0-9]+$`); everything else is rejected with the same error as `abc`; leading zeros (`06`) are accepted as 6.
-- GAP: oversized N. An even N of 10 or more is not rejected (A-9, FR-18 is Future), so `--size 1000` passes validation and generation runs without a bound. Proposed default: reject N above a maximum chosen by the user (a placeholder of 16) in the CLI and generator with the same Ukrainian error; this would be a scope addition against A-9, hence the user's decision.
-- GAP: a generator size that is not an integer (4.5), NaN or Infinity. It is neither odd nor below 4 in the FR-16/FR-17 sense. Proposed default: rejected with an error and no puzzle, like an odd N.
-- GAP: a CLI option given without a value (for example `--size` last on the line) and an unknown option.
-- GAP: the exact wording of the CLI error sentences is not pinned; only that each is one Ukrainian sentence with no Latin letters.
-- GAP: the pass threshold of the NFR-6 eval. The eval-suite sets none. Proposed default: each of the 2 to 3 cases scores at least 80 out of 100.

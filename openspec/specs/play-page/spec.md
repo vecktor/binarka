@@ -2,54 +2,53 @@
 
 ## Purpose
 
-The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a hint button and a new-puzzle button, offers a grid size selector, and shows a Ukrainian win message when the board is solved. The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
+The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a hint button and a new-puzzle button, and shows a Ukrainian win message when the board is solved. The page is always 6×6 (the size selector, FR-43, is cut). The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
 
-Ownership: this capability owns FR-31 to FR-43. It traces NFR-5 only for the text the page itself shows (labels, buttons, size options, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
+Ownership: this capability owns FR-31 to FR-42; FR-43 is also assigned to it but is cut (Future, reported NOT-EARNED), see "FR-43 is cut". It traces NFR-5 only for the text the page itself shows (labels, buttons, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
 
 ## DOM contract used by the scenarios
 
-Scenarios are decided from the DOM only (text content, classes, data attributes, element presence). Indices are 1-based, matching the rows and columns shown to the player. The «» guillemets around labels and messages in this spec are quoting marks and are not part of the text. The apostrophe in «розв'язано» is the ASCII apostrophe U+0027 (as in FR-41); an equality check on the win message compares against that codepoint exactly.
+Scenarios are decided from the DOM only (text content, classes, data attributes, element presence). Indices are 1-based, matching the rows and columns shown to the player. The engine interface (`openspec/specs/puzzle-engine/spec.md`, test conventions) is 0-based, so a hint target with `row` r and `col` c is the cell with `data-row` = r + 1 and `data-col` = c + 1. The «» guillemets around labels and messages in this spec are quoting marks and are not part of the text. The apostrophe in «розв'язано» is the ASCII apostrophe U+0027 (as in FR-41); an equality check on the win message compares against that codepoint exactly.
 
 ### Mount entry point and fixtures (spec-made contract)
 
-FR-31 to FR-43 and A-4 only require that the seed is injectable. The following entry point is a contract chosen by this spec so scenarios can be written test-first; the change design may rename it only together with this spec.
+FR-31 to FR-42 and A-4 only require that the seed is injectable. The following entry point is a contract chosen by this spec so scenarios can be written test-first; the change design may rename it only together with this spec.
 
-- Entry point: `mountPlayPage(root: HTMLElement, options?: { seedSource?: () => number; generate?: (size: number, seed: number) => Puzzle }): void`, exported from `src/ui/`. `Puzzle` is the type the engine generator returns. `src/main.ts` calls it with the `#app` element and no options.
-- Mounting is synchronous: when the call returns, the board, buttons, selector and both message regions are in `root`. It replaces the previous content of `root`. Two mounts on two different roots are independent.
-- Seed source: a synchronous function with no arguments that returns an integer. The page calls it exactly once for each puzzle it generates (the mount, each press of the new puzzle button, each accepted size change) and at no other time, and passes the returned value to the generator unchanged. When no `seedSource` is injected the page uses its own default source (see the seed requirement).
+- Entry point: `mountPlayPage(root: HTMLElement, options?: { seedSource?: () => number; generate?: (size: number, seed: number) => Puzzle }): void`, exported from `src/ui/`. `Puzzle` is the type the engine generator returns (engine interface in `openspec/specs/puzzle-engine/spec.md`). `src/main.ts` calls it with the `#app` element and no options.
+- Mounting is synchronous: when the call returns, the board, buttons and both message regions are in `root`. It replaces the previous content of `root`. Two mounts on two different roots are independent.
+- Seed source: a synchronous function with no arguments that returns an integer. The page calls it exactly once for each puzzle it generates (the mount and each press of the new puzzle button) and at no other time, and passes the returned value to the generator unchanged. When no `seedSource` is injected the page uses its own default source (see the seed requirement).
 - Generator: when `generate` is not injected the page uses the engine generator. A scenario that says "fixture puzzle" injects a hand-written puzzle through `generate` (returned whatever the size and seed); its givens, and its solution where a scenario needs one, are written in the test suite so that the board state a scenario needs can be reached by clicks. A scenario that says "the generator output for size N and seed S" uses the real engine generator with no injection of `generate`. The rule checker and the hint engine are always the real engine; an "expected hint" in a scenario is the engine hint function applied to the board as read from the DOM.
 - Unless a scenario names a seed, its board is a fixture puzzle.
 
-- Board element: `[data-board]`, with `data-size` holding N.
+- Board element: `[data-board]`, with `data-size` holding N (always 6, see "FR-43 is cut").
 - Cell element: `[data-cell]` with `data-row`, `data-col`, and `data-given` equal to `true` for a given and `false` otherwise. A given also carries the class `cell-given`. A cell's shown text is empty, `0` or `1`.
 - Highlighted cell: carries the class `cell-violation`.
 - Buttons: `[data-action="hint"]` (label «Підказка») and `[data-action="new"]` (label «Нова головоломка»).
-- Size selector: `[data-control="size"]`, a select with options 4, 6 and 8 labelled «4×4», «6×6» and «8×8».
 - Message regions: `[data-message="hint"]` and `[data-message="win"]`, always present; empty text content means no message is shown.
 - Page root: the `root` passed to `mountPlayPage`. The page heading is not required by any FR; if present it is inside the root, and the document title is `document.title`.
 
-### If FR-43 is cut
+### FR-43 is cut
 
-FR-43 is cut 0 in the signed-off cut order (`docs/requirements.md`, Cut order). If it is cut: the page stays at 6×6 with no `[data-control="size"]` element; the `data-size` attribute stays and is always `6`; the "Grid size selector" requirement and its scenarios, the invalid-size scenario, the size parts of the new puzzle scenarios ("New puzzle keeps the chosen size") and the size options in the static text scenario are removed or moved to Future; "the currently selected size" in the new puzzle requirement reads 6; the `generate` option and the seed source contract stay unchanged.
+FR-43 is cut (cut 0, applied 2026-10-04 18:40; FR-43 is Future, see `docs/requirements.md`, Cut order). There is no size selector and no `[data-control="size"]` element; the page is always 6×6 and `data-size` is always `6`. FR-43 is reported NOT-EARNED; its ID stays.
 
 ## Requirements
 
 ### Requirement: Board rendering and default size
 
-The page SHALL render an N×N grid of cells for a puzzle produced by the generator from a size and a seed, with N equal to 6 when the player has not chosen another size.
+The page SHALL render an N×N grid of cells for a puzzle produced by the generator from a size and a seed, with N equal to 6; the page offers no other size (FR-43 is cut).
 
 Traces: FR-31
 
 #### Scenario: Default board is 6x6
 
-- **GIVEN** the page is mounted with an injected seed source returning 1 and no size chosen
+- **GIVEN** the page is mounted with an injected seed source returning 1
 - **WHEN** the page has rendered
 - **THEN** `[data-board]` has `data-size="6"` and contains exactly 36 `[data-cell]` elements
 - **AND** the cells carry `data-row` and `data-col` values 1 to 6, each pair appearing exactly once
 
 #### Scenario: Board content comes from the generator
 
-- **GIVEN** the page is mounted with an injected seed source returning 42 and the default size
+- **GIVEN** the page is mounted with an injected seed source returning 42
 - **WHEN** the page has rendered
 - **THEN** for every cell, `data-given="true"` holds exactly where the generator returns a given for size 6 and seed 42
 - **AND** each given cell shows the digit the generator returns for it and every other cell shows empty text
@@ -183,7 +182,7 @@ Traces: FR-37
 
 ### Requirement: Highlighting follows every board change
 
-The page SHALL recompute the highlighted cells after every board change (a cell click on a non-given cell, a hint fill, a new puzzle, a size change), so that a broken rule is highlighted at once and its highlight is removed as soon as the rule is no longer broken.
+The page SHALL recompute the highlighted cells after every board change (a cell click on a non-given cell, a hint fill, a new puzzle), so that a broken rule is highlighted at once and its highlight is removed as soon as the rule is no longer broken.
 
 Traces: FR-38
 
@@ -221,8 +220,15 @@ Traces: FR-39
 
 - **GIVEN** a rendered board on which the hint engine returns a target cell and value
 - **WHEN** the player presses `[data-action="hint"]`
-- **THEN** the cell at the target row and column shows that value
+- **THEN** the cell with `data-row` = row + 1 and `data-col` = col + 1 (the engine's 0-based `row` and `col`) shows that value
 - **AND** every other cell has the same text as before the press
+
+#### Scenario: Zero-based target maps to the one-based cell
+
+- **GIVEN** a fixture puzzle whose only given cells are 0 at `data-row` 3 with `data-col` 1 and 2, so that the hint engine returns `{ kind: 'fill', row: 2, col: 2, value: 1, rule: 'pair' }` (row 3 column 3 in the page's numbering)
+- **WHEN** the player presses `[data-action="hint"]`
+- **THEN** the cell with `data-row="3"` and `data-col="3"` shows `1`
+- **AND** the cell with `data-row="2"` and `data-col="2"` is unchanged
 
 #### Scenario: Count rule fills only one cell
 
@@ -238,7 +244,7 @@ Traces: FR-39
 
 #### Scenario: No fill when the hint engine has no target
 
-- **GIVEN** a board on which the hint engine returns no target cell
+- **GIVEN** a board on which the hint engine returns `kind` 'none' or 'broken' (no target cell)
 - **WHEN** the player presses the hint button
 - **THEN** every cell has the same text as before the press
 
@@ -279,6 +285,24 @@ Traces: FR-40
 - **WHEN** no button has been pressed
 - **THEN** `[data-message="hint"]` has empty text content
 
+### Requirement: Hint message stays until the next hint or a new puzzle
+
+The page SHALL keep the text of `[data-message="hint"]` unchanged when the player clicks a cell, until the next press of the hint button or the next press of the new puzzle button (A-23).
+
+Traces: FR-40
+
+#### Scenario: Clicking a player cell keeps the hint message
+
+- **GIVEN** `[data-message="hint"]` shows a sentence after a hint press
+- **WHEN** the player clicks a non-given cell once, and then twice more
+- **THEN** `[data-message="hint"]` keeps exactly the same text after each click
+
+#### Scenario: The next hint replaces it and a new puzzle clears it
+
+- **GIVEN** `[data-message="hint"]` shows a sentence and the player has clicked a cell since
+- **WHEN** the player presses the hint button again, and then presses the new puzzle button
+- **THEN** after the hint press the region shows the sentence for that press, and after the new puzzle press it has empty text content
+
 ### Requirement: Win message when solved
 
 The page SHALL show the Ukrainian win message «Вітаємо, головоломку розв'язано!» in `[data-message="win"]` when the rule checker recognises the board as solved after a board change, whether the change is a click or a hint fill. While the board is not solved the win region SHALL have empty text content.
@@ -312,7 +336,7 @@ Traces: FR-41
 
 ### Requirement: New puzzle button
 
-The page SHALL, when the «Нова головоломка» button is pressed, replace the board with a puzzle generated for the currently selected size from a new seed, and SHALL clear the hint message and the win message and all highlights that belonged to the old board. The page MUST NOT require the new puzzle to differ from the old one.
+The page SHALL, when the «Нова головоломка» button is pressed, replace the board with a 6×6 puzzle generated from a new seed, and SHALL clear the hint message and the win message and all highlights that belonged to the old board. The page MUST NOT require the new puzzle to differ from the old one.
 
 Traces: FR-42
 
@@ -323,11 +347,11 @@ Traces: FR-42
 - **THEN** the board has 36 cells matching what the page's generator returns for size 6 and seed 7 (with an injected `generate` that returns the fixture for the first call and the engine generator's output afterwards), with no player entries
 - **AND** `[data-message="hint"]` and `[data-message="win"]` both have empty text content
 
-#### Scenario: New puzzle keeps the chosen size
+#### Scenario: New puzzle is always 6x6
 
-- **GIVEN** the size selector is set to 8×8 and the board is 8×8
+- **GIVEN** a mounted page with a 6×6 board
 - **WHEN** the player presses the new puzzle button
-- **THEN** the board has `data-size="8"` and 64 cells and the selector still shows 8×8
+- **THEN** the board has `data-size="6"` and 36 cells
 
 #### Scenario: New puzzle mid-game removes highlights
 
@@ -341,47 +365,15 @@ Traces: FR-42
 - **WHEN** the page is mounted and the new puzzle button is pressed twice
 - **THEN** the boards were generated from seeds 1, 2 and 3 in this order
 
-### Requirement: Grid size selector
-
-The page SHALL offer a size selector with the choices 4×4, 6×6 and 8×8, with 6×6 selected initially, and SHALL start a new puzzle of the chosen size when the choice changes, clearing the hint and win messages.
-
-Traces: FR-43
-
-#### Scenario: Selector options
-
-- **GIVEN** the page has just been mounted
-- **WHEN** the test reads `[data-control="size"]`
-- **THEN** it has exactly three options with values 4, 6 and 8 and labels «4×4», «6×6» and «8×8», and the value 6 is selected
-
-#### Scenario: Choose 4x4
-
-- **GIVEN** the default 6×6 board
-- **WHEN** the player selects 4×4
-- **THEN** `[data-board]` has `data-size="4"` and contains 16 cells matching the generator output for size 4 and the next seed from the seed source
-
-#### Scenario: Choose 8x8 mid-game
-
-- **GIVEN** a 6×6 board with player entries, a hint sentence shown and highlighted cells
-- **WHEN** the player selects 8×8
-- **THEN** the board has `data-size="8"` and 64 cells with no player entries
-- **AND** the hint and win message regions have empty text content
-
-#### Scenario: Value outside the offered sizes is ignored
-
-- **GIVEN** the default 6×6 board with player entries and a hint sentence shown, a seed source and a generator that count their calls, and a size selector made to report a value outside 4, 6 and 8 (for example by overriding `value` to return `5`, `10`, `abc`, or by selecting no option so that it reports the empty string), each tried in turn
-- **WHEN** a `change` event is dispatched on `[data-control="size"]` for each such value
-- **THEN** no error is thrown or logged as uncaught, `[data-board]` keeps `data-size="6"`, every cell keeps its text and class, and both message regions keep their text
-- **AND** the seed source and the generator were not called again, and the selector reports the value 6 again (the page restores it) once the value override is removed
-
 ### Requirement: Seed is chosen outside the engine, injectable and not shown
 
-The page SHALL obtain the seed for each puzzle from a seed source outside `src/engine/`, SHALL accept an injected seed source (contract in the DOM contract section) so tests are deterministic, and MUST NOT display the seed anywhere on the page, including in locale-formatted or separator-split form. When no seed source is injected, the default source SHALL give a different seed on each call (no two consecutive calls return the same seed) and every seed it returns SHALL be an integer from 0 to 2^31 - 1 inclusive. That range is a page-side decision made by this spec because `puzzle-engine/spec.md` does not pin a seed domain (see the GAP in Exclusions).
+The page SHALL obtain the seed for each puzzle from a seed source outside `src/engine/`, SHALL accept an injected seed source (contract in the DOM contract section) so tests are deterministic, and MUST NOT display the seed anywhere on the page, including in locale-formatted or separator-split form. When no seed source is injected, the default source SHALL give a different seed on each call (no two consecutive calls return the same seed) and every seed it returns SHALL be an integer from 0 to 2^31 - 1 inclusive. That range is the seed domain pinned by FR-51 and A-25.
 
-Traces: FR-31, FR-42
+Traces: FR-31, FR-42, FR-51
 
 #### Scenario: Injected seed gives a reproducible page
 
-- **GIVEN** two pages mounted with seed sources that both return 42, default size, using the real engine generator
+- **GIVEN** two pages mounted with seed sources that both return 42, using the real engine generator
 - **WHEN** both have rendered
 - **THEN** their cells have identical `data-given` values and identical text
 
@@ -407,15 +399,15 @@ Traces: FR-31, FR-42
 
 ### Requirement: Ukrainian page text
 
-The page SHALL show all of its own text (heading if any, labels, buttons, size selector option labels, the win message, `document.title` and any user-visible attribute such as `aria-label`, `title`, `placeholder` and `alt`) in Ukrainian: each such text contains Cyrillic letters and no Latin letters, or consists only of digits, whitespace and the sign ×. Hint sentences are owned by the puzzle-engine capability and are only displayed here.
+The page SHALL show all of its own text (heading if any, labels, buttons, the win message, `document.title` and any user-visible attribute such as `aria-label`, `title`, `placeholder` and `alt`) in Ukrainian: each such text contains Cyrillic letters and no Latin letters. The digits shown in the cells of the board are puzzle content, not page text, and are not collected. Hint sentences are owned by the puzzle-engine capability and are only displayed here.
 
 Traces: NFR-5
 
 #### Scenario: Static page text
 
 - **GIVEN** the page has just been mounted
-- **WHEN** the test collects every non-whitespace text node under the page root (including the buttons, the size options and any heading, label or footer), `document.title`, and the values of the attributes `aria-label`, `title`, `placeholder` and `alt` on every element in the root; `data-*` attributes, `class` and option `value` attributes are not user-visible and are not collected
-- **THEN** every collected text matches `/\p{Script=Cyrillic}/u` or consists only of digits, whitespace and the sign ×, and none matches `/[A-Za-z]/`
+- **WHEN** the test collects every non-whitespace text node under the page root (including the buttons and any heading, label or footer, but not the text of `[data-cell]` elements, which is puzzle content), `document.title`, and the values of the attributes `aria-label`, `title`, `placeholder` and `alt` on every element in the root; `data-*` attributes, `class` and option `value` attributes are not user-visible and are not collected
+- **THEN** every collected text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
 
 #### Scenario: Win message text
 
@@ -433,8 +425,8 @@ The following are intentionally unsupported in MVP; testers must not report them
 - Real-browser tests (NFR-7) are Future; the page is tested in jsdom only (TC-13). Rendering defects that jsdom cannot see are not caught.
 - Keyboard play and screen-reader support have no requirements (A-20). Mobile layout and visual polish are not specified (A-14).
 - The seed is not shown on the page (A-4).
-- Re-selecting the already selected size: browsers do not fire `change` when the same option is chosen again and FR-43 does not ask for it, so no scenario asserts it.
-- Grid sizes of 10 and above (FR-18) are not offered.
+- FR-43 (size selector) is cut (cut 0, applied 2026-10-04 18:40): it is Future and reported NOT-EARNED tonight; the page is always 6×6 and no scenario covers a size choice. Grid sizes other than 6 (including 10 to 16, FR-18) are not offered.
+- FR-55 (a bilingual page with a language switch) is Future: the page text is Ukrainian only.
+- FR-56 (English hint sentences) is Future: hint sentences are Ukrainian only.
 - The page does not restate or re-implement rule checking, solving, generation or hint selection; it only displays engine results (see `openspec/specs/puzzle-engine/spec.md`).
-- Not specified, and so not asserted by any scenario: whether the hint message is cleared when the player edits a cell after a hint. This is a GAP for the user to decide (BC-7). The win message after an edit is not a GAP: FR-41 empties it while the board is not solved (see "Board stays editable after a win").
-- GAP (seed domain, escalated to the user per BC-7): neither FR-13 to FR-17 nor `puzzle-engine/spec.md` pins the accepted seed domain (integer or not, negative values, upper bound, NaN). The page does not validate an injected seed: what happens when an injected seed source returns an oversized, negative, fractional or `NaN` value is the generator's behaviour and is not asserted by any scenario. This spec only pins the domain of the page's own default seeds (0 to 2^31 - 1, integers).
+- The page does not validate an injected seed: the generator rejects one outside 0 to 2147483647 (FR-51), and what the page does with that error is not asserted by any scenario. This spec pins the domain of the page's own default seeds only (integers from 0 to 2^31 - 1).
