@@ -22,6 +22,7 @@ Rule: if the 5-hour meter is above 70% before slice 2's review-gate, skip that s
 | 2026-10-04 ~15:00, after P0 | 2% (resets 17:50) | 51% | 23% | P0 end (readings are whole percents, so P0 cost is under 1%) |
 | 2026-10-04 ~15:08, before P1 | 3% (resets 17:50) | 51% (resets Wed 7 Oct 20:30) | 23% | P1 start, session B (Opus 5.5). The 5-hour meter moved 2% → 3% between sessions (session B start-up and reading). P1 ceiling at 1.5×: 4.5% weekly, 12% 5-hour. |
 | 2026-10-04 ~16:15, after P1 sign-off | 3% (resets 17:50) | 51% (resets Wed 7 Oct 20:30) | 23% | P1 end. Whole-percent readings, so P1 cost is under 1% on both meters. |
+| 2026-10-04 ~16:21, before P2 | 3% (resets 17:50) | 51% (resets Wed 7 Oct 20:30) | 23% | P2 start, session B. P2+P3 ceiling at 1.5×: 6% weekly, 15% 5-hour. |
 
 ## Deviations and cuts
 
