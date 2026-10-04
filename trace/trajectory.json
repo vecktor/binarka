@@ -2,6 +2,15 @@
   "generatedBy": "scripts/check-trajectory.mjs",
   "slices": [
     {
+      "slice": "2026-10-04-add-play-page",
+      "reviewEvidence": "clean",
+      "trailerCommits": 5,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
       "slice": "2026-10-04-add-puzzle-engine",
       "reviewEvidence": "unclean",
       "trailerCommits": 8,
