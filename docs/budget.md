@@ -1,0 +1,25 @@
+# Budget: planned vs actual
+
+Instrument: `get_usage` (Claude desktop app, Max plan). Percentages are of the plan meters, not dollars.
+Extra usage is off. Rule: a phase that uses more than 1.5× its planned share stops and is re-planned.
+Rule: if the 5-hour meter is above 70% before slice 2's review-gate, skip that slice's confirming run and the global review.
+
+| Phase | Session / model | Planned (weekly, all models) | Planned (5-hour) | Actual | Notes |
+|---|---|---|---|---|---|
+| P0 setup, up to the stack ADR | A: Sonnet 5.5, medium | ~1% | ~3% | _fill after P0_ | Docs only until the ADR is decided |
+| P1 requirements | B: Opus 5.5, medium | ~3% | ~8% | | |
+| P2 specs + P3 plan | B | ~4% | ~10% | | Deviation: P2 runs in session B to save one handoff |
+| Slice 1 | C: Sonnet 5.5, medium | ~8% | ~25% | | one review-gate, one fix round, one confirming run |
+| Slice 2 | C | ~8% | ~25% | | same limits |
+| Eval, gate:status, retro | C | ~3% | ~8% | | optional eval is first to cut |
+| Submission | C or D | ~1% | ~3% | | |
+
+## Meter readings
+
+| When (user time, UTC+5:30) | 5-hour | Weekly, all | Weekly, Fable | Phase |
+|---|---|---|---|---|
+| 2026-10-04 ~14:40, before P0 | 2% (resets 17:50) | 51% (resets Wed 7 Oct 20:30) | 23% | P0 start |
+
+## Deviations and cuts
+
+None yet. Every cut line applied is logged here and in `docs/autonomy-log.md`.
