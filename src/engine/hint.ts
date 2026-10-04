@@ -8,7 +8,8 @@ const NO_RULE = 'Жодне з трьох правил зараз не підк�
 const BROKEN = 'Спершу виправте порушення правил, підсвічене на полі.';
 
 /**
- * The only source of number words, keyed by k = N/2 (zeros: masculine, ones: feminine).
+ * Number words of the count sentence, keyed by k = N/2 (zeros: masculine, ones: feminine).
+ * The pair and sandwich sentences keep their own fixed forms («два»/«дві», «двома»).
  * Rows k = 2 to 4 are tested; the plural genitive forms for k = 5 to 8 follow the regular rule
  * but are untested above N = 8.
  */
@@ -23,8 +24,6 @@ const COUNT_WORDS: Record<number, { zero: string; one: string }> = {
 };
 
 const inLine = (axis: 'row' | 'col'): string => (axis === 'row' ? 'рядку' : 'стовпці');
-const digitWord = (d: Digit, plural: 'nom' | 'ins'): string =>
-  d === 0 ? (plural === 'nom' ? 'нулі' : 'нулями') : plural === 'nom' ? 'одиниці' : 'одиницями';
 const singular = (d: Digit): string => (d === 0 ? 'нуль' : 'одиниця');
 
 function pairSentence(axis: 'row' | 'col', line: number, d: Digit): string {
@@ -40,7 +39,7 @@ function sandwichSentence(axis: 'row' | 'col', line: number, d: Digit): string {
 function countSentence(axis: 'row' | 'col', line: number, d: Digit, n: number): string {
   const words = COUNT_WORDS[n / 2];
   const have = words === undefined ? String(n / 2) : d === 0 ? words.zero : words.one;
-  const rest = d === 0 ? digitWord(1, 'nom') : digitWord(0, 'nom');
+  const rest = d === 0 ? 'одиниці' : 'нулі';
   return `У ${inLine(axis)} ${line + 1} вже ${have}, тож решта клітинок — ${rest}.`;
 }
 
