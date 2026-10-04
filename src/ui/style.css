@@ -114,6 +114,7 @@ select {
 
 .rules ul {
   margin: 0;
+  text-align: left;
   padding-left: 1.25rem;
 }
 

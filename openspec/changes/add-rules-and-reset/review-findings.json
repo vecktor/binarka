@@ -1,0 +1,35 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "add-rules-and-reset",
+  "change": "add-rules-and-reset",
+  "baseRef": "step-31-s4-red",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 1
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 1,
+      "contested": 1,
+      "rejected": 2
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "Rules list inherits text-align:center from #app, so bullets sit apart from the centred item text",
+    "tasks.md section 1 (red tests) left unticked although its artifacts exist"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-04T18:18:42Z"
+}
