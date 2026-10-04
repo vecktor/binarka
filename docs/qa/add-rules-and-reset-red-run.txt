@@ -1,0 +1,65 @@
+Red run of slice 4 add-rules-and-reset, by the orchestrator (not the test-engineer)
+Date: Sun Oct  4 23:43:32 +0530 2026
+Tree: git archive 63c26c4 (red-test commit; src/ unchanged from step-30-s4-change) in a scratch copy, node_modules symlinked
+Command: npx vitest run
+
+     × Rules block at mount: one block after the board, heading «Правила», three li items in order, no Latin letters 36ms
+     × after new puzzle there is still exactly one rules block, the same element, after the board, with the same texts 14ms
+     × after size 4 there is still exactly one rules block, the same element, after the board, with the same texts 6ms
+     × after size 8 there is still exactly one rules block, the same element, after the board, with the same texts 4ms
+     × after win there is still exactly one rules block, the same element, after the board, with the same texts 5ms
+     × a button [data-action="reset"] labelled «Скинути», in the page text with no Latin letters 9ms
+     × Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector 61ms
+     × Reset clears highlights that come from the player and the hint message 22ms
+     × Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone 5ms
+     × Reset after a win empties the win message, and the board is editable again 11ms
+     × Reset takes no seed and calls no generator: one press and two more leave the counts as after mount 8ms
+     × Reset on an untouched board changes nothing: same cell text and classes, same messages 13ms
+     × Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector 14ms
+     × Reset clears highlights that come from the player and the hint message 5ms
+     × Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone 4ms
+     × Reset after a win empties the win message, and the board is editable again 53ms
+     × Reset takes no seed and calls no generator: one press and two more leave the counts as after mount 2ms
+     × Reset on an untouched board changes nothing: same cell text and classes, same messages 16ms
+     × Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector 12ms
+     × Reset clears highlights that come from the player and the hint message 4ms
+     × Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone 14ms
+     × Reset after a win empties the win message, and the board is editable again 12ms
+     × Reset takes no seed and calls no generator: one press and two more leave the counts as after mount 4ms
+     × Reset on an untouched board changes nothing: same cell text and classes, same messages 27ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 24 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-57 @trace NFR-5 the rules block is shown at mount > Rules block at mount: one block after the board, heading «Правила», three li items in order, no Latin letters
+AssertionError: exactly one rules block: expected  to have a length of 1 but got +0
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-57 the rules block survives every board change > after new puzzle there is still exactly one rules block, the same element, after the board, with the same texts
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-57 the rules block survives every board change > after size 4 there is still exactly one rules block, the same element, after the board, with the same texts
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-57 the rules block survives every board change > after size 8 there is still exactly one rules block, the same element, after the board, with the same texts
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-57 the rules block survives every board change > after win there is still exactly one rules block, the same element, after the board, with the same texts
+AssertionError: exactly one rules block: expected  to have a length of 1 but got +0
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 @trace NFR-5 the reset button is offered > a button [data-action="reset"] labelled «Скинути», in the page text with no Latin letters
+AssertionError: expected an element matching [data-action="reset"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector
+AssertionError: expected an element matching [data-action="reset"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset clears highlights that come from the player and the hint message
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset clears highlights that come from the player and the hint message
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset clears highlights that come from the player and the hint message
+AssertionError: expected an element matching [data-action="reset"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone
+AssertionError: expected an element matching [data-action="reset"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset after a win empties the win message, and the board is editable again
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset after a win empties the win message, and the board is editable again
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset after a win empties the win message, and the board is editable again
+AssertionError: expected an element matching [data-action="reset"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset takes no seed and calls no generator: one press and two more leave the counts as after mount
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset takes no seed and calls no generator: one press and two more leave the counts as after mount
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset takes no seed and calls no generator: one press and two more leave the counts as after mount
+AssertionError: expected an element matching [data-action="reset"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset on an untouched board changes nothing: same cell text and classes, same messages
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset on an untouched board changes nothing: same cell text and classes, same messages
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset on an untouched board changes nothing: same cell text and classes, same messages
+AssertionError: expected an element matching [data-action="reset"]: expected null not to be null
+ Test Files  1 failed | 18 passed (19)
+      Tests  24 failed | 418 passed (442)
