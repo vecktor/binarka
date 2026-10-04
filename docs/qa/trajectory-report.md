@@ -12,7 +12,7 @@ Result: PASS, 2 warning(s)
 |---|---|---|---|---|
 | 2026-10-04-add-play-page | clean | 6 | yes | ui |
 | 2026-10-04-add-puzzle-engine | **unclean** | 8 | yes | engine |
-| 2026-10-04-add-rules-and-reset | **unclean** | 7 | yes | ui |
+| 2026-10-04-add-rules-and-reset | **unclean** | 8 | yes | ui |
 | 2026-10-04-add-size-selector | clean | 15 | yes | ui |
 
 ## Cross-slice module overlap
