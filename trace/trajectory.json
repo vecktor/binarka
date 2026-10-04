@@ -4,7 +4,7 @@
     {
       "slice": "2026-10-04-add-puzzle-engine",
       "reviewEvidence": "unclean",
-      "trailerCommits": 6,
+      "trailerCommits": 7,
       "libDomains": [
         "engine"
       ],
