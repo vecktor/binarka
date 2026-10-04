@@ -297,6 +297,40 @@ describe('@trace FR-43 a value outside the offered sizes is ignored', () => {
   });
 });
 
+describe('@trace FR-43 the selector always shows the size of the board that is shown (also away from 6)', () => {
+  it('at 8x8 an ignored value and a failed change to 4 restore the option 8, not the default option 6', () => {
+    const seeds = seedQueue([1, 2, 3, 4]);
+    const spy = rawGenerateSpy((_i, size) => {
+      if (size === 4) throw new Error('generator failed for size 4');
+      return size === 8 ? BLANK_8 : PAIR_ROW;
+    });
+    const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
+    selectSize(root, 8);
+    expect(boardSize(root)).toBe(8);
+    expect(sizeSelect(root).selectedIndex).toBe(2);
+    const before = snapshot(root);
+
+    const ignored = changeWithReportedValue(root, '5');
+    expect(ignored.selectedIndex).toBe(2);
+    expect(ignored.option1Selected).toBe(false);
+    expect(ignored.valueAfter).toBe('8');
+    const none = changeWithReportedValue(root, null);
+    expect(none.selectedIndex).toBe(2);
+    expect(none.valueAfter).toBe('8');
+    expect(seeds.calls()).toBe(2); // the mount and the change to 8: the ignored values took no seed
+
+    selectSize(root, 4); // the generator throws for 4: the board and the selector stay at 8
+
+    expect(boardSize(root)).toBe(8);
+    expect(snapshot(root)).toEqual(before);
+    expect(sizeSelect(root).value).toBe('8');
+    expect(sizeSelect(root).selectedIndex).toBe(2);
+    expect(seeds.calls()).toBe(3);
+    pressNew(root);
+    expect(spy.calls[spy.calls.length - 1]).toEqual({ size: 8, seed: 4 });
+  });
+});
+
 describe('@trace FR-43 a generator failure keeps the previous board', () => {
   it('A generator error keeps the previous board: same cells, messages, highlights; selector restored; one seed taken', () => {
     const seeds = seedQueue([1, 2, 3]);

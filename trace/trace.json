@@ -628,6 +628,7 @@
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
+        "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts"
       ],
       "recordings": []
