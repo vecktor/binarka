@@ -27,3 +27,13 @@ Project Factory's deterministic checks inspect what ends up in the repo, never h
 - Treat the playbook's agent roles and step order as discipline, not as something a check will catch.
 - Keep one commit (and tag) per step, confirm red yourself in a scratch copy, and log the agent per step, so the order can be audited afterwards.
 - Never hand-edit `review-findings.json`; nothing but the rule prevents it.
+
+## Sign-offs are judgment gates, by design
+
+Recorded 2026-10-05 about 00:30 (UTC+5:30) at the user's request.
+
+- **Where a sign-off lives:** the Status line of `docs/requirements.md` and `docs/mvp-capability-plan.md`, a row in `docs/autonomy-log.md` quoting the user's words and time, and a commit plus tag (e.g. `step-30-s4-change`). All are text and git history; there is no machine-readable sign-off record.
+- **What the gates check:** `scripts/gate-status.mjs` line 191 (G1) and line 193 (G3) only check that the document exists and then print "needs sign-off"; they never read it, so they can never show PASS. Line 264 counts "needs sign-off" as earned, so later gates are not blocked; line 476 says sign-offs are confirmed by hand.
+- **Why:** every place a sign-off is stored can be written by the agent being judged (the Status line, the log row, the tag). Even GPG signatures prove nothing about a human once the passphrase is cached: the agent signs with the user's key, as it did when it re-signed the slice 4 commits. A script that trusted any of these would let the maker pass its own gate.
+- **What would make it checkable:** an artifact only the human can produce, e.g. a signed tag (`git tag -s signoff-requirements-<date>`) made with a key or passphrase the agent session never has cached, checked by `git tag -v` and by matching the tagged `docs/requirements.md` against HEAD; or an approval from the user's own account (a PR approval) that the agent's tools cannot make in the user's name. Either needs a credential the agent cannot use.
+- **How to apply:** treat G1 and G3 as "confirmed by reading the evidence", never as passed; do not cache the signing passphrase for an agent session if signatures are meant to prove a human decision. Changing `gate-status.mjs` is a harness change and needs the user's approval.

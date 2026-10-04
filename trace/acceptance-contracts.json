@@ -379,6 +379,22 @@
         "status": "artifact-ok"
       }
     ],
+    "FR-57": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-rules-and-reset.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-58": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-rules-and-reset.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
     "NFR-1": [
       {
         "method": "local-verifiable",

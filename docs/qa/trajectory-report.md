@@ -14,7 +14,7 @@ Result: PASS, 3 warning(s)
 | 2026-10-04-add-puzzle-engine | **unclean** | 8 | yes | engine |
 | 2026-10-04-add-rules-and-reset | **unclean** | 20 | yes | ui |
 | 2026-10-04-add-size-selector | clean | 15 | yes | ui |
-| 2026-10-04-update-hint-sentences | clean | 7 | yes | engine |
+| 2026-10-04-update-hint-sentences | clean | 8 | yes | engine |
 
 ## Cross-slice module overlap
 
