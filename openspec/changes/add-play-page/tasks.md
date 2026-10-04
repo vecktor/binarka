@@ -10,26 +10,26 @@ carry `Slice: add-play-page` and `Refs: FR-x`.
 
 ## 1. Foundations (seed source, mount skeleton)
 
-- [ ] 1.1 Implement `src/ui/seed.ts`: `defaultSeedSource()` returns an integer from 0 to 2147483647 inclusive via `Math.random` (allowed here, outside `src/engine/`), remembers the previous value and redraws while the new value equals it (FR-42, FR-51).
-- [ ] 1.2 Create `src/ui/index.ts` exporting `mountPlayPage` and its option types, and the skeleton of `src/ui/play-page.ts`: `mountPlayPage(root, options?)` replaces the content of `root` synchronously with heading «Бінарка», the two buttons («Підказка», «Нова головоломка») and both message regions, each with its `data-action` or `data-message` attribute; sets `document.title` to «Бінарка».
-- [ ] 1.3 Add `src/ui/style.css` (plain CSS, no dependency): grid layout, distinct `cell-given` style, `cell-violation` style, button and message styling; Ukrainian-only text, nothing user-visible in CSS (`content:` is not used).
-- [ ] 1.4 Change `src/main.ts` to import `./ui/style.css` and call `mountPlayPage(document.querySelector('#app'))` with no options; confirm `index.html` is unchanged and keeps its Ukrainian title.
+- [x] 1.1 Implement `src/ui/seed.ts`: `defaultSeedSource()` returns an integer from 0 to 2147483647 inclusive via `Math.random` (allowed here, outside `src/engine/`), remembers the previous value and redraws while the new value equals it (FR-42, FR-51).
+- [x] 1.2 Create `src/ui/index.ts` exporting `mountPlayPage` and its option types, and the skeleton of `src/ui/play-page.ts`: `mountPlayPage(root, options?)` replaces the content of `root` synchronously with heading «Бінарка», the two buttons («Підказка», «Нова головоломка») and both message regions, each with its `data-action` or `data-message` attribute; sets `document.title` to «Бінарка».
+- [x] 1.3 Add `src/ui/style.css` (plain CSS, no dependency): grid layout, distinct `cell-given` style, `cell-violation` style, button and message styling; Ukrainian-only text, nothing user-visible in CSS (`content:` is not used).
+- [x] 1.4 Change `src/main.ts` to import `./ui/style.css` and call `mountPlayPage(document.querySelector('#app'))` with no options; confirm `index.html` is unchanged and keeps its Ukrainian title.
 
 ## 2. Rendering and state
 
-- [ ] 2.1 Keep the model in `play-page.ts`: `givens` and `board` as copies of the puzzle grids (0, 1, null), never parsed from the DOM; call the injected or engine `generate(6, seed)` with the seed from `options.seedSource ?? defaultSeedSource`, called exactly once per puzzle and passed unchanged (FR-31, FR-42).
-- [ ] 2.2 Render `[data-board]` with `data-size="6"` and 36 `[data-cell]` elements carrying `data-row` and `data-col` 1 to 6 and `data-given`; a given carries the class `cell-given` and shows its digit, other cells show empty text (FR-31, FR-32).
-- [ ] 2.3 Implement `renderCell` as the only writer of cell text, `data-given` and the `cell-given` class, and `refreshHighlights()` that sets `cell-violation` on exactly the cells of `findViolations(board)` (0-based engine coordinates, DOM is +1); no digit counting or run checking in `src/ui/` (FR-35 to FR-38).
-- [ ] 2.4 Make the page show no seed anywhere: no text node, no attribute and no `document.title` contains the seed (A-4); no `aria-label`, `title`, `placeholder` or `alt` is added (NFR-5).
-- [ ] 2.5 Error handling for `generate`: on a new-puzzle press, a thrown error is caught and the previous board and messages stay; at mount with no previous board, render the empty message regions and no board; the page never throws to the caller.
+- [x] 2.1 Keep the model in `play-page.ts`: `givens` and `board` as copies of the puzzle grids (0, 1, null), never parsed from the DOM; call the injected or engine `generate(6, seed)` with the seed from `options.seedSource ?? defaultSeedSource`, called exactly once per puzzle and passed unchanged (FR-31, FR-42).
+- [x] 2.2 Render `[data-board]` with `data-size="6"` and 36 `[data-cell]` elements carrying `data-row` and `data-col` 1 to 6 and `data-given`; a given carries the class `cell-given` and shows its digit, other cells show empty text (FR-31, FR-32).
+- [x] 2.3 Implement `renderCell` as the only writer of cell text, `data-given` and the `cell-given` class, and `refreshHighlights()` that sets `cell-violation` on exactly the cells of `findViolations(board)` (0-based engine coordinates, DOM is +1); no digit counting or run checking in `src/ui/` (FR-35 to FR-38).
+- [x] 2.4 Make the page show no seed anywhere: no text node, no attribute and no `document.title` contains the seed (A-4); no `aria-label`, `title`, `placeholder` or `alt` is added (NFR-5).
+- [x] 2.5 Error handling for `generate`: on a new-puzzle press, a thrown error is caught and the previous board and messages stay; at mount with no previous board, render the empty message regions and no board; the page never throws to the caller.
 
 ## 3. Interaction (click cycle, hint, win, new puzzle)
 
-- [ ] 3.1 Attach one delegated click listener on `[data-board]`: resolve `closest('[data-cell]')`, ignore a given cell completely (no model, DOM or message change, FR-33), otherwise cycle null, 0, 1, null (FR-34), `renderCell`, `refreshHighlights`, then set or clear the win message (FR-38).
-- [ ] 3.2 Hint button: call `hint(board)` on the model, show `sentence` unchanged in `[data-message="hint"]` replacing the previous text (FR-40); for `kind: 'fill'` write `value` at 0-based `row`, `col` and update the cell `data-row = row + 1`, `data-col = col + 1` through one mapping helper (FR-39); for 'none' and 'broken' fill nothing; after a fill run `refreshHighlights` and the win check.
-- [ ] 3.3 Win message: after every click on a non-given cell and every hint fill, `isSolved(board)` sets `[data-message="win"]` to exactly «Вітаємо, головоломку розв'язано!» (ASCII apostrophe U+0027) or clears it; the board is never locked (FR-41).
-- [ ] 3.4 Hint persistence: cell clicks and given clicks leave `[data-message="hint"]` unchanged; only the next hint press or the new puzzle press changes it (A-23, FR-40).
-- [ ] 3.5 New-puzzle button: take one seed from the seed source, generate a 6×6 puzzle, rebuild `[data-board]` (new model, new cells, one new delegated listener), clear both messages, recompute highlights from the new givens; no requirement that the puzzle differs from the old one (FR-42).
+- [x] 3.1 Attach one delegated click listener on `[data-board]`: resolve `closest('[data-cell]')`, ignore a given cell completely (no model, DOM or message change, FR-33), otherwise cycle null, 0, 1, null (FR-34), `renderCell`, `refreshHighlights`, then set or clear the win message (FR-38).
+- [x] 3.2 Hint button: call `hint(board)` on the model, show `sentence` unchanged in `[data-message="hint"]` replacing the previous text (FR-40); for `kind: 'fill'` write `value` at 0-based `row`, `col` and update the cell `data-row = row + 1`, `data-col = col + 1` through one mapping helper (FR-39); for 'none' and 'broken' fill nothing; after a fill run `refreshHighlights` and the win check.
+- [x] 3.3 Win message: after every click on a non-given cell and every hint fill, `isSolved(board)` sets `[data-message="win"]` to exactly «Вітаємо, головоломку розв'язано!» (ASCII apostrophe U+0027) or clears it; the board is never locked (FR-41).
+- [x] 3.4 Hint persistence: cell clicks and given clicks leave `[data-message="hint"]` unchanged; only the next hint press or the new puzzle press changes it (A-23, FR-40).
+- [x] 3.5 New-puzzle button: take one seed from the seed source, generate a 6×6 puzzle, rebuild `[data-board]` (new model, new cells, one new delegated listener), clear both messages, recompute highlights from the new givens; no requirement that the puzzle differs from the old one (FR-42).
 
 ## 4. Tests (written FIRST by the test-engineer in `tests/play-page-*.test.ts` against RED-STAGE stubs in `src/ui`, seen red, then green; each test tagged `@trace FR-x` or `@trace NFR-5`)
 
