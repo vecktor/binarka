@@ -1,0 +1,46 @@
+Red run of update-hint-sentences, by the orchestrator (not the test-engineer)
+Date: Mon Oct  5 00:11:41 +0530 2026
+Tree: git archive 2c08c44 (test commit; src/ unchanged) in a scratch copy, node_modules symlinked
+Command: npx vitest run
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 19 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > number words, comma and dash are not breaks: the count sentence for row 5 is one sentence
+AssertionError: expected 'У рядку 5 вже три нулі, тож решта клі…' to be 'У рядку 5 вже три нулі, а нулів і оди…' // Object.is equality
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 reason clauses are not sentence breaks > a pair sentence with the «бо» clause is one sentence
+AssertionError: expected 'Два нулі поспіль у рядку 3, тож поруч…' to be 'Два нулі поспіль у рядку 3, тож поруч…' // Object.is equality
+ FAIL  tests/hint.test.ts > @trace FR-19 pair hint > pair of zeros in a row
+AssertionError: expected { kind: 'fill', row: 2, col: 2, …(3) } to deeply equal { kind: 'fill', row: 2, col: 2, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-19 pair hint > pair of ones in a column
+AssertionError: expected { kind: 'fill', row: 2, col: 3, …(3) } to deeply equal { kind: 'fill', row: 2, col: 3, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-19 pair hint > pair of ones in a row
+AssertionError: expected { kind: 'fill', row: 1, col: 2, …(3) } to deeply equal { kind: 'fill', row: 1, col: 2, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-19 pair hint > pair of zeros in a column
+AssertionError: expected { kind: 'fill', row: 2, col: 5, …(3) } to deeply equal { kind: 'fill', row: 2, col: 5, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-20 sandwich hint > sandwich of zeros in a column
+AssertionError: expected { kind: 'fill', row: 1, col: 1, …(3) } to deeply equal { kind: 'fill', row: 1, col: 1, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-20 sandwich hint > sandwich of ones in a row
+AssertionError: expected { kind: 'fill', row: +0, col: 1, …(3) } to deeply equal { kind: 'fill', row: +0, col: 1, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > count of zeros in a 6-wide row
+AssertionError: expected { kind: 'fill', row: 4, col: 4, …(3) } to deeply equal { kind: 'fill', row: 4, col: 4, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > count of ones in a column
+AssertionError: expected { kind: 'fill', row: 4, col: 1, …(3) } to deeply equal { kind: 'fill', row: 4, col: 1, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > number word for N = 4: два нулі and дві одиниці
+AssertionError: expected { kind: 'fill', row: 1, col: 3, …(3) } to deeply equal { kind: 'fill', row: 1, col: 3, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > number word for N = 8: чотири нулі and чотири одиниці
+AssertionError: expected { kind: 'fill', row: +0, col: 7, …(3) } to deeply equal { kind: 'fill', row: +0, col: 7, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > two empty cells in the line use the plural ending (решта порожніх клітинок)
+AssertionError: expected { kind: 'fill', row: 1, col: 3, …(3) } to deeply equal { kind: 'fill', row: 1, col: 3, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > row numbering starts at 1: pair at row 1 columns 1 and 2
+AssertionError: expected { kind: 'fill', row: +0, col: 2, …(3) } to deeply equal { kind: 'fill', row: +0, col: 2, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > column numbering starts at 1: sandwich in column 1
+AssertionError: expected { kind: 'fill', row: 1, col: +0, …(3) } to deeply equal { kind: 'fill', row: 1, col: +0, …(3) }
+ FAIL  tests/hint.test.ts > @trace FR-26 broken-board hint > a legal entry that differs from the solution is followed, not corrected
+AssertionError: expected { kind: 'fill', row: +0, col: 2, …(3) } to deeply equal { kind: 'fill', row: +0, col: 2, …(3) }
+ FAIL  tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > the engine sentences used as literals are the ones the engine returns
+AssertionError: expected 'Два нулі поспіль у рядку 3, тож поруч…' to be 'Два нулі поспіль у рядку 3, тож поруч…' // Object.is equality
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Sentence shown with a fill: equals the engine sentence, unaltered
+AssertionError: expected 'Два нулі поспіль у рядку 3, тож поруч…' to be 'Два нулі поспіль у рядку 3, тож поруч…' // Object.is equality
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Second press replaces the sentence, it does not append
+AssertionError: expected 'Дві одиниці поспіль у рядку 5, тож по…' to be 'Дві одиниці поспіль у рядку 5, тож по…' // Object.is equality
+ Test Files  4 failed | 15 passed (19)
+      Tests  19 failed | 425 passed (444)
