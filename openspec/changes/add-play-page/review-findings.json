@@ -8,7 +8,7 @@
     "correctness": {
       "confirmed": 0,
       "contested": 0,
-      "rejected": 3
+      "rejected": 0
     },
     "security": {
       "confirmed": 0,
@@ -16,7 +16,7 @@
       "rejected": 0
     },
     "spec-compliance": {
-      "confirmed": 2,
+      "confirmed": 0,
       "contested": 0,
       "rejected": 0
     },
@@ -26,10 +26,7 @@
       "rejected": 0
     }
   },
-  "confirmedTitles": [
-    "tasks.md section 4 names test files that do not exist; the real test files are named differently",
-    "Task 3.2 is ticked but the 'one mapping helper' it names does not exist"
-  ],
-  "clean": false,
-  "generatedAt": "2026-10-04T15:11:59Z"
+  "confirmedTitles": [],
+  "clean": true,
+  "generatedAt": "2026-10-04T15:14:08Z"
 }

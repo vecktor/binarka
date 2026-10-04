@@ -45,13 +45,13 @@ carry `Slice: add-play-page` and `Refs: FR-x`.
 
 ## 5. Validation, docs and archive prep
 
-- [ ] 5.1 Run `npm run lint`.
-- [ ] 5.2 Run `npm run test:run` (all green, including the slice 1 timing tests).
-- [ ] 5.3 Run `npm run build` (`tsc --noEmit` covers `src/` and `tests/`, then `vite build` bundles the CSS).
-- [ ] 5.4 Run `npx openspec validate add-play-page --strict`.
-- [ ] 5.5 Run `npx openspec validate --all --strict`.
-- [ ] 5.6 Review-gate with `change: add-play-page` (correctness and spec-compliance on Opus medium, security on Sonnet medium, verifiers on Sonnet medium, focus "return only defects"): one run, one fix round for confirmed defects, one confirming run; skip the confirming run if the 5-hour meter is above 70% and record the skip in `docs/autonomy-log.md`. Save the report path in `docs/current-state.md`.
-- [ ] 5.7 Update `docs/current-state.md` (last update date and time in UTC+5:30, phase, slice status, evidence paths: red run from 4.8, review-gate report, test and validation output) with "Scope NOT delivered": FR-43 (NOT-EARNED), FR-55, FR-44 to FR-48, NFR-6 eval (NOT-EARNED until graded), NFR-7. Update `README.md` with the page (`npm run dev`).
-- [ ] 5.8 Page smoke check (stands in for the DB smoke flow; no database exists): (a) start `npx vite` in the background and note the printed local URL; (b) `curl -s http://localhost:<port>/` and check the HTML contains `<div id="app">` and the module script `/src/main.ts`; (c) `curl -s http://localhost:<port>/src/main.ts` returns 200 and imports the play page; (d) `curl -s http://localhost:<port>/src/ui/style.css` returns 200; (e) stop the server; (f) record the outcome and the date in `docs/current-state.md`. Rendering itself is not checked (TC-13, NFR-7 Future).
-- [ ] 5.9 Confirm no new dependency: `git diff package.json package-lock.json` shows no change from this slice.
+- [x] 5.1 Run `npm run lint`.
+- [x] 5.2 Run `npm run test:run` (all green, including the slice 1 timing tests).
+- [x] 5.3 Run `npm run build` (`tsc --noEmit` covers `src/` and `tests/`, then `vite build` bundles the CSS).
+- [x] 5.4 Run `npx openspec validate add-play-page --strict`.
+- [x] 5.5 Run `npx openspec validate --all --strict`.
+- [x] 5.6 (round 1 `wf_421a44c2-0ea`: 2 confirmed minor documentation findings, fixed in `dfb8f60`, 3 rejected; confirming run `wf_84916d1b-463`: 4 finders returned empty lists, `review-findings.json` `clean: true`) Review-gate with `change: add-play-page` (correctness and spec-compliance on Opus medium, security on Sonnet medium, verifiers on Sonnet medium, focus "return only defects"): one run, one fix round for confirmed defects, one confirming run; skip the confirming run if the 5-hour meter is above 70% and record the skip in `docs/autonomy-log.md`. Save the report path in `docs/current-state.md`.
+- [x] 5.7 Update `docs/current-state.md` (last update date and time in UTC+5:30, phase, slice status, evidence paths: red run from 4.8, review-gate report, test and validation output) with "Scope NOT delivered": FR-43 (NOT-EARNED), FR-55, FR-44 to FR-48, NFR-6 eval (NOT-EARNED until graded), NFR-7. Update `README.md` with the page (`npm run dev`).
+- [x] 5.8 Page smoke check (stands in for the DB smoke flow; no database exists): (a) start `npx vite` in the background and note the printed local URL; (b) `curl -s http://localhost:<port>/` and check the HTML contains `<div id="app">` and the module script `/src/main.ts`; (c) `curl -s http://localhost:<port>/src/main.ts` returns 200 and imports the play page; (d) `curl -s http://localhost:<port>/src/ui/style.css` returns 200; (e) stop the server; (f) record the outcome and the date in `docs/current-state.md`. Done 2026-10-04 about 20:37 by the implementer (curl 200 on `/`, `/src/main.ts`, `/src/ui/style.css`); the orchestrator then also looked at the page in the built-in browser (grid, highlight, hint, new puzzle, phone width). Rendering itself is not checked (TC-13, NFR-7 Future).
+- [x] 5.9 Confirm no new dependency: `git diff package.json package-lock.json` shows no change from this slice.
 - [ ] 5.10 Archive, only after 5.1 to 5.9 all passed and the review-gate in 5.6 has no open confirmed defect: run `npx openspec archive add-play-page --skip-specs --yes` (the baseline spec already holds the requirements), tick this task in the archived copy `openspec/changes/archive/*-add-play-page/tasks.md`, then run `npx openspec validate --all --strict` again.

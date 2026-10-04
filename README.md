@@ -2,6 +2,14 @@
 
 A 0/1 grid puzzle (Takuzu rules) built with TypeScript, Vite and vanilla DOM. The engine is pure TypeScript; the page text is Ukrainian, CLI output and errors are English.
 
+## Play the page
+
+```bash
+npm run dev
+```
+
+Opens a 6×6 puzzle in the browser: click a cell to cycle empty, 0, 1; rule violations turn red; «Підказка» fills one cell and explains the rule; «Нова головоломка» starts another puzzle. Page text is Ukrainian.
+
 ## Print a puzzle from the command line
 
 ```bash

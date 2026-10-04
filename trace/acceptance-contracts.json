@@ -279,96 +279,96 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-rendering.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-32": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-rendering.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-33": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-click-cycle.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-34": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-click-cycle.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-35": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-highlighting.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-36": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-highlighting.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-37": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-highlighting.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-38": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-highlighting.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-39": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-40": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-41": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-win.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-42": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/play-page-new-puzzle-and-seed.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "NFR-1": [
