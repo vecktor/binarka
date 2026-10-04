@@ -1,0 +1,54 @@
+# CI: mirrors the local gates. If it isn't green here, it isn't done.
+# Adapted from the Project Factory template for ADR-0001 (no DB, no Playwright, no coverage tooling).
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # trailers (Slice:/Refs:) must be visible to the traceability checks
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Traceability chain (and freshness of generated report)
+        run: |
+          node scripts/check-traceability.mjs --check-fresh
+          node scripts/check-traceability.mjs ${{ ((github.ref_name == 'main' || github.ref_name == 'master') && '--release') || '' }}
+      - name: Trajectory process audit (and freshness)
+        run: |
+          node scripts/check-trajectory.mjs --check-fresh
+          node scripts/check-trajectory.mjs ${{ ((github.ref_name == 'main' || github.ref_name == 'master') && '--release') || '' }}
+      - name: OpenSpec strict validation
+        run: npx openspec validate --all --strict
+      - name: Dependency audit, shipped dependencies only (fail on high+)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Tests
+        run: npm run test:run
+      - name: Build
+        run: npm run build
+
+      - name: Upload QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-evidence
+          path: |
+            docs/qa/traceability-report.md
+            trace/trace.json
+          if-no-files-found: ignore
