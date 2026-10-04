@@ -2,7 +2,7 @@
 
 ### Requirement: Grid size selector
 
-The page SHALL offer a size selector `[data-control="size"]`, a select with the options 4, 6 and 8 labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8», with 6 selected when the page is mounted. When the choice changes to exactly 4, 6 or 8 the page SHALL start a new puzzle of the chosen size from a new seed taken from the seed source (one seed per generation attempt), SHALL render a board of that size, and SHALL clear the hint message, the win message and all highlights that belonged to the old board. The page assumes that `generate(n, seed)` returns an n×n puzzle: if the generator throws, or the returned `puzzle.givens` is not n rows of n cells, the page SHALL treat it as a generator failure and keep the previous board, the previous messages and highlights and the previous size, and the selector SHALL show the size of the board that is shown. The page SHALL ignore a changed value that is not exactly 4, 6 or 8 (including the empty value): no error, no seed taken, no generator call, no change to the board, the messages or the highlights, and the selector shows the size of the board that is shown. Rules, hint and win message work at the chosen size exactly as at 6. The page MUST NOT remember the choice: a reload or a new mount starts at 6 (TC-12). Re-selecting the current size is not specified: browsers fire no `change` event for it, so the page may start a new puzzle or ignore it and no scenario asserts which.
+The page SHALL offer a size selector `[data-control="size"]`, a select with the options 4, 6 and 8 labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8», with 6 selected when the page is mounted. When the choice changes to exactly 4, 6 or 8 the page SHALL start a new puzzle of the chosen size from a new seed taken from the seed source (one seed per generation attempt), SHALL render a board of that size, and SHALL clear the hint message, the win message and all highlights that belonged to the old board. The page assumes that `generate(n, seed)` returns an n×n puzzle: if the generator throws, or the returned `puzzle.givens` is not n rows of n cells, the page SHALL treat it as a generator failure and keep the previous board, the previous messages and highlights and the previous size, and the selector SHALL show the size of the board that is shown. The page SHALL ignore a changed value that is not exactly 4, 6 or 8 (including the empty value; the page reads the selected size from the select's `value` property): no error, no seed taken, no generator call, no change to the board, the messages or the highlights, and the selector shows the size of the board that is shown. Rules, hint and win message work at the chosen size exactly as at 6. The page MUST NOT remember the choice: a reload or a new mount starts at 6 (TC-12). Re-selecting the current size is not specified: browsers fire no `change` event for it, so the page may start a new puzzle or ignore it and no scenario asserts which.
 
 Traces: FR-43
 
@@ -50,7 +50,7 @@ Traces: FR-43
 #### Scenario: Value outside the offered sizes is ignored
 
 - **GIVEN** the default 6x6 board with player entries, a hint sentence shown and some cells with `cell-violation`, a seed source and a `generate` spy that count their calls, and a `window` `error` event listener that records uncaught errors (a `dispatchEvent` call never throws when a listener throws, so the listener is the only way to detect an uncaught error)
-- **AND** a size selector made to report a value outside the offered sizes by overriding `value` on the element (the override has a getter and a setter) with each of `5`, `10`, `abc`, `6.0`, ` 6`, `06`, `0x6` and the empty string, each tried in turn
+- **AND** a size selector made to report a value outside the offered sizes by overriding `value` on the element (the override has a getter and a setter) with each of `5`, `10`, `abc`, `6.0`, ` 6`, `06`, `0x6` and the empty string, each tried in turn; before each override is installed the test sets `selectedIndex` to 0 (the option with value `4`), so a page that does not restore the selector leaves index 0
 - **WHEN** a `change` event is dispatched on `[data-control="size"]` for each such value
 - **THEN** the `error` listener recorded nothing, `[data-board]` keeps `data-size="6"`, every cell keeps its text and its `cell-violation` state, and both message regions keep their text
 - **AND** the seed source and the generator were not called again
@@ -124,7 +124,7 @@ Traces: FR-43
 
 ### Requirement: Board rendering and default size
 
-The page SHALL render an N×N grid of cells for a puzzle produced by the generator from a size and a seed, with N equal to 6 until the player chooses another size with the size selector and equal to the chosen size afterwards (FR-43).
+The page SHALL render an N×N grid of cells for a puzzle produced by the generator from a size and a seed, with N equal to 6 until a size change shows a puzzle of another size and equal to the size of the board shown afterwards (a size change whose generation fails keeps the previous size, see Grid size selector) (FR-43).
 
 Traces: FR-31, FR-43
 
@@ -220,7 +220,7 @@ Traces: FR-38, FR-43
 
 ### Requirement: Hint message stays until the next hint or a new puzzle
 
-The page SHALL keep the text of `[data-message="hint"]` unchanged when the player clicks a cell, until the next press of the hint button, the next press of the new puzzle button or an accepted size change (A-23, FR-43).
+The page SHALL keep the text of `[data-message="hint"]` unchanged when the player clicks a cell, until the next press of the hint button, the next press of the new puzzle button or a size change whose new puzzle was shown (a size change whose generation fails keeps the message, see Grid size selector) (A-23, FR-43).
 
 Traces: FR-40, FR-43
 
@@ -236,7 +236,7 @@ Traces: FR-40, FR-43
 - **WHEN** the player presses the hint button again, and then presses the new puzzle button
 - **THEN** after the hint press the region shows the sentence for that press, and after the new puzzle press it has empty text content
 
-#### Scenario: An accepted size change clears it
+#### Scenario: A size change that shows a new puzzle clears it
 
 - **GIVEN** `[data-message="hint"]` shows a sentence and the player has clicked a cell since
 - **WHEN** the player selects 4×4
@@ -308,7 +308,7 @@ Traces: FR-31, FR-42, FR-43, FR-51
 #### Scenario: Seed calls follow the puzzles generated
 
 - **GIVEN** a counting seed source returning 1, 2, 3 and so on, and a `generate` spy
-- **WHEN** the page is mounted, the new puzzle button is pressed once, the player selects 4×4, a `change` event with the ignored value `5` is dispatched, and the player selects 8×8
+- **WHEN** the page is mounted, the new puzzle button is pressed once, the player selects 4×4, a `change` event is dispatched while the select reports the ignored value `5` (through the `value` override of the scenario "Value outside the offered sizes is ignored"), and the player selects 8×8
 - **THEN** the seed source was called exactly four times and the spy recorded the seeds 1, 2, 3 and 4 in this order, paired with the sizes 6, 6, 4 and 8
 
 ### Requirement: Ukrainian page text

@@ -51,11 +51,12 @@
    highlights and `size` stay and the select is restored (decision 5).
 8. **CSS from `data-size`, no dependency, on `.board` itself.** `--n` (default 6;
    `.board[data-size="4"] { --n: 4 }`, 8 likewise) and the cap `--cell-max: 48px` are
-   declared on `.board`, because `var()` substitutes where the property is declared
-   (declared on `:root` or `#app` they would resolve to the default). Columns:
+   declared on `.board` itself, next to the rule that uses them. Columns:
    `repeat(var(--n), minmax(0, var(--cell-max)))`; `.cell` has `aspect-ratio: 1` and
-   `min-width: 0` instead of a fixed width and height, so tracks shrink with the
-   container and no `100vw` is used (it counts the scrollbar). The font size is set
+   `min-width: 0` instead of a fixed width and height, and `grid-auto-rows: 48px` is
+   removed from `.board` (rows take their height from the cells' `aspect-ratio`; a
+   kept 48 px row would leave a dead band under each 41 px cell), so tracks shrink
+   with the container and no `100vw` is used (it counts the scrollbar). The font size is set
    per `data-size` (22px, 22px, 18px). At 375 px (#app padding 16px, gap 2px) an 8×8
    cell is about 41px, so the board fits a phone.
 
@@ -98,8 +99,9 @@ cases). The choice is not stored anywhere (TC-12).
   `fillFrom`, `fixedGenerate`/`mountFixture`/`generateSpy` fixtures, plus `rowCells`
   and `colCells` in `tests/play-page-highlighting.test.ts` and the
   `generateSpy(() => BLANK)` calls in `tests/play-page-new-puzzle-and-seed.test.ts`.
-  Once `expectPageStructure` requires the selector, every slice-2 page test is red in
-  the red stage by design. Task 4.6 lists the fixes.
+  Once `expectPageStructure` requires the selector, every slice-2 page test that calls it
+  is red in the red stage by design; the others stay green because the 6×6 behaviour is
+  unchanged. Task 4.6 lists the fixes.
 - **Fixture cost at N = 8.** There are 72 solved 4×4 grids, 4,140 6×6 and 4,111,116
   8×8. `allSolutions` is cached per N and used only for 4 and 6; 8×8 fixtures use a
   hand-written solution or a first-match depth-first search, never full enumeration.
