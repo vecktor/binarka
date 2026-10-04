@@ -415,8 +415,8 @@
       {
         "method": "eval",
         "mechanism": "file:scripts/check-eval-ratchet.mjs",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "evals/results/latest.json",
+        "status": "artifact-ok"
       }
     ],
     "NFR-8": [

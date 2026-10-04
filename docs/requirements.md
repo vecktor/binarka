@@ -1,6 +1,6 @@
 # Бінарка — Requirements
 
-Status: **SIGNED OFF 2026-10-04 16:13, AMENDED 2026-10-04 18:41 after a scope change** (autonomy-log rows 9 and 10); amended rows are marked "(amended 2026-10-04: …)"; **the amendment was re-signed by the user on 2026-10-04 at 18:45 (UTC+5:30)** (autonomy-log row 11).
+Status: **SIGNED OFF 2026-10-04 16:13, AMENDED 2026-10-04 18:41 after a scope change** (autonomy-log rows 9 and 10); amended rows are marked "(amended 2026-10-04: …)"; **the amendment was re-signed by the user on 2026-10-04 at 18:45 (UTC+5:30)** (autonomy-log row 11); **FR-43 was restored by the user on 2026-10-04 at about 21:00 (UTC+5:30) after both slices were archived early, and the restoring amendment was signed off by the user in chat at that time** (autonomy-log rows 22 and 24).
 
 Narrative: `docs/product-brief.md`. Stack: `docs/adr/0001-stack.md`.
 
@@ -86,7 +86,7 @@ Conventions used below: N is the grid size (even); "line" means a row or a colum
 | FR-40 | MVP | Play page | Pressing the hint button shows the hint engine's sentence on the page, including the no-hint and broken-rule sentences when no cell is filled. | verify: local-verifiable |
 | FR-41 | MVP | Play page | When the grid becomes solved, the page shows a Ukrainian win message, e.g. «Вітаємо, головоломку розв'язано!» | verify: local-verifiable |
 | FR-42 | MVP | Play page | The «Нова головоломка» button replaces the board with a newly generated puzzle of the current size and clears the hint and win messages. | verify: local-verifiable |
-| FR-43 | Future | Play page | A size selector offers 4×4, 6×6 and 8×8; choosing a size starts a new puzzle of that size (first item cut if the schedule slips, see Cut order). (amended 2026-10-04: cut 0 applied at 18:40; out of tonight's plan and reported NOT-EARNED in the final report) | — |
+| FR-43 | MVP | Play page | A size selector offers 4×4, 6×6 and 8×8 with the labels «Поле 4×4», «Поле 6×6» and «Поле 8×8»; 6×6 is selected at start; choosing a size starts a new puzzle of that size and clears the hint and win messages; a value outside the three sizes is ignored; the choice is not remembered on reload (TC-12). (amended 2026-10-04: cut 0 applied at 18:40, then RESTORED at about 21:00 by the user's decision, autonomy-log row 22) | verify: local-verifiable |
 | FR-44 | Future | Play page | Difficulty grading of puzzles. | — |
 | FR-45 | Future | Play page | A timer. | — |
 | FR-46 | Future | Play page | Saved progress across page reloads. | — |
@@ -147,7 +147,7 @@ All MVP NFRs are measured in Vitest (unit or jsdom). No server, accounts, hostin
 
 Applied in this order when the build is more than 30 minutes behind (BC-3). Cut rows move to Future or are reported NOT-EARNED; their IDs stay. The user confirmed this order at sign-off: the size selector is cut 0 (clarification 13), and the "new puzzle" button stays in the shrunken slice 2 (clarification 14).
 
-0. **Before cut line 1 (autonomy-log row 2a; confirmed at sign-off, clarification 13): APPLIED 2026-10-04 18:40** (about 70 minutes behind; autonomy-log row 10): drop the size selector, FR-43. The engine stays generic (FR-13 to FR-17, FR-15 still tested for N = 4, 6, 8); the page stays at 6×6.
+0. **Before cut line 1 (autonomy-log row 2a; confirmed at sign-off, clarification 13): APPLIED 2026-10-04 18:40** (about 70 minutes behind; autonomy-log row 10): drop the size selector, FR-43. The engine stays generic (FR-13 to FR-17, FR-15 still tested for N = 4, 6, 8); the page stays at 6×6. **RESTORED 2026-10-04 about 21:00 by the user's decision** (autonomy-log row 22), because both slices were archived about 2.5 hours ahead of the plan: FR-43 is MVP again, owned by the slice `add-size-selector`.
 1. **Skip the global review-gate.** Process only; no FR or NFR removed. Per-slice reviews stay.
 2. **Drop the eval.** NFR-6 is reported NOT-EARNED.
 3. **Shrink slice 2 to the grid, rule highlighting, the win message and the "new puzzle" button.** FR-39 and FR-40 (page hint button) move to Future. FR-42 ("new puzzle" button) stays in the shrunken slice (user decision, clarification 14); FR-43 is already gone at cut 0. The hint engine (FR-19 to FR-26) stays in slice 1.
@@ -182,7 +182,7 @@ Each item is keyed to its clarification number. At the P1 sign-off (2026-10-04) 
 - **A-21:** the engine-purity constraints TC-7 and TC-8 may be enforced by a Vitest test that scans `src/engine/` sources, but they are constraints, not traced behaviours.
 - **A-22:** CLI error wording is chosen during the build; each error is one English sentence (FR-30, FR-52, FR-54, NFR-8).
 - **A-23:** the hint message on the page stays until the next hint or a new puzzle (FR-40, FR-42).
-- **A-24:** if FR-43 is ever restored, its option labels are «Поле 4×4», «Поле 6×6», «Поле 8×8», and the page need not handle values outside the offered sizes.
+- **A-24:** FR-43 is restored (autonomy-log row 22): its option labels are «Поле 4×4», «Поле 6×6», «Поле 8×8»; the selector is a select with the options 4, 6 and 8, 6 is selected at start, a value outside 4, 6 and 8 is ignored (no change to the board or the messages), re-selecting the current size is not specified (browsers fire no change event), and the choice is not remembered on reload (TC-12).
 - **A-25:** the seed domain, integers from 0 to 2147483647 (2^31 − 1), applies to the generator (FR-51), the CLI (FR-52) and the page (the page picks its new seeds in that range, A-4).
-- **Note (2026-10-04 amendment):** the size cap of 16, English CLI errors, the seed domain, the CLI number grammar, the CLI option errors, the eval pass bar, the bilingual page as Future, and cut 0 came from the user on 2026-10-04 (autonomy-log rows 9 and 10). New IDs: FR-49 to FR-56, NFR-8. Amended: FR-18, FR-30, FR-43, NFR-5, NFR-6, A-1, A-9.
+- **Note (2026-10-04 amendment):** the size cap of 16, English CLI errors, the seed domain, the CLI number grammar, the CLI option errors, the eval pass bar, the bilingual page as Future, and cut 0 came from the user on 2026-10-04 (autonomy-log rows 9 and 10). New IDs: FR-49 to FR-56, NFR-8. Amended: FR-18, FR-30, FR-43, NFR-5, NFR-6, A-1, A-9. Amended again 2026-10-04 about 21:00: FR-43 restored to MVP, A-24 (autonomy-log row 22).
 - **Note:** verification tags are only those built tonight: `local-verifiable` (Vitest unit and jsdom tests with `@trace`), plus `eval` for NFR-6 if kept. No real-browser, hosting or uptime checks are declared.
