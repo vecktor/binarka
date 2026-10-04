@@ -10,26 +10,26 @@ database exists. Commits carry `Slice: add-puzzle-engine` and `Refs: FR-x`.
 
 ## 1. Foundations (types, rng)
 
-- [ ] 1.1 Replace the stub `src/engine/types.ts` with `Cell`, `Grid`, `Puzzle`, `Violation` (`rule` 'three' | 'count' | 'duplicate', `axis` 'row' | 'col', 0-based `index`, optional `other`, `cells` as `[row, col]`), `Hint` (fill / none / broken), `InvalidSizeError` and `InvalidSeedError` (subclasses of `RangeError`) and a `TypeError` subclass for non-number arguments; names exactly as pinned in design.md.
-- [ ] 1.2 Implement `src/engine/rng.ts`: `mulberry32(seed)` returning `() => number` in [0, 1), and a seeded Fisher-Yates `shuffle(items, rng)`; no `Math.random`, no `Date`, no DOM globals (TC-7, TC-8).
-- [ ] 1.3 Implement `src/engine/index.ts` re-exporting only `findViolations`, `isSolved`, `countSolutions`, `generate`, `hint` and the types.
+- [x] 1.1 Replace the stub `src/engine/types.ts` with `Cell`, `Grid`, `Puzzle`, `Violation` (`rule` 'three' | 'count' | 'duplicate', `axis` 'row' | 'col', 0-based `index`, optional `other`, `cells` as `[row, col]`), `Hint` (fill / none / broken), `InvalidSizeError` and `InvalidSeedError` (subclasses of `RangeError`) and a `TypeError` subclass for non-number arguments; names exactly as pinned in design.md.
+- [x] 1.2 Implement `src/engine/rng.ts`: `mulberry32(seed)` returning `() => number` in [0, 1), and a seeded Fisher-Yates `shuffle(items, rng)`; no `Math.random`, no `Date`, no DOM globals (TC-7, TC-8).
+- [x] 1.3 Implement `src/engine/index.ts` re-exporting only `findViolations`, `isSolved`, `countSolutions`, `generate`, `hint` and the types.
 - [x] 1.4 Node typings: the user approved `@types/node` (exact pin 22.20.5, `npm audit` 0 vulnerabilities) and `tsconfig.json` `types` now lists `node`; no ambient shim is created (autonomy-log row 15).
 
 ## 2. Domain logic (rules, solver, generator, hint)
 
-- [ ] 2.1 Implement `findViolations` in `src/engine/rules.ts`: one `three` entry per maximal run of 3 or more equal digits with all its cells (FR-1, FR-2); a `count` entry per row or column with more than N/2 of one digit, also when the line is incomplete (FR-3, FR-4); a `duplicate` entry for each pair of identical complete rows or columns, with `index` and `other` (FR-5, FR-6); empty cells never cause a violation (FR-7).
-- [ ] 2.2 Implement `isSolved` in `src/engine/rules.ts`: every cell filled and no violation (FR-8, FR-9).
-- [ ] 2.3 Implement `countSolutions` in `src/engine/solver.ts`: return 0 when `findViolations` is non-empty, propagate pair, sandwich and count deductions to a fixed point, branch on the first empty cell, stop at the second solution, return only 0, 1 or 2 (FR-10, FR-11, FR-12). Add the internal node-budgeted variant used by the generator.
-- [ ] 2.4 Implement size and seed validation in `src/engine/generator.ts`: even integer 4 to 16, seed integer 0 to 2147483647, rejecting odd, below 4, above 16, non-integer, NaN, Infinity, negative and fractional values with the error classes from 1.1 and messages that do not echo the value (FR-16, FR-17, FR-49, FR-50, FR-51).
-- [ ] 2.5 Implement `generate(size, seed)`: seeded randomised backtracking fill of a complete valid grid with a node budget and deterministic restart, then seeded-order carving that keeps a blank only when the budgeted solver count is exactly 1; return `{size, givens, solution}` as separate arrays (FR-13, FR-14, FR-15, NFR-1 to NFR-3).
-- [ ] 2.6 Implement `hint` in `src/engine/hint.ts` with the precedence broken, pair, sandwich, count, none; rows before columns, lower line, lower target position; only empty cells targeted; board never mutated; solution never read (FR-19, FR-20, FR-21, FR-23, FR-24, FR-25, FR-26).
-- [ ] 2.7 Implement the sentence builders in `src/engine/hint.ts`: the Ukrainian templates, the line-type word in the right case («рядку» / «стовпці») with the 1-based number, and the count-word table for k = N/2 (FR-21, FR-22, NFR-4, NFR-5); note in a code comment that k = 5 to 8 is untested.
+- [x] 2.1 Implement `findViolations` in `src/engine/rules.ts`: one `three` entry per maximal run of 3 or more equal digits with all its cells (FR-1, FR-2); a `count` entry per row or column with more than N/2 of one digit, also when the line is incomplete (FR-3, FR-4); a `duplicate` entry for each pair of identical complete rows or columns, with `index` and `other` (FR-5, FR-6); empty cells never cause a violation (FR-7).
+- [x] 2.2 Implement `isSolved` in `src/engine/rules.ts`: every cell filled and no violation (FR-8, FR-9).
+- [x] 2.3 Implement `countSolutions` in `src/engine/solver.ts`: return 0 when `findViolations` is non-empty, propagate pair, sandwich and count deductions to a fixed point, branch on the first empty cell, stop at the second solution, return only 0, 1 or 2 (FR-10, FR-11, FR-12). Add the internal node-budgeted variant used by the generator.
+- [x] 2.4 Implement size and seed validation in `src/engine/generator.ts`: even integer 4 to 16, seed integer 0 to 2147483647, rejecting odd, below 4, above 16, non-integer, NaN, Infinity, negative and fractional values with the error classes from 1.1 and messages that do not echo the value (FR-16, FR-17, FR-49, FR-50, FR-51).
+- [x] 2.5 Implement `generate(size, seed)`: seeded randomised backtracking fill of a complete valid grid with a node budget and deterministic restart, then seeded-order carving that keeps a blank only when the budgeted solver count is exactly 1; return `{size, givens, solution}` as separate arrays (FR-13, FR-14, FR-15, NFR-1 to NFR-3).
+- [x] 2.6 Implement `hint` in `src/engine/hint.ts` with the precedence broken, pair, sandwich, count, none; rows before columns, lower line, lower target position; only empty cells targeted; board never mutated; solution never read (FR-19, FR-20, FR-21, FR-23, FR-24, FR-25, FR-26).
+- [x] 2.7 Implement the sentence builders in `src/engine/hint.ts`: the Ukrainian templates, the line-type word in the right case («рядку» / «стовпці») with the 1-based number, and the count-word table for k = N/2 (FR-21, FR-22, NFR-4, NFR-5); note in a code comment that k = 5 to 8 is untested.
 
 ## 3. CLI
 
-- [ ] 3.1 Replace the stub `src/cli.ts`: manual parsing of `--size` and `--seed`, defaults 6 and 1, `^[0-9]+$` grammar with leading zeros accepted, missing value and unknown option rejected, last repeated option wins (FR-29, FR-30, FR-52, FR-53, FR-54).
-- [ ] 3.2 Print the puzzle as N lines of N space-separated tokens (`0`, `1`, `.`), newline-terminated, built fully before one stdout write; never print the solution; nothing on stderr on success (FR-28).
-- [ ] 3.3 On any error: catch, write one English sentence (no Cyrillic, no echoed user input, single terminal mark) to stderr, set exit code 1, write nothing to stdout (FR-30, FR-52, FR-54, NFR-4, NFR-8).
+- [x] 3.1 Replace the stub `src/cli.ts`: manual parsing of `--size` and `--seed`, defaults 6 and 1, `^[0-9]+$` grammar with leading zeros accepted, missing value and unknown option rejected, last repeated option wins (FR-29, FR-30, FR-52, FR-53, FR-54).
+- [x] 3.2 Print the puzzle as N lines of N space-separated tokens (`0`, `1`, `.`), newline-terminated, built fully before one stdout write; never print the solution; nothing on stderr on success (FR-28).
+- [x] 3.3 On any error: catch, write one English sentence (no Cyrillic, no echoed user input, single terminal mark) to stderr, set exit code 1, write nothing to stdout (FR-30, FR-52, FR-54, NFR-4, NFR-8).
 
 ## 4. Tests (written FIRST, seen red; one file per area, each test tagged `@trace FR-x` or `@trace NFR-x`)
 

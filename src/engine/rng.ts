@@ -1,4 +1,4 @@
-// RED-STAGE STUB: replaced by the capability-implementer
+/** Seeded PRNG (mulberry32): returns a function giving floats in [0, 1). Seed 0 is valid. */
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
@@ -8,4 +8,15 @@ export function mulberry32(seed: number): () => number {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
+}
+
+/** Seeded Fisher-Yates shuffle, in place; returns the same array. */
+export function shuffle<T>(items: T[], rng: () => number): T[] {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    const a = items[i] as T;
+    items[i] = items[j] as T;
+    items[j] = a;
+  }
+  return items;
 }

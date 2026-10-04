@@ -120,7 +120,7 @@ describe('@trace FR-6 identical complete columns', () => {
     expect(dup[0]?.other).toBe(3);
     const expected: Cells = [];
     for (const c of [1, 3]) for (let r = 0; r < 4; r++) expected.push([r, c]);
-    expect(sortedCells(dup[0]?.cells ?? [])).toEqual(expected);
+    expect(sortedCells(dup[0]?.cells ?? [])).toEqual(sortedCells(expected));
   });
 
   it('an incomplete column (1 0 0 .) is never compared', () => {
