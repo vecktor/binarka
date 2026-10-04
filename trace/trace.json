@@ -310,7 +310,8 @@
       ],
       "planned": true,
       "tests": [
-        "tests/generator.test.ts"
+        "tests/generator.test.ts",
+        "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
       "recordings": []
     },
@@ -476,7 +477,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-rendering.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -486,7 +489,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-rendering.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -496,7 +501,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-click-cycle.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -506,7 +513,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-click-cycle.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -516,7 +525,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-highlighting.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -526,7 +537,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-highlighting.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -536,7 +549,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-highlighting.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -546,7 +561,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-highlighting.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -556,7 +573,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-hint.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -566,7 +585,10 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-hint.test.ts",
+        "tests/play-page-hint.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -576,7 +598,9 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-win.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -586,60 +610,14 @@
         "openspec/changes/add-play-page/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-new-puzzle-and-seed.test.ts"
+      ],
       "recordings": []
     }
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-31 has no test annotated \"@trace FR-31\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-32 has no test annotated \"@trace FR-32\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-33 has no test annotated \"@trace FR-33\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-34 has no test annotated \"@trace FR-34\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-35 has no test annotated \"@trace FR-35\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-36 has no test annotated \"@trace FR-36\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-37 has no test annotated \"@trace FR-37\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-38 has no test annotated \"@trace FR-38\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-39 has no test annotated \"@trace FR-39\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-40 has no test annotated \"@trace FR-40\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-41 has no test annotated \"@trace FR-41\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-42 has no test annotated \"@trace FR-42\""
-    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"

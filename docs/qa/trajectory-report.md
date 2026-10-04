@@ -10,7 +10,7 @@ Result: PASS, 1 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
 |---|---|---|---|---|
-| 2026-10-04-add-puzzle-engine | **unclean** | 7 | yes | engine |
+| 2026-10-04-add-puzzle-engine | **unclean** | 8 | yes | engine |
 
 ## Cross-slice module overlap
 
