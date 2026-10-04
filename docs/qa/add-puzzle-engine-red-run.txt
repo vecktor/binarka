@@ -1,0 +1,2887 @@
+RED RUN: add-puzzle-engine (test-first evidence, task 4.10)
+Date: 2026-10-04 (host clock)
+Command: npx vitest run --reporter=verbose
+State of src/: RED-STAGE STUBS (src/engine/{types,rules,solver,rng,generator,hint,index}.ts, src/cli.ts)
+  findViolations -> [], isSolved -> false, countSolutions -> 0, hint -> {kind:'none', sentence:'.'},
+  generate -> NAIVE (never throws, blanks ~half the cells at random, no uniqueness check, no validation),
+  cli -> does nothing (exit 0).
+Result: 7 failed files, 2 passed files; 233 tests failed, 37 passed (270 tests; one extra oracle self-check added after this run).
+The passing tests fall into four groups, each justified in the hand-off report:
+  1. scoped negatives that genuinely hold for an empty stub (rules FR-1..7, FR-9, solver FR-10);
+  2. accepted-input shape and determinism, which the seeded naive generator satisfies (FR-13, FR-14, accepted halves of FR-17/49/50/51);
+  3. timing bounds (NFR-1..3), trivially met by an O(N^2) stub and meaningful only once generate() searches;
+  4. purity source scans (engine-purity) that genuinely hold for the stubs, plus two oracle self-checks that test the helper, not the engine.
+FR-15 is RED against the naive generator: see the "tests/generator-unique.test.ts" failures below
+(the oracle assertions report puzzles whose solution count is not 1, e.g. "seed/oracle-count pairs that are not 1").
+
+----- raw vitest output follows -----
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/fwdays-capstone-slices-5cecb3
+
+ ✓ tests/engine-purity.test.ts > src/engine purity > scans the engine modules (the scan is not vacuous) 2ms
+ ✓ tests/engine-purity.test.ts > src/engine purity > never uses Math.random 1ms
+ ✓ tests/engine-purity.test.ts > src/engine purity > uses no DOM or browser globals 1ms
+ ✓ tests/engine-purity.test.ts > src/engine purity > imports nothing from the page or from a DOM module 0ms
+ ✓ tests/generator-timing.test.ts > generation time over seeds 1 to 20 > @trace NFR-1 N = 4: the slowest puzzle takes under 200 ms 1ms
+ ✓ tests/generator-timing.test.ts > generation time over seeds 1 to 20 > @trace NFR-2 N = 6: the slowest puzzle takes under 500 ms 0ms
+ ✓ tests/generator-timing.test.ts > generation time over seeds 1 to 20 > @trace NFR-3 N = 8: the slowest puzzle takes under 3 seconds 0ms
+ × tests/rules.test.ts > @trace FR-1 three equal digits in a row > run of three ones in row 1 is flagged with columns 2, 3 and 4 5ms
+   → expected [] to have a length of 1 but got +0
+ × tests/rules.test.ts > @trace FR-1 three equal digits in a row > longer run in row 2 is flagged with all four of its cells and not column 5 1ms
+   → expected [] to have a length of 1 but got +0
+ ✓ tests/rules.test.ts > @trace FR-1 three equal digits in a row > two equal digits (0 0 1) in row 3 are not a three-in-a-row violation 1ms
+ ✓ tests/rules.test.ts > @trace FR-1 three equal digits in a row > equal digits separated by another digit (1 1 0 1 1) in row 4 are not a run 0ms
+ × tests/rules.test.ts > @trace FR-2 three equal digits in a column > run of three zeros at rows 2, 3, 4 of column 3 is flagged for column 3 0ms
+   → expected [] to have a length of 1 but got +0
+ ✓ tests/rules.test.ts > @trace FR-2 three equal digits in a column > two equal digits in column 5 are not a violation at all 0ms
+ × tests/rules.test.ts > @trace FR-3 a row with too many of one digit > four ones in a 6-wide row is a count violation for row 1 listing the four ones 0ms
+   → expected [] to have a length of 1 but got +0
+ ✓ tests/rules.test.ts > @trace FR-3 a row with too many of one digit > exactly N/2 of a digit in an incomplete row (1 0 1 0 1 .) is allowed 0ms
+ × tests/rules.test.ts > @trace FR-3 a row with too many of one digit > threshold follows N: five zeros in an 8-wide row is flagged 1ms
+   → expected [] to have a length of 1 but got +0
+ ✓ tests/rules.test.ts > @trace FR-3 a row with too many of one digit > threshold follows N: four zeros and three ones in an 8-wide row is not flagged 0ms
+ × tests/rules.test.ts > @trace FR-4 a column with too many of one digit > four zeros in a 6-high column is a count violation for column 2 listing the four zeros 0ms
+   → expected [] to have a length of 1 but got +0
+ ✓ tests/rules.test.ts > @trace FR-4 a column with too many of one digit > exactly N/2 of a digit in an incomplete column (0 1 0 1 0 .) is allowed 0ms
+ × tests/rules.test.ts > @trace FR-5 identical complete rows > rows 1 and 3 both 0 1 1 0 give a duplicate-row violation naming rows 1 and 3 (0-based 0 and 2) 0ms
+   → expected [] to have a length of 1 but got +0
+ ✓ tests/rules.test.ts > @trace FR-5 identical complete rows > an incomplete row (0 1 1 .) is never compared 0ms
+ × tests/rules.test.ts > @trace FR-6 identical complete columns > columns 2 and 4 both 1 0 0 1 give a duplicate-column violation naming columns 2 and 4 (0-based 1 and 3) 0ms
+   → expected [] to have a length of 1 but got +0
+ ✓ tests/rules.test.ts > @trace FR-6 identical complete columns > an incomplete column (1 0 0 .) is never compared 0ms
+ ✓ tests/rules.test.ts > @trace FR-7 empty cells never cause violations > sparse 4x4 board (0 at 1,1; 1 at 2,2; 1 at 4,4) has no violations 0ms
+ ✓ tests/rules.test.ts > @trace FR-7 empty cells never cause violations > empty board of size 4 has no violations 0ms
+ ✓ tests/rules.test.ts > @trace FR-7 empty cells never cause violations > empty board of size 6 has no violations 0ms
+ ✓ tests/rules.test.ts > @trace FR-7 empty cells never cause violations > empty board of size 8 has no violations 0ms
+ × tests/rules.test.ts > @trace FR-8 a correct full grid is recognised as solved > valid full 4x4 grid is solved 1ms
+   → expected false to be true // Object.is equality
+ ✓ tests/rules.test.ts > @trace FR-9 incomplete or rule-breaking grids are not solved > valid grid with row 4 column 4 emptied is not solved 0ms
+ ✓ tests/rules.test.ts > @trace FR-9 incomplete or rule-breaking grids are not solved > full grid with duplicate rows (0 1 1 0 / 0 1 1 0 / 1 0 0 1 / 1 0 0 1) is not solved 0ms
+ ✓ tests/rules.test.ts > @trace FR-9 incomplete or rule-breaking grids are not solved > every single-cell emptying of the valid grid is not solved 0ms
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 4 over seeds 1 to 20 > engine solver reports 1 on the givens of every puzzle 6ms
+   → seed/solver-result pairs that are not 1: expected [ [ 1, +0 ], [ 2, +0 ], …(18) ] to deeply equal []
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 4 over seeds 1 to 20 > independent oracle finds exactly one solution for the givens of every puzzle 1ms
+   → seed/oracle-count pairs that are not 1: expected [ [ 1, 2 ], [ 2, +0 ], …(15) ] to deeply equal []
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 4 over seeds 1 to 20 > the solution is complete, rule-valid and agrees with every given 2ms
+   → seed 1: expected false to be true // Object.is equality
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 4 over seeds 1 to 20 > the solution equals the one solution the oracle finds for the givens 0ms
+   → seed 1: expected 2 to be 1 // Object.is equality
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 6 over seeds 1 to 20 > engine solver reports 1 on the givens of every puzzle 1ms
+   → seed/solver-result pairs that are not 1: expected [ [ 1, +0 ], [ 2, +0 ], …(18) ] to deeply equal []
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 6 over seeds 1 to 20 > independent oracle finds exactly one solution for the givens of every puzzle 1ms
+   → seed/oracle-count pairs that are not 1: expected [ [ 1, +0 ], [ 2, +0 ], …(18) ] to deeply equal []
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 6 over seeds 1 to 20 > the solution is complete, rule-valid and agrees with every given 1ms
+   → seed 1: expected false to be true // Object.is equality
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 6 over seeds 1 to 20 > the solution equals the one solution the oracle finds for the givens 0ms
+   → seed 1: expected +0 to be 1 // Object.is equality
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 8 over seeds 1 to 20 > engine solver reports 1 on the givens of every puzzle 1ms
+   → seed/solver-result pairs that are not 1: expected [ [ 1, +0 ], [ 2, +0 ], …(18) ] to deeply equal []
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 8 over seeds 1 to 20 > independent oracle finds exactly one solution for the givens of every puzzle 5ms
+   → seed/oracle-count pairs that are not 1: expected [ [ 1, +0 ], [ 2, +0 ], …(18) ] to deeply equal []
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 8 over seeds 1 to 20 > the solution is complete, rule-valid and agrees with every given 2ms
+   → seed 1: expected false to be true // Object.is equality
+ × tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 8 over seeds 1 to 20 > the solution equals the one solution the oracle finds for the givens 1ms
+   → seed 1: expected +0 to be 1 // Object.is equality
+ × tests/hint.test.ts > @trace FR-19 pair hint > pair of zeros in a row 6ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 2, col: 2, …(3) }
+ × tests/hint.test.ts > @trace FR-19 pair hint > pair of ones in a column 1ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 2, col: 3, …(3) }
+ × tests/hint.test.ts > @trace FR-19 pair hint > pair of ones in a row 1ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 1, col: 2, …(3) }
+ × tests/hint.test.ts > @trace FR-19 pair hint > pair of zeros in a column 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 2, col: 5, …(3) }
+ × tests/hint.test.ts > @trace FR-20 sandwich hint > sandwich of zeros in a column 1ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 1, col: 1, …(3) }
+ × tests/hint.test.ts > @trace FR-20 sandwich hint > sandwich of ones in a row 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: +0, col: 1, …(3) }
+ × tests/hint.test.ts > @trace FR-21 count hint > count of zeros in a 6-wide row 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 4, col: 4, …(3) }
+ × tests/hint.test.ts > @trace FR-21 count hint > count of ones in a column 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 4, col: 1, …(3) }
+ × tests/hint.test.ts > @trace FR-21 count hint > number word for N = 4: два нулі and дві одиниці 1ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 1, col: 3, …(3) }
+ × tests/hint.test.ts > @trace FR-21 count hint > number word for N = 8: чотири нулі and чотири одиниці 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: +0, col: 7, …(3) }
+ × tests/hint.test.ts > @trace FR-21 count hint > one hint fills one cell, the first empty one (row 2 column 4, not column 5) 1ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > row hint from row 3 contains «рядку 3» and not «стовп» 0ms
+   → expected '.' to contain 'рядку 3'
+ × tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > column hint from column 4 contains «стовпці 4» and not «рядк» 0ms
+   → expected '.' to contain 'стовпці 4'
+ × tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > row numbering starts at 1: pair at row 1 columns 1 and 2 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: +0, col: 2, …(3) }
+ × tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > column numbering starts at 1: sandwich in column 1 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 1, col: +0, …(3) }
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: pair of zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: pair of ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: pair of ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: pair of zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: sandwich of zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: sandwich of ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: count of zeros in a 6-wide row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: count of ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > pair beats sandwich although the sandwich is on a lower row 1ms
+   → expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 4, col: 2, …(2) }
+(1 matching property omitted from actual)
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > sandwich beats count 0ms
+   → expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 5, col: 1, …(2) }
+(1 matching property omitted from actual)
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > rows before columns although the column pair has the lower line number 0ms
+   → expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 3, col: 3, …(2) }
+(1 matching property omitted from actual)
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > lower line number first (row 2 before row 5) 0ms
+   → expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 1, col: 2, …(2) }
+(1 matching property omitted from actual)
+ × tests/hint.test.ts > @trace FR-23 hint choice is deterministic > lower cell position first when both cells beside the pair are empty (row 3 column 1) 0ms
+   → expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 2, col: +0, …(2) }
+(1 matching property omitted from actual)
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > filled cell beside a pair is not targeted: no cell and the no-rule sentence 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'none', …(1) }
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: pair of zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: pair of ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: pair of ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: pair of zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: sandwich of zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: sandwich of ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: count of zeros in a 6-wide row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: count of ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint.test.ts > @trace FR-25 no-rule hint > sparse board with only 0 at row 1 column 1 targets no cell 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'none', …(1) }
+ × tests/hint.test.ts > @trace FR-25 no-rule hint > empty 6x6 board targets no cell 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'none', …(1) }
+ × tests/hint.test.ts > @trace FR-25 no-rule hint > complete valid 4x4 board targets no cell 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'none', …(1) }
+ × tests/hint.test.ts > @trace FR-26 broken-board hint > three in a row (0 0 0 . . .) targets no cell and asks to fix the rule 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'broken', …(1) }
+ × tests/hint.test.ts > @trace FR-26 broken-board hint > a broken rule wins over an available pair hint 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'broken', …(1) }
+ × tests/hint.test.ts > @trace FR-26 broken-board hint > digit-count violation (1 1 0 1 1 .) is broken 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'broken', …(1) }
+ × tests/hint.test.ts > @trace FR-26 broken-board hint > duplicate complete rows are broken 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'broken', …(1) }
+ × tests/hint.test.ts > @trace FR-26 broken-board hint > a legal entry that differs from the solution is followed, not corrected 0ms
+   → expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: +0, col: 2, …(3) }
+ ✓ tests/solver.test.ts > oracle self-check (helper, no FR: the oracle must agree with the spec before it judges anything) > agrees with the spec on the FR-10, FR-11 and FR-12 boards 3ms
+ ✓ tests/solver.test.ts > @trace FR-10 solver reports zero solutions > row 1 = 0 0 0 . (already breaks a rule) gives 0 0ms
+ ✓ tests/solver.test.ts > oracle self-check (helper, no FR: the oracle must agree with the spec before it judges anything) > matches a brute-force enumeration of all 65536 4x4 grids (72 are valid) on 300 random boards 208ms
+ ✓ tests/solver.test.ts > @trace FR-10 solver reports zero solutions > rows 1 and 2 both 0 0 . . (no violation yet, no completion) give 0 0ms
+ × tests/solver.test.ts > @trace FR-11 solver reports exactly one solution > valid grid with row 4 column 4 emptied gives 1 4ms
+   → expected +0 to be 1 // Object.is equality
+ × tests/solver.test.ts > @trace FR-11 solver reports exactly one solution > already complete valid grid gives 1 1ms
+   → expected +0 to be 1 // Object.is equality
+ × tests/solver.test.ts > @trace FR-12 solver stops at the second solution > empty 4x4 board reports "2 or more" (2) 0ms
+   → expected +0 to be 2 // Object.is equality
+ × tests/solver.test.ts > @trace FR-12 solver stops at the second solution > empty 8x8 board returns exactly 2 and nothing above 2 0ms
+   → expected +0 to be 2 // Object.is equality
+ × tests/solver.test.ts > @trace FR-10, FR-11, FR-12 solver agrees with the independent oracle > on size-4 boards cut from a valid grid, with and without one flipped cell 2ms
+   → board:
+0 0 1 1
+. . 0 1
+1 . 1 0
+1 1 . 0: expected +0 to be 1 // Object.is equality
+ × tests/solver.test.ts > @trace FR-10, FR-11, FR-12 solver agrees with the independent oracle > on size-6 boards cut from a valid grid, with and without one flipped cell 0ms
+   → board:
+0 . . . . .
+0 0 1 1 . 1
+1 . 0 . . .
+. . . . 1 1
+. . 1 1 0 0
+1 1 0 . . 0: expected +0 to be 2 // Object.is equality
+ × tests/solver.test.ts > @trace FR-10, FR-11, FR-12 solver agrees with the independent oracle > on size-8 boards cut from a valid grid, with and without one flipped cell 1ms
+   → board:
+. 0 . 0 1 . 1 1
+. 0 . 0 1 1 0 1
+. 1 0 1 0 . 1 0
+0 0 1 1 0 0 1 1
+1 1 0 0 1 . 0 0
+0 . 0 . 1 0 1 1
+. . . 1 . 1 0 0
+1 1 0 1 0 . 0 0: expected +0 to be 1 // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 pair zeros in a row 4ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 pair ones in a row 1ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 pair zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 pair ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 sandwich zeros in a row 1ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 sandwich ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 sandwich zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 sandwich ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 count zeros in a row 1ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 count ones in a row 1ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 count zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 count ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 no-rule (empty board) 1ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 no-rule (single given) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 broken (three in a row) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 broken (three in a column) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 pair zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 pair ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 pair zeros in a column 1ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 pair ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 sandwich zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 sandwich ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 sandwich zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 sandwich ones in a column 1ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 count zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 count ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 count zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 count ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 no-rule (empty board) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 no-rule (single given) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 broken (three in a row) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 broken (three in a column) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 pair zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 pair ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 pair zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 pair ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 sandwich zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 sandwich ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 sandwich zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 sandwich ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 count zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 count ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 count zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 count ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 no-rule (empty board) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 no-rule (single given) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 broken (three in a row) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 broken (three in a column) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > number words, comma and dash are not breaks: the count sentence for row 5 is one sentence 3ms
+   → expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', rule: 'count' }
+(1 matching property omitted from actual)
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 pair zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 pair ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 pair zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 pair ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 sandwich zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 sandwich ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 sandwich zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 sandwich ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 count zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 count ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 count zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 count ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 no-rule (empty board) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 no-rule (single given) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 broken (three in a row) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 broken (three in a column) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 pair zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 pair ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 pair zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 pair ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 sandwich zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 sandwich ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 sandwich zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 sandwich ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 count zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 count ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 count zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 count ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 no-rule (empty board) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 no-rule (single given) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 broken (three in a row) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 broken (three in a column) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 pair zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 pair ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 pair zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 pair ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 sandwich zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 sandwich ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 sandwich zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 sandwich ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 count zeros in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 count ones in a row 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 count zeros in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 count ones in a column 0ms
+   → expected 'none' to be 'fill' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 no-rule (empty board) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 no-rule (single given) 0ms
+   → .: expected false to be true // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 broken (three in a row) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ × tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 broken (three in a column) 0ms
+   → expected 'none' to be 'broken' // Object.is equality
+ ✓ tests/generator.test.ts > @trace FR-13 generator returns a puzzle of the requested size > size 6 seed 42 gives 6 rows of 6 cells, each 0, 1 or empty 5ms
+ ✓ tests/generator.test.ts > @trace FR-13 generator returns a puzzle of the requested size > size 4 seed 1 gives an NxN puzzle of 0, 1 or empty cells 1ms
+ ✓ tests/generator.test.ts > @trace FR-13 generator returns a puzzle of the requested size > size 8 seed 1 gives an NxN puzzle of 0, 1 or empty cells 2ms
+ ✓ tests/generator.test.ts > @trace FR-14 same seed and size give the identical puzzle > size 6 seed 42 generated twice is cell-for-cell identical 1ms
+ ✓ tests/generator.test.ts > @trace FR-14 same seed and size give the identical puzzle > is not disturbed by generating other sizes and seeds in between 0ms
+ ✓ tests/generator.test.ts > @trace FR-14 same seed and size give the identical puzzle > size 8 seed 7 generated in a separate process is identical (seed is the only source of variation) 1152ms
+ × tests/generator.test.ts > @trace FR-16 odd size is rejected > size 5 raises an error and returns no puzzle 4ms
+   → generate(5, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-16 odd size is rejected > size 7 raises an error and returns no puzzle 1ms
+   → generate(7, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > even size 2 raises an error and returns no puzzle 1ms
+   → generate(2, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > size 0 raises an error and returns no puzzle 0ms
+   → generate(0, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > size 3 raises an error and returns no puzzle 1ms
+   → generate(3, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > size -2 raises an error and returns no puzzle 0ms
+   → generate(-2, 1) must throw: expected false to be true // Object.is equality
+ ✓ tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > minimum size 4 is accepted and gives a 4x4 puzzle 1ms
+ × tests/generator.test.ts > @trace FR-49 size above the maximum is rejected > size 18 raises an error and returns no puzzle 0ms
+   → generate(18, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-49 size above the maximum is rejected > size 1000 raises an error and returns no puzzle 1ms
+   → generate(1000, 1) must throw: expected false to be true // Object.is equality
+ ✓ tests/generator.test.ts > @trace FR-49 size above the maximum is rejected > largest tested size 8 is still accepted and gives an 8x8 puzzle 2ms
+ × tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > size 4.5 raises an error and returns no puzzle 1ms
+   → generate(4.5, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > size NaN raises an error and returns no puzzle 0ms
+   → generate(NaN, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > size Infinity raises an error and returns no puzzle 0ms
+   → generate(Infinity, 1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > size -Infinity raises an error and returns no puzzle 0ms
+   → generate(-Infinity, 1) must throw: expected false to be true // Object.is equality
+ ✓ tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > whole-number size 6 is accepted and gives a 6x6 puzzle 3ms
+ ✓ tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed 0 with size 4 returns a 4x4 puzzle 0ms
+ ✓ tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed 2147483647 with size 4 returns a 4x4 puzzle 0ms
+ × tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed -1 raises an error and returns no puzzle 0ms
+   → generate(4, -1) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed 2147483648 raises an error and returns no puzzle 0ms
+   → generate(4, 2147483648) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed 1.5 raises an error and returns no puzzle 0ms
+   → generate(4, 1.5) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed NaN raises an error and returns no puzzle 0ms
+   → generate(4, NaN) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed Infinity raises an error and returns no puzzle 0ms
+   → generate(4, Infinity) must throw: expected false to be true // Object.is equality
+ × tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed -Infinity raises an error and returns no puzzle 0ms
+   → generate(4, -Infinity) must throw: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-28 CLI prints the puzzle for a size and seed > size 6 seed 42: exit 0, 6 lines of 6 tokens, empty stderr 1001ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-28 CLI prints the puzzle for a size and seed > output matches the engine generator cell for cell (. is an empty cell) 1ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-28 CLI prints the puzzle for a size and seed > same arguments, same output (two real runs) 1269ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-28 CLI prints the puzzle for a size and seed > size 8 seed 7 in a separate process equals the engine in this process (FR-14 across processes) 631ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-29 CLI defaults > no arguments: stdout equals --size 6 --seed 1 1291ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-29 CLI defaults > only the seed given: a 6x6 puzzle equal to --size 6 --seed 5 1271ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-29 CLI defaults > only the size given: a 4x4 puzzle equal to --size 4 --seed 1 1279ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > odd size 5: one English sentence on stderr, non-zero exit, empty stdout 629ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > size below 4: one English sentence on stderr, non-zero exit, empty stdout 618ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > size above 16: one English sentence on stderr, non-zero exit, empty stdout 632ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > non-numeric size: one English sentence on stderr, non-zero exit, empty stdout 632ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > size that breaks the number grammar (6.5): one English sentence on stderr, non-zero exit, empty stdout 640ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > non-numeric seed: one English sentence on stderr, non-zero exit, empty stdout 625ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > seed above the domain (2147483648): one English sentence on stderr, non-zero exit, empty stdout 634ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > negative seed: one English sentence on stderr, non-zero exit, empty stdout 623ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > fractional seed: one English sentence on stderr, non-zero exit, empty stdout 634ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > seed 0 with size 4: exit 0, a 4x4 puzzle, empty stderr 781ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > seed 2147483647 with size 4: exit 0, a 4x4 puzzle, empty stderr 641ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > leading zeros in the size: --size 06 equals --size 6 1253ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > leading zeros in the seed: --seed 007 equals --seed 7 1263ms
+   → stdout must end with a newline: expected false to be true // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "6.5" is rejected 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "+6" is rejected 636ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "-2" is rejected 622ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "1e1" is rejected 634ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "0x6" is rejected 644ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "" is rejected 616ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "6.5" is rejected 630ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "+6" is rejected 611ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "-2" is rejected 609ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "1e1" is rejected 593ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "0x6" is rejected 723ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "" is rejected 623ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-54 CLI rejects a missing option value and an unknown option > size without a value: one English sentence on stderr, non-zero exit, empty stdout 663ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-54 CLI rejects a missing option value and an unknown option > seed without a value after another option: one English sentence on stderr, non-zero exit, empty stdout 731ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-54 CLI rejects a missing option value and an unknown option > unknown option: one English sentence on stderr, non-zero exit, empty stdout 691ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace FR-54 CLI rejects a missing option value and an unknown option > unknown option next to valid ones: one English sentence on stderr, non-zero exit, empty stdout 641ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-4 CLI error sentences are one sentence > odd size: single line, one terminal mark at the end, no earlier . ! or ? 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-4 CLI error sentences are one sentence > size below 4: single line, one terminal mark at the end, no earlier . ! or ? 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-4 CLI error sentences are one sentence > non-numeric size: single line, one terminal mark at the end, no earlier . ! or ? 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-8 CLI errors are English > odd size: Latin letters, no Cyrillic, one line, one terminal mark 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-8 CLI errors are English > size above 16: Latin letters, no Cyrillic, one line, one terminal mark 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-8 CLI errors are English > non-numeric seed: Latin letters, no Cyrillic, one line, one terminal mark 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-8 CLI errors are English > seed above 2147483647: Latin letters, no Cyrillic, one line, one terminal mark 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-8 CLI errors are English > --size without a value: Latin letters, no Cyrillic, one line, one terminal mark 0ms
+   → expected +0 not to be +0 // Object.is equality
+ × tests/cli.test.ts > @trace NFR-8 CLI errors are English > unknown option: Latin letters, no Cyrillic, one line, one terminal mark 0ms
+   → expected +0 not to be +0 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 233 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-28 CLI prints the puzzle for a size and seed > size 6 seed 42: exit 0, 6 lines of 6 tokens, empty stderr
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:76:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-28 CLI prints the puzzle for a size and seed > output matches the engine generator cell for cell (. is an empty cell)
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:80:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-28 CLI prints the puzzle for a size and seed > same arguments, same output (two real runs)
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:87:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-28 CLI prints the puzzle for a size and seed > size 8 seed 7 in a separate process equals the engine in this process (FR-14 across processes)
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:93:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-29 CLI defaults > no arguments: stdout equals --size 6 --seed 1
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:102:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-29 CLI defaults > only the seed given: a 6x6 puzzle equal to --size 6 --seed 5
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:110:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-29 CLI defaults > only the size given: a 4x4 puzzle equal to --size 4 --seed 1
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:118:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > odd size 5: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > size below 4: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > size above 16: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > non-numeric size: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-30 CLI rejects an invalid size > size that breaks the number grammar (6.5): one English sentence on stderr, non-zero exit, empty stdout
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:63:26
+     61| function expectCliError(run: Run): void {
+     62|   expect(run.status, 'exit code must be a non-zero number (not a timeo…
+     63|   expect(run.status).not.toBe(0);
+       |                          ^
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+ ❯ tests/cli.test.ts:132:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > non-numeric seed: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > seed above the domain (2147483648): one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > negative seed: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > fractional seed: one English sentence on stderr, non-zero exit, empty stdout
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:63:26
+     61| function expectCliError(run: Run): void {
+     62|   expect(run.status, 'exit code must be a non-zero number (not a timeo…
+     63|   expect(run.status).not.toBe(0);
+       |                          ^
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+ ❯ tests/cli.test.ts:143:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > seed 0 with size 4: exit 0, a 4x4 puzzle, empty stderr
+ FAIL  tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > seed 2147483647 with size 4: exit 0, a 4x4 puzzle, empty stderr
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:147:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > leading zeros in the size: --size 06 equals --size 6
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:155:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > leading zeros in the seed: --seed 007 equals --seed 7
+AssertionError: stdout must end with a newline: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectPuzzleStdout tests/cli.test.ts:41:71
+     39| /** Asserts stdout is exactly n newline-terminated lines of n single-s…
+     40| function expectPuzzleStdout(run: Run, n: number): string[][] {
+     41|   expect(run.stdout.endsWith('\n'), 'stdout must end with a newline').…
+       |                                                                       ^
+     42|   const lines = run.stdout.slice(0, -1).split('\n');
+     43|   expect(lines).toHaveLength(n);
+ ❯ expectSuccess tests/cli.test.ts:55:10
+ ❯ tests/cli.test.ts:163:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "6.5" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "+6" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "-2" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "1e1" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "0x6" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid size token "" is rejected
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:63:26
+     61| function expectCliError(run: Run): void {
+     62|   expect(run.status, 'exit code must be a non-zero number (not a timeo…
+     63|   expect(run.status).not.toBe(0);
+       |                          ^
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+ ❯ tests/cli.test.ts:169:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "6.5" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "+6" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "-2" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "1e1" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "0x6" is rejected
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "" is rejected
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:63:26
+     61| function expectCliError(run: Run): void {
+     62|   expect(run.status, 'exit code must be a non-zero number (not a timeo…
+     63|   expect(run.status).not.toBe(0);
+       |                          ^
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+ ❯ tests/cli.test.ts:173:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-54 CLI rejects a missing option value and an unknown option > size without a value: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-54 CLI rejects a missing option value and an unknown option > seed without a value after another option: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-54 CLI rejects a missing option value and an unknown option > unknown option: one English sentence on stderr, non-zero exit, empty stdout
+ FAIL  tests/cli.test.ts > @trace FR-54 CLI rejects a missing option value and an unknown option > unknown option next to valid ones: one English sentence on stderr, non-zero exit, empty stdout
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:63:26
+     61| function expectCliError(run: Run): void {
+     62|   expect(run.status, 'exit code must be a non-zero number (not a timeo…
+     63|   expect(run.status).not.toBe(0);
+       |                          ^
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+ ❯ tests/cli.test.ts:184:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace NFR-4 CLI error sentences are one sentence > odd size: single line, one terminal mark at the end, no earlier . ! or ?
+ FAIL  tests/cli.test.ts > @trace NFR-4 CLI error sentences are one sentence > size below 4: single line, one terminal mark at the end, no earlier . ! or ?
+ FAIL  tests/cli.test.ts > @trace NFR-4 CLI error sentences are one sentence > non-numeric size: single line, one terminal mark at the end, no earlier . ! or ?
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ tests/cli.test.ts:196:28
+    194|     const run = cli(args);
+    195|     expect(run.status).not.toBeNull();
+    196|     expect(run.status).not.toBe(0);
+       |                            ^
+    197|     const line = run.stderr.replace(/\n$/, '');
+    198|     expect(line.length).toBeGreaterThan(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/233]⎯
+
+ FAIL  tests/cli.test.ts > @trace NFR-8 CLI errors are English > odd size: Latin letters, no Cyrillic, one line, one terminal mark
+ FAIL  tests/cli.test.ts > @trace NFR-8 CLI errors are English > size above 16: Latin letters, no Cyrillic, one line, one terminal mark
+ FAIL  tests/cli.test.ts > @trace NFR-8 CLI errors are English > non-numeric seed: Latin letters, no Cyrillic, one line, one terminal mark
+ FAIL  tests/cli.test.ts > @trace NFR-8 CLI errors are English > seed above 2147483647: Latin letters, no Cyrillic, one line, one terminal mark
+ FAIL  tests/cli.test.ts > @trace NFR-8 CLI errors are English > --size without a value: Latin letters, no Cyrillic, one line, one terminal mark
+ FAIL  tests/cli.test.ts > @trace NFR-8 CLI errors are English > unknown option: Latin letters, no Cyrillic, one line, one terminal mark
+AssertionError: expected +0 not to be +0 // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:63:26
+     61| function expectCliError(run: Run): void {
+     62|   expect(run.status, 'exit code must be a non-zero number (not a timeo…
+     63|   expect(run.status).not.toBe(0);
+       |                          ^
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+ ❯ tests/cli.test.ts:212:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/233]⎯
+
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 4 over seeds 1 to 20 > engine solver reports 1 on the givens of every puzzle
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 6 over seeds 1 to 20 > engine solver reports 1 on the givens of every puzzle
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 8 over seeds 1 to 20 > engine solver reports 1 on the givens of every puzzle
+AssertionError: seed/solver-result pairs that are not 1: expected [ [ 1, +0 ], [ 2, +0 ], …(18) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   [
++     1,
++     0,
++   ],
++   [
++     2,
++     0,
++   ],
++   [
++     3,
++     0,
++   ],
++   [
++     4,
++     0,
++   ],
++   [
++     5,
++     0,
++   ],
++   [
++     6,
++     0,
++   ],
++   [
++     7,
++     0,
++   ],
++   [
++     8,
++     0,
++   ],
++   [
++     9,
++     0,
++   ],
++   [
++     10,
++     0,
++   ],
++   [
++     11,
++     0,
++   ],
++   [
++     12,
++     0,
++   ],
++   [
++     13,
++     0,
++   ],
++   [
++     14,
++     0,
++   ],
++   [
++     15,
++     0,
++   ],
++   [
++     16,
++     0,
++   ],
++   [
++     17,
++     0,
++   ],
++   [
++     18,
++     0,
++   ],
++   [
++     19,
++     0,
++   ],
++   [
++     20,
++     0,
++   ],
++ ]
+
+ ❯ tests/generator-unique.test.ts:20:60
+     18|       .map(([seed, p]) => [seed, countSolutions(p.givens)] as const)
+     19|       .filter(([, count]) => count !== 1);
+     20|     expect(bad, 'seed/solver-result pairs that are not 1').toEqual([]);
+       |                                                            ^
+     21|   }, LONG);
+     22|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/233]⎯
+
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 4 over seeds 1 to 20 > independent oracle finds exactly one solution for the givens of every puzzle
+AssertionError: seed/oracle-count pairs that are not 1: expected [ [ 1, 2 ], [ 2, +0 ], …(15) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   [
++     1,
++     2,
++   ],
++   [
++     2,
++     0,
++   ],
++   [
++     3,
++     0,
++   ],
++   [
++     4,
++     2,
++   ],
++   [
++     5,
++     0,
++   ],
++   [
++     6,
++     0,
++   ],
++   [
++     7,
++     0,
++   ],
++   [
++     9,
++     2,
++   ],
++   [
++     10,
++     0,
++   ],
++   [
++     11,
++     2,
++   ],
++   [
++     13,
++     0,
++   ],
++   [
++     14,
++     0,
++   ],
++   [
++     15,
++     0,
++   ],
++   [
++     16,
++     0,
++   ],
++   [
++     17,
++     0,
++   ],
++   [
++     19,
++     0,
++   ],
++   [
++     20,
++     0,
++   ],
++ ]
+
+ ❯ tests/generator-unique.test.ts:27:59
+     25|       .map(([seed, p]) => [seed, oracleSolve(p.givens).count] as const)
+     26|       .filter(([, count]) => count !== 1);
+     27|     expect(bad, 'seed/oracle-count pairs that are not 1').toEqual([]);
+       |                                                           ^
+     28|   }, LONG);
+     29|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/233]⎯
+
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 4 over seeds 1 to 20 > the solution is complete, rule-valid and agrees with every given
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 6 over seeds 1 to 20 > the solution is complete, rule-valid and agrees with every given
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 8 over seeds 1 to 20 > the solution is complete, rule-valid and agrees with every given
+AssertionError: seed 1: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/generator-unique.test.ts:39:43
+     37|       }
+     38|       expect(findViolations(p.solution), label).toEqual([]);
+     39|       expect(isSolved(p.solution), label).toBe(true);
+       |                                           ^
+     40|       p.givens.forEach((row, r) =>
+     41|         row.forEach((g, c) => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/233]⎯
+
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 4 over seeds 1 to 20 > the solution equals the one solution the oracle finds for the givens
+AssertionError: seed 1: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/generator-unique.test.ts:51:43
+     49|     for (const [seed, p] of puzzles(n)) {
+     50|       const found = oracleSolve(p.givens);
+     51|       expect(found.count, `seed ${seed}`).toBe(1);
+       |                                           ^
+     52|       expect(p.solution, `seed ${seed}`).toEqual(found.solutions[0]);
+     53|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/233]⎯
+
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 6 over seeds 1 to 20 > independent oracle finds exactly one solution for the givens of every puzzle
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 8 over seeds 1 to 20 > independent oracle finds exactly one solution for the givens of every puzzle
+AssertionError: seed/oracle-count pairs that are not 1: expected [ [ 1, +0 ], [ 2, +0 ], …(18) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   [
++     1,
++     0,
++   ],
++   [
++     2,
++     0,
++   ],
++   [
++     3,
++     0,
++   ],
++   [
++     4,
++     0,
++   ],
++   [
++     5,
++     0,
++   ],
++   [
++     6,
++     0,
++   ],
++   [
++     7,
++     0,
++   ],
++   [
++     8,
++     0,
++   ],
++   [
++     9,
++     0,
++   ],
++   [
++     10,
++     0,
++   ],
++   [
++     11,
++     0,
++   ],
++   [
++     12,
++     0,
++   ],
++   [
++     13,
++     0,
++   ],
++   [
++     14,
++     0,
++   ],
++   [
++     15,
++     0,
++   ],
++   [
++     16,
++     0,
++   ],
++   [
++     17,
++     0,
++   ],
++   [
++     18,
++     0,
++   ],
++   [
++     19,
++     0,
++   ],
++   [
++     20,
++     0,
++   ],
++ ]
+
+ ❯ tests/generator-unique.test.ts:27:59
+     25|       .map(([seed, p]) => [seed, oracleSolve(p.givens).count] as const)
+     26|       .filter(([, count]) => count !== 1);
+     27|     expect(bad, 'seed/oracle-count pairs that are not 1').toEqual([]);
+       |                                                           ^
+     28|   }, LONG);
+     29|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/233]⎯
+
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 6 over seeds 1 to 20 > the solution equals the one solution the oracle finds for the givens
+ FAIL  tests/generator-unique.test.ts > @trace FR-15 uniqueness at N = 8 over seeds 1 to 20 > the solution equals the one solution the oracle finds for the givens
+AssertionError: seed 1: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/generator-unique.test.ts:51:43
+     49|     for (const [seed, p] of puzzles(n)) {
+     50|       const found = oracleSolve(p.givens);
+     51|       expect(found.count, `seed ${seed}`).toBe(1);
+       |                                           ^
+     52|       expect(p.solution, `seed ${seed}`).toEqual(found.solutions[0]);
+     53|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-16 odd size is rejected > size 5 raises an error and returns no puzzle
+AssertionError: generate(5, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:75:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-16 odd size is rejected > size 7 raises an error and returns no puzzle
+AssertionError: generate(7, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:75:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > even size 2 raises an error and returns no puzzle
+AssertionError: generate(2, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:81:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > size 0 raises an error and returns no puzzle
+AssertionError: generate(0, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:85:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > size 3 raises an error and returns no puzzle
+AssertionError: generate(3, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:85:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-17 size below the minimum is rejected > size -2 raises an error and returns no puzzle
+AssertionError: generate(-2, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:85:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-49 size above the maximum is rejected > size 18 raises an error and returns no puzzle
+AssertionError: generate(18, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:95:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-49 size above the maximum is rejected > size 1000 raises an error and returns no puzzle
+AssertionError: generate(1000, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:95:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > size 4.5 raises an error and returns no puzzle
+AssertionError: generate(4.5, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:107:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > size NaN raises an error and returns no puzzle
+AssertionError: generate(NaN, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:107:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > size Infinity raises an error and returns no puzzle
+AssertionError: generate(Infinity, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:107:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-50 a size that is not an integer is rejected > size -Infinity raises an error and returns no puzzle
+AssertionError: generate(-Infinity, 1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:107:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed -1 raises an error and returns no puzzle
+AssertionError: generate(4, -1) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:122:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed 2147483648 raises an error and returns no puzzle
+AssertionError: generate(4, 2147483648) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:126:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed 1.5 raises an error and returns no puzzle
+AssertionError: generate(4, 1.5) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:132:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed NaN raises an error and returns no puzzle
+AssertionError: generate(4, NaN) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:132:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed Infinity raises an error and returns no puzzle
+AssertionError: generate(4, Infinity) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:132:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/233]⎯
+
+ FAIL  tests/generator.test.ts > @trace FR-51 a seed outside the seed domain is rejected > seed -Infinity raises an error and returns no puzzle
+AssertionError: generate(4, -Infinity) must throw: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectRejected tests/generator.test.ts:20:60
+     18| function expectRejected(size: number, seed: number): void {
+     19|   const a = attempt(size, seed);
+     20|   expect(a.threw, `generate(${size}, ${seed}) must throw`).toBe(true);
+       |                                                            ^
+     21|   expect(a.isError, 'the thrown value must be an Error').toBe(true);
+     22|   expect(a.result).toBeUndefined();
+ ❯ tests/generator.test.ts:132:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/233]⎯
+
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 pair zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 pair ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 pair zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 pair ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 sandwich zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 sandwich ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 sandwich zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 sandwich ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 count zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 count ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 count zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 count ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 pair zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 pair ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 pair zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 pair ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 sandwich zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 sandwich ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 sandwich zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 sandwich ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 count zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 count ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 count zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 count ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 pair zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 pair ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 pair zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 pair ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 sandwich zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 sandwich ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 sandwich zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 sandwich ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 count zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 count ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 count zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 count ones in a column
+AssertionError: expected 'none' to be 'fill' // Object.is equality
+
+Expected: "fill"
+Received: "none"
+
+ ❯ tests/hint-sentences.test.ts:50:25
+     48|   it.each(ALL)('$label', ({ board, kind, rule }) => {
+     49|     const result = hint(board);
+     50|     expect(result.kind).toBe(kind);
+       |                         ^
+     51|     if (rule) expect(result).toMatchObject({ rule });
+     52|     expect(isOneSentence(result.sentence), result.sentence).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/233]⎯
+
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 no-rule (empty board)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 no-rule (single given)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 no-rule (empty board)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 no-rule (single given)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 no-rule (empty board)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 no-rule (single given)
+AssertionError: .: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/hint-sentences.test.ts:52:61
+     50|     expect(result.kind).toBe(kind);
+     51|     if (rule) expect(result).toMatchObject({ rule });
+     52|     expect(isOneSentence(result.sentence), result.sentence).toBe(true);
+       |                                                             ^
+     53|     expect(result.sentence.trimEnd().endsWith('.')).toBe(true);
+     54|     expect(terminalMarkCount(result.sentence)).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/233]⎯
+
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 broken (three in a row)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=4 broken (three in a column)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 broken (three in a row)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=6 broken (three in a column)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 broken (three in a row)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > N=8 broken (three in a column)
+AssertionError: expected 'none' to be 'broken' // Object.is equality
+
+Expected: "broken"
+Received: "none"
+
+ ❯ tests/hint-sentences.test.ts:50:25
+     48|   it.each(ALL)('$label', ({ board, kind, rule }) => {
+     49|     const result = hint(board);
+     50|     expect(result.kind).toBe(kind);
+       |                         ^
+     51|     if (rule) expect(result).toMatchObject({ rule });
+     52|     expect(isOneSentence(result.sentence), result.sentence).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/233]⎯
+
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-4 every hint sentence is exactly one sentence > number words, comma and dash are not breaks: the count sentence for row 5 is one sentence
+AssertionError: expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', rule: 'count' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "fill",
+-   "rule": "count",
++   "kind": "none",
+  }
+
+ ❯ tests/hint-sentences.test.ts:59:20
+     57|   it('number words, comma and dash are not breaks: the count sentence …
+     58|     const result = hint(boardOf(6, { rows: { 5: '0 1 0 1 . 0' } }));
+     59|     expect(result).toMatchObject({ kind: 'fill', rule: 'count' });
+       |                    ^
+     60|     expect(result.sentence).toBe('У рядку 5 вже три нулі, тож решта кл…
+     61|     expect(isOneSentence(result.sentence)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/233]⎯
+
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 pair zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 pair ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 pair zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 pair ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 sandwich zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 sandwich ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 sandwich zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 sandwich ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 count zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 count ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 count zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 count ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 pair zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 pair ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 pair zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 pair ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 sandwich zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 sandwich ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 sandwich zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 sandwich ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 count zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 count ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 count zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 count ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 pair zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 pair ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 pair zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 pair ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 sandwich zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 sandwich ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 sandwich zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 sandwich ones in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 count zeros in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 count ones in a row
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 count zeros in a column
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 count ones in a column
+AssertionError: expected 'none' to be 'fill' // Object.is equality
+
+Expected: "fill"
+Received: "none"
+
+ ❯ tests/hint-sentences.test.ts:68:25
+     66|   it.each(ALL)('$label', ({ board, kind, rule }) => {
+     67|     const result = hint(board);
+     68|     expect(result.kind).toBe(kind);
+       |                         ^
+     69|     if (rule) expect(result).toMatchObject({ rule });
+     70|     expect(hasCyrillic(result.sentence), result.sentence).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/233]⎯
+
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 no-rule (empty board)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 no-rule (single given)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 no-rule (empty board)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 no-rule (single given)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 no-rule (empty board)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 no-rule (single given)
+AssertionError: .: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/hint-sentences.test.ts:70:59
+     68|     expect(result.kind).toBe(kind);
+     69|     if (rule) expect(result).toMatchObject({ rule });
+     70|     expect(hasCyrillic(result.sentence), result.sentence).toBe(true);
+       |                                                           ^
+     71|     expect(hasLatin(result.sentence), result.sentence).toBe(false);
+     72|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/233]⎯
+
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 broken (three in a row)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=4 broken (three in a column)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 broken (three in a row)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=6 broken (three in a column)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 broken (three in a row)
+ FAIL  tests/hint-sentences.test.ts > @trace NFR-5 hint sentences are Ukrainian > N=8 broken (three in a column)
+AssertionError: expected 'none' to be 'broken' // Object.is equality
+
+Expected: "broken"
+Received: "none"
+
+ ❯ tests/hint-sentences.test.ts:68:25
+     66|   it.each(ALL)('$label', ({ board, kind, rule }) => {
+     67|     const result = hint(board);
+     68|     expect(result.kind).toBe(kind);
+       |                         ^
+     69|     if (rule) expect(result).toMatchObject({ rule });
+     70|     expect(hasCyrillic(result.sentence), result.sentence).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-19 pair hint > pair of zeros in a row
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 2, col: 2, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 2,
+-   "kind": "fill",
+-   "row": 2,
+-   "rule": "pair",
+-   "sentence": "Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця.",
+-   "value": 1,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:34:25
+     32| describe('@trace FR-19 pair hint', () => {
+     33|   it.each(FILL_BOARDS.slice(0, 4))('%s', (_name, board, expected) => {
+     34|     expect(hint(board)).toEqual(expected);
+       |                         ^
+     35|   });
+     36| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-19 pair hint > pair of ones in a column
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 2, col: 3, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 3,
+-   "kind": "fill",
+-   "row": 2,
+-   "rule": "pair",
+-   "sentence": "Дві одиниці поспіль у стовпці 4, тож поруч може стояти лише нуль.",
+-   "value": 0,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:34:25
+     32| describe('@trace FR-19 pair hint', () => {
+     33|   it.each(FILL_BOARDS.slice(0, 4))('%s', (_name, board, expected) => {
+     34|     expect(hint(board)).toEqual(expected);
+       |                         ^
+     35|   });
+     36| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-19 pair hint > pair of ones in a row
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 1, col: 2, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 2,
+-   "kind": "fill",
+-   "row": 1,
+-   "rule": "pair",
+-   "sentence": "Дві одиниці поспіль у рядку 2, тож поруч може стояти лише нуль.",
+-   "value": 0,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:34:25
+     32| describe('@trace FR-19 pair hint', () => {
+     33|   it.each(FILL_BOARDS.slice(0, 4))('%s', (_name, board, expected) => {
+     34|     expect(hint(board)).toEqual(expected);
+       |                         ^
+     35|   });
+     36| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-19 pair hint > pair of zeros in a column
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 2, col: 5, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 5,
+-   "kind": "fill",
+-   "row": 2,
+-   "rule": "pair",
+-   "sentence": "Два нулі поспіль у стовпці 6, тож поруч може стояти лише одиниця.",
+-   "value": 1,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:34:25
+     32| describe('@trace FR-19 pair hint', () => {
+     33|   it.each(FILL_BOARDS.slice(0, 4))('%s', (_name, board, expected) => {
+     34|     expect(hint(board)).toEqual(expected);
+       |                         ^
+     35|   });
+     36| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-20 sandwich hint > sandwich of zeros in a column
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 1, col: 1, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 1,
+-   "kind": "fill",
+-   "row": 1,
+-   "rule": "sandwich",
+-   "sentence": "Між двома нулями у стовпці 2 може стояти лише одиниця.",
+-   "value": 1,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:40:25
+     38| describe('@trace FR-20 sandwich hint', () => {
+     39|   it.each(FILL_BOARDS.slice(4, 6))('%s', (_name, board, expected) => {
+     40|     expect(hint(board)).toEqual(expected);
+       |                         ^
+     41|   });
+     42| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-20 sandwich hint > sandwich of ones in a row
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: +0, col: 1, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 1,
+-   "kind": "fill",
+-   "row": 0,
+-   "rule": "sandwich",
+-   "sentence": "Між двома одиницями у рядку 1 може стояти лише нуль.",
+-   "value": 0,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:40:25
+     38| describe('@trace FR-20 sandwich hint', () => {
+     39|   it.each(FILL_BOARDS.slice(4, 6))('%s', (_name, board, expected) => {
+     40|     expect(hint(board)).toEqual(expected);
+       |                         ^
+     41|   });
+     42| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > count of zeros in a 6-wide row
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 4, col: 4, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 4,
+-   "kind": "fill",
+-   "row": 4,
+-   "rule": "count",
+-   "sentence": "У рядку 5 вже три нулі, тож решта клітинок — одиниці.",
+-   "value": 1,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:46:25
+     44| describe('@trace FR-21 count hint', () => {
+     45|   it.each(FILL_BOARDS.slice(6, 8))('%s', (_name, board, expected) => {
+     46|     expect(hint(board)).toEqual(expected);
+       |                         ^
+     47|   });
+     48|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > count of ones in a column
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 4, col: 1, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 1,
+-   "kind": "fill",
+-   "row": 4,
+-   "rule": "count",
+-   "sentence": "У стовпці 2 вже три одиниці, тож решта клітинок — нулі.",
+-   "value": 0,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:46:25
+     44| describe('@trace FR-21 count hint', () => {
+     45|   it.each(FILL_BOARDS.slice(6, 8))('%s', (_name, board, expected) => {
+     46|     expect(hint(board)).toEqual(expected);
+       |                         ^
+     47|   });
+     48|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > number word for N = 4: два нулі and дві одиниці
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 1, col: 3, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 3,
+-   "kind": "fill",
+-   "row": 1,
+-   "rule": "count",
+-   "sentence": "У рядку 2 вже два нулі, тож решта клітинок — одиниці.",
+-   "value": 1,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:50:58
+     48|
+     49|   it('number word for N = 4: два нулі and дві одиниці', () => {
+     50|     expect(hint(boardOf(4, { rows: { 2: '0 1 0 .' } }))).toEqual(
+       |                                                          ^
+     51|       fill(2, 4, 1, 'count', 'У рядку 2 вже два нулі, тож решта клітин…
+     52|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > number word for N = 8: чотири нулі and чотири одиниці
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: +0, col: 7, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 7,
+-   "kind": "fill",
+-   "row": 0,
+-   "rule": "count",
+-   "sentence": "У рядку 1 вже чотири нулі, тож решта клітинок — одиниці.",
+-   "value": 1,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:59:66
+     57|
+     58|   it('number word for N = 8: чотири нулі and чотири одиниці', () => {
+     59|     expect(hint(boardOf(8, { rows: { 1: '0 1 0 1 0 1 0 .' } }))).toEqu…
+       |                                                                  ^
+     60|       fill(1, 8, 1, 'count', 'У рядку 1 вже чотири нулі, тож решта клі…
+     61|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-21 count hint > one hint fills one cell, the first empty one (row 2 column 4, not column 5)
+AssertionError: expected 'none' to be 'fill' // Object.is equality
+
+Expected: "fill"
+Received: "none"
+
+ ❯ tests/hint.test.ts:69:25
+     67|   it('one hint fills one cell, the first empty one (row 2 column 4, no…
+     68|     const result = hint(boardOf(6, { rows: { 2: '0 1 0 . . 0' } }));
+     69|     expect(result.kind).toBe('fill');
+       |                         ^
+     70|     expect(result).toMatchObject({ kind: 'fill', row: 1, col: 3, value…
+     71|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > row hint from row 3 contains «рядку 3» and not «стовп»
+AssertionError: expected '.' to contain 'рядку 3'
+
+Expected: "рядку 3"
+Received: "."
+
+ ❯ tests/hint.test.ts:77:15
+     75|   it('row hint from row 3 contains «рядку 3» and not «стовп»', () => {
+     76|     const s = hint(boardOf(6, { cells: [[3, 1, 0], [3, 2, 0]] })).sent…
+     77|     expect(s).toContain('рядку 3');
+       |               ^
+     78|     expect(s).not.toContain('стовп');
+     79|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > column hint from column 4 contains «стовпці 4» and not «рядк»
+AssertionError: expected '.' to contain 'стовпці 4'
+
+Expected: "стовпці 4"
+Received: "."
+
+ ❯ tests/hint.test.ts:83:15
+     81|   it('column hint from column 4 contains «стовпці 4» and not «рядк»', …
+     82|     const s = hint(boardOf(6, { cells: [[1, 4, 1], [2, 4, 1]] })).sent…
+     83|     expect(s).toContain('стовпці 4');
+       |               ^
+     84|     expect(s).not.toContain('рядк');
+     85|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > row numbering starts at 1: pair at row 1 columns 1 and 2
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: +0, col: 2, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 2,
+-   "kind": "fill",
+-   "row": 0,
+-   "rule": "pair",
+-   "sentence": "Два нулі поспіль у рядку 1, тож поруч може стояти лише одиниця.",
+-   "value": 1,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:89:20
+     87|   it('row numbering starts at 1: pair at row 1 columns 1 and 2', () =>…
+     88|     const result = hint(boardOf(6, { cells: [[1, 1, 0], [1, 2, 0]] }));
+     89|     expect(result).toEqual(fill(1, 3, 1, 'pair', 'Два нулі поспіль у р…
+       |                    ^
+     90|     expect(result.sentence).not.toContain('рядку 0');
+     91|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-22 the explanation names the line type and number > column numbering starts at 1: sandwich in column 1
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: 1, col: +0, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 0,
+-   "kind": "fill",
+-   "row": 1,
+-   "rule": "sandwich",
+-   "sentence": "Між двома нулями у стовпці 1 може стояти лише одиниця.",
+-   "value": 1,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:95:20
+     93|   it('column numbering starts at 1: sandwich in column 1', () => {
+     94|     const result = hint(boardOf(6, { cells: [[1, 1, 0], [3, 1, 0]] }));
+     95|     expect(result).toEqual(fill(2, 1, 1, 'sandwich', 'Між двома нулями…
+       |                    ^
+     96|     expect(result.sentence).not.toContain('стовпці 0');
+     97|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: pair of zeros in a row
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: pair of ones in a column
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: pair of ones in a row
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: pair of zeros in a column
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: sandwich of zeros in a column
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: sandwich of ones in a row
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: count of zeros in a 6-wide row
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > repeated calls return the same cell, value and sentence: count of ones in a column
+AssertionError: expected 'none' to be 'fill' // Object.is equality
+
+Expected: "fill"
+Received: "none"
+
+ ❯ tests/hint.test.ts:103:24
+    101|   it.each(FILL_BOARDS)('repeated calls return the same cell, value and…
+    102|     const first = hint(board);
+    103|     expect(first.kind).toBe('fill');
+       |                        ^
+    104|     expect(hint(board)).toEqual(first);
+    105|     expect(hint(cloneBoard(board))).toEqual(first);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > pair beats sandwich although the sandwich is on a lower row
+AssertionError: expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 4, col: 2, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "col": 2,
+-   "kind": "fill",
+-   "row": 4,
+-   "rule": "pair",
+-   "value": 1,
++   "kind": "none",
+  }
+
+ ❯ tests/hint.test.ts:110:25
+    108|   it('pair beats sandwich although the sandwich is on a lower row', ()…
+    109|     const board = boardOf(6, { rows: { 1: '1 . 1 . . .', 5: '0 0 . . .…
+    110|     expect(hint(board)).toMatchObject({ kind: 'fill', row: 4, col: 2, …
+       |                         ^
+    111|   });
+    112|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > sandwich beats count
+AssertionError: expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 5, col: 1, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "col": 1,
+-   "kind": "fill",
+-   "row": 5,
+-   "rule": "sandwich",
+-   "value": 0,
++   "kind": "none",
+  }
+
+ ❯ tests/hint.test.ts:115:25
+    113|   it('sandwich beats count', () => {
+    114|     const board = boardOf(6, { rows: { 1: '0 1 0 . . 0', 6: '1 . 1 . .…
+    115|     expect(hint(board)).toMatchObject({ kind: 'fill', row: 5, col: 1, …
+       |                         ^
+    116|   });
+    117|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > rows before columns although the column pair has the lower line number
+AssertionError: expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 3, col: 3, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "col": 3,
+-   "kind": "fill",
+-   "row": 3,
+-   "rule": "pair",
+-   "value": 0,
++   "kind": "none",
+  }
+
+ ❯ tests/hint.test.ts:120:25
+    118|   it('rows before columns although the column pair has the lower line …
+    119|     const board = boardOf(6, { cells: [[4, 5, 1], [4, 6, 1], [1, 2, 0]…
+    120|     expect(hint(board)).toMatchObject({ kind: 'fill', row: 3, col: 3, …
+       |                         ^
+    121|   });
+    122|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > lower line number first (row 2 before row 5)
+AssertionError: expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 1, col: 2, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "col": 2,
+-   "kind": "fill",
+-   "row": 1,
+-   "rule": "pair",
+-   "value": 0,
++   "kind": "none",
+  }
+
+ ❯ tests/hint.test.ts:125:25
+    123|   it('lower line number first (row 2 before row 5)', () => {
+    124|     const board = boardOf(6, { rows: { 2: '1 1 . . . .', 5: '0 0 . . .…
+    125|     expect(hint(board)).toMatchObject({ kind: 'fill', row: 1, col: 2, …
+       |                         ^
+    126|   });
+    127|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-23 hint choice is deterministic > lower cell position first when both cells beside the pair are empty (row 3 column 1)
+AssertionError: expected { kind: 'none', sentence: '.' } to match object { kind: 'fill', row: 2, col: +0, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "col": 0,
+-   "kind": "fill",
+-   "row": 2,
+-   "rule": "pair",
+-   "value": 1,
++   "kind": "none",
+  }
+
+ ❯ tests/hint.test.ts:130:25
+    128|   it('lower cell position first when both cells beside the pair are em…
+    129|     const board = boardOf(6, { rows: { 3: '. 0 0 . . .' } });
+    130|     expect(hint(board)).toMatchObject({ kind: 'fill', row: 2, col: 0, …
+       |                         ^
+    131|   });
+    132| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > filled cell beside a pair is not targeted: no cell and the no-rule sentence
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'none', …(1) }
+
+- Expected
++ Received
+
+  {
+    "kind": "none",
+-   "sentence": "Жодне з трьох правил зараз не підказує наступного ходу.",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:136:62
+    134| describe('@trace FR-24 a hint targets only empty cells', () => {
+    135|   it('filled cell beside a pair is not targeted: no cell and the no-ru…
+    136|     expect(hint(boardOf(6, { rows: { 3: '0 0 1 . . .' } }))).toEqual(N…
+       |                                                              ^
+    137|   });
+    138|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[70/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: pair of zeros in a row
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: pair of ones in a column
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: pair of ones in a row
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: pair of zeros in a column
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: sandwich of zeros in a column
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: sandwich of ones in a row
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: count of zeros in a 6-wide row
+ FAIL  tests/hint.test.ts > @trace FR-24 a hint targets only empty cells > board is left unchanged and the target was empty before the call: count of ones in a column
+AssertionError: expected 'none' to be 'fill' // Object.is equality
+
+Expected: "fill"
+Received: "none"
+
+ ❯ tests/hint.test.ts:143:25
+    141|     const result = hint(board);
+    142|     expect(board).toEqual(before);
+    143|     expect(result.kind).toBe('fill');
+       |                         ^
+    144|     if (result.kind === 'fill') expect(before[result.row]?.[result.col…
+    145|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[71/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-25 no-rule hint > sparse board with only 0 at row 1 column 1 targets no cell
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'none', …(1) }
+
+- Expected
++ Received
+
+  {
+    "kind": "none",
+-   "sentence": "Жодне з трьох правил зараз не підказує наступного ходу.",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:150:54
+    148| describe('@trace FR-25 no-rule hint', () => {
+    149|   it('sparse board with only 0 at row 1 column 1 targets no cell', () …
+    150|     expect(hint(boardOf(6, { cells: [[1, 1, 0]] }))).toEqual(NONE);
+       |                                                      ^
+    151|   });
+    152|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[72/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-25 no-rule hint > empty 6x6 board targets no cell
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'none', …(1) }
+
+- Expected
++ Received
+
+  {
+    "kind": "none",
+-   "sentence": "Жодне з трьох правил зараз не підказує наступного ходу.",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:154:33
+    152|
+    153|   it('empty 6x6 board targets no cell', () => {
+    154|     expect(hint(emptyBoard(6))).toEqual(NONE);
+       |                                 ^
+    155|   });
+    156|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[73/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-25 no-rule hint > complete valid 4x4 board targets no cell
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'none', …(1) }
+
+- Expected
++ Received
+
+  {
+    "kind": "none",
+-   "sentence": "Жодне з трьох правил зараз не підказує наступного ходу.",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:158:29
+    156|
+    157|   it('complete valid 4x4 board targets no cell', () => {
+    158|     expect(hint(VALID_4X4)).toEqual(NONE);
+       |                             ^
+    159|   });
+    160| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-26 broken-board hint > three in a row (0 0 0 . . .) targets no cell and asks to fix the rule
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'broken', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "broken",
+-   "sentence": "Спершу виправте порушення правил, підсвічене на полі.",
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:164:62
+    162| describe('@trace FR-26 broken-board hint', () => {
+    163|   it('three in a row (0 0 0 . . .) targets no cell and asks to fix the…
+    164|     expect(hint(boardOf(6, { rows: { 1: '0 0 0 . . .' } }))).toEqual(B…
+       |                                                              ^
+    165|   });
+    166|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-26 broken-board hint > a broken rule wins over an available pair hint
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'broken', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "broken",
+-   "sentence": "Спершу виправте порушення правил, підсвічене на полі.",
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:168:80
+    166|
+    167|   it('a broken rule wins over an available pair hint', () => {
+    168|     expect(hint(boardOf(6, { rows: { 1: '0 0 0 . . .', 3: '1 1 . . . .…
+       |                                                                                ^
+    169|   });
+    170|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-26 broken-board hint > digit-count violation (1 1 0 1 1 .) is broken
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'broken', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "broken",
+-   "sentence": "Спершу виправте порушення правил, підсвічене на полі.",
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:172:62
+    170|
+    171|   it('digit-count violation (1 1 0 1 1 .) is broken', () => {
+    172|     expect(hint(boardOf(6, { rows: { 2: '1 1 0 1 1 .' } }))).toEqual(B…
+       |                                                              ^
+    173|   });
+    174|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-26 broken-board hint > duplicate complete rows are broken
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'broken', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "broken",
+-   "sentence": "Спершу виправте порушення правил, підсвічене на полі.",
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:182:25
+    180|       1 0 0 1
+    181|     `);
+    182|     expect(hint(board)).toEqual(BROKEN_HINT);
+       |                         ^
+    183|   });
+    184|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/233]⎯
+
+ FAIL  tests/hint.test.ts > @trace FR-26 broken-board hint > a legal entry that differs from the solution is followed, not corrected
+AssertionError: expected { kind: 'none', sentence: '.' } to deeply equal { kind: 'fill', row: +0, col: 2, …(3) }
+
+- Expected
++ Received
+
+  {
+-   "col": 2,
+-   "kind": "fill",
+-   "row": 0,
+-   "rule": "pair",
+-   "sentence": "Дві одиниці поспіль у рядку 1, тож поруч може стояти лише нуль.",
+-   "value": 0,
++   "kind": "none",
++   "sentence": ".",
+  }
+
+ ❯ tests/hint.test.ts:189:25
+    187|     const board = boardOf(4, { cells: [[1, 1, 1], [1, 2, 1]] });
+    188|     expect(VALID_4X4[0]?.[2]).toBe(1);
+    189|     expect(hint(board)).toEqual(
+       |                         ^
+    190|       fill(1, 3, 0, 'pair', 'Дві одиниці поспіль у рядку 1, тож поруч …
+    191|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-1 three equal digits in a row > run of three ones in row 1 is flagged with columns 2, 3 and 4
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/rules.test.ts:14:19
+     12|     const board = boardOf(6, { rows: { 1: '0 1 1 1 0 .' } });
+     13|     const three = matching(findViolations(board), 'three', 'row');
+     14|     expect(three).toHaveLength(1);
+       |                   ^
+     15|     expect(three[0]?.index).toBe(0);
+     16|     expect(sortedCells(three[0]?.cells ?? [])).toEqual([[0, 1], [0, 2]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-1 three equal digits in a row > longer run in row 2 is flagged with all four of its cells and not column 5
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/rules.test.ts:22:19
+     20|     const board = boardOf(6, { rows: { 2: '0 0 0 0 1 .' } });
+     21|     const three = matching(findViolations(board), 'three', 'row');
+     22|     expect(three).toHaveLength(1);
+       |                   ^
+     23|     expect(three[0]?.index).toBe(1);
+     24|     expect(sortedCells(three[0]?.cells ?? [])).toEqual([[1, 0], [1, 1]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-2 three equal digits in a column > run of three zeros at rows 2, 3, 4 of column 3 is flagged for column 3
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/rules.test.ts:42:19
+     40|     const board = boardOf(6, { cols: { 3: '. 0 0 0 . .' } });
+     41|     const three = matching(findViolations(board), 'three', 'col');
+     42|     expect(three).toHaveLength(1);
+       |                   ^
+     43|     expect(three[0]?.index).toBe(2);
+     44|     expect(sortedCells(three[0]?.cells ?? [])).toEqual([[1, 2], [2, 2]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[82/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-3 a row with too many of one digit > four ones in a 6-wide row is a count violation for row 1 listing the four ones
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/rules.test.ts:57:19
+     55|     const board = boardOf(6, { rows: { 1: '1 1 0 1 1 .' } });
+     56|     const count = matching(findViolations(board), 'count', 'row');
+     57|     expect(count).toHaveLength(1);
+       |                   ^
+     58|     expect(count[0]?.index).toBe(0);
+     59|     expect(sortedCells(count[0]?.cells ?? [])).toEqual([[0, 0], [0, 1]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[83/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-3 a row with too many of one digit > threshold follows N: five zeros in an 8-wide row is flagged
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/rules.test.ts:70:19
+     68|     const board = boardOf(8, { rows: { 1: '0 0 1 0 0 1 0 .' } });
+     69|     const count = matching(findViolations(board), 'count', 'row');
+     70|     expect(count).toHaveLength(1);
+       |                   ^
+     71|     expect(count[0]?.index).toBe(0);
+     72|     expect(sortedCells(count[0]?.cells ?? [])).toEqual([[0, 0], [0, 1]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[84/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-4 a column with too many of one digit > four zeros in a 6-high column is a count violation for column 2 listing the four zeros
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/rules.test.ts:85:19
+     83|     const board = boardOf(6, { cols: { 2: '0 0 1 0 0 .' } });
+     84|     const count = matching(findViolations(board), 'count', 'col');
+     85|     expect(count).toHaveLength(1);
+       |                   ^
+     86|     expect(count[0]?.index).toBe(1);
+     87|     expect(sortedCells(count[0]?.cells ?? [])).toEqual([[0, 1], [1, 1]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[85/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-5 identical complete rows > rows 1 and 3 both 0 1 1 0 give a duplicate-row violation naming rows 1 and 3 (0-based 0 and 2)
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/rules.test.ts:100:17
+     98|     const board = boardOf(4, { rows: { 1: '0 1 1 0', 3: '0 1 1 0' } });
+     99|     const dup = matching(findViolations(board), 'duplicate', 'row');
+    100|     expect(dup).toHaveLength(1);
+       |                 ^
+    101|     expect(dup[0]?.index).toBe(0);
+    102|     expect(dup[0]?.other).toBe(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[86/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-6 identical complete columns > columns 2 and 4 both 1 0 0 1 give a duplicate-column violation naming columns 2 and 4 (0-based 1 and 3)
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/rules.test.ts:118:17
+    116|     const board = boardOf(4, { cols: { 2: '1 0 0 1', 4: '1 0 0 1' } });
+    117|     const dup = matching(findViolations(board), 'duplicate', 'col');
+    118|     expect(dup).toHaveLength(1);
+       |                 ^
+    119|     expect(dup[0]?.index).toBe(1);
+    120|     expect(dup[0]?.other).toBe(3);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[87/233]⎯
+
+ FAIL  tests/rules.test.ts > @trace FR-8 a correct full grid is recognised as solved > valid full 4x4 grid is solved
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/rules.test.ts:145:33
+    143| describe('@trace FR-8 a correct full grid is recognised as solved', ()…
+    144|   it('valid full 4x4 grid is solved', () => {
+    145|     expect(isSolved(VALID_4X4)).toBe(true);
+       |                                 ^
+    146|   });
+    147| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[88/233]⎯
+
+ FAIL  tests/solver.test.ts > @trace FR-11 solver reports exactly one solution > valid grid with row 4 column 4 emptied gives 1
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/solver.test.ts:78:35
+     76|     const row = board[3];
+     77|     if (row) row[3] = null;
+     78|     expect(countSolutions(board)).toBe(1);
+       |                                   ^
+     79|   });
+     80|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[89/233]⎯
+
+ FAIL  tests/solver.test.ts > @trace FR-11 solver reports exactly one solution > already complete valid grid gives 1
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/solver.test.ts:82:39
+     80|
+     81|   it('already complete valid grid gives 1', () => {
+     82|     expect(countSolutions(VALID_4X4)).toBe(1);
+       |                                       ^
+     83|   });
+     84| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[90/233]⎯
+
+ FAIL  tests/solver.test.ts > @trace FR-12 solver stops at the second solution > empty 4x4 board reports "2 or more" (2)
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ tests/solver.test.ts:88:43
+     86| describe('@trace FR-12 solver stops at the second solution', () => {
+     87|   it('empty 4x4 board reports "2 or more" (2)', () => {
+     88|     expect(countSolutions(emptyBoard(4))).toBe(2);
+       |                                           ^
+     89|   });
+     90|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[91/233]⎯
+
+ FAIL  tests/solver.test.ts > @trace FR-12 solver stops at the second solution > empty 8x8 board returns exactly 2 and nothing above 2
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ tests/solver.test.ts:93:20
+     91|   it('empty 8x8 board returns exactly 2 and nothing above 2', () => {
+     92|     const result = countSolutions(emptyBoard(8));
+     93|     expect(result).toBe(2);
+       |                    ^
+     94|     expect(result).toBeLessThanOrEqual(2);
+     95|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[92/233]⎯
+
+ FAIL  tests/solver.test.ts > @trace FR-10, FR-11, FR-12 solver agrees with the independent oracle > on size-4 boards cut from a valid grid, with and without one flipped cell
+AssertionError: board:
+0 0 1 1
+. . 0 1
+1 . 1 0
+1 1 . 0: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/solver.test.ts:117:117
+    115|       const expected = oracleCount(board);
+    116|       seen.add(expected);
+    117|       expect(countSolutions(board), `board:\n${board.map((row) => row.…
+       |                                                                                                                     ^
+    118|     }
+    119|     // the sample must exercise all three answers, otherwise the compa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[93/233]⎯
+
+ FAIL  tests/solver.test.ts > @trace FR-10, FR-11, FR-12 solver agrees with the independent oracle > on size-6 boards cut from a valid grid, with and without one flipped cell
+AssertionError: board:
+0 . . . . .
+0 0 1 1 . 1
+1 . 0 . . .
+. . . . 1 1
+. . 1 1 0 0
+1 1 0 . . 0: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ tests/solver.test.ts:117:117
+    115|       const expected = oracleCount(board);
+    116|       seen.add(expected);
+    117|       expect(countSolutions(board), `board:\n${board.map((row) => row.…
+       |                                                                                                                     ^
+    118|     }
+    119|     // the sample must exercise all three answers, otherwise the compa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[94/233]⎯
+
+ FAIL  tests/solver.test.ts > @trace FR-10, FR-11, FR-12 solver agrees with the independent oracle > on size-8 boards cut from a valid grid, with and without one flipped cell
+AssertionError: board:
+. 0 . 0 1 . 1 1
+. 0 . 0 1 1 0 1
+. 1 0 1 0 . 1 0
+0 0 1 1 0 0 1 1
+1 1 0 0 1 . 0 0
+0 . 0 . 1 0 1 1
+. . . 1 . 1 0 0
+1 1 0 1 0 . 0 0: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/solver.test.ts:117:117
+    115|       const expected = oracleCount(board);
+    116|       seen.add(expected);
+    117|       expect(countSolutions(board), `board:\n${board.map((row) => row.…
+       |                                                                                                                     ^
+    118|     }
+    119|     // the sample must exercise all three answers, otherwise the compa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[95/233]⎯
+
+
+ Test Files  7 failed | 2 passed (9)
+      Tests  233 failed | 37 passed (270)
+   Start at  19:27:03
+   Duration  27.35s (tests 73%, environment 24%, transform 2%)
+
