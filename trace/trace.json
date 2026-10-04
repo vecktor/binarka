@@ -92,8 +92,7 @@
     {
       "id": "FR-1",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -104,8 +103,7 @@
     {
       "id": "FR-2",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -116,8 +114,7 @@
     {
       "id": "FR-3",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -128,8 +125,7 @@
     {
       "id": "FR-4",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -140,8 +136,7 @@
     {
       "id": "FR-5",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -152,8 +147,7 @@
     {
       "id": "FR-6",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -164,8 +158,7 @@
     {
       "id": "FR-7",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -176,8 +169,7 @@
     {
       "id": "FR-8",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -188,8 +180,7 @@
     {
       "id": "FR-9",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -200,8 +191,7 @@
     {
       "id": "FR-10",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -213,8 +203,7 @@
     {
       "id": "FR-11",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -226,8 +215,7 @@
     {
       "id": "FR-12",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -239,8 +227,7 @@
     {
       "id": "FR-13",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -251,8 +238,7 @@
     {
       "id": "FR-14",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -263,8 +249,7 @@
     {
       "id": "FR-15",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -275,8 +260,7 @@
     {
       "id": "FR-16",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -287,8 +271,7 @@
     {
       "id": "FR-17",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -299,8 +282,7 @@
     {
       "id": "FR-49",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -311,8 +293,7 @@
     {
       "id": "FR-50",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -324,8 +305,7 @@
       "id": "FR-51",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -336,8 +316,7 @@
     {
       "id": "FR-19",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -348,8 +327,7 @@
     {
       "id": "FR-20",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -360,8 +338,7 @@
     {
       "id": "FR-21",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -372,8 +349,7 @@
     {
       "id": "FR-22",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -384,8 +360,7 @@
     {
       "id": "FR-23",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -396,8 +371,7 @@
     {
       "id": "FR-24",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -408,8 +382,7 @@
     {
       "id": "FR-25",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -420,8 +393,7 @@
     {
       "id": "FR-26",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -432,8 +404,7 @@
     {
       "id": "FR-28",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -444,8 +415,7 @@
     {
       "id": "FR-29",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -456,8 +426,7 @@
     {
       "id": "FR-30",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -468,8 +437,7 @@
     {
       "id": "FR-52",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -480,8 +448,7 @@
     {
       "id": "FR-53",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -492,8 +459,7 @@
     {
       "id": "FR-54",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -844,10 +810,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-42 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-puzzle-engine\" is not archived"
     }
   ]
 }
