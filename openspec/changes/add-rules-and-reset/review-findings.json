@@ -6,9 +6,9 @@
   "headRef": "HEAD",
   "dimensions": {
     "correctness": {
-      "confirmed": 1,
+      "confirmed": 0,
       "contested": 0,
-      "rejected": 1
+      "rejected": 0
     },
     "security": {
       "confirmed": 0,
@@ -17,19 +17,19 @@
     },
     "spec-compliance": {
       "confirmed": 1,
-      "contested": 1,
-      "rejected": 2
+      "contested": 0,
+      "rejected": 0
     },
     "visual": {
-      "confirmed": 0,
+      "confirmed": 1,
       "contested": 0,
       "rejected": 0
     }
   },
   "confirmedTitles": [
-    "Rules list inherits text-align:center from #app, so bullets sit apart from the centred item text",
-    "tasks.md section 1 (red tests) left unticked although its artifacts exist"
+    "Commit 6491011 says the .buttons flex-wrap is noted in task 2.4, but tasks.md does not mention it",
+    "Two reset and hint screenshots show the centered rules list from before the fix, so they are stale evidence"
   ],
   "clean": false,
-  "generatedAt": "2026-10-04T18:18:42Z"
+  "generatedAt": "2026-10-04T18:21:11Z"
 }

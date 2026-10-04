@@ -16,7 +16,7 @@ template maps to the manual page check in 3.6. Commits carry
 - [x] 2.1 In `mountPlayPage` build the rules block once: `section[data-section="rules"]` with an `h2` «Правила» and a `ul` of three `li` with the exact texts of FR-57; add it to the single `root.replaceChildren(...)` call after `boardHost`, outside it; `showPuzzle` does not touch it (FR-57, NFR-5).
 - [x] 2.2 Add the button `[data-action="reset"]` labelled «Скинути» to the buttons row (FR-58, NFR-5); no `aria-label`, `title` or `alt` text.
 - [x] 2.3 Add the reset handler: return if `board.length === 0`; `board = copyGrid(givens)`; `renderCell` for every cell; `refreshHighlights()`; clear `hintMessage` and `winMessage`. It calls neither `seedSource` nor `makePuzzle` and does not touch `size` or the select (FR-58).
-- [x] 2.4 In `src/ui/style.css` add a few rules for the rules block (heading, list spacing, readable at 375 px) and the reset button (same look as the other buttons).
+- [x] 2.4 In `src/ui/style.css` add a few rules for the rules block (heading, list spacing, readable at 375 px) and the reset button (same look as the other buttons). Done with `text-align: left` on `.rules ul` (review-gate round 1: `#app` centres text) and `flex-wrap: wrap` on the shared `.buttons` row so three buttons fit at 375 px (round 1 contested note; the round-1 fix commit claimed this note but its replacement did not match, autonomy-log M13).
 - [x] 2.5 Run `npm run test:run` and confirm every test is green and no stub remains in `src/ui/`.
 
 ## 3. Validation, docs, and archive prep
