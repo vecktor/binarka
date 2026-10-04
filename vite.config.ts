@@ -4,5 +4,11 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     include: ['tests/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.ts'],
+      reporter: ['text', 'json-summary'],
+      reportsDirectory: 'coverage',
+    },
   },
 });

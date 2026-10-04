@@ -43,8 +43,8 @@ Archived changes: none.
 
 ## Open items and risks
 
-- `npm audit` reports 4 high findings in OpenSpec's transitive `braces` dev dependency; the only offered fix is a forced downgrade to 0.17.2. CI audits shipped dependencies only (`--omit=dev`); G7 as shipped does not, so decide before release.
-- `test:coverage` fails on purpose until `@vitest/coverage-v8` is approved and installed; G5 is not planned tonight.
+- `npm audit`: 0 vulnerabilities after the user-approved downgrade of OpenSpec to 0.17.2 (exact pin; the 1.x line pulled in a vulnerable `braces`). OpenSpec 0.17.2 is older than the version `init` created `openspec/config.yaml` with; `validate` and `list` run, but re-check scenario and delta-spec behaviour when the first spec is written.
+- `@vitest/coverage-v8@5.0.3` is installed and `npm run test:coverage` is real (json-summary reporter, `src/**`). CI does not run it yet: adding it to the locked `ci.yml` needs a re-lock or a `Refs: PD-x` commit once the first tests exist (slice 1). G5 is "try to fit in", not promised.
 - `recordings`, `visual-fidelity` and `eval-ratchet` remain in the battery and will show NOT-EARNED.
 - The branch has not been pushed. Pushing to the public remote is the user's call.
 - Hooks are per clone: `git config core.hooksPath .githooks`.
