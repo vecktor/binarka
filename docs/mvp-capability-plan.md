@@ -1,6 +1,6 @@
 # MVP Capability Change Plan
 
-Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3.
+Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24); amendment of 2026-10-04 about 23:30, SIGNED OFF by the user in chat at about 23:35: slice 4 `add-rules-and-reset` added for FR-57 and FR-58 (autonomy-log row 27)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3.
 
 Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amendment re-signed 18:45), and the baseline specs `openspec/specs/puzzle-engine/spec.md` and `openspec/specs/play-page/spec.md`.
 
@@ -18,6 +18,7 @@ Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amend
 | 1 | `add-puzzle-engine` | `puzzle-engine` | FR-1 to FR-17, FR-19 to FR-26, FR-28 to FR-30, FR-49 to FR-54 (34) | NFR-1, NFR-2, NFR-3, NFR-4, NFR-5 (hint sentences), NFR-6 (eval, graded after slice 2), NFR-8 | — | serialize |
 | 2 | `add-play-page` | `play-page` | FR-31 to FR-42 (12) | NFR-5 (page text) | 1 | serialize (consumes the slice 1 interface) |
 | 3 | `add-size-selector` (added 21:00, user decision) | `play-page` | FR-43 (1) | NFR-5 (option labels) | 2 | serialize |
+| 4 | `add-rules-and-reset` (added 23:30, user request row 27) | `play-page` | FR-57, FR-58 (2) | NFR-5 (rules text, button label) | 3 | serialize |
 
 **Cross-cutting rules every change honours:** TC-7 and TC-8 (engine is pure TypeScript, no DOM, no `Math.random`), TC-3 (tests in `tests/`, `*.test.ts`, `@trace` with plain IDs), TC-10 (no new dependencies without the user), test-first per slice (AGENTS.md), and "exactly one solution" is never weakened.
 
@@ -65,6 +66,13 @@ flowchart LR
 - **Baseline spec impact:** `play-page/spec.md` is amended together with the change (delta MODIFIED and ADDED requirements, plus the non-requirement text: Purpose, ownership, DOM contract, the "FR-43 is cut" section, Exclusions). A few slice-2 tests that assert "always 6×6" are changed deliberately to the amended spec and listed in the test commit.
 - **Definition of done:** tests first and seen red; lint, test:run, build and strict validation pass; per-slice review-gate (one fix round, one confirming run); archived with `Slice: add-size-selector` commits before the 00:00 freeze.
 
+### 4.5 `add-rules-and-reset` (signed about 23:35, added 2026-10-04 about 23:30 by the user's request, autonomy-log row 27)
+
+- **Scope in:** a rules block `[data-section="rules"]` below the board with the heading «Правила» and three fixed list items (FR-57); a «Скинути» button `[data-action="reset"]` that empties every non-given cell and clears messages and highlights, for every offered size 4, 6 and 8 (FR-58).
+- **Scope out:** undo (FR-47), saved progress (FR-46), restarting with a new puzzle (that is FR-42), keyboard and screen-reader support (A-20).
+- **Baseline spec impact:** `play-page/spec.md` gets two ADDED requirements; Purpose, the ownership line ("FR-31 to FR-43, FR-57, FR-58") and the DOM contract lines for `[data-section="rules"]` and `[data-action="reset"]` are edited at archive.
+- **Definition of done:** tests first and seen red; lint, test:run, build and strict validation pass; per-slice review-gate (one fix round, one confirming run); real-browser check at 375 px; archived with `Slice: add-rules-and-reset` commits before the moved freeze of about 00:45.
+
 ### 4.3 After both slices (session C)
 
 - Eval (NFR-6, optional, cut line 2): `eval-suite` with `eval-judge` on 2–3 Ukrainian hint cases, each scoring at least 80 out of 100.
@@ -91,8 +99,9 @@ flowchart LR
 | FR-14 | 1 | FR-32 | 2 | FR-54 | 1 |
 | FR-15 | 1 | FR-33 | 2 | | |
 | FR-16 | 1 | FR-34 | 2 | FR-43 | 3 |
+| FR-57 | 4 | FR-58 | 4 | | |
 
-Total: **47 MVP FRs across 3 slices** (34 in slice 1, 12 in slice 2, 1 in slice 3; no gaps, no duplicates).
+Total: **49 MVP FRs across 4 slices** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4; no gaps, no duplicates).
 
 ## 6. Sequencing and schedule
 
@@ -104,7 +113,8 @@ Re-baselined 2026-10-04 18:40 (autonomy-log row 10; user time, UTC+5:30):
 | Slice 1 `add-puzzle-engine`, archived | 21:25 (hard limit 22:00, cut line 4) | C (Sonnet 5.5 medium) |
 | Slice 2 `add-play-page`, archived | 23:25 | C |
 | Stretch, only if slice 2 is archived before about 23:00: restore the size selector (FR-43) as a small follow-up change; the user decides at that point. The spec text is at tag `step-08-p2-draft` (labels «Поле 4×4», «Поле 6×6», «Поле 8×8», A-24); restoring it is a requirements amendment, a spec section, tests and code, about 30 minutes | before 00:00 | C |
-| Feature freeze | 00:00 (21:30 Kyiv) | — |
+| Slice 4 `add-rules-and-reset`, archived (signed about 23:35, added 23:30, autonomy-log row 27) | 00:40 | C |
+| Feature freeze | about 00:45 (moved by the user at 23:28 from 00:00, which was 21:30 Kyiv) | — |
 | Eval (optional), gate status, retro, PR text, README branch | after the slices; PR open by 02:29 (23:59 Kyiv) | C or D |
 
 Cut lines still in force, in order, whenever the work is more than 30 minutes behind this table: (1) skip the global review-gate, (2) drop the eval, (3) shrink slice 2 to grid, highlighting, win message and new puzzle, (4) drop slice 2 if slice 1 is not archived by 22:00. Each cut is logged in `docs/autonomy-log.md` and `docs/budget.md` and reported to the user. After each archive, run `npx openspec validate --all --strict` before starting the next slice. Future-phase work is not in this plan.

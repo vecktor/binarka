@@ -32,6 +32,7 @@ Rule: if the 5-hour meter is above 70% before slice 2's review-gate, skip that s
 | 2026-10-04 ~20:45, before slice 2's confirming review run | 4% (resets 23:30) | 53% (resets Wed 7 Oct 20:30) | 23% | Slice 2 end. Rule check for the confirming run: 4% is below 70%, so it was not skipped. |
 | 2026-10-04 21:26, before slice 3 | 6% (resets 23:30) | 53% (resets Wed 7 Oct 20:30) | 23% | Slice 3 start (Sonnet 5.5; context 91k tokens at read). Slice 3 plan: about 3% weekly, 8% 5-hour; the 1.5× ceiling is 4.5% weekly, 12% 5-hour. The 5-hour meter moved 4% → 6% since 20:45 (the NFR-6 eval and the change-folder critics ran in that time; the split between them is not measured). |
 | 2026-10-04 22:36, after slice 3 archived | 8% (resets 23:30) | 54% (resets Wed 7 Oct 20:30) | 23% | Slice 3 end. Rule check for the confirming run (22:24): 8% is below 70%, so it was not skipped. |
+| 2026-10-04 23:13, before slice 4 | 9% (resets 23:30) | 54% (resets Wed 7 Oct 20:30) | 23% | Slice 4 start (session running Opus 5.5; context 102k tokens). |
 
 ## Deviations and cuts
 
@@ -43,4 +44,5 @@ Every cut line applied is logged here and in `docs/autonomy-log.md`.
 | 2026-10-04 18:40 | **Cut 0 applied:** the size selector (FR-43) leaves tonight's plan; reported NOT-EARNED | About 70 minutes behind the brief's schedule (slice 1 was due at 17:30; P2 was still open). Causes: about 30 minutes of a blocked GPG signing wait (M6), the user's response time, a 14-minute spec workflow, and a scope change after sign-off. | Pre-agreed cut line, applied by the agent and reported to the user |
 | 2026-10-04 18:40 | Schedule re-baselined (option A): P3 ends about 19:25, slice 1 about 21:25, slice 2 about 23:25; freeze 00:00 unchanged | The earlier 45-minute shift was approved on a wrong clock reading (M7) and is withdrawn. | User |
 | 2026-10-04 18:45 | Cut line 4 deadline moved from 20:30 to 22:00 user time (18:00 → 19:30 Kyiv) | Under the re-baselined schedule the old time would drop slice 2 automatically; 22:00 is the latest point where slice 2's two hours still fit before the 00:00 freeze. | User |
+| 2026-10-04 23:28 | Feature freeze moved from 00:00 to about 00:45 user time (deadline 02:29 user time, 23:59 Kyiv, unchanged) | Slice 4 (FR-57, FR-58) requested at 21:40 and signed at about 23:35; the 23:35 red-test checkpoint could not be met. The agent recommended building only the rules block; the user chose both with a later freeze. | User (autonomy-log row 33) |
 
