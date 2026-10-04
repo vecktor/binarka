@@ -17,6 +17,7 @@ import {
   mountPage,
   q,
   seedQueue,
+  selectSize,
   snapshot,
 } from './helpers/play-page';
 
@@ -55,6 +56,31 @@ describe('@trace FR-31 the page renders a 6x6 board from the generator', () => {
       }
     }
     expect(givenCount).toBeGreaterThan(0);
+  });
+
+  it('Board follows the chosen size: with the real generator, selecting 8x8 gives data-size 8 and 64 cells (rows and columns 1..8)', () => {
+    const seeds = seedQueue([1, 2]);
+    const root = mountPage({ seedSource: seeds.source });
+    expectPageStructure(root);
+
+    selectSize(root, 8);
+
+    const board = q(root, '[data-board]');
+    expect(board.getAttribute('data-size')).toBe('8');
+    const cells = Array.from(board.querySelectorAll('[data-cell]'));
+    expect(cells).toHaveLength(64);
+    const pairs = cells.map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}`);
+    expect(new Set(pairs).size).toBe(64);
+    for (let r = 1; r <= 8; r++) for (let c = 1; c <= 8; c++) expect(pairs).toContain(`${r},${c}`);
+    // and the content is the engine puzzle for size 8 and the second seed
+    const expected = generate(8, 2);
+    for (let r = 1; r <= 8; r++) {
+      for (let c = 1; c <= 8; c++) {
+        const g = expected.givens[r - 1]?.[c - 1] ?? null;
+        expect(cellEl(root, r, c).getAttribute('data-given'), `given flag ${r},${c}`).toBe(g === null ? 'false' : 'true');
+        expect(cellText(root, r, c), `text ${r},${c}`).toBe(g === null ? '' : String(g));
+      }
+    }
   });
 
   it('the generator is called with size 6 and the seed from the seed source, once per puzzle', () => {

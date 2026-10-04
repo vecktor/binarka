@@ -1,0 +1,173 @@
+RED RUN: add-size-selector (test-first evidence)
+Date: 2026-10-04 (host clock)
+Command: npx vitest run --reporter=verbose   (the whole suite; npm run test:run is the same command)
+State of src/: UNCHANGED slice-2 page (src/ui/play-page.ts has no size selector and a SIZE constant of 6). No stub exists
+  anywhere in src/ (git diff --stat -- src package.json package-lock.json is empty): a red test fails on an assertion
+  because the page has no selector, never because a module is missing.
+Result: 8 failed files, 10 passed files; 66 tests failed, 351 passed (417 tests; the slice-2 baseline before the slice
+  was 363 tests, all green).
+Failure reasons: 65 x "expected an element matching [data-control="size"]: expected null not to be null" and
+  1 x "collected text contains Поле 4×4" (the page-text test that asserts the three option labels).
+
+Why every slice-2 page test that calls expectPageStructure is red BY DESIGN: expectPageStructure(root, size = 6) now also
+requires [data-control="size"] (task 4.6 a), so each slice-2 test that calls it fails in the red stage on a missing
+selector. That is 32 existing slice-2 tests; the 6x6 behaviour they check is unchanged and they go green again once the
+selector exists. The other slice-2 tests (the ones that never call expectPageStructure) stay green here because the 6x6
+behaviour is unchanged: 35 slice-2 page tests pass in this run (click cycle 5, highlighting 4, hint 10, new puzzle and seed
+4, page text 3, rendering 6, win 3). Of the 66 failures: 23 are the new tests/play-page-size-selector.test.ts, 32 are the
+slice-2 tests above, 11 are new tests in the extended files (rendering 1, highlighting 4, new-puzzle-and-seed 4 = the two
+"New puzzle keeps the chosen size" tests that replace "New puzzle is always 6x6" + seed calls + hint cleared, page-text 2).
+Passing in the red state, with the reason: the 35 slice-2 page tests above (unchanged 6x6 behaviour, no expectPageStructure
+call) and tests/play-page-helpers.test.ts, 45 tests (no @trace, they check the test fixtures, the helpers and the real
+engine, never the page: 24 before the slice, 21 added), plus the 271 engine and CLI tests (untouched).
+
+Deliberate updates of slice-2 tests (none weakened): tests/play-page-new-puzzle-and-seed.test.ts "New puzzle is always 6x6"
+replaced by "New puzzle keeps the chosen size" (the 6x6 case is still asserted inside it); tests/play-page-helpers.test.ts
+(allSolutions per N, every fixture checked against its own size); tests/helpers/play-page.ts (size-generic helpers).
+
+Stub-independence and satisfiability: a reference implementation of the design, kept OUTSIDE the repository (a scratch copy),
+passes 417/417; 33 mutants of it (Number(value) accepted, no restore on an ignored value, restore through select.value,
+no restore after a failed generation, hint or win message not cleared on a size change, new puzzle button always 6,
+seed taken twice, seed taken for an ignored value, size committed before the board was built, count expansion with a
+constant 6, no or partial shape validation, no highlight refresh, throwing handler, choice stored in localStorage or
+sessionStorage, default option 4, Latin x or Latin label in the options, option order, extra option, select reset by the
+new puzzle button, generator called with 6, seed ignored, failed change clearing the hint, generator error not caught,
+data-size stuck at 6, old board kept, wrong event, seed drawn after the generator call, win cleared for 6 only) were
+ALL caught by at least one test.
+
+----- the failing tests of the verbose vitest output follow -----
+
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board: the exact Ukrainian message, apostrophe U+0027 26ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a row are highlighted 25ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a column are highlighted 4ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Two equal digits are not highlighted 7ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row: the fourth 0 highlights all six cells of the row and nothing else 8ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many ones in a column: the fourth 1 highlights all six cells of the column and nothing else 3ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row of an 8x8 board: the fifth 0 highlights all eight cells of row 1 and nothing else 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row of a 4x4 board: the third 0 highlights all four cells of row 1 and nothing else 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many ones in the last column of an 8x8 board: the fifth 1 highlights all eight cells of column 8 and nothing else 5ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Exactly N/2 is not highlighted: a full row of three 0 and three 1 10ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete rows: both rows highlighted, nothing else 7ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete columns: both columns highlighted, nothing else 3ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > A row with an empty cell is not compared 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Highlight appears immediately, in the same click handling 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle after play: a fresh generator(6, 7) board, no entries, both messages cleared 29ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > @trace FR-43 New puzzle keeps the chosen size: at 8x8 the button gives an 8x8 board and the selector keeps 8 9ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > @trace FR-43 New puzzle keeps the chosen size at 4x4 as well, and clears both messages 5ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 the size selector is offered and 6 is selected at mount > Selector options and default: a select with the options 4, 6, 8 labelled «Поле 4×4», «Поле 6×6», «Поле 8×8» 27ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 the size selector is offered and 6 is selected at mount > Selector options and default with the real engine generator 14ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 4x4: real generator, second seed, 16 cells with data-row/data-col 1..4, givens equal generate(4, 2) 8ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 8x8 after play: 64 empty-or-given cells, hint message empty, highlights only for the new givens 10ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a row) 32ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a column) 3ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a row) 3ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a column) 8ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of zeros in a column) 6ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of ones in a row) 4ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (count of zeros in a row) 8ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the seed calls follow the puzzles generated > @trace FR-43 @trace FR-51 Seed calls follow the puzzles generated: seeds 1..4 with sizes 6, 6, 4, 8 and four seed-source calls 10ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-40 the hint message is cleared by a size change that shows a new puzzle > @trace FR-43 Hint message cleared by a size change: a sentence and a click since, then selecting 4x4 empties it 15ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Injected seed gives a reproducible page: two pages with seed 42 and the real generator are identical 19ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Full board with a violation is not a win 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > A size change recomputes the highlights: the 16 cells of the new 4x4 board have none and no old cell remains 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > A new puzzle recomputes highlights from its own givens (a board whose givens break a rule is highlighted at once) 1ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Default seed source with the real generator: a 6x6 board is rendered and no error is thrown 8ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: no text node, title or attribute value contains the seed in any form 15ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: the same holds on a fixture board and on a root that held other content 1ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 8x8 after a win: the win message is cleared and the board is 8x8 with 64 cells 100ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Going back to 6x6: after 8x8 the board is 6x6 with 36 cells and the selector shows 6 5ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > A change takes exactly one seed and passes the chosen size: (6, 1), (4, 2), (8, 3) and three seed-source calls 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > The choice is not remembered: a new mount starts at 6 and nothing is written to localStorage or sessionStorage 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a value outside the offered sizes is ignored > Value outside the offered sizes is ignored: 5, 10, abc, 6.0, " 6", 06, 0x6 and empty, each tried in turn 4ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a value outside the offered sizes is ignored > Value outside the offered sizes with no option selected: selectedIndex -1 is repaired to the option 6 4ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a value outside the offered sizes is ignored > an ignored value leaves the page working: a valid choice afterwards is accepted with the next seed 6ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator error keeps the previous board: same cells, messages, highlights; selector restored; one seed taken 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (a 6x6 fixture for size 8) 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (8 rows with the last row 7 cells long for size 8) 7ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (8 rows with the first row 9 cells long for size 8) 9ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (7 rows of 8 cells for size 8) 5ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > No fill when the engine has no target: kind none 4ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > a failed change keeps the win message too 63ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Hint at 4x4: the pair fill lands on (2,3), nothing else changes, the engine sentence is shown 1ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Hint at 8x8: the pair fill lands on (8,6), nothing else changes, the engine sentence is shown 1ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Win at 4x4: clicking the one open cell until it shows the solution digit shows the exact win message 1ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Win at 8x8: clicking the open cell (8,8) until it shows the solution digit shows the exact win message 1ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 violations in the givens of a new board show at once > Violations in the givens of a new 8x8 board show at once: exactly (8,1), (8,2), (8,3) 1ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-size-selector.test.ts > @trace FR-43 violations in the givens of a new board show at once > A count violation in the last column of a new 8x8 board shows at once: all eight cells of column 8, none outside 1ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > No rule applies: shows the no-rule sentence and fills nothing 3ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Initial state has no hint message (and the region exists) 2ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Default board is 6x6: data-size 6, exactly 36 cells, every (row, col) pair 1..6 once 41ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Board follows the chosen size: with the real generator, selecting 8x8 gives data-size 8 and 64 cells (rows and columns 1..8) 11ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > mounting is synchronous and replaces the previous content of the root 19ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text: every collected text has Cyrillic letters and no Latin letters 24ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text includes the size options: «Поле 4×4», «Поле 6×6» and «Поле 8×8» exactly 7ms
+   → collected text contains Поле 4×4: expected [ 'Бінарка', 'Підказка', …(2) ] to include 'Поле 4×4'
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > the label attribute of an option or optgroup is page text: it is collected and would fail the Ukrainian check 3ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+ × tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given cell changes nothing (once, then twice more) 20ms
+   → expected an element matching [data-control="size"]: expected null not to be null
+
+----- summary line of the run: Test Files  8 failed | 10 passed (18); Tests  66 failed | 351 passed (417) -----

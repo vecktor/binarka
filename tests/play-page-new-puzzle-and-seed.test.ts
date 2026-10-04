@@ -4,13 +4,19 @@ import { describe, expect, it } from 'vitest';
 import { generate } from '../src/engine/index';
 import {
   BLANK,
+  BLANK_4,
+  BLANK_8,
   DIRTY_GIVENS,
   PAIR_ROW,
+  TWO_PAIRS,
   WIN_MESSAGE,
   WIN_PUZZLE,
   allCells,
+  boardSize,
+  bySize,
   cellEl,
   cellText,
+  changeWithReportedValue,
   checkerCells,
   clickCell,
   collectEverything,
@@ -27,6 +33,8 @@ import {
   readBoard,
   readGivenFlags,
   seedQueue,
+  selectSize,
+  sizeSelect,
   snapshot,
   solutionGrid,
   violationCells,
@@ -67,16 +75,45 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
     expect(q(root, '[data-message="win"]').textContent).toBe('');
   });
 
-  it('New puzzle is always 6x6', () => {
-    const spy = generateSpy(() => BLANK);
-    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: spy.generate });
-    expect(q(root, '[data-board]').getAttribute('data-size')).toBe('6');
-
+  // Slice 3 (FR-43), DELIBERATE REPLACEMENT: the slice-2 test "New puzzle is always 6x6" asserted that the board is 6x6
+  // after the new puzzle button; the amended spec says the button keeps the chosen size, so the test is replaced (not
+  // weakened) by "New puzzle keeps the chosen size". The 6x6 case is still asserted below (first block of the test).
+  it('@trace FR-43 New puzzle keeps the chosen size: at 8x8 the button gives an 8x8 board and the selector keeps 8', () => {
+    const spy = generateSpy(bySize({ 6: BLANK, 8: BLANK_8 }));
+    const root = mountPage({ seedSource: seedQueue([1, 2, 3, 4]).source, generate: spy.generate });
+    expectPageStructure(root);
+    // at the default size the button still gives a 6x6 board (the slice-2 expectation)
     pressNew(root);
-
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe('6');
     expect(allCells(root)).toHaveLength(36);
     expect(spy.calls.map((c) => c.size)).toEqual([6, 6]);
+
+    selectSize(root, 8);
+    expect(boardSize(root)).toBe(8);
+
+    pressNew(root);
+
+    expect(q(root, '[data-board]').getAttribute('data-size')).toBe('8');
+    expect(allCells(root)).toHaveLength(64);
+    expect(sizeSelect(root).value).toBe('8');
+    expect(spy.calls[spy.calls.length - 1]).toEqual({ size: 8, seed: 4 });
+    expect(spy.calls.map((c) => c.size)).toEqual([6, 6, 8, 8]);
+  });
+
+  it('@trace FR-43 New puzzle keeps the chosen size at 4x4 as well, and clears both messages', () => {
+    const spy = generateSpy(bySize({ 6: WIN_PUZZLE, 4: BLANK_4 }));
+    const root = mountPage({ seedSource: seedQueue([1, 2, 3]).source, generate: spy.generate });
+    selectSize(root, 4);
+    pressHint(root); // a hint sentence (the 4x4 board has no givens: the engine answers with a sentence anyway)
+    expect(hintMessage(root)).not.toBe('');
+
+    pressNew(root);
+
+    expect(boardSize(root)).toBe(4);
+    expect(allCells(root)).toHaveLength(16);
+    expect(sizeSelect(root).value).toBe('4');
+    expect(hintMessage(root)).toBe('');
+    expect(spy.calls).toEqual([{ size: 6, seed: 1 }, { size: 4, seed: 2 }, { size: 4, seed: 3 }]);
   });
 
   it('New puzzle mid-game removes highlights: a clean new puzzle shows none', () => {
@@ -123,6 +160,53 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
 
     expect(spy.calls.map((c) => c.seed)).toEqual([1, 2, 3]);
     expect(seeds.calls()).toBe(3);
+  });
+});
+
+describe('@trace FR-42 the seed calls follow the puzzles generated', () => {
+  it('@trace FR-43 @trace FR-51 Seed calls follow the puzzles generated: seeds 1..4 with sizes 6, 6, 4, 8 and four seed-source calls', () => {
+    const seeds = seedQueue([1, 2, 3, 4]);
+    const spy = generateSpy(bySize({ 6: BLANK, 4: BLANK_4, 8: BLANK_8 }));
+    const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
+    expect(seeds.calls()).toBe(1);
+
+    pressNew(root);
+    expect(seeds.calls()).toBe(2);
+    selectSize(root, 4);
+    expect(seeds.calls()).toBe(3);
+    // a change event while the select reports the ignored value 5 takes no seed and calls no generator
+    changeWithReportedValue(root, '5');
+    expect(seeds.calls()).toBe(3);
+    expect(spy.calls).toHaveLength(3);
+    selectSize(root, 8);
+
+    expect(seeds.calls()).toBe(4);
+    expect(spy.calls).toEqual([
+      { size: 6, seed: 1 },
+      { size: 6, seed: 2 },
+      { size: 4, seed: 3 },
+      { size: 8, seed: 4 },
+    ]);
+    expect(boardSize(root)).toBe(8);
+  });
+});
+
+describe('@trace FR-40 the hint message is cleared by a size change that shows a new puzzle', () => {
+  it('@trace FR-43 Hint message cleared by a size change: a sentence and a click since, then selecting 4x4 empties it', () => {
+    const spy = generateSpy(bySize({ 6: TWO_PAIRS, 4: BLANK_4 }));
+    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: spy.generate });
+    pressHint(root);
+    const sentence = hintMessage(root);
+    expect(sentence).not.toBe('');
+    clickCell(root, 1, 1);
+    expect(cellText(root, 1, 1)).toBe('0');
+    expect(hintMessage(root)).toBe(sentence); // a click keeps it (premise)
+
+    selectSize(root, 4);
+
+    expect(q(root, '[data-message="hint"]').textContent).toBe('');
+    expect(boardSize(root)).toBe(4);
+    expect(allCells(root)).toHaveLength(16);
   });
 });
 

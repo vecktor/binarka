@@ -14,6 +14,7 @@ import {
   mountPage,
   pressHint,
   q,
+  sizeSelect,
   solutionGrid,
   winMessage,
 } from './helpers/play-page';
@@ -37,6 +38,40 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
       expect(/\p{Script=Cyrillic}/u.test(text), `"${text}" has Cyrillic letters`).toBe(true);
       expect(/[A-Za-z]/.test(text), `"${text}" has no Latin letters`).toBe(false);
     }
+  });
+
+  it('Static page text includes the size options: «Поле 4×4», «Поле 6×6» and «Поле 8×8» exactly', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const texts = collectPageText(root).map((t) => t.trim());
+    for (const label of ['Поле 4×4', 'Поле 6×6', 'Поле 8×8']) {
+      expect(texts, `collected text contains ${label}`).toContain(label);
+    }
+    // the sign is the multiplication sign U+00D7, not the Latin letter x, and it is exactly three options
+    expect(Array.from(sizeSelect(root).options).map((o) => o.textContent)).toEqual(['Поле 4×4', 'Поле 6×6', 'Поле 8×8']);
+    expect('Поле 4×4'.codePointAt(6)).toBe(0xd7);
+    for (const text of texts) {
+      expect(/\p{Script=Cyrillic}/u.test(text), `"${text}" has Cyrillic letters`).toBe(true);
+      expect(/[A-Za-z]/.test(text), `"${text}" has no Latin letters`).toBe(false);
+    }
+  });
+
+  it('the label attribute of an option or optgroup is page text: it is collected and would fail the Ukrainian check', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const select = sizeSelect(root);
+    expect(select.options).toHaveLength(3);
+    // a Latin label on an option would be shown by a browser instead of the option text (NFR-5)
+    select.options[0]?.setAttribute('label', 'Size four');
+    const group = document.createElement('optgroup');
+    group.setAttribute('label', 'Sizes');
+    select.appendChild(group);
+    const texts = collectPageText(root);
+    expect(texts).toContain('Size four');
+    expect(texts).toContain('Sizes');
+    expect(texts.some((t) => /[A-Za-z]/.test(t))).toBe(true);
+    // and the page as mounted carries no such attribute: nothing in it has a label attribute at all
+    const fresh = mountFixture(WIN_PUZZLE);
+    expect(fresh.querySelectorAll('option[label], optgroup[label]')).toHaveLength(0);
+    expect(fresh.querySelectorAll('option')).toHaveLength(3);
   });
 
   it('the button labels are exactly the two Ukrainian labels of the DOM contract', () => {

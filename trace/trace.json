@@ -311,6 +311,7 @@
       "planned": true,
       "tests": [
         "tests/generator.test.ts",
+        "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
       "recordings": []
@@ -581,7 +582,8 @@
       "planned": true,
       "tests": [
         "tests/play-page-hint.test.ts",
-        "tests/play-page-hint.test.ts"
+        "tests/play-page-hint.test.ts",
+        "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
       "recordings": []
     },
@@ -604,6 +606,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
       "recordings": []
@@ -615,16 +618,23 @@
         "openspec/changes/add-size-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-new-puzzle-and-seed.test.ts",
+        "tests/play-page-new-puzzle-and-seed.test.ts",
+        "tests/play-page-new-puzzle-and-seed.test.ts",
+        "tests/play-page-new-puzzle-and-seed.test.ts",
+        "tests/play-page-size-selector.test.ts",
+        "tests/play-page-size-selector.test.ts",
+        "tests/play-page-size-selector.test.ts",
+        "tests/play-page-size-selector.test.ts",
+        "tests/play-page-size-selector.test.ts",
+        "tests/play-page-size-selector.test.ts"
+      ],
       "recordings": []
     }
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-43 has no test annotated \"@trace FR-43\""
-    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"

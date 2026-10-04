@@ -6,8 +6,9 @@ import { findViolations, hint, isSolved } from '../../src/engine/index';
 import type { Cell, Grid, Hint, Puzzle } from '../../src/engine/index';
 import { mountPlayPage } from '../../src/ui/index';
 import type { PlayPageOptions } from '../../src/ui/index';
-import { boardOf, parseBoard, sortedCells } from './board';
+import { VALID_4X4, boardOf, parseBoard, sortedCells } from './board';
 
+/** The default board size of the page (6); other sizes are chosen with `selectSize`. */
 export const SIZE = 6;
 /** The win message of FR-41, with the ASCII apostrophe U+0027. */
 export const WIN_MESSAGE = "Вітаємо, головоломку розв'язано!";
@@ -48,7 +49,7 @@ export function mountPage(options?: PlayPageOptions): HTMLElement {
   return mountOn(document.createElement('div'), options);
 }
 
-/** Mount a fixture puzzle (the injected generator returns it whatever the size and seed). */
+/** Mount a fixture puzzle (the injected generator returns it for its own size and throws for any other size). */
 export function mountFixture(puzzle: Puzzle, options: Omit<PlayPageOptions, 'generate'> = {}): HTMLElement {
   return mountPage({ seedSource: () => 1, ...options, generate: fixedGenerate(puzzle) });
 }
@@ -57,8 +58,29 @@ export function mountFixture(puzzle: Puzzle, options: Omit<PlayPageOptions, 'gen
 // Injected generator / seed source
 // ---------------------------------------------------------------------------------------------------------
 
+/** A fixture of the requested size, or a THROW when the requested size differs from the fixture size (slice 3, FR-43). */
+function fixtureOfSize(puzzle: Puzzle, size: number): Puzzle {
+  if (puzzle.size !== size) throw new Error(`fixture is ${puzzle.size}x${puzzle.size} but size ${size} was requested`);
+  return puzzle;
+}
+
 export function fixedGenerate(puzzle: Puzzle): (size: number, seed: number) => Puzzle {
-  return () => puzzle;
+  return (size) => fixtureOfSize(puzzle, size);
+}
+
+/** A generator that returns the fixture registered for the requested size (else throws). */
+export function generatorBySize(fixtures: Partial<Record<number, Puzzle>>): (size: number, seed: number) => Puzzle {
+  const pick = bySize(fixtures);
+  return (size, seed) => pick(0, size, seed);
+}
+
+/** A pick function for `generateSpy` / a generator that returns the fixture registered for the requested size (else throws). */
+export function bySize(fixtures: Partial<Record<number, Puzzle>>): (callIndex: number, size: number, seed: number) => Puzzle {
+  return (_i, size) => {
+    const puzzle = fixtures[size];
+    if (puzzle === undefined) throw new Error(`no fixture registered for size ${size}`);
+    return fixtureOfSize(puzzle, size);
+  };
 }
 
 export interface GenerateSpy {
@@ -66,8 +88,17 @@ export interface GenerateSpy {
   calls: Array<{ size: number; seed: number }>;
 }
 
-/** A generator that records every (size, seed) and returns `pick(callIndex, size, seed)`. */
+/**
+ * A generator that records every (size, seed) and returns `pick(callIndex, size, seed)`. The result must be of the
+ * requested size, otherwise the spy THROWS (a fixture of another size is a test-writing error; slice 3). A scenario that
+ * needs a generator error or a wrong-size result uses `rawGenerateSpy`.
+ */
 export function generateSpy(pick: (callIndex: number, size: number, seed: number) => Puzzle): GenerateSpy {
+  return rawGenerateSpy((i, size, seed) => fixtureOfSize(pick(i, size, seed), size));
+}
+
+/** Like `generateSpy` but returns whatever `pick` returns (or throws whatever it throws): for the generator-error scenarios. */
+export function rawGenerateSpy(pick: (callIndex: number, size: number, seed: number) => Puzzle): GenerateSpy {
   const calls: Array<{ size: number; seed: number }> = [];
   return {
     calls,
@@ -115,6 +146,21 @@ export function allCells(root: ParentNode): HTMLElement[] {
   return Array.from(root.querySelectorAll<HTMLElement>('[data-cell]'));
 }
 
+/** N of the board shown, from [data-board]'s data-size (asserts it is a whole number >= 1). */
+export function boardSize(root: ParentNode): number {
+  const raw = q(root, '[data-board]').getAttribute('data-size');
+  const n = Number(raw);
+  expect(Number.isInteger(n) && n >= 1, `data-size "${raw}" is a whole number`).toBe(true);
+  return n;
+}
+
+/** The size of the board shown, asserting the cell count is N*N (so a half-built board fails on an assertion). */
+function expectedBoardSize(root: ParentNode): number {
+  const n = boardSize(root);
+  expect(allCells(root), `expected ${n * n} [data-cell] elements for a ${n}x${n} board`).toHaveLength(n * n);
+  return n;
+}
+
 export const cellText = (root: ParentNode, row: number, col: number): string => cellEl(root, row, col).textContent ?? '';
 
 export const isGivenCell = (root: ParentNode, row: number, col: number): boolean =>
@@ -130,12 +176,12 @@ function parseCellText(text: string, where: string): Cell {
   throw new Error(`cell ${where} shows "${text}", expected empty, 0 or 1`);
 }
 
-/** Read the board from the DOM into the engine's 0-based grid (cell text only). Asserts 36 cells first. */
+/** Read the board from the DOM into the engine's 0-based grid (cell text only). Asserts N*N cells first (N = data-size). */
 export function readBoard(root: ParentNode): Grid {
-  expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLength(SIZE * SIZE);
-  const board: Grid = Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, (): Cell => null));
-  for (let r = 1; r <= SIZE; r++) {
-    for (let c = 1; c <= SIZE; c++) {
+  const n = expectedBoardSize(root);
+  const board: Grid = Array.from({ length: n }, () => Array.from({ length: n }, (): Cell => null));
+  for (let r = 1; r <= n; r++) {
+    for (let c = 1; c <= n; c++) {
       const row = board[r - 1];
       if (row === undefined) throw new Error('unreachable');
       row[c - 1] = parseCellText(cellText(root, r, c), `${r},${c}`);
@@ -146,16 +192,16 @@ export function readBoard(root: ParentNode): Grid {
 
 /** The data-given flags, 0-based grid of booleans. */
 export function readGivenFlags(root: ParentNode): boolean[][] {
-  expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLength(SIZE * SIZE);
-  return Array.from({ length: SIZE }, (_, r) => Array.from({ length: SIZE }, (_, c) => isGivenCell(root, r + 1, c + 1)));
+  const n = expectedBoardSize(root);
+  return Array.from({ length: n }, (_, r) => Array.from({ length: n }, (_, c) => isGivenCell(root, r + 1, c + 1)));
 }
 
 /** Every cell as one string: position, text, data-given, sorted class list. Row-major. */
 export function snapshot(root: ParentNode): string[] {
-  expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLength(SIZE * SIZE);
+  const n = expectedBoardSize(root);
   const out: string[] = [];
-  for (let r = 1; r <= SIZE; r++) {
-    for (let c = 1; c <= SIZE; c++) {
+  for (let r = 1; r <= n; r++) {
+    for (let c = 1; c <= n; c++) {
       const el = cellEl(root, r, c);
       out.push(`${r},${c}|${el.textContent ?? ''}|${el.getAttribute('data-given')}|${[...el.classList].sort().join(' ')}`);
     }
@@ -163,9 +209,9 @@ export function snapshot(root: ParentNode): string[] {
   return out;
 }
 
-/** Cells (1-based [row, col], sorted) that carry the class cell-violation. Asserts 36 cells first. */
+/** Cells (1-based [row, col], sorted) that carry the class cell-violation. Asserts N*N cells first. */
 export function violationCells(root: ParentNode): Array<[number, number]> {
-  expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLength(SIZE * SIZE);
+  expectedBoardSize(root);
   const out: Array<[number, number]> = [];
   for (const el of allCells(root)) {
     if (el.classList.contains('cell-violation')) {
@@ -200,10 +246,14 @@ export function checkerCells(board: Grid): Array<[number, number]> {
 export const hintMessage = (root: ParentNode): string => q(root, '[data-message="hint"]').textContent ?? '';
 export const winMessage = (root: ParentNode): string => q(root, '[data-message="win"]').textContent ?? '';
 
-/** Assert the structural elements every rendered page has (so a negative check can never pass on an empty page). */
-export function expectPageStructure(root: ParentNode): void {
-  expect(q(root, '[data-board]').getAttribute('data-size')).toBe('6');
-  expect(allCells(root)).toHaveLength(SIZE * SIZE);
+/**
+ * Assert the structural elements every rendered page has (so a negative check can never pass on an empty page): the
+ * board of `size` (6 by default), the size selector (FR-43), both buttons and both message regions.
+ */
+export function expectPageStructure(root: ParentNode, size = 6): void {
+  expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(size));
+  expect(allCells(root)).toHaveLength(size * size);
+  q(root, '[data-control="size"]');
   q(root, '[data-action="hint"]');
   q(root, '[data-action="new"]');
   q(root, '[data-message="hint"]');
@@ -257,8 +307,9 @@ export function setCol(root: ParentNode, col: number, text: string, only?: numbe
 
 /** Fill every non-given cell with the digit of `grid` (0-based grid), except the 1-based cells in `skip`. */
 export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: Array<[number, number]> = []): void {
-  for (let r = 1; r <= SIZE; r++) {
-    for (let c = 1; c <= SIZE; c++) {
+  const n = puzzle.givens.length;
+  for (let r = 1; r <= n; r++) {
+    for (let c = 1; c <= n; c++) {
       if (puzzle.givens[r - 1]?.[c - 1] !== null) continue;
       if (skip.some(([sr, sc]) => sr === r && sc === c)) continue;
       const value = grid[r - 1]?.[c - 1];
@@ -270,6 +321,104 @@ export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: Arr
 
 export const pressHint = (root: ParentNode): void => q(root, '[data-action="hint"]').click();
 export const pressNew = (root: ParentNode): void => q(root, '[data-action="new"]').click();
+
+// ---- the size selector (FR-43) ----
+
+/** The size selector `[data-control="size"]`, asserted to be a <select>. */
+export function sizeSelect(root: ParentNode): HTMLSelectElement {
+  const el = q(root, '[data-control="size"]');
+  expect(el.tagName, 'the size selector is a select element').toBe('SELECT');
+  return el as HTMLSelectElement;
+}
+
+export interface ErrorTracker {
+  /** everything the window 'error' event reported while the tracker was active */
+  errors: unknown[];
+  stop: () => void;
+}
+
+/**
+ * A `window` 'error' listener. dispatchEvent() never throws when a listener throws (jsdom reports the exception on
+ * window instead), so a "does not throw" check around dispatchEvent is vacuous: this listener is the only detector.
+ * Always `stop()` it (try/finally) so a listener never leaks into the next test.
+ */
+export function trackErrors(): ErrorTracker {
+  const errors: unknown[] = [];
+  const listener = (event: ErrorEvent): void => {
+    event.preventDefault();
+    errors.push(event.error ?? event.message);
+  };
+  window.addEventListener('error', listener);
+  return { errors, stop: () => window.removeEventListener('error', listener) };
+}
+
+/** Dispatch a bubbling `change` on the size selector, recording uncaught errors; asserts none were recorded. */
+function dispatchChange(select: HTMLSelectElement): void {
+  const tracker = trackErrors();
+  try {
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  } finally {
+    tracker.stop();
+  }
+  expect(tracker.errors, 'no uncaught error during the change event').toEqual([]);
+}
+
+/** The player selects a size: set the select's value to it and dispatch a bubbling `change` (no uncaught error allowed). */
+export function selectSize(root: ParentNode, size: number): void {
+  const select = sizeSelect(root);
+  select.value = String(size);
+  expect(select.value, `the select offers the value ${size}`).toBe(String(size));
+  dispatchChange(select);
+}
+
+/**
+ * Mount the page on the 6x6 fixture `start`, then (when `puzzle` is not 6x6) let the player select `puzzle.size`, the
+ * injected generator returning `puzzle` for that size: a board of another size, reached the way a player reaches it.
+ */
+export function mountThenSelect(puzzle: Puzzle, start: Puzzle = BLANK): HTMLElement {
+  const root = mountPage({
+    seedSource: seedQueue([1, 2]).source,
+    generate: generatorBySize({ [start.size]: start, [puzzle.size]: puzzle }),
+  });
+  if (puzzle.size !== start.size) selectSize(root, puzzle.size);
+  return root;
+}
+
+export interface ReportedValueResult {
+  /** `selectedIndex` right after the `change` event (override still installed) */
+  selectedIndex: number;
+  /** `options[1].selected` right after the `change` event */
+  option1Selected: boolean;
+  /** `select.value` once the override is removed again (the natively reported value) */
+  valueAfter: string;
+}
+
+/**
+ * The scenarios "Value outside the offered sizes is ignored" (and "... with no option selected"): make the select report
+ * `reported` by overriding `value` on the element (getter and setter; the setter ignores writes) after setting
+ * `selectedIndex = 0`, so a page that does not restore the selector leaves index 0 (a page that restores with
+ * `select.value = ...` hits the dead setter and also leaves 0). `reported === null` is the no-option-selected case:
+ * `selectedIndex = -1`, no override, the select reports ''. Dispatches a bubbling `change` with the error tracker.
+ */
+export function changeWithReportedValue(root: ParentNode, reported: string | null): ReportedValueResult {
+  const select = sizeSelect(root);
+  if (reported === null) {
+    select.selectedIndex = -1;
+    expect(select.value, 'no option selected: the select reports the empty string').toBe('');
+  } else {
+    select.selectedIndex = 0;
+    Object.defineProperty(select, 'value', { configurable: true, get: () => reported, set: () => undefined });
+    expect(select.value).toBe(reported);
+  }
+  let during: Pick<ReportedValueResult, 'selectedIndex' | 'option1Selected'> | undefined;
+  try {
+    dispatchChange(select);
+    during = { selectedIndex: select.selectedIndex, option1Selected: select.options[1]?.selected === true };
+  } finally {
+    if (reported !== null) Reflect.deleteProperty(select, 'value');
+  }
+  return { ...during, valueAfter: select.value };
+}
 
 /** The engine hint for the board as it is shown right now (the spec: "the engine hint applied to the DOM board"). */
 export const expectedHint = (root: ParentNode): Hint => hint(readBoard(root));
@@ -288,41 +437,48 @@ export function targetCell(h: Hint): [number, number] {
 }
 
 // ---------------------------------------------------------------------------------------------------------
-// Fixture puzzles. A fixture is a Puzzle (size 6, givens, solution). The solution is the first valid 6x6 grid
-// (in enumeration order) that keeps the givens; makePuzzle throws when there is none, unless `inconsistent`.
+// Fixture puzzles. A fixture is a Puzzle (size N, givens, solution). For N = 4 and 6 the solution is the first valid
+// grid (in enumeration order) that keeps the givens; makePuzzle throws when there is none, unless `inconsistent`.
+// N = 8 has 4,111,116 solved grids and is NEVER enumerated: an 8x8 fixture names its solution explicitly
+// (`options.solution`, a hand-written valid grid).
 // ---------------------------------------------------------------------------------------------------------
 
 type Digit = 0 | 1;
-let solutionCache: Digit[][][] | null = null;
+const solutionCaches = new Map<number, Digit[][][]>();
 
-/** Every valid solved 6x6 grid (rows: three 0s, three 1s, no run of 3; distinct rows; columns likewise). */
-export function allSolutions(): Digit[][][] {
-  if (solutionCache !== null) return solutionCache;
+/**
+ * Every valid solved NxN grid (rows: N/2 zeros and ones, no run of 3; distinct rows; columns likewise), cached per N.
+ * Only N = 4 (72 grids) and N = 6 (4,140 grids) are supported: N = 8 has 4,111,116 and throws instead of hanging.
+ */
+export function allSolutions(n = 6): Digit[][][] {
+  if (n !== 4 && n !== 6) throw new Error(`allSolutions(${n}): only 4 and 6 are enumerated (8x8 has 4,111,116 grids)`);
+  const cached = solutionCaches.get(n);
+  if (cached !== undefined) return cached;
   const rows: Digit[][] = [];
-  for (let m = 0; m < 1 << SIZE; m++) {
-    const bits: Digit[] = Array.from({ length: SIZE }, (_, i) => (((m >> (SIZE - 1 - i)) & 1) === 1 ? 1 : 0));
+  for (let m = 0; m < 1 << n; m++) {
+    const bits: Digit[] = Array.from({ length: n }, (_, i) => (((m >> (n - 1 - i)) & 1) === 1 ? 1 : 0));
     const ones = bits.filter((b) => b === 1).length;
-    const run = bits.some((b, i) => i + 2 < SIZE && b === bits[i + 1] && b === bits[i + 2]);
-    if (ones === SIZE / 2 && !run) rows.push(bits);
+    const run = bits.some((b, i) => i + 2 < n && b === bits[i + 1] && b === bits[i + 2]);
+    if (ones === n / 2 && !run) rows.push(bits);
   }
   const out: Digit[][][] = [];
   const colOk = (g: Digit[][], final: boolean): boolean => {
-    for (let c = 0; c < SIZE; c++) {
+    for (let c = 0; c < n; c++) {
       const col = g.map((r) => r[c]);
       const L = col.length;
       if (L >= 3 && col[L - 1] === col[L - 2] && col[L - 2] === col[L - 3]) return false;
       const ones = col.filter((x) => x === 1).length;
-      if (ones > SIZE / 2 || L - ones > SIZE / 2) return false;
-      if (final && ones !== SIZE / 2) return false;
+      if (ones > n / 2 || L - ones > n / 2) return false;
+      if (final && ones !== n / 2) return false;
     }
     if (final) {
-      const keys = new Set(Array.from({ length: SIZE }, (_, c) => g.map((r) => r[c]).join('')));
-      if (keys.size !== SIZE) return false;
+      const keys = new Set(Array.from({ length: n }, (_, c) => g.map((r) => r[c]).join('')));
+      if (keys.size !== n) return false;
     }
     return true;
   };
   const rec = (g: Digit[][]): void => {
-    if (g.length === SIZE) {
+    if (g.length === n) {
       if (colOk(g, true)) out.push(g.map((r) => [...r]));
       return;
     }
@@ -333,12 +489,12 @@ export function allSolutions(): Digit[][][] {
     }
   };
   rec([]);
-  solutionCache = out;
+  solutionCaches.set(n, out);
   return out;
 }
 
 export interface MakePuzzleOptions {
-  /** an explicit solution (spec notation); it must still be a valid solved grid and keep the givens */
+  /** an explicit solution (spec notation); it must still be a valid solved grid and keep the givens. Required for N = 8. */
   solution?: string;
   /** allow givens that no valid grid satisfies (only for boards that deliberately break a rule) */
   inconsistent?: boolean;
@@ -348,48 +504,52 @@ export function keepsGivens(solution: Grid, givens: Grid): boolean {
   return givens.every((row, r) => row.every((g, c) => g === null || solution[r]?.[c] === g));
 }
 
+/** A fixture puzzle for `givens`; N is the number of rows of `givens` (so the 6x6 callers are unchanged). */
 export function makePuzzle(givens: Grid, options: MakePuzzleOptions = {}): Puzzle {
+  const n = givens.length;
   let solution: Digit[][] | undefined;
   if (options.solution !== undefined) {
     solution = parseBoard(options.solution).map((row) => row.map((c) => (c === 1 ? 1 : 0)));
+    if (solution.length !== n) throw new Error(`makePuzzle: the explicit solution is ${solution.length}x${solution.length}, not ${n}x${n}`);
   } else {
-    solution = allSolutions().find((s) => keepsGivens(s, givens));
+    if (n !== 4 && n !== 6) throw new Error(`makePuzzle: a ${n}x${n} fixture needs an explicit options.solution (never enumerated)`);
+    solution = allSolutions(n).find((s) => keepsGivens(s, givens));
     if (solution === undefined) {
       if (options.inconsistent !== true) throw new Error('makePuzzle: no valid grid keeps these givens');
-      solution = allSolutions()[0];
+      solution = allSolutions(n)[0];
     }
   }
   if (solution === undefined) throw new Error('makePuzzle: no solution');
-  return { size: SIZE, givens, solution };
+  return { size: n, givens, solution };
 }
 
-/** Board with the listed givens only; cells are [row, col, value], 1-based. */
-const givensOf = (cells: Array<[number, number, 0 | 1]>): Grid => boardOf(SIZE, { cells });
+/** Board of size n with the listed givens only; cells are [row, col, value], 1-based. */
+export const givensOf = (n: number, cells: Array<[number, number, 0 | 1]>): Grid => boardOf(n, { cells });
 
 /** No givens at all. */
-export const BLANK = makePuzzle(givensOf([]));
+export const BLANK = makePuzzle(givensOf(6, []));
 /** Only givens: 0 at (3,1) and (3,2). The hint engine returns the pair fill at 1-based (3,3) = 1. */
-export const PAIR_ROW = makePuzzle(givensOf([[3, 1, 0], [3, 2, 0]]));
+export const PAIR_ROW = makePuzzle(givensOf(6, [[3, 1, 0], [3, 2, 0]]));
 /** Givens: 0 at (4,2) and (4,3); the neighbour on the left (4,1) is a player cell. */
-export const PAIR_LEFT = makePuzzle(givensOf([[4, 2, 0], [4, 3, 0]]));
+export const PAIR_LEFT = makePuzzle(givensOf(6, [[4, 2, 0], [4, 3, 0]]));
 /** Only givens: 1 at (1,4) and (2,4). The hint engine returns the pair fill at 1-based (3,4) = 0. */
-export const PAIR_COL = makePuzzle(givensOf([[1, 4, 1], [2, 4, 1]]));
+export const PAIR_COL = makePuzzle(givensOf(6, [[1, 4, 1], [2, 4, 1]]));
 /** Givens: 0 at (3,1) and (3,2) plus 1 at (6,6) (a given far away from the run). */
-export const PAIR_ROW_PLUS = makePuzzle(givensOf([[3, 1, 0], [3, 2, 0], [6, 6, 1]]));
+export const PAIR_ROW_PLUS = makePuzzle(givensOf(6, [[3, 1, 0], [3, 2, 0], [6, 6, 1]]));
 /** Two independent pairs: 0 0 at (3,1),(3,2) and 1 1 at (5,4),(5,5): two consecutive pair hints. */
-export const TWO_PAIRS = makePuzzle(givensOf([[3, 1, 0], [3, 2, 0], [5, 4, 1], [5, 5, 1]]));
+export const TWO_PAIRS = makePuzzle(givensOf(6, [[3, 1, 0], [3, 2, 0], [5, 4, 1], [5, 5, 1]]));
 /** Row 5 holds `0 1 0 . . 0`: no pair, no sandwich anywhere; the count rule targets (5,4) and leaves (5,5) empty. */
-export const COUNT_ROW = makePuzzle(givensOf([[5, 1, 0], [5, 2, 1], [5, 3, 0], [5, 6, 0]]));
+export const COUNT_ROW = makePuzzle(givensOf(6, [[5, 1, 0], [5, 2, 1], [5, 3, 0], [5, 6, 0]]));
 /** Two isolated givens: no rule applies, the hint engine returns kind 'none'. */
-export const ISOLATED = makePuzzle(givensOf([[1, 1, 0], [4, 5, 1]]));
+export const ISOLATED = makePuzzle(givensOf(6, [[1, 1, 0], [4, 5, 1]]));
 /**
  * A board on which the hint fill itself breaks a rule: the first pair hint is the row pair (1,1),(1,2) = 1 1,
  * target (1,3) = 0, which completes 0 0 0 in column 3 (rows 1 to 3). The board before the fill is rule-clean.
  * No valid grid keeps these givens, so the solution is an arbitrary valid grid (fixture is deliberately inconsistent).
  */
-export const HINT_BREAKS = makePuzzle(givensOf([[1, 1, 1], [1, 2, 1], [2, 3, 0], [3, 3, 0]]), { inconsistent: true });
+export const HINT_BREAKS = makePuzzle(givensOf(6, [[1, 1, 1], [1, 2, 1], [2, 3, 0], [3, 3, 0]]), { inconsistent: true });
 /** Givens already break a rule (three 0 in row 1): the board is highlighted the moment it is shown. */
-export const DIRTY_GIVENS = makePuzzle(givensOf([[1, 1, 0], [1, 2, 0], [1, 3, 0]]), { inconsistent: true });
+export const DIRTY_GIVENS = makePuzzle(givensOf(6, [[1, 1, 0], [1, 2, 0], [1, 3, 0]]), { inconsistent: true });
 
 /** A real generator output (seed 2): unique solution, 10 givens, a given 1 at (2,5). */
 export const WIN_PUZZLE: Puzzle = {
@@ -412,6 +572,47 @@ export const WIN_PUZZLE: Puzzle = {
   `).map((row) => row.map((c) => (c === 1 ? 1 : 0))),
 };
 
+// ---- slice 3 (FR-43): 4x4 and 8x8 fixtures ----
+
+/** A valid solved 8x8 grid, written out (it is generate(8, 1).solution; the helper self-check runs isSolved on it). */
+export const SOLUTION_8_TEXT = `
+  1 0 1 1 0 0 1 0
+  0 1 0 0 1 0 1 1
+  0 0 1 1 0 1 0 1
+  1 1 0 0 1 1 0 0
+  1 0 1 0 1 0 1 0
+  0 0 1 1 0 0 1 1
+  0 1 0 0 1 1 0 1
+  1 1 0 1 0 1 0 0
+`;
+
+/** 4x4, no givens. */
+export const BLANK_4 = makePuzzle(givensOf(4, []));
+/** 4x4, only givens 0 at (2,1) and (2,2): the hint engine returns the pair fill at 1-based (2,3) = 1 (0-based row 1, col 2). */
+export const PAIR_4 = makePuzzle(givensOf(4, [[2, 1, 0], [2, 2, 0]]));
+/** 4x4 whose solution is VALID_4X4 and whose givens are every cell except the non-given (4,4), whose digit is 1. */
+export const WIN_4 = winFixture(VALID_4X4, [4, 4]);
+
+/** 8x8, no givens (explicit solution, never enumerated). */
+export const BLANK_8 = makePuzzle(givensOf(8, []), { solution: SOLUTION_8_TEXT });
+/** 8x8, only givens 0 at (8,7) and (8,8): the hint engine returns the pair fill at 1-based (8,6) = 1 (0-based row 7, col 5). */
+export const PAIR_8 = makePuzzle(givensOf(8, [[8, 7, 0], [8, 8, 0]]), { solution: SOLUTION_8_TEXT });
+/** 8x8 whose solution is SOLUTION_8_TEXT and whose givens are every cell except the non-given (8,8), whose digit is 0. */
+export const WIN_8 = winFixture(parseBoard(SOLUTION_8_TEXT), [8, 8]);
+/** 8x8 whose only givens are 0 at (8,1), (8,2), (8,3): the checker reports `three` in row 8 at once (inconsistent fixture). */
+export const DIRTY_8_ROW = makePuzzle(givensOf(8, [[8, 1, 0], [8, 2, 0], [8, 3, 0]]), { solution: SOLUTION_8_TEXT, inconsistent: true });
+/** 8x8 whose only givens are 1 at column 8, rows 1, 2, 4, 6, 7: five 1s, no three side by side, `count` on column 8. */
+export const DIRTY_8_COL = makePuzzle(
+  givensOf(8, [[1, 8, 1], [2, 8, 1], [4, 8, 1], [6, 8, 1], [7, 8, 1]]),
+  { solution: SOLUTION_8_TEXT, inconsistent: true },
+);
+
+/** A fixture whose solution is `solved` and whose givens are all cells except the 1-based `empty` cell. */
+function winFixture(solved: Grid, empty: [number, number]): Puzzle {
+  const givens = solved.map((row, r) => row.map((c, k): Cell => (r === empty[0] - 1 && k === empty[1] - 1 ? null : c)));
+  return { size: solved.length, givens, solution: solved.map((row) => row.map((c) => (c === 1 ? 1 : 0))) };
+}
+
 /** Every fixture, for the helper self-check. `consistent` = givens must be kept by the solution. */
 export const FIXTURES: Array<{ name: string; puzzle: Puzzle; consistent: boolean }> = [
   { name: 'BLANK', puzzle: BLANK, consistent: true },
@@ -425,7 +626,16 @@ export const FIXTURES: Array<{ name: string; puzzle: Puzzle; consistent: boolean
   { name: 'HINT_BREAKS', puzzle: HINT_BREAKS, consistent: false },
   { name: 'DIRTY_GIVENS', puzzle: DIRTY_GIVENS, consistent: false },
   { name: 'WIN_PUZZLE', puzzle: WIN_PUZZLE, consistent: true },
+  { name: 'BLANK_4', puzzle: BLANK_4, consistent: true },
+  { name: 'PAIR_4', puzzle: PAIR_4, consistent: true },
+  { name: 'WIN_4', puzzle: WIN_4, consistent: true },
+  { name: 'BLANK_8', puzzle: BLANK_8, consistent: true },
+  { name: 'PAIR_8', puzzle: PAIR_8, consistent: true },
+  { name: 'WIN_8', puzzle: WIN_8, consistent: true },
+  { name: 'DIRTY_8_ROW', puzzle: DIRTY_8_ROW, consistent: false },
+  { name: 'DIRTY_8_COL', puzzle: DIRTY_8_COL, consistent: false },
 ];
+
 
 /** The solution as an engine Grid. */
 export const solutionGrid = (p: Puzzle): Grid => p.solution.map((row) => [...row]);
@@ -459,7 +669,8 @@ export function collectEverything(root: HTMLElement): string[] {
 
 /**
  * Static-page-text scenario: every non-whitespace text node (not the text of [data-cell] elements), document.title,
- * and the values of aria-label, title, placeholder and alt on every element in the root.
+ * the values of aria-label, title, placeholder and alt on every element in the root, and the `label` attribute of every
+ * option and optgroup element.
  */
 export function collectPageText(root: HTMLElement): string[] {
   const out: string[] = [];
@@ -473,6 +684,11 @@ export function collectPageText(root: HTMLElement): string[] {
     for (const name of ['aria-label', 'title', 'placeholder', 'alt']) {
       const value = el.getAttribute(name);
       if (value !== null) out.push(value);
+    }
+    // the `label` attribute of option and optgroup is shown by a browser instead of the option text (NFR-5, FR-43)
+    if (el.tagName === 'OPTION' || el.tagName === 'OPTGROUP') {
+      const label = el.getAttribute('label');
+      if (label !== null) out.push(label);
     }
   }
   return out;

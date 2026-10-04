@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 import { findViolations } from '../src/engine/index';
 import {
   BLANK,
+  BLANK_4,
+  BLANK_8,
   DIRTY_GIVENS,
   HINT_BREAKS,
   ISOLATED,
@@ -11,6 +13,8 @@ import {
   PAIR_LEFT,
   PAIR_ROW,
   PAIR_ROW_PLUS,
+  allCells,
+  boardSize,
   cellEl,
   cellText,
   checkerCells,
@@ -18,10 +22,15 @@ import {
   clickUntil,
   expectPageStructure,
   expectedHint,
+  generatorBySize,
   installPageLifecycle,
   mountFixture,
+  mountPage,
+  mountThenSelect,
   pressHint,
   readBoard,
+  seedQueue,
+  selectSize,
   setCellTo,
   setCol,
   setRow,
@@ -32,9 +41,10 @@ import { sortedCells } from './helpers/board';
 
 installPageLifecycle();
 
-/** Row r: 1-based cells (r, 1..6). */
-const rowCells = (r: number): Array<[number, number]> => [1, 2, 3, 4, 5, 6].map((c): [number, number] => [r, c]);
-const colCells = (c: number): Array<[number, number]> => [1, 2, 3, 4, 5, 6].map((r): [number, number] => [r, c]);
+/** Row r of an n x n board (6 by default): 1-based cells (r, 1..n). Slice 3 (FR-43): the size is a parameter. */
+const lineOf = (n: number): number[] => Array.from({ length: n }, (_, i) => i + 1);
+const rowCells = (r: number, n = 6): Array<[number, number]> => lineOf(n).map((c): [number, number] => [r, c]);
+const colCells = (c: number, n = 6): Array<[number, number]> => lineOf(n).map((r): [number, number] => [r, c]);
 
 describe('@trace FR-35 three or more equal digits side by side are highlighted', () => {
   it('Three equal digits in a row are highlighted', () => {
@@ -120,6 +130,55 @@ describe('@trace FR-36 a line with more than N/2 of one digit is highlighted', (
     expect(violations).toHaveLength(1);
     expect(violations[0]).toMatchObject({ rule: 'count', axis: 'col', index: 0 });
     expect(violationCells(root)).toEqual(sortedCells(colCells(1)));
+  });
+
+  it('Too many zeros in a row of an 8x8 board: the fifth 0 highlights all eight cells of row 1 and nothing else', () => {
+    const root = mountThenSelect(BLANK_8);
+    expectPageStructure(root, 8);
+    // 0 0 1 0 1 0 . . holds four 0 (exactly N/2 = 4): not highlighted yet
+    setRow(root, 1, '0 0 1 0 1 0 0 1', [1, 2, 3, 4, 5, 6]);
+    expect(violationCells(root)).toEqual([]);
+    expect(cellText(root, 1, 7)).toBe('');
+
+    setCellTo(root, 1, 7, 0);
+
+    // 0 0 1 0 1 0 0 .: five 0, no three side by side; the only broken rule is the count of row 1
+    const violations = findViolations(readBoard(root));
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toMatchObject({ rule: 'count', axis: 'row', index: 0 });
+    expect(violationCells(root)).toEqual(sortedCells(rowCells(1, 8)));
+    expect(violationCells(root)).toHaveLength(8);
+
+    setCellTo(root, 1, 8, 1); // the full row 0 0 1 0 1 0 0 1 keeps the highlight
+    expect(violationCells(root)).toEqual(sortedCells(rowCells(1, 8)));
+  });
+
+  it('Too many zeros in a row of a 4x4 board: the third 0 highlights all four cells of row 1 and nothing else', () => {
+    const root = mountThenSelect(BLANK_4);
+    expectPageStructure(root, 4);
+    setRow(root, 1, '0 0 1 0', [1, 2, 3]); // two 0 = N/2: not highlighted
+    expect(violationCells(root)).toEqual([]);
+
+    setCellTo(root, 1, 4, 0);
+
+    const violations = findViolations(readBoard(root));
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toMatchObject({ rule: 'count', axis: 'row', index: 0 });
+    expect(violationCells(root)).toEqual(sortedCells(rowCells(1, 4)));
+  });
+
+  it('Too many ones in the last column of an 8x8 board: the fifth 1 highlights all eight cells of column 8 and nothing else', () => {
+    const root = mountThenSelect(BLANK_8);
+    // top to bottom 1 1 0 1 0 1 . . holds four 1 (= N/2): not highlighted yet
+    setCol(root, 8, '1 1 0 1 0 1 1 0', [1, 2, 3, 4, 5, 6]);
+    expect(violationCells(root)).toEqual([]);
+
+    setCellTo(root, 7, 8, 1);
+
+    const violations = findViolations(readBoard(root));
+    expect(violations).toHaveLength(1);
+    expect(violations[0]).toMatchObject({ rule: 'count', axis: 'col', index: 7 });
+    expect(violationCells(root)).toEqual(sortedCells(colCells(8, 8)));
   });
 
   it('Exactly N/2 is not highlighted: a full row of three 0 and three 1', () => {
@@ -251,6 +310,23 @@ describe('@trace FR-38 highlighting follows every board change', () => {
     expect(violationCells(root)).toEqual(highlighted);
     clickCell(root, 6, 6, 3);
     expect(violationCells(root)).toEqual(highlighted);
+  });
+
+  it('A size change recomputes the highlights: the 16 cells of the new 4x4 board have none and no old cell remains', () => {
+    // a 6x6 board with cell-violation cells, then the player selects 4x4 and the injected generator returns a 4x4 fixture
+    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: PAIR_ROW, 4: BLANK_4 }) });
+    clickCell(root, 3, 3);
+    expect(violationCells(root)).toEqual([[3, 1], [3, 2], [3, 3]]);
+    const oldCells = allCells(root);
+    expect(oldCells.filter((c) => c.classList.contains('cell-violation'))).toHaveLength(3);
+
+    selectSize(root, 4);
+
+    expect(boardSize(root)).toBe(4);
+    expect(allCells(root)).toHaveLength(16);
+    expect(violationCells(root)).toEqual([]);
+    expect(root.querySelector('.cell-violation')).toBeNull();
+    expect(oldCells.every((c) => !root.contains(c)), 'no cell of the old board remains in the page').toBe(true);
   });
 
   it('A new puzzle recomputes highlights from its own givens (a board whose givens break a rule is highlighted at once)', () => {
