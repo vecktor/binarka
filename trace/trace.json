@@ -634,7 +634,10 @@
         "openspec/changes/add-rules-and-reset/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-rules-and-reset.test.ts",
+        "tests/play-page-rules-and-reset.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -643,20 +646,15 @@
         "openspec/changes/add-rules-and-reset/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-rules-and-reset.test.ts",
+        "tests/play-page-rules-and-reset.test.ts"
+      ],
       "recordings": []
     }
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-57 has no test annotated \"@trace FR-57\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-58 has no test annotated \"@trace FR-58\""
-    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"
