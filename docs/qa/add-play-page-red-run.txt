@@ -1,0 +1,1165 @@
+RED RUN: add-play-page (test-first evidence)
+Date: 2026-10-04 (host clock)
+Command: npx vitest run tests/play-page-*.test.ts --reporter=verbose
+State of src/: RED-STAGE STUB src/ui/index.ts (mountPlayPage only clears the root and renders nothing, never throws);
+  src/ui/play-page.ts, src/ui/seed.ts and src/main.ts are untouched (the capability-implementer creates them).
+Result: 7 failed files, 1 passed file; 68 tests failed, 24 passed (92 tests).
+The 24 passing tests are all in tests/play-page-helpers.test.ts (no @trace): a self-check of the fixtures and helpers against
+the REAL engine (valid solved grids, givens kept, hint premises, seedQueue, win-message codepoint). They never call
+mountPlayPage, so they pass against the stub by design. Every one of the 68 page tests fails on an assertion
+("expected an element matching [data-board]: expected null not to be null", "expected [] to have a length of 36", ...).
+Stub-independence of the tests was cross-checked against a throwaway reference implementation kept outside the repository
+(92/92 green, stable over 4 runs) and against 14 mutants of it (each of: transposed hint target, one-based hint target,
+curly apostrophe, hint message kept on new puzzle, constant default seed, seed in an attribute, English/missing title,
+clickable givens, hint message cleared by a click, board locked after a win, seed drawn twice per puzzle, seed domain 2^32,
+count hint filling the whole line failed at least one test).
+
+----- raw vitest output follows -----
+
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/fwdays-capstone-slices-5cecb3
+
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Default board is 6x6: data-size 6, exactly 36 cells, every (row, col) pair 1..6 once 11ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Board content comes from the generator: given flags and digits equal generate(6, 42) 10ms
+   → expected [] to have a length of 36 but got +0
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > the generator is called with size 6 and the seed from the seed source, once per puzzle 2ms
+   → expected [] to deeply equal [ { size: 6, seed: 5 } ]
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > mounting is synchronous and replaces the previous content of the root 5ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > two mounts on two different roots are independent 1ms
+   → expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+ × tests/play-page-rendering.test.ts > @trace FR-32 given cells are marked distinctly > Givens and player cells are distinguishable (fixture puzzle) 1ms
+   → expected [] to have a length of 36 but got +0
+ × tests/play-page-rendering.test.ts > @trace FR-32 given cells are marked distinctly > Givens and player cells are distinguishable (generator output for seed 42) 1ms
+   → expected [] to have a length of 36 but got +0
+ × tests/play-page-rendering.test.ts > @trace FR-32 given cells are marked distinctly > the fixture marks exactly its ten givens, each with the cell-given class 1ms
+   → expected [] to have a length of 10 but got +0
+ × tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given cell changes nothing (once, then twice more) 11ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given 0 changes nothing either 4ms
+   → expected an element matching [data-cell][data-row="1"][data-col="3"]: expected null not to be null
+ × tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given does not clear a message 1ms
+   → expected an element matching [data-action="hint"]: expected null not to be null
+ × tests/play-page-click-cycle.test.ts > @trace FR-34 player cells cycle through empty, 0 and 1 > Three clicks complete the cycle: 0, 1, empty (and the cycle repeats) 1ms
+   → expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ × tests/play-page-click-cycle.test.ts > @trace FR-34 player cells cycle through empty, 0 and 1 > a click changes only the clicked cell 3ms
+   → expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+ × tests/play-page-click-cycle.test.ts > @trace FR-34 player cells cycle through empty, 0 and 1 > Cycle works on a cell filled by a hint: a hint-filled 0 becomes 1 on click 1ms
+   → expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board: the exact Ukrainian message, apostrophe U+0027 14ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board when the last cell was empty 4ms
+   → expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final hint solves the board 1ms
+   → expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Full board with a violation is not a win 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Board stays editable after a win: the next click follows the cycle and the message disappears 1ms
+   → expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text: every collected text has Cyrillic letters and no Latin letters 11ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > the button labels are exactly the two Ukrainian labels of the DOM contract 2ms
+   → expected an element matching [data-action="hint"]: expected null not to be null
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text with the real generator (seed 42): the digits in the cells are puzzle content, not collected 3ms
+   → expected [] to have a length of 36 but got +0
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Win message text: exactly the Ukrainian message, with Cyrillic letters and no Latin letters 3ms
+   → expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a row are highlighted 11ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a column are highlighted 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Two equal digits are not highlighted 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row: the fourth 0 highlights all six cells of the row and nothing else 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many ones in a column: the fourth 1 highlights all six cells of the column and nothing else 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Exactly N/2 is not highlighted: a full row of three 0 and three 1 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete rows: both rows highlighted, nothing else 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete columns: both columns highlighted, nothing else 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > A row with an empty cell is not compared 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Highlight appears immediately, in the same click handling 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Highlight disappears once the rule is fixed (click the third cell until it is empty) 3ms
+   → expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Hint fill triggers recomputation: the highlighted set equals what the checker reports for the new board 2ms
+   → expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Hint fill that itself breaks a rule is highlighted at once (requirement text: a hint fill is a board change) 0ms
+   → expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Clicking a given does not recompute to a different result 0ms
+   → expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > A new puzzle recomputes highlights from its own givens (a board whose givens break a rule is highlighted at once) 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle after play: a fresh generator(6, 7) board, no entries, both messages cleared 12ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle is always 6x6 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle mid-game removes highlights: a clean new puzzle shows none 4ms
+   → expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle mid-game: highlights follow the new puzzle givens only (old ones are gone) 1ms
+   → expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > Each press uses a new seed: 1, 2, 3 in this order, one seed-source call per puzzle 3ms
+   → expected +0 to be 1 // Object.is equality
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Injected seed gives a reproducible page: two pages with seed 42 and the real generator are identical 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Default seed source gives new seeds in its domain: 10 seeds, integers 0..2147483647, no equal neighbours 2ms
+   → expected [Function] to not throw an error but 'AssertionError: expected an element m…' was thrown
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Default seed source with the real generator: a 6x6 board is rendered and no error is thrown 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: no text node, title or attribute value contains the seed in any form 12ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: the same holds on a fixture board and on a root that held other content 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a row) 12ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a column) 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a row) 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a column) 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of zeros in a column) 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of ones in a row) 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (count of zeros in a row) 1ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell on a real generated board (seed 2) 3ms
+   → expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Zero-based target maps to the one-based cell: engine row 2, col 2 is data-row 3, data-col 3 3ms
+   → expected [] to have a length of 2 but got +0
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Count rule fills only one cell, the first empty one of the line 1ms
+   → expected an element matching [data-cell][data-row="5"][data-col="1"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint-filled cell stays editable: a hint-filled 1 follows the player cycle (1, empty, 0) 1ms
+   → expected an element matching [data-action="hint"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > No fill when the engine has no target: kind none 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > No fill when the engine has no target: kind broken 1ms
+   → expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Sentence shown with a fill: equals the engine sentence, unaltered 0ms
+   → expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Board breaks a rule: shows the broken-board sentence and fills nothing 0ms
+   → expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > No rule applies: shows the no-rule sentence and fills nothing 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Second press replaces the sentence, it does not append 0ms
+   → expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Initial state has no hint message (and the region exists) 0ms
+   → expected an element matching [data-board]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint message stays until the next hint or a new puzzle > Clicking a player cell keeps the hint message (once, then twice more) 0ms
+   → expected an element matching [data-action="hint"]: expected null not to be null
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint message stays until the next hint or a new puzzle > The next hint replaces it and a new puzzle clears it 0ms
+   → expected an element matching [data-action="hint"]: expected null not to be null
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > every enumerated 6x6 grid is solved by the real rule checker (and there are 4140 of them) 40ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > BLANK: size 6, valid solution, givens are a rule-clean subset of the solution 1ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > PAIR_ROW: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > PAIR_LEFT: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > PAIR_COL: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > PAIR_ROW_PLUS: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > TWO_PAIRS: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > COUNT_ROW: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > ISOLATED: size 6, valid solution, givens are a rule-clean subset of the solution 1ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > HINT_BREAKS: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > DIRTY_GIVENS: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > WIN_PUZZLE: size 6, valid solution, givens are a rule-clean subset of the solution 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > WIN_PUZZLE has exactly one solution, 10 givens and a given 1 at row 2 column 5 1ms
+ ✓ tests/play-page-helpers.test.ts > play-page fixtures > DIRTY_GIVENS breaks exactly the three-in-a-row rule in row 1 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > PAIR_ROW: the zero-based target of the spec is {row 2, col 2, value 1, pair} 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > PAIR_COL fills (3,4) with 0 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > COUNT_ROW: count rule, target (5,4), (5,5) stays empty, nothing else can fire first 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > ISOLATED: no rule applies 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > TWO_PAIRS: the second hint (after the first fill) is the row 5 pair 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > HINT_BREAKS: rule-clean before, the fill (1,3) = 0 then breaks column 3 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > the win fixture with (4,1) left empty: the hint targets it with the solution digit 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page hint premises, computed with the real engine on the fixtures > the engine sentences used as literals are the ones the engine returns 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page seed helpers and constants > seedQueue returns the listed seeds in order, then keeps counting up, and counts the calls 0ms
+ ✓ tests/play-page-helpers.test.ts > play-page seed helpers and constants > the win message uses the ASCII apostrophe U+0027 and no Latin letters 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 68 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given cell changes nothing (once, then twice more)
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-click-cycle.test.ts:25:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/68]⎯
+
+ FAIL  tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given 0 changes nothing either
+AssertionError: expected an element matching [data-cell][data-row="1"][data-col="3"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ cellText tests/helpers/play-page.ts:118:81
+ ❯ tests/play-page-click-cycle.test.ts:48:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/68]⎯
+
+ FAIL  tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given does not clear a message
+AssertionError: expected an element matching [data-action="hint"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ pressHint tests/helpers/play-page.ts:268:54
+ ❯ tests/play-page-click-cycle.test.ts:57:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/68]⎯
+
+ FAIL  tests/play-page-click-cycle.test.ts > @trace FR-34 player cells cycle through empty, 0 and 1 > Three clicks complete the cycle: 0, 1, empty (and the cycle repeats)
+AssertionError: expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ cellText tests/helpers/play-page.ts:118:81
+ ❯ tests/play-page-click-cycle.test.ts:70:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/68]⎯
+
+ FAIL  tests/play-page-click-cycle.test.ts > @trace FR-34 player cells cycle through empty, 0 and 1 > a click changes only the clicked cell
+AssertionError: expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ snapshot tests/helpers/play-page.ts:155:62
+    153| /** Every cell as one string: position, text, data-given, sorted class…
+    154| export function snapshot(root: ParentNode): string[] {
+    155|   expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLen…
+       |                                                              ^
+    156|   const out: string[] = [];
+    157|   for (let r = 1; r <= SIZE; r++) {
+ ❯ tests/play-page-click-cycle.test.ts:88:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/68]⎯
+
+ FAIL  tests/play-page-click-cycle.test.ts > @trace FR-34 player cells cycle through empty, 0 and 1 > Cycle works on a cell filled by a hint: a hint-filled 0 becomes 1 on click
+AssertionError: expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ readBoard tests/helpers/play-page.ts:135:62
+    133| /** Read the board from the DOM into the engine's 0-based grid (cell t…
+    134| export function readBoard(root: ParentNode): Grid {
+    135|   expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLen…
+       |                                                              ^
+    136|   const board: Grid = Array.from({ length: SIZE }, () => Array.from({ …
+    137|   for (let r = 1; r <= SIZE; r++) {
+ ❯ expectedHint tests/helpers/play-page.ts:272:62
+ ❯ tests/play-page-click-cycle.test.ts:101:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a row are highlighted
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:42:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a column are highlighted
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:59:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Two equal digits are not highlighted
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:76:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row: the fourth 0 highlights all six cells of the row and nothing else
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:94:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many ones in a column: the fourth 1 highlights all six cells of the column and nothing else
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:111:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Exactly N/2 is not highlighted: a full row of three 0 and three 1
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:127:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete rows: both rows highlighted, nothing else
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:138:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete columns: both columns highlighted, nothing else
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:154:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > A row with an empty cell is not compared
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:169:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Highlight appears immediately, in the same click handling
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:183:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Highlight disappears once the rule is fixed (click the third cell until it is empty)
+AssertionError: expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ clickCell tests/helpers/play-page.ts:215:14
+ ❯ tests/play-page-highlighting.test.ts:196:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Hint fill triggers recomputation: the highlighted set equals what the checker reports for the new board
+AssertionError: expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ readBoard tests/helpers/play-page.ts:135:62
+    133| /** Read the board from the DOM into the engine's 0-based grid (cell t…
+    134| export function readBoard(root: ParentNode): Grid {
+    135|   expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLen…
+       |                                                              ^
+    136|   const board: Grid = Array.from({ length: SIZE }, () => Array.from({ …
+    137|   for (let r = 1; r <= SIZE; r++) {
+ ❯ expectedHint tests/helpers/play-page.ts:272:62
+ ❯ tests/play-page-highlighting.test.ts:215:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Hint fill that itself breaks a rule is highlighted at once (requirement text: a hint fill is a board change)
+AssertionError: expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ violationCells tests/helpers/play-page.ts:168:62
+    166| /** Cells (1-based [row, col], sorted) that carry the class cell-viola…
+    167| export function violationCells(root: ParentNode): Array<[number, numbe…
+    168|   expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLen…
+       |                                                              ^
+    169|   const out: Array<[number, number]> = [];
+    170|   for (const el of allCells(root)) {
+ ❯ tests/play-page-highlighting.test.ts:230:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Clicking a given does not recompute to a different result
+AssertionError: expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ clickCell tests/helpers/play-page.ts:215:14
+ ❯ tests/play-page-highlighting.test.ts:243:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/68]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > A new puzzle recomputes highlights from its own givens (a board whose givens break a rule is highlighted at once)
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-highlighting.test.ts:259:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of zeros in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of ones in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (count of zeros in a row)
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-hint.test.ts:79:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell on a real generated board (seed 2)
+AssertionError: expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ cellText tests/helpers/play-page.ts:118:81
+ ❯ tests/play-page-hint.test.ts:38:40
+ ❯ texts tests/play-page-hint.test.ts:38:9
+ ❯ tests/play-page-hint.test.ts:99:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Zero-based target maps to the one-based cell: engine row 2, col 2 is data-row 3, data-col 3
+AssertionError: expected [] to have a length of 2 but got +0
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ tests/play-page-hint.test.ts:116:83
+    114|     const root = mountFixture(PAIR_ROW);
+    115|     // the only givens are 0 at data-row 3, data-col 1 and 2
+    116|     expect(allCells(root).filter((c) => c.getAttribute('data-given') =…
+       |                                                                                   ^
+    117|     expect(cellText(root, 3, 1)).toBe('0');
+    118|     expect(cellText(root, 3, 2)).toBe('0');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Count rule fills only one cell, the first empty one of the line
+AssertionError: expected an element matching [data-cell][data-row="5"][data-col="1"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ cellText tests/helpers/play-page.ts:118:81
+ ❯ tests/play-page-hint.test.ts:132:42
+ ❯ tests/play-page-hint.test.ts:132:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint-filled cell stays editable: a hint-filled 1 follows the player cycle (1, empty, 0)
+AssertionError: expected an element matching [data-action="hint"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ pressHint tests/helpers/play-page.ts:268:54
+ ❯ tests/play-page-hint.test.ts:146:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > No fill when the engine has no target: kind none
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-hint.test.ts:161:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > No fill when the engine has no target: kind broken
+AssertionError: expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ clickCell tests/helpers/play-page.ts:215:14
+ ❯ tests/play-page-hint.test.ts:173:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Sentence shown with a fill: equals the engine sentence, unaltered
+AssertionError: expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ readBoard tests/helpers/play-page.ts:135:62
+    133| /** Read the board from the DOM into the engine's 0-based grid (cell t…
+    134| export function readBoard(root: ParentNode): Grid {
+    135|   expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLen…
+       |                                                              ^
+    136|   const board: Grid = Array.from({ length: SIZE }, () => Array.from({ …
+    137|   for (let r = 1; r <= SIZE; r++) {
+ ❯ expectedHint tests/helpers/play-page.ts:272:62
+ ❯ tests/play-page-hint.test.ts:187:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Board breaks a rule: shows the broken-board sentence and fills nothing
+AssertionError: expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ clickCell tests/helpers/play-page.ts:215:14
+ ❯ tests/play-page-hint.test.ts:198:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > No rule applies: shows the no-rule sentence and fills nothing
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-hint.test.ts:213:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Second press replaces the sentence, it does not append
+AssertionError: expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ readBoard tests/helpers/play-page.ts:135:62
+    133| /** Read the board from the DOM into the engine's 0-based grid (cell t…
+    134| export function readBoard(root: ParentNode): Grid {
+    135|   expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLen…
+       |                                                              ^
+    136|   const board: Grid = Array.from({ length: SIZE }, () => Array.from({ …
+    137|   for (let r = 1; r <= SIZE; r++) {
+ ❯ expectedHint tests/helpers/play-page.ts:272:62
+ ❯ tests/play-page-hint.test.ts:228:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Initial state has no hint message (and the region exists)
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-hint.test.ts:245:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint message stays until the next hint or a new puzzle > Clicking a player cell keeps the hint message (once, then twice more)
+AssertionError: expected an element matching [data-action="hint"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ pressHint tests/helpers/play-page.ts:268:54
+ ❯ tests/play-page-hint.test.ts:255:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/68]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint message stays until the next hint or a new puzzle > The next hint replaces it and a new puzzle clears it
+AssertionError: expected an element matching [data-action="hint"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ pressHint tests/helpers/play-page.ts:268:54
+ ❯ tests/play-page-hint.test.ts:271:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle after play: a fresh generator(6, 7) board, no entries, both messages cleared
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:43:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle is always 6x6
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:73:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle mid-game removes highlights: a clean new puzzle shows none
+AssertionError: expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ clickCell tests/helpers/play-page.ts:215:14
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:85:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle mid-game: highlights follow the new puzzle givens only (old ones are gone)
+AssertionError: expected an element matching [data-cell][data-row="3"][data-col="3"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ clickCell tests/helpers/play-page.ts:215:14
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:99:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > Each press uses a new seed: 1, 2, 3 in this order, one seed-source call per puzzle
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:114:27
+    112|     const spy = generateSpy(() => BLANK);
+    113|     const root = mountPage({ seedSource: seeds.source, generate: spy.g…
+    114|     expect(seeds.calls()).toBe(1);
+       |                           ^
+    115|
+    116|     // other actions never draw a seed
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Injected seed gives a reproducible page: two pages with seed 42 and the real generator are identical
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:133:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Default seed source gives new seeds in its domain: 10 seeds, integers 0..2147483647, no equal neighbours
+AssertionError: expected [Function] to not throw an error but 'AssertionError: expected an element m…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"AssertionError: expected an element matching [data-action=\"new\"]: expected null not to be null"
+
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:147:12
+    145|       const root = mountPage({ generate: spy.generate });
+    146|       for (let i = 0; i < 9; i++) pressNew(root);
+    147|     }).not.toThrow();
+       |            ^
+    148|
+    149|     const seeds = spy.calls.map((c) => c.seed);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Default seed source with the real generator: a 6x6 board is rendered and no error is thrown
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:166:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: no text node, title or attribute value contains the seed in any form
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:176:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/68]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: the same holds on a fixture board and on a root that held other content
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:201:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/68]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text: every collected text has Cyrillic letters and no Latin letters
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-page-text.test.ts:26:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/68]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > the button labels are exactly the two Ukrainian labels of the DOM contract
+AssertionError: expected an element matching [data-action="hint"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ tests/play-page-page-text.test.ts:44:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/68]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text with the real generator (seed 42): the digits in the cells are puzzle content, not collected
+AssertionError: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ tests/play-page-page-text.test.ts:51:23
+     49|     const root = mountPage({ seedSource: () => 42 });
+     50|     const cellTexts = Array.from(root.querySelectorAll('[data-cell]'))…
+     51|     expect(cellTexts).toHaveLength(36);
+       |                       ^
+     52|     expect(cellTexts.some((t) => t === '0' || t === '1')).toBe(true);
+     53|     // none of the cell digits was collected as page text
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/68]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Win message text: exactly the Ukrainian message, with Cyrillic letters and no Latin letters
+AssertionError: expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ cellText tests/helpers/play-page.ts:118:81
+ ❯ setCellTo tests/helpers/play-page.ts:227:10
+ ❯ fillFrom tests/helpers/play-page.ts:263:7
+ ❯ tests/play-page-page-text.test.ts:65:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/68]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Default board is 6x6: data-size 6, exactly 36 cells, every (row, col) pair 1..6 once
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-rendering.test.ts:28:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/68]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Board content comes from the generator: given flags and digits equal generate(6, 42)
+AssertionError: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ tests/play-page-rendering.test.ts:41:28
+     39|     const root = mountPage({ seedSource: () => 42 });
+     40|     const expected = generate(6, 42);
+     41|     expect(allCells(root)).toHaveLength(36);
+       |                            ^
+     42|     let givenCount = 0;
+     43|     for (let r = 1; r <= 6; r++) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/68]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > the generator is called with size 6 and the seed from the seed source, once per puzzle
+AssertionError: expected [] to deeply equal [ { size: 6, seed: 5 } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "seed": 5,
+-     "size": 6,
+-   },
+- ]
++ []
+
+ ❯ tests/play-page-rendering.test.ts:64:23
+     62|     const seeds = seedQueue([5]);
+     63|     const root = mountPage({ seedSource: seeds.source, generate: spy.g…
+     64|     expect(spy.calls).toEqual([{ size: 6, seed: 5 }]);
+       |                       ^
+     65|     expect(seeds.calls()).toBe(1);
+     66|     // the board is the generator's puzzle: the two zero givens of PAI…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/68]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > mounting is synchronous and replaces the previous content of the root
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-rendering.test.ts:78:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/68]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > two mounts on two different roots are independent
+AssertionError: expected 36 [data-cell] elements: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ snapshot tests/helpers/play-page.ts:155:62
+    153| /** Every cell as one string: position, text, data-given, sorted class…
+    154| export function snapshot(root: ParentNode): string[] {
+    155|   expect(allCells(root), 'expected 36 [data-cell] elements').toHaveLen…
+       |                                                              ^
+    156|   const out: string[] = [];
+    157|   for (let r = 1; r <= SIZE; r++) {
+ ❯ tests/play-page-rendering.test.ts:87:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/68]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-32 given cells are marked distinctly > Givens and player cells are distinguishable (fixture puzzle)
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-32 given cells are marked distinctly > Givens and player cells are distinguishable (generator output for seed 42)
+AssertionError: expected [] to have a length of 36 but got +0
+
+- Expected
++ Received
+
+- 36
++ 0
+
+ ❯ tests/play-page-rendering.test.ts:105:21
+    103|       const root = mount();
+    104|       const cells = allCells(root);
+    105|       expect(cells).toHaveLength(36);
+       |                     ^
+    106|       const given = cells.filter((c) => c.getAttribute('data-given') =…
+    107|       const player = cells.filter((c) => c.getAttribute('data-given') …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/68]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-32 given cells are marked distinctly > the fixture marks exactly its ten givens, each with the cell-given class
+AssertionError: expected [] to have a length of 10 but got +0
+
+- Expected
++ Received
+
+- 10
++ 0
+
+ ❯ tests/play-page-rendering.test.ts:125:20
+    123|     const root = mountFixture(WIN_PUZZLE);
+    124|     const marked = allCells(root).filter((c) => c.classList.contains('…
+    125|     expect(marked).toHaveLength(10);
+       |                    ^
+    126|     // spot checks against the fixture: (1,3)=0 given, (2,5)=1 given, …
+    127|     expect(cellEl(root, 1, 3).textContent).toBe('0');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/68]⎯
+
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board: the exact Ukrainian message, apostrophe U+0027
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-win.test.ts:32:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/68]⎯
+
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board when the last cell was empty
+AssertionError: expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ cellText tests/helpers/play-page.ts:118:81
+ ❯ setCellTo tests/helpers/play-page.ts:227:10
+ ❯ fillFrom tests/helpers/play-page.ts:263:7
+ ❯ tests/play-page-win.test.ts:50:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/68]⎯
+
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final hint solves the board
+AssertionError: expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ cellText tests/helpers/play-page.ts:118:81
+ ❯ setCellTo tests/helpers/play-page.ts:227:10
+ ❯ fillFrom tests/helpers/play-page.ts:263:7
+ ❯ tests/play-page-win.test.ts:62:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/68]⎯
+
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Full board with a violation is not a win
+AssertionError: expected an element matching [data-board]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:202:10
+ ❯ tests/play-page-win.test.ts:77:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/68]⎯
+
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Board stays editable after a win: the next click follows the cycle and the message disappears
+AssertionError: expected an element matching [data-cell][data-row="1"][data-col="1"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:106:62
+    104| export function q(root: ParentNode, selector: string): HTMLElement {
+    105|   const el = root.querySelector<HTMLElement>(selector);
+    106|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    107|   return el as HTMLElement;
+    108| }
+ ❯ cellEl tests/helpers/play-page.ts:111:10
+ ❯ cellText tests/helpers/play-page.ts:118:81
+ ❯ setCellTo tests/helpers/play-page.ts:227:10
+ ❯ fillFrom tests/helpers/play-page.ts:263:7
+ ❯ tests/play-page-win.test.ts:91:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/68]⎯
+
+
+ Test Files  7 failed | 1 passed (8)
+      Tests  68 failed | 24 passed (92)
+   Start at  20:34:39
+   Duration  1.10s (environment 64%, import 26%, transform 6%, tests 4%)
+
