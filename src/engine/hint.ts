@@ -28,19 +28,22 @@ const singular = (d: Digit): string => (d === 0 ? 'нуль' : 'одиниця')
 
 function pairSentence(axis: 'row' | 'col', line: number, d: Digit): string {
   const twice = d === 0 ? 'Два нулі' : 'Дві одиниці';
-  return `${twice} поспіль у ${inLine(axis)} ${line + 1}, тож поруч може стояти лише ${singular((1 - d) as Digit)}.`;
+  return `${twice} поспіль у ${inLine(axis)} ${line + 1}, тож поруч може стояти лише ${singular((1 - d) as Digit)}, бо три однакові цифри поспіль заборонені.`;
 }
 
 function sandwichSentence(axis: 'row' | 'col', line: number, d: Digit): string {
   const both = d === 0 ? 'нулями' : 'одиницями';
-  return `Між двома ${both} у ${inLine(axis)} ${line + 1} може стояти лише ${singular((1 - d) as Digit)}.`;
+  return `Між двома ${both} у ${inLine(axis)} ${line + 1} може стояти лише ${singular((1 - d) as Digit)}, бо три однакові цифри поспіль заборонені.`;
 }
 
-function countSentence(axis: 'row' | 'col', line: number, d: Digit, n: number): string {
+function countSentence(axis: 'row' | 'col', line: number, d: Digit, n: number, empties: number): string {
   const words = COUNT_WORDS[n / 2];
   const have = words === undefined ? String(n / 2) : d === 0 ? words.zero : words.one;
-  const rest = d === 0 ? 'одиниці' : 'нулі';
-  return `У ${inLine(axis)} ${line + 1} вже ${have}, тож решта клітинок — ${rest}.`;
+  const ending =
+    empties === 1
+      ? `остання порожня клітинка — ${singular((1 - d) as Digit)}`
+      : `решта порожніх клітинок — ${d === 0 ? 'одиниці' : 'нулі'}`;
+  return `У ${inLine(axis)} ${line + 1} вже ${have}, а нулів і одиниць має бути порівну, тож ${ending}.`;
 }
 
 /** Deterministic hint from the board alone (never the solution); the board is not modified. */
@@ -65,13 +68,17 @@ export function hint(board: Grid): Hint {
           for (const d of [0, 1] as const) {
             let have = 0;
             let firstEmpty = -1;
+            let empties = 0;
             for (let i = 0; i < n; i++) {
               const v = at(axis, line, i);
               if (v === d) have++;
-              else if (v === null && firstEmpty === -1) firstEmpty = i;
+              else if (v === null) {
+                empties++;
+                if (firstEmpty === -1) firstEmpty = i;
+              }
             }
             if (have === n / 2 && firstEmpty !== -1) {
-              return fill(axis, line, firstEmpty, (1 - d) as Digit, 'count', countSentence(axis, line, d, n));
+              return fill(axis, line, firstEmpty, (1 - d) as Digit, 'count', countSentence(axis, line, d, n, empties));
             }
           }
           continue;

@@ -15,10 +15,10 @@ template maps to the manual page check in 3.7. Commits carry
 
 ## 2. Implement in `src/engine/hint.ts`
 
-- [ ] 2.1 `pairSentence`: append «, бо три однакові цифри поспіль заборонені» before the full stop (FR-19).
-- [ ] 2.2 `sandwichSentence`: same clause (FR-20).
-- [ ] 2.3 `countSentence`: take the number of empty cells in the line (N minus its filled cells); build «У <рядку|стовпці> K вже <count phrase>, а нулів і одиниць має бути порівну, тож » plus «решта порожніх клітинок — <одиниці|нулі>.» for 2 or more empty cells and «остання порожня клітинка — <одиниця|нуль>.» for exactly 1 (FR-21); pass the count from the call site; the target cell stays the first empty one.
-- [ ] 2.4 Run `npm run test:run` and confirm every test is green (including NFR-4 one-sentence and NFR-5 no-Latin checks at N = 4, 6, 8); the engine stays free of DOM imports and `Math.random`.
+- [x] 2.1 `pairSentence`: append «, бо три однакові цифри поспіль заборонені» before the full stop (FR-19).
+- [x] 2.2 `sandwichSentence`: same clause (FR-20).
+- [x] 2.3 `countSentence`: take the number of empty cells in the line (N minus its filled cells); build «У <рядку|стовпці> K вже <count phrase>, а нулів і одиниць має бути порівну, тож » plus «решта порожніх клітинок — <одиниці|нулі>.» for 2 or more empty cells and «остання порожня клітинка — <одиниця|нуль>.» for exactly 1 (FR-21); pass the count from the call site; the target cell stays the first empty one.
+- [x] 2.4 Run `npm run test:run` and confirm every test is green (including NFR-4 one-sentence and NFR-5 no-Latin checks at N = 4, 6, 8); the engine stays free of DOM imports and `Math.random`.
 
 ## 3. Validation, eval re-run, docs, and archive
 
