@@ -34,6 +34,7 @@ Rule: if the 5-hour meter is above 70% before slice 2's review-gate, skip that s
 | 2026-10-04 22:36, after slice 3 archived | 8% (resets 23:30) | 54% (resets Wed 7 Oct 20:30) | 23% | Slice 3 end. Rule check for the confirming run (22:24): 8% is below 70%, so it was not skipped. |
 | 2026-10-04 23:13, before slice 4 | 9% (resets 23:30) | 54% (resets Wed 7 Oct 20:30) | 23% | Slice 4 start (session running Opus 5.5; context 102k tokens). |
 | 2026-10-04 23:56, after slice 4 archived | 2% (new window, resets 04:30) | 54% (resets Wed 7 Oct 20:30) | 23% | Slice 4 end. The 5-hour window reset at 23:30, so slice 4's cost is 9% → reset → 2%. Subagent tokens: requirements-analyst 37k, spec-writer 45k, check 54k, test-engineer 67k, implementer 26k (all Sonnet 5.5); review-gate 888k + 406k + 549k (17, 9 and 11 agents). Wall time 23:13 to 23:56. |
+| 2026-10-05 00:21, after update-hint-sentences archived | 3% (resets 04:30) | 54% (resets Wed 7 Oct 20:30) | 23% | NFR-6 job end. Subagent tokens: requirements-analyst 26k, spec-writer 56k, test-engineer 44k, implementer 26k (Sonnet 5.5); review-gate 540k + 182k; eval-suite 135k. Wall time 00:01 to 00:21. Session context 264k tokens. |
 
 ## Deviations and cuts
 
