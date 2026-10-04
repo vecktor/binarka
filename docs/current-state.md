@@ -6,18 +6,32 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-04 16:16:00 (UTC+5:30; Kyiv 13:46)
-- **Current phase:** Phase 1
-- **Last completed gate:** G1
+- **Date and time:** 2026-10-04 18:56:00 (UTC+5:30; Kyiv 16:26)
+- **Current phase:** Phase 3
+- **Last completed gate:** G3
 - **Active change:** none
-- **Progress:** P1 is finished: the user signed off on scope at 16:13, answering all 14 clarifications (`docs/autonomy-log.md` row 7). `docs/requirements.md` holds FR-1 to FR-48 (41 MVP, 7 Future), NFR-1 to NFR-7 (6 MVP, including NFR-6, the hint-clarity eval, kept), TC-1 to TC-14, BC-1 to BC-8, decisions A-1 to A-21 and the confirmed cut order (size selector first; the "new puzzle" button stays if slice 2 shrinks). Grid size re-confirmed: engine takes even N ≥ 4, tested at 4/6/8; page defaults to 6×6; N ≥ 10 Future. No product code yet.
-- **Next task:** P2 specs, then P3 plan, both in session B (Opus 5.5, medium; deviation already in `docs/budget.md`). Read the usage meters first. Run the `spec-pipeline` workflow (spec-writer on Sonnet, high) over two capabilities matching the draft slices: `puzzle-engine` (FR-1 to FR-17, FR-19 to FR-26, FR-28 to FR-30, NFR-1 to NFR-5) and `play-page` (FR-31 to FR-43, NFR-4/NFR-5 where they touch the page, NFR-6). Confirm that split with the user before running it (L1). Then the plan, `docs/mvp-capability-plan.md`, ending at the user's plan sign-off. Ask the user to cache the GPG passphrase before each signed commit (M6).
+- **Progress:** P1–P3 are finished in session B.
+  - Requirements were signed off at 16:13. After a scope change, the amendment was re-signed at 18:45 (FR-49 to FR-56, NFR-8; autonomy-log rows 9–11).
+  - Baseline specs `openspec/specs/puzzle-engine/spec.md` and `openspec/specs/play-page/spec.md` are written and revised.
+  - The capability plan `docs/mvp-capability-plan.md` was signed off at 18:54.
+  - **Cut 0 is applied** (the size selector FR-43 is out, reported NOT-EARNED).
+  - The schedule is re-baselined: slice 1 is due about 21:25, with a **hard limit of 22:00** (cut line 4); slice 2 about 23:25; feature freeze 00:00 user time (21:30 Kyiv).
+  - No product code yet.
+- **Next task:** session C (Sonnet 5.5, medium). Read the usage meters and record them in `docs/budget.md`, then build slice 1 `add-puzzle-engine` per `docs/mvp-capability-plan.md` section 4.1:
+  1. Create the OpenSpec change `openspec/changes/add-puzzle-engine/` (proposal, design, tasks).
+  2. Have `test-engineer` write the tests first and confirm they are red; the first is "every generated puzzle has exactly one solution" over seeds 1–20 at N = 4, 6, 8.
+  3. Have `capability-implementer` take them to green.
+  4. Run the per-slice `review-gate`, one fix round and one confirming run.
+  5. Archive the change.
+
+  Commits touching `src/` carry `Slice: add-puzzle-engine` and `Refs: FR-x`. Ask the user to cache the GPG passphrase before each signed commit (the cache lasts about 10 minutes; autonomy-log M6). Read the clock before any time claim (M7). Then slice 2 `add-play-page` (plan 4.2).
 - **Claims:**
-  - G0 passes: lint, build, hooks fire (empty commit ran them), `core.hooksPath` is `.githooks` — evidence: `npm run gate:status`, commits `cbc84fa` and `4ed10a8`, tag `step-02-factory-init`
+  - G0 passes: lint, build, hooks fire, `core.hooksPath` is `.githooks` — evidence: `npm run gate:status`, commits `cbc84fa` and `4ed10a8`, tag `step-02-factory-init`
   - Factory integrity lock holds 23 gate-bearing files with 6 recorded adaptations — evidence: `factory-lock.json`
-  - G1 signed off by the user (`gate:status` shows "needs sign-off"; the sign-off is a human judgment) — evidence: `docs/autonomy-log.md` row 7, `docs/requirements.md` Status line, tag `step-07-p1-signoff` (diff against `step-06-p1-draft`)
-  - Every MVP FR/NFR row declares a real mechanism (47 rows, 0 failures; existence only, no artifacts yet) — evidence: `npm run check:acceptance`, `trace/acceptance-contracts.json`
-  - Not claimed: G2 (`gate:status` prints PASS over zero specs; vacuous), G3 (no capability plan), G4–G8 (no product code; G4/G6 now compute FAIL because 47 contracts have no artifacts).
+  - G1: requirements signed off by the user, amendment re-signed — evidence: `docs/autonomy-log.md` rows 7 and 11, tags `step-07-p1-signoff` and `step-09-p1-amend` (`gate:status` prints "needs sign-off" because it cannot see a human sign-off)
+  - G2: both baseline specs pass `npx openspec validate --all --strict`, and every one of the 46 MVP FRs is cited by a spec (traceability: 0 failures) — evidence: `docs/qa/traceability-report.md`, tag `step-10-p2-specs`, workflow run `wf_4388e25c-d35` (coverage check: no gaps, no duplicates)
+  - G3: capability plan signed off by the user, and every MVP FR/NFR row declares a real mechanism (`npm run check:acceptance`: 53 tagged rows, 0 failures) — evidence: `docs/mvp-capability-plan.md` Status line, `docs/autonomy-log.md` row 12, tag `step-11-p3-signoff`, `trace/acceptance-contracts.json`
+  - Not claimed: G4–G8 (no product code). **G7 will report FAIL tonight by the user's decision** (no Playwright; `--strict-recordings` needs a recording for every MVP FR, see plan 4.3).
 
 > This header is machine-read: keep the exact formats `Phase <N>` and `G<N>`,
 > and give every done/verified claim an evidence path — `gate-status`
@@ -27,10 +41,10 @@
 
 1. `AGENTS.md` — project agent rules.
 2. `docs/current-state.md` — this handoff.
-3. `docs/requirements.md` — canonical FR/NFR/TC/BC requirements (signed off 2026-10-04).
+3. `docs/requirements.md` — canonical FR/NFR/TC/BC requirements (signed off 2026-10-04 16:13, amendment re-signed 18:45).
 4. `docs/product-brief.md` — product narrative (signed off 2026-10-04).
-5. `docs/mvp-capability-plan.md` — change sequence and scope (not written yet).
-6. `openspec/config.yaml` + `openspec/specs/` — accepted behavior (no specs yet).
+5. `docs/mvp-capability-plan.md` — change sequence and scope (signed off 2026-10-04 18:54).
+6. `openspec/config.yaml` + `openspec/specs/` — accepted behavior (`puzzle-engine`, `play-page`).
 7. `docs/adr/` — ADR-0001 stack, ADR-0002 context architecture.
 8. `docs/qa/` — QA proof pack and recordings.
 9. `docs/autonomy-log.md` and `docs/budget.md` — kept live; update them at every phase.
@@ -38,7 +52,7 @@
 ## OpenSpec Status
 
 ```bash
-npx openspec validate --all --strict   # no specs yet
+npx openspec validate --all --strict   # 2 specs, both pass
 npx openspec list                      # expected: No active changes
 ```
 
@@ -50,8 +64,8 @@ Archived changes: none.
 - `@vitest/coverage-v8@5.0.3` is installed and `npm run test:coverage` is real (json-summary reporter, `src/**`). CI does not run it yet: adding it to the locked `ci.yml` needs a re-lock or a `Refs: PD-x` commit once the first tests exist (slice 1). G5 is "try to fit in", not promised.
 - `recordings`, `visual-fidelity` and `eval-ratchet` remain in the battery and will show NOT-EARNED.
 - The branch has not been pushed. Pushing to the public remote is the user's call.
-- P1 commits live on the worktree branch `claude/binarka-p1-requirements-45688c` (tags `step-06-p1-draft`, `step-07-p1-signoff`); `main` does not have them yet. Merging and pushing are the user's call.
+- P0–P3 commits live on the worktree branch `claude/binarka-p1-requirements-45688c` (tags `step-06` to `step-11`); `main` does not have them yet. Session C must start from this branch (or the user merges it into `main` first). Merging and pushing are the user's call.
 - Process-defect candidate (for the retro, not fixed: the scripts are locked harness files): `gate-status` counts G1 "needs sign-off" as earned for the frontier and prints G2 PASS over zero specs, so the computed frontier reads G2 with no sign-off and no specs behind it.
-- Release risk: G7 runs `traceability --release --strict-recordings`, and traceability warns that no FR has a recording manifest. No requirement declares a recording, so this needs a decision in P3 (waiver or a recording) before G7 can pass.
+- G7 will report FAIL: it runs `traceability --release --strict-recordings`, which needs a recording manifest for every MVP FR and takes no waiver. The user decided at the plan sign-off not to add Playwright (autonomy-log row 12).
 - NFR-1 to NFR-3 timing bounds may be flaky in CI; NFR-5 forbids Latin letters in all user-facing text, CLI errors included.
 - Hooks are per clone: `git config core.hooksPath .githooks`.
