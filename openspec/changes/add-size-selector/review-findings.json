@@ -1,0 +1,34 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "add-size-selector",
+  "change": "add-size-selector",
+  "baseRef": "step-26-s3-red",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 1
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 1,
+      "contested": 1,
+      "rejected": 0
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 1
+    }
+  },
+  "confirmedTitles": [
+    "tasks.md checkboxes do not match reality: sections 1 to 4 are all unticked although the artifacts exist and pass"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-04T16:53:23Z"
+}
