@@ -7,11 +7,11 @@ template maps to the manual page check in 3.7. Commits carry
 
 ## 1. Update the pinned tests first (red)
 
-- [ ] 1.1 In `tests/hint.test.ts` replace every pinned pair, sandwich and count sentence with the delta text (table lines 22 to 29, N = 4 and N = 8 count cases, the two numbering cases, the broken-board case); the four existing count boards move to the singular ending «тож остання порожня клітинка — ...».
-- [ ] 1.2 In `tests/hint.test.ts` add the plural count case: 6×6, row 2 `0 1 0 . . 0`, target row 2 column 4 value 1, sentence «У рядку 2 вже три нулі, а нулів і одиниць має бути порівну, тож решта порожніх клітинок — одиниці.» (FR-21).
-- [ ] 1.3 In `tests/hint-sentences.test.ts` update the pinned count sentence (line 60) to the singular text; tag stays `@trace NFR-4`; add a check that a pair sentence with the «бо» clause is one sentence.
-- [ ] 1.4 In `tests/play-page-hint.test.ts` (lines 188, 193, 235) and `tests/play-page-helpers.test.ts` (line 251) update the pinned pair sentences to the new text.
-- [ ] 1.5 Run `npm run test:run`, confirm the updated tests FAIL (red) and only for the old wording, and save the failing output to `docs/qa/update-hint-sentences-red-run.txt` with the red and green counts.
+- [x] 1.1 In `tests/hint.test.ts` replace every pinned pair, sandwich and count sentence with the delta text (table lines 22 to 29, N = 4 and N = 8 count cases, the two numbering cases, the broken-board case); the four existing count boards move to the singular ending «тож остання порожня клітинка — ...».
+- [x] 1.2 In `tests/hint.test.ts` add the plural count case: 6×6, row 2 `0 1 0 . . 0`, target row 2 column 4 value 1, sentence «У рядку 2 вже три нулі, а нулів і одиниць має бути порівну, тож решта порожніх клітинок — одиниці.» (FR-21).
+- [x] 1.3 In `tests/hint-sentences.test.ts` update the pinned count sentence (line 60) to the singular text; tag stays `@trace NFR-4`; add a check that a pair sentence with the «бо» clause is one sentence.
+- [x] 1.4 In `tests/play-page-hint.test.ts` (lines 188, 193, 235) and `tests/play-page-helpers.test.ts` (line 251) update the pinned pair sentences to the new text.
+- [x] 1.5 (evidence: `docs/qa/update-hint-sentences-red-run.txt`, commits `2c08c44` and `77111fb`, tag `step-37-s5-red`) Run `npm run test:run`, confirm the updated tests FAIL (red) and only for the old wording, and save the failing output to `docs/qa/update-hint-sentences-red-run.txt` with the red and green counts.
 
 ## 2. Implement in `src/engine/hint.ts`
 

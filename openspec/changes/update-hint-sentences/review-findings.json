@@ -1,0 +1,35 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "update-hint-sentences",
+  "change": "update-hint-sentences",
+  "baseRef": "step-37-s5-red",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 2,
+      "contested": 0,
+      "rejected": 1
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "tasks.md section 1 (tests first, red) is done but its boxes are still unticked",
+    "The plural count ending is tested only for the zeros-in-a-row case; the «нулі» plural branch and the column plural are never exercised"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-04T18:46:08Z"
+}

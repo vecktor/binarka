@@ -70,6 +70,12 @@ describe('@trace FR-21 count hint', () => {
     );
   });
 
+  it('two empty cells in a column of ones use the plural ending with нулі (review-gate finding)', () => {
+    expect(hint(boardOf(6, { cols: { 3: '1 0 1 . . 1' } }))).toEqual(
+      fill(4, 3, 0, 'count', 'У стовпці 3 вже три одиниці, а нулів і одиниць має бути порівну, тож решта порожніх клітинок — нулі.'),
+    );
+  });
+
   it('one hint fills one cell, the first empty one (row 2 column 4, not column 5)', () => {
     const result = hint(boardOf(6, { rows: { 2: '0 1 0 . . 0' } }));
     expect(result.kind).toBe('fill');
