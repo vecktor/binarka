@@ -6,7 +6,7 @@ Rule: if the 5-hour meter is above 70% before slice 2's review-gate, skip that s
 
 | Phase | Session / model | Planned (weekly, all models) | Planned (5-hour) | Actual | Notes |
 |---|---|---|---|---|---|
-| P0 setup, up to the stack ADR | A: Sonnet 5.5, medium | ~1% | ~3% | _fill after P0_ | Docs only until the ADR is decided |
+| P0 setup, through G0 | A: Sonnet 5.5, medium | ~1% | ~3% | weekly 51% → 51% (under 1%); 5-hour 2% → 2% | Instrument: `get_usage`, read at ~14:40 and ~15:00. Scope grew past the ADR stop: scaffold, init and the lock were done after the user approved them. Session context used: about 154k tokens. |
 | P1 requirements | B: Opus 5.5, medium | ~3% | ~8% | | |
 | P2 specs + P3 plan | B | ~4% | ~10% | | Deviation: P2 runs in session B to save one handoff |
 | Slice 1 | C: Sonnet 5.5, medium | ~8% | ~25% | | one review-gate, one fix round, one confirming run |
@@ -19,6 +19,7 @@ Rule: if the 5-hour meter is above 70% before slice 2's review-gate, skip that s
 | When (user time, UTC+5:30) | 5-hour | Weekly, all | Weekly, Fable | Phase |
 |---|---|---|---|---|
 | 2026-10-04 ~14:40, before P0 | 2% (resets 17:50) | 51% (resets Wed 7 Oct 20:30) | 23% | P0 start |
+| 2026-10-04 ~15:00, after P0 | 2% (resets 17:50) | 51% | 23% | P0 end (readings are whole percents, so P0 cost is under 1%) |
 
 ## Deviations and cuts
 

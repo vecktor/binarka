@@ -41,6 +41,7 @@ None yet.
 |---|---|---|---|---|
 | M2 | 2026-10-04 | The agent read "starting with the two listed in the brief" as two mistakes and wrote a placeholder row for a second mistake that does not exist (the brief lists one decision and one mistake). | Agent, before committing | Row removed before the first commit; nothing invented. |
 | M3 | 2026-10-04 | The agent copied `scripts/lib/` (parity-capture helper) into the repo although the init steps do not list it. | Agent, while reviewing the file list | Removed before commit. |
+| M4 | 2026-10-04 | The agent chained `git tag` after a `git commit | tail` pipe, which hid the failed pre-commit (ESLint rejected the workflow files for undeclared runtime globals), so tag `step-02-factory-init` pointed at the wrong commit. | Agent, from the missing commit in `git log` | Tag deleted and recreated on the real commit after a clean commit; ESLint config now declares the workflow globals. The pre-commit hook did its job. |
 | M1 | 2026-10-04 | The agent first treated "simplify my puzzles project" as a brownfield import of the old code. | User | Project restarted as a greenfield build from requirements; the old project is off-limits. |
 
 ## Numbers
