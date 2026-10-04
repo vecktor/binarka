@@ -7,7 +7,7 @@ export interface PlayPageOptions {
   generate?: (size: number, seed: number) => Puzzle;
 }
 
-const SIZE = 6;
+const SIZES = [4, 6, 8];
 const WIN_TEXT = "Вітаємо, головоломку розв'язано!";
 
 function copyGrid(grid: Grid): Grid {
@@ -32,12 +32,19 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const boardHost = el('div', { class: 'board-host' });
   const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, 'Підказка');
   const newButton = el('button', { type: 'button', 'data-action': 'new' }, 'Нова головоломка');
+  const sizeSelect = el('select', { 'data-control': 'size' });
+  for (const n of SIZES) {
+    const option = el('option', { value: String(n) }, `Поле ${n}×${n}`);
+    if (n === 6) option.selected = true;
+    sizeSelect.appendChild(option);
+  }
   const buttons = el('div', { class: 'buttons' });
   buttons.append(hintButton, newButton);
   const hintMessage = el('p', { 'data-message': 'hint', class: 'message' });
   const winMessage = el('p', { 'data-message': 'win', class: 'message message-win' });
-  root.replaceChildren(heading, boardHost, buttons, hintMessage, winMessage);
+  root.replaceChildren(heading, sizeSelect, boardHost, buttons, hintMessage, winMessage);
 
+  let size = 6;
   let givens: Grid = [];
   let board: Grid = [];
   let cellEls: HTMLElement[][] = [];
@@ -53,16 +60,17 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   }
 
   function refreshHighlights(): void {
+    const n = board.length;
     const marked = new Set<string>();
     for (const v of findViolations(board)) {
       if (v.rule === 'count') {
-        for (let i = 0; i < SIZE; i++) marked.add(v.axis === 'row' ? `${v.index},${i}` : `${i},${v.index}`);
+        for (let i = 0; i < n; i++) marked.add(v.axis === 'row' ? `${v.index},${i}` : `${i},${v.index}`);
       } else {
         for (const [r, c] of v.cells) marked.add(`${r},${c}`);
       }
     }
-    for (let r = 0; r < SIZE; r++) {
-      for (let c = 0; c < SIZE; c++) cellEls[r]?.[c]?.classList.toggle('cell-violation', marked.has(`${r},${c}`));
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) cellEls[r]?.[c]?.classList.toggle('cell-violation', marked.has(`${r},${c}`));
     }
   }
 
@@ -86,14 +94,17 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     updateWin();
   }
 
-  function showPuzzle(puzzle: Puzzle): void {
+  function showPuzzle(puzzle: Puzzle, n: number): void {
+    if (puzzle.givens.length !== n || puzzle.givens.some((row) => row.length !== n)) {
+      throw new Error(`puzzle is not ${n}x${n}`);
+    }
     givens = copyGrid(puzzle.givens);
     board = copyGrid(puzzle.givens);
-    const boardEl = el('div', { 'data-board': '', 'data-size': String(SIZE), class: 'board' });
+    const boardEl = el('div', { 'data-board': '', 'data-size': String(n), class: 'board' });
     cellEls = [];
-    for (let r = 0; r < SIZE; r++) {
+    for (let r = 0; r < n; r++) {
       const rowEls: HTMLElement[] = [];
-      for (let c = 0; c < SIZE; c++) {
+      for (let c = 0; c < n; c++) {
         const cell = el('div', { 'data-cell': '', 'data-row': String(r + 1), 'data-col': String(c + 1), class: 'cell' });
         rowEls.push(cell);
         boardEl.appendChild(cell);
@@ -102,13 +113,14 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     }
     boardEl.addEventListener('click', onBoardClick);
     boardHost.replaceChildren(boardEl);
-    for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) renderCell(r, c);
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) renderCell(r, c);
     refreshHighlights();
   }
 
-  function newPuzzle(): boolean {
+  function newPuzzle(requestedSize: number): boolean {
     try {
-      showPuzzle(makePuzzle(SIZE, seedSource()));
+      showPuzzle(makePuzzle(requestedSize, seedSource()), requestedSize);
+      size = requestedSize;
       return true;
     } catch {
       return false; // keep the previous board (or no board at mount)
@@ -126,12 +138,32 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     updateWin();
   });
 
+  function restoreSelect(): void {
+    for (const option of Array.from(sizeSelect.options)) {
+      if (option.value === String(size)) option.selected = true;
+    }
+  }
+
+  sizeSelect.addEventListener('change', () => {
+    const chosen = SIZES.find((n) => String(n) === sizeSelect.value);
+    if (chosen === undefined) {
+      restoreSelect();
+      return;
+    }
+    if (newPuzzle(chosen)) {
+      hintMessage.textContent = '';
+      winMessage.textContent = '';
+    } else {
+      restoreSelect();
+    }
+  });
+
   newButton.addEventListener('click', () => {
-    if (newPuzzle()) {
+    if (newPuzzle(size)) {
       hintMessage.textContent = '';
       winMessage.textContent = '';
     }
   });
 
-  newPuzzle();
+  newPuzzle(size);
 }
