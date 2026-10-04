@@ -1,27 +1,27 @@
 {
-  "generatedAt": "2026-10-04T15:28:26Z",
+  "generatedAt": "2026-10-04T18:45:14Z",
   "kind": "eval",
   "results": [
     {
       "id": "eval-hint-clarity-pair",
       "dimension": "hint-clarity",
       "proof": "NFR-6, FR-19",
-      "score": 82,
+      "score": 92,
       "pass": true
     },
     {
       "id": "eval-hint-clarity-sandwich",
       "dimension": "hint-clarity",
       "proof": "NFR-6, FR-20",
-      "score": 88,
+      "score": 95,
       "pass": true
     },
     {
       "id": "eval-hint-clarity-count",
       "dimension": "hint-clarity",
       "proof": "NFR-6, FR-21",
-      "score": 76,
-      "pass": false
+      "score": 95,
+      "pass": true
     }
   ]
 }

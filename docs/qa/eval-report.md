@@ -2,23 +2,23 @@
 
 The quality BAR for graded behavior. Recordings illustrate these cases for humans; this report decides pass/fail. Guarded in CI by `node scripts/check-eval-ratchet.mjs` against `quality/eval-baseline.json`.
 
-- Cases: 3 (2 pass, 1 fail)
+- Cases: 3 (3 pass, 0 fail)
 - Pass mark: 80/100 per case; CRITICAL rubric misses fail a case outright.
-- Per-dimension score (ratcheted): {"hint-clarity":82}
+- Per-dimension score (ratcheted): {"hint-clarity":94}
 
 | Case | Dimension | Proves | Score | Verdict | Judges |
 |---|---|---|---|---|---|
-| eval-hint-clarity-pair | hint-clarity | NFR-6, FR-19 | 82 | pass | 2 |
-| eval-hint-clarity-sandwich | hint-clarity | NFR-6, FR-20 | 88 | pass | 2 |
-| eval-hint-clarity-count | hint-clarity | NFR-6, FR-21 | 76 | **FAIL** | 2 |
+| eval-hint-clarity-pair | hint-clarity | NFR-6, FR-19 | 92 | pass | 1 |
+| eval-hint-clarity-sandwich | hint-clarity | NFR-6, FR-20 | 95 | pass | 1 |
+| eval-hint-clarity-count | hint-clarity | NFR-6, FR-21 | 95 | pass | 1 |
 
 ## Per-case notes
 
-### eval-hint-clarity-pair — 82/100 (pass)
-All three critical criteria are met. The pair rule really holds on row 3 ('0 0 . . . .'), the line and number match the filled cell (row 3, column 3), and the placed 1 matches 'лише одиниця'. The one deduction is under criterion 4: the sentence implies the no-three-in-a-row rule but never states it, so a newcomer may not see why, and 'поруч' does not say which cell is meant. The sentence is otherwise clean, grammatical Ukrainian, which gives a score in the mid-80s. | All three critical criteria are met. The pair rule really holds on the shown board, the hint names the right row (3) and matches the filled cell (row 3, column 3), and it names zeros and places a 1 as the sentence implies. Criterion 5 is fully met. Criterion 4 is only partly met: the Ukrainian is natural and correct, but the hint assumes the player already knows the no-three-in-a-row rule and says 'поруч' without pointing to a specific cell, so it falls short of being understandable to someone who does not know the rules.
+### eval-hint-clarity-pair — 92/100 (pass)
+All three critical criteria are met. The board shows a pair of zeros at row 3, columns 1–2. The sentence correctly names "рядку 3" and zeros, and the 1 placed at row 3, column 3 is the digit the sentence implies. The text is one grammatical Ukrainian sentence with no Latin letters, and it states the no-three-in-a-row rule. The small deduction is because "поруч" does not say which cell gets the 1.
 
-### eval-hint-clarity-sandwich — 88/100 (pass)
-This output passes with a score of 88. All three critical criteria are met. The board really has 0 in rows 1 and 3 of column 2, the sentence names \"стовпці 2\", and it implies a one, which is the digit that was placed. The sentence is one sentence of correct Ukrainian with no Latin letters. Points were taken off because it never says why only a one fits (three equal digits in a row are forbidden), so a player who does not know the rules may not follow it. | All three critical criteria are met. The board shows 0 / . / 0 in column 2, the sentence names 'стовпці 2' correctly, and the placed 1 matches 'лише одиниця'. The sentence is a single, grammatical Ukrainian sentence with no Latin letters. I took points off because it states the conclusion without the underlying no-three-in-a-row reason, which makes it less clear to a player who does not know the rules.
+### eval-hint-clarity-sandwich — 95/100 (pass)
+All three critical criteria are met. The board shows 0, empty, 0 in rows 1 to 3 of column 2. The sentence names the gap rule, the correct column (стовпці 2) and the correct digits (zeros around the gap, one placed). It is one grammatical Ukrainian sentence with no Latin letters, and it explains the reason for the move. The only small deduction is for slight wording stiffness ('може стояти лише одиниця'); I would otherwise ship it unchanged.
 
-### eval-hint-clarity-count — 76/100 (FAIL)
-All three critical criteria are met. Row 5 really holds three zeros (columns 1, 3 and 6), and the hint names the correct row, 5, which matches the filled cell at row 5, column 5. The digit 1 that was placed follows from the sentence. The hint is one sentence with no Latin letters. Points come off on criterion 4: the sentence leaves out why three zeros forces ones (the rule that a line needs equal zeros and ones, half each), so a novice cannot follow it. Its plural 'решта клітинок' also does not fit the single empty cell left. | All three critical criteria are met. The board really shows three zeros in row 5, the sentence names row 5 correctly, and the placed 1 is the digit the sentence implies. Criterion 5 is fully met. Criterion 4 is only partly met: the sentence never says that each row must hold equal 0s and 1s (half of six), so a newcomer sees the conclusion but not the reason. The plural 'решта клітинок' for a single empty cell also reads slightly off. That drops the score into the high 70s.
+### eval-hint-clarity-count — 95/100 (pass)
+Row 5 on the board (0 1 0 1 . 0) really does already hold three zeros. The hint names the correct line (row 5) and gives the deduced digit (1), which matches the action of filling row 5, column 5 with 1, so all critical criteria are met. The sentence is one grammatical Ukrainian sentence with no Latin letters, and it explains the equal-count rule without assuming the player knows it. I took a small deduction because the sentence does not say that half of a 6-cell row is three. A beginner has to count the cells on the board to see why three zeros is the limit.
