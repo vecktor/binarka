@@ -36,9 +36,26 @@
         "ui"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-04-update-hint-sentences",
+      "reviewEvidence": "clean",
+      "trailerCommits": 6,
+      "libDomains": [
+        "engine"
+      ],
+      "processComplete": true
     }
   ],
-  "overlaps": [],
+  "overlaps": [
+    {
+      "domain": "engine",
+      "slices": [
+        "2026-10-04-add-puzzle-engine",
+        "2026-10-04-update-hint-sentences"
+      ]
+    }
+  ],
   "failures": [],
   "warnings": [
     {
@@ -48,6 +65,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-04-add-rules-and-reset: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "in-scope",
+      "msg": "src/engine/ modified by 2 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences) — review for scope drift"
     }
   ]
 }
