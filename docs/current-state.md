@@ -6,11 +6,11 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-04 23:57:00 (UTC+5:30; Kyiv 21:27)
+- **Date and time:** 2026-10-04 23:56:00 (UTC+5:30; Kyiv 21:26)
 - **Current phase:** Phase 4
 - **Last completed gate:** G3
 - **Active change:** none (slices 1 to 4 are archived)
-- **Progress:** slice 4 `add-rules-and-reset` (FR-57 rules block, FR-58 reset «Скинути»; amendment signed by the user at about 23:35, autonomy-log row 32; freeze moved to about 00:45 by the user, row 33) is implemented, reviewed and archived, test-first, at about 23:57, with the dedicated agents on Sonnet 5.5 (row 34). Commits are UNSIGNED (GPG probe exit 2): change `ad00181` (`step-30-s4-change`), red tests `63c26c4`, red evidence `0a2ec20` (`step-31-s4-red`), green `6f63c01` (`step-32-s4-green`), fix `6491011` (`step-33-s4-fix1`), fix `c91c884` (`step-34-s4-fix2`), archive commit (`step-35-s4-archived`).
+- **Progress:** slice 4 `add-rules-and-reset` (FR-57 rules block, FR-58 reset «Скинути»; amendment signed by the user at about 23:35, autonomy-log row 32; freeze moved to about 00:45 by the user, row 33) is implemented, reviewed and archived, test-first, at about 23:56, with the dedicated agents on Sonnet 5.5 (row 34). Commits are UNSIGNED (GPG probe exit 2): change `ad00181` (`step-30-s4-change`), red tests `63c26c4`, red evidence `0a2ec20` (`step-31-s4-red`), green `6f63c01` (`step-32-s4-green`), fix `6491011` (`step-33-s4-fix1`), fix `c91c884` (`step-34-s4-fix2`), archive commit (`step-35-s4-archived`).
   - Earlier: slice 3 `add-size-selector` (FR-43, restored by the user, autonomy-log rows 22 and 24) is implemented, reviewed and archived, test-first, at about 22:45, about 45 minutes ahead of the 23:30 target. Slices 1 and 2 as before (archived 20:20 and 20:50). No cut line applied. P0–P3 are unchanged (claims below).
   - Commit and tag order, slice 3: change `a3adf3c` (`step-25-s3-change`), revised change `41b7730`, red tests `47b25bd` (`step-26-s3-red`) and `ca12f12` (24th test, red evidence 67 red), green `d7613cf` (`step-27-s3-green`), review fix round `8b52593` (`step-28-s3-fix1`), archive commit (`step-29-s3-archived`). Slice 2: tags `step-19` to `step-23`; slice 1: `step-13` to `step-18`.
   - **Signing:** every commit in this branch's history is signed (`git log --format='%G?' | sort | uniq -c` gives 37 `G`, 0 `N`, checked 2026-10-04 about 22:57). The slice 3 commits were re-signed on that date by a forced rebase (tags `step-26` to `step-29` re-pointed; the unsigned originals are on the local branch `backup/slice3-unsigned-6877f25`), so the slice 3 SHAs in this file are the re-signed ones.

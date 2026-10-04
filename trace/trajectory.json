@@ -22,7 +22,7 @@
     {
       "slice": "2026-10-04-add-rules-and-reset",
       "reviewEvidence": "unclean",
-      "trailerCommits": 6,
+      "trailerCommits": 7,
       "libDomains": [
         "ui"
       ],
