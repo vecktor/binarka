@@ -7,272 +7,272 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-2": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-3": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-4": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-5": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-6": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-7": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-8": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-9": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/rules.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-10": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/solver.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-11": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/solver.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-12": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/solver.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-13": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-14": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-15": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator-unique.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-16": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-17": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-49": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-50": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-51": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-19": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-20": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-21": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-22": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-23": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-24": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-25": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-26": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-28": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-29": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-30": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-52": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-53": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-54": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "FR-31": [
@@ -375,40 +375,40 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator-timing.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "NFR-2": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator-timing.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "NFR-3": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/generator-timing.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "NFR-4": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "NFR-5": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/hint-sentences.test.ts",
+        "status": "artifact-ok"
       }
     ],
     "NFR-6": [
@@ -423,8 +423,8 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": null,
-        "status": "missing-artifact"
+        "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
       }
     ]
   }

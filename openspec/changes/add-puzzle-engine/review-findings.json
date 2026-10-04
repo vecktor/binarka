@@ -1,0 +1,34 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "add-puzzle-engine",
+  "change": "add-puzzle-engine",
+  "baseRef": "step-14-s1-deps",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 0
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "tasks.md 5.3 still points to the deleted shim src/node-env.d.ts"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-04T14:48:46Z"
+}

@@ -47,13 +47,13 @@ database exists. Commits carry `Slice: add-puzzle-engine` and `Refs: FR-x`.
 
 ## 5. Validation, docs and archive prep
 
-- [ ] 5.1 Run `npm run lint`.
-- [ ] 5.2 Run `npm run test:run` (all green, including the timing tests).
-- [ ] 5.3 Run `npm run build` (`tsc --noEmit` covers `tests/` and `src/node-env.d.ts`).
-- [ ] 5.4 Run `npx openspec validate add-puzzle-engine --strict`.
-- [ ] 5.5 Run `npx openspec validate --all --strict`.
-- [ ] 5.6 Review-gate for this slice (correctness and spec-compliance on Opus medium, security on Sonnet medium, verifiers on Sonnet medium, focus "return only defects"): one run, one fix round for confirmed defects, one confirming run; no open confirmed defect remains. Save the report path in `docs/current-state.md`.
-- [ ] 5.7 Update `docs/current-state.md`: last update date and time (UTC+5:30, Kyiv is +2:30), phase, slice status, the red-run evidence path from 4.10, the test and validation evidence, and "Scope NOT delivered": NFR-6 eval (NOT-EARNED until graded), FR-18, FR-27, FR-56. Update `README.md` with the CLI usage (`npm run --silent cli -- --size 6 --seed 42`).
-- [ ] 5.8 Confirm the only new dependency is the user-approved `@types/node` (`git diff package.json` shows that one line).
-- [ ] 5.9 Manual CLI smoke run (stands in for the DB smoke flow; no database exists): (a) run `npm run --silent cli -- --size 6 --seed 42` and check stdout is 6 lines of 6 tokens from `0`, `1`, `.`, exit code 0 (`echo $?`), nothing on stderr; (b) run it again and diff the two outputs, they must be identical; (c) run `npm run --silent cli` and compare with `--size 6 --seed 1`; (d) run `npm run --silent cli -- --size 5` and check one English sentence on stderr, exit code 1, stdout empty (`2>/dev/null` prints nothing); (e) run `--size 06 --seed 7` and `--size 6 --seed 7` and diff; (f) run `--size 8 --seed 20` and note the time (under 3 s); (g) run `--size 6 --seed` and `--level 3` and check one English error each with exit code 1. Record the outcome and the date in `docs/current-state.md`.
+- [x] 5.1 Run `npm run lint`.
+- [x] 5.2 Run `npm run test:run` (all green, including the timing tests).
+- [x] 5.3 Run `npm run build` (`tsc --noEmit` covers `src/` and `tests/`; Node typings come from the user-approved `@types/node`).
+- [x] 5.4 Run `npx openspec validate add-puzzle-engine --strict`.
+- [x] 5.5 Run `npx openspec validate --all --strict`.
+- [x] 5.6 (round 1 `wf_01e59347-3e4`: 3 confirmed minor, fixed in `50840e8`; confirming run `wf_f8542286-f1c`: 1 confirmed minor doc defect, fixed by hand, not re-run, `review-findings.json` stays `clean: false`) Review-gate for this slice (correctness and spec-compliance on Opus medium, security on Sonnet medium, verifiers on Sonnet medium, focus "return only defects"): one run, one fix round for confirmed defects, one confirming run; no open confirmed defect remains. Save the report path in `docs/current-state.md`.
+- [x] 5.7 Update `docs/current-state.md`: last update date and time (UTC+5:30, Kyiv is +2:30), phase, slice status, the red-run evidence path from 4.10, the test and validation evidence, and "Scope NOT delivered": NFR-6 eval (NOT-EARNED until graded), FR-18, FR-27, FR-56. Update `README.md` with the CLI usage (`npm run --silent cli -- --size 6 --seed 42`).
+- [x] 5.8 Confirm the only new dependency is the user-approved `@types/node` (`git diff package.json` shows that one line).
+- [x] 5.9 Manual CLI smoke run (stands in for the DB smoke flow; no database exists): (a) run `npm run --silent cli -- --size 6 --seed 42` and check stdout is 6 lines of 6 tokens from `0`, `1`, `.`, exit code 0 (`echo $?`), nothing on stderr; (b) run it again and diff the two outputs, they must be identical; (c) run `npm run --silent cli` and compare with `--size 6 --seed 1`; (d) run `npm run --silent cli -- --size 5` and check one English sentence on stderr, exit code 1, stdout empty (`2>/dev/null` prints nothing); (e) run `--size 06 --seed 7` and `--size 6 --seed 7` and diff; (f) run `--size 8 --seed 20` and note the time (under 3 s); (g) run `--size 6 --seed` and `--level 3` and check one English error each with exit code 1. Record the outcome and the date in `docs/current-state.md`.
 - [ ] 5.10 Archive, only after 5.1 to 5.9 all passed and the review-gate in 5.6 has no open confirmed defect: run `npx openspec archive add-puzzle-engine --skip-specs --yes` (the baseline spec already holds the requirements), then run `npx openspec validate --all --strict` again.
