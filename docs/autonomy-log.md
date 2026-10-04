@@ -23,7 +23,7 @@ None yet.
 
 | # | Date | From → to | What happened | Decided by |
 |---|---|---|---|---|
-| L1 | 2026-10-04 | Interpreting the task and scope: 3 → 1 | The agent misread "simplify my puzzles project" as a brownfield import (see mistake M1). Since then the agent confirms its reading of scope with the user before acting on it. | Proposed by agent after the user's correction; **user to confirm** |
+| L1 | 2026-10-04 | Interpreting the task and scope: 3 → 1 | The agent misread "simplify my puzzles project" as a brownfield import (see mistake M1). Since then the agent confirms its reading of scope with the user before acting on it. | Proposed by agent after the user's correction; **confirmed by the user on 2026-10-04**, as described: the agent states its reading of ambiguous scope and waits; scope changes and conflicts between artifacts also wait for the user. Pre-agreed cut lines from the brief are applied and logged without asking; dependency, harness and push approvals are unchanged. |
 
 ## Escalations deliberately not taken
 
