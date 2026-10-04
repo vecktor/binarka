@@ -1,0 +1,106 @@
+{
+  "generatedAt": "2026-10-04T18:25:55.235Z",
+  "ledger": {
+    "path": "trace/ledger.jsonl",
+    "present": true,
+    "eventCount": 101,
+    "malformedLines": 0
+  },
+  "productCodePresent": true,
+  "result": "PASS",
+  "vacuousPasses": 0,
+  "warningsByClass": {},
+  "acceptanceCoverage": {
+    "covered": 54,
+    "declared": 54
+  },
+  "metrics": {
+    "vacuousPasses": {
+      "count": 0,
+      "events": []
+    },
+    "warningsByClass": {},
+    "notEarned": {
+      "count": 0
+    },
+    "warningTrendByClass": {},
+    "retriesPerCheck": {
+      "pre-commit": {
+        "runs": 43,
+        "failures": 5,
+        "retries": 5
+      },
+      "commit-msg": {
+        "runs": 38,
+        "failures": 0,
+        "retries": 0
+      },
+      "gate-status": {
+        "runs": 20,
+        "failures": 20,
+        "retries": 19
+      }
+    },
+    "redToGreenLatency": {
+      "perCheck": {
+        "pre-commit": {
+          "episodes": [
+            {
+              "redAt": "2026-10-04T09:24:46.715Z",
+              "greenAt": "2026-10-04T09:25:16.328Z",
+              "ms": 29613
+            },
+            {
+              "redAt": "2026-10-04T16:07:57.482Z",
+              "greenAt": "2026-10-04T16:08:22.988Z",
+              "ms": 25506
+            },
+            {
+              "redAt": "2026-10-04T18:06:43.878Z",
+              "greenAt": "2026-10-04T18:09:59.441Z",
+              "ms": 195563
+            }
+          ],
+          "avgMs": 83561,
+          "stillRed": false
+        },
+        "commit-msg": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "gate-status": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": true
+        }
+      },
+      "overallAvgMs": 83561
+    },
+    "waivers": {
+      "ledgerEvents": 0,
+      "contractWaivers": 0,
+      "total": 0
+    },
+    "claimDivergence": {
+      "ledgerEvents": 0,
+      "unmetContracts": 0,
+      "unmet": [],
+      "total": 0
+    },
+    "uncommittedWork": {
+      "dirtyStreakEvents": 101,
+      "since": "2026-10-04T09:24:28.113Z",
+      "ageMs": 32247720
+    },
+    "corrections": {
+      "total": 0,
+      "open": 0,
+      "openIds": []
+    }
+  },
+  "inputs": {
+    "acceptanceContracts": 54,
+    "corrections": 0
+  }
+}

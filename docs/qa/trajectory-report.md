@@ -5,13 +5,14 @@ archived slice took: review evidence, `Slice:` trailers, and module scope.
 It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
-Scope: 3 archived slice(s).
-Result: PASS, 1 warning(s)
+Scope: 4 archived slice(s).
+Result: PASS, 2 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
 |---|---|---|---|---|
 | 2026-10-04-add-play-page | clean | 6 | yes | ui |
 | 2026-10-04-add-puzzle-engine | **unclean** | 8 | yes | engine |
+| 2026-10-04-add-rules-and-reset | **unclean** | 6 | yes | ui |
 | 2026-10-04-add-size-selector | clean | 15 | yes | ui |
 
 ## Cross-slice module overlap
@@ -25,3 +26,4 @@ None.
 ## Warnings
 
 - **review-evidence**: 2026-10-04-add-puzzle-engine: review-findings.json is unclean (review must have run clean before archive)
+- **review-evidence**: 2026-10-04-add-rules-and-reset: review-findings.json is unclean (review must have run clean before archive)

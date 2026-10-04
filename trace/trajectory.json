@@ -20,6 +20,15 @@
       "processComplete": true
     },
     {
+      "slice": "2026-10-04-add-rules-and-reset",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 6,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
       "slice": "2026-10-04-add-size-selector",
       "reviewEvidence": "clean",
       "trailerCommits": 15,
@@ -35,6 +44,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-04-add-puzzle-engine: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-04-add-rules-and-reset: review-findings.json is unclean (review must have run clean before archive)"
     }
   ]
 }

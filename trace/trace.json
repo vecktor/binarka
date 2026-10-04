@@ -631,7 +631,7 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/changes/add-rules-and-reset/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -643,7 +643,7 @@
     {
       "id": "FR-58",
       "specs": [
-        "openspec/changes/add-rules-and-reset/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -850,10 +850,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-58 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-rules-and-reset\" is not archived"
     }
   ]
 }

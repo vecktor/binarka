@@ -2,9 +2,9 @@
 
 ## Purpose
 
-The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a grid size selector (4×4, 6×6, 8×8; 6×6 at start), a hint button and a new-puzzle button, and shows a Ukrainian win message when the board is solved. The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
+The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a grid size selector (4×4, 6×6, 8×8; 6×6 at start), a hint button, a reset button and a new-puzzle button, a rules block under the board, and shows a Ukrainian win message when the board is solved. The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
 
-Ownership: this capability owns FR-31 to FR-43. It traces NFR-5 only for the text the page itself shows (labels, buttons, size options, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
+Ownership: this capability owns FR-31 to FR-43, FR-57 and FR-58. It traces NFR-5 only for the text the page itself shows (labels, buttons including the reset label, size options, rules text, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
 
 ## DOM contract used by the scenarios
 
@@ -12,10 +12,10 @@ Scenarios are decided from the DOM only (text content, classes, data attributes,
 
 ### Mount entry point and fixtures (spec-made contract)
 
-FR-31 to FR-43 and A-4 only require that the seed is injectable. The following entry point is a contract chosen by this spec so scenarios can be written test-first; the change design may rename it only together with this spec.
+FR-31 to FR-43, FR-57, FR-58 and A-4 only require that the seed is injectable. The following entry point is a contract chosen by this spec so scenarios can be written test-first; the change design may rename it only together with this spec.
 
 - Entry point: `mountPlayPage(root: HTMLElement, options?: { seedSource?: () => number; generate?: (size: number, seed: number) => Puzzle }): void`, exported from `src/ui/`. `Puzzle` is the type the engine generator returns (engine interface in `openspec/specs/puzzle-engine/spec.md`). `src/main.ts` calls it with the `#app` element and no options.
-- Mounting is synchronous: when the call returns, the board, the size selector, buttons and both message regions are in `root`. It replaces the previous content of `root`. Two mounts on two different roots are independent.
+- Mounting is synchronous: when the call returns, the board, the size selector, the rules block, the buttons (including reset) and both message regions are in `root`. It replaces the previous content of `root`. Two mounts on two different roots are independent.
 - Seed source: a synchronous function with no arguments that returns an integer. The page calls it exactly once for each generation attempt (the mount, each press of the new puzzle button and each accepted size change, including an attempt whose generator call throws) and at no other time, and passes the returned value to the generator unchanged. When no `seedSource` is injected the page uses its own default source (see the seed requirement).
 - Generator: when `generate` is not injected the page uses the engine generator. A scenario that says "fixture puzzle" injects a hand-written puzzle through `generate` (a fixture of the requested size; the page assumes `generate(n, s)` returns an n×n puzzle); its givens, and its solution where a scenario needs one, are written in the test suite so that the board state a scenario needs can be reached by clicks. A scenario that says "the generator output for size N and seed S" uses the real engine generator with no injection of `generate`. The rule checker and the hint engine are always the real engine; an "expected hint" in a scenario is the engine hint function applied to the board as read from the DOM.
 - Unless a scenario names a seed, its board is a fixture puzzle; a scenario that says real engine generator uses it without naming a seed.
@@ -24,10 +24,10 @@ FR-31 to FR-43 and A-4 only require that the seed is injectable. The following e
 - Cell element: `[data-cell]` with `data-row`, `data-col`, and `data-given` equal to `true` for a given and `false` otherwise. A given also carries the class `cell-given`. A cell's shown text is empty, `0` or `1`.
 - Highlighted cell: carries the class `cell-violation`.
 - Size selector: `[data-control="size"]`, a select with options 4, 6 and 8 labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8».
-- Buttons: `[data-action="hint"]` (label «Підказка») and `[data-action="new"]` (label «Нова головоломка»).
+- Buttons: `[data-action="hint"]` (label «Підказка»), `[data-action="reset"]` (label «Скинути») and `[data-action="new"]` (label «Нова головоломка»).
+- Rules block: `[data-section="rules"]`, follows `[data-board]` in document order, heading «Правила» and three `li` items.
 - Message regions: `[data-message="hint"]` and `[data-message="win"]`, always present; empty text content means no message is shown.
 - Page root: the `root` passed to `mountPlayPage`. The page heading is not required by any FR; if present it is inside the root, and the document title is `document.title`.
-
 ## Requirements
 ### Requirement: Board rendering and default size
 
@@ -564,13 +564,89 @@ Traces: FR-43
 - **THEN** the new page's selector shows 6 and its `[data-board]` has `data-size="6"` and 36 cells
 - **AND** `localStorage` and `sessionStorage` still hold no entry
 
+### Requirement: Rules block
+
+The page SHALL show a rules block `[data-section="rules"]` inside the root, after `[data-board]` in document order, with the heading text «Правила» and exactly three `li` items, in this order: «Не більше двох однакових цифр поспіль у рядку чи стовпці.», «У кожному рядку та стовпці порівну нулів і одиниць.» and «Усі рядки різні, і всі стовпці різні.» (FR-57). The block is created once at mount outside the element that holds the board, so a new puzzle, a size change and a win leave exactly one block with the same heading and the same three texts. The texts are Ukrainian and contain no Latin letters (NFR-5). The block needs no script behaviour.
+
+Traces: FR-57, NFR-5
+
+#### Scenario: Rules block at mount
+
+- **GIVEN** the page has just been mounted with a fixture puzzle
+- **WHEN** the test reads `[data-section="rules"]`
+- **THEN** exactly one such element exists inside the root and it follows `[data-board]` in document order
+- **AND** its heading text is «Правила» and it contains exactly three `li` items whose texts, in order, are those of this table, none of which contains a Latin letter
+
+| Item | Text |
+|------|------|
+| 1 | Не більше двох однакових цифр поспіль у рядку чи стовпці. |
+| 2 | У кожному рядку та стовпці порівну нулів і одиниць. |
+| 3 | Усі рядки різні, і всі стовпці різні. |
+
+#### Scenario: Rules block survives every board change
+
+- **GIVEN** a mounted page with a fixture puzzle and the rules block read at mount
+- **WHEN** the player does each of the actions in this table, each from a freshly mounted page
+
+| Action |
+|--------|
+| presses «Нова головоломка» |
+| changes the size to 4 or to 8 (one run for each) |
+| reaches a win |
+
+- **THEN** after each action there is still exactly one `[data-section="rules"]`, it follows `[data-board]` in document order, and it has the same heading and the same three `li` texts as at mount
+
+### Requirement: Reset button
+
+The page SHALL offer a button `[data-action="reset"]` labelled «Скинути» (NFR-5). Pressing it SHALL set every non-given cell to empty, including cells filled by a hint, keep every given cell's text and `data-given` value, keep the current size (any of 4, 6 and 8) in `[data-board]`'s `data-size` and in the size selector, remove every `cell-violation` class that does not come from the givens themselves (the highlights are recomputed for the reset board), empty `[data-message="hint"]` and `[data-message="win"]`, and keep the board editable (FR-58). Reset SHALL NOT call the seed source or the generator. It works after a win and, on an untouched board, changes no cell text, no class and no message. Reset is size-independent: the scenarios that touch the board are run for each N in the table below, each with a fixture puzzle of size N. Undo and restoring a saved state are not part of reset (FR-47 and FR-46 are Future).
+
+| N |
+|---|
+| 4 |
+| 6 |
+| 8 |
+
+Traces: FR-58, NFR-5
+
+#### Scenario: Reset empties player cells and keeps givens and size
+
+- **GIVEN** a mounted page with a fixture puzzle of size N, and the player has clicked several non-given cells and pressed the hint button once so that a hint filled a cell
+- **WHEN** the player presses `[data-action="reset"]`
+- **THEN** every cell with `data-given="false"` shows empty text, and every cell with `data-given="true"` shows the same text and the same `data-given` value as before
+- **AND** `[data-board]` has `data-size` equal to N and the size selector still shows N
+
+#### Scenario: Reset clears highlights and the hint message
+
+- **GIVEN** a mounted page with a fixture puzzle of size N where at least one cell has the class `cell-violation` because of the player's entries (the givens alone report no violation), and `[data-message="hint"]` shows a sentence
+- **WHEN** the player presses `[data-action="reset"]`
+- **THEN** no cell has the class `cell-violation` and `[data-message="hint"]` has empty text content
+
+#### Scenario: Reset after a win
+
+- **GIVEN** a mounted page with a fixture puzzle of size N whose board the player has solved, so that `[data-message="win"]` shows the win text
+- **WHEN** the player presses `[data-action="reset"]`, and then clicks a non-given cell once
+- **THEN** after the press `[data-message="win"]` has empty text content
+- **AND** after the click that cell shows «0»
+
+#### Scenario: Reset takes no seed and calls no generator
+
+- **GIVEN** a mounted page with a fixture puzzle of size N, an injected seed source and an injected generator that count their calls, with the counts read after mount
+- **WHEN** the player presses `[data-action="reset"]` once, and then two more times
+- **THEN** after each press the seed-source call count and the generator call count equal the counts read after mount
+
+#### Scenario: Reset on an untouched board changes nothing
+
+- **GIVEN** a mounted page with a fixture puzzle of size N and no player action, with the text and class list of every cell and the text of both message regions recorded
+- **WHEN** the player presses `[data-action="reset"]`
+- **THEN** every cell has the same text and the same class list as recorded, and both message regions have the same text as recorded
+
 ## Exclusions
 
 The following are intentionally unsupported in MVP; testers must not report them as defects.
 
 - No server, no authentication, no accounts, no authorization: every visitor can use the page, so there are no unauthorized or forbidden cases and no redirects.
 - No persistence (TC-12): reloading the page starts a fresh puzzle; nothing is stored. No network calls: puzzles are generated in the browser.
-- Difficulty grading (FR-44), a timer (FR-45), saved progress (FR-46), undo (FR-47) and a daily puzzle (FR-48) are Future.
+- Difficulty grading (FR-44), a timer (FR-45), saved progress (FR-46), undo (FR-47) and a daily puzzle (FR-48) are Future; reset (FR-58) returns to the givens only and is not undo.
 - Real-browser tests (NFR-7) are Future; the page is tested in jsdom only (TC-13). Rendering defects that jsdom cannot see are not caught.
 - Keyboard play and screen-reader support have no requirements (A-20). Mobile layout and visual polish are not specified (A-14).
 - The seed is not shown on the page (A-4).
