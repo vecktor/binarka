@@ -1,6 +1,6 @@
 # MVP Capability Change Plan
 
-Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24); amendment of 2026-10-04 about 23:30, SIGNED OFF by the user in chat at about 23:35: slice 4 `add-rules-and-reset` added for FR-57 and FR-58 (autonomy-log row 27)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3.
+Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24); amendment of 2026-10-04 about 23:30, SIGNED OFF by the user in chat at about 23:35: slice 4 `add-rules-and-reset` added for FR-57 and FR-58 (autonomy-log row 27)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). AMENDED 2026-10-05 about 00:03 by the user's sign-off in chat: slice 5 `update-hint-sentences` (section 4.6) changes the hint sentences of FR-19 to FR-21 after the NFR-6 eval failed (autonomy-log row 38). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3.
 
 Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amendment re-signed 18:45), and the baseline specs `openspec/specs/puzzle-engine/spec.md` and `openspec/specs/play-page/spec.md`.
 
@@ -73,6 +73,13 @@ flowchart LR
 - **Baseline spec impact:** `play-page/spec.md` gets two ADDED requirements; Purpose, the ownership line ("FR-31 to FR-43, FR-57, FR-58") and the DOM contract lines for `[data-section="rules"]` and `[data-action="reset"]` are edited at archive.
 - **Definition of done:** tests first and seen red; lint, test:run, build and strict validation pass; per-slice review-gate (one fix round, one confirming run); real-browser check at 375 px; archived with `Slice: add-rules-and-reset` commits before the moved freeze of about 00:45.
 
+### 4.6 `update-hint-sentences` (signed in chat about 00:03 on 2026-10-05, autonomy-log row 38)
+
+- **Why:** the NFR-6 eval failed (count 76 < 80); the judges said the sentences give the conclusion without the rule, and the plural «решта клітинок» is wrong when one cell is empty.
+- **Scope in:** the hint sentence templates in `src/engine/hint.ts` and the `puzzle-engine` spec scenarios that pin them, matching the amended FR-19 to FR-21 (each sentence says why; the count rule has a singular form for one empty cell). Tests that pin sentences are updated first and seen red.
+- **Scope out:** hint selection order, hint targets, FR-25, FR-26 and the page; no new FRs (FR-19 to FR-21 stay owned by slice 1).
+- **Definition of done:** tests first and seen red; lint, test:run, build and strict validation pass; per-slice review-gate; `eval-suite` re-run; the eval ratchet baseline is minted only if every case scores at least 80, otherwise NFR-6 stays FAIL.
+
 ### 4.3 After both slices (session C)
 
 - Eval (NFR-6, optional, cut line 2): `eval-suite` with `eval-judge` on 2–3 Ukrainian hint cases, each scoring at least 80 out of 100.
@@ -101,6 +108,8 @@ flowchart LR
 | FR-16 | 1 | FR-34 | 2 | FR-43 | 3 |
 | FR-57 | 4 | FR-58 | 4 | | |
 
+FR-19 to FR-21 stay owned by slice 1; slice 5 changes their wording and adds no FRs.
+
 Total: **49 MVP FRs across 4 slices** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4; no gaps, no duplicates).
 
 ## 6. Sequencing and schedule
@@ -114,6 +123,7 @@ Re-baselined 2026-10-04 18:40 (autonomy-log row 10; user time, UTC+5:30):
 | Slice 2 `add-play-page`, archived | 23:25 | C |
 | Stretch, only if slice 2 is archived before about 23:00: restore the size selector (FR-43) as a small follow-up change; the user decides at that point. The spec text is at tag `step-08-p2-draft` (labels «Поле 4×4», «Поле 6×6», «Поле 8×8», A-24); restoring it is a requirements amendment, a spec section, tests and code, about 30 minutes | before 00:00 | C |
 | Slice 4 `add-rules-and-reset`, archived (signed about 23:35, added 23:30, autonomy-log row 27) | 00:40 | C |
+| Slice 5 `update-hint-sentences`, archived, eval re-run (signed in chat about 00:03 on 2026-10-05, autonomy-log row 38) | 00:40 | C |
 | Feature freeze | about 00:45 (moved by the user at 23:28 from 00:00, which was 21:30 Kyiv) | — |
 | Eval (optional), gate status, retro, PR text, README branch | after the slices; PR open by 02:29 (23:59 Kyiv) | C or D |
 

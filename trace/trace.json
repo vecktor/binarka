@@ -320,7 +320,8 @@
     {
       "id": "FR-19",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/update-hint-sentences/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -331,7 +332,8 @@
     {
       "id": "FR-20",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/update-hint-sentences/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -342,7 +344,8 @@
     {
       "id": "FR-21",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/update-hint-sentences/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -353,7 +356,8 @@
     {
       "id": "FR-22",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/update-hint-sentences/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -397,7 +401,8 @@
     {
       "id": "FR-26",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/update-hint-sentences/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -430,7 +435,8 @@
     {
       "id": "FR-30",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/update-hint-sentences/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -850,6 +856,10 @@
     {
       "check": "recording-evidence",
       "msg": "FR-58 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"update-hint-sentences\" is not archived"
     }
   ]
 }
