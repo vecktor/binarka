@@ -9,7 +9,7 @@ Rule: if the 5-hour meter is above 70% before slice 2's review-gate, skip that s
 | P0 setup, through G0 | A: Sonnet 5.5, medium | ~1% | ~3% | weekly 51% → 51% (under 1%); 5-hour 2% → 2% | Instrument: `get_usage`, read at ~14:40 and ~15:00. Scope grew past the ADR stop: scaffold, init and the lock were done after the user approved them. Session context used: about 154k tokens. |
 | P1 requirements | B: Opus 5.5, medium | ~3% | ~8% | weekly 51% → 51% (under 1%); 5-hour 3% → 3% (under 1%) | Instrument: `get_usage`, read at ~15:08 and ~16:15. Well under the 1.5× ceiling (4.5% weekly, 12% 5-hour). Session context about 160k tokens; the `requirements-analyst` subagent used about 55k tokens. About 30 min of the phase was a blocked GPG signing wait (autonomy-log M6), which used no meter. No cut lines applied: the phase finished ahead of the 15:30–16:30 slot. |
 | P2 specs + P3 plan | B | ~4% | ~10% | weekly 51% → 52% (about 1%); 5-hour 3% → 4% before the 17:50 reset, then 0% → 1% in the new window (about 2% in all) | Instrument: `get_usage`, read at ~16:21, ~16:37, ~18:40, ~18:48 and ~18:54. Deviation: P2 runs in session B to save one handoff. Within the 1.5× ceiling. Subagents: spec-pipeline workflow about 469k tokens (7 agents), requirements amendment about 40k, spec revision about 89k. Session context about 290k tokens. Took about 2.5 hours of wall time instead of 1 hour: user response time, a scope change after sign-off, a requirements amendment and a second spec pass (see Deviations). |
-| Slice 1 | C: Sonnet 5.5, medium | ~8% | ~25% | | one review-gate, one fix round, one confirming run |
+| Slice 1 | C: Sonnet 5.5, medium | ~8% | ~25% | weekly 52% at start; 5-hour 2% at start (see readings) | one review-gate, one fix round, one confirming run. Actual filled at slice end. |
 | Slice 2 | C | ~8% | ~25% | | same limits |
 | Eval, gate:status, retro | C | ~3% | ~8% | | optional eval is first to cut |
 | Submission | C or D | ~1% | ~3% | | |
@@ -26,6 +26,7 @@ Rule: if the 5-hour meter is above 70% before slice 2's review-gate, skip that s
 | 2026-10-04 ~16:37, P2 specs drafted | 4% (resets 17:50) | 52% | 23% | After the spec-pipeline workflow (7 agents, about 469k subagent tokens). |
 | 2026-10-04 ~18:40, P2 open points | 0% (new window, resets 23:30) | 52% (resets Wed 7 Oct 20:30) | 23% | The 5-hour window reset at 17:50; the build now falls in the 18:30–23:30 window. |
 | 2026-10-04 ~18:54, after P3 plan sign-off | 1% (resets 23:30) | 52% (resets Wed 7 Oct 20:30) | 23% | P2+P3 end, session B handoff to session C. |
+| 2026-10-04 19:05, before slice 1 | 2% (resets 23:30 user time) | 52% (resets Wed 7 Oct 20:30) | 23% | Slice 1 start, session C (Sonnet 5.5). Context 86k tokens at read. Slice 1 ceiling at 1.5x: 12% weekly, 37% 5-hour. |
 
 ## Deviations and cuts
 

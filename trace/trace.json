@@ -92,308 +92,413 @@
     {
       "id": "FR-1",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-2",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-3",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-4",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-5",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-6",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-7",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-8",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-9",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/rules.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-10",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/solver.test.ts",
+        "tests/solver.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-11",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/solver.test.ts",
+        "tests/solver.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-12",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/solver.test.ts",
+        "tests/solver.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-13",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-14",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-15",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator-unique.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-16",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-17",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-49",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-50",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-51",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-19",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-20",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-21",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-22",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-23",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-24",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-25",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-26",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-28",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-29",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-30",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-52",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-53",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli.test.ts"
+      ],
       "recordings": []
     },
     {
       "id": "FR-54",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-puzzle-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -508,142 +613,6 @@
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-1 has no test annotated \"@trace FR-1\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-2 has no test annotated \"@trace FR-2\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-3 has no test annotated \"@trace FR-3\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-4 has no test annotated \"@trace FR-4\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-5 has no test annotated \"@trace FR-5\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-6 has no test annotated \"@trace FR-6\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-7 has no test annotated \"@trace FR-7\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-8 has no test annotated \"@trace FR-8\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-9 has no test annotated \"@trace FR-9\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-10 has no test annotated \"@trace FR-10\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-11 has no test annotated \"@trace FR-11\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-12 has no test annotated \"@trace FR-12\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-13 has no test annotated \"@trace FR-13\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-14 has no test annotated \"@trace FR-14\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-15 has no test annotated \"@trace FR-15\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-16 has no test annotated \"@trace FR-16\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-17 has no test annotated \"@trace FR-17\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-49 has no test annotated \"@trace FR-49\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-50 has no test annotated \"@trace FR-50\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-51 has no test annotated \"@trace FR-51\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-19 has no test annotated \"@trace FR-19\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-20 has no test annotated \"@trace FR-20\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-21 has no test annotated \"@trace FR-21\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-22 has no test annotated \"@trace FR-22\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-23 has no test annotated \"@trace FR-23\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-24 has no test annotated \"@trace FR-24\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-25 has no test annotated \"@trace FR-25\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-26 has no test annotated \"@trace FR-26\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-28 has no test annotated \"@trace FR-28\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-29 has no test annotated \"@trace FR-29\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-30 has no test annotated \"@trace FR-30\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-52 has no test annotated \"@trace FR-52\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-53 has no test annotated \"@trace FR-53\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-54 has no test annotated \"@trace FR-54\""
-    },
     {
       "check": "test-trace",
       "msg": "FR-31 has no test annotated \"@trace FR-31\""
@@ -875,6 +844,10 @@
     {
       "check": "recording-evidence",
       "msg": "FR-42 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-puzzle-engine\" is not archived"
     }
   ]
 }
