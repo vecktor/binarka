@@ -1,6 +1,7 @@
 import { findViolations, generate, hint, isSolved } from '../engine/index';
 import type { Cell, Grid, Puzzle } from '../engine/index';
 import { defaultSeedSource } from './seed';
+import { BUTTONS, IDLE, RULES, TITLE, WIN, sizeLabel } from './strings';
 
 export interface PlayPageOptions {
   seedSource?: () => number;
@@ -8,12 +9,10 @@ export interface PlayPageOptions {
 }
 
 const SIZES = [4, 6, 8];
-const RULES_ITEMS = [
-  'Не більше двох однакових цифр поспіль у рядку чи стовпці.',
-  'У кожному рядку та стовпці порівну нулів і одиниць.',
-  'Усі рядки різні, і всі стовпці різні.',
-];
-const WIN_TEXT = "Вітаємо, головоломку розв'язано!";
+// Decorative examples of the rules (digits and the not-equal sign only, aria-hidden). A trailing "?" marks the answer cell.
+const RULE_EXAMPLES: string[][] = [['0', '0', '1?'], ['0', '1', '0', '1?'], ['0', '1', '1', '0', '\u2260', '1', '0', '0', '1']];
+
+let panelCounter = 0;
 
 function copyGrid(grid: Grid): Grid {
   return grid.map((row) => [...row]);
@@ -31,28 +30,53 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const seedSource = options.seedSource ?? defaultSeedSource;
   const makePuzzle = options.generate ?? generate;
 
-  document.title = 'Бінарка';
+  document.title = TITLE;
 
-  const heading = el('h1', {}, 'Бінарка');
+  panelCounter += 1;
+  const panelId = `rules-panel-${panelCounter}`;
+  const panelTitleId = `rules-title-${panelCounter}`;
+
+  const rulesButton = el('button', { type: 'button', class: 'rules-button', 'data-action': 'rules', popovertarget: panelId }, BUTTONS.rules);
+  const header = el('header', { class: 'page-header' });
+  header.append(el('h1', {}, TITLE), rulesButton);
+
   const boardHost = el('div', { class: 'board-host' });
-  const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, 'Підказка');
-  const newButton = el('button', { type: 'button', 'data-action': 'new' }, 'Нова головоломка');
+  const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, BUTTONS.hint);
+  const newButton = el('button', { type: 'button', 'data-action': 'new' }, BUTTONS.newPuzzle);
   const sizeSelect = el('select', { 'data-control': 'size' });
   for (const n of SIZES) {
-    const option = el('option', { value: String(n) }, `Поле ${n}×${n}`);
+    const option = el('option', { value: String(n) }, sizeLabel(n));
     if (n === 6) option.selected = true;
     sizeSelect.appendChild(option);
   }
-  const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, 'Скинути');
+  const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, BUTTONS.reset);
   const buttons = el('div', { class: 'buttons' });
   buttons.append(hintButton, resetButton, newButton);
-  const rules = el('section', { 'data-section': 'rules', class: 'rules' });
-  const rulesList = el('ul');
-  for (const text of RULES_ITEMS) rulesList.appendChild(el('li', {}, text));
-  rules.append(el('h2', {}, 'Правила'), rulesList);
+
+  const idleMessage = el('p', { 'data-message': 'idle', class: 'message message-idle' }, IDLE);
   const hintMessage = el('p', { 'data-message': 'hint', class: 'message' });
   const winMessage = el('p', { 'data-message': 'win', class: 'message message-win' });
-  root.replaceChildren(heading, sizeSelect, boardHost, rules, buttons, hintMessage, winMessage);
+  const messages = el('div', { class: 'messages' });
+  messages.append(idleMessage, hintMessage, winMessage);
+
+  const rulesPanel = el('div', { popover: 'auto', id: panelId, class: 'rules', 'data-section': 'rules', 'aria-labelledby': panelTitleId });
+  const rulesList = el('ul');
+  RULES.items.forEach((text, i) => {
+    const item = el('li');
+    item.appendChild(el('span', { class: 'rule-text' }, text));
+    const example = el('span', { class: 'rule-example', 'aria-hidden': 'true' });
+    for (const token of RULE_EXAMPLES[i] ?? []) {
+      if (token === '\u2260') example.appendChild(el('span', { class: 'mini-sep' }, token));
+      else if (token.endsWith('?')) example.appendChild(el('span', { class: 'mini mini-answer' }, token.slice(0, -1)));
+      else example.appendChild(el('span', { class: 'mini' }, token));
+    }
+    item.appendChild(example);
+    rulesList.appendChild(item);
+  });
+  const closeButton = el('button', { type: 'button', class: 'rules-close', popovertarget: panelId, popovertargetaction: 'hide' }, BUTTONS.rulesClose);
+  rulesPanel.append(el('h2', { id: panelTitleId }, RULES.heading), rulesList, closeButton);
+
+  root.replaceChildren(header, sizeSelect, boardHost, buttons, messages, rulesPanel);
 
   let size = 6;
   let givens: Grid = [];
@@ -85,7 +109,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   }
 
   function updateWin(): void {
-    winMessage.textContent = isSolved(board) ? WIN_TEXT : '';
+    winMessage.textContent = isSolved(board) ? WIN : '';
   }
 
   function onBoardClick(event: Event): void {
