@@ -6,7 +6,7 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-05 22:18:00 (UTC+5:30; Kyiv 19:48)
+- **Date and time:** 2026-10-05 22:40:00 (UTC+5:30; Kyiv 20:10)
 - **Current phase:** Phase 4 (post-submission iteration: design and UX, nothing signed yet)
 - **Last completed gate:** G3
 - **Active change:** none (slices 1 to 4 and the change `update-hint-sentences` are archived)
@@ -15,8 +15,12 @@
   - Earlier: slice 3 `add-size-selector` (FR-43, restored by the user, autonomy-log rows 22 and 24) is implemented, reviewed and archived, test-first, at about 22:45, about 45 minutes ahead of the 23:30 target. Slices 1 and 2 as before (archived 20:20 and 20:50). No cut line applied. P0–P3 are unchanged (claims below).
   - Commit and tag order, slice 3: change `a3adf3c` (`step-25-s3-change`), revised change `41b7730`, red tests `47b25bd` (`step-26-s3-red`) and `ca12f12` (24th test, red evidence 67 red), green `d7613cf` (`step-27-s3-green`), review fix round `8b52593` (`step-28-s3-fix1`), archive commit (`step-29-s3-archived`). Slice 2: tags `step-19` to `step-23`; slice 1: `step-13` to `step-18`.
   - **Signing (2026-10-05 about 22:11): every commit in this branch's history is signed.** The design commits after `406940d` were re-signed at the user's request ("re-sign the three unsigned commits now", about 22:10; GPG probe exit 0). The command was `git rebase -f -S 406940d` with backup branch `backup/design-unsigned-4b62294`. Check: `git log --format='%G?' 406940d..186b83a` gives 4 `G`, and `git diff backup/design-unsigned-4b62294 186b83a` is empty. The new SHAs are: iteration 4 `c375b37`, review 2 `9a4f23e`, signing-line fix `edac8c6`, iteration 5 `186b83a`. They live on branch `claude/next-session-handoff-8cd297` in worktree `.claude/worktrees/next-session-handoff-8cd297`, which is the slice-4 branch tip `406940d` plus these commits. Before them: slices 1 to 3 up to `cd90dca` (37 `G`, checked about 22:57) and the 9 slice 4 commits re-signed at about 00:00 on 2026-10-05 (`git log --format='%G?' cd90dca..HEAD`: 9 `G`; `git diff backup/slice4-unsigned-f0b3f37 <re-signed tip>` empty; tags `step-30` to `step-35` re-pointed). Slice 4 lives on branch `claude/fwdays-slice4-rules-reset-de6481` in worktree `.claude/worktrees/git-https-to-ssh-ed7693`, branched from `cd90dca` (the slice 3 branch is checked out in `practical-allen-938687`, which still holds the three untracked 23:10 retro files).
-- **Next task (2026-10-05 about 22:18):**
-  1. **Design iterations 4 and 5 and reviews 2 and 3 are done; the design is not yet the pixel reference.**
+- **Next task (2026-10-05 about 22:40):**
+  1. **Design iteration 6 is done: review 3's blocker is fixed. The design is a candidate pixel reference, not yet frozen.**
+     - Iteration 6 applies R1 (the cell-size floor), R3, R4 and R6 (decisions 22–25, autonomy-log row 51). Evidence: 76 shots in `design/v0-screenshots/review-set-4/`; two runs were byte-identical (`SHA1SUMS`). Against set 3 only the expected 18 shots changed. Measurements, including 1366×650, 1280×420 and 844×390, are in `design/README.md`.
+     - **Unsigned:** the iteration 6 commits (GPG probe exit 2 at about 22:38). Re-sign them once the passphrase is cached (backup branch, `git rebase -f -S <last signed>`, `%G?`, empty `git diff`).
+     - **Next:** the user decides between freezing `review-set-4` as the pixel reference and running review 4. Then comes the requirements amendment (item 2), which includes decision 25 for the product's capture.
+     - Earlier, iteration 5 and review 3:
      - **Latest:** iteration 5 (all review 2 findings, decisions 18–21): commit `186b83a`, 72 shots in `design/v0-screenshots/review-set-3/` (adds 4×4 and 1024×768; two runs byte-identical, `SHA1SUMS`), measurements in `design/README.md`.
      - Review 3 (`docs/design/review-3-design-reviewer.md`, verbatim, with a spot-check): all of review 2's findings fixed. **One blocker, R1:** from 48rem the cell size has no floor, so 6×6 cells shrink below 44 px on short desktop windows (33.7 px at 1366×650, measured), the board collapses below about 450 px of height, and landscape phones keep 80 px cells (the page is 917 px tall at 844×390). Fixing it changes none of the 72 shots. Five low findings: R2 (the button row shifts between play and win), R3, R4 (backdrop motion), R5 (pointer off the page in the parity capture), R6.
      - **Next:** the user answers review 3's three questions. Then apply R1 (and the chosen low findings), add a short desktop size such as 1366×650 to the capture, recapture twice, and either freeze the set as the reference or run review 4.
