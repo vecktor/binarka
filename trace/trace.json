@@ -248,7 +248,8 @@
     {
       "id": "FR-14",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -259,7 +260,8 @@
     {
       "id": "FR-15",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -329,7 +331,8 @@
     {
       "id": "FR-19",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -351,7 +354,8 @@
     {
       "id": "FR-21",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -373,7 +377,8 @@
     {
       "id": "FR-23",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -396,7 +401,8 @@
       "id": "FR-25",
       "specs": [
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md"
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -419,7 +425,8 @@
     {
       "id": "FR-27",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [],
@@ -612,7 +619,8 @@
       "id": "FR-41",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-page-layout/specs/play-page/spec.md"
+        "openspec/changes/update-page-layout/specs/play-page/spec.md",
+        "openspec/changes/update-win-apostrophe/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1045,11 +1053,19 @@
     },
     {
       "check": "active-changes",
+      "msg": "active change \"add-rule-solvable-generator\" is not archived"
+    },
+    {
+      "check": "active-changes",
       "msg": "active change \"update-controls-accessibility\" is not archived"
     },
     {
       "check": "active-changes",
       "msg": "active change \"update-page-layout\" is not archived"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"update-win-apostrophe\" is not archived"
     }
   ]
 }
