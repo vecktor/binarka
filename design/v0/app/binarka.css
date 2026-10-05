@@ -1,11 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap');
 
 /* ---------- Tokens ---------- */
 
 :root {
   color-scheme: light dark;
 
-  --font: 'Rubik', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --bg: #f7f3ea;
   --surface: #fffdf8;
@@ -125,10 +124,8 @@ body {
   color: var(--primary);
 }
 
-#app > h1 svg text {
+#app > h1 svg .logo-word {
   fill: var(--primary-ink);
-  font-family: var(--font);
-  letter-spacing: 0;
 }
 
 /* ---------- Size picker (segmented control) ---------- */
