@@ -17,6 +17,33 @@ export const NO_RULE_SENTENCE = 'Жодне з трьох правил зара�
 export const BROKEN_SENTENCE = 'Спершу виправте порушення правил, підсвічене на полі.';
 export const HINT_LABEL = 'Підказка';
 export const NEW_LABEL = 'Нова головоломка';
+/** The page title and the header text (FR-61). Exact literals: tests never import src/ui/strings.ts. */
+export const TITLE_TEXT = 'Бінарка';
+export const RULES_LABEL = 'Правила';
+export const RULES_CLOSE_LABEL = 'Зрозуміло';
+/** The three rules texts of FR-57, in order. */
+export const RULES_ITEMS = [
+  'Не більше двох однакових цифр поспіль у рядку чи стовпці.',
+  'У кожному рядку та стовпці порівну нулів і одиниць.',
+  'Усі рядки різні, і всі стовпці різні.',
+];
+/**
+ * The idle line of FR-64. The two spaces inside «0 і 1» are U+00A0 (written as the escape, never as a literal NBSP);
+ * the «і» between them is the Cyrillic letter U+0456; the dash is U+2014.
+ */
+export const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 0\u00A0і\u00A01. Правила — кнопка «Правила» вгорі.';
+/** FR-61 document order of the page, as selectors; the rules panel is outside this sequence. */
+export const PAGE_ORDER = [
+  'header',
+  '[data-control="size"]',
+  '[data-board]',
+  '[data-action="hint"]',
+  '[data-action="reset"]',
+  '[data-action="new"]',
+  '[data-message="idle"]',
+  '[data-message="hint"]',
+  '[data-message="win"]',
+];
 
 // ---------------------------------------------------------------------------------------------------------
 // Lifecycle: fresh roots, cleaned up after each test; document.title reset (jsdom starts with '').
@@ -246,6 +273,38 @@ export function checkerCells(board: Grid): Array<[number, number]> {
 export const hintMessage = (root: ParentNode): string => q(root, '[data-message="hint"]').textContent ?? '';
 export const winMessage = (root: ParentNode): string => q(root, '[data-message="win"]').textContent ?? '';
 
+/** The rules panel of FR-57: asserts that there is exactly one `[data-section="rules"]` in `root`, returns it. */
+export function rulesPanel(root: ParentNode): HTMLElement {
+  const found = root.querySelectorAll<HTMLElement>('[data-section="rules"]');
+  expect(found, 'exactly one [data-section="rules"] in the root').toHaveLength(1);
+  return found[0] as HTMLElement;
+}
+
+/** The message area of FR-61: the parent element of the idle line (asserts the idle line exists). */
+export function messageArea(root: ParentNode): HTMLElement {
+  const parent = q(root, '[data-message="idle"]').parentElement;
+  expect(parent, 'the idle line has a parent element').not.toBeNull();
+  return parent as HTMLElement;
+}
+
+/** The text of an element without the text of its descendants that have aria-hidden="true" (decorative examples, A-26). */
+export function textWithoutHidden(el: Element): string {
+  const copy = el.cloneNode(true) as Element;
+  for (const hidden of Array.from(copy.querySelectorAll('[aria-hidden="true"]'))) hidden.remove();
+  return copy.textContent ?? '';
+}
+
+/** Assert that each element follows the previous one in document order (and is not contained in it). */
+export function expectInDocumentOrder(elements: Element[]): void {
+  for (let i = 1; i < elements.length; i++) {
+    const prev = elements[i - 1] as Element;
+    const next = elements[i] as Element;
+    const position = prev.compareDocumentPosition(next);
+    expect((position & Node.DOCUMENT_POSITION_FOLLOWING) !== 0, `element ${i} follows element ${i - 1} in document order`).toBe(true);
+    expect((position & Node.DOCUMENT_POSITION_CONTAINED_BY) !== 0, `element ${i} is not inside element ${i - 1}`).toBe(false);
+  }
+}
+
 /**
  * Assert the structural elements every rendered page has (so a negative check can never pass on an empty page): the
  * board of `size` (6 by default), the size selector (FR-43), both buttons and both message regions.
@@ -255,9 +314,20 @@ export function expectPageStructure(root: ParentNode, size = 6): void {
   expect(allCells(root)).toHaveLength(size * size);
   q(root, '[data-control="size"]');
   q(root, '[data-action="hint"]');
+  q(root, '[data-action="reset"]');
   q(root, '[data-action="new"]');
   q(root, '[data-message="hint"]');
   q(root, '[data-message="win"]');
+  // FR-61 (update-page-layout): the header with the title heading and the rules button, the idle line, the rules panel
+  const header = q(root, 'header');
+  const headings = Array.from(header.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+  expect(headings.map((h) => h.textContent), 'the header holds the title heading').toContain(TITLE_TEXT);
+  expect(header.querySelectorAll('[data-action="rules"]'), 'the header holds the rules button').toHaveLength(1);
+  q(root, '[data-message="idle"]');
+  rulesPanel(root);
+  messageArea(root);
+  // the document order of FR-61 (the panel is outside the sequence)
+  expectInDocumentOrder(PAGE_ORDER.map((selector) => q(root, selector)));
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -670,13 +740,15 @@ export function collectEverything(root: HTMLElement): string[] {
 /**
  * Static-page-text scenario: every non-whitespace text node (not the text of [data-cell] elements), document.title,
  * the values of aria-label, title, placeholder and alt on every element in the root, and the `label` attribute of every
- * option and optgroup element.
+ * option and optgroup element. Text under an element with aria-hidden="true" is decoration and is skipped (NFR-5).
  */
 export function collectPageText(root: HTMLElement): string[] {
   const out: string[] = [];
   for (const t of textNodesOf(root)) {
     if (t.data.trim() === '') continue;
     if (t.parentElement?.closest('[data-cell]') !== null && t.parentElement !== null) continue;
+    // decoration (aria-hidden="true", the examples of the rules panel, A-26) is not page text (NFR-5)
+    if (t.parentElement?.closest('[aria-hidden="true"]') != null) continue;
     out.push(t.data);
   }
   out.push(document.title);

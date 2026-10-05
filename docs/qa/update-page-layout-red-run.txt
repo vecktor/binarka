@@ -1,0 +1,946 @@
+# Red run for update-page-layout (slice A), confirmed by the orchestrator
+# 2026-10-06 00:17 (UTC+5:30), `NO_COLOR=1 npx vitest run` in worktree
+# ux-orchestrator-run with src/ unchanged from 488e0c0 and the new tests applied.
+# Result: 73 failed, 399 passed of 472 (10 of 21 files failing).
+# Every failure is an AssertionError (missing header, rules button, idle line,
+# popover attribute, panel id, src/ui/strings.ts; Cyrillic in play-page.ts);
+# no import, syntax or type error. 47 failures cascade through the stricter
+# expectPageStructure ("missing header"). Characterisation guards green from
+# the start: no details / three li, hint and win empty at mount, decorative
+# examples have no letters (vacuous), the spy self-test.
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-orchestrator-run
+
+ ❯ tests/play-page-rendering.test.ts (9 tests | 3 failed) 177ms
+   ❯ @trace FR-31 the page renders a 6x6 board from the generator (6)
+     × Default board is 6x6: data-size 6, exactly 36 cells, every (row, col) pair 1..6 once 37ms
+     × Board follows the chosen size: with the real generator, selecting 8x8 gives data-size 8 and 64 cells (rows and columns 1..8) 16ms
+     × mounting is synchronous and replaces the previous content of the root 5ms
+ ❯ tests/play-page-click-cycle.test.ts (6 tests | 1 failed) 197ms
+   ❯ @trace FR-33 given cells are locked (3)
+     × Clicking a given cell changes nothing (once, then twice more) 37ms
+ ❯ tests/play-page-page-text.test.ts (6 tests | 1 failed) 187ms
+   ❯ @trace NFR-5 the page text is Ukrainian (6)
+     × Static page text: every collected text has Cyrillic letters and no Latin letters 53ms
+ ❯ tests/play-page-layout.test.ts (25 tests | 22 failed) 219ms
+   ❯ @trace FR-57 the rules button is in the header (1)
+     × Rules button in the header: exactly one [data-action="rules"], a button «Правила», popovertarget = the panel id 26ms
+   ❯ @trace FR-57 the rules panel at mount (1)
+     × Rules panel structure: popover attribute, heading «Правила», three li items in order, one close button «Зрозуміло» 14ms
+   ❯ @trace FR-57 the panel opens with no script (2)
+     × Clicking the rules button and the close button calls none of showPopover, hidePopover, togglePopover 11ms
+   ❯ @trace FR-57 two mounts stay independent (1)
+     × two roots in one document have panels with different ids, and each button names the panel of its own root 38ms
+   ❯ @trace FR-57 the panel survives every board change (4)
+     × after new puzzle there is still exactly one panel, the same element, with the same texts and the button naming its id 4ms
+     × after size 4 there is still exactly one panel, the same element, with the same texts and the button naming its id 4ms
+     × after size 8 there is still exactly one panel, the same element, with the same texts and the button naming its id 13ms
+     × after win there is still exactly one panel, the same element, with the same texts and the button naming its id 2ms
+   ❯ @trace FR-61 order at mount (2)
+     × header, size control, board, hint, reset, new buttons, idle, hint and win messages follow each other in this order 3ms
+     × the header holds the heading «Бінарка» followed by the rules button 12ms
+   ❯ @trace FR-61 the message area holds the three messages (1)
+     × the parent of the idle line holds exactly idle, hint, win in this order and follows the three action buttons 25ms
+   ❯ @trace FR-61 the panel is outside the sequence (1)
+     × the panel is not inside the header, the message area or [data-board], and it follows the message area 15ms
+   ❯ @trace FR-61 the order and the message area survive every board change (5)
+     × after new puzzle the nine elements still exist once, in the same order, and the messages are in the same message area 2ms
+     × after size 4 the nine elements still exist once, in the same order, and the messages are in the same message area 8ms
+     × after size 8 the nine elements still exist once, in the same order, and the messages are in the same message area 2ms
+     × after reset the nine elements still exist once, in the same order, and the messages are in the same message area 1ms
+     × after win the nine elements still exist once, in the same order, and the messages are in the same message area 11ms
+   ❯ @trace FR-64 idle line text, code point by code point (1)
+     × the text equals the sentence with two U+00A0 and the Cyrillic і (U+0456) after the first one 2ms
+   ❯ @trace FR-64 the idle line stays in the DOM and untouched (4)
+     × after hint the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute 1ms
+     × after win the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute 9ms
+     × after new puzzle the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute 7ms
+     × after reset the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute 1ms
+ ❯ tests/play-page-win.test.ts (5 tests | 2 failed) 247ms
+   ❯ @trace FR-41 the win message appears when the board is solved (5)
+     × Final click solves the board: the exact Ukrainian message, apostrophe U+0027 31ms
+     × Full board with a violation is not a win 3ms
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts (13 tests | 6 failed) 227ms
+   ❯ @trace FR-42 the new puzzle button replaces the board (6)
+     × New puzzle after play: a fresh generator(6, 7) board, no entries, both messages cleared 45ms
+     × @trace FR-43 New puzzle keeps the chosen size: at 8x8 the button gives an 8x8 board and the selector keeps 8 9ms
+   ❯ @trace FR-51 the seed is chosen outside the engine, injectable and not shown (5)
+     × Injected seed gives a reproducible page: two pages with seed 42 and the real generator are identical 31ms
+     × Default seed source with the real generator: a 6x6 board is rendered and no error is thrown 7ms
+     × Seed is not shown: no text node, title or attribute value contains the seed in any form 15ms
+     × Seed is not shown: the same holds on a fixture board and on a root that held other content 2ms
+ ❯ tests/play-page-highlighting.test.ts (19 tests | 13 failed) 337ms
+   ❯ @trace FR-35 three or more equal digits side by side are highlighted (3)
+     × Three equal digits in a row are highlighted 52ms
+     × Three equal digits in a column are highlighted 4ms
+     × Two equal digits are not highlighted 4ms
+   ❯ @trace FR-36 a line with more than N/2 of one digit is highlighted (6)
+     × Too many zeros in a row: the fourth 0 highlights all six cells of the row and nothing else 4ms
+     × Too many ones in a column: the fourth 1 highlights all six cells of the column and nothing else 3ms
+     × Too many zeros in a row of an 8x8 board: the fifth 0 highlights all eight cells of row 1 and nothing else 23ms
+     × Too many zeros in a row of a 4x4 board: the third 0 highlights all four cells of row 1 and nothing else 14ms
+     × Exactly N/2 is not highlighted: a full row of three 0 and three 1 5ms
+   ❯ @trace FR-37 identical complete rows or columns are highlighted (3)
+     × Two identical complete rows: both rows highlighted, nothing else 3ms
+     × Two identical complete columns: both columns highlighted, nothing else 5ms
+     × A row with an empty cell is not compared 3ms
+   ❯ @trace FR-38 highlighting follows every board change (7)
+     × Highlight appears immediately, in the same click handling 2ms
+     × A new puzzle recomputes highlights from its own givens (a board whose givens break a rule is highlighted at once) 3ms
+ ❯ tests/play-page-hint.test.ts (20 tests | 10 failed) 379ms
+   ❯ @trace FR-39 the hint button fills one cell (13)
+     × Hint fills the targeted cell and no other (pair of zeros in a row) 42ms
+     × Hint fills the targeted cell and no other (pair of ones in a column) 6ms
+     × Hint fills the targeted cell and no other (pair of ones in a row) 4ms
+     × Hint fills the targeted cell and no other (pair of zeros in a column) 9ms
+     × Hint fills the targeted cell and no other (sandwich of zeros in a column) 9ms
+     × Hint fills the targeted cell and no other (sandwich of ones in a row) 4ms
+     × Hint fills the targeted cell and no other (count of zeros in a row) 10ms
+     × No fill when the engine has no target: kind none 2ms
+   ❯ @trace FR-40 the hint button shows the engine sentence (5)
+     × No rule applies: shows the no-rule sentence and fills nothing 2ms
+     × Initial state has no hint message (and the region exists) 2ms
+ ❯ tests/play-page-size-selector.test.ts (24 tests | 11 failed) 514ms
+   ❯ @trace FR-43 the size selector is offered and 6 is selected at mount (2)
+     × Selector options and default: a select with the options 4, 6, 8 labelled «Поле 4×4», «Поле 6×6», «Поле 8×8» 29ms
+     × Selector options and default with the real engine generator 10ms
+   ❯ @trace FR-43 choosing a size starts a new puzzle of that size (6)
+     × Choose 4x4: real generator, second seed, 16 cells with data-row/data-col 1..4, givens equal generate(4, 2) 5ms
+     × Choose 8x8 after play: 64 empty-or-given cells, hint message empty, highlights only for the new givens 6ms
+   ❯ @trace FR-43 a value outside the offered sizes is ignored (3)
+     × Value outside the offered sizes is ignored: 5, 10, abc, 6.0, " 6", 06, 0x6 and empty, each tried in turn 3ms
+     × Value outside the offered sizes with no option selected: selectedIndex -1 is repaired to the option 6 3ms
+   ❯ @trace FR-43 a generator failure keeps the previous board (6)
+     × A generator error keeps the previous board: same cells, messages, highlights; selector restored; one seed taken 2ms
+     × A generator result of the wrong size keeps the previous board (a 6x6 fixture for size 8) 6ms
+     × A generator result of the wrong size keeps the previous board (8 rows with the last row 7 cells long for size 8) 2ms
+     × A generator result of the wrong size keeps the previous board (8 rows with the first row 9 cells long for size 8) 2ms
+     × A generator result of the wrong size keeps the previous board (7 rows of 8 cells for size 8) 2ms
+ ❯ tests/ui-strings.test.ts (5 tests | 4 failed) 53ms
+   ❯ @trace NFR-5 the new texts are Ukrainian (1)
+     × the header, the rules panel (without aria-hidden descendants) and the idle line show the required texts, in Ukrainian only 27ms
+   ❯ @trace NFR-5 the static page text covers the header, the rules panel and the idle line (1)
+     × Static page text: the collection includes the new texts, none of it is decoration, and every text is Ukrainian 8ms
+   ❯ @trace NFR-5 no Cyrillic text outside the strings module (2)
+     × scans src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts, and none holds a Cyrillic character (comments included) 4ms
+     × src/ui/strings.ts exists and contains the title, the idle line and the three rules texts 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 73 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given cell changes nothing (once, then twice more)
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-click-cycle.test.ts:25:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a row are highlighted
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:52:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a column are highlighted
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:69:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Two equal digits are not highlighted
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:86:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row: the fourth 0 highlights all six cells of the row and nothing else
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:104:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many ones in a column: the fourth 1 highlights all six cells of the column and nothing else
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:121:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row of an 8x8 board: the fifth 0 highlights all eight cells of row 1 and nothing else
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:137:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row of a 4x4 board: the third 0 highlights all four cells of row 1 and nothing else
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:158:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Exactly N/2 is not highlighted: a full row of three 0 and three 1
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:186:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete rows: both rows highlighted, nothing else
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:197:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete columns: both columns highlighted, nothing else
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:213:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > A row with an empty cell is not compared
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:228:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Highlight appears immediately, in the same click handling
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:242:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/73]⎯
+
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > A new puzzle recomputes highlights from its own givens (a board whose givens break a rule is highlighted at once)
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-highlighting.test.ts:335:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/73]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of zeros in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of ones in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (count of zeros in a row)
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-hint.test.ts:79:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/73]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > No fill when the engine has no target: kind none
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-hint.test.ts:161:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/73]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > No rule applies: shows the no-rule sentence and fills nothing
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-hint.test.ts:213:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/73]⎯
+
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Initial state has no hint message (and the region exists)
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-hint.test.ts:245:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the rules button is in the header > Rules button in the header: exactly one [data-action="rules"], a button «Правила», popovertarget = the panel id
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ tests/play-page-layout.test.ts:125:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the rules panel at mount > Rules panel structure: popover attribute, heading «Правила», three li items in order, one close button «Зрозуміло»
+AssertionError: the panel has the popover attribute: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/play-page-layout.test.ts:146:82
+    144|     const panel = rulesPanel(root);
+    145|
+    146|     expect(panel.hasAttribute('popover'), 'the panel has the popover a…
+       |                                                                                  ^
+    147|     const board = q(root, '[data-board]');
+    148|     const boardHost = board.parentElement as HTMLElement;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the panel opens with no script > Clicking the rules button and the close button calls none of showPopover, hidePopover, togglePopover
+AssertionError: expected an element matching [data-action="rules"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ readPanel tests/play-page-layout.test.ts:73:15
+ ❯ tests/play-page-layout.test.ts:188:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 two mounts stay independent > two roots in one document have panels with different ids, and each button names the panel of its own root
+AssertionError: panel A has an id: expected null to be truthy
+
+- Expected:
+true
+
++ Received:
+null
+
+ ❯ tests/play-page-layout.test.ts:239:38
+    237|     const idA = panelA.getAttribute('id');
+    238|     const idB = panelB.getAttribute('id');
+    239|     expect(idA, 'panel A has an id').toBeTruthy();
+       |                                      ^
+    240|     expect(idB, 'panel B has an id').toBeTruthy();
+    241|     expect(idA).not.toBe(idB);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the panel survives every board change > after new puzzle there is still exactly one panel, the same element, with the same texts and the button naming its id
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the panel survives every board change > after size 4 there is still exactly one panel, the same element, with the same texts and the button naming its id
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the panel survives every board change > after size 8 there is still exactly one panel, the same element, with the same texts and the button naming its id
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the panel survives every board change > after win there is still exactly one panel, the same element, with the same texts and the button naming its id
+AssertionError: expected an element matching [data-action="rules"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ readPanel tests/play-page-layout.test.ts:73:15
+ ❯ tests/play-page-layout.test.ts:260:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 order at mount > header, size control, board, hint, reset, new buttons, idle, hint and win messages follow each other in this order
+AssertionError: exactly one header: expected  to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/play-page-layout.test.ts:80:72
+     78| function expectNineInOrder(root: HTMLElement): void {
+     79|   const elements = PAGE_ORDER.map((selector) => {
+     80|     expect(root.querySelectorAll(selector), `exactly one ${selector}`)…
+       |                                                                        ^
+     81|     return q(root, selector);
+     82|   });
+ ❯ expectNineInOrder tests/play-page-layout.test.ts:79:31
+ ❯ tests/play-page-layout.test.ts:298:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 order at mount > the header holds the heading «Бінарка» followed by the rules button
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ tests/play-page-layout.test.ts:303:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the message area holds the three messages > the parent of the idle line holds exactly idle, hint, win in this order and follows the three action buttons
+AssertionError: expected an element matching [data-message="idle"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ messageArea tests/helpers/play-page.ts:285:18
+ ❯ tests/play-page-layout.test.ts:314:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the panel is outside the sequence > the panel is not inside the header, the message area or [data-board], and it follows the message area
+AssertionError: expected an element matching [data-message="idle"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ messageArea tests/helpers/play-page.ts:285:18
+ ❯ tests/play-page-layout.test.ts:332:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after new puzzle the nine elements still exist once, in the same order, and the messages are in the same message area
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after size 4 the nine elements still exist once, in the same order, and the messages are in the same message area
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after size 8 the nine elements still exist once, in the same order, and the messages are in the same message area
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after reset the nine elements still exist once, in the same order, and the messages are in the same message area
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after win the nine elements still exist once, in the same order, and the messages are in the same message area
+AssertionError: exactly one header: expected  to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/play-page-layout.test.ts:80:72
+     78| function expectNineInOrder(root: HTMLElement): void {
+     79|   const elements = PAGE_ORDER.map((selector) => {
+     80|     expect(root.querySelectorAll(selector), `exactly one ${selector}`)…
+       |                                                                        ^
+     81|     return q(root, selector);
+     82|   });
+ ❯ expectNineInOrder tests/play-page-layout.test.ts:79:31
+ ❯ tests/play-page-layout.test.ts:347:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-64 idle line text, code point by code point > the text equals the sentence with two U+00A0 and the Cyrillic і (U+0456) after the first one
+AssertionError: expected an element matching [data-message="idle"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ idleLine tests/play-page-layout.test.ts:57:53
+ ❯ tests/play-page-layout.test.ts:391:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/73]⎯
+
+ FAIL  tests/play-page-layout.test.ts > @trace FR-64 the idle line stays in the DOM and untouched > after hint the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute
+ FAIL  tests/play-page-layout.test.ts > @trace FR-64 the idle line stays in the DOM and untouched > after win the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute
+ FAIL  tests/play-page-layout.test.ts > @trace FR-64 the idle line stays in the DOM and untouched > after new puzzle the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute
+ FAIL  tests/play-page-layout.test.ts > @trace FR-64 the idle line stays in the DOM and untouched > after reset the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute
+AssertionError: expected an element matching [data-message="idle"]: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ idleLine tests/play-page-layout.test.ts:57:53
+ ❯ tests/play-page-layout.test.ts:417:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/73]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle after play: a fresh generator(6, 7) board, no entries, both messages cleared
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:51:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/73]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > @trace FR-43 New puzzle keeps the chosen size: at 8x8 the button gives an 8x8 board and the selector keeps 8
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:84:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/73]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Injected seed gives a reproducible page: two pages with seed 42 and the real generator are identical
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:217:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/73]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Default seed source with the real generator: a 6x6 board is rendered and no error is thrown
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:250:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/73]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: no text node, title or attribute value contains the seed in any form
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:260:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/73]⎯
+
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: the same holds on a fixture board and on a root that held other content
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-new-puzzle-and-seed.test.ts:285:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/73]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text: every collected text has Cyrillic letters and no Latin letters
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-page-text.test.ts:27:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/73]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Default board is 6x6: data-size 6, exactly 36 cells, every (row, col) pair 1..6 once
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-rendering.test.ts:29:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/73]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Board follows the chosen size: with the real generator, selecting 8x8 gives data-size 8 and 64 cells (rows and columns 1..8)
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-rendering.test.ts:64:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/73]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > mounting is synchronous and replaces the previous content of the root
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-rendering.test.ts:104:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/73]⎯
+
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 the size selector is offered and 6 is selected at mount > Selector options and default: a select with the options 4, 6, 8 labelled «Поле 4×4», «Поле 6×6», «Поле 8×8»
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-size-selector.test.ts:96:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/73]⎯
+
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 the size selector is offered and 6 is selected at mount > Selector options and default with the real engine generator
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-size-selector.test.ts:103:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/73]⎯
+
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 4x4: real generator, second seed, 16 cells with data-row/data-col 1..4, givens equal generate(4, 2)
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-size-selector.test.ts:111:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/73]⎯
+
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 8x8 after play: 64 empty-or-given cells, hint message empty, highlights only for the new givens
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ playedBoard tests/play-page-size-selector.test.ts:76:3
+ ❯ tests/play-page-size-selector.test.ts:140:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/73]⎯
+
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a value outside the offered sizes is ignored > Value outside the offered sizes is ignored: 5, 10, abc, 6.0, " 6", 06, 0x6 and empty, each tried in turn
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ playedBoard tests/play-page-size-selector.test.ts:76:3
+ ❯ tests/play-page-size-selector.test.ts:239:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/73]⎯
+
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a value outside the offered sizes is ignored > Value outside the offered sizes with no option selected: selectedIndex -1 is repaired to the option 6
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ playedBoard tests/play-page-size-selector.test.ts:76:3
+ ❯ tests/play-page-size-selector.test.ts:267:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/73]⎯
+
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator error keeps the previous board: same cells, messages, highlights; selector restored; one seed taken
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ playedBoard tests/play-page-size-selector.test.ts:76:3
+ ❯ tests/play-page-size-selector.test.ts:342:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/73]⎯
+
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (a 6x6 fixture for size 8)
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (8 rows with the last row 7 cells long for size 8)
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (8 rows with the first row 9 cells long for size 8)
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (7 rows of 8 cells for size 8)
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ playedBoard tests/play-page-size-selector.test.ts:76:3
+ ❯ tests/play-page-size-selector.test.ts:378:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/73]⎯
+
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board: the exact Ukrainian message, apostrophe U+0027
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-win.test.ts:32:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/73]⎯
+
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Full board with a violation is not a win
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ expectPageStructure tests/helpers/play-page.ts:322:18
+ ❯ tests/play-page-win.test.ts:77:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/73]⎯
+
+ FAIL  tests/ui-strings.test.ts > @trace NFR-5 the new texts are Ukrainian > the header, the rules panel (without aria-hidden descendants) and the idle line show the required texts, in Ukrainian only
+AssertionError: expected an element matching header: expected null not to be null
+ ❯ q tests/helpers/play-page.ts:164:62
+    162| export function q(root: ParentNode, selector: string): HTMLElement {
+    163|   const el = root.querySelector<HTMLElement>(selector);
+    164|   expect(el, `expected an element matching ${selector}`).not.toBeNull(…
+       |                                                              ^
+    165|   return el as HTMLElement;
+    166| }
+ ❯ tests/ui-strings.test.ts:57:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/73]⎯
+
+ FAIL  tests/ui-strings.test.ts > @trace NFR-5 the static page text covers the header, the rules panel and the idle line > Static page text: the collection includes the new texts, none of it is decoration, and every text is Ukrainian
+AssertionError: collectPageText contains «Зрозуміло»: expected [ 'Бінарка', 'Поле 4×4', …(10) ] to include 'Зрозуміло'
+ ❯ tests/ui-strings.test.ts:89:65
+     87|     const trimmed = texts.map((t) => t.trim());
+     88|     for (const required of [TITLE_TEXT, RULES_LABEL, RULES_CLOSE_LABEL…
+     89|       expect(trimmed, `collectPageText contains «${required}»`).toCont…
+       |                                                                 ^
+     90|     }
+     91|     for (const text of texts) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/73]⎯
+
+ FAIL  tests/ui-strings.test.ts > @trace NFR-5 no Cyrillic text outside the strings module > scans src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts, and none holds a Cyrillic character (comments included)
+AssertionError: files with a Cyrillic character outside src/ui/strings.ts: expected [ 'src/ui/play-page.ts' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "src/ui/play-page.ts",
++ ]
+
+ ❯ tests/ui-strings.test.ts:131:84
+    129|     expect(names).not.toContain('src/ui/strings.ts');
+    130|     const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f…
+    131|     expect(offenders, 'files with a Cyrillic character outside src/ui/…
+       |                                                                                    ^
+    132|   });
+    133|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/73]⎯
+
+ FAIL  tests/ui-strings.test.ts > @trace NFR-5 no Cyrillic text outside the strings module > src/ui/strings.ts exists and contains the title, the idle line and the three rules texts
+AssertionError: src/ui/strings.ts exists: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/ui-strings.test.ts:135:66
+    133|
+    134|   it('src/ui/strings.ts exists and contains the title, the idle line a…
+    135|     expect(existsSync(STRINGS_FILE), 'src/ui/strings.ts exists').toBe(…
+       |                                                                  ^
+    136|     const source = existsSync(STRINGS_FILE) ? readFileSync(STRINGS_FIL…
+    137|     expect(source).toContain(TITLE_TEXT);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/73]⎯
+
+
+ Test Files  10 failed | 11 passed (21)
+      Tests  73 failed | 399 passed (472)
+   Start at  00:16:51
+   Duration  26.48s (tests 60%, environment 31%, import 6%, transform 2%)
+

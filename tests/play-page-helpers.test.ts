@@ -34,9 +34,12 @@ import {
   givensOf,
   keepsGivens,
   makePuzzle,
+  messageArea,
   rawGenerateSpy,
+  rulesPanel,
   seedQueue,
   solutionGrid,
+  textWithoutHidden,
   trackErrors,
 } from './helpers/play-page';
 import { VALID_4X4, boardOf, parseBoard } from './helpers/board';
@@ -156,6 +159,28 @@ describe('play-page fixtures', () => {
     expect(texts).toContain('Option label');
     expect(texts).toContain('x');
     expect(texts).not.toContain('4');
+  });
+
+  it('collectPageText skips text under aria-hidden="true" (decoration, A-26) and keeps the visible text next to it', () => {
+    const root = document.createElement('div');
+    root.innerHTML = '<ul><li>Visible rule<span aria-hidden="true">0 0 1 <b>decor</b></span></li></ul>';
+    const texts = collectPageText(root);
+    expect(texts).toContain('Visible rule');
+    expect(texts.some((t) => t.includes('decor') || t.includes('0 0 1'))).toBe(false);
+  });
+
+  it('textWithoutHidden drops the aria-hidden descendants and keeps the rest; rulesPanel / messageArea assert their element', () => {
+    const li = document.createElement('li');
+    li.innerHTML = 'Rule text<span aria-hidden="true">0 1 ≠ 1 0</span>';
+    expect(textWithoutHidden(li)).toBe('Rule text');
+    expect(li.textContent).toContain('≠'); // the original is untouched
+
+    const root = document.createElement('div');
+    root.innerHTML = '<div data-section="rules"></div><div class="area"><p data-message="idle"></p></div>';
+    expect(rulesPanel(root)).toBe(root.querySelector('[data-section="rules"]'));
+    expect(messageArea(root)).toBe(root.querySelector('.area'));
+    root.insertAdjacentHTML('beforeend', '<div data-section="rules"></div>');
+    expect(() => rulesPanel(root)).toThrow();
   });
 });
 

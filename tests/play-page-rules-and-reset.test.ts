@@ -1,5 +1,7 @@
-// Play page: the rules block (FR-57) and the reset button (FR-58). Scenarios of the delta spec
-// openspec/changes/add-rules-and-reset/specs/play-page/spec.md ("Rules block", "Reset button"). Written FIRST (red).
+// Play page: the reset button (FR-58). Scenarios of the delta spec
+// openspec/changes/add-rules-and-reset/specs/play-page/spec.md ("Reset button"). Written FIRST (red).
+// The rules-block scenarios (FR-57) that used to live here were removed by the change update-page-layout: the rules are now
+// a popover panel, covered by tests/play-page-layout.test.ts ("Rules panel").
 // Reset scenarios that touch the board run for N = 4, 6, 8, each with a fixture puzzle of size N (the page is mounted at 6
 // and the player selects 4 or 8, the injected generator returning the fixture).
 // NEVER enumerate the 8x8 grids: the 8x8 fixtures carry a hand-written solution (tests/helpers/play-page.ts).
@@ -7,8 +9,6 @@ import { describe, expect, it } from 'vitest';
 import type { Puzzle } from '../src/engine/index';
 import {
   BLANK,
-  BLANK_4,
-  BLANK_8,
   BROKEN_SENTENCE,
   DIRTY_8_ROW,
   DIRTY_GIVENS,
@@ -34,7 +34,6 @@ import {
   makePuzzle,
   mountPage,
   pressHint,
-  pressNew,
   q,
   readBoard,
   seedQueue,
@@ -47,15 +46,6 @@ import {
 } from './helpers/play-page';
 
 installPageLifecycle();
-
-const RULES = '[data-section="rules"]';
-const RULES_HEADING = 'Правила';
-const RULES_ITEMS = [
-  'Не більше двох однакових цифр поспіль у рядку чи стовпці.',
-  'У кожному рядку та стовпці порівну нулів і одиниць.',
-  'Усі рядки різні, і всі стовпці різні.',
-];
-const LATIN = /[A-Za-z]/;
 
 /** 4x4 whose only givens are three 0 in row 1: the checker reports `three` at once (inconsistent fixture). */
 const DIRTY_4 = makePuzzle(givensOf(4, [[1, 1, 0], [1, 2, 0], [1, 3, 0]]), { inconsistent: true });
@@ -105,74 +95,6 @@ const pressReset = (root: ParentNode): void => q(root, '[data-action="reset"]').
 function textsAndGivens(root: ParentNode): string[] {
   return allCells(root).map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}|${c.textContent ?? ''}|${c.getAttribute('data-given')}`);
 }
-
-// ---------------------------------------------------------------------------------------------------------
-// Rules block (FR-57, NFR-5)
-// ---------------------------------------------------------------------------------------------------------
-
-/** The rules block as read now: asserts it is unique, outside and after the board; returns its element, heading and items. */
-function readRules(root: HTMLElement): { el: HTMLElement; headings: string[]; items: string[] } {
-  const found = root.querySelectorAll<HTMLElement>(RULES);
-  expect(found, 'exactly one rules block').toHaveLength(1);
-  const el = found[0] as HTMLElement;
-  const board = q(root, '[data-board]');
-  expect(board.contains(el), 'the rules block is not inside [data-board]').toBe(false);
-  expect(el.contains(board), 'the board is not inside the rules block').toBe(false);
-  expect(
-    (board.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
-    'the rules block follows [data-board] in document order',
-  ).toBe(true);
-  const headings = Array.from(el.querySelectorAll('h1, h2, h3, h4, h5, h6')).map((h) => h.textContent ?? '');
-  const items = Array.from(el.querySelectorAll('li')).map((li) => li.textContent ?? '');
-  return { el, headings, items };
-}
-
-describe('@trace FR-57 @trace NFR-5 the rules block is shown at mount', () => {
-  it('Rules block at mount: one block after the board, heading «Правила», three li items in order, no Latin letters', () => {
-    const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: BLANK }) });
-    const rules = readRules(root);
-
-    expect(rules.headings).toEqual([RULES_HEADING]);
-    expect(rules.items).toEqual(RULES_ITEMS);
-    expect(rules.el.querySelectorAll('li')).toHaveLength(3);
-    for (const text of [...rules.headings, ...rules.items]) expect(text, `no Latin letter in "${text}"`).not.toMatch(LATIN);
-  });
-});
-
-describe('@trace FR-57 the rules block survives every board change', () => {
-  const ACTIONS = ['new puzzle', 'size 4', 'size 8', 'win'] as const;
-
-  it.each(ACTIONS)('after %s there is still exactly one rules block, the same element, after the board, with the same texts', (action) => {
-    const seeds = seedQueue([1, 2, 3]);
-    const spy = generateSpy(bySize({ 6: WIN_PUZZLE, 4: BLANK_4, 8: BLANK_8 }));
-    const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
-    const atMount = readRules(root);
-    expect(atMount.headings).toEqual([RULES_HEADING]);
-    expect(atMount.items).toEqual(RULES_ITEMS);
-    const boardAtMount = q(root, '[data-board]');
-
-    if (action === 'new puzzle') {
-      pressNew(root);
-      expect(spy.calls).toHaveLength(2); // premise: a new puzzle was really generated
-    } else if (action === 'size 4') {
-      selectSize(root, 4);
-      expect(q(root, '[data-board]').getAttribute('data-size')).toBe('4');
-    } else if (action === 'size 8') {
-      selectSize(root, 8);
-      expect(q(root, '[data-board]').getAttribute('data-size')).toBe('8');
-    } else {
-      fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE));
-      expect(winMessage(root)).toBe(WIN_MESSAGE);
-    }
-
-    const after = readRules(root);
-    expect(after.el, 'the block is created once at mount, not rebuilt with the board').toBe(atMount.el);
-    expect(after.headings).toEqual(atMount.headings);
-    expect(after.items).toEqual(atMount.items);
-    // a board change really happened where the board is replaced (so "same element" is not about an untouched page)
-    if (action === 'size 4' || action === 'size 8') expect(allCells(root).length).not.toBe(boardAtMount.querySelectorAll('[data-cell]').length);
-  });
-});
 
 // ---------------------------------------------------------------------------------------------------------
 // Reset button (FR-58, NFR-5)
