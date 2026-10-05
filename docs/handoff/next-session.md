@@ -6,15 +6,15 @@ Paste the block below as the first message of a new Claude Code session opened o
 
 You are continuing **Бінарка** (Project Factory; TypeScript, Vite, vanilla DOM, Vitest). The course capstone was delivered on 2026-10-04 (signed tag `submission-2026-10-04`, pushed to `main`); we are now in a post-submission iteration on design and UX. Nothing in this iteration is signed as a requirement yet.
 
-**Where to work:** branch `claude/next-session-handoff-8cd297` in worktree `.claude/worktrees/next-session-handoff-8cd297`. It is the slice-4 branch `claude/fwdays-slice4-rules-reset-de6481` (tip `406940d`) plus the design iteration 4 and review 2 commits. The slice-4 branch could not be fast-forwarded from here, because it is checked out in `.claude/worktrees/git-https-to-ssh-ed7693`. That worktree has an uncommitted `trace/ledger.jsonl` hook change; ask the user before touching it. Never edit a worktree another session owns. Commits after `406940d` are signed (re-signed on 2026-10-05 about 22:10, autonomy-log row 49; backup of the unsigned originals: `backup/design-unsigned-4b62294`). Nothing after `3777289` is pushed; `main` stays at `db76f02`.
+**Where to work:** branch `claude/next-session-handoff-8cd297` in worktree `.claude/worktrees/next-session-handoff-8cd297`. It is the slice-4 branch `claude/fwdays-slice4-rules-reset-de6481` (tip `406940d`) plus the design iteration 4 and 5 and review 2 and 3 commits. The slice-4 branch could not be fast-forwarded from here, because it is checked out in `.claude/worktrees/git-https-to-ssh-ed7693`. That worktree has an uncommitted `trace/ledger.jsonl` hook change; ask the user before touching it. Never edit a worktree another session owns. Commits after `406940d` are signed (re-signed on 2026-10-05 about 22:10, autonomy-log row 49; backup of the unsigned originals: `backup/design-unsigned-4b62294`). Nothing after `3777289` is pushed; `main` stays at `db76f02`.
 
 **Read first, in order:**
 1. `AGENTS.md`
 2. `docs/current-state.md` (Last Updated and Next task)
-3. `docs/design/review-2-design-reviewer.md` (the latest design review, with its four questions)
+3. `docs/design/review-3-design-reviewer.md` (the latest design review, with its three questions)
 4. `docs/design/ux-decisions.md` (the user's 17 decisions)
-5. `design/README.md` (iteration 4, its measurements and known limits)
-6. `docs/autonomy-log.md`, rows 32 to 47 and mistakes M12 to M17
+5. `design/README.md` (iterations 4 and 5, their measurements and known limits)
+6. `docs/autonomy-log.md`, rows 32 to 50 and mistakes M12 to M17
 7. `docs/lessons/factory-enforces-artifacts-not-order.md`
 8. `docs/requirements.md`
 9. `openspec/specs/play-page/spec.md`
@@ -22,12 +22,12 @@ You are continuing **Бінарка** (Project Factory; TypeScript, Vite, vanill
 Run `date` first and before every time claim; the user is UTC+5:30 (Kyiv is 2:30 earlier).
 
 **First job: close the design review loop.**
-1. Ask the user review 2's four questions (8×8 on short tablets and desktops, 4×4 board growth, adding 4×4 and 1024×768 to the set, reduced motion in the product capture), and which findings to apply. Proposed: the blockers N1, N3, N4 and #14, then N2, N6, N7 and #9, with N5 last because it is motion only.
+1. Read `docs/design/review-3-design-reviewer.md` (iteration 5; one blocker, R1: no floor on the height-aware cell size). Ask the user its three questions (R1's floor and a short desktop size such as 1366×650 in the set; R2, accept the 5–7 px button shift or give equal widths; reduced motion and the pointer off the page in the product's parity capture) unless they were answered in `docs/design/ux-decisions.md` after decision 21.
 2. Apply them in `design/v0/`. Build with pnpm 10: `npm_config_manage_package_manager_versions=false pnpm build` in `design/v0` (run `pnpm install --frozen-lockfile` the same way first if `node_modules` is missing).
-3. Add the 4×4 page and the 1024×768 size to `design/tools/capture-review-set.sh` if the user agrees.
-4. Serve `design/v0/out` on 127.0.0.1:4173 and capture **twice** into the scratchpad (`capture-review-set.sh <dir>`, about 5 minutes per run). Compare `shasum` output; any difference is a harness defect to fix first. Copy the set into a new `review-set-3/` with its `SHA1SUMS`.
+3. Add the agreed sizes to `design/tools/capture-review-set.sh` (it already has 4×4 and 1024×768).
+4. Serve `design/v0/out` on 127.0.0.1:4173 and capture **twice** into the scratchpad (`capture-review-set.sh <dir>`, about 5 minutes per run). Compare `shasum` output; any difference is a harness defect to fix first. Copy the set into a new `review-set-4/` with its `SHA1SUMS`.
 5. Measure the touch targets and fit in the built-in browser (each page in an iframe of the given size), as in `design/README.md`.
-6. Run review 3: a fresh Opus agent told to read and follow `.claude/agents/design-reviewer.md`, read-only, with the brief of review 2 updated. Save its report verbatim with your spot-checks, and report its verdict to the user.
+6. If the user wants another look, run review 4: a fresh Opus agent told to read and follow `.claude/agents/design-reviewer.md`, read-only, with the brief of review 3 updated. Save its report verbatim with your spot-checks, and report its verdict to the user.
 
 **Then:** draft the requirements amendment for the UX decisions with the requirements-analyst and wait for the user's explicit "signed" in chat before any spec, test or code. A design-fidelity NFR is declared only after `npm run check:visual` is proven runnable and seen failing. That needs the user's approval of Playwright, `pixelmatch` and `pngjs` first.
 
