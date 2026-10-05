@@ -105,7 +105,17 @@ body {
   padding: var(--space-5) var(--page-pad) var(--space-6);
 }
 
-#app > h1 {
+/* ---------- Header (title + «Правила») ---------- */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.page-header h1 {
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -117,15 +127,44 @@ body {
   color: var(--ink);
 }
 
-#app > h1 svg {
+.page-header h1 svg {
   flex: none;
   width: 3.5rem;
   height: 3.5rem;
   color: var(--primary);
 }
 
-#app > h1 svg .logo-word {
+.page-header h1 svg .logo-cell {
   fill: var(--primary-ink);
+}
+
+.page-header h1 svg .logo-digit {
+  fill: currentColor;
+}
+
+.page-header h1 svg .logo-digit-ring {
+  fill: none;
+  stroke: currentColor;
+}
+
+.rules-button {
+  flex: none;
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border: 2px solid var(--cell-border);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.rules-button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 
 /* ---------- Size picker (segmented control) ---------- */
@@ -289,68 +328,114 @@ body {
   text-underline-offset: 0.12em;
 }
 
-/* ---------- Rules ---------- */
+/* ---------- Rules (popover: bottom sheet on phones, centred panel on wider screens) ---------- */
 
 .rules {
-  align-self: stretch;
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: 60vh;
+  margin: 0;
+  padding: var(--space-5) var(--space-4) var(--space-4);
+  overflow-y: auto;
   border: 1px solid var(--line);
-  border-left: 3px solid var(--primary);
-  border-radius: 0 var(--radius-m) var(--radius-m) 0;
+  border-bottom: none;
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
   background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font);
   text-align: left;
+  box-shadow: 0 -0.5rem 2rem rgba(0, 0, 0, 0.18);
 }
 
-.rules summary {
+.rules::backdrop {
+  background: rgba(20, 18, 14, 0.3);
+}
+
+.rules h2 {
+  margin: 0 0 var(--space-3);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.rules ul {
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.rules li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.rule-example {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  min-height: 2.75rem;
-  padding: 0 var(--space-4);
-  border-radius: 0 var(--radius-m) var(--radius-m) 0;
-  color: var(--ink);
+  gap: 0.1875rem;
+}
+
+.mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--cell-border);
+  border-radius: var(--radius-s);
+  background: var(--bg);
+  color: var(--entry-ink);
   font-size: 0.9375rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.mini-answer {
+  border: 2px dashed var(--primary);
+  background: var(--primary-soft);
+  color: var(--ink);
+  font-style: italic;
   font-weight: 700;
-  list-style: none;
+}
+
+.mini-sep {
+  padding: 0 var(--space-2);
+  color: var(--ink-muted);
+  font-weight: 700;
+}
+
+.rules-close {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-m);
+  background: var(--primary);
+  color: var(--primary-ink);
+  font: inherit;
+  font-weight: 700;
   cursor: pointer;
 }
 
-.rules summary::-webkit-details-marker {
-  display: none;
-}
-
-.rules summary::before {
-  content: '';
-  flex: none;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-right: 2px solid var(--primary);
-  border-bottom: 2px solid var(--primary);
-  transform: translateX(-0.125rem) rotate(-45deg);
-}
-
-.rules[open] summary::before {
-  transform: translateY(-0.125rem) rotate(45deg);
-}
-
-.rules summary:focus-visible {
+.rules-close:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 
-.rules ul {
-  margin: 0;
-  padding: 0 var(--space-4) var(--space-4) 2.25rem;
-  color: var(--ink-muted);
-  font-size: 0.9375rem;
-  line-height: 1.5;
-}
-
-.rules li + li {
-  margin-top: var(--space-1);
-}
-
-.rules li::marker {
-  color: var(--primary);
+@media (min-width: 48rem) {
+  .rules {
+    inset: 0;
+    width: 26rem;
+    max-height: 80vh;
+    margin: auto;
+    border-bottom: 1px solid var(--line);
+    border-radius: var(--radius-l);
+  }
 }
 
 /* ---------- Buttons ---------- */
@@ -439,6 +524,19 @@ body {
   display: none;
 }
 
+.message-idle {
+  padding: 0 var(--space-3);
+  border: none;
+  background: none;
+  color: var(--ink-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.messages:has([data-message='hint']:not(:empty), [data-message='win']:not(:empty)) .message-idle {
+  display: none;
+}
+
 .message[data-message='hint'] {
   border-left: 4px solid var(--primary);
   background: var(--primary-soft);
@@ -521,11 +619,11 @@ body {
     gap: var(--space-5);
   }
 
-  #app > h1 {
+  .page-header h1 {
     font-size: 2.5rem;
   }
 
-  #app > h1 svg {
+  .page-header h1 svg {
     width: 4rem;
     height: 4rem;
   }

@@ -2,7 +2,7 @@
 
 Visual design references for Бінарка. **Not product code:** nothing here is built, tested or linted with the app (`eslint.config.js` ignores `design/`; `tsconfig.json` does not include it).
 
-## `v0/`: Vercel v0 design, iteration 2
+## `v0/`: Vercel v0 design, iteration 3 (iteration 3 edited by the agent)
 
 | | |
 |---|---|
@@ -36,6 +36,30 @@ Visual design references for Бінарка. **Not product code:** nothing here 
 - **Build:** `pnpm build` passed, including the TypeScript check; all five routes were exported to `out/`. Served with `python3 -m http.server 4173 --bind 127.0.0.1 -d design/v0/out`.
 - **Measured at 375×812** in the built-in browser: page width 375, no horizontal scroll, 6×6 cells 51.5 px, system font stack.
 - **Screenshots** in [`v0-screenshots/`](v0-screenshots/): light default, hint, win and confirm, plus dark hint. Some scaled captures in the built-in browser show partial repaints (for example the confirm backdrop covering only part of the page). Those are capture artifacts of the preview, not the design, which is one more reason the pixel gate must use its own Playwright captures.
+
+### Iteration 3: edited by the agent (2026-10-05 about 20:05)
+
+The v0 credits ran out, so the agent applied [`docs/design/v0-followup-2.md`](../docs/design/v0-followup-2.md) and decision 12 of `docs/design/ux-decisions.md` to these sources directly:
+- **`components/binarka-page.tsx`:**
+  - A `header.page-header` with the title and a «Правила» button (`popovertarget="rules"`, no script).
+  - The rules moved into `div#rules[popover]` with mini examples and «Зрозуміло»; the bottom `<details>` is gone.
+  - Buttons moved directly under the board, with the message area below them.
+  - A `[data-message="idle"]` placeholder line.
+  - The logo's word replaced by a 2×2 mini board `1 0 / 0 1`, with digits drawn as the same bar/ring shapes as the rays.
+- **`components/open-rules-popover.tsx`:** opens the popover on load for `/rules/` only (like the confirm route).
+- **`app/binarka.css`:**
+  - Header and `.rules-button` styles.
+  - The popover as a bottom sheet (max 60vh) on phones and a centred 26rem panel from 48rem.
+  - `.mini` and `.mini-answer` cells.
+  - A muted `.message-idle`, hidden with `:has()` when a hint or win message has text.
+  - `#app > h1` selectors became `.page-header h1`.
+- **Built and checked:**
+  - `pnpm build` passed, including TypeScript.
+  - At 375×812 (built-in browser, light and dark): no horizontal scroll, the idle line shown on `/` and hidden on `/hint/`, and the board, buttons and message on one screen.
+  - Screenshots in [`v0-screenshots/iteration-3/`](v0-screenshots/iteration-3/) (iteration 2's in `iteration-2/`).
+- **Not done:**
+  - No independent review yet: the agent authored this iteration, so the user's look and a `vision-judge` pass come before it is used as the pixel reference.
+  - Browser support of `popover` and `:has()` was not tested beyond the built-in browser (current Chromium).
 
 ### Before it becomes the pixel-check reference
 
