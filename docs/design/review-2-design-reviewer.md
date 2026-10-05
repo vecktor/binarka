@@ -2,7 +2,7 @@
 
 - **Reviewer:** a fresh Opus agent following [`.claude/agents/design-reviewer.md`](../../.claude/agents/design-reviewer.md), read-only, about 250k tokens, 63 tool calls, about 8 minutes. The agent file is not loaded as a named agent in this session (it was added after the session started), so a general-purpose Opus agent was told to read and follow it, as in review 1.
 - **Material:** the 50 shots in `design/v0-screenshots/review-set-2/` (6 pages at 320/375/768/1440, light and dark, plus the logo at 40/56/64 px; two capture runs byte-identical, `SHA1SUMS`), the design sources, the capture harness, and `docs/design/ux-decisions.md`. The brief gave the game context, the constraints, what changed since review 1 and the author's measurements.
-- **Design reviewed:** iteration 4 (agent-edited), commit `4b62294`.
+- **Design reviewed:** iteration 4 (agent-edited), commit `c375b37` (first committed as `4b62294`, re-signed).
 - **The report below is verbatim.**
 
 **Orchestrator's spot-checks (2026-10-05 about 21:45):**
