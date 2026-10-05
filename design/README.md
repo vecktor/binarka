@@ -30,6 +30,13 @@ Visual design references for Бінарка. **Not product code:** nothing here 
   5. Build and serve commands are given (above). v0 reports that the build passes type checking; **we have not verified that yet**.
 - **v0's caveat, relevant to the pixel check:** `system-ui` resolves to different fonts on different machines (macOS, a bare Linux container, CI). The reference and our page must be captured on the same machine with the same fonts, or the comparison measures fonts, not design. That is the capture-determinism lesson.
 
+### First local build (2026-10-05 about 19:46)
+
+- **Install:** pnpm 12.3.4 (pinned by v0) does not run on this machine's Node 22.21.1; v0 assumed Node 24. The installed pnpm 10.32.1 reads the lockfile (format 9.0), so `npm_config_manage_package_manager_versions=false pnpm install --frozen-lockfile` was used: 64 packages, only in `design/v0/node_modules`.
+- **Build:** `pnpm build` passed, including the TypeScript check; all five routes were exported to `out/`. Served with `python3 -m http.server 4173 --bind 127.0.0.1 -d design/v0/out`.
+- **Measured at 375×812** in the built-in browser: page width 375, no horizontal scroll, 6×6 cells 51.5 px, system font stack.
+- **Screenshots** in [`v0-screenshots/`](v0-screenshots/): light default, hint, win and confirm, plus dark hint. Some scaled captures in the built-in browser show partial repaints (for example the confirm backdrop covering only part of the page). Those are capture artifacts of the preview, not the design, which is one more reason the pixel gate must use its own Playwright captures.
+
 ### Before it becomes the pixel-check reference
 
 See the notes at the end of `docs/design/v0-prompt.md`: approve Playwright, `pixelmatch` and `pngjs`; serve this design locally; write `quality/visual-parity.config.json`; and see `npm run check:visual` fail against today's page **before** a design NFR is signed.

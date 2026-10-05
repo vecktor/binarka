@@ -6,3 +6,4 @@ coverage/
 .DS_Store
 .claude/worktrees/
 design/*.zip
+design/v0/next-env.d.ts
