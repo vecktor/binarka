@@ -6,7 +6,7 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-05 20:49:00 (UTC+5:30; Kyiv 18:19)
+- **Date and time:** 2026-10-05 21:47:00 (UTC+5:30; Kyiv 19:17)
 - **Current phase:** Phase 4 (post-submission iteration: design and UX, nothing signed yet)
 - **Last completed gate:** G3
 - **Active change:** none (slices 1 to 4 and the change `update-hint-sentences` are archived)
@@ -15,11 +15,11 @@
   - Earlier: slice 3 `add-size-selector` (FR-43, restored by the user, autonomy-log rows 22 and 24) is implemented, reviewed and archived, test-first, at about 22:45, about 45 minutes ahead of the 23:30 target. Slices 1 and 2 as before (archived 20:20 and 20:50). No cut line applied. P0–P3 are unchanged (claims below).
   - Commit and tag order, slice 3: change `a3adf3c` (`step-25-s3-change`), revised change `41b7730`, red tests `47b25bd` (`step-26-s3-red`) and `ca12f12` (24th test, red evidence 67 red), green `d7613cf` (`step-27-s3-green`), review fix round `8b52593` (`step-28-s3-fix1`), archive commit (`step-29-s3-archived`). Slice 2: tags `step-19` to `step-23`; slice 1: `step-13` to `step-18`.
   - **Signing:** every commit in this branch's history is signed: slices 1 to 3 up to `cd90dca` (37 `G`, checked about 22:57) and the 9 slice 4 commits re-signed at about 00:00 on 2026-10-05 (`git log --format='%G?' cd90dca..HEAD`: 9 `G`; `git diff backup/slice4-unsigned-f0b3f37 <re-signed tip>` empty; tags `step-30` to `step-35` re-pointed). Slice 4 lives on branch `claude/fwdays-slice4-rules-reset-de6481` in worktree `.claude/worktrees/git-https-to-ssh-ed7693`, branched from `cd90dca` (the slice 3 branch is checked out in `practical-allen-938687`, which still holds the three untracked 23:10 retro files).
-- **Next task (handoff to a fresh session, 2026-10-05 about 19:58):**
-  1. **Design review 1 is done** by the independent `design-reviewer` agent (`.claude/agents/design-reviewer.md`, the user's prompt): 15 findings, verbatim in `docs/design/review-1-design-reviewer.md`, over 40 shots in `design/v0-screenshots/review-set/` made by `design/tools/capture-review-set.sh`. The user answered its five questions (decisions 13–17 in `docs/design/ux-decisions.md`). **Next:**
-     - Confirm with the user which findings to apply (proposed: 1–9, with 10–15 optional).
-     - Apply them to `design/v0/`, add the 40 px logo capture, and make the confirm-dialog focus deterministic in the capture (finding 7).
-     - Recapture all shots and run the `design-reviewer` once more to confirm.
+- **Next task (2026-10-05 about 21:47):**
+  1. **Design iteration 4 and review 2 are done; the design is not yet the pixel reference.**
+     - Iteration 4 applies all 15 findings of review 1 and its motion (the user's choice, autonomy-log row 46): commit `4b62294` (unsigned, GPG probe exit 2). Evidence: `design/README.md` (iteration 4, with measurements), 50 shots in `design/v0-screenshots/review-set-2/`; two capture runs were byte-identical (`SHA1SUMS`).
+     - Review 2 (`docs/design/review-2-design-reviewer.md`, verbatim, with spot-checks): 11 of 15 fixed, 3 partly or not fixed (8, 9, 14), and 7 new findings. Verdict **not ready**, with four blockers: no 4×4 shots and a too-narrow 4×4 column (N1), «Зрозуміло» clipped at 320 (N3, confirmed), the hint crescent (#14), and the layout shift on 8×8 (N4, confirmed).
+     - **Next:** the user answers review 2's four questions and chooses which findings to apply. Then apply them, add 4×4 and 1024×768 to the capture, recapture twice, and run review 3.
      - The apostrophe change (decision 14) is a product change: it goes into the requirements amendment.
   2. **Then the requirements amendment**, drafted by the requirements-analyst and signed by the user in chat before any spec, test or code. It covers [`docs/design/ux-decisions.md`](design/ux-decisions.md) decisions 1 to 11: FR-57 (popover), FR-42/43/58 (confirmation), FR-43/A-24 (segmented control), A-20 (keyboard and screen reader), FR-27 to MVP, a hinted-cell FR, non-colour-cue and fit-on-one-screen NFRs, the placeholder text, and the logo (TC-14). Plus a design-fidelity NFR, but **only after** the check is proven runnable: approve Playwright, `pixelmatch` and `pngjs`, write `quality/visual-parity.config.json` with `referenceUrl` set to the served `design/v0/out`, and see `npm run check:visual` fail first (declared-method-needs-mechanism).
   3. **Slices in the proposed order** of `ux-decisions.md`: layout 1+2+9, then 3 and 5, then 4, 6 and 8; FR-27 as an independent generator slice. Same process as slice 4 (dedicated agents on Sonnet, red confirmed by the orchestrator, review-gate, 375 px check, archive).

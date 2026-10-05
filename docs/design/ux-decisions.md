@@ -51,4 +51,4 @@ The user's answers to the five questions in [`review-1-design-reviewer.md`](revi
 | 16 | May the board grow beyond 4rem cells? | **Yes:** about 5rem on tablet, height-aware (about 4.5rem) on desktop, as the review proposes. | Design CSS; the fit-on-one-screen NFR must still hold. |
 | 17 | Warm dark theme? | **Yes:** the warm brown-black palette from the review (§3). | Design CSS; contrast to be verified by `check-a11y`. |
 
-**Which findings to apply** is not decided yet. The agent proposed findings 1–9, with 10–15 at the user's choice; confirm with the user at the start of the next session.
+**Which findings to apply:** all 15, plus the review's motion (the user's choice, 2026-10-05 about 21:00; iteration 4 in `design/README.md`). Review 2 ([`review-2-design-reviewer.md`](review-2-design-reviewer.md)) asks four more questions, still open.
