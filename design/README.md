@@ -2,7 +2,7 @@
 
 Visual design references for Бінарка. **Not product code:** nothing here is built, tested or linted with the app (`eslint.config.js` ignores `design/`; `tsconfig.json` does not include it).
 
-## `v0/`: Vercel v0 design, iteration 3 (iteration 3 edited by the agent)
+## `v0/`: Vercel v0 design, iteration 4 (iterations 3 and 4 edited by the agent)
 
 | | |
 |---|---|
@@ -60,6 +60,30 @@ The v0 credits ran out, so the agent applied [`docs/design/v0-followup-2.md`](..
 - **Not done:**
   - No independent review yet: the agent authored this iteration, so the user's look and a `vision-judge` pass come before it is used as the pixel reference.
   - Browser support of `popover` and `:has()` was not tested beyond the built-in browser (current Chromium).
+
+### Iteration 4: review 1 applied by the agent (2026-10-05 about 21:30)
+
+The user chose to apply all 15 findings of [`docs/design/review-1-design-reviewer.md`](../docs/design/review-1-design-reviewer.md) and its motion, with decisions 13–17 of `docs/design/ux-decisions.md`.
+- **`app/binarka.css`:**
+  - The warm brown-black dark palette from the review's §3 (decision 17, finding 6); `--surface-raised` and `--overlay-border` for the rules sheet and the dialog (13); warmer backdrops (12); the focus ring in `--ink` (15).
+  - The board size is read on `#app` with `:has(.board[data-size=…])`, so the column (header, picker, buttons, messages) matches the board width from 48rem (10).
+  - 44 px size buttons (1); at ≤ 22.5rem a 0.75rem page padding, tighter 6×6 gutters (2) and narrower button padding (4); the tightest 8×8 gutters on phones (3, decision 13).
+  - «Нова головоломка» is the filled button after a win (5); hover and pressed states (9); the hint accent as an inset shadow (14); `text-wrap: balance` on the idle line (11).
+  - The rules sheet: 55dvh, a tighter list, and safe-area bottom padding (8).
+  - Decision 16: 5rem cells from 48rem; height-aware cells from 64rem. The author reserves 28rem, not the review's 24rem, because 8×8 at 1440×900 scrolled by 17 px; on screens up to 50rem tall the reserve is 31.5rem.
+  - Motion, only under `prefers-reduced-motion: no-preference`: the sheet slides in (a fade and a short rise from 48rem), the hinted cell pops, the solved board glows once, and the buttons get transitions. No fill mode, so every motion ends at the static style.
+- **`components/binarka-page.tsx`:** `Logo` is exported with a `size` prop and the class `logo`; «0 і 1» in the idle line uses non-breaking spaces (balance alone still broke it as «0 і / 1.»).
+- **`app/layout.tsx`:** `viewportFit: 'cover'` (the safe-area padding needs it; `#app` pads its sides with `max(--page-pad, env(safe-area-inset-*))`), and the dark theme colour `#1a1714`.
+- **New routes:** `/eight/`, an 8×8 mid-game board (givens from our engine's `generate(8, 7)`, exactly one solution; entries taken from that solution, checked by a script); `/logo/`, the mark at 40, 56 and 64 px (decision 15).
+- **Capture (`tools/capture-review-set.sh`, `tools/frame.html`):**
+  - No hard-coded worktree path; the output directory is an argument.
+  - The frame focuses the framed window on load, so the dialog's focus ring paints in every confirm shot (finding 7).
+  - Shots force reduced motion. Headless virtual time never finished the win glow (a halo was caught mid-way, even with a 10 s budget); in the built-in browser the glow ends (computed `box-shadow: none` after 1.5 s).
+- **Measured in the built-in browser** (each page in an iframe of the given size):
+  - 320×700: size buttons 44 px; 6×6 cells 45.2 px (44.8 on the solved board); the buttons take two rows; the win message ends at y = 665 and the hint at y = 695.
+  - 8×8 cells: 35.3 px at 320, 42.1 at 375, 60.1 at 768, 56.3 at 1440×900. 6×6 cells: 79.7 px at 768×1024, 71.7 at 1440×900.
+  - No horizontal scroll anywhere; no vertical scroll at 375×812, 768×1024, 1440×900, 1280×800, or 1024×768 for `/` and `/eight/`.
+  - **Known limits:** at 1024×768 the hint page is 7 px taller than the screen, and 6×6 cells are 43.7 px there.
 
 ### Before it becomes the pixel-check reference
 

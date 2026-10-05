@@ -9,10 +9,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  // The rules sheet pads its bottom by env(safe-area-inset-bottom), which needs this.
+  viewportFit: 'cover',
   colorScheme: 'light dark',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#f7f3ea' },
-    { media: '(prefers-color-scheme: dark)', color: '#16171a' },
+    { media: '(prefers-color-scheme: dark)', color: '#1a1714' },
   ],
 }
 

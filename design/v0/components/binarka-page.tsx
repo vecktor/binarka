@@ -20,7 +20,8 @@ type BinarkaPageProps = {
 
 const RAY_COUNT = 12
 const SIZES = [4, 6, 8] as const
-const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.'
+// Non-breaking spaces keep «0 і 1» on one line (finding 11).
+const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 0\u00a0і\u00a01. Правила — кнопка «Правила» вгорі.'
 
 // A "1" drawn as a bar and a "0" drawn as a ring, the same shapes as the rays,
 // so the logo needs no font.
@@ -32,7 +33,7 @@ function LogoDigit({ digit, cx, cy }: { digit: 0 | 1; cx: number; cy: number }) 
   )
 }
 
-function Logo() {
+export function Logo({ size = 56 }: { size?: number }) {
   // 2×2 mini board «1 0 / 0 1» inside the sun.
   const cells: Array<{ x: number; y: number; digit: 0 | 1 }> = [
     { x: 20.5, y: 20.5, digit: 1 },
@@ -41,7 +42,14 @@ function Logo() {
     { x: 32.5, y: 32.5, digit: 1 },
   ]
   return (
-    <svg aria-hidden="true" focusable="false" viewBox="0 0 64 64" width="56" height="56">
+    <svg
+      className="logo"
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 64 64"
+      width={size}
+      height={size}
+    >
       {Array.from({ length: RAY_COUNT }, (_, index) => {
         const angle = (360 / RAY_COUNT) * index
         return (

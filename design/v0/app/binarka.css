@@ -24,7 +24,11 @@
   --violation-stripe: rgba(179, 38, 30, 0.14);
   --success: #2f6b3a;
   --success-bg: #e2efdf;
-  --focus: #1d4ed8;
+  --surface-raised: #fffdf8;
+  --overlay-border: var(--line);
+  --hover-filter: brightness(0.96);
+  /* Finding 15: the focus ring uses the ink colour (warm, about 15:1), not blue. */
+  --focus: var(--ink);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -46,25 +50,27 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #16171a;
-    --surface: #212328;
+    --bg: #1a1714;
+    --surface: #24201b;
+    --surface-raised: #2c2620;
+    --overlay-border: var(--cell-border);
+    --hover-filter: brightness(1.12);
     --ink: #f1ede4;
-    --ink-muted: #b3afa6;
-    --line: #2b2d33;
-    --cell-border: #7f7b73;
-    --given-bg: #4a4e58;
+    --ink-muted: #b8b0a4;
+    --line: #3a332b;
+    --cell-border: #8a7f71;
+    --given-bg: #4d4438;
     --given-ink: #f7f3ea;
     --entry-ink: #f7a46a;
     --primary: #f39a5b;
     --primary-ink: #1a1007;
-    --primary-soft: #3a2a1f;
+    --primary-soft: #3d2b1e;
     --violation: #ff8a7d;
-    --violation-bg: #3d2220;
+    --violation-bg: #3f2320;
     --violation-ink: #ffb4ab;
     --violation-stripe: rgba(255, 138, 125, 0.16);
     --success: #8fd19a;
     --success-bg: #1f3324;
-    --focus: #93b4ff;
   }
 }
 
@@ -94,7 +100,13 @@ body {
 
 /* ---------- Layout ---------- */
 
+/* The board size lives on #app (read with :has), so the column width (finding 10)
+   and the height-aware cell size (decision 16) can be computed from it. */
 #app {
+  --n: 6;
+  --board-width: calc(
+    var(--n) * var(--cell-max) + (var(--n) - 1) * var(--board-gap) + 2 * var(--board-pad)
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -102,7 +114,40 @@ body {
   width: 100%;
   max-width: var(--page-max);
   margin: 0 auto;
-  padding: var(--space-5) var(--page-pad) var(--space-6);
+  padding: var(--space-5) max(var(--page-pad), env(safe-area-inset-right)) var(--space-6)
+    max(var(--page-pad), env(safe-area-inset-left));
+}
+
+#app:has(.board[data-size='4']) {
+  --n: 4;
+}
+
+#app:has(.board[data-size='8']) {
+  --n: 8;
+  --board-gap: 0.1875rem;
+  --board-pad: 0.25rem;
+}
+
+/* Small phones (320): 6×6 cells reach 44 px (finding 2). */
+@media (max-width: 22.5rem) {
+  #app {
+    --page-pad: 0.75rem;
+  }
+
+  #app:has(.board[data-size='6']) {
+    --board-gap: 0.1875rem;
+    --board-pad: 0.25rem;
+  }
+}
+
+/* Phones: 8×8 gets the tightest gutters (finding 3). Its cells stay under 44 px,
+   at least WCAG 2.5.8's 24 px (decision 13). */
+@media (max-width: 30rem) {
+  #app:has(.board[data-size='8']) {
+    --page-pad: 0.5rem;
+    --board-gap: 0.125rem;
+    --board-pad: 0.1875rem;
+  }
 }
 
 /* ---------- Header (title + «Правила») ---------- */
@@ -127,24 +172,50 @@ body {
   color: var(--ink);
 }
 
-.page-header h1 svg {
+.logo {
   flex: none;
-  width: 3.5rem;
-  height: 3.5rem;
   color: var(--primary);
 }
 
-.page-header h1 svg .logo-cell {
+.logo .logo-cell {
   fill: var(--primary-ink);
 }
 
-.page-header h1 svg .logo-digit {
+.logo .logo-digit {
   fill: currentColor;
 }
 
-.page-header h1 svg .logo-digit-ring {
+.logo .logo-digit-ring {
   fill: none;
   stroke: currentColor;
+}
+
+.page-header h1 .logo {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+/* The logo at several sizes, for the review capture only (decision 15). */
+.logo-sheet {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-4);
+}
+
+.logo-sheet figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.logo-sheet figcaption {
+  color: var(--ink-muted);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .rules-button {
@@ -183,7 +254,7 @@ body {
 .size-picker button {
   flex: 1 1 0;
   min-width: 0;
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   padding: 0 var(--space-2);
   border: 2px solid transparent;
   border-radius: calc(var(--radius-m) - 0.1875rem);
@@ -218,7 +289,6 @@ body {
 }
 
 .board {
-  --n: 6;
   display: grid;
   grid-template-columns: repeat(var(--n), minmax(0, 1fr));
   grid-template-rows: repeat(var(--n), minmax(0, 1fr));
@@ -244,8 +314,6 @@ body {
 
 .board[data-size='8'] {
   --n: 8;
-  --board-gap: 0.1875rem;
-  --board-pad: 0.25rem;
 }
 
 .cell {
@@ -336,13 +404,14 @@ body {
   width: 100%;
   max-width: none;
   max-height: 60vh;
+  max-height: 55dvh;
   margin: 0;
-  padding: var(--space-5) var(--space-4) var(--space-4);
+  padding: var(--space-5) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom));
   overflow-y: auto;
-  border: 1px solid var(--line);
+  border: 1px solid var(--overlay-border);
   border-bottom: none;
   border-radius: var(--radius-l) var(--radius-l) 0 0;
-  background: var(--surface);
+  background: var(--surface-raised);
   color: var(--ink);
   font-family: var(--font);
   text-align: left;
@@ -350,11 +419,11 @@ body {
 }
 
 .rules::backdrop {
-  background: rgba(20, 18, 14, 0.3);
+  background: rgba(70, 40, 15, 0.22);
 }
 
 .rules h2 {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-2);
   font-size: 1.125rem;
   font-weight: 700;
 }
@@ -369,7 +438,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding: var(--space-3) 0;
+  padding: var(--space-2) 0;
   border-top: 1px solid var(--line);
   font-size: 0.9375rem;
   line-height: 1.45;
@@ -433,7 +502,8 @@ body {
     width: 26rem;
     max-height: 80vh;
     margin: auto;
-    border-bottom: 1px solid var(--line);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--overlay-border);
     border-radius: var(--radius-l);
   }
 }
@@ -494,6 +564,53 @@ body {
   }
 }
 
+/* Small phones (320): «Скинути» and «Нова головоломка» share one row (finding 4). */
+@media (max-width: 22.5rem) {
+  .buttons button {
+    padding: 0 var(--space-3);
+  }
+}
+
+/* After a win, «Нова головоломка» is the one filled button (finding 5). */
+#app:has(.board[data-solved='true']) .buttons button[data-action='new'] {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 700;
+}
+
+#app:has(.board[data-solved='true']) .buttons button[data-action='hint'] {
+  border-color: var(--cell-border);
+  background: var(--surface);
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+/* ---------- Pointer feedback (finding 9) ---------- */
+
+@media (hover: hover) {
+  .board:not([data-solved='true']) .cell:not(.cell-given):hover {
+    box-shadow: inset 0 0 0 2px var(--primary-soft);
+  }
+
+  .buttons button:hover,
+  .size-picker button:hover,
+  .rules-button:hover,
+  .rules-close:hover,
+  .confirm-buttons button:hover {
+    filter: var(--hover-filter);
+  }
+}
+
+.board:not([data-solved='true']) .cell:not(.cell-given):active,
+.buttons button:active,
+.size-picker button:active,
+.rules-button:active,
+.rules-close:active,
+.confirm-buttons button:active {
+  transform: translateY(1px);
+}
+
 /* ---------- Messages ---------- */
 
 .messages {
@@ -531,6 +648,7 @@ body {
   color: var(--ink-muted);
   font-size: 0.875rem;
   text-align: center;
+  text-wrap: balance;
 }
 
 .messages:has([data-message='hint']:not(:empty), [data-message='win']:not(:empty)) .message-idle {
@@ -538,8 +656,8 @@ body {
 }
 
 .message[data-message='hint'] {
-  border-left: 4px solid var(--primary);
   background: var(--primary-soft);
+  box-shadow: inset 4px 0 0 var(--primary);
 }
 
 .message-win {
@@ -559,14 +677,14 @@ body {
   padding: var(--space-5);
   border: 1px solid var(--cell-border);
   border-radius: var(--radius-l);
-  background: var(--surface);
+  background: var(--surface-raised);
   color: var(--ink);
   font-family: var(--font);
   box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.25);
 }
 
 .confirm::backdrop {
-  background: rgba(20, 18, 14, 0.55);
+  background: rgba(45, 25, 10, 0.5);
 }
 
 .confirm p {
@@ -623,8 +741,108 @@ body {
     font-size: 2.5rem;
   }
 
-  .page-header h1 svg {
+  .page-header h1 .logo {
     width: 4rem;
     height: 4rem;
+  }
+
+  /* Decision 16: the board grows on tablets. */
+  #app {
+    --cell-max: 5rem;
+  }
+
+  /* Finding 10: header, size picker, buttons and messages share the board's width. */
+  .page-header,
+  .size-picker,
+  .buttons,
+  .messages {
+    max-width: var(--board-width);
+  }
+}
+
+/* Decision 16: on desktop the board is height-aware, so 8×8 still fits without scrolling.
+   28rem is everything but the cells: padding, header, picker, the board's gaps and
+   padding, buttons, messages and the gaps between them (measured about 27.3rem). */
+@media (min-width: 64rem) {
+  #app {
+    --cell-max: min(4.5rem, calc((100dvh - 28rem) / var(--n)));
+  }
+}
+
+/* Short desktop screens (1024×768): the narrower column wraps the buttons to two rows,
+   so the rest of the page takes about 30.7rem. */
+@media (min-width: 64rem) and (max-height: 50rem) {
+  #app {
+    --cell-max: min(4.5rem, calc((100dvh - 31.5rem) / var(--n)));
+  }
+}
+
+/* ---------- Motion ----------
+   Only without reduced motion. No animation-fill-mode: every motion ends exactly
+   at the static style, so a settled screenshot is the same with or without it. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .buttons button,
+  .size-picker button,
+  .rules-button,
+  .rules-close,
+  .confirm-buttons button {
+    transition:
+      background-color 120ms,
+      filter 120ms,
+      transform 80ms;
+  }
+
+  .rules {
+    transition:
+      transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      overlay 220ms allow-discrete,
+      display 220ms allow-discrete;
+  }
+
+  @starting-style {
+    .rules:popover-open {
+      transform: translateY(100%);
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .rules {
+      transition:
+        opacity 220ms ease-out,
+        transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        overlay 220ms allow-discrete,
+        display 220ms allow-discrete;
+    }
+
+    @starting-style {
+      .rules:popover-open {
+        opacity: 0;
+        transform: translateY(0.5rem);
+      }
+    }
+  }
+
+  .cell-hinted {
+    animation: pop 160ms ease-out;
+  }
+
+  .board[data-solved='true'] {
+    animation: glow 600ms ease-out;
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.92);
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 45%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 1rem transparent;
   }
 }

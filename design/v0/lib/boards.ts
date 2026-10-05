@@ -44,3 +44,19 @@ export const solvedBoard: BoardSpec = {
     'p1 g1 p0 p1 p0 p0',
   ]),
 }
+
+// 8×8 mid-game: givens from our engine (generate(8, 7), exactly one solution),
+// entries taken from that solution.
+export const eightBoard: BoardSpec = {
+  size: 8,
+  rows: parse([
+    'p0 g0 p1 p1 .  .  g1 .',
+    'p1 p1 .  .  g1 .  .  g0',
+    '.  p1 .  p1 .  .  .  .',
+    '.  .  p1 .  .  .  .  .',
+    '.  g0 .  .  .  .  .  .',
+    'g1 p1 .  .  .  .  .  .',
+    '.  .  .  .  .  p1 g0 g0',
+    'g1 p0 g1 .  .  .  .  g0',
+  ]),
+}
