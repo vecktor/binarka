@@ -536,6 +536,8 @@ body {
     padding-bottom: var(--space-4);
     border-bottom: 1px solid var(--overlay-border);
     border-radius: var(--radius-l);
+    /* Review 4, N2 (decision 27): lit like the dialog, not like the bottom sheet. */
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -795,7 +797,11 @@ body {
       26rem,
       calc(6 * clamp(2.75rem, calc((100dvh - 28rem) / 6), 5rem) + 5 * 0.25rem + 2 * 0.375rem + 2px)
     );
-    --page-max: calc(var(--column) + 2 * var(--page-pad));
+    /* Review 4, N3 (decision 29): the side padding includes the notch insets. */
+    --page-max: calc(
+      var(--column) + max(var(--page-pad), env(safe-area-inset-left)) +
+        max(var(--page-pad), env(safe-area-inset-right))
+    );
   }
 
   #app:has(.board[data-size='8']) {
@@ -825,9 +831,12 @@ body {
     --cell-max: clamp(1.5rem, calc((100dvh - 28rem) / 8), 4.5rem);
   }
 
-  /* Review 3, R3: the centred rules panel sits higher, clear of the button row. */
+  /* Review 3, R3: the centred rules panel sits higher, clear of the button row; review 4,
+     N1 (decision 26): never above 6.5rem, so it stays below the header, and it scrolls
+     inside itself on very short windows. */
   .rules {
-    margin-block: 12vh auto;
+    margin-block: max(12vh, 6.5rem) auto;
+    max-height: min(80vh, calc(100dvh - max(12vh, 6.5rem) - 1rem));
   }
 }
 

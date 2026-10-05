@@ -21,7 +21,7 @@ for page in default: rules:rules/ hint:hint/ win:win/ confirm:confirm/ four:four
   done
 done
 # A short desktop window: the cell-size floor (decision 22).
-for page in default: eight:eight/; do
+for page in default: rules:rules/ eight:eight/; do
   n=${page%%:*}; p=${page#*:}
   shot "1366-light-$n" "http://127.0.0.1:4173/$p" 1366 650 1 &
   shot "1366-dark-$n" "http://127.0.0.1:4173/$p" 1366 650 0 &

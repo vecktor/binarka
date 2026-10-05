@@ -74,3 +74,15 @@ The user's answers to [`review-3-design-reviewer.md`](review-3-design-reviewer.m
 | 23 | The 5–7 px button shift between play and win (R2)? | **Accept it.** | None. |
 | 24 | Which low findings? | **R3** (rules panel anchored higher from 64rem), **R4** (backdrop and dialog motion), **R6** (exact 80 px cells at 768). R5 is covered by decision 25. | Design CSS; R3 and R6 change the 1024/1440 rules shots and the 768 shots. |
 | 25 | Should the product's parity capture match the design capture? | **Yes:** reduced motion forced, the framed window focused (the dialog's focus ring), and the pointer kept off the page (R5). | A requirement for `quality/visual-parity.config.json` and the product's capture, when the pixel check is set up. |
+
+## Decisions after design review 4 (2026-10-05 at 22:50)
+
+The user's answers to [`review-4-design-reviewer.md`](review-4-design-reviewer.md):
+
+| # | Question | Decision | Impact |
+|---|---|---|---|
+| 26 | Keep the rules panel below the header from 64rem (N1)? | **Yes:** anchored at `max(12vh, 6.5rem)` with a matching maximum height. | Design CSS; the 1024 rules shots change. |
+| 27 | The centred panel's shadow (N2)? | **Yes:** the dialog's downward shadow, from 48rem. | Design CSS; the rules shots at 768, 1024 and 1440 change. |
+| 28 | The rules page at 1366×650 in the set? | **Yes**, light and dark. | Capture script. |
+| 29 | Notch (safe-area) insets in the page width (N3)? | **Yes, now.** | Design CSS; no shot changes. |
+

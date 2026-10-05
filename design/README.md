@@ -2,7 +2,7 @@
 
 Visual design references for Бінарка. **Not product code:** nothing here is built, tested or linted with the app (`eslint.config.js` ignores `design/`; `tsconfig.json` does not include it).
 
-## `v0/`: Vercel v0 design, iteration 6 (iterations 3 to 6 edited by the agent)
+## `v0/`: Vercel v0 design, iteration 7 (iterations 3 to 7 edited by the agent)
 
 | | |
 |---|---|
@@ -140,6 +140,25 @@ Review 3 ([`docs/design/review-3-design-reviewer.md`](../docs/design/review-3-de
   | 1366×650 | 50.5 | 44.0 | 25.3 | 6×6 page scrolls by 53 px |
   | 1280×420 | 44 | 44.0 | 24.0 | all scroll; nothing collapses |
   | 844×390 (landscape phone) | 44 | 44.0 | 24.0 | all scroll; nothing collapses |
+
+### Iteration 7: review 4 applied by the agent (2026-10-05 about 22:52)
+
+Review 4 ([`docs/design/review-4-design-reviewer.md`](../docs/design/review-4-design-reviewer.md)) found one small blocker. The user's answers are decisions 26–29.
+- **N1:** from 64rem the rules panel sits at `max(12vh, 6.5rem)`, below the header, with `max-height: min(80vh, 100dvh − that − 1rem)`.
+- **N2:** from 48rem the centred panel casts the dialog's downward shadow, `0 1rem 2.5rem rgba(0,0,0,.25)`; the phone bottom sheet keeps its upward one.
+- **N3:** `--page-max` includes the notch insets (`max(page-pad, env(safe-area-inset-left/right))`). This changes no shot, because headless has no insets.
+- **Capture:** adds the rules page at 1366×650: 78 shots.
+- **Measured** (`/rules/`, scrollbars hidden):
+
+  | Window | Panel top | Header bottom | Notes |
+  |---|---|---|---|
+  | 1024×768 | 104 | 96 | was 92.2, overlapping the header |
+  | 1366×650 | 104 | 96 | |
+  | 1440×900 | 108 | 96 | unchanged |
+  | 1280×420 | 104 | 96 | the panel scrolls 105 px inside itself |
+
+  768×1024 is unchanged (514 px column, 80 px cells).
+- **Changed shots against review set 4** (checksums): only the 6 rules shots at 768, 1024 and 1440 changed, and the 2 rules shots at 1366×650 are new; the other 70 are byte-identical. The set is `v0-screenshots/review-set-5/` (78 shots, two runs byte-identical, `SHA1SUMS`).
 
 ### Before it becomes the pixel-check reference
 
