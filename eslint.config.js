@@ -7,7 +7,7 @@ const workflowGlobals = Object.fromEntries(
 );
 
 export default tseslint.config(
-  { ignores: ['dist/', 'node_modules/', 'coverage/', 'openspec/', 'scripts/', 'evals/'] },
+  { ignores: ['dist/', 'node_modules/', 'coverage/', 'openspec/', 'scripts/', 'evals/', 'design/'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   { files: ['.claude/workflows/*.js'], languageOptions: { globals: workflowGlobals } },
