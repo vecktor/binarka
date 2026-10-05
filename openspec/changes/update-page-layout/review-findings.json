@@ -7,7 +7,7 @@
   "dimensions": {
     "correctness": {
       "confirmed": 1,
-      "contested": 1,
+      "contested": 0,
       "rejected": 1
     },
     "security": {
@@ -16,19 +16,23 @@
       "rejected": 0
     },
     "spec-compliance": {
-      "confirmed": 0,
+      "confirmed": 3,
       "contested": 0,
-      "rejected": 1
+      "rejected": 0
     },
     "visual": {
-      "confirmed": 0,
+      "confirmed": 1,
       "contested": 0,
       "rejected": 0
     }
   },
   "confirmedTitles": [
-    "aria-labelledby on a role-less popover div is not a valid way to name it"
+    "role=\"dialog\" popover never moves focus into the panel when it opens",
+    "role=\"dialog\" on the rules panel is behaviour with no backing requirement or task (undocumented scope drift from fix round 1)",
+    "Commit message says the idle line uses U+00A0 escapes, but strings.ts has literal invisible NBSP bytes",
+    "The real-browser check evidence was captured at e9c2709, before the fix commit that changed the panel markup",
+    "375 rules-open still cuts off the «Зрозуміло» close button that the README says it shows"
   ],
   "clean": false,
-  "generatedAt": "2026-10-05T18:52:59Z"
+  "generatedAt": "2026-10-05T18:58:00Z"
 }

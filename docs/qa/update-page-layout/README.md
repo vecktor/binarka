@@ -5,12 +5,14 @@
 | Step | Observation | Evidence |
 |---|---|---|
 | Mount at 375×812 | Header with «Бінарка» and «Правила»; size select; 6×6 board; «Підказка», «Скинути», «Нова головоломка»; idle line below the buttons; no rules block under the board | `375-mount.jpg` |
-| «Правила» at 375 | The panel is open (`:popover-open` true), a bottom sheet: x 0, width 375, bottom 812; heading, three rules with decorative examples, «Зрозуміло» | `375-rules-open.jpg` |
+| «Правила» at 375 | The panel is open (`:popover-open` true), a bottom sheet: x 0, width 375, bottom 812; the still shows the heading and the three rules with decorative examples; «Зрозуміло» is below the still's 600 px crop and was found and clicked by script, not seen (corrected after the confirming review `wf_912df3de-71f`, which found the row overstated the still) | `375-rules-open.jpg` |
 | «Зрозуміло» | The panel closes (`:popover-open` false) | script check |
 | «Підказка» | Hint sentence shown, idle line `display: none` | script check, `375-8x8-hint-idle-hidden.jpg` (8×8) |
 | «Скинути» | Hint sentence gone, idle line `display: block` again | script check |
 | Size 4, size 8, «Нова головоломка» | Panel element still connected and its text unchanged; 64 cells; no `details`; `scrollWidth` 375 (no horizontal scroll) | script check |
 | «Правила» at 1280×800 | Centred panel, x 416, width 448, top 204 (below the header) | `1280-rules-open.jpg` |
 | Console | No errors | `read_console_messages` |
+
+This check ran at `e9c2709`, before fix round 1 (`41bbda6`: `role="dialog"` on the panel and a type change); it has NOT been re-run at the fix commit. Re-run it before archive (tasks 3.7, 3.9).
 
 The browser pane's screenshots of an emulated viewport come back cropped to the pane (800 px frames); they are illustrations, not pixel evidence (UX decision 11).
