@@ -36,6 +36,15 @@ Run `date` first and before every time claim; the user is UTC+5:30 (Kyiv is 2:30
 
 D and E may run before C if C is blocked; F may run any time. G1 must come before G2.
 
+## Orchestrator mode (the user's choice, 2026-10-06 about 00:05)
+
+One new session orchestrates every phase in order, A to H, without stopping between phases. It does each phase's steps itself and gives the heavy work to fresh subagents (spec-writer, spec-compliance-auditor, test-engineer, capability-implementer, the review-gate workflow, vision-judge). A subagent cannot start its own subagents or workflows, so the orchestrator never hands a whole phase to one subagent. The user opted into the review-gate workflow for every slice.
+
+- **Start in your own worktree.** A scheduled or fresh session starts in the main checkout on `main` (probe `binarka-autonomy-probe`, 2026-10-05 23:55). Load `EnterWorktree` with ToolSearch and create a worktree first, then `git merge --ff-only claude/next-session-handoff-15b81c` (or the newest "Working branch" in `docs/current-state.md`). Never commit on `main` and never work in the main checkout.
+- **After each phase:** commit, update `docs/current-state.md` ("Working branch" = your branch) and the autonomy log, then go on to the next phase. No chip is needed between phases in this mode; leave one chip only when you stop.
+- **Stop and leave a chip** (with your branch name and the next phase) when: FR-27 cannot hold NFR-1 to NFR-3; a review-gate confirming run still has a confirmed code defect; a step needs anything that is not pre-authorised (row 59); the battery fails and one fix attempt does not make it green; or G2 has converged as far as it can in this session (report the per-shot scores).
+- A scheduled run cannot answer questions. Do not ask; stop at the condition and write why in `docs/current-state.md`.
+
 ## How a phase runs (as slices 3 and 4 did)
 
 1. Fast-forward (above). `npm ci` if `node_modules` is missing or stale. Run the battery once: `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
