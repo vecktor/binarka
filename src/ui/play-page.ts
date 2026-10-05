@@ -10,7 +10,9 @@ export interface PlayPageOptions {
 
 const SIZES = [4, 6, 8];
 // Decorative examples of the rules (digits and the not-equal sign only, aria-hidden). A trailing "?" marks the answer cell.
-const RULE_EXAMPLES: string[][] = [['0', '0', '1?'], ['0', '1', '0', '1?'], ['0', '1', '1', '0', '\u2260', '1', '0', '0', '1']];
+// Typed as one entry per rule text, so adding or removing a rule in strings.ts fails the type check.
+type OnePerRule<T> = { readonly [K in keyof T]: readonly string[] };
+const RULE_EXAMPLES: OnePerRule<typeof RULES.items> = [['0', '0', '1?'], ['0', '1', '0', '1?'], ['0', '1', '1', '0', '\u2260', '1', '0', '0', '1']];
 
 let panelCounter = 0;
 
@@ -59,7 +61,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const messages = el('div', { class: 'messages' });
   messages.append(idleMessage, hintMessage, winMessage);
 
-  const rulesPanel = el('div', { popover: 'auto', id: panelId, class: 'rules', 'data-section': 'rules', 'aria-labelledby': panelTitleId });
+  const rulesPanel = el('div', { popover: 'auto', id: panelId, class: 'rules', 'data-section': 'rules', role: 'dialog', 'aria-labelledby': panelTitleId });
   const rulesList = el('ul');
   RULES.items.forEach((text, i) => {
     const item = el('li');

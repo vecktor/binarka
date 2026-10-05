@@ -1,0 +1,34 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "update-page-layout",
+  "change": "update-page-layout",
+  "baseRef": "fc897ac",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 1,
+      "contested": 1,
+      "rejected": 1
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 1
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "aria-labelledby on a role-less popover div is not a valid way to name it"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-05T18:52:59Z"
+}

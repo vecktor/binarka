@@ -164,6 +164,19 @@ describe('@trace FR-57 the rules panel at mount', () => {
     expect(close.getAttribute('popovertarget')).toBe(read.id);
     expect(close.getAttribute('popovertargetaction')).toBe('hide');
   });
+
+  // Added after green in review fix round 1 (wf_e90d3ea5-de4): a role-less popover div cannot take a name, so the panel
+  // has role="dialog" and is named by its heading. Coverage of the fix, not part of the red evidence.
+  it('the panel has role="dialog" and aria-labelledby points at its heading «Правила»', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const panel = rulesPanel(root);
+    expect(panel.getAttribute('role')).toBe('dialog');
+    const labelId = panel.getAttribute('aria-labelledby') ?? '';
+    expect(labelId, 'aria-labelledby is set').not.toBe('');
+    const heading = panel.querySelector(`[id="${labelId}"]`);
+    expect(heading?.tagName).toBe('H2');
+    expect(heading?.textContent?.trim()).toBe(RULES_LABEL);
+  });
 });
 
 describe('@trace FR-57 no rules block under the board and no details element', () => {
