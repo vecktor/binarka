@@ -86,3 +86,9 @@ The user's answers to [`review-4-design-reviewer.md`](review-4-design-reviewer.m
 | 28 | The rules page at 1366×650 in the set? | **Yes**, light and dark. | Capture script. |
 | 29 | Notch (safe-area) insets in the page width (N3)? | **Yes, now.** | Design CSS; no shot changes. |
 
+## Freezing the reference (2026-10-05 at 23:12)
+
+| # | Question | Decision | Impact |
+|---|---|---|---|
+| 30 | Freeze iteration 7's `review-set-5` as the pixel reference, or run review 5 first? | **Freeze** (the user, "freeze", about 23:11). No review has looked at iteration 7; review 4's only blocker (N1) was applied and measured. | `design/README.md` "Pixel reference: frozen". It is the `referenceUrl` and baseline for `npm run check:visual` once the pixel check is set up (Playwright, `pixelmatch` and `pngjs` still need the user's approval). |
+

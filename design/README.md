@@ -160,6 +160,25 @@ Review 4 ([`docs/design/review-4-design-reviewer.md`](../docs/design/review-4-de
   768×1024 is unchanged (514 px column, 80 px cells).
 - **Changed shots against review set 4** (checksums): only the 6 rules shots at 768, 1024 and 1440 changed, and the 2 rules shots at 1366×650 are new; the other 70 are byte-identical. The set is `v0-screenshots/review-set-5/` (78 shots, two runs byte-identical, `SHA1SUMS`).
 
-### Before it becomes the pixel-check reference
+### Pixel reference: frozen (2026-10-05 about 23:12, decision 30)
+
+- **The reference is `v0-screenshots/review-set-5/`:** 78 shots of iteration 7, design commit `736260a`.
+  - Its `SHA1SUMS` lists every shot; that file's own SHA-1 is `661048f7f4feee6d955511d2cc41478f5de522cd`.
+  - Two capture runs were byte-identical.
+- **Pages, sizes and themes:**
+  - 7 pages (`default`, `rules`, `hint`, `win`, `confirm`, `four`, `eight`) at 320×700, 375×812, 768×1024, 1024×768 and 1440×900, light and dark.
+  - `default`, `rules` and `eight` at 1366×650.
+  - The logo at 40, 56 and 64 px.
+- **How it was captured:** `tools/capture-review-set.sh` (headless Chrome through `tools/frame.html`):
+  - device scale 2;
+  - reduced motion forced;
+  - the framed window focused;
+  - scrollbars hidden;
+  - viewport-cropped, never the full page;
+  - the system font stack, on this Mac.
+- **Frozen means:** do not edit the files in `review-set-5/` or the design sources it was captured from without the user's word. Any design change gets a new set (`review-set-6/`) and the user's decision to move the reference.
+- Earlier sets (`review-set/` to `review-set-4/`) stay as the evidence of reviews 1–4. They are not references.
+
+### Before the pixel check can use it
 
 Decision 25: the product's capture must match this one: reduced motion forced, the framed window focused, and the pointer kept off the page. See also the notes at the end of `docs/design/v0-prompt.md`: approve Playwright, `pixelmatch` and `pngjs`; serve this design locally; write `quality/visual-parity.config.json`; and see `npm run check:visual` fail against today's page **before** a design NFR is signed.
