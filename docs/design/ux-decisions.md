@@ -62,4 +62,15 @@ The user's answers to the five questions in [`review-1-design-reviewer.md`](revi
 | 20 | 8×8 under 44 px on short tablet and desktop screens (1024×768)? | **Extend decision 13's exception:** 8×8 cells may be under 44 px (at least 24 px) on any screen too short for 44 px, so the page never scrolls; 4×4 and 6×6 keep 44 px everywhere. | The touch-target NFR's exception names screen height, not only phones. |
 | 21 | 4×4 on tablet and desktop: grow or stay centred? | **Stay centred** in a column of at least 26rem. | Design CSS. |
 
-Review 2's fourth question (should the product's parity capture also force reduced motion?) was not asked yet; it belongs to the pixel-check setup.
+Review 2's fourth question (should the product's parity capture also force reduced motion?) was answered as decision 25.
+
+## Decisions after design review 3 (2026-10-05 at 22:20)
+
+The user's answers to [`review-3-design-reviewer.md`](review-3-design-reviewer.md):
+
+| # | Question | Decision | Impact |
+|---|---|---|---|
+| 22 | A floor on the height-aware cell size (R1), and a short desktop size in the set? | **Yes, both:** 4×4 and 6×6 cells at least 44 px and 8×8 at least 24 px on every screen; below that the page scrolls. Add 1366×650 (default and 8×8, light and dark) to the set. | Design CSS; capture script. |
+| 23 | The 5–7 px button shift between play and win (R2)? | **Accept it.** | None. |
+| 24 | Which low findings? | **R3** (rules panel anchored higher from 64rem), **R4** (backdrop and dialog motion), **R6** (exact 80 px cells at 768). R5 is covered by decision 25. | Design CSS; R3 and R6 change the 1024/1440 rules shots and the 768 shots. |
+| 25 | Should the product's parity capture match the design capture? | **Yes:** reduced motion forced, the framed window focused (the dialog's focus ring), and the pointer kept off the page (R5). | A requirement for `quality/visual-parity.config.json` and the product's capture, when the pixel check is set up. |

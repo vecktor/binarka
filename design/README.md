@@ -2,7 +2,7 @@
 
 Visual design references for Бінарка. **Not product code:** nothing here is built, tested or linted with the app (`eslint.config.js` ignores `design/`; `tsconfig.json` does not include it).
 
-## `v0/`: Vercel v0 design, iteration 5 (iterations 3 to 5 edited by the agent)
+## `v0/`: Vercel v0 design, iteration 6 (iterations 3 to 6 edited by the agent)
 
 | | |
 |---|---|
@@ -114,6 +114,33 @@ The user chose all findings of [`docs/design/review-2-design-reviewer.md`](../do
   - At 320×700 the bottom page padding scrolls by 5–27 px; that width is outside the fit NFR (375×812).
 - **Measuring gotcha:** with the built-in browser pane at desktop size, iframes draw classic scrollbars (15 px), which made 320 px look 15 px narrower. Hide them (`html { scrollbar-width: none }`), as the capture's `--hide-scrollbars` does.
 
+### Iteration 6: review 3 applied by the agent (2026-10-05 about 22:25)
+
+Review 3 ([`docs/design/review-3-design-reviewer.md`](../docs/design/review-3-design-reviewer.md)) found one blocker. The user's answers are decisions 22–25 in `docs/design/ux-decisions.md`.
+- **Cell-size floor (R1, decision 22).** From 48rem the cell size is height-aware with a floor and a cap:
+  - 4×4 and 6×6: `clamp(2.75rem, (100dvh − 28rem) / n, 5rem)`, with a 4.5rem cap from 64rem;
+  - 8×8: the same with a 1.5rem floor.
+  - The 6×6 column uses the same clamp.
+  - Before, short windows shrank the cells without limit (6×6 was 33.7 px at 1366×650 and 2 px at 1280×420), and landscape phones kept 80 px cells.
+- **R6:** from 48rem the page is exactly the column wide (`--page-max: column + 2 × page padding`), so 6×6 cells are 80 px at 768 (they were 79.7).
+- **R3:** from 64rem the centred rules panel sits 12vh from the top, clear of the button row at 1024×768. Seen in `1024-light-rules.png`: its top edge now sits just below the header, over the size picker.
+- **Changed shots against review set 3** (checksums): only the 14 shots at 768 (R6) and the 4 rules shots at 1024 and 1440 (R3); the other 54 are byte-identical. The set is `v0-screenshots/review-set-4/` (76 shots, two runs byte-identical, `SHA1SUMS`).
+- **R4:** the backdrops fade with the sheet and the dialog, and the dialog fades and scales from 0.98, in and out. This is motion only and not visible in shots.
+- **R2** (a 5–7 px button shift between play and win) is accepted (decision 23).
+- **Capture:** adds 1366×650 for the default and 8×8 pages (light and dark): 76 shots.
+- **Measured in the built-in browser** (scrollbars hidden), cell sizes in px:
+
+  | Size | 4×4 | 6×6 | 8×8 | Notes |
+  |---|---|---|---|---|
+  | 320×700 | 64 | 45.2 | 35.3 | as in iteration 5 |
+  | 375×812 | 64 | 51.5 | 42.1 | as in iteration 5 |
+  | 768×1024 | 80 | 80.0 | 60.4 | column 514 px (was 512) |
+  | 1024×768 | 72 | 53.3 | 40.0 | as in iteration 5 |
+  | 1440×900 | 72 | 72.0 | 54.4 | as in iteration 5 |
+  | 1366×650 | 50.5 | 44.0 | 25.3 | 6×6 page scrolls by 53 px |
+  | 1280×420 | 44 | 44.0 | 24.0 | all scroll; nothing collapses |
+  | 844×390 (landscape phone) | 44 | 44.0 | 24.0 | all scroll; nothing collapses |
+
 ### Before it becomes the pixel-check reference
 
-See the notes at the end of `docs/design/v0-prompt.md`: approve Playwright, `pixelmatch` and `pngjs`; serve this design locally; write `quality/visual-parity.config.json`; and see `npm run check:visual` fail against today's page **before** a design NFR is signed.
+Decision 25: the product's capture must match this one: reduced motion forced, the framed window focused, and the pointer kept off the page. See also the notes at the end of `docs/design/v0-prompt.md`: approve Playwright, `pixelmatch` and `pngjs`; serve this design locally; write `quality/visual-parity.config.json`; and see `npm run check:visual` fail against today's page **before** a design NFR is signed.

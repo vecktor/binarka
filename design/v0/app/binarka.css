@@ -781,16 +781,25 @@ body {
     height: 4rem;
   }
 
-  /* Decision 16: the board grows on tablets. */
+  /* Decision 16: the board grows on tablets, up to 5rem cells, and is height-aware so a
+     short screen (a phone in landscape) shrinks it instead of hiding the buttons.
+     Decision 22 (review 3, R1): never below 44 px for 4×4 and 6×6, or 24 px for 8×8;
+     below that the page scrolls. 28rem is everything but the cells (measured about 27.3rem).
+     One column for every board size: the 6×6 board's width, at least 26rem, so the
+     header and the three buttons always fit on one line (finding 10; review 2, N1 and
+     N4). 4×4 sits centred in it (decision 21); 8×8 is capped at it. The page is exactly
+     the column wide, so 6×6 cells reach 5rem at 768 (review 3, R6). */
   #app {
-    --cell-max: 5rem;
+    --cell-max: clamp(2.75rem, calc((100dvh - 28rem) / var(--n)), 5rem);
+    --column: max(
+      26rem,
+      calc(6 * clamp(2.75rem, calc((100dvh - 28rem) / 6), 5rem) + 5 * 0.25rem + 2 * 0.375rem + 2px)
+    );
+    --page-max: calc(var(--column) + 2 * var(--page-pad));
   }
 
-  /* One column for every board size: the 6×6 board's width, at least 26rem, so the
-     header and the three buttons always fit on one line (finding 10; review 2, N1 and
-     N4). 4×4 sits centred in it (decision 21); 8×8 is capped at it. */
-  #app {
-    --column: max(26rem, calc(6 * 5rem + 5 * 0.25rem + 2 * 0.375rem + 2px));
+  #app:has(.board[data-size='8']) {
+    --cell-max: clamp(1.5rem, calc((100dvh - 28rem) / 8), 5rem);
   }
 
   .page-header,
@@ -801,16 +810,24 @@ body {
   }
 }
 
-/* Decision 16: on desktop the board is height-aware, so it fits without scrolling.
-   28rem is everything but the cells: padding, header, picker, the board's gaps and
-   padding, buttons, messages and the gaps between them (measured about 27.3rem). */
+/* Desktop: the same height-aware size and floors, capped at 4.5rem cells. The 8×8 rule
+   is repeated because its :has() selector outranks plain #app. */
 @media (min-width: 64rem) {
   #app {
-    --cell-max: min(4.5rem, calc((100dvh - 28rem) / var(--n)));
+    --cell-max: clamp(2.75rem, calc((100dvh - 28rem) / var(--n)), 4.5rem);
     --column: max(
       26rem,
-      calc(6 * min(4.5rem, calc((100dvh - 28rem) / 6)) + 5 * 0.25rem + 2 * 0.375rem + 2px)
+      calc(6 * clamp(2.75rem, calc((100dvh - 28rem) / 6), 4.5rem) + 5 * 0.25rem + 2 * 0.375rem + 2px)
     );
+  }
+
+  #app:has(.board[data-size='8']) {
+    --cell-max: clamp(1.5rem, calc((100dvh - 28rem) / 8), 4.5rem);
+  }
+
+  /* Review 3, R3: the centred rules panel sits higher, clear of the button row. */
+  .rules {
+    margin-block: 12vh auto;
   }
 }
 
@@ -869,6 +886,48 @@ body {
       opacity: 0;
       transform: translateY(0.5rem);
     }
+  }
+
+  /* Review 3, R4: the backdrops fade with the sheet and the dialog, and the dialog
+     fades and scales in and out. */
+  .rules::backdrop,
+  .confirm::backdrop {
+    transition:
+      background-color 220ms ease-out,
+      overlay 220ms allow-discrete,
+      display 220ms allow-discrete;
+  }
+
+  @starting-style {
+    .rules:popover-open::backdrop,
+    .confirm[open]::backdrop {
+      background-color: transparent;
+    }
+  }
+
+  .rules:not(:popover-open)::backdrop,
+  .confirm:not([open])::backdrop {
+    background-color: transparent;
+  }
+
+  .confirm {
+    transition:
+      opacity 160ms ease-out,
+      transform 160ms ease-out,
+      overlay 160ms allow-discrete,
+      display 160ms allow-discrete;
+  }
+
+  @starting-style {
+    .confirm[open] {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
+
+  .confirm:not([open]) {
+    opacity: 0;
+    transform: scale(0.98);
   }
 
   .cell-hinted {
