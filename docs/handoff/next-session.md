@@ -6,7 +6,7 @@ Paste the block below as the first message of a new Claude Code session opened o
 
 You are continuing **Бінарка** (Project Factory; TypeScript, Vite, vanilla DOM, Vitest). The course capstone was delivered on 2026-10-04 (signed tag `submission-2026-10-04`, pushed to `main`); we are now in a post-submission iteration on design and UX. Nothing in this iteration is signed as a requirement yet.
 
-**Where to work:** branch `claude/fwdays-slice4-rules-reset-de6481`, in worktree `.claude/worktrees/git-https-to-ssh-ed7693` (or check it out in your own worktree; never edit a worktree another session owns: if `git status` shows changes you did not make, stop and ask). It has local commits after `fec972f` that are **not pushed and not signed yet**.
+**Where to work:** branch `claude/fwdays-slice4-rules-reset-de6481`, in worktree `.claude/worktrees/git-https-to-ssh-ed7693` (or check it out in your own worktree; never edit a worktree another session owns: if `git status` shows changes you did not make, stop and ask). Its commits after `fec972f` are signed (re-signed 2026-10-05 about 20:10) but **not pushed**: push only on the user's word.
 
 **Read first, in order:**
 1. `AGENTS.md`
