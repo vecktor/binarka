@@ -6,7 +6,7 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-05 22:40:00 (UTC+5:30; Kyiv 20:10)
+- **Date and time:** 2026-10-05 23:09:00 (UTC+5:30; Kyiv 20:39)
 - **Current phase:** Phase 4 (post-submission iteration: design and UX, nothing signed yet)
 - **Last completed gate:** G3
 - **Active change:** none (slices 1 to 4 and the change `update-hint-sentences` are archived)
@@ -20,7 +20,8 @@
      - Iteration 6 applies R1 (the cell-size floor), R3, R4 and R6 (decisions 22–25, autonomy-log row 51). Evidence: 76 shots in `design/v0-screenshots/review-set-4/`; two runs were byte-identical (`SHA1SUMS`). Against set 3 only the expected 18 shots changed. Measurements, including 1366×650, 1280×420 and 844×390, are in `design/README.md`.
      - **Signed:** the iteration 6 commits were first committed unsigned (GPG probe exit 2 at about 22:38) and re-signed at about 22:43 after the user cached the passphrase: `git rebase -f -S f7dc374`, backup `backup/design-unsigned-6ad6cf0`, `git diff` against it empty. Iteration 6 is `a802b5d` (was `6ad6cf0`) and its handoff `306ee05` (was `f963284`).
      - Review 4 (`docs/design/review-4-design-reviewer.md`, verbatim, with a spot-check): R1, R4 and R6 fixed; verdict **not ready, one small blocker, N1**. From 64rem the rules panel's `12vh` offset overlaps the header: by 3.8 px at 1024×768, and it would cover 18 px at 1366×650 (measured). The fix changes only the two 1024 rules shots. N2 (the centred panel's shadow direction) is optional before freezing; N3 (safe-area insets in `--page-max`) can come after.
-     - **Next:** the user answers review 4's four questions; apply them, recapture twice, and freeze the set only on the user's word. Then comes the requirements amendment (item 2), which includes decision 25 for the product's capture.
+     - **Iteration 7** applies all of review 4 (N1, N2, N3, 1366×650 rules; decisions 26–29; autonomy-log row 54). Evidence: 78 shots in `design/v0-screenshots/review-set-5/`; two runs were byte-identical (`SHA1SUMS`). Against set 4, exactly the 8 predicted shots are new or changed. Measurements are in `design/README.md`. **Unsigned:** the iteration 7 commits (GPG probe exit 2 at about 23:09); re-sign them once the passphrase is cached.
+     - **Next:** the user decides whether to freeze `review-set-5` as the pixel reference. Review 4 named N1 as its only blocker; N1 is applied, but no review has looked at iteration 7. Then comes the requirements amendment (item 2). Then comes the requirements amendment (item 2), which includes decision 25 for the product's capture.
      - Earlier, iteration 5 and review 3:
      - **Latest:** iteration 5 (all review 2 findings, decisions 18–21): commit `186b83a`, 72 shots in `design/v0-screenshots/review-set-3/` (adds 4×4 and 1024×768; two runs byte-identical, `SHA1SUMS`), measurements in `design/README.md`.
      - Review 3 (`docs/design/review-3-design-reviewer.md`, verbatim, with a spot-check): all of review 2's findings fixed. **One blocker, R1:** from 48rem the cell size has no floor, so 6×6 cells shrink below 44 px on short desktop windows (33.7 px at 1366×650, measured), the board collapses below about 450 px of height, and landscape phones keep 80 px cells (the page is 917 px tall at 844×390). Fixing it changes none of the 72 shots. Five low findings: R2 (the button row shifts between play and win), R3, R4 (backdrop motion), R5 (pointer off the page in the parity capture), R6.
