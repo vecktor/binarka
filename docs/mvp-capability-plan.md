@@ -1,6 +1,6 @@
 # MVP Capability Change Plan
 
-Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24); amendment of 2026-10-04 about 23:30, SIGNED OFF by the user in chat at about 23:35: slice 4 `add-rules-and-reset` added for FR-57 and FR-58 (autonomy-log row 27)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). AMENDED 2026-10-05 about 00:03 by the user's sign-off in chat: slice 5 `update-hint-sentences` (section 4.6) changes the hint sentences of FR-19 to FR-21 after the NFR-6 eval failed (autonomy-log row 38). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3.
+Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24); amendment of 2026-10-04 about 23:30, SIGNED OFF by the user in chat at about 23:35: slice 4 `add-rules-and-reset` added for FR-57 and FR-58 (autonomy-log row 27)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). AMENDED 2026-10-05 about 00:03 by the user's sign-off in chat: slice 5 `update-hint-sentences` (section 4.6) changes the hint sentences of FR-19 to FR-21 after the NFR-6 eval failed (autonomy-log row 38). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3. AMENDED 2026-10-05 about 23:31 by the user's signature in chat ("signed, defaults for all six", autonomy-log row 57): UX decisions 1-30 add slices A to H (section 4.7); the Playwright dependencies were approved at about 23:20 (effective after this signing, not yet installed), so the "no Playwright" decision above is superseded for slice G.
 
 Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amendment re-signed 18:45), and the baseline specs `openspec/specs/puzzle-engine/spec.md` and `openspec/specs/play-page/spec.md`.
 
@@ -8,7 +8,7 @@ Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amend
 
 1. One slice per baseline capability: `puzzle-engine` → slice 1, `play-page` → slice 2.
 2. Foundations first: the page consumes the engine interface pinned in the puzzle-engine spec, so slice 2 starts after slice 1 is archived.
-3. Every MVP FR is owned by exactly one slice (section 5). Future rows (FR-18, FR-27, FR-44 to FR-48, FR-55, FR-56, NFR-7) are not in this plan.
+3. Every MVP FR is owned by exactly one slice (section 5). Future rows (FR-18, FR-44 to FR-48, FR-55, FR-56) are not in this plan. (amended 2026-10-05: FR-27 is now MVP, slice F; NFR-7 moves with slice G, section 4.7)
 4. Change folders are `openspec/changes/add-<capability>/`; every commit touching `src/` carries `Slice: <change-name>` and `Refs: FR-x`.
 
 ## 2. The capability changes
@@ -80,6 +80,23 @@ flowchart LR
 - **Scope out:** hint selection order, hint targets, FR-25, FR-26 and the page; no new FRs (FR-19 to FR-21 stay owned by slice 1).
 - **Definition of done:** tests first and seen red; lint, test:run, build and strict validation pass; per-slice review-gate; `eval-suite` re-run; the eval ratchet baseline is minted only if every case scores at least 80, otherwise NFR-6 stays FAIL.
 
+### 4.7 UX amendment, slices A to H (signed in chat about 23:31 on 2026-10-05, autonomy-log row 57; UX decisions 1-30)
+
+Source: `docs/design/ux-decisions.md`; frozen reference `design/README.md` and `design/v0-screenshots/review-set-5/` (decision 30). Rows that need a real browser or a vision pass are held in `docs/requirements-held.md` (NOT-EARNED, never PASS) until the slice below moves them. Slice names are working names; the OpenSpec change names are fixed when each change is created.
+
+- **Order:** A, then B, then C, with D and E alongside; F any time (independent of the page); G and H after. Every slice: tests first and seen red, a dedicated agent on Sonnet, per-slice review-gate (one fix round, one confirming run), archive with `Slice: <change-name>` and `Refs: FR-x` on commits touching `src/`. Each slice amends `openspec/specs/play-page/spec.md` (or `puzzle-engine/spec.md` for F) together with the change, lists the deliberately changed tests in the test commit, and runs `npx openspec validate --all --strict` before the next slice.
+- **Slice A, layout** (decisions 1, 2, 9, 12). IDs: FR-57 (amended), FR-61, FR-64, NFR-5, A-26. Scope in: header with the «Правила» button and the rules popover, document order, the always-present message area with the idle line. Scope out: the visual placement checks (held NFR-9, NFR-13).
+- **Slice B, hinted cell** (decision 3). IDs: FR-59, FR-39 (amended). Scope in: the `cell-hinted` marker and its removal rules. Scope out: perception of the non-colour cue (held NFR-10).
+- **Slice C, dialog, segmented control, accessible cells** (decisions 4, 6, 8). IDs: FR-60, FR-42 (amended), FR-43 (amended), FR-58 (amended), FR-66, FR-62, FR-63, NFR-5, A-20, A-24. Scope in: the confirmation dialog, the three-button radiogroup (Tab reaches every button, Enter or Space selects, arrow keys not required, A-24), cells as buttons with Ukrainian labels. The select-based size tests change deliberately (list in the test commit). Scope out: focus and accessibility checks in a browser (held NFR-12).
+- **Slice D, win apostrophe** (decision 14). IDs: FR-41 (amended). A one-line change with its test constant.
+- **Slice E, logo** (decision 10). IDs: FR-65, TC-14. Scope in: the inline SVG logo with no text. Scope out: legibility at 40 px (held NFR-14).
+- **Slice F, rule-solvable generator** (decision 7). IDs: FR-27, A-5, A-30. Independent of the UI; engine only, no DOM. FR-15, FR-14 and NFR-1 to NFR-3 must hold; if they cannot, the slice stops and an amendment is raised, nothing is relaxed silently (A-30).
+- **Slice G, Playwright tooling** (after the dependencies are installed with the user's approval already given, TC-10). Scope in: `check:visual` with `quality/visual-parity.config.json`, the accessibility check script and the browser tests, each shown runnable and seen failing against today's page first. Then a further signed step moves NFR-7, NFR-9, NFR-11, NFR-12, TC-13 and A-14 from `docs/requirements-held.md` into `docs/requirements.md`, and NFR-13 last, only after `check:visual` is seen failing.
+- **Page texts (user decision 2026-10-05 about 23:40, autonomy-log row 58):** slice A creates `src/ui/strings.ts` and moves every Ukrainian page text there; slices B to E add their texts there and inline none elsewhere in `src/ui/` or `src/main.ts`. Hint sentences stay in the engine. Languages (FR-55, FR-56) stay Future; decide on a language switch before slice G pins the pixel reference.
+- **Slice H, vision check** (user answer to Q3). Scope in: a `check:vision` script as its own small tooling slice (no package), seen failing first. Then a further signed step moves NFR-10 and NFR-14 into `docs/requirements.md`.
+- **Definition of done for A to F:** tests first and seen red; lint, test:run, build and strict validation pass; per-slice review-gate; archived. For G and H: the script exists, exits non-zero today with instructions, and is seen failing before any held row moves; no stub that exits 0.
+- **Risks:** jsdom has no layout and no popover behaviour and may lack `showModal` (tests assert attributes and spy on the call); NFR-3 pressure from FR-27 (slice F); the held rows stay NOT-EARNED until G and H are done.
+
 ### 4.3 After both slices (session C)
 
 - Eval (NFR-6, optional, cut line 2): `eval-suite` with `eval-judge` on 2–3 Ukrainian hint cases, each scoring at least 80 out of 100.
@@ -110,7 +127,17 @@ flowchart LR
 
 FR-19 to FR-21 stay owned by slice 1; slice 5 changes their wording and adds no FRs.
 
-Total: **49 MVP FRs across 4 slices** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4; no gaps, no duplicates).
+Added 2026-10-05 (UX amendment, section 4.7; the new and newly MVP IDs, each owned exactly once):
+
+| FR | Slice | FR | Slice | FR | Slice |
+|---|---|---|---|---|---|
+| FR-27 | F | FR-61 | A | FR-64 | A |
+| FR-59 | B | FR-62 | C | FR-65 | E |
+| FR-60 | C | FR-63 | C | FR-66 | C |
+
+FR-39, FR-41, FR-42, FR-43, FR-57 and FR-58 keep the owner in the table above (slices 2, 3, 4); slices A to E change them as amended rows and own no new copy of them.
+
+Total: **49 MVP FRs across 4 slices** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4; no gaps, no duplicates), plus **9 MVP FRs across slices A, B, C, E, F** from the 2026-10-05 amendment (FR-27, FR-59 to FR-66), 58 in all. Slice D owns no new FR (it amends FR-41); slices G and H own no FR.
 
 ## 6. Sequencing and schedule
 

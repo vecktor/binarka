@@ -1,69 +1,72 @@
 # Start prompt for the next session
 
-Paste the block below as the first message of a new Claude Code session opened on this repository.
+Each phase of the UX iteration runs in its **own new session** (the user's choice, 2026-10-05 about 23:50). A session runs exactly one phase, then updates this file and `docs/current-state.md`, commits, and leaves a chip for the next phase. The user starts each new session by clicking that chip (or by pasting the block below).
 
 ---
 
-You are continuing **Бінарка** (Project Factory; TypeScript, Vite, vanilla DOM, Vitest). The course capstone was delivered on 2026-10-04 (signed tag `submission-2026-10-04`, pushed to `main`); we are now in a post-submission iteration on design and UX. Nothing in this iteration is signed as a requirement yet.
+You are continuing **Бінарка** (Project Factory; TypeScript, Vite, vanilla DOM, Vitest). The course capstone was delivered on 2026-10-04 (signed tag `submission-2026-10-04`, `main` at `db76f02`). We are in the post-submission UX iteration. The requirements amendment for UX decisions 1–30 was **signed by the user on 2026-10-05 at about 23:31** (autonomy-log rows 57 to 59).
 
-**Where to work:** branch `claude/next-session-handoff-8cd297` in worktree `.claude/worktrees/next-session-handoff-8cd297`. It is the slice-4 branch `claude/fwdays-slice4-rules-reset-de6481` (tip `406940d`) plus the design iterations 4 to 7 and reviews 2 to 4. The slice-4 branch could not be fast-forwarded from here, because it is checked out in `.claude/worktrees/git-https-to-ssh-ed7693`. That worktree has an uncommitted `trace/ledger.jsonl` hook change; ask the user before touching it. Never edit a worktree another session owns. Commits after `406940d` up to the review 3 commit are signed (re-signed on 2026-10-05 about 22:10, autonomy-log row 49; backup of the unsigned originals: `backup/design-unsigned-4b62294`). The iteration 6 commits were re-signed at about 22:43 (backup of the unsigned originals: `backup/design-unsigned-6ad6cf0`), and the iteration 7 commits at about 23:12 (backup `backup/design-unsigned-edb15c8`), so every commit after `406940d` is signed (check `%G?` for anything committed later). This branch was pushed to `origin` on 2026-10-05 at 23:15 at the user's request (new remote branch `claude/next-session-handoff-8cd297`, tracking set). The remote slice-4 branch stays at `3777289`, and `main` stays at `db76f02`.
+**Where to work.** Your session has its own worktree and branch. First bring it to the previous phase's tip: `git fetch` is not needed (all branches are local); run `git merge --ff-only <previous phase branch>`. The previous phase branch is named in the chip that started you and in `docs/current-state.md` ("Working branch"). If the fast-forward fails, stop and ask the user. Never edit a worktree another session owns (`.claude/worktrees/git-https-to-ssh-ed7693` holds an uncommitted `trace/ledger.jsonl`; leave it alone). Phase 0 (the amendment and the change folders A, B, C, E) is on branch `claude/next-session-handoff-15b81c`.
 
 **Read first, in order:**
 1. `AGENTS.md`
-2. `docs/current-state.md` (Last Updated and Next task)
-3. `docs/design/review-4-design-reviewer.md` (the latest design review; its questions are answered as decisions 26–29)
-4. `docs/design/ux-decisions.md` (the user's 17 decisions)
-5. `design/README.md` (iterations 4 and 5, their measurements and known limits)
-6. `docs/autonomy-log.md`, rows 32 to 55 and mistakes M12 to M17
-7. `docs/lessons/factory-enforces-artifacts-not-order.md`
-8. `docs/requirements.md`
-9. `openspec/specs/play-page/spec.md`
+2. `docs/current-state.md` (Last Updated, Working branch, Next task)
+3. `docs/mvp-capability-plan.md` section 4.7 (slices A to H, order, definition of done)
+4. `docs/requirements.md` (the 2026-10-05 amendment) and `docs/requirements-held.md`
+5. `docs/autonomy-log.md` rows 32 to 40 (how a slice runs) and 57 to 59 (this amendment and the pre-authorisations), mistakes M12 to M17
+6. `openspec/specs/play-page/spec.md`, and your phase's change folder under `openspec/changes/`
+7. `docs/design/ux-decisions.md`, `design/README.md` ("Pixel reference: frozen")
+8. `docs/lessons/factory-enforces-artifacts-not-order.md`
 
 Run `date` first and before every time claim; the user is UTC+5:30 (Kyiv is 2:30 earlier).
 
-**The design review loop is closed.** Four independent reviews were run, and iterations 4–7 applied them. The user froze `design/v0-screenshots/review-set-5/` as the pixel reference (decision 30; see `design/README.md`, "Pixel reference: frozen"). Do not change the design or that set without the user's word. If the user asks for a design change, follow these steps and make a new set:
-1. Agree the change with the user and record it as a decision in `docs/design/ux-decisions.md`.
-2. Apply them in `design/v0/`. Build with pnpm 10: `npm_config_manage_package_manager_versions=false pnpm build` in `design/v0` (run `pnpm install --frozen-lockfile` the same way first if `node_modules` is missing).
-3. Add the agreed sizes to `design/tools/capture-review-set.sh` (it already has 4×4 and 1024×768).
-4. Serve `design/v0/out` on 127.0.0.1:4173 and capture **twice** into the scratchpad (`capture-review-set.sh <dir>`, about 5 minutes per run). Compare `shasum` output; any difference is a harness defect to fix first. Copy the set into a new `review-set-6/` with its `SHA1SUMS`.
-5. Measure the touch targets and fit in the built-in browser (each page in an iframe of the given size), as in `design/README.md`.
-6. If the user wants another look, run review 4: a fresh Opus agent told to read and follow `.claude/agents/design-reviewer.md`, read-only, with the brief of review 3 updated (material: the latest `review-set-N/`). Save its report verbatim with your spot-checks, and report its verdict to the user.
+## Phases (one per session, in this order)
 
-**First job now: draft the requirements amendment for the UX decisions.** The user asked for it on 2026-10-05 at about 23:15 and chose to start it in a new session.
+| Phase | Change | Requirements | Notes |
+|---|---|---|---|
+| A | `update-page-layout` (folder exists) | FR-57, FR-61, FR-64, A-26, NFR-5 | Creates `src/ui/strings.ts` and moves **every** Ukrainian page text there (user decision, row 58). Rules popover, page order, idle line. |
+| B | `add-hinted-cell` (folder exists) | FR-59, FR-39 | |
+| C | `update-controls-accessibility` (folder exists) | FR-60, FR-42, FR-43, FR-58, FR-66, FR-62, FR-63, A-20, A-24, NFR-5 | The largest slice; the size-selector and reset tests change on purpose. Rebase any shared delta on the baseline as archived by A, if its tasks.md says so. |
+| D | write the change first (spec-writer), e.g. `update-win-apostrophe` | FR-41 (U+02BC) | The tests that pin the ASCII apostrophe change on purpose. |
+| E | `add-logo` (folder exists) | FR-65, TC-14 | Inline SVG from the frozen design. |
+| F | write the change first (spec-writer), e.g. `add-rule-solvable-generator` | FR-27, A-5, A-30 | Engine only. NFR-1 to NFR-3 must hold; if they cannot, **stop and ask the user** (never relax a bound). |
+| G1 | browser checks | NFR-7, NFR-9, NFR-11, NFR-12, TC-13, A-14 | Install the four approved dev dependencies (`@playwright/test`, `pixelmatch`, `pngjs`, `@axe-core/playwright`) and run `npx playwright install chromium` (pre-authorised, row 59). Build `check:a11y` (exists, needs the packages) and Playwright tests for NFR-9 and NFR-11 at the viewports declared in the held rows (`sampled`, not continuum). Show each check **running and failing** against today's page first (save the output under `docs/qa/`), then move the held rows into `docs/requirements.md` with the signed wording (pre-authorised, row 59), one logged commit per move. |
+| G2 | design fidelity | NFR-13 | Write `quality/visual-parity.config.json` (reference: served `design/v0/out`, or the frozen `review-set-5` shots; product: the built page), with decision 25's capture conditions and **0.98 per shot** (row 59). Show `npm run check:visual` running and failing, then move NFR-13 into `docs/requirements.md`. Then converge the page **block by block** (AGENTS.md lessons: per-block done, overlay and onion-skin, capture determinism). Likely more than one session; each session ends with the per-shot scores in `docs/qa/visual-diff/`. |
+| H | `check:vision` | NFR-10, NFR-14 | Write the script (no package), see it fail, move the two rows. Uses the `vision-verify` skill with a fresh vision-judge. |
 
-**Process.** This is the same as the slice 4 and NFR-6 amendments (autonomy-log rows 32 and 38–39):
-1. Dispatch the requirements-analyst (Sonnet) to draft exact FR/NFR/A/TC wording. It reads `docs/requirements.md`, `docs/design/ux-decisions.md` (decisions 1–30), `design/README.md` and `openspec/specs/play-page/spec.md`.
-2. Show the user the draft in chat. Number every new or changed item, and give each a verification method that already has a mechanism, or mark it as waiting for a dependency approval (declared-method-needs-mechanism).
-3. Wait for the user's explicit "signed". Only then edit `docs/requirements.md` and `docs/mvp-capability-plan.md`, and plan the slices.
-4. No spec, test or code before "signed".
+D and E may run before C if C is blocked; F may run any time. G1 must come before G2.
 
-**Scope** (decision → requirement impact, from `docs/design/ux-decisions.md`):
-- 1: FR-57 and A-26. The rules become a «Правила» header button opening a native popover: a bottom sheet on phones, a centred panel from 48rem. The `<details>` goes away; the rule texts stay.
-- 2 and 12: the DOM order becomes header with «Правила» → size picker → board → buttons → message area. New NFR: the board, buttons and message fit on one 375×812 screen at 6×6.
-- 3: a new hinted-cell FR (`cell-hinted` until the next board action); FR-39's scenarios gain the marker.
-- 4: FR-42, FR-43 and FR-58 ask for confirmation only when the board has player entries, in a native `<dialog>`. The texts «Почати заново? Ваші ходи на цьому полі буде втрачено.», «Так, почати» and «Скасувати» come under NFR-5.
-- 5: a new NFR for non-colour cues (violations, givens, entries, the hinted cell).
-- 6: FR-43 and A-24. The size control becomes a segmented control: three buttons «Поле 4×4», «Поле 6×6», «Поле 8×8», `role="radiogroup"`. The size-selector tests change deliberately.
-- 7: FR-27 moves from Future to MVP (every puzzle solvable with the pair, sandwich and count rules). This is a generator slice; NFR-1 to NFR-3 timing must still hold.
-- 8: A-20 is replaced by keyboard and screen-reader requirements: cells as `<button>`s with Ukrainian `aria-label`s, and visible focus. `check-a11y` needs Playwright and `@axe-core/playwright`.
-- 9: the placeholder line «Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.» under NFR-5. «0 і 1» uses non-breaking spaces.
-- 10: the logo (TC-14): the 2×2 mini board «1 0 / 0 1» drawn as shapes, legible at 40 px.
-- 13, 20 and 22: a touch-target NFR. 4×4 and 6×6 cells and all controls are at least 44×44 CSS px everywhere. 8×8 cells may be smaller (at least 24 px) on phones and on screens too short for 44 px. Below the floor the page scrolls.
-- 14: FR-41's win message uses the Ukrainian apostrophe: «Вітаємо, головоломку розвʼязано!» (U+02BC). The tests that pin the ASCII apostrophe change deliberately.
-- 16, 21 and the other layout decisions: no separate FR. The design-fidelity NFR covers them.
-- 25 and 30: a **design-fidelity NFR** against the frozen reference `design/v0-screenshots/review-set-5/`, with decision 25's capture conditions (reduced motion, framed window focused, pointer off the page, viewport crop). Declare it **only after** `npm run check:visual` is proven runnable and seen failing against today's page (declared-method-needs-mechanism).
-- Ask the user whether motion that respects `prefers-reduced-motion` should be a requirement or stay design-only.
+## How a phase runs (as slices 3 and 4 did)
 
-**Dependency approvals to ask for early** (each one is the user's word in chat):
-- Playwright, `pixelmatch` and `pngjs`, for `check:visual`;
-- `@axe-core/playwright`, for `check-a11y`.
+1. Fast-forward (above). `npm ci` if `node_modules` is missing or stale. Run the battery once: `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
+2. If the phase has no change folder, the spec-writer (Sonnet) writes it from the signed rows. Either way, run one fresh read-only check of the folder (spec-compliance-auditor, Sonnet) before any test; the folders for A, B, C and E were written in one pass (autonomy-log row 60) and have had no independent check yet.
+3. Test-engineer (Sonnet) writes the tests first. **Confirm red yourself** in a scratch copy and save the evidence as `docs/qa/<change>-red-run.txt`. Commit the red tests.
+4. Capability-implementer (Sonnet) makes them green. **Confirm green yourself** with the full battery.
+5. Review-gate workflow (base: the red commit). One fix round and one confirming run; if it is still not clean, report it as not clean instead of looping.
+6. A 375 px check in the built-in browser (jsdom cannot see layout, TC-13), screenshots in `docs/qa/<change>/`.
+7. Archive (`npx openspec archive <change> --yes`), strict validation, `npm run check:trace`.
+8. Update `docs/current-state.md` (Last Updated, Working branch = your branch, Next task = the next phase), this file's table if anything changed, and an autonomy-log row. Commit.
+9. Leave a chip for the next phase with `spawn_task`. The chip's prompt must name **your branch** (for the fast-forward) and the phase to run, and say "read `docs/handoff/next-session.md` first". Tell the user the phase is done, with evidence paths, and stop.
 
-Without them, the fidelity, non-colour-cue and keyboard NFRs cannot get a mechanism and must wait.
+Commit trailers: `Slice: <change-name>` and `Refs: FR-x` on every commit touching `src/`. Never `--no-verify`, never squash.
 
-**Rules that bit us** (see the autonomy log):
-- Probe GPG before a signed commit: `echo x | gpg --batch --pinentry-mode error -s -o /dev/null; echo $?`. If it isn't 0, commit with `--no-gpg-sign` and ask the user to cache the passphrase later (M6, M8, M16).
+## Pre-authorised by the user (row 59) and what is not
+
+- Moving the held rows into `docs/requirements.md` with the signed wording, once their check is shown running and failing; NFR-13 last.
+- NFR-13 pass mark: 0.98 per shot (the checker's default is 0.99; a below-default warning is expected).
+- Installing the four approved dev dependencies and the Chromium download.
+- If the GPG probe fails: commit with `--no-gpg-sign`, log it, and leave the re-sign (with a backup branch) for when the user is back.
+- **Not authorised:** push, PR, merge, any other dependency, hook, settings or `AGENTS.md` change, changing the frozen design or `review-set-5`, relaxing a test or a bound. Stop and ask.
+
+## Rules that bit us (see the autonomy log)
+
+- Probe GPG before each commit: `echo x | gpg --batch --pinentry-mode error -s -o /dev/null; echo $?` (M6, M8, M16).
 - Never claim an edit in a commit message unless the edit step exited 0; assert scripted replacements (M13 to M15).
-- Tag only after a successful commit (M12).
-- Use the dedicated agents (spec-writer, test-engineer, capability-implementer on Sonnet; review-gate workflow).
-- Confirm red and green yourself.
-- No push, PR, merge, dependency, hook, settings or `AGENTS.md` change without the user's word in chat.
+- Tag only after a successful commit (M12). The pre-commit hook runs `check:trace`: a new MVP FR needs a spec that cites it in the same commit.
+- Use the dedicated agents (spec-writer, test-engineer, capability-implementer on Sonnet; review-gate workflow). Confirm red and green yourself.
+- jsdom has no layout, no popover behaviour, and no `showModal` or `showPopover`: tests assert attributes and stub the methods.
+- Every "done" carries an evidence path. Held rows are NOT-EARNED until moved, never PASS.
+
+## Languages
+
+FR-55 and FR-56 stay Future (row 58). The strings module of phase A keeps the door open. Decide on a language switch with the user **before G2**, because G2 pins the page to the frozen reference.

@@ -30,7 +30,7 @@
     "FR-24": "MVP",
     "FR-25": "MVP",
     "FR-26": "MVP",
-    "FR-27": "Future",
+    "FR-27": "MVP",
     "FR-56": "Future",
     "FR-28": "MVP",
     "FR-29": "MVP",
@@ -53,6 +53,14 @@
     "FR-43": "MVP",
     "FR-57": "MVP",
     "FR-58": "MVP",
+    "FR-59": "MVP",
+    "FR-60": "MVP",
+    "FR-61": "MVP",
+    "FR-62": "MVP",
+    "FR-63": "MVP",
+    "FR-64": "MVP",
+    "FR-65": "MVP",
+    "FR-66": "MVP",
     "FR-44": "Future",
     "FR-45": "Future",
     "FR-46": "Future",
@@ -307,7 +315,8 @@
       "id": "FR-51",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -386,7 +395,8 @@
     {
       "id": "FR-25",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -397,12 +407,22 @@
     {
       "id": "FR-26",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
         "tests/hint.test.ts"
       ],
+      "recordings": []
+    },
+    {
+      "id": "FR-27",
+      "specs": [
+        "openspec/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
       "recordings": []
     },
     {
@@ -475,7 +495,8 @@
       "id": "FR-31",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -497,7 +518,9 @@
     {
       "id": "FR-33",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -563,7 +586,8 @@
     {
       "id": "FR-39",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -587,7 +611,8 @@
     {
       "id": "FR-41",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-page-layout/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -598,7 +623,8 @@
     {
       "id": "FR-42",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -610,7 +636,10 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md",
+        "openspec/changes/update-page-layout/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -631,7 +660,9 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/changes/update-page-layout/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -643,7 +674,8 @@
     {
       "id": "FR-58",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -651,10 +683,121 @@
         "tests/play-page-rules-and-reset.test.ts"
       ],
       "recordings": []
+    },
+    {
+      "id": "FR-59",
+      "specs": [
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-60",
+      "specs": [
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-61",
+      "specs": [
+        "openspec/changes/update-page-layout/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-62",
+      "specs": [
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-63",
+      "specs": [
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-64",
+      "specs": [
+        "openspec/changes/update-page-layout/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-65",
+      "specs": [
+        "openspec/changes/add-logo/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-66",
+      "specs": [
+        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
     }
   ],
   "failures": [],
   "warnings": [
+    {
+      "check": "test-trace",
+      "msg": "FR-27 has no test annotated \"@trace FR-27\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-59 has no test annotated \"@trace FR-59\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-60 has no test annotated \"@trace FR-60\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-61 has no test annotated \"@trace FR-61\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-62 has no test annotated \"@trace FR-62\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-63 has no test annotated \"@trace FR-63\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-64 has no test annotated \"@trace FR-64\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-65 has no test annotated \"@trace FR-65\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-66 has no test annotated \"@trace FR-66\""
+    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"
@@ -769,6 +912,10 @@
     },
     {
       "check": "recording-evidence",
+      "msg": "FR-27 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
       "msg": "FR-28 is not referenced by any recording manifest under docs/qa/"
     },
     {
@@ -850,6 +997,54 @@
     {
       "check": "recording-evidence",
       "msg": "FR-58 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-59 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-60 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-61 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-62 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-63 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-64 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-65 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-66 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-hinted-cell\" is not archived"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-logo\" is not archived"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"update-controls-accessibility\" is not archived"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"update-page-layout\" is not archived"
     }
   ]
 }
