@@ -51,4 +51,15 @@ The user's answers to the five questions in [`review-1-design-reviewer.md`](revi
 | 16 | May the board grow beyond 4rem cells? | **Yes:** about 5rem on tablet, height-aware (about 4.5rem) on desktop, as the review proposes. | Design CSS; the fit-on-one-screen NFR must still hold. |
 | 17 | Warm dark theme? | **Yes:** the warm brown-black palette from the review (§3). | Design CSS; contrast to be verified by `check-a11y`. |
 
-**Which findings to apply:** all 15, plus the review's motion (the user's choice, 2026-10-05 about 21:00; iteration 4 in `design/README.md`). Review 2 ([`review-2-design-reviewer.md`](review-2-design-reviewer.md)) asks four more questions, still open.
+**Which findings to apply:** all 15, plus the review's motion (the user's choice, 2026-10-05 about 21:00; iteration 4 in `design/README.md`). Review 2 ([`review-2-design-reviewer.md`](review-2-design-reviewer.md)) asked four more questions.
+
+## Decisions after design review 2 (2026-10-05 at 21:50)
+
+| # | Question | Decision | Impact |
+|---|---|---|---|
+| 18 | Which review 2 findings to apply? | **All of them:** N1–N7 and the partly fixed #8, #9, #14 (the agent proposed the same set in order of priority). | Design iteration 5. |
+| 19 | 4×4 and 1024×768 in the review set? | **Add both** before the set becomes the pixel reference. | `design/tools/capture-review-set.sh`, a `/four/` route. |
+| 20 | 8×8 under 44 px on short tablet and desktop screens (1024×768)? | **Extend decision 13's exception:** 8×8 cells may be under 44 px (at least 24 px) on any screen too short for 44 px, so the page never scrolls; 4×4 and 6×6 keep 44 px everywhere. | The touch-target NFR's exception names screen height, not only phones. |
+| 21 | 4×4 on tablet and desktop: grow or stay centred? | **Stay centred** in a column of at least 26rem. | Design CSS. |
+
+Review 2's fourth question (should the product's parity capture also force reduced motion?) was not asked yet; it belongs to the pixel-check setup.

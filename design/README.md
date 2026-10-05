@@ -2,7 +2,7 @@
 
 Visual design references for Бінарка. **Not product code:** nothing here is built, tested or linted with the app (`eslint.config.js` ignores `design/`; `tsconfig.json` does not include it).
 
-## `v0/`: Vercel v0 design, iteration 4 (iterations 3 and 4 edited by the agent)
+## `v0/`: Vercel v0 design, iteration 5 (iterations 3 to 5 edited by the agent)
 
 | | |
 |---|---|
@@ -84,6 +84,35 @@ The user chose to apply all 15 findings of [`docs/design/review-1-design-reviewe
   - 8×8 cells: 35.3 px at 320, 42.1 at 375, 60.1 at 768, 56.3 at 1440×900. 6×6 cells: 79.7 px at 768×1024, 71.7 at 1440×900.
   - No horizontal scroll anywhere; no vertical scroll at 375×812, 768×1024, 1440×900, 1280×800, or 1024×768 for `/` and `/eight/`.
   - **Known limits:** at 1024×768 the hint page is 7 px taller than the screen, and 6×6 cells are 43.7 px there.
+
+### Iteration 5: review 2 applied by the agent (2026-10-05 about 22:00)
+
+The user chose all findings of [`docs/design/review-2-design-reviewer.md`](../docs/design/review-2-design-reviewer.md) and decisions 18–21 of `docs/design/ux-decisions.md`.
+- **One column for every board size** (N1, N4). From 48rem, `--column` is the 6×6 board's width, at least 26rem. The header, picker, buttons and messages use it; 4×4 sits centred in it (decision 21) and 8×8 is capped at it. On phones the page padding no longer changes on 8×8; only `.board-host` bleeds 0.5rem into it. Cell digits are sized from the board's own width (`container-type: inline-size`, `100cqi`) instead of `100vw`.
+- **Exact cell sizes** (N2). `--board-width` adds the board's 2 px of border. A solved board keeps a 1 px border plus a 1 px `box-shadow` ring, so the cells don't shrink on a win; the win glow keeps that ring. The 31.5rem reserve for short screens is gone: with the 26rem column the buttons stay on one row.
+- **320 px:** the rules sheet has a 1rem top padding and 1.5rem mini cells (N3), and «Правила» has narrower padding (it stuck out of the header by 3 px).
+- **Smaller fixes:**
+  - The hint accent is a 4 px left border with 0.125rem left corners (#14).
+  - The hover ring is the primary colour at 60% (#9).
+  - The hint and win messages sit right under the buttons, while the idle line stays centred (N6).
+  - Dark backdrops dim the page (`--backdrop-soft`/`--backdrop-strong`, N7).
+  - The sheet has a closing state, so it also slides out (N5).
+- **New route `/four/`:** a 4×4 mid-game board (givens from `generate(4, 3)`, one solution; entries from the solution, checked by a script). The capture adds `four` and the 1024×768 size: 7 pages × 5 sizes × 2 themes + 2 logo shots = 72 shots.
+- **Measured in the built-in browser** (each page in an iframe of the given size, scrollbars hidden as in the capture):
+
+  | Size | 4×4 cell | 6×6 cell | 8×8 cell | Column |
+  |---|---|---|---|---|
+  | 320×700 | 64 | 45.2 | 35.3 | 296 px at x = 12 for every size |
+  | 375×812 | 64 | 51.5 | 42.1 | 343 px at x = 16 for every size |
+  | 768×1024 | 80 | 79.7 | 60.1 | 512 px |
+  | 1024×768 | 72 | 53.3 | 40.0 | 416 px; buttons on one row |
+  | 1440×900 | 72 | 72.0 | 54.4 | 466 px |
+
+  - At 320 the rules sheet doesn't scroll, and «Зрозуміло» ends at y = 684 of 700.
+  - No horizontal scroll anywhere.
+  - No vertical scroll at 375×812, 768×1024, 1024×768 or 1440×900 on the default, 4×4, 8×8, hint and win pages.
+  - At 320×700 the bottom page padding scrolls by 5–27 px; that width is outside the fit NFR (375×812).
+- **Measuring gotcha:** with the built-in browser pane at desktop size, iframes draw classic scrollbars (15 px), which made 320 px look 15 px narrower. Hide them (`html { scrollbar-width: none }`), as the capture's `--hide-scrollbars` does.
 
 ### Before it becomes the pixel-check reference
 

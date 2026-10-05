@@ -60,3 +60,15 @@ export const eightBoard: BoardSpec = {
     'g1 p0 g1 .  .  .  .  g0',
   ]),
 }
+
+// 4×4 mid-game: givens from our engine (generate(4, 3), exactly one solution),
+// entries taken from that solution.
+export const fourBoard: BoardSpec = {
+  size: 4,
+  rows: parse([
+    'g1 p0 .  .',
+    'g1 .  g1 .',
+    '.  g1 .  g1',
+    'p0 g1 .  .',
+  ]),
+}

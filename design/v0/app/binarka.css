@@ -27,6 +27,8 @@
   --surface-raised: #fffdf8;
   --overlay-border: var(--line);
   --hover-filter: brightness(0.96);
+  --backdrop-soft: rgba(70, 40, 15, 0.22);
+  --backdrop-strong: rgba(45, 25, 10, 0.5);
   /* Finding 15: the focus ring uses the ink colour (warm, about 15:1), not blue. */
   --focus: var(--ink);
 
@@ -55,6 +57,9 @@
     --surface-raised: #2c2620;
     --overlay-border: var(--cell-border);
     --hover-filter: brightness(1.12);
+    /* Review 2, N7: in dark, a brown backdrop lifts the page; these dim it. */
+    --backdrop-soft: rgba(8, 5, 2, 0.45);
+    --backdrop-strong: rgba(8, 5, 2, 0.6);
     --ink: #f1ede4;
     --ink-muted: #b8b0a4;
     --line: #3a332b;
@@ -100,12 +105,13 @@ body {
 
 /* ---------- Layout ---------- */
 
-/* The board size lives on #app (read with :has), so the column width (finding 10)
-   and the height-aware cell size (decision 16) can be computed from it. */
+/* The board size lives on #app (read with :has), so the height-aware cell size
+   (decision 16) can be computed from it. --board-width includes the board's 1 px
+   border on both sides (review 2, N2), so a cell is exactly --cell-max. */
 #app {
   --n: 6;
   --board-width: calc(
-    var(--n) * var(--cell-max) + (var(--n) - 1) * var(--board-gap) + 2 * var(--board-pad)
+    var(--n) * var(--cell-max) + (var(--n) - 1) * var(--board-gap) + 2 * var(--board-pad) + 2px
   );
   display: flex;
   flex-direction: column;
@@ -141,12 +147,18 @@ body {
 }
 
 /* Phones: 8×8 gets the tightest gutters (finding 3). Its cells stay under 44 px,
-   at least WCAG 2.5.8's 24 px (decision 13). */
+   at least WCAG 2.5.8's 24 px (decisions 13 and 20). Only the board bleeds into the
+   page padding, so nothing else moves when the size changes (review 2, N4). */
 @media (max-width: 30rem) {
   #app:has(.board[data-size='8']) {
-    --page-pad: 0.5rem;
     --board-gap: 0.125rem;
     --board-pad: 0.1875rem;
+  }
+
+  #app:has(.board[data-size='8']) .board-host {
+    --bleed: calc(var(--page-pad) - 0.5rem);
+    width: calc(100% + 2 * var(--bleed));
+    margin-inline: calc(-1 * var(--bleed));
   }
 }
 
@@ -238,6 +250,13 @@ body {
   outline-offset: 2px;
 }
 
+/* Small phones (320): «Правила» fits beside the title (it stuck out 3 px). */
+@media (max-width: 22.5rem) {
+  .rules-button {
+    padding: 0 var(--space-3);
+  }
+}
+
 /* ---------- Size picker (segmented control) ---------- */
 
 .size-picker {
@@ -293,11 +312,11 @@ body {
   grid-template-columns: repeat(var(--n), minmax(0, 1fr));
   grid-template-rows: repeat(var(--n), minmax(0, 1fr));
   gap: var(--board-gap);
-  width: min(
-    100%,
-    calc(var(--n) * var(--cell-max) + (var(--n) - 1) * var(--board-gap) + 2 * var(--board-pad))
-  );
+  /* --column (from 48rem) caps 8×8 at the 6×6 width, so the column never changes with the size. */
+  width: min(100%, var(--board-width), var(--column, 100%));
   aspect-ratio: 1 / 1;
+  /* The cells size their digits from the board's width (review 2, N4). */
+  container-type: inline-size;
   padding: var(--board-pad);
   border: 1px solid var(--line);
   border-radius: var(--radius-l);
@@ -317,10 +336,7 @@ body {
 }
 
 .cell {
-  --cell-font: min(
-    calc((100vw - 2 * var(--page-pad)) / var(--n) * 0.46),
-    calc(var(--cell-max) * 0.46)
-  );
+  --cell-font: calc(100cqi / var(--n) * 0.46);
   appearance: none;
   -webkit-appearance: none;
   display: flex;
@@ -370,8 +386,10 @@ body {
 }
 
 .board[data-solved='true'] {
-  border: 2px solid var(--success);
+  /* 1 px border plus a 1 px ring, so the cells do not shrink on a win (review 2, N2). */
+  border-color: var(--success);
   background: var(--success-bg);
+  box-shadow: 0 0 0 1px var(--success);
 }
 
 .board[data-solved='true'] .cell {
@@ -419,7 +437,7 @@ body {
 }
 
 .rules::backdrop {
-  background: rgba(70, 40, 15, 0.22);
+  background: var(--backdrop-soft);
 }
 
 .rules h2 {
@@ -494,6 +512,19 @@ body {
 .rules-close:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
+}
+
+/* Small phones (320): the sheet fits in 55dvh with «Зрозуміло» clear of the edge (review 2, N3). */
+@media (max-width: 22.5rem) {
+  .rules {
+    padding-top: var(--space-4);
+  }
+
+  .mini {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.875rem;
+  }
 }
 
 @media (min-width: 48rem) {
@@ -590,7 +621,7 @@ body {
 
 @media (hover: hover) {
   .board:not([data-solved='true']) .cell:not(.cell-given):hover {
-    box-shadow: inset 0 0 0 2px var(--primary-soft);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--primary) 60%, transparent);
   }
 
   .buttons button:hover,
@@ -619,7 +650,7 @@ body {
   --message-pad: var(--space-2);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-2);
   width: 100%;
   /* Reserves three lines of hint text, so the page never jumps when a message appears. */
@@ -649,6 +680,8 @@ body {
   font-size: 0.875rem;
   text-align: center;
   text-wrap: balance;
+  /* Centred in the reserved area; the hint and win sit right under the buttons (review 2, N6). */
+  margin-block: auto;
 }
 
 .messages:has([data-message='hint']:not(:empty), [data-message='win']:not(:empty)) .message-idle {
@@ -656,8 +689,10 @@ body {
 }
 
 .message[data-message='hint'] {
+  /* Square left corners keep the 4 px accent straight (review 2, #14). */
+  border-left: 4px solid var(--primary);
+  border-radius: 0.125rem var(--radius-m) var(--radius-m) 0.125rem;
   background: var(--primary-soft);
-  box-shadow: inset 4px 0 0 var(--primary);
 }
 
 .message-win {
@@ -684,7 +719,7 @@ body {
 }
 
 .confirm::backdrop {
-  background: rgba(45, 25, 10, 0.5);
+  background: var(--backdrop-strong);
 }
 
 .confirm p {
@@ -751,29 +786,31 @@ body {
     --cell-max: 5rem;
   }
 
-  /* Finding 10: header, size picker, buttons and messages share the board's width. */
+  /* One column for every board size: the 6×6 board's width, at least 26rem, so the
+     header and the three buttons always fit on one line (finding 10; review 2, N1 and
+     N4). 4×4 sits centred in it (decision 21); 8×8 is capped at it. */
+  #app {
+    --column: max(26rem, calc(6 * 5rem + 5 * 0.25rem + 2 * 0.375rem + 2px));
+  }
+
   .page-header,
   .size-picker,
   .buttons,
   .messages {
-    max-width: var(--board-width);
+    max-width: var(--column);
   }
 }
 
-/* Decision 16: on desktop the board is height-aware, so 8×8 still fits without scrolling.
+/* Decision 16: on desktop the board is height-aware, so it fits without scrolling.
    28rem is everything but the cells: padding, header, picker, the board's gaps and
    padding, buttons, messages and the gaps between them (measured about 27.3rem). */
 @media (min-width: 64rem) {
   #app {
     --cell-max: min(4.5rem, calc((100dvh - 28rem) / var(--n)));
-  }
-}
-
-/* Short desktop screens (1024×768): the narrower column wraps the buttons to two rows,
-   so the rest of the page takes about 30.7rem. */
-@media (min-width: 64rem) and (max-height: 50rem) {
-  #app {
-    --cell-max: min(4.5rem, calc((100dvh - 31.5rem) / var(--n)));
+    --column: max(
+      26rem,
+      calc(6 * min(4.5rem, calc((100dvh - 28rem) / 6)) + 5 * 0.25rem + 2 * 0.375rem + 2px)
+    );
   }
 }
 
@@ -806,6 +843,12 @@ body {
     }
   }
 
+  /* The closing state, so the sheet also slides out (review 2, N5). A closed popover is
+     display: none, so no settled frame changes. */
+  .rules:not(:popover-open) {
+    transform: translateY(100%);
+  }
+
   @media (min-width: 48rem) {
     .rules {
       transition:
@@ -820,6 +863,11 @@ body {
         opacity: 0;
         transform: translateY(0.5rem);
       }
+    }
+
+    .rules:not(:popover-open) {
+      opacity: 0;
+      transform: translateY(0.5rem);
     }
   }
 
@@ -840,9 +888,13 @@ body {
 
 @keyframes glow {
   from {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 45%, transparent);
+    box-shadow:
+      0 0 0 1px var(--success),
+      0 0 0 1px color-mix(in srgb, var(--success) 45%, transparent);
   }
   to {
-    box-shadow: 0 0 0 1rem transparent;
+    box-shadow:
+      0 0 0 1px var(--success),
+      0 0 0 1rem transparent;
   }
 }
