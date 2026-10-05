@@ -6,7 +6,7 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-05 19:58:00 (UTC+5:30; Kyiv 17:28)
+- **Date and time:** 2026-10-05 20:49:00 (UTC+5:30; Kyiv 18:19)
 - **Current phase:** Phase 4 (post-submission iteration: design and UX, nothing signed yet)
 - **Last completed gate:** G3
 - **Active change:** none (slices 1 to 4 and the change `update-hint-sentences` are archived)
@@ -16,7 +16,11 @@
   - Commit and tag order, slice 3: change `a3adf3c` (`step-25-s3-change`), revised change `41b7730`, red tests `47b25bd` (`step-26-s3-red`) and `ca12f12` (24th test, red evidence 67 red), green `d7613cf` (`step-27-s3-green`), review fix round `8b52593` (`step-28-s3-fix1`), archive commit (`step-29-s3-archived`). Slice 2: tags `step-19` to `step-23`; slice 1: `step-13` to `step-18`.
   - **Signing:** every commit in this branch's history is signed: slices 1 to 3 up to `cd90dca` (37 `G`, checked about 22:57) and the 9 slice 4 commits re-signed at about 00:00 on 2026-10-05 (`git log --format='%G?' cd90dca..HEAD`: 9 `G`; `git diff backup/slice4-unsigned-f0b3f37 <re-signed tip>` empty; tags `step-30` to `step-35` re-pointed). Slice 4 lives on branch `claude/fwdays-slice4-rules-reset-de6481` in worktree `.claude/worktrees/git-https-to-ssh-ed7693`, branched from `cd90dca` (the slice 3 branch is checked out in `practical-allen-938687`, which still holds the three untracked 23:10 retro files).
 - **Next task (handoff to a fresh session, 2026-10-05 about 19:58):**
-  1. **Design iteration 3 is done by the agent** (the v0 credits ran out): `v0-followup-2.md` plus decision 12 (buttons directly under the board) are applied in `design/v0/`, built and screenshotted at 375 px (`design/v0-screenshots/iteration-3/`, `design/README.md`). Next: the user reviews it, and a `vision-judge` pass checks it independently (the agent was its author) before it becomes the pixel reference. To view: `pnpm build` in `design/v0/` (pnpm 10 with `npm_config_manage_package_manager_versions=false`), then serve `design/v0/out` on 127.0.0.1:4173.
+  1. **Design review 1 is done** by the independent `design-reviewer` agent (`.claude/agents/design-reviewer.md`, the user's prompt): 15 findings, verbatim in `docs/design/review-1-design-reviewer.md`, over 40 shots in `design/v0-screenshots/review-set/` made by `design/tools/capture-review-set.sh`. The user answered its five questions (decisions 13–17 in `docs/design/ux-decisions.md`). **Next:**
+     - Confirm with the user which findings to apply (proposed: 1–9, with 10–15 optional).
+     - Apply them to `design/v0/`, add the 40 px logo capture, and make the confirm-dialog focus deterministic in the capture (finding 7).
+     - Recapture all shots and run the `design-reviewer` once more to confirm.
+     - The apostrophe change (decision 14) is a product change: it goes into the requirements amendment.
   2. **Then the requirements amendment**, drafted by the requirements-analyst and signed by the user in chat before any spec, test or code. It covers [`docs/design/ux-decisions.md`](design/ux-decisions.md) decisions 1 to 11: FR-57 (popover), FR-42/43/58 (confirmation), FR-43/A-24 (segmented control), A-20 (keyboard and screen reader), FR-27 to MVP, a hinted-cell FR, non-colour-cue and fit-on-one-screen NFRs, the placeholder text, and the logo (TC-14). Plus a design-fidelity NFR, but **only after** the check is proven runnable: approve Playwright, `pixelmatch` and `pngjs`, write `quality/visual-parity.config.json` with `referenceUrl` set to the served `design/v0/out`, and see `npm run check:visual` fail first (declared-method-needs-mechanism).
   3. **Slices in the proposed order** of `ux-decisions.md`: layout 1+2+9, then 3 and 5, then 4, 6 and 8; FR-27 as an independent generator slice. Same process as slice 4 (dedicated agents on Sonnet, red confirmed by the orchestrator, review-gate, 375 px check, archive).
   4. **Pushed:** the branch was pushed to `origin` on 2026-10-05 at 20:18 at the user's request; every commit since `cd90dca` is signed (all `G`; the design commits were re-signed, and the unsigned originals are on `backup/design-unsigned-75756b3`). `main` stays at the 2026-10-04 snapshot `db76f02` (tag `submission-2026-10-04`); moving it is the user's call.

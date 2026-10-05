@@ -38,3 +38,17 @@ Options considered for decision 1, with sources: `docs/design/v0-followup-2.md` 
 4. Decision 7, the generator slice. It is independent of the UI and can run in parallel.
 
 The v0 prompt already uses the target structure from these decisions.
+
+## Decisions after design review 1 (2026-10-05 at 20:49)
+
+The user's answers to the five questions in [`review-1-design-reviewer.md`](review-1-design-reviewer.md):
+
+| # | Question | Decision | Impact |
+|---|---|---|---|
+| 13 | 8×8 cells cannot reach 44 px on phones. | **Accept smaller 8×8 cells on phones** (at least WCAG 2.5.8's 24 px, in practice about 33 px at 320 and 39 px at 375 with the tightest gutters); 4×4 and 6×6 keep 44 px. Alternatives considered and not chosen: hiding 8×8 on narrow phones (loses a feature), a zoom/pan board or a row-focus mode (complex, more friction), horizontal scrolling (worst). | A touch-target NFR with this explicit exception. |
+| 14 | The win message uses an ASCII apostrophe. | **Use the Ukrainian apostrophe ʼ (U+02BC)**: «Вітаємо, головоломку розвʼязано!» | **Product change, not only design:** FR-41 and the play-page spec pin the ASCII apostrophe, and tests compare it exactly; an amendment the user signs, then the tests change deliberately. |
+| 15 | No 40 px logo capture exists. | **Add a 40 px logo capture** to the review set. | `design/tools/capture-review-set.sh`. |
+| 16 | May the board grow beyond 4rem cells? | **Yes:** about 5rem on tablet, height-aware (about 4.5rem) on desktop, as the review proposes. | Design CSS; the fit-on-one-screen NFR must still hold. |
+| 17 | Warm dark theme? | **Yes:** the warm brown-black palette from the review (§3). | Design CSS; contrast to be verified by `check-a11y`. |
+
+**Which findings to apply** is not decided yet. The agent proposed findings 1–9, with 10–15 at the user's choice; confirm with the user at the start of the next session.
