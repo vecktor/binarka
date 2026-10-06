@@ -2,7 +2,7 @@
 
 ### Requirement: Confirmation before discarding player entries
 
-«Нова головоломка», a press of a size button of another size and «Скинути» SHALL ask for confirmation only when the board has player entries (FR-60). A player entry is a non-given cell that is not empty; a cell filled by a hint counts as one (A-8); a board that was just solved has entries, so the confirmation is also asked after a win (A-28). The confirmation SHALL be a native `<dialog>` `[data-dialog="confirm"]`, created once at mount inside the page root, outside the board element and outside the sequence of «Page document order» (it follows the rules panel), closed at mount, and opened with `showModal()`. It SHALL hold the text «Почати заново? Ваші ходи на цьому полі буде втрачено.» and exactly two `<button type="button">`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати». «Так, почати» SHALL close the dialog (calling `close()`) and then perform the pending action exactly as it would on an untouched board. «Скасувати», and Escape (the dialog's `cancel` and `close` events with no button pressed), SHALL close the dialog and leave unchanged the board, the size (`aria-checked`), the hint message, the win message, the highlights and `cell-hinted`; no seed is taken and the generator is not called. A cancelled action is dropped: it is never performed later. On a board with no player entries the action happens at once and `showModal()` is never called. Reading rule: wherever another requirement of this capability says that pressing «Нова головоломка», changing the size or pressing «Скинути» has an effect (for example «Highlighting follows every board change», «Hint message stays until the next hint or a new puzzle» and the size steps of «Board rendering and default size»), the effect happens when the action is performed: at once on a board without player entries, after «Так, почати» on a board with entries; a requested but unperformed action has no effect. Where the dialog is drawn and its focus ring are layout and are covered by the held NFR-12 and NFR-13, see `docs/requirements-held.md`.
+«Нова головоломка», a press of a size button of another size and «Скинути» SHALL ask for confirmation only when the board has player entries (FR-60). A player entry is a non-given cell that is not empty; a cell filled by a hint counts as one (A-8); a board that was just solved has entries, so the confirmation is also asked after a win (A-28). The confirmation SHALL be a native `<dialog>` `[data-dialog="confirm"]`, created once at mount inside the page root, outside the board element and outside the sequence of «Page document order» (it follows the rules panel), closed at mount, and opened with `showModal()`. It SHALL hold the text «Почати заново? Ваші ходи на цьому полі буде втрачено.» and exactly two `<button type="button">`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати». «Так, почати» SHALL close the dialog (calling `close()`) and then perform the pending action exactly as it would on an untouched board. «Скасувати», and Escape (the dialog's `cancel` and `close` events with no button pressed), SHALL close the dialog and leave unchanged the board, the size (`aria-checked`), the hint message, the win message, the highlights and `cell-hinted`; no seed is taken and the generator is not called. A cancelled action is dropped: it is never performed later. On a board with no player entries the action happens at once and `showModal()` is never called. Reading rule: wherever another requirement of this capability says that pressing «Нова головоломка», changing the size or pressing «Скинути» has an effect (for example «Highlighting follows every board change», «Hint message stays until the next hint or a new puzzle» and the size steps of «Board rendering and default size»), the effect happens when the action is performed: at once on a board without player entries, after «Так, почати» on a board with entries; a requested but unperformed action has no effect. The dialog SHALL have `aria-labelledby` naming the `id` of the element that holds its text (unique per mount), so assistive technology announces the question (A-20). When the page opens the dialog it SHALL move focus to «Скасувати» (after `showModal()`), so that the safe choice is the default and two key presses cannot discard the player's moves (A-20; the user's decision of 2026-10-06, review round 1). Where the dialog is drawn and its focus ring are layout and are covered by the held NFR-12 and NFR-13, see `docs/requirements-held.md`.
 
 Traces: FR-60, FR-42, FR-43, FR-58, FR-59
 
@@ -14,6 +14,13 @@ Traces: FR-60, FR-42, FR-43, FR-58, FR-59
 - **AND** its text includes «Почати заново? Ваші ходи на цьому полі буде втрачено.»
 - **AND** it contains exactly two `button` elements of `type="button"`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати»
 - **AND** the `showModal` spy has not been called
+
+#### Scenario: The dialog is named by its question and opens on «Скасувати»
+
+- **GIVEN** a mounted page with a fixture puzzle on which the player has clicked one non-given cell
+- **WHEN** the test reads the dialog, and then the player presses «Нова головоломка»
+- **THEN** the dialog's `aria-labelledby` names an element inside the dialog whose text is «Почати заново? Ваші ходи на цьому полі буде втрачено.», and two mounts give two different ids
+- **AND** after the press the dialog is open and the focused element of the document is `[data-confirm="no"]`
 
 #### Scenario: No player entries means no dialog
 
@@ -92,7 +99,7 @@ Traces: FR-60, FR-42, FR-43, FR-58, FR-59
 
 ### Requirement: Pressing the shown size changes nothing
 
-Pressing the size button of the size already shown SHALL be a no-op (FR-66): no dialog, no new puzzle, no seed taken, no generator call, and the board, both messages, the highlights, `aria-checked` and `cell-hinted` unchanged (FR-59). This holds on a board with player entries and on a board without.
+Pressing the size button of the size already shown SHALL be a no-op (FR-66): no dialog, no new puzzle, no seed taken, no generator call, and the board, both messages, the highlights, `aria-checked` and `cell-hinted` unchanged (FR-59). This holds on a board with player entries and on a board without. The shown size is the size of the board shown: when no board is shown (the generation at mount failed), no size is shown, and a press of any size button generates a board of that size at once (there are no entries to confirm).
 
 Traces: FR-66, FR-59, FR-43
 
@@ -108,6 +115,12 @@ Traces: FR-66, FR-59, FR-43
 
 - **WHEN** the player presses the button of the row (the size already shown), and again on a freshly mounted page of the same size with no player entries
 - **THEN** `showModal` was never called, the seed-source and generator call counts are unchanged, every cell keeps its text and class list (including `cell-violation` and `cell-hinted`), both messages keep their text, and `aria-checked="true"` stays on that button only
+
+#### Scenario: With no board shown, a size button generates
+
+- **GIVEN** a page whose generation at mount threw, so no board is shown, and a generator that succeeds afterwards
+- **WHEN** the player presses «Поле 6×6»
+- **THEN** no dialog opens, one seed is taken and the generator is called once with size 6, and a 6×6 board is shown with `aria-checked="true"` on «Поле 6×6»
 
 ### Requirement: Cells are buttons
 

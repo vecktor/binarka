@@ -55,17 +55,17 @@ Result: PASS, 64 warning(s)
 | FR-40 | yes | yes | 3 | - |
 | FR-41 | yes | yes | 1 | - |
 | FR-42 | yes | yes | 7 | - |
-| FR-43 | yes | yes | 20 | - |
+| FR-43 | yes | yes | 21 | - |
 | FR-57 | yes | yes | 6 | - |
 | FR-58 | yes | yes | 7 | - |
 | FR-59 | yes | yes | 13 | - |
-| FR-60 | yes | yes | 11 | - |
+| FR-60 | yes | yes | 12 | - |
 | FR-61 | yes | yes | 4 | - |
 | FR-62 | yes | yes | 3 | - |
 | FR-63 | yes | yes | 4 | - |
 | FR-64 | yes | yes | 3 | - |
 | FR-65 | yes | yes | - | - |
-| FR-66 | yes | yes | 3 | - |
+| FR-66 | yes | yes | 4 | - |
 
 ## Failures
 

@@ -666,6 +666,7 @@
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
@@ -741,6 +742,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
@@ -827,6 +829,7 @@
       "planned": true,
       "tests": [
         "tests/play-page-confirm.test.ts",
+        "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts"
       ],

@@ -79,12 +79,13 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const closeButton = el('button', { type: 'button', class: 'rules-close', popovertarget: panelId, popovertargetaction: 'hide', autofocus: '' }, BUTTONS.rulesClose);
   rulesPanel.append(el('h2', { id: panelTitleId }, RULES.heading), rulesList, closeButton);
 
-  const dialog = el('dialog', { 'data-dialog': 'confirm', class: 'confirm' });
+  const dialogTextId = `confirm-text-${panelCounter}`;
+  const dialog = el('dialog', { 'data-dialog': 'confirm', class: 'confirm', 'aria-labelledby': dialogTextId });
   const yesButton = el('button', { type: 'button', 'data-confirm': 'yes' }, CONFIRM.yes);
   const noButton = el('button', { type: 'button', 'data-confirm': 'no' }, CONFIRM.no);
   const dialogButtons = el('div', { class: 'confirm-buttons' });
   dialogButtons.append(yesButton, noButton);
-  dialog.append(el('p', {}, CONFIRM.text), dialogButtons);
+  dialog.append(el('p', { id: dialogTextId }, CONFIRM.text), dialogButtons);
 
   root.replaceChildren(header, sizeControl, boardHost, buttons, messages, rulesPanel, dialog);
 
@@ -196,8 +197,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     hintMessage.textContent = h.sentence;
     if (h.kind !== 'fill') return;
     (board[h.row] as Cell[])[h.col] = h.value;
-    setHinted([h.row, h.col]);
-    renderCell(h.row, h.col);
+    setHinted([h.row, h.col]); // renders the cell with its new value and label
     refreshHighlights();
     updateWin();
   });
@@ -214,7 +214,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
       return;
     }
     pending = action;
-    if (!dialog.hasAttribute('open')) dialog.showModal();
+    if (!dialog.hasAttribute('open')) {
+      dialog.showModal();
+      noButton.focus(); // the safe choice is the default (A-20)
+    }
   }
 
   function resetBoard(): void {
@@ -260,7 +263,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   newButton.addEventListener('click', () => requestAction(startNewPuzzle));
   for (const [n, button] of sizeButtons) {
     button.addEventListener('click', () => {
-      if (n === size) return; // the shown size is a no-op
+      if (n === size && board.length > 0) return; // the shown size is a no-op; with no board shown, no size is shown
       requestAction(() => changeSize(n));
     });
   }

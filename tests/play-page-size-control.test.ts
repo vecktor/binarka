@@ -154,3 +154,25 @@ describe('@trace FR-66 @trace FR-43 a press of the shown size does not disturb a
     expect(dialogIsOpen(root)).toBe(true);
   });
 });
+
+// Added in review fix round 1 (wf_c621c8e9-bc8, contested finding): the shown size is the size of the board shown.
+describe('@trace FR-66 @trace FR-43 with no board shown, a size button generates', () => {
+  it('after a failed generation at mount, «Поле 6×6» generates a 6x6 board at once', () => {
+    const seeds = seedQueue([1, 2]);
+    const spy = generateSpy((i) => {
+      if (i === 0) throw new Error('generator failed at mount');
+      return PAIR_ROW;
+    });
+    const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
+    expect(root.querySelectorAll('[data-cell]'), 'premise: no board is shown').toHaveLength(0);
+
+    pressSizeButton(root, 6);
+
+    expect(showModalCalls()).toBe(0);
+    expect(seeds.calls()).toBe(2);
+    expect(spy.calls.map((c) => c.size)).toEqual([6, 6]);
+    expect(boardSize(root)).toBe(6);
+    expect(allCells(root)).toHaveLength(36);
+    expect(checkedSize(root)).toBe(6);
+  });
+});

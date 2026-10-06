@@ -93,6 +93,27 @@ describe('@trace FR-60 the dialog at mount', () => {
   });
 });
 
+// Added in review fix round 1 of update-controls-accessibility (wf_c621c8e9-bc8; the user chose the safe focus,
+// 2026-10-06). Scenario "The dialog is named by its question and opens on «Скасувати»".
+describe('@trace FR-60 the dialog is named by its question and opens on «Скасувати»', () => {
+  it('aria-labelledby names the question inside the dialog, unique per mount; opening moves focus to «Скасувати»', () => {
+    const root = mountPage({ seedSource: () => 1, generate: () => PAIR_ROW });
+    const other = mountPage({ seedSource: () => 2, generate: () => PAIR_ROW });
+    const dialog = dialogOf(root);
+    const labelId = dialog.getAttribute('aria-labelledby') ?? '';
+    expect(labelId, 'aria-labelledby is set').not.toBe('');
+    const label = document.getElementById(labelId);
+    expect(label !== null && dialog.contains(label), 'the label is inside the dialog').toBe(true);
+    expect(label?.textContent).toBe(CONFIRM_TEXT);
+    expect(dialogOf(other).getAttribute('aria-labelledby'), 'two mounts, two ids').not.toBe(labelId);
+
+    clickCell(root, 1, 1);
+    q(root, '[data-action="new"]').click();
+    expect(dialogIsOpen(root)).toBe(true);
+    expect(document.activeElement, 'focus is on «Скасувати»').toBe(q(dialog, '[data-confirm="no"]'));
+  });
+});
+
 describe('@trace FR-60 @trace FR-42 @trace FR-43 @trace FR-58 no player entries means no dialog', () => {
   it('table: «Нова головоломка», «Поле 4×4» and «Скинути» act at once on a board with only givens', () => {
     // «Нова головоломка»
