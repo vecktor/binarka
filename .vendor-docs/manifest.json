@@ -29,5 +29,16 @@
       "files": 216,
       "bytes": 1386553
     }
+  },
+  "pinned": {
+    "web-interface-guidelines": {
+      "commit": "434b7f91364665f2f733b310ec54809bf8f37937",
+      "repo": "https://github.com/vercel-labs/web-interface-guidelines.git",
+      "site": "https://vercel.com/design/guidelines",
+      "files": [
+        "AGENTS.md"
+      ],
+      "bytes": 7995
+    }
   }
 }

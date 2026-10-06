@@ -89,9 +89,9 @@ Source: Vite 8.3.2 `guide/index.md` § `index.html` and Project Root, `guide/ass
 - Use plain CSS (Vite: "Use CSS instead of Sass/Less/Stylus when possible").
 - Set user-visible text with `textContent` or `createElement`, never `innerHTML`. Page text is Ukrainian (`AGENTS.md`).
 
-## 8. What this file does not cover yet
+## 8. What this file does not cover
 
-- **UI conventions for HTML, CSS and DOM code** (semantics, accessibility, keyboard and focus, CSS structure, responsive layout, motion). Vite is unopinionated about UI, so §7 only covers how Vite processes these files. Candidate sources: Vercel's Web Interface Guidelines, the W3C WAI-ARIA Authoring Practices (Grid pattern for the board), MDN. Proposal pending.
+- **UI conventions for HTML, CSS and DOM code** (semantics, accessibility, keyboard and focus, CSS structure, motion) are in `docs/frontend-conventions.md` (ADR-0004). §7 above only covers how Vite processes these files.
 - **Formatting** (quotes, semicolons, line width): there is no formatter in the stack (ADR-0001), so match the surrounding code. Adding Prettier or Oxfmt would be a dependency, which is a level-1 decision.
 - **Vite+** (`vp`, VoidZero's unified toolchain) would replace parts of the stack, not add conventions. It is out of scope.
 
