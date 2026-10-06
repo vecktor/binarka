@@ -1,0 +1,33 @@
+{
+  "generatedBy": "scripts/vendor-docs.mjs",
+  "packages": {
+    "vite": {
+      "version": "8.3.2",
+      "tag": "v8.3.2",
+      "commit": "10033218d239c927cdc375970b5741cce408e81b",
+      "repo": "https://github.com/vitejs/vite.git",
+      "site": "https://vite.dev",
+      "dirs": [
+        "guide",
+        "config",
+        "changes"
+      ],
+      "files": 38,
+      "bytes": 424490
+    },
+    "vitest": {
+      "version": "5.0.3",
+      "tag": "v5.0.3",
+      "commit": "33cadea62e8763c455c7fca38d9ab1dda87c5f75",
+      "repo": "https://github.com/vitest-dev/vitest.git",
+      "site": "https://vitest.dev",
+      "dirs": [
+        "guide",
+        "api",
+        "config"
+      ],
+      "files": 216,
+      "bytes": 1386553
+    }
+  }
+}

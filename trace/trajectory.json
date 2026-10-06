@@ -22,7 +22,7 @@
     {
       "slice": "2026-10-04-add-size-selector",
       "reviewEvidence": "clean",
-      "trailerCommits": 14,
+      "trailerCommits": 15,
       "libDomains": [
         "ui"
       ],

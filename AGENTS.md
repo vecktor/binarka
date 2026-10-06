@@ -2,7 +2,9 @@
 
 # Stack
 
-TypeScript (strict), Vite, vanilla DOM, Vitest (jsdom), ESLint, OpenSpec, npm. See `docs/adr/0001-stack.md`. No framework docs to consult; do not add dependencies without asking the user (level 1).
+TypeScript (strict), Vite, vanilla DOM, Vitest (jsdom), ESLint, OpenSpec, npm. See `docs/adr/0001-stack.md`. Do not add dependencies without asking the user (level 1).
+
+Before writing code, read `docs/coding-conventions.md`. Your training data predates the installed versions: before using a Vite or Vitest API or option, read its page in `.vendor-docs/` (version-matched, ADR-0003), not memory.
 
 Use `docs/requirements.md` to understand the requirements for the project.
 
