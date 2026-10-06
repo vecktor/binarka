@@ -84,6 +84,13 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   let givens: Grid = [];
   let board: Grid = [];
   let cellEls: HTMLElement[][] = [];
+  let hinted: [number, number] | null = null;
+
+  function setHinted(next: [number, number] | null): void {
+    if (hinted !== null) cellEls[hinted[0]]?.[hinted[1]]?.classList.remove('cell-hinted');
+    hinted = next;
+    if (next !== null) cellEls[next[0]]?.[next[1]]?.classList.add('cell-hinted');
+  }
 
   function renderCell(r: number, c: number): void {
     const node = cellEls[r]?.[c];
@@ -126,6 +133,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     const next: Cell = current === null ? 0 : current === 0 ? 1 : null;
     (board[r] as Cell[])[c] = next;
     renderCell(r, c);
+    setHinted(null);
     refreshHighlights();
     updateWin();
   }
@@ -134,6 +142,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (puzzle.givens.length !== n || puzzle.givens.some((row) => row.length !== n)) {
       throw new Error(`puzzle is not ${n}x${n}`);
     }
+    hinted = null; // the old cell elements are replaced below
     givens = copyGrid(puzzle.givens);
     board = copyGrid(puzzle.givens);
     const boardEl = el('div', { 'data-board': '', 'data-size': String(n), class: 'board' });
@@ -170,6 +179,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (h.kind !== 'fill') return;
     (board[h.row] as Cell[])[h.col] = h.value;
     renderCell(h.row, h.col);
+    setHinted([h.row, h.col]);
     refreshHighlights();
     updateWin();
   });
@@ -178,6 +188,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (board.length === 0) return;
     board = copyGrid(givens);
     for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
+    setHinted(null);
     refreshHighlights();
     hintMessage.textContent = '';
     winMessage.textContent = '';

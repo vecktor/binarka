@@ -43,7 +43,7 @@ Traces: FR-59, FR-39
 | Action |
 |--------|
 | clicks a given cell (once, and again twice) |
-| presses «Підказка» on a board where the hint engine returns no cell (the board breaks a rule, or no rule applies) |
+| presses «Підказка» on a board where the hint engine returns no cell (the board breaks a rule, reachable only when the hint's own fill broke one, since a click on a non-given cell removes the marker; or no rule applies) |
 | clicks `[data-action="rules"]` and then the close button «Зрозуміло» |
 
 - **THEN** after each action exactly one cell has the class `cell-hinted`, it is X, and X still shows the digit the hint wrote

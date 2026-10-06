@@ -75,6 +75,13 @@ h1 {
   cursor: default;
 }
 
+.cell-hinted {
+  /* Non-colour cue: dashed border, italic and bold digit (design/v0). */
+  border: 2px dashed #4b5563;
+  font-style: italic;
+  font-weight: 700;
+}
+
 .cell-violation {
   background: #fecaca;
   border-color: #dc2626;
