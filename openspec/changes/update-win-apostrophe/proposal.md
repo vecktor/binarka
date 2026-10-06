@@ -8,7 +8,7 @@ UX decision 14 of the amendment signed on 2026-10-05 about 23:31 (autonomy-log r
 
 - The page shows «Вітаємо, головоломку розвʼязано!» with U+02BC in `[data-message="win"]` (FR-41). The text lives in `src/ui/strings.ts` (constant `WIN`, created by slice A); that constant is the only source line that changes.
 - A test asserts the exact code point U+02BC after «розв», the absence of U+0027 and of U+2019 anywhere in the text, and that NFR-5 still holds (see `design.md`: U+02BC is not a Latin letter under either definition the tests use).
-- The tests that pin the ASCII apostrophe change deliberately; they are listed by FR in `design.md`.
+- The tests that pin the ASCII apostrophe change deliberately, in every file under `tests/` that has one when D starts, including `tests/play-page-size-selector.test.ts` if C left a pin there; they are listed by FR in `design.md`.
 - Spec: one MODIFIED requirement of `play-page`, «Win message when solved», copied whole with the apostrophe changed in its text and in its two exact-text scenarios, plus one added scenario («The apostrophe is U+02BC and no other character»). No ADDED or REMOVED requirement.
 
 Baseline requirements touched by this change (the table of the four UI changes is in `openspec/changes/update-page-layout/proposal.md`):
@@ -25,6 +25,6 @@ Out of scope: any other page text, the hint sentences (their apostrophe U+2019 i
 
 - Affected specs: `play-page` (1 MODIFIED). Normal merge at archive (not `--skip-specs`), then one hand edit of non-requirement text listed in `design.md`.
 - Affected code: `src/ui/strings.ts` (one constant and its "until slice D" comment). `src/ui/play-page.ts` and `src/engine/` are unchanged. No dependency added.
-- Affected tests: `tests/helpers/play-page.ts`, `tests/play-page-win.test.ts`, `tests/play-page-helpers.test.ts`, `tests/play-page-page-text.test.ts` (list by FR in `design.md`).
-- Ordering: A is archived first (it creates `strings.ts` and rewords «Win message text»). D can be archived before or after C; the stale quotes in «Grid size selector» disappear only when C is archived, see `design.md`.
+- Affected tests: `tests/helpers/play-page.ts`, `tests/play-page-win.test.ts`, `tests/play-page-helpers.test.ts`, `tests/play-page-page-text.test.ts`, and `tests/play-page-size-selector.test.ts` for any U+0027 pin still in it when D starts (today `String.fromCodePoint(0x27)` at lines 465 and 482 in «Win at 4x4» and «Win at 8x8»; C rewrites that file first, so D re-greps and changes what is left; list by FR in `design.md`).
+- Ordering (precondition): D runs and archives AFTER C (`update-controls-accessibility`). A is already archived (it created `strings.ts` and reworded «Win message text»); C is archived before D starts, so the stale U+0027 quotes in «Grid size selector» («Win at 4x4», «Win at 8x8») are already gone from the baseline and D archives against a clean baseline. D does not start (no test is written) until C is archived; see `design.md` decision 5 and tasks 1.1 and 3.9.
 - Commits that touch `src/` carry trailers `Slice: update-win-apostrophe` and `Refs: FR-41`.

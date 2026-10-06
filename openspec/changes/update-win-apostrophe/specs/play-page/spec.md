@@ -20,7 +20,7 @@ Traces: FR-41
 
 #### Scenario: The apostrophe is U+02BC and no other character
 
-- **GIVEN** a solved board with the win message shown
+- **GIVEN** a solved board with the win message shown, reached by either route: the final click of the scenario «Final click solves the board», or the final hint of the scenario «Final hint solves the board» (the checks below hold for both)
 - **WHEN** the test reads the text of `[data-message="win"]` code point by code point
 - **THEN** the text equals `Вітаємо, головоломку розв` + U+02BC + `язано!`
 - **AND** the code point right after «розв» is U+02BC (its length in UTF-16 code units is 1)
