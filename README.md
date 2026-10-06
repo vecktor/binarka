@@ -8,7 +8,7 @@ A 0/1 grid puzzle (Takuzu rules) built with TypeScript, Vite and vanilla DOM. Th
 npm run dev
 ```
 
-Opens a 6×6 puzzle in the browser: click a cell to cycle empty, 0, 1; rule violations turn red; «Підказка» fills one cell and explains the rule; «Нова головоломка» starts another puzzle of the same size. The size selector above the board («Поле 4×4», «Поле 6×6», «Поле 8×8») starts a new puzzle of the chosen size; the choice is not remembered, a reload starts at 6×6. «Скинути» clears your entries and keeps the same puzzle and size; the three rules («Правила») are shown under the board. Page text is Ukrainian.
+Opens a 6×6 puzzle in the browser: click a cell to cycle empty, 0, 1; rule violations turn red; «Підказка» fills one cell and explains the rule; «Нова головоломка» starts another puzzle of the same size. The size selector above the board («Поле 4×4», «Поле 6×6», «Поле 8×8») starts a new puzzle of the chosen size; the choice is not remembered, a reload starts at 6×6. «Скинути» clears your entries and keeps the same puzzle and size; the «Правила» button in the header opens the three rules in a popover, closed with «Зрозуміло» or Escape; a short line under the buttons says what to do until a hint or the win message replaces it. Page text is Ukrainian and lives in one module, `src/ui/strings.ts`.
 
 ## Print a puzzle from the command line
 

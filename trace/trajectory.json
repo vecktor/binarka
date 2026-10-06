@@ -45,6 +45,15 @@
         "engine"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-06-update-page-layout",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 5,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [
@@ -65,6 +74,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-04-add-rules-and-reset: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-06-update-page-layout: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "in-scope",

@@ -2,9 +2,9 @@
 
 ## Purpose
 
-The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a grid size selector (4×4, 6×6, 8×8; 6×6 at start), a hint button, a reset button and a new-puzzle button, a rules block under the board, and shows a Ukrainian win message when the board is solved. The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
+The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a grid size selector (4×4, 6×6, 8×8; 6×6 at start), a hint button, a reset button and a new-puzzle button, a «Правила» button in the header that opens a rules popover, an idle line that tells a new player what to do, and shows a Ukrainian win message when the board is solved. The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
 
-Ownership: this capability owns FR-31 to FR-43, FR-57 and FR-58. It traces NFR-5 only for the text the page itself shows (labels, buttons including the reset label, size options, rules text, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
+Ownership: this capability owns FR-31 to FR-43, FR-57, FR-58, FR-61 and FR-64. It traces NFR-5 only for the text the page itself shows (labels, buttons including the reset label, size options, the header, the rules panel, the idle line, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
 
 ## DOM contract used by the scenarios
 
@@ -15,7 +15,7 @@ Scenarios are decided from the DOM only (text content, classes, data attributes,
 FR-31 to FR-43, FR-57, FR-58 and A-4 only require that the seed is injectable. The following entry point is a contract chosen by this spec so scenarios can be written test-first; the change design may rename it only together with this spec.
 
 - Entry point: `mountPlayPage(root: HTMLElement, options?: { seedSource?: () => number; generate?: (size: number, seed: number) => Puzzle }): void`, exported from `src/ui/`. `Puzzle` is the type the engine generator returns (engine interface in `openspec/specs/puzzle-engine/spec.md`). `src/main.ts` calls it with the `#app` element and no options.
-- Mounting is synchronous: when the call returns, the board, the size selector, the rules block, the buttons (including reset) and both message regions are in `root`. It replaces the previous content of `root`. Two mounts on two different roots are independent.
+- Mounting is synchronous: when the call returns, the header (heading «Бінарка» and the «Правила» button), the size selector, the board, the buttons (including reset), the three messages (idle, hint, win) and the rules panel are in `root`. It replaces the previous content of `root`. Two mounts on two different roots are independent.
 - Seed source: a synchronous function with no arguments that returns an integer. The page calls it exactly once for each generation attempt (the mount, each press of the new puzzle button and each accepted size change, including an attempt whose generator call throws) and at no other time, and passes the returned value to the generator unchanged. When no `seedSource` is injected the page uses its own default source (see the seed requirement).
 - Generator: when `generate` is not injected the page uses the engine generator. A scenario that says "fixture puzzle" injects a hand-written puzzle through `generate` (a fixture of the requested size; the page assumes `generate(n, s)` returns an n×n puzzle); its givens, and its solution where a scenario needs one, are written in the test suite so that the board state a scenario needs can be reached by clicks. A scenario that says "the generator output for size N and seed S" uses the real engine generator with no injection of `generate`. The rule checker and the hint engine are always the real engine; an "expected hint" in a scenario is the engine hint function applied to the board as read from the DOM.
 - Unless a scenario names a seed, its board is a fixture puzzle; a scenario that says real engine generator uses it without naming a seed.
@@ -25,9 +25,9 @@ FR-31 to FR-43, FR-57, FR-58 and A-4 only require that the seed is injectable. T
 - Highlighted cell: carries the class `cell-violation`.
 - Size selector: `[data-control="size"]`, a select with options 4, 6 and 8 labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8».
 - Buttons: `[data-action="hint"]` (label «Підказка»), `[data-action="reset"]` (label «Скинути») and `[data-action="new"]` (label «Нова головоломка»).
-- Rules block: `[data-section="rules"]`, follows `[data-board]` in document order, heading «Правила» and three `li` items.
-- Message regions: `[data-message="hint"]` and `[data-message="win"]`, always present; empty text content means no message is shown.
-- Page root: the `root` passed to `mountPlayPage`. The page heading is not required by any FR; if present it is inside the root, and the document title is `document.title`.
+- Rules panel: `[data-section="rules"]`, a `popover` element opened by `[data-action="rules"]` in the header, with the heading «Правила», three `li` items and the close button «Зрозуміло»; it is the last child of the root, after the message area, outside the FR-61 sequence (see «Rules panel» and «Page document order»).
+- Message regions: `[data-message="idle"]`, `[data-message="hint"]` and `[data-message="win"]` in this order, always present; for hint and win, empty text content means no message is shown; the idle line always holds its text (see «Idle line»).
+- Page root: the `root` passed to `mountPlayPage`. The header with the heading «Бінарка» is required (FR-61) and is inside the root; the document title is `document.title`.
 ## Requirements
 ### Requirement: Board rendering and default size
 
@@ -427,14 +427,14 @@ Traces: FR-31, FR-42, FR-43, FR-51
 
 ### Requirement: Ukrainian page text
 
-The page SHALL show all of its own text (heading if any, labels, buttons, size selector option labels, the win message, `document.title` and any user-visible attribute such as `aria-label`, `title`, `placeholder`, `alt` and the `label` attribute of `option` and `optgroup` elements, which a browser shows instead of the option text) in Ukrainian: each such text contains Cyrillic letters and no Latin letters. The digits and the sign × inside an option label such as «Поле 4×4» are not Latin letters. The digits shown in the cells of the board are puzzle content, not page text, and are not collected. Hint sentences are owned by the puzzle-engine capability and are only displayed here.
+The page SHALL show all of its own text (the title in the header, labels, buttons including «Правила» and «Зрозуміло», the size control labels, the rules texts, the idle line, the win message, `document.title` and any user-visible attribute such as `aria-label`, `title`, `placeholder`, `alt` and the `label` attribute of `option` and `optgroup` elements, which a browser shows instead of the option text) in Ukrainian: each such text contains Cyrillic letters and no Latin letters. The digits and the sign × inside a size label such as «Поле 4×4» are not Latin letters. The digits shown in the cells of the board are puzzle content, not page text, and are not collected. Text inside an element with `aria-hidden="true"` (the decorative examples of the rules panel, A-26) is decoration made of digits and symbols, not page text, and is not collected; it holds no letter at all (see «Ukrainian texts of the header, rules panel and idle line»). Hint sentences are owned by the puzzle-engine capability and are only displayed here.
 
-Traces: NFR-5, FR-43
+Traces: NFR-5, FR-43, FR-57, FR-64
 
 #### Scenario: Static page text
 
 - **GIVEN** the page has just been mounted
-- **WHEN** the test collects every non-whitespace text node under the page root (including the buttons, the size selector options and any heading, label or footer, but not the text of `[data-cell]` elements, which is puzzle content), `document.title`, and the values of the attributes `aria-label`, `title`, `placeholder` and `alt` on every element in the root and of the attribute `label` on every `option` and `optgroup` element; `data-*` attributes, `class` and option `value` attributes are not user-visible and are not collected
+- **WHEN** the test collects every non-whitespace text node under the page root (including the buttons, the size control labels and the header, the rules panel and the idle line, but not the text of `[data-cell]` elements, which is puzzle content, and not the text of elements with `aria-hidden="true"`, which is decoration), `document.title`, and the values of the attributes `aria-label`, `title`, `placeholder` and `alt` on every element in the root and of the attribute `label` on every `option` and `optgroup` element; `data-*` attributes, `class` and option `value` attributes are not user-visible and are not collected
 - **THEN** every collected text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
 - **AND** the collected texts include «Поле 4×4», «Поле 6×6» and «Поле 8×8»
 
@@ -442,7 +442,7 @@ Traces: NFR-5, FR-43
 
 - **GIVEN** a solved board
 - **WHEN** the win message is shown
-- **THEN** its text is exactly «Вітаємо, головоломку розв'язано!» (apostrophe U+0027), which contains Cyrillic letters and no Latin letters
+- **THEN** its text is the one required by «Win message when solved» (FR-41), and it contains Cyrillic letters and no Latin letters
 
 ### Requirement: Grid size selector
 
@@ -564,38 +564,6 @@ Traces: FR-43
 - **THEN** the new page's selector shows 6 and its `[data-board]` has `data-size="6"` and 36 cells
 - **AND** `localStorage` and `sessionStorage` still hold no entry
 
-### Requirement: Rules block
-
-The page SHALL show a rules block `[data-section="rules"]` inside the root, after `[data-board]` in document order, with the heading text «Правила» and exactly three `li` items, in this order: «Не більше двох однакових цифр поспіль у рядку чи стовпці.», «У кожному рядку та стовпці порівну нулів і одиниць.» and «Усі рядки різні, і всі стовпці різні.» (FR-57). The block is created once at mount outside the element that holds the board, so a new puzzle, a size change and a win leave exactly one block with the same heading and the same three texts. The texts are Ukrainian and contain no Latin letters (NFR-5). The block needs no script behaviour.
-
-Traces: FR-57, NFR-5
-
-#### Scenario: Rules block at mount
-
-- **GIVEN** the page has just been mounted with a fixture puzzle
-- **WHEN** the test reads `[data-section="rules"]`
-- **THEN** exactly one such element exists inside the root and it follows `[data-board]` in document order
-- **AND** its heading text is «Правила» and it contains exactly three `li` items whose texts, in order, are those of this table, none of which contains a Latin letter
-
-| Item | Text |
-|------|------|
-| 1 | Не більше двох однакових цифр поспіль у рядку чи стовпці. |
-| 2 | У кожному рядку та стовпці порівну нулів і одиниць. |
-| 3 | Усі рядки різні, і всі стовпці різні. |
-
-#### Scenario: Rules block survives every board change
-
-- **GIVEN** a mounted page with a fixture puzzle and the rules block read at mount
-- **WHEN** the player does each of the actions in this table, each from a freshly mounted page
-
-| Action |
-|--------|
-| presses «Нова головоломка» |
-| changes the size to 4 or to 8 (one run for each) |
-| reaches a win |
-
-- **THEN** after each action there is still exactly one `[data-section="rules"]`, it follows `[data-board]` in document order, and it has the same heading and the same three `li` texts as at mount
-
 ### Requirement: Reset button
 
 The page SHALL offer a button `[data-action="reset"]` labelled «Скинути» (NFR-5). Pressing it SHALL set every non-given cell to empty, including cells filled by a hint, keep every given cell's text and `data-given` value, keep the current size (any of 4, 6 and 8) in `[data-board]`'s `data-size` and in the size selector, remove every `cell-violation` class that does not come from the givens themselves (the highlights are recomputed for the reset board), empty `[data-message="hint"]` and `[data-message="win"]`, and keep the board editable (FR-58). Reset SHALL NOT call the seed source or the generator. It works after a win and, on an untouched board, changes no cell text, no class and no message. Reset is size-independent: the scenarios that touch the board are run for each N in the table below, each with a fixture puzzle of size N. Undo and restoring a saved state are not part of reset (FR-47 and FR-46 are Future).
@@ -639,6 +607,172 @@ Traces: FR-58, NFR-5
 - **GIVEN** a mounted page with a fixture puzzle of size N and no player action, with the text and class list of every cell and the text of both message regions recorded
 - **WHEN** the player presses `[data-action="reset"]`
 - **THEN** every cell has the same text and the same class list as recorded, and both message regions have the same text as recorded
+
+### Requirement: Rules panel
+
+The page header SHALL hold a button `[data-action="rules"]` labelled «Правила» whose `popovertarget` attribute names the `id` of the rules panel. The rules panel `[data-section="rules"]` SHALL be an element with the `popover` attribute, opened by that button with no script, and SHALL contain the heading «Правила», exactly three `li` items in this order: «Не більше двох однакових цифр поспіль у рядку чи стовпці.», «У кожному рядку та стовпці порівну нулів і одиниць.», «Усі рядки різні, і всі стовпці різні.», and one close button «Зрозуміло» with `popovertarget` naming the same `id` and `popovertargetaction="hide"` (FR-57). A list item MAY carry a decorative example drawn from digits and symbols inside an element with `aria-hidden="true"` (A-26, not pinned); the text of an item is its text content without the descendants that have `aria-hidden="true"`. The panel SHALL be created once at mount, sit inside the page root and outside the element that holds the board, need no new dependency, and stay the same element with the same texts after a new puzzle, a size change and a win. There SHALL be no rules block below the board and no `<details>` element anywhere on the page. Each mount SHALL give its panel an `id` that is unique in the document, so two mounts on two roots stay independent. The panel SHALL have `role="dialog"` and `aria-labelledby` naming the `id` of its heading «Правила» (also unique per mount), so assistive technology announces it as a named dialog, and the close button «Зрозуміло» SHALL carry the `autofocus` attribute, so that opening the popover moves focus into the panel (A-20). Where the panel is drawn (bottom sheet on phones, centred panel from 48rem) is layout and is not claimed here: it is covered by the held NFR-13 (or NFR-9 / NFR-14), see `docs/requirements-held.md`.
+
+Traces: FR-57, NFR-5
+
+#### Scenario: Rules button in the header
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the `header` element of the root
+- **THEN** it contains exactly one `[data-action="rules"]`, a `button` whose text is «Правила»
+- **AND** its `popovertarget` attribute is non-empty and equals the `id` of the one element `[data-section="rules"]` in the root
+
+#### Scenario: Rules panel structure at mount
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads `[data-section="rules"]`
+- **THEN** exactly one such element exists inside the root, it has the `popover` attribute, and it is not inside `[data-board]` or inside the board host
+- **AND** it contains a heading with the text «Правила» and exactly three `li` items whose texts, in order, are those of this table
+- **AND** it contains exactly one `button`, with the text «Зрозуміло», `popovertarget` equal to the panel's `id` and `popovertargetaction="hide"`
+
+| Item | Text |
+|------|------|
+| 1 | Не більше двох однакових цифр поспіль у рядку чи стовпці. |
+| 2 | У кожному рядку та стовпці порівну нулів і одиниць. |
+| 3 | Усі рядки різні, і всі стовпці різні. |
+
+#### Scenario: The panel is a named dialog and takes focus when opened
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads `[data-section="rules"]`
+- **THEN** it has `role="dialog"`, and its `aria-labelledby` names an `h2` inside the panel whose text is «Правила»
+- **AND** the close button «Зрозуміло» has the `autofocus` attribute, and no other element of the root has it
+
+#### Scenario: No rules block under the board and no details element
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the whole root
+- **THEN** the root contains no `details` element
+- **AND** every `li` element of the root is inside `[data-section="rules"]`, and the root contains exactly three `li` elements
+
+#### Scenario: The panel opens with no script
+
+- **GIVEN** the page has just been mounted, and the methods `showPopover`, `hidePopover` and `togglePopover` are installed on `HTMLElement.prototype` as spies (jsdom has none of them)
+- **WHEN** the test clicks `[data-action="rules"]` and then the close button «Зрозуміло»
+- **THEN** no spy was called
+- **AND** the panel keeps the same attributes and the same texts, and the board, the messages and every cell are unchanged
+
+#### Scenario: Two mounts stay independent
+
+- **GIVEN** the page is mounted on two different roots in the same document
+- **WHEN** the test reads the `popovertarget` of each root's rules button
+- **THEN** the two panels have different `id` values, and each button names the panel of its own root
+
+#### Scenario: The panel survives every board change
+
+- **GIVEN** a mounted page with a fixture puzzle, the panel element and its texts read at mount
+- **WHEN** the player does each of the actions in this table, each from a freshly mounted page
+
+| Action |
+|--------|
+| presses «Нова головоломка» |
+| changes the size to 4 (one run) and to 8 (one run) |
+| reaches a win |
+
+- **THEN** after each action there is exactly one `[data-section="rules"]`, it is the same element as at mount, it has the same heading and the same three `li` texts, and the rules button still names its `id`
+
+### Requirement: Page document order
+
+In document order the page root SHALL hold: a `header` (the title, a heading with the text «Бінарка», then the `[data-action="rules"]` button), the size control `[data-control="size"]`, the board `[data-board]`, the buttons `[data-action="hint"]`, `[data-action="reset"]` and `[data-action="new"]` in this order, then the message area holding `[data-message="idle"]`, `[data-message="hint"]` and `[data-message="win"]` in this order (FR-61). The rules panel (FR-57) SHALL be outside this sequence and outside the board element. The message area SHALL always be present in the DOM, with all three message elements, also while a message is shown and after every board change. The reserved height of the message area is layout and is not claimed here: it is covered by the held NFR-13 (or NFR-9 / NFR-14), see `docs/requirements-held.md`. This requirement names the size control by its hook `[data-control="size"]` and does not depend on the element type of the control.
+
+Traces: FR-61
+
+#### Scenario: Order at mount
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test compares document positions of these elements with `compareDocumentPosition`: the `header`, `[data-control="size"]`, `[data-board]`, `[data-action="hint"]`, `[data-action="reset"]`, `[data-action="new"]`, `[data-message="idle"]`, `[data-message="hint"]`, `[data-message="win"]`
+- **THEN** each element follows the previous one in this order
+- **AND** the `header` contains a heading with the text «Бінарка» followed by the `[data-action="rules"]` button, and the heading precedes the button
+
+#### Scenario: The message area holds the three messages
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test takes the parent element of `[data-message="idle"]`
+- **THEN** that element contains exactly the three elements `[data-message="idle"]`, `[data-message="hint"]` and `[data-message="win"]`, in this order, and no other `[data-message]` element
+- **AND** that element follows the three action buttons in document order
+
+#### Scenario: The panel is outside the sequence
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads where `[data-section="rules"]` sits
+- **THEN** it is not inside the `header`, not inside the message area, not inside `[data-board]`, and it follows the message area in document order
+
+#### Scenario: The order and the message area survive every board change
+
+- **GIVEN** a mounted page with a fixture puzzle
+- **WHEN** the player does each of the actions in this table, each from a freshly mounted page, with a hint pressed first so that the hint message has text
+
+| Action |
+|--------|
+| presses «Нова головоломка» |
+| changes the size to 4 or to 8 (one run for each) |
+| presses «Скинути» |
+| reaches a win |
+
+- **THEN** after each action the nine elements of the first scenario still exist exactly once, in the same document order, and the three message elements are still in the same message area
+
+### Requirement: Idle line
+
+The message area SHALL hold an idle line `[data-message="idle"]` with the text «Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.» (FR-64). The two spaces inside «0 і 1» SHALL be non-breaking spaces U+00A0, one between «0» and «і» and one between «і» and «1»; every other space of the sentence is an ordinary space U+0020; the «і» is the Cyrillic letter U+0456. The line SHALL always be in the DOM. It is visible only while `[data-message="hint"]` and `[data-message="win"]` both have empty text content, and this SHALL be done by CSS only: the page code never removes the line, never sets `hidden` or an inline `style` on it and never changes its text. The visibility itself is layout and is not claimed here: it is covered by the held NFR-13 (or NFR-9 / NFR-14), see `docs/requirements-held.md`.
+
+Traces: FR-64
+
+#### Scenario: Idle line text, code point by code point
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the text content of `[data-message="idle"]`
+- **THEN** it equals the JavaScript string `'Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.'`
+- **AND** it contains exactly two U+00A0 characters, and the character after the first one is U+0456
+
+#### Scenario: The idle line stays in the DOM and untouched
+
+- **GIVEN** a mounted page, with the text, the `hidden` attribute and the `style` attribute of `[data-message="idle"]` read at mount (no `hidden`, no `style`)
+- **WHEN** the player does each of the actions in this table, each from a freshly mounted page
+
+| Action |
+|--------|
+| presses «Підказка» so that the hint message has text |
+| reaches a win so that the win message has text |
+| presses «Нова головоломка» |
+| presses «Скинути» |
+
+- **THEN** after each action `[data-message="idle"]` is still in the DOM exactly once, with the same text, without a `hidden` attribute and without a `style` attribute (so only CSS can hide it)
+
+#### Scenario: The hint and win messages are empty at mount
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads `[data-message="hint"]` and `[data-message="win"]`
+- **THEN** both have empty text content and no child node (so the CSS rule that shows the idle line while both are empty can match)
+
+### Requirement: Ukrainian texts of the header, rules panel and idle line
+
+Every text that the header, the rules panel and the idle line show or expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5). This covers the title «Бінарка», the button «Правила», the panel heading «Правила», the three rules texts of «Rules panel», the close button «Зрозуміло», the idle line and any `aria-label`, `title`, `alt` or `label` attribute in them. Decorative examples inside the panel (A-26) are inside elements with `aria-hidden="true"` and hold digits and symbols but no letter of any alphabet. By the user's code-organisation decision of 2026-10-05 (not a requirement; languages stay Future, FR-55 and FR-56) these texts are kept in the single module `src/ui/strings.ts` and no other file of `src/ui/` and no `src/main.ts` holds a Cyrillic character; the last scenario below guards it as a source scan.
+
+Traces: NFR-5
+
+#### Scenario: The new texts are Ukrainian
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test collects the texts of the header, of the rules panel (without `aria-hidden` descendants) and of the idle line, and the values of `aria-label`, `title`, `alt` and `label` attributes inside them
+- **THEN** the collection contains «Бінарка», «Правила», «Зрозуміло», the three rules texts of the table in «Rules panel» and the idle line, each at least once
+- **AND** every collected text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
+
+#### Scenario: Decorative examples hold no letters
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test collects the text content of every element of the root that has `aria-hidden="true"`
+- **THEN** none of these texts matches `/\p{L}/u`
+
+#### Scenario: No Cyrillic text outside the strings module
+
+- **GIVEN** the source files of the page
+- **WHEN** the test reads every file under `src/ui/` with the extension `.ts` or `.css`, except `src/ui/strings.ts`, and `src/main.ts`
+- **THEN** none of them contains a character matching `/\p{Script=Cyrillic}/u` (comments in these files are written in English)
+- **AND** `src/ui/strings.ts` exists and contains the title, the idle line and the three rules texts
 
 ## Exclusions
 
