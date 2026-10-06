@@ -400,8 +400,8 @@
     {
       "id": "FR-25",
       "specs": [
+        "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
         "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
@@ -413,8 +413,8 @@
     {
       "id": "FR-26",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -526,7 +526,6 @@
       "id": "FR-33",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -593,8 +592,7 @@
     {
       "id": "FR-39",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -644,7 +642,6 @@
       "id": "FR-43",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -666,8 +663,7 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -696,7 +692,7 @@
     {
       "id": "FR-59",
       "specs": [
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/specs/play-page/spec.md",
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -714,7 +710,7 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/specs/play-page/spec.md",
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -778,7 +774,7 @@
     {
       "id": "FR-66",
       "specs": [
-        "openspec/changes/add-hinted-cell/specs/play-page/spec.md",
+        "openspec/specs/play-page/spec.md",
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1043,10 +1039,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-66 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-hinted-cell\" is not archived"
     },
     {
       "check": "active-changes",

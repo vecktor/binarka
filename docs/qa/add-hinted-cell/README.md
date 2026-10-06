@@ -15,7 +15,7 @@
 
 ## Run 2: the steps run 1 skipped (after the confirming review `wf_88d3903c-ecf`)
 
-2026-10-06 about 09:42, same setup, at `ad2712d` (no `src/` change since `a38ee72` except a CSS comment), 375×812, a fresh page.
+2026-10-06 about 09:38, same setup, at `ad2712d` (no `src/` change since `a38ee72` except a CSS comment), 375×812, a fresh page.
 
 | Step (tasks 3.7) | Observation | Evidence |
 |---|---|---|
