@@ -64,6 +64,10 @@ h1 {
   font-size: 22px;
   background: #fff;
   border: 1px solid #9ca3af;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -96,8 +100,7 @@ h1 {
   margin: 16px 0 8px;
 }
 
-button,
-select {
+button {
   font: inherit;
   padding: 10px 16px;
   border: 1px solid #6b7280;
@@ -129,8 +132,72 @@ select {
   color: #166534;
 }
 
-select {
-  margin-bottom: 12px;
+/* Segmented size control (ported in part from design/v0/app/binarka.css .size-picker). */
+.size-control {
+  display: flex;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto 12px;
+  padding: 3px;
+  gap: 3px;
+  box-sizing: border-box;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.size-control button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 8px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.size-control button[aria-checked='true'] {
+  border-color: #2563eb;
+  background: #dbeafe;
+  color: #1f2937;
+  font-weight: 700;
+}
+
+/* Confirmation dialog (ported in part from design/v0/app/binarka.css .confirm). */
+.confirm {
+  width: min(22rem, calc(100vw - 32px));
+  max-width: none;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #9ca3af;
+  border-radius: 12px;
+  background: #fff;
+  color: #1f2937;
+  text-align: left;
+}
+
+.confirm::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.confirm p {
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.confirm-buttons {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.confirm-buttons button {
+  flex: 1 1 auto;
+  min-height: 2.75rem;
+  font-weight: 700;
 }
 
 /* Rules popover: bottom sheet below 48rem, centred panel from 48rem. */

@@ -1,7 +1,7 @@
 import { findViolations, generate, hint, isSolved } from '../engine/index';
 import type { Cell, Grid, Puzzle } from '../engine/index';
 import { defaultSeedSource } from './seed';
-import { BUTTONS, IDLE, RULES, TITLE, WIN, sizeLabel } from './strings';
+import { BUTTONS, CONFIRM, IDLE, RULES, SIZE_GROUP, TITLE, WIN, cellLabel, sizeLabel } from './strings';
 
 export interface PlayPageOptions {
   seedSource?: () => number;
@@ -45,11 +45,12 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const boardHost = el('div', { class: 'board-host' });
   const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, BUTTONS.hint);
   const newButton = el('button', { type: 'button', 'data-action': 'new' }, BUTTONS.newPuzzle);
-  const sizeSelect = el('select', { 'data-control': 'size' });
+  const sizeControl = el('div', { 'data-control': 'size', role: 'radiogroup', 'aria-label': SIZE_GROUP, class: 'size-control' });
+  const sizeButtons = new Map<number, HTMLButtonElement>();
   for (const n of SIZES) {
-    const option = el('option', { value: String(n) }, sizeLabel(n));
-    if (n === 6) option.selected = true;
-    sizeSelect.appendChild(option);
+    const option = el('button', { type: 'button', role: 'radio', 'aria-checked': n === 6 ? 'true' : 'false', 'data-size-option': String(n) }, sizeLabel(n));
+    sizeButtons.set(n, option);
+    sizeControl.appendChild(option);
   }
   const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, BUTTONS.reset);
   const buttons = el('div', { class: 'buttons' });
@@ -78,7 +79,14 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const closeButton = el('button', { type: 'button', class: 'rules-close', popovertarget: panelId, popovertargetaction: 'hide', autofocus: '' }, BUTTONS.rulesClose);
   rulesPanel.append(el('h2', { id: panelTitleId }, RULES.heading), rulesList, closeButton);
 
-  root.replaceChildren(header, sizeSelect, boardHost, buttons, messages, rulesPanel);
+  const dialog = el('dialog', { 'data-dialog': 'confirm', class: 'confirm' });
+  const yesButton = el('button', { type: 'button', 'data-confirm': 'yes' }, CONFIRM.yes);
+  const noButton = el('button', { type: 'button', 'data-confirm': 'no' }, CONFIRM.no);
+  const dialogButtons = el('div', { class: 'confirm-buttons' });
+  dialogButtons.append(yesButton, noButton);
+  dialog.append(el('p', {}, CONFIRM.text), dialogButtons);
+
+  root.replaceChildren(header, sizeControl, boardHost, buttons, messages, rulesPanel, dialog);
 
   let size = 6;
   let givens: Grid = [];
@@ -86,10 +94,16 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   let cellEls: HTMLElement[][] = [];
   let hinted: [number, number] | null = null;
 
+  let pending: (() => void) | null = null;
+
   function setHinted(next: [number, number] | null): void {
-    if (hinted !== null) cellEls[hinted[0]]?.[hinted[1]]?.classList.remove('cell-hinted');
+    const old = hinted;
+    if (old !== null) cellEls[old[0]]?.[old[1]]?.classList.remove('cell-hinted');
     hinted = next;
     if (next !== null) cellEls[next[0]]?.[next[1]]?.classList.add('cell-hinted');
+    // The hint suffix of the label follows the marker.
+    if (old !== null) renderCell(old[0], old[1]);
+    if (next !== null) renderCell(next[0], next[1]);
   }
 
   function renderCell(r: number, c: number): void {
@@ -100,6 +114,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     node.textContent = value === null ? '' : String(value);
     node.setAttribute('data-given', given ? 'true' : 'false');
     node.classList.toggle('cell-given', given);
+    if (given) node.setAttribute('aria-disabled', 'true');
+    else node.removeAttribute('aria-disabled');
+    const isHinted = hinted !== null && hinted[0] === r && hinted[1] === c;
+    node.setAttribute('aria-label', cellLabel(r + 1, c + 1, value, given, isHinted));
   }
 
   function refreshHighlights(): void {
@@ -150,7 +168,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     for (let r = 0; r < n; r++) {
       const rowEls: HTMLElement[] = [];
       for (let c = 0; c < n; c++) {
-        const cell = el('div', { 'data-cell': '', 'data-row': String(r + 1), 'data-col': String(c + 1), class: 'cell' });
+        const cell = el('button', { type: 'button', 'data-cell': '', 'data-row': String(r + 1), 'data-col': String(c + 1), class: 'cell' });
         rowEls.push(cell);
         boardEl.appendChild(cell);
       }
@@ -178,13 +196,28 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     hintMessage.textContent = h.sentence;
     if (h.kind !== 'fill') return;
     (board[h.row] as Cell[])[h.col] = h.value;
-    renderCell(h.row, h.col);
     setHinted([h.row, h.col]);
+    renderCell(h.row, h.col);
     refreshHighlights();
     updateWin();
   });
 
-  resetButton.addEventListener('click', () => {
+  /** True when a non-given cell is not empty (a hint-filled cell counts; so does a solved board). */
+  function hasEntries(): boolean {
+    return board.some((row, r) => row.some((value, c) => givens[r]?.[c] === null && value !== null));
+  }
+
+  /** Run the action at once on a board without entries; otherwise keep it pending and ask. */
+  function requestAction(action: () => void): void {
+    if (!hasEntries()) {
+      action();
+      return;
+    }
+    pending = action;
+    if (!dialog.hasAttribute('open')) dialog.showModal();
+  }
+
+  function resetBoard(): void {
     if (board.length === 0) return;
     board = copyGrid(givens);
     for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
@@ -192,34 +225,45 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     refreshHighlights();
     hintMessage.textContent = '';
     winMessage.textContent = '';
-  });
-
-  function restoreSelect(): void {
-    for (const option of Array.from(sizeSelect.options)) {
-      if (option.value === String(size)) option.selected = true;
-    }
   }
 
-  sizeSelect.addEventListener('change', () => {
-    const chosen = SIZES.find((n) => String(n) === sizeSelect.value);
-    if (chosen === undefined) {
-      restoreSelect();
-      return;
-    }
-    if (newPuzzle(chosen)) {
-      hintMessage.textContent = '';
-      winMessage.textContent = '';
-    } else {
-      restoreSelect();
-    }
-  });
-
-  newButton.addEventListener('click', () => {
+  function startNewPuzzle(): void {
     if (newPuzzle(size)) {
       hintMessage.textContent = '';
       winMessage.textContent = '';
     }
+  }
+
+  function changeSize(n: number): void {
+    if (newPuzzle(n)) {
+      for (const [m, button] of sizeButtons) button.setAttribute('aria-checked', m === n ? 'true' : 'false');
+      hintMessage.textContent = '';
+      winMessage.textContent = '';
+    }
+  }
+
+  yesButton.addEventListener('click', () => {
+    const action = pending; // captured first: the late `close` event must not drop it
+    pending = null;
+    dialog.close();
+    action?.();
   });
+  noButton.addEventListener('click', () => {
+    pending = null;
+    dialog.close();
+  });
+  dialog.addEventListener('close', () => {
+    pending = null;
+  });
+
+  resetButton.addEventListener('click', () => requestAction(resetBoard));
+  newButton.addEventListener('click', () => requestAction(startNewPuzzle));
+  for (const [n, button] of sizeButtons) {
+    button.addEventListener('click', () => {
+      if (n === size) return; // the shown size is a no-op
+      requestAction(() => changeSize(n));
+    });
+  }
 
   newPuzzle(size);
 }

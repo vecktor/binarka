@@ -12,6 +12,23 @@ export const BUTTONS = {
 
 export const sizeLabel = (n: number): string => `Поле ${n}×${n}`;
 
+export const SIZE_GROUP = 'Розмір поля';
+
+export const CONFIRM = {
+  text: 'Почати заново? Ваші ходи на цьому полі буде втрачено.',
+  yes: 'Так, почати',
+  no: 'Скасувати',
+} as const;
+
+const CELL = { row: 'Рядок', col: 'стовпець', empty: 'порожньо', given: 'задано', hint: 'підказка' } as const;
+
+/** Accessible name of a cell: «Рядок R, стовпець C, V» plus «, задано» or «, підказка» (row and col are 1-based). */
+export function cellLabel(row: number, col: number, value: 0 | 1 | null, given: boolean, hinted: boolean): string {
+  const v = value === null ? CELL.empty : String(value);
+  const suffix = given ? `, ${CELL.given}` : hinted ? `, ${CELL.hint}` : '';
+  return `${CELL.row} ${row}, ${CELL.col} ${col}, ${v}${suffix}`;
+}
+
 export const RULES = {
   heading: 'Правила',
   items: [
