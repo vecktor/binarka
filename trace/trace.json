@@ -317,8 +317,7 @@
       "id": "FR-51",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -503,8 +502,7 @@
       "id": "FR-31",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -526,8 +524,7 @@
     {
       "id": "FR-33",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -629,8 +626,7 @@
     {
       "id": "FR-42",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -647,8 +643,7 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -695,8 +690,7 @@
     {
       "id": "FR-58",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -713,8 +707,7 @@
     {
       "id": "FR-59",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -737,8 +730,7 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -774,7 +766,7 @@
     {
       "id": "FR-62",
       "specs": [
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -787,7 +779,7 @@
     {
       "id": "FR-63",
       "specs": [
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -823,8 +815,7 @@
     {
       "id": "FR-66",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1085,10 +1076,6 @@
     {
       "check": "active-changes",
       "msg": "active change \"add-rule-solvable-generator\" is not archived"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"update-controls-accessibility\" is not archived"
     },
     {
       "check": "active-changes",

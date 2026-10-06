@@ -27,9 +27,9 @@ Run `date` first and before every time claim; the user is UTC+5:30 (Kyiv is 2:30
 | A | `update-page-layout` (folder exists) | FR-57, FR-61, FR-64, A-26, NFR-5 | Creates `src/ui/strings.ts` and moves **every** Ukrainian page text there (user decision, row 58). Rules popover, page order, idle line. |
 | B | `add-hinted-cell` (folder exists) | FR-59, FR-39 | |
 | C | `update-controls-accessibility` (folder exists) | FR-60, FR-42, FR-43, FR-58, FR-66, FR-62, FR-63, A-20, A-24, NFR-5 | The largest slice; the size-selector and reset tests change on purpose. Rebase any shared delta on the baseline as archived by A, if its tasks.md says so. |
-| D | write the change first (spec-writer), e.g. `update-win-apostrophe` | FR-41 (U+02BC) | The tests that pin the ASCII apostrophe change on purpose. |
+| D | `update-win-apostrophe` (folder exists, audited and fixed `a7ddd9e`) | FR-41 (U+02BC) | Runs after C (done). Task 1.2 re-greps every U+0027 pin in `tests/` first (`tests/play-page-page-text.test.ts:106` is one; C's rewrite already compares to `WIN_MESSAGE`). |
 | E | `add-logo` (folder exists) | FR-65, TC-14 | Inline SVG from the frozen design. |
-| F | write the change first (spec-writer), e.g. `add-rule-solvable-generator` | FR-27, A-5, A-30 | Engine only. NFR-1 to NFR-3 must hold; if they cannot, **stop and ask the user** (never relax a bound). |
+| F | `add-rule-solvable-generator` (folder exists, audited and fixed `6d2bd79`; scenario 2 corrected against the engine) | FR-27, A-5, A-30 | Engine only. NFR-1 to NFR-3 must hold; if they cannot, **stop and ask the user** (never relax a bound). |
 | G1 | browser checks | NFR-7, NFR-9, NFR-11, NFR-12, TC-13, A-14 | Install the four approved dev dependencies (`@playwright/test`, `pixelmatch`, `pngjs`, `@axe-core/playwright`) and run `npx playwright install chromium` (pre-authorised, row 59). Build `check:a11y` (exists, needs the packages) and Playwright tests for NFR-9 and NFR-11 at the viewports declared in the held rows (`sampled`, not continuum). Show each check **running and failing** against today's page first (save the output under `docs/qa/`), then move the held rows into `docs/requirements.md` with the signed wording (pre-authorised, row 59), one logged commit per move. |
 | G2 | design fidelity | NFR-13 | Write `quality/visual-parity.config.json` (reference: served `design/v0/out`, or the frozen `review-set-5` shots; product: the built page), with decision 25's capture conditions and **0.98 per shot** (row 59). Show `npm run check:visual` running and failing, then move NFR-13 into `docs/requirements.md`. Then converge the page **block by block** (AGENTS.md lessons: per-block done, overlay and onion-skin, capture determinism). Likely more than one session; each session ends with the per-shot scores in `docs/qa/visual-diff/`. |
 | H | `check:vision` | NFR-10, NFR-14 | Write the script (no package), see it fail, move the two rows. Uses the `vision-verify` skill with a fresh vision-judge. |
@@ -67,7 +67,19 @@ Commit trailers: `Slice: <change-name>` and `Refs: FR-x` on every commit touchin
 - If the GPG probe fails: commit with `--no-gpg-sign`, log it, and leave the re-sign (with a backup branch) for when the user is back.
 - **Not authorised:** push, PR, merge, any other dependency, hook, settings or `AGENTS.md` change, changing the frozen design or `review-set-5`, relaxing a test or a bound. Stop and ask.
 
+## State at the 2026-10-06 handoff (session `heuristic-lovelace-5e57b4`)
+
+- Phases A, B and C are archived on branch `claude/heuristic-lovelace-5e57b4`. Fast-forward to it. Next: **D**, then E, F, G1, G2, H.
+- Decided by the user: no language switch before G2 (row 62); «Зрозуміло» autofocus and the rules panel `role="dialog"` (row 62); the confirmation dialog opens on «Скасувати» (row 65). These depart from the frozen markup on purpose; a mouse-opened panel or dialog draws no focus ring, so the NFR-13 shots should not change.
+- Open for the user: **re-sign** every commit since `488e0c0` (all unsigned, GPG probe exit 2; backup branch, `git rebase -f -S 488e0c0`, `git diff` against the backup empty). The idle line breaks before the em dash at 375 px (accepted, signed FR-64 text; look at it in G2).
+- The user asked why the page colours differ from the design: phases A to C ported only usable CSS; the palette (`design/v0/app/binarka.css` tokens), rounded cells, striped errors and button styles come in **G2** (NFR-13), the logo in **E**. If the user wants the palette earlier, it is a small token port checked by eye only.
+- The review-gate's persist step sometimes writes nothing (`reviewEvidence: null`): write `openspec/changes/<change>/review-findings.json` from the run's result by hand, `clean` as the run says, with a `persistedBy` note.
+
 ## Rules that bit us (see the autonomy log)
+
+- Do not tick task 3.7 (browser check) until every sub-step has its evidence row; it was caught by a confirming review in B and again in C.
+- A browser-pane screenshot can lag the DOM (seen three times): take a second screenshot, and rest state claims on script checks.
+- Write times only after running `date` (twice this session a time was written ahead of the clock).
 
 - Probe GPG before each commit: `echo x | gpg --batch --pinentry-mode error -s -o /dev/null; echo $?` (M6, M8, M16).
 - Never claim an edit in a commit message unless the edit step exited 0; assert scripted replacements (M13 to M15).
