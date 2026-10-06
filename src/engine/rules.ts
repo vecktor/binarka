@@ -5,8 +5,8 @@ function cellOf(board: Grid, r: number, c: number): 0 | 1 | null {
 }
 
 /** Cells of line `index` along `axis`, in order. */
-function line(board: Grid, axis: 'row' | 'col', index: number, n: number): Array<0 | 1 | null> {
-  const out: Array<0 | 1 | null> = [];
+function line(board: Grid, axis: 'row' | 'col', index: number, n: number): (0 | 1 | null)[] {
+  const out: (0 | 1 | null)[] = [];
   for (let i = 0; i < n; i++) out.push(axis === 'row' ? cellOf(board, index, i) : cellOf(board, i, index));
   return out;
 }
@@ -25,8 +25,8 @@ export function findViolations(board: Grid): Violation[] {
         const v = cells[i];
         let j = i;
         while (j + 1 < n && cells[j + 1] === v) j++;
-        if (v !== null && v !== undefined && j - i + 1 >= 3) {
-          const run: Array<[number, number]> = [];
+        if (v != null && j - i + 1 >= 3) {
+          const run: [number, number][] = [];
           for (let k = i; k <= j; k++) run.push(at(k));
           out.push({ rule: 'three', axis, index, cells: run });
         }
@@ -36,7 +36,7 @@ export function findViolations(board: Grid): Violation[] {
       const ones = cells.filter((x) => x === 1).length;
       if (zeros > half || ones > half) {
         const over = zeros > half ? 0 : 1;
-        const offending: Array<[number, number]> = [];
+        const offending: [number, number][] = [];
         cells.forEach((x, k) => {
           if (x === over) offending.push(at(k));
         });
@@ -46,7 +46,7 @@ export function findViolations(board: Grid): Violation[] {
         const key = cells.join('');
         for (const [other, otherKey] of keys) {
           if (otherKey === key) {
-            const both: Array<[number, number]> = [];
+            const both: [number, number][] = [];
             for (const l of [other, index]) {
               for (let k = 0; k < n; k++) both.push(axis === 'row' ? [l, k] : [k, l]);
             }
@@ -62,7 +62,7 @@ export function findViolations(board: Grid): Violation[] {
 
 export function isSolved(board: Grid): boolean {
   for (const row of board) {
-    for (const cell of row) if (cell === null || cell === undefined) return false;
+    for (const cell of row) if (cell == null) return false; // == null also catches holes in a sparse row
   }
   return findViolations(board).length === 0;
 }

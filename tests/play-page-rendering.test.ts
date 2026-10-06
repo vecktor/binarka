@@ -119,7 +119,7 @@ describe('@trace FR-31 the page renders a 6x6 board from the generator', () => {
 });
 
 describe('@trace FR-32 given cells are marked distinctly', () => {
-  const sources: Array<[string, () => HTMLElement]> = [
+  const sources: [string, () => HTMLElement][] = [
     ['fixture puzzle', () => mountFixture(WIN_PUZZLE)],
     ['generator output for seed 42', () => mountPage({ seedSource: () => 42 })],
   ];

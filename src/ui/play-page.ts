@@ -85,10 +85,11 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (node === null) return;
     const r = Number(node.getAttribute('data-row')) - 1;
     const c = Number(node.getAttribute('data-col')) - 1;
-    if (givens[r]?.[c] === undefined || givens[r]?.[c] !== null) return; // given (or unknown) cell: ignore
-    const current = board[r]?.[c] ?? null;
+    const row = board[r];
+    if (givens[r]?.[c] !== null || row === undefined) return; // given or unknown cell: ignore
+    const current = row[c] ?? null;
     const next: Cell = current === null ? 0 : current === 0 ? 1 : null;
-    (board[r] as Cell[])[c] = next;
+    row[c] = next;
     renderCell(r, c);
     refreshHighlights();
     updateWin();
@@ -132,7 +133,9 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     const h = hint(board);
     hintMessage.textContent = h.sentence;
     if (h.kind !== 'fill') return;
-    (board[h.row] as Cell[])[h.col] = h.value;
+    const row = board[h.row];
+    if (row === undefined) return; // hint() only names cells of the board it was given
+    row[h.col] = h.value;
     renderCell(h.row, h.col);
     refreshHighlights();
     updateWin();

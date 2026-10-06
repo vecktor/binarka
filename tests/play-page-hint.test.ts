@@ -38,7 +38,7 @@ const texts = (root: HTMLElement): string[] =>
   Array.from({ length: 36 }, (_, i) => cellText(root, Math.floor(i / 6) + 1, (i % 6) + 1));
 
 /** Hint situations of the engine spec, with the expected 1-based target and value written out literally. */
-const FILL_CASES: Array<{ name: string; puzzle: Puzzle; row: number; col: number; value: 0 | 1 }> = [
+const FILL_CASES: { name: string; puzzle: Puzzle; row: number; col: number; value: 0 | 1 }[] = [
   { name: 'pair of zeros in a row', puzzle: PAIR_ROW, row: 3, col: 3, value: 1 },
   { name: 'pair of ones in a column', puzzle: PAIR_COL, row: 3, col: 4, value: 0 },
   {

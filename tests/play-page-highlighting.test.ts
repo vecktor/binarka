@@ -43,8 +43,8 @@ installPageLifecycle();
 
 /** Row r of an n x n board (6 by default): 1-based cells (r, 1..n). Slice 3 (FR-43): the size is a parameter. */
 const lineOf = (n: number): number[] => Array.from({ length: n }, (_, i) => i + 1);
-const rowCells = (r: number, n = 6): Array<[number, number]> => lineOf(n).map((c): [number, number] => [r, c]);
-const colCells = (c: number, n = 6): Array<[number, number]> => lineOf(n).map((r): [number, number] => [r, c]);
+const rowCells = (r: number, n = 6): [number, number][] => lineOf(n).map((c): [number, number] => [r, c]);
+const colCells = (c: number, n = 6): [number, number][] => lineOf(n).map((r): [number, number] => [r, c]);
 
 describe('@trace FR-35 three or more equal digits side by side are highlighted', () => {
   it('Three equal digits in a row are highlighted', () => {

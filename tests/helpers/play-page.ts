@@ -85,7 +85,7 @@ export function bySize(fixtures: Partial<Record<number, Puzzle>>): (callIndex: n
 
 export interface GenerateSpy {
   generate: (size: number, seed: number) => Puzzle;
-  calls: Array<{ size: number; seed: number }>;
+  calls: { size: number; seed: number }[];
 }
 
 /**
@@ -99,7 +99,7 @@ export function generateSpy(pick: (callIndex: number, size: number, seed: number
 
 /** Like `generateSpy` but returns whatever `pick` returns (or throws whatever it throws): for the generator-error scenarios. */
 export function rawGenerateSpy(pick: (callIndex: number, size: number, seed: number) => Puzzle): GenerateSpy {
-  const calls: Array<{ size: number; seed: number }> = [];
+  const calls: { size: number; seed: number }[] = [];
   return {
     calls,
     generate: (size, seed) => {
@@ -134,8 +134,8 @@ export function seedQueue(values: number[]): SeedQueue {
 
 export function q(root: ParentNode, selector: string): HTMLElement {
   const el = root.querySelector<HTMLElement>(selector);
-  expect(el, `expected an element matching ${selector}`).not.toBeNull();
-  return el as HTMLElement;
+  expect.assert(el !== null, `expected an element matching ${selector}`); // narrows el; expect().not.toBeNull() does not
+  return el;
 }
 
 export function cellEl(root: ParentNode, row: number, col: number): HTMLElement {
@@ -161,7 +161,7 @@ function expectedBoardSize(root: ParentNode): number {
   return n;
 }
 
-export const cellText = (root: ParentNode, row: number, col: number): string => cellEl(root, row, col).textContent ?? '';
+export const cellText = (root: ParentNode, row: number, col: number): string => cellEl(root, row, col).textContent;
 
 export const isGivenCell = (root: ParentNode, row: number, col: number): boolean =>
   cellEl(root, row, col).getAttribute('data-given') === 'true';
@@ -203,16 +203,16 @@ export function snapshot(root: ParentNode): string[] {
   for (let r = 1; r <= n; r++) {
     for (let c = 1; c <= n; c++) {
       const el = cellEl(root, r, c);
-      out.push(`${r},${c}|${el.textContent ?? ''}|${el.getAttribute('data-given')}|${[...el.classList].sort().join(' ')}`);
+      out.push(`${r},${c}|${el.textContent}|${el.getAttribute('data-given')}|${[...el.classList].sort().join(' ')}`);
     }
   }
   return out;
 }
 
 /** Cells (1-based [row, col], sorted) that carry the class cell-violation. Asserts N*N cells first. */
-export function violationCells(root: ParentNode): Array<[number, number]> {
+export function violationCells(root: ParentNode): [number, number][] {
   expectedBoardSize(root);
-  const out: Array<[number, number]> = [];
+  const out: [number, number][] = [];
   for (const el of allCells(root)) {
     if (el.classList.contains('cell-violation')) {
       out.push([Number(el.getAttribute('data-row')), Number(el.getAttribute('data-col'))]);
@@ -227,7 +227,7 @@ export function violationCells(root: ParentNode): Array<[number, number]> {
  * cell of its row or column (FR-36: "all six cells of that row"), although the checker lists only the cells holding
  * the over-represented digit.
  */
-export function checkerCells(board: Grid): Array<[number, number]> {
+export function checkerCells(board: Grid): [number, number][] {
   const seen = new Map<string, [number, number]>();
   const add = (r: number, c: number): void => void seen.set(`${r + 1},${c + 1}`, [r + 1, c + 1]);
   for (const v of findViolations(board)) {
@@ -243,8 +243,8 @@ export function checkerCells(board: Grid): Array<[number, number]> {
   return sortedCells([...seen.values()]);
 }
 
-export const hintMessage = (root: ParentNode): string => q(root, '[data-message="hint"]').textContent ?? '';
-export const winMessage = (root: ParentNode): string => q(root, '[data-message="win"]').textContent ?? '';
+export const hintMessage = (root: ParentNode): string => q(root, '[data-message="hint"]').textContent;
+export const winMessage = (root: ParentNode): string => q(root, '[data-message="win"]').textContent;
 
 /**
  * Assert the structural elements every rendered page has (so a negative check can never pass on an empty page): the
@@ -306,7 +306,7 @@ export function setCol(root: ParentNode, col: number, text: string, only?: numbe
 }
 
 /** Fill every non-given cell with the digit of `grid` (0-based grid), except the 1-based cells in `skip`. */
-export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: Array<[number, number]> = []): void {
+export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: [number, number][] = []): void {
   const n = puzzle.givens.length;
   for (let r = 1; r <= n; r++) {
     for (let c = 1; c <= n; c++) {
@@ -319,8 +319,8 @@ export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: Arr
   }
 }
 
-export const pressHint = (root: ParentNode): void => q(root, '[data-action="hint"]').click();
-export const pressNew = (root: ParentNode): void => q(root, '[data-action="new"]').click();
+export const pressHint = (root: ParentNode): void => { q(root, '[data-action="hint"]').click(); };
+export const pressNew = (root: ParentNode): void => { q(root, '[data-action="new"]').click(); };
 
 // ---- the size selector (FR-43) ----
 
@@ -349,7 +349,7 @@ export function trackErrors(): ErrorTracker {
     errors.push(event.error ?? event.message);
   };
   window.addEventListener('error', listener);
-  return { errors, stop: () => window.removeEventListener('error', listener) };
+  return { errors, stop: () => { window.removeEventListener('error', listener); } };
 }
 
 /** Dispatch a bubbling `change` on the size selector, recording uncaught errors; asserts none were recorded. */
@@ -524,7 +524,7 @@ export function makePuzzle(givens: Grid, options: MakePuzzleOptions = {}): Puzzl
 }
 
 /** Board of size n with the listed givens only; cells are [row, col, value], 1-based. */
-export const givensOf = (n: number, cells: Array<[number, number, 0 | 1]>): Grid => boardOf(n, { cells });
+export const givensOf = (n: number, cells: [number, number, 0 | 1][]): Grid => boardOf(n, { cells });
 
 /** No givens at all. */
 export const BLANK = makePuzzle(givensOf(6, []));
@@ -614,7 +614,7 @@ function winFixture(solved: Grid, empty: [number, number]): Puzzle {
 }
 
 /** Every fixture, for the helper self-check. `consistent` = givens must be kept by the solution. */
-export const FIXTURES: Array<{ name: string; puzzle: Puzzle; consistent: boolean }> = [
+export const FIXTURES: { name: string; puzzle: Puzzle; consistent: boolean }[] = [
   { name: 'BLANK', puzzle: BLANK, consistent: true },
   { name: 'PAIR_ROW', puzzle: PAIR_ROW, consistent: true },
   { name: 'PAIR_LEFT', puzzle: PAIR_LEFT, consistent: true },

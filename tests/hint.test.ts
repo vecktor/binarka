@@ -18,7 +18,7 @@ const NONE: Hint = { kind: 'none', sentence: NO_RULE };
 const BROKEN_HINT: Hint = { kind: 'broken', sentence: BROKEN };
 
 /** Boards on which a hint applies, shared by the determinism and no-mutation checks. */
-const FILL_BOARDS: Array<[string, Grid, Hint]> = [
+const FILL_BOARDS: [string, Grid, Hint][] = [
   ['pair of zeros in a row', boardOf(6, { cells: [[3, 1, 0], [3, 2, 0]] }), fill(3, 3, 1, 'pair', 'Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця.')],
   ['pair of ones in a column', boardOf(6, { cells: [[1, 4, 1], [2, 4, 1]] }), fill(3, 4, 0, 'pair', 'Дві одиниці поспіль у стовпці 4, тож поруч може стояти лише нуль.')],
   ['pair of ones in a row', boardOf(6, { cells: [[2, 4, 1], [2, 5, 1]] }), fill(2, 3, 0, 'pair', 'Дві одиниці поспіль у рядку 2, тож поруч може стояти лише нуль.')],

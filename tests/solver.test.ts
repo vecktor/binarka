@@ -68,7 +68,7 @@ describe('oracle self-check (helper, no FR: the oracle must agree with the spec 
         const c = Math.floor(rand() * 4);
         if (line && line[c] !== null) line[c] = line[c] === 0 ? 1 : 0;
       }
-      const brute = valid.filter((g) => g.every((row, r) => row.every((v, c) => board[r]?.[c] == null || board[r]?.[c] === v))).length;
+      const brute = valid.filter((g) => g.every((row, r) => row.every((v, c) => board[r]?.[c] == null || board[r][c] === v))).length;
       expect(oracleCount(board)).toBe(Math.min(brute, 2));
     }
   });

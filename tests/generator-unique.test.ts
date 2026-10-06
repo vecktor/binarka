@@ -8,7 +8,7 @@ import { oracleSolve } from './helpers/oracle';
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
 const LONG = 120_000;
 
-function puzzles(n: number): Array<[number, Puzzle]> {
+function puzzles(n: number): [number, Puzzle][] {
   return SEEDS.map((seed): [number, Puzzle] => [seed, generate(n, seed)]);
 }
 
@@ -37,11 +37,11 @@ describe.each([4, 6, 8])('@trace FR-15 uniqueness at N = %i over seeds 1 to 20',
       }
       expect(findViolations(p.solution), label).toEqual([]);
       expect(isSolved(p.solution), label).toBe(true);
-      p.givens.forEach((row, r) =>
+      p.givens.forEach((row, r) => {
         row.forEach((g, c) => {
           if (g !== null) expect(p.solution[r]?.[c], `${label} given ${r},${c}`).toBe(g);
-        }),
-      );
+        });
+      });
     }
   }, LONG);
 

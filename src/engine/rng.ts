@@ -14,6 +14,7 @@ export function mulberry32(seed: number): () => number {
 export function shuffle<T>(items: T[], rng: () => number): T[] {
   for (let i = items.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
+    // `as T`, not a guard: i and j are in range, and T itself may include undefined
     const a = items[i] as T;
     items[i] = items[j] as T;
     items[j] = a;

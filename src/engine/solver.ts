@@ -22,7 +22,7 @@ function propagate(cells: Int8Array, n: number): boolean {
   const half = n / 2;
   let changed = true;
   const set = (idx: number, v: number): boolean => {
-    const cur = cells[idx] as number;
+    const cur = cells[idx]; // no fallback: a missing cell must read as a contradiction, not as empty
     if (cur === EMPTY) {
       cells[idx] = v;
       changed = true;
@@ -37,7 +37,7 @@ function propagate(cells: Int8Array, n: number): boolean {
         let zeros = 0;
         let ones = 0;
         for (let i = 0; i < n; i++) {
-          const v = cells[lineIndex(n, axis, line, i)] as number;
+          const v = cells[lineIndex(n, axis, line, i)] ?? EMPTY;
           if (v === 0) zeros++;
           else if (v === 1) ones++;
         }
@@ -51,20 +51,20 @@ function propagate(cells: Int8Array, n: number): boolean {
           changed = true;
         }
         for (let i = 0; i + 1 < n; i++) {
-          const a = cells[lineIndex(n, axis, line, i)] as number;
-          const b = cells[lineIndex(n, axis, line, i + 1)] as number;
+          const a = cells[lineIndex(n, axis, line, i)] ?? EMPTY;
+          const b = cells[lineIndex(n, axis, line, i + 1)] ?? EMPTY;
           if (a !== EMPTY && a === b) {
             if (i + 2 < n && !set(lineIndex(n, axis, line, i + 2), 1 - a)) return false;
             if (i - 1 >= 0 && !set(lineIndex(n, axis, line, i - 1), 1 - a)) return false;
           }
           if (i + 2 < n) {
-            const c = cells[lineIndex(n, axis, line, i + 2)] as number;
+            const c = cells[lineIndex(n, axis, line, i + 2)] ?? EMPTY;
             if (a !== EMPTY && a === c && !set(lineIndex(n, axis, line, i + 1), 1 - a)) return false;
           }
         }
         // a run of three that was filled in directly (set() only guards forced cells)
         for (let i = 0; i + 2 < n; i++) {
-          const a = cells[lineIndex(n, axis, line, i)] as number;
+          const a = cells[lineIndex(n, axis, line, i)] ?? EMPTY;
           if (
             a !== EMPTY &&
             a === cells[lineIndex(n, axis, line, i + 1)] &&
@@ -87,7 +87,7 @@ function hasDuplicateLines(cells: Int8Array, n: number): boolean {
       let mask = 0;
       let complete = true;
       for (let i = 0; i < n; i++) {
-        const v = cells[lineIndex(n, axis, line, i)] as number;
+        const v = cells[lineIndex(n, axis, line, i)] ?? EMPTY;
         if (v === EMPTY) {
           complete = false;
           break;
@@ -102,8 +102,16 @@ function hasDuplicateLines(cells: Int8Array, n: number): boolean {
   return false;
 }
 
+/**
+ * The search has its answer or ran out of budget. A function, not an inline test: the recursive
+ * search() call changes `s`, and TypeScript would keep the narrowing of `s.exhausted` across it.
+ */
+function isDone(s: Search, limit: number): boolean {
+  return s.found >= limit || s.exhausted;
+}
+
 function search(cells: Int8Array, s: Search, limit: number): void {
-  if (s.found >= limit || s.exhausted) return;
+  if (isDone(s, limit)) return;
   s.nodes++;
   if (s.nodes > s.maxNodes) {
     s.exhausted = true;
@@ -125,7 +133,7 @@ function search(cells: Int8Array, s: Search, limit: number): void {
     const next = Int8Array.from(cells);
     next[pick] = v;
     search(next, s, limit);
-    if (s.found >= limit || s.exhausted) return;
+    if (isDone(s, limit)) return;
   }
 }
 

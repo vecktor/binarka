@@ -15,7 +15,7 @@ export interface Violation {
   /** 0-based second line of a duplicate pair */
   other?: number;
   /** [row, col] pairs, 0-based */
-  cells: Array<[number, number]>;
+  cells: [number, number][];
 }
 
 export type Hint =

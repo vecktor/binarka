@@ -76,13 +76,13 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
 
   it('the button labels are exactly the two Ukrainian labels of the DOM contract', () => {
     const root = mountFixture(WIN_PUZZLE);
-    expect(q(root, '[data-action="hint"]').textContent?.trim()).toBe(HINT_LABEL);
-    expect(q(root, '[data-action="new"]').textContent?.trim()).toBe(NEW_LABEL);
+    expect(q(root, '[data-action="hint"]').textContent.trim()).toBe(HINT_LABEL);
+    expect(q(root, '[data-action="new"]').textContent.trim()).toBe(NEW_LABEL);
   });
 
   it('Static page text with the real generator (seed 42): the digits in the cells are puzzle content, not collected', () => {
     const root = mountPage({ seedSource: () => 42 });
-    const cellTexts = Array.from(root.querySelectorAll('[data-cell]')).map((c) => c.textContent ?? '');
+    const cellTexts = Array.from(root.querySelectorAll('[data-cell]')).map((c) => c.textContent);
     expect(cellTexts).toHaveLength(36);
     expect(cellTexts.some((t) => t === '0' || t === '1')).toBe(true);
     // none of the cell digits was collected as page text
