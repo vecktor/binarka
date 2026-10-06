@@ -1,0 +1,37 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "add-hinted-cell",
+  "change": "add-hinted-cell",
+  "baseRef": "2446162",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 1,
+      "contested": 1,
+      "rejected": 2
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 3,
+      "contested": 0,
+      "rejected": 3
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "tasks.md for add-hinted-cell leaves every item unchecked although sections 1 and 2 are implemented and green",
+    "tasks.md: no task is ticked, although sections 1 and 2 are done",
+    "Spec scenario text changed in the green (feat) commit, after the red tests were written",
+    "The CSS cue differs from task 2.5, and its bold weight is the same as the given-cell cue"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-06T04:05:32Z"
+}

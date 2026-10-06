@@ -76,7 +76,7 @@ h1 {
 }
 
 .cell-hinted {
-  /* Non-colour cue: dashed border, italic and bold digit (design/v0). */
+  /* Non-colour cue: dashed border, italic and bold digit (design/v0/app/binarka.css .cell-hinted). */
   border: 2px dashed #4b5563;
   font-style: italic;
   font-weight: 700;
