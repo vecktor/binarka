@@ -7,8 +7,8 @@
   "dimensions": {
     "correctness": {
       "confirmed": 1,
-      "contested": 1,
-      "rejected": 2
+      "contested": 0,
+      "rejected": 0
     },
     "security": {
       "confirmed": 0,
@@ -16,9 +16,9 @@
       "rejected": 0
     },
     "spec-compliance": {
-      "confirmed": 3,
+      "confirmed": 1,
       "contested": 0,
-      "rejected": 3
+      "rejected": 2
     },
     "visual": {
       "confirmed": 0,
@@ -27,11 +27,9 @@
     }
   },
   "confirmedTitles": [
-    "tasks.md for add-hinted-cell leaves every item unchecked although sections 1 and 2 are implemented and green",
-    "tasks.md: no task is ticked, although sections 1 and 2 are done",
-    "Spec scenario text changed in the green (feat) commit, after the red tests were written",
-    "The CSS cue differs from task 2.5, and its bold weight is the same as the given-cell cue"
+    "Task 3.7 is ticked, but the browser-check evidence leaves out steps (d), (f) and (h), and step (d) asks for an action the spec now says cannot happen",
+    "Task 3.7 is ticked, but the browser check skipped steps (d), (f), the size-change removal in (g), and step (h)"
   ],
   "clean": false,
-  "generatedAt": "2026-10-06T04:05:32Z"
+  "generatedAt": "2026-10-06T04:08:13Z"
 }
