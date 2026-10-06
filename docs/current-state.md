@@ -6,14 +6,19 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-06 15:15:00 (UTC+5:30; Kyiv 12:45)
+- **Date and time:** 2026-10-06 16:00:00 (UTC+5:30; Kyiv 13:30)
 - **Current phase:** Phase 4
 - **Last completed gate:** G3
 - **Active change:** none (slices 1 to 3 are archived)
 - **Progress:** **2026-10-06:** coding conventions and version-matched framework docs adopted by the user's decisions (ADR-0003, accepted). Changes: `docs/coding-conventions.md`; `.vendor-docs/` (Vite 8.3.2 and Vitest 5.0.3 docs, `npm run check:docs`); `tsconfig.json` aligned with create-vite 9.2.1; type-aware typescript-eslint strict + stylistic for TypeScript; `restoreMocks: true`; a two-sentence `AGENTS.md` pointer. Committed and signed on the user's go-ahead: `7b76610` (docs and vendored docs) and `ba430c5` (config and code, `Refs: TC-1, TC-4`). The records follow in the next commit, on branch `claude/vite-coding-conventions-a4b96a` (worktree `vite-coding-conventions-a4b96a`, base `cd90dca`). Not pushed. Earlier: slice 3 `add-size-selector` (FR-43, restored by the user, autonomy-log rows 22 and 24) is implemented, reviewed and archived, test-first, at about 22:45, about 45 minutes ahead of the 23:30 target. Slices 1 and 2 as before (archived 20:20 and 20:50). No cut line applied. P0–P3 are unchanged (claims below).
   - Commit and tag order, slice 3: change `a3adf3c` (`step-25-s3-change`), revised change `41b7730`, red tests `47b25bd` (`step-26-s3-red`) and `ca12f12` (24th test, red evidence 67 red), green `d7613cf` (`step-27-s3-green`), review fix round `8b52593` (`step-28-s3-fix1`), archive commit (`step-29-s3-archived`). Slice 2: tags `step-19` to `step-23`; slice 1: `step-13` to `step-18`.
   - **Signing:** every commit in this branch's history is signed (`git log --format='%G?' | sort | uniq -c` gives 37 `G`, 0 `N`, checked 2026-10-04 about 22:57). The slice 3 commits were re-signed on that date by a forced rebase (tags `step-26` to `step-29` re-pointed; the unsigned originals are on the local branch `backup/slice3-unsigned-6877f25`), so the slice 3 SHAs in this file are the re-signed ones.
-- **Next task:** (0) two items the user asked for on 2026-10-06. First, a proposal for UI conventions (HTML, CSS, DOM, accessibility; not covered yet, `docs/coding-conventions.md` §8): research is running, and the user decides what to adopt. Second, an answer on path- and role-scoped loading of conventions (frontend versus backend agents). Then the user decides (1) what to do about the failed NFR-6 hint-quality eval (the hint sentences are pinned in the signed puzzle-engine spec; count 76 against a pass mark of 80), (2) the new request from about 21:40: a rules block for new players and a reset button (autonomy-log row 27; a requirements amendment to sign, then slice 4 `add-rules-and-reset`; reset keeps the puzzle and clears the player's entries). Then `npm run retro:digest`, the PR text and the README branch. Re-sign the unsigned commits when the user has cached the GPG passphrase.
+- **Next task:** (0) Three things follow the user's decisions of 2026-10-06 (autonomy-log row 33):
+  - **Done, committed `e050f74`:** UI conventions accepted (`docs/frontend-conventions.md`). Vercel's guidelines are vendored and pinned (`npm run check:docs`). Path-scoped loading is in place as A + B + C (ADR-0004): the `AGENTS.md` routing block, `.claude/rules/frontend.md`, and `src/ui/AGENTS.md` with its `CLAUDE.md`.
+  - **Still to verify:** the `.claude/rules/frontend.md` rule, in a new session. Read `index.html` and confirm the rule appears.
+  - **Accessibility slice:** the user signed the requirements amendment (NFR-9, FR-57 to FR-63) on 2026-10-06 at about 16:05 (autonomy-log row 34). Slice `add-page-accessibility` is in progress, test-first: change folder, red tests, green, review, archive. It fixes gaps G1–G6 and G9.
+
+  Then the user decides (1) what to do about the failed NFR-6 hint-quality eval (the hint sentences are pinned in the signed puzzle-engine spec; count 76 against a pass mark of 80), (2) the new request from about 21:40: a rules block for new players and a reset button (autonomy-log row 27; a requirements amendment to sign, then slice 4 `add-rules-and-reset`; reset keeps the puzzle and clears the player's entries). Then `npm run retro:digest`, the PR text and the README branch. Re-sign the unsigned commits when the user has cached the GPG passphrase.
 - **Claims:**
   - G0 passes: lint, build, hooks fire, `core.hooksPath` is `.githooks` — evidence: `npm run gate:status`, commits `cbc84fa` and `4ed10a8`, tag `step-02-factory-init`
   - Factory integrity lock holds 23 gate-bearing files with 6 recorded adaptations — evidence: `factory-lock.json`
@@ -48,7 +53,7 @@
 4. `docs/product-brief.md` — product narrative (signed off 2026-10-04).
 5. `docs/mvp-capability-plan.md` — change sequence and scope (signed off 2026-10-04 18:54).
 6. `openspec/config.yaml` + `openspec/specs/` — accepted behavior (`puzzle-engine`, `play-page`).
-7. `docs/adr/` — ADR-0001 stack, ADR-0002 context architecture, ADR-0003 coding conventions and vendored framework docs (`docs/coding-conventions.md`, `.vendor-docs/`).
+7. `docs/adr/` — ADR-0001 stack, ADR-0002 context architecture, ADR-0003 coding conventions and vendored framework docs (`docs/coding-conventions.md`, `.vendor-docs/`), ADR-0004 path-scoped conventions (`docs/frontend-conventions.md`, `.claude/rules/frontend.md`, `src/ui/AGENTS.md`).
 8. `docs/qa/` — QA proof pack and recordings.
 9. `docs/autonomy-log.md` and `docs/budget.md` — kept live; update them at every phase.
 
