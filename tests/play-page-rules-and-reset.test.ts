@@ -5,6 +5,8 @@
 // Reset scenarios that touch the board run for N = 4, 6, 8, each with a fixture puzzle of size N (the page is mounted at 6
 // and the player selects 4 or 8, the injected generator returning the fixture).
 // NEVER enumerate the 8x8 grids: the 8x8 fixtures carry a hand-written solution (tests/helpers/play-page.ts).
+// Change update-controls-accessibility (FR-60): a press of «Скинути» on a board with entries is asked first, so those tests press
+// and then confirm with `confirmYes`; on an untouched board it acts at once with no dialog.
 import { describe, expect, it } from 'vitest';
 import type { Puzzle } from '../src/engine/index';
 import {
@@ -22,8 +24,12 @@ import {
   allCells,
   bySize,
   cellEl,
+  checkedSize,
   checkerCells,
   clickCell,
+  confirmNo,
+  confirmYes,
+  dialogIsOpen,
   collectPageText,
   fillFrom,
   generateSpy,
@@ -34,11 +40,12 @@ import {
   makePuzzle,
   mountPage,
   pressHint,
+  pressReset,
   q,
   readBoard,
   seedQueue,
   selectSize,
-  sizeSelect,
+  showModalCalls,
   snapshot,
   solutionGrid,
   violationCells,
@@ -89,8 +96,6 @@ function mountAtSize(puzzle: Puzzle): Mounted {
   return { root, seeds, spy };
 }
 
-const pressReset = (root: ParentNode): void => q(root, '[data-action="reset"]').click();
-
 /** Cell texts and data-given flags only (no classes), row-major. */
 function textsAndGivens(root: ParentNode): string[] {
   return allCells(root).map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}|${c.textContent ?? ''}|${c.getAttribute('data-given')}`);
@@ -128,6 +133,8 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(playerFilled.length, 'premise: clicked cells plus the hint-filled cell show a digit').toBeGreaterThanOrEqual(3);
 
     pressReset(root);
+    expect(dialogIsOpen(root), 'the board has entries: asked first (FR-60)').toBe(true);
+    confirmYes(root);
 
     for (const el of allCells(root)) {
       if (el.getAttribute('data-given') === 'false') {
@@ -138,7 +145,8 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(allCells(root).filter((c) => c.getAttribute('data-given') === 'true')).toHaveLength(givensBefore.length);
     expect(allCells(root)).toHaveLength(n * n);
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
-    expect(sizeSelect(root).value).toBe(String(n));
+    expect(checkedSize(root)).toBe(n);
+    expect(root.querySelectorAll('[data-control="size"] [aria-checked="true"]'), 'aria-checked is on one button only').toHaveLength(1);
     // the board is the pure givens grid
     expect(readBoard(root)).toEqual(pair.givens);
   });
@@ -153,6 +161,7 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(hintMessage(root)).toBe(BROKEN_SENTENCE);
 
     pressReset(root);
+    confirmYes(root);
 
     expect(violationCells(root)).toEqual([]);
     expect(allCells(root).filter((c) => c.classList.contains('cell-violation'))).toHaveLength(0);
@@ -171,6 +180,7 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(withPlayer.length).toBeGreaterThan(fromGivens.length);
 
     pressReset(root);
+    confirmYes(root);
 
     expect(violationCells(root)).toEqual(fromGivens);
     for (const [r, c] of dirtyClicks) expect(cellEl(root, r, c).textContent).toBe('');
@@ -187,6 +197,9 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     const col = Number(open[0]?.getAttribute('data-col'));
 
     pressReset(root);
+    expect(dialogIsOpen(root), 'a solved board has entries: asked (A-28)').toBe(true);
+    expect(winMessage(root), 'unchanged until the confirmation').toBe(WIN_MESSAGE);
+    confirmYes(root);
 
     expect(q(root, '[data-message="win"]').textContent).toBe('');
     expect(open.length).toBe(allCells(root).filter((c) => c.getAttribute('data-given') === 'false' && c.textContent === '').length);
@@ -196,24 +209,43 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
   });
 
-  it('Reset takes no seed and calls no generator: one press and two more leave the counts as after mount', () => {
+  it('Reset takes no seed and calls no generator: untouched, confirmed (twice) and cancelled presses leave the counts as after mount', () => {
     const { root, seeds, spy } = mountAtSize(pair);
-    clickCell(root, clicks[0]?.[0] as number, clicks[0]?.[1] as number, 1);
+    const [r, c] = [clicks[0]?.[0] as number, clicks[0]?.[1] as number];
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
     expect(seedCalls, 'premise: the mount (and the size change) took seeds').toBeGreaterThan(0);
     expect(generatorCalls).toBeGreaterThan(0);
-    expect(cellEl(root, clicks[0]?.[0] as number, clicks[0]?.[1] as number).textContent).toBe('0');
 
+    // the untouched board: at once, no dialog
     pressReset(root);
+    expect(showModalCalls()).toBe(0);
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
-    expect(cellEl(root, clicks[0]?.[0] as number, clicks[0]?.[1] as number).textContent, 'the press did reset').toBe('');
 
+    // an entry, a press and the confirmation
+    clickCell(root, r, c, 1);
+    expect(cellEl(root, r, c).textContent).toBe('0');
     pressReset(root);
+    expect(dialogIsOpen(root)).toBe(true);
+    confirmYes(root);
+    expect(cellEl(root, r, c).textContent, 'the confirmed press did reset').toBe('');
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
+
+    // the same once more
+    clickCell(root, r, c, 1);
     pressReset(root);
+    confirmYes(root);
+    expect(cellEl(root, r, c).textContent).toBe('');
+    expect(seeds.calls()).toBe(seedCalls);
+    expect(spy.calls).toHaveLength(generatorCalls);
+
+    // a cancelled press: nothing is reset, still no seed and no generator call
+    clickCell(root, r, c, 1);
+    pressReset(root);
+    confirmNo(root);
+    expect(cellEl(root, r, c).textContent, 'the cancelled press did not reset').toBe('0');
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
   });
@@ -229,10 +261,12 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
 
     pressReset(root);
 
+    expect(showModalCalls(), 'an untouched board asks nothing').toBe(0);
+    expect(dialogIsOpen(root)).toBe(false);
     expect(snapshot(root)).toEqual(cellsBefore);
     expect(hintMessage(root)).toBe(hintBefore);
     expect(winMessage(root)).toBe(winBefore);
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
-    expect(sizeSelect(root).value).toBe(String(n));
+    expect(checkedSize(root)).toBe(n);
   });
 });

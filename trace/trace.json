@@ -323,6 +323,7 @@
       "planned": true,
       "tests": [
         "tests/generator.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
@@ -633,6 +634,11 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
@@ -646,11 +652,20 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
-        "tests/play-page-size-selector.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
@@ -684,6 +699,11 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-rules-and-reset.test.ts",
         "tests/play-page-rules-and-reset.test.ts"
       ],
@@ -697,13 +717,19 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
-        "tests/play-page-hinted-cell.test.ts"
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-size-control.test.ts"
       ],
       "recordings": []
     },
@@ -714,7 +740,19 @@
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-size-control.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -737,7 +775,11 @@
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -746,7 +788,12 @@
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -778,7 +825,11 @@
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts"
+      ],
       "recordings": []
     }
   ],
@@ -790,23 +841,7 @@
     },
     {
       "check": "test-trace",
-      "msg": "FR-60 has no test annotated \"@trace FR-60\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-62 has no test annotated \"@trace FR-62\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-63 has no test annotated \"@trace FR-63\""
-    },
-    {
-      "check": "test-trace",
       "msg": "FR-65 has no test annotated \"@trace FR-65\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-66 has no test annotated \"@trace FR-66\""
     },
     {
       "check": "recording-evidence",

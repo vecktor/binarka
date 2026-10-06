@@ -15,6 +15,8 @@ import {
   cellEl,
   cellText,
   clickCell,
+  confirmYes,
+  dialogIsOpen,
   expectPageStructure,
   expectedHint,
   hintMessage,
@@ -324,7 +326,11 @@ describe('@trace FR-40 the hint message stays until the next hint or a new puzzl
     expect(hintMessage(root)).toBe(expected.sentence);
     expect(hintMessage(root)).not.toBe('');
 
+    // the board has entries (a hint-filled cell and a click): a new puzzle is asked first and performed after «Так, почати» (FR-60)
     pressNew(root);
+    expect(dialogIsOpen(root), 'asked first').toBe(true);
+    expect(hintMessage(root), 'the hint message stays until the new puzzle is performed').toBe(expected.sentence);
+    confirmYes(root);
     expect(q(root, '[data-message="hint"]').textContent).toBe('');
   });
 });

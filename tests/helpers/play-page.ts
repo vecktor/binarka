@@ -51,15 +51,70 @@ export const PAGE_ORDER = [
 
 const roots: HTMLElement[] = [];
 
+// ---- the dialog stubs (FR-60). jsdom 29 has HTMLDialogElement but neither showModal nor close (design.md, "jsdom limits").
+// The stubs are installed before each test and removed after it; the page has no production fallback. showModal sets the
+// `open` attribute (and throws InvalidStateError on an open dialog, as a browser does), close removes it. Neither stub
+// dispatches an event: a test that needs Escape or the late `close` event uses `dialogEscape` / `dialogLateClose`.
+
+/** Every call of the stubs and every mark a test adds with `markDialogLog`, in order: 'showModal', 'close', ... */
+export const dialogLog: string[] = [];
+let showModalCount = 0;
+let closeCount = 0;
+let closeHook: (() => void) | null = null;
+
+/** How many times the page called `showModal()` since the test began. */
+export const showModalCalls = (): number => showModalCount;
+/** How many times the page called `close()` since the test began. */
+export const closeCalls = (): number => closeCount;
+/** Run `hook` inside the `close` stub, before it removes `open` (to see the page at the moment `close()` is called). */
+export function onDialogClose(hook: (() => void) | null): void {
+  closeHook = hook;
+}
+
+function installDialogStubs(): void {
+  dialogLog.length = 0;
+  showModalCount = 0;
+  closeCount = 0;
+  closeHook = null;
+  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+    configurable: true,
+    writable: true,
+    value(this: HTMLDialogElement): void {
+      if (this.hasAttribute('open')) throw new DOMException('showModal on an open dialog', 'InvalidStateError');
+      showModalCount += 1;
+      dialogLog.push('showModal');
+      this.setAttribute('open', '');
+    },
+  });
+  Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+    configurable: true,
+    writable: true,
+    value(this: HTMLDialogElement): void {
+      closeCount += 1;
+      dialogLog.push('close');
+      closeHook?.();
+      this.removeAttribute('open');
+    },
+  });
+}
+
+function removeDialogStubs(): void {
+  Reflect.deleteProperty(HTMLDialogElement.prototype, 'showModal');
+  Reflect.deleteProperty(HTMLDialogElement.prototype, 'close');
+  closeHook = null;
+}
+
 /** Call once at the top of a test file. */
 export function installPageLifecycle(): void {
   beforeEach(() => {
     document.title = '';
+    installDialogStubs();
   });
   afterEach(() => {
     for (const root of roots.splice(0)) root.remove();
     document.body.replaceChildren();
     document.title = '';
+    removeDialogStubs();
   });
 }
 
@@ -404,15 +459,6 @@ export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: Arr
 export const pressHint = (root: ParentNode): void => q(root, '[data-action="hint"]').click();
 export const pressNew = (root: ParentNode): void => q(root, '[data-action="new"]').click();
 
-// ---- the size selector (FR-43) ----
-
-/** The size selector `[data-control="size"]`, asserted to be a <select>. */
-export function sizeSelect(root: ParentNode): HTMLSelectElement {
-  const el = q(root, '[data-control="size"]');
-  expect(el.tagName, 'the size selector is a select element').toBe('SELECT');
-  return el as HTMLSelectElement;
-}
-
 export interface ErrorTracker {
   /** everything the window 'error' event reported while the tracker was active */
   errors: unknown[];
@@ -434,23 +480,149 @@ export function trackErrors(): ErrorTracker {
   return { errors, stop: () => window.removeEventListener('error', listener) };
 }
 
-/** Dispatch a bubbling `change` on the size selector, recording uncaught errors; asserts none were recorded. */
-function dispatchChange(select: HTMLSelectElement): void {
+// ---- the size control (FR-43, FR-66): a radiogroup of three buttons, found by order and label, never by a data hook ----
+
+/** The sizes, in the order of the three buttons. */
+const SIZE_ORDER = [4, 6, 8];
+const sizeButtonText = (n: number): string => `Поле ${n}×${n}`;
+
+/** The size control `[data-control="size"]`, asserted to be a radiogroup of exactly three `button[role="radio"]`. */
+export function sizeControl(root: ParentNode): HTMLElement {
+  const el = q(root, '[data-control="size"]');
+  expect(el.getAttribute('role'), 'the size control is a radiogroup').toBe('radiogroup');
+  const radios = el.querySelectorAll('button[role="radio"]');
+  expect(radios, 'the size control holds three button[role=radio]').toHaveLength(3);
+  return el;
+}
+
+/** The three size buttons in document order. */
+export function sizeButtons(root: ParentNode): HTMLElement[] {
+  return Array.from(sizeControl(root).querySelectorAll<HTMLElement>('button[role="radio"]'));
+}
+
+/** The button of size `n` (4, 6 or 8), found by its position AND its text «Поле n×n» (the data-size-option hook is not in the spec). */
+export function sizeButton(root: ParentNode, n: number): HTMLElement {
+  const index = SIZE_ORDER.indexOf(n);
+  expect(index, `${n} is one of the sizes 4, 6, 8`).toBeGreaterThanOrEqual(0);
+  const button = sizeButtons(root)[index] as HTMLElement;
+  expect(button.textContent, `button ${index + 1} of the size control is «${sizeButtonText(n)}»`).toBe(sizeButtonText(n));
+  return button;
+}
+
+/** The size whose button has aria-checked="true"; asserts that every button says "true" or "false" and exactly one says "true". */
+export function checkedSize(root: ParentNode): number {
+  const states = sizeButtons(root).map((b) => b.getAttribute('aria-checked'));
+  for (const state of states) expect(['true', 'false'], 'aria-checked is "true" or "false" on every size button').toContain(state);
+  const checked = SIZE_ORDER.filter((_, i) => states[i] === 'true');
+  expect(checked, `exactly one size button is checked (states ${states.join(',')})`).toHaveLength(1);
+  return checked[0] as number;
+}
+
+/** True when the board shown has a player entry: a non-given cell that is not empty (FR-60, A-8, A-28). Read from the DOM only. */
+export function hasPlayerEntries(root: ParentNode): boolean {
+  return allCells(root).some((c) => c.getAttribute('data-given') === 'false' && (c.textContent ?? '') !== '');
+}
+
+/** The raw press of the size button of `n`: no confirmation is given. */
+export const pressSizeButton = (root: ParentNode, n: number): void => sizeButton(root, n).click();
+export const pressReset = (root: ParentNode): void => q(root, '[data-action="reset"]').click();
+
+// ---- the confirmation dialog (FR-60) ----
+
+/** `[data-dialog="confirm"]`, asserted to be a <dialog> element. */
+export function dialogOf(root: ParentNode): HTMLDialogElement {
+  const el = q(root, '[data-dialog="confirm"]');
+  expect(el.tagName, 'the confirmation is a dialog element').toBe('DIALOG');
+  return el as HTMLDialogElement;
+}
+
+/** True while the dialog has the `open` attribute (the stubs set and remove it). */
+export const dialogIsOpen = (root: ParentNode): boolean => dialogOf(root).hasAttribute('open');
+
+function pressInDialog(root: ParentNode, which: 'yes' | 'no'): void {
+  expect(dialogIsOpen(root), `the dialog is open before «${which}» is pressed`).toBe(true);
   const tracker = trackErrors();
   try {
-    select.dispatchEvent(new Event('change', { bubbles: true }));
+    q(dialogOf(root), `[data-confirm="${which}"]`).click();
   } finally {
     tracker.stop();
   }
-  expect(tracker.errors, 'no uncaught error during the change event').toEqual([]);
+  expect(tracker.errors, 'no uncaught error during the press').toEqual([]);
 }
 
-/** The player selects a size: set the select's value to it and dispatch a bubbling `change` (no uncaught error allowed). */
+/** Press «Так, почати» (asserts the dialog is open and that no uncaught error happened). */
+export const confirmYes = (root: ParentNode): void => pressInDialog(root, 'yes');
+/** Press «Скасувати» (asserts the dialog is open and that no uncaught error happened). */
+export const confirmNo = (root: ParentNode): void => pressInDialog(root, 'no');
+
+/**
+ * What a browser does when the player presses Escape in a modal dialog: `cancel`, then the dialog is closed (the `open`
+ * attribute goes) and `close` fires. The `open` attribute is removed between the two events because a browser does it
+ * and the page's guard `dialog.hasAttribute('open')` reads it; the spec names only the two events.
+ */
+export function dialogEscape(root: ParentNode): void {
+  const dialog = dialogOf(root);
+  expect(dialog.hasAttribute('open'), 'the dialog is open before Escape').toBe(true);
+  dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+  dialog.removeAttribute('open');
+  dialog.dispatchEvent(new Event('close'));
+}
+
+/** The `close` event that a browser fires asynchronously after `close()` was called (the stub fires none). */
+export function dialogLateClose(root: ParentNode): void {
+  dialogOf(root).dispatchEvent(new Event('close'));
+}
+
+/** Press «Нова головоломка» and, when the board has entries, press «Так, почати» (asserts the dialog opened exactly then). */
+export function startNewPuzzle(root: ParentNode): void {
+  const asks = hasPlayerEntries(root);
+  pressNew(root);
+  expect(dialogIsOpen(root), 'the dialog opens exactly when the board has entries').toBe(asks);
+  if (asks) confirmYes(root);
+}
+
+/** Press «Скинути» and, when the board has entries, press «Так, почати» (asserts the dialog opened exactly then). */
+export function resetBoard(root: ParentNode): void {
+  const asks = hasPlayerEntries(root);
+  pressReset(root);
+  expect(dialogIsOpen(root), 'the dialog opens exactly when the board has entries').toBe(asks);
+  if (asks) confirmYes(root);
+}
+
+/**
+ * The player chooses a size: press its button and, when the dialog opened, press «Так, почати». The dialog must open exactly
+ * when the board has entries and the size differs from the one shown (FR-60, FR-66). No uncaught error is allowed.
+ */
 export function selectSize(root: ParentNode, size: number): void {
-  const select = sizeSelect(root);
-  select.value = String(size);
-  expect(select.value, `the select offers the value ${size}`).toBe(String(size));
-  dispatchChange(select);
+  const asks = hasPlayerEntries(root) && checkedSize(root) !== size;
+  const tracker = trackErrors();
+  try {
+    pressSizeButton(root, size);
+  } finally {
+    tracker.stop();
+  }
+  expect(tracker.errors, 'no uncaught error during the size button press').toEqual([]);
+  expect(dialogIsOpen(root), 'the dialog opens exactly when the board has entries and the size is another one').toBe(asks);
+  if (asks) confirmYes(root);
+}
+
+/** `aria-label` of the cell at the 1-based (row, col), asserted present. */
+export function cellLabel(root: ParentNode, row: number, col: number): string {
+  const label = cellEl(root, row, col).getAttribute('aria-label');
+  expect(label, `cell ${row},${col} has an aria-label`).not.toBeNull();
+  return label as string;
+}
+
+/** Everything a cancelled or no-op action must leave alone: cell text/data-given/classes, size, aria-checked, both messages. */
+export interface PageState {
+  cells: string[];
+  size: number;
+  checked: number;
+  hint: string;
+  win: string;
+}
+export function pageState(root: ParentNode): PageState {
+  return { cells: snapshot(root), size: boardSize(root), checked: checkedSize(root), hint: hintMessage(root), win: winMessage(root) };
 }
 
 /**
@@ -464,42 +636,6 @@ export function mountThenSelect(puzzle: Puzzle, start: Puzzle = BLANK): HTMLElem
   });
   if (puzzle.size !== start.size) selectSize(root, puzzle.size);
   return root;
-}
-
-export interface ReportedValueResult {
-  /** `selectedIndex` right after the `change` event (override still installed) */
-  selectedIndex: number;
-  /** `options[1].selected` right after the `change` event */
-  option1Selected: boolean;
-  /** `select.value` once the override is removed again (the natively reported value) */
-  valueAfter: string;
-}
-
-/**
- * The scenarios "Value outside the offered sizes is ignored" (and "... with no option selected"): make the select report
- * `reported` by overriding `value` on the element (getter and setter; the setter ignores writes) after setting
- * `selectedIndex = 0`, so a page that does not restore the selector leaves index 0 (a page that restores with
- * `select.value = ...` hits the dead setter and also leaves 0). `reported === null` is the no-option-selected case:
- * `selectedIndex = -1`, no override, the select reports ''. Dispatches a bubbling `change` with the error tracker.
- */
-export function changeWithReportedValue(root: ParentNode, reported: string | null): ReportedValueResult {
-  const select = sizeSelect(root);
-  if (reported === null) {
-    select.selectedIndex = -1;
-    expect(select.value, 'no option selected: the select reports the empty string').toBe('');
-  } else {
-    select.selectedIndex = 0;
-    Object.defineProperty(select, 'value', { configurable: true, get: () => reported, set: () => undefined });
-    expect(select.value).toBe(reported);
-  }
-  let during: Pick<ReportedValueResult, 'selectedIndex' | 'option1Selected'> | undefined;
-  try {
-    dispatchChange(select);
-    during = { selectedIndex: select.selectedIndex, option1Selected: select.options[1]?.selected === true };
-  } finally {
-    if (reported !== null) Reflect.deleteProperty(select, 'value');
-  }
-  return { ...during, valueAfter: select.value };
 }
 
 /** The engine hint for the board as it is shown right now (the spec: "the engine hint applied to the DOM board"). */
@@ -689,6 +825,60 @@ export const DIRTY_8_COL = makePuzzle(
   { solution: SOLUTION_8_TEXT, inconsistent: true },
 );
 
+// ---- change update-controls-accessibility: a played board with a hint-filled cell that breaks a rule ----
+
+const breakerGivens = (n: number): Grid => givensOf(n, [[1, 1, 1], [1, 2, 1], [2, 3, 0], [3, 3, 0]]);
+/** 4x4 twin of HINT_BREAKS: the first hint is the row pair 1 1 at (1,1),(1,2), target (1,3) = 0, which makes 0 0 0 in column 3. */
+export const HINT_BREAKS_4 = makePuzzle(breakerGivens(4), { inconsistent: true });
+/** 8x8 twin of HINT_BREAKS (explicit solution, never enumerated). */
+export const HINT_BREAKS_8 = makePuzzle(breakerGivens(8), { solution: SOLUTION_8_TEXT, inconsistent: true });
+const BREAKER: Record<number, Puzzle> = { 4: HINT_BREAKS_4, 6: HINT_BREAKS, 8: HINT_BREAKS_8 };
+/** What the injected generator returns for a NEW puzzle (any call after the played board was reached). */
+const NEW_BOARD: Record<number, Puzzle> = { 4: BLANK_4, 6: PAIR_ROW, 8: BLANK_8 };
+
+export interface PlayedPage {
+  root: HTMLElement;
+  seeds: SeedQueue;
+  spy: GenerateSpy;
+  /** size of the board played on */
+  n: number;
+  /** the cell the player clicked to 1 (1-based) */
+  entry: [number, number];
+  /** the cell the hint filled and that carries cell-hinted (1-based) */
+  hinted: [number, number];
+}
+
+/**
+ * A page of size `n` (4, 6 or 8) with the played state the confirmation scenarios need: the player clicked the last cell
+ * (n, n) to 1, pressed «Підказка» so that a hint filled (1,3) with 0 (`cell-hinted`, a hint sentence shown), and that fill makes
+ * 0 0 0 in column 3 (at 4x4 also the count rule of column 3), so cells carry `cell-violation`. The page is mounted at 6 on HINT_BREAKS; for n != 6 the player first
+ * presses the size button (the generator returns the n-fixture). Every call of the generator after that board was reached
+ * returns `later(size)` (default: PAIR_ROW / BLANK_4 / BLANK_8, never the played fixture) and may throw. The seeds are 1, 2, 3, ...
+ * The premises are asserted here so that "unchanged" in a test is never about an empty board.
+ */
+export function mountPlayedBoard(n = 6, later: (size: number) => Puzzle = (size) => NEW_BOARD[size] as Puzzle): PlayedPage {
+  const seeds = seedQueue([1, 2, 3, 4, 5, 6]);
+  const reaching = n === 6 ? 1 : 2; // the calls that belong to reaching the played board: the mount and, for n != 6, the size change
+  const spy = rawGenerateSpy((i, size) => (i < reaching ? (i === 0 ? HINT_BREAKS : (BREAKER[size] as Puzzle)) : later(size)));
+  const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
+  if (n !== 6) selectSize(root, n);
+  expect(boardSize(root)).toBe(n);
+  expect(hasPlayerEntries(root), 'premise: the board is untouched before the play').toBe(false);
+  const entry: [number, number] = [n, n];
+  clickCell(root, entry[0], entry[1], 2);
+  expect(cellText(root, entry[0], entry[1]), 'premise: the player entry is a 1').toBe('1');
+  expect(targetCell(expectedHint(root)), 'premise: the first hint targets (1,3)').toEqual([1, 3]);
+  pressHint(root);
+  expect(hintedCells(root), 'premise: the hint-filled cell is marked').toEqual([[1, 3]]);
+  expect(cellText(root, 1, 3), 'premise: the hint wrote 0').toBe('0');
+  expect(violationCells(root).length, 'premise: the hint fill breaks a rule').toBeGreaterThan(0);
+  expect(violationCells(root), 'premise: the highlights are the checker cells').toEqual(checkerCells(readBoard(root)));
+  expect(violationCells(root), 'premise: the hinted cell is one of them').toContainEqual([1, 3]);
+  expect(hintMessage(root), 'premise: a hint sentence is shown').not.toBe('');
+  expect(winMessage(root)).toBe('');
+  return { root, seeds, spy, n, entry, hinted: [1, 3] };
+}
+
 /** A fixture whose solution is `solved` and whose givens are all cells except the 1-based `empty` cell. */
 function winFixture(solved: Grid, empty: [number, number]): Puzzle {
   const givens = solved.map((row, r) => row.map((c, k): Cell => (r === empty[0] - 1 && k === empty[1] - 1 ? null : c)));
@@ -716,6 +906,8 @@ export const FIXTURES: Array<{ name: string; puzzle: Puzzle; consistent: boolean
   { name: 'WIN_8', puzzle: WIN_8, consistent: true },
   { name: 'DIRTY_8_ROW', puzzle: DIRTY_8_ROW, consistent: false },
   { name: 'DIRTY_8_COL', puzzle: DIRTY_8_COL, consistent: false },
+  { name: 'HINT_BREAKS_4', puzzle: HINT_BREAKS_4, consistent: false },
+  { name: 'HINT_BREAKS_8', puzzle: HINT_BREAKS_8, consistent: false },
 ];
 
 

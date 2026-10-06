@@ -1,5 +1,8 @@
 // Play page: the new puzzle button (FR-42) and the seed requirement (FR-51: chosen outside the engine, injectable,
 // never shown, default source in 0..2^31-1 with no two consecutive equal). Scenarios of play-page/spec.md.
+// Change update-controls-accessibility (FR-60, FR-66): a press of «Нова головоломка» or of another size on a board with entries
+// is asked first, so those tests press and then confirm with `confirmYes`; the ignored-value step is replaced by the press of the
+// size already shown.
 import { describe, expect, it } from 'vitest';
 import { generate } from '../src/engine/index';
 import {
@@ -16,10 +19,12 @@ import {
   bySize,
   cellEl,
   cellText,
-  changeWithReportedValue,
+  checkedSize,
   checkerCells,
   clickCell,
   collectEverything,
+  confirmYes,
+  dialogIsOpen,
   expectPageStructure,
   fillFrom,
   generateSpy,
@@ -29,13 +34,15 @@ import {
   mountPage,
   pressHint,
   pressNew,
+  pressSizeButton,
   q,
   readBoard,
   readGivenFlags,
   seedQueue,
   selectSize,
-  sizeSelect,
+  showModalCalls,
   snapshot,
+  startNewPuzzle,
   solutionGrid,
   violationCells,
   winMessage,
@@ -58,6 +65,9 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
     expect(seeds.calls()).toBe(1);
 
     pressNew(root);
+    expect(dialogIsOpen(root), 'a board with entries asks first (FR-60)').toBe(true);
+    expect(seeds.calls(), 'no seed before the confirmation').toBe(1);
+    confirmYes(root);
 
     const expected = generate(6, 7);
     expect(spy.calls).toEqual([{ size: 6, seed: 1 }, { size: 6, seed: 7 }]);
@@ -95,7 +105,8 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
 
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe('8');
     expect(allCells(root)).toHaveLength(64);
-    expect(sizeSelect(root).value).toBe('8');
+    expect(checkedSize(root)).toBe(8);
+    expect(showModalCalls(), 'the boards have no entries: no dialog').toBe(0);
     expect(spy.calls[spy.calls.length - 1]).toEqual({ size: 8, seed: 4 });
     expect(spy.calls.map((c) => c.size)).toEqual([6, 6, 8, 8]);
   });
@@ -111,7 +122,7 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
 
     expect(boardSize(root)).toBe(4);
     expect(allCells(root)).toHaveLength(16);
-    expect(sizeSelect(root).value).toBe('4');
+    expect(checkedSize(root)).toBe(4);
     expect(hintMessage(root)).toBe('');
     expect(spy.calls).toEqual([{ size: 6, seed: 1 }, { size: 4, seed: 2 }, { size: 4, seed: 3 }]);
   });
@@ -123,6 +134,7 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
     expect(violationCells(root)).toEqual([[3, 1], [3, 2], [3, 3]]);
 
     pressNew(root);
+    confirmYes(root);
 
     expect(allCells(root)).toHaveLength(36);
     expect(cellText(root, 1, 3)).toBe('0'); // the new puzzle (WIN_PUZZLE) is on the board
@@ -137,6 +149,7 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
     expect(violationCells(root)).toEqual([[3, 1], [3, 2], [3, 3]]);
 
     pressNew(root);
+    confirmYes(root);
 
     // the new puzzle's givens put 0 0 0 in row 1; nothing of the old highlight in row 3 may remain
     expect(checkerCells(DIRTY_GIVENS.givens)).toEqual([[1, 1], [1, 2], [1, 3]]);
@@ -154,9 +167,11 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
     clickCell(root, 1, 1);
     pressHint(root);
     expect(seeds.calls()).toBe(1);
+    clickCell(root, 1, 1, 2); // the cell is empty again: the board has no entry, so the presses below act at once
 
     pressNew(root);
     pressNew(root);
+    expect(showModalCalls(), 'the boards have no entries: no dialog').toBe(0);
 
     expect(spy.calls.map((c) => c.seed)).toEqual([1, 2, 3]);
     expect(seeds.calls()).toBe(3);
@@ -172,13 +187,14 @@ describe('@trace FR-42 the seed calls follow the puzzles generated', () => {
 
     pressNew(root);
     expect(seeds.calls()).toBe(2);
-    selectSize(root, 4);
+    pressSizeButton(root, 4);
     expect(seeds.calls()).toBe(3);
-    // a change event while the select reports the ignored value 5 takes no seed and calls no generator
-    changeWithReportedValue(root, '5');
+    // a press of the size already shown takes no seed and calls no generator (FR-66)
+    pressSizeButton(root, 4);
     expect(seeds.calls()).toBe(3);
     expect(spy.calls).toHaveLength(3);
-    selectSize(root, 8);
+    pressSizeButton(root, 8);
+    expect(showModalCalls(), 'every board has no entries: no dialog').toBe(0);
 
     expect(seeds.calls()).toBe(4);
     expect(spy.calls).toEqual([
@@ -274,7 +290,7 @@ describe('@trace FR-51 the seed is chosen outside the engine, injectable and not
     // the seed stays hidden after play and after a new puzzle (the injected source returns the same seed again)
     pressHint(root);
     clickCell(root, 1, 1);
-    pressNew(root);
+    startNewPuzzle(root); // asks first when the real puzzle of seed 987654 left an entry, and confirms
     check();
   });
 

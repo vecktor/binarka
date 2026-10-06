@@ -1,8 +1,10 @@
 // Play page: the hinted cell marker (FR-59). Scenarios of the delta spec
 // openspec/changes/add-hinted-cell/specs/play-page/spec.md ("Hinted cell marker"). Written FIRST (red): the class
 // `cell-hinted` does not exist yet.
-// Not written here (owned by change C, they need the dialog and the radiogroup): the cancelled confirmation (FR-60) and the
-// press of the already selected size (FR-66).
+// The cancelled confirmation (FR-60) and the press of the size already shown (FR-66) are written by change
+// update-controls-accessibility in tests/play-page-confirm.test.ts and tests/play-page-size-control.test.ts. Here, since that
+// change, a press of «Нова головоломка», of another size and of «Скинути» on a board with a hint-filled cell is asked first (a
+// hint-filled cell is a player entry, A-8) and the tests confirm it: the marker goes when the action is performed.
 // jsdom has no layout and no popover behaviour: the tests read classes, text and attributes only.
 // Coordinates are 1-based (data-row / data-col); the engine's 0-based row/col are converted with targetCell().
 import { describe, expect, it } from 'vitest';
@@ -22,6 +24,8 @@ import {
   cellEl,
   cellText,
   clickCell,
+  confirmYes,
+  dialogIsOpen,
   expectPageStructure,
   expectedHint,
   fillFrom,
@@ -34,6 +38,8 @@ import {
   mountPage,
   pressHint,
   pressNew,
+  pressReset,
+  pressSizeButton,
   q,
   rulesPanel,
   seedQueue,
@@ -60,8 +66,6 @@ function pageWithHint(puzzle: Puzzle = PAIR_ROW): { root: HTMLElement; x: [numbe
   expect(hintedCells(root)).toEqual([x]);
   return { root, x };
 }
-
-const pressReset = (root: ParentNode): void => q(root, '[data-action="reset"]').click();
 
 /** A page on the 6x6 PAIR_ROW (and the 4 and 8 fixtures for size changes) where a hint has filled a cell. */
 function pageWithHintAndSizes(): { root: HTMLElement; x: [number, number] } {
@@ -154,9 +158,12 @@ describe('@trace FR-59 later board changes remove the marker', () => {
   });
 
   it('«Нова головоломка» removes the marker, and a later hint marks exactly one cell again', () => {
-    const { root } = pageWithHint();
+    const { root, x } = pageWithHint();
 
     pressNew(root);
+    expect(dialogIsOpen(root), 'a hint-filled cell is an entry: asked first').toBe(true);
+    expect(hintedCells(root), 'the marker stays until the action is performed').toEqual([x]);
+    confirmYes(root);
 
     expect(boardSize(root)).toBe(6);
     expect(hintedCells(root)).toEqual([]);
@@ -169,9 +176,12 @@ describe('@trace FR-59 later board changes remove the marker', () => {
 
   for (const size of [4, 8]) {
     it(`A size change to ${size} removes the marker (the injected generator returns a ${size}x${size} fixture)`, () => {
-      const { root } = pageWithHintAndSizes();
+      const { root, x } = pageWithHintAndSizes();
 
-      selectSize(root, size);
+      pressSizeButton(root, size);
+      expect(dialogIsOpen(root), 'a hint-filled cell is an entry: asked first').toBe(true);
+      expect(hintedCells(root), 'the marker stays until the change is performed').toEqual([x]);
+      confirmYes(root);
 
       expect(boardSize(root)).toBe(size);
       expect(allCells(root)).toHaveLength(size * size);
@@ -187,6 +197,9 @@ describe('@trace FR-59 later board changes remove the marker', () => {
     const { root, x } = pageWithHint();
 
     pressReset(root);
+    expect(dialogIsOpen(root), 'a hint-filled cell is an entry: asked first').toBe(true);
+    expect(hintedCells(root), 'the marker stays until the action is performed').toEqual([x]);
+    confirmYes(root);
 
     expect(cellText(root, x[0], x[1])).toBe('');
     expect(hintedCells(root)).toEqual([]);

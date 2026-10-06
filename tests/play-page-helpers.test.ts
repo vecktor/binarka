@@ -1,6 +1,6 @@
 // Self-check of the play-page test helpers and fixtures. Carries no @trace on purpose: it checks the test data
 // (and the real engine on it), never the page, so it passes against the red-stage page.
-import { describe, expect, it, vi } from 'vitest';
+import { afterAll, describe, expect, it, vi } from 'vitest';
 import { countSolutions, findViolations, generate, hint, isSolved } from '../src/engine/index';
 import {
   BLANK,
@@ -13,6 +13,13 @@ import {
   DIRTY_GIVENS,
   FIXTURES,
   HINT_BREAKS,
+  HINT_BREAKS_4,
+  HINT_BREAKS_8,
+  closeCalls,
+  dialogLog,
+  installPageLifecycle,
+  onDialogClose,
+  showModalCalls,
   ISOLATED,
   NO_RULE_SENTENCE,
   PAIR_4,
@@ -223,6 +230,24 @@ describe('play-page hint premises, computed with the real engine on the fixtures
     expect(checkerCells(after)).toEqual([[1, 3], [2, 3], [3, 3]]);
   });
 
+  it.each([[4, HINT_BREAKS_4], [6, HINT_BREAKS], [8, HINT_BREAKS_8]] as const)(
+    'HINT_BREAKS at %i: with the player entry (n,n) = 1 the board is rule-clean and the first hint is the fill (1,3) = 0, which then breaks a rule',
+    (n, puzzle) => {
+      const board = puzzle.givens.map((r) => [...r]);
+      const last = board[n - 1];
+      if (last === undefined) throw new Error('row');
+      last[n - 1] = 1;
+      expect(findViolations(board)).toEqual([]);
+      expect(hint(board)).toMatchObject({ kind: 'fill', row: 0, col: 2, value: 0, rule: 'pair' });
+      const after = board.map((r) => [...r]);
+      const line = after[0];
+      if (line === undefined) throw new Error('row');
+      line[2] = 0;
+      expect(findViolations(after).length).toBeGreaterThan(0);
+      expect(checkerCells(after)).toContainEqual([1, 3]);
+    },
+  );
+
   it('the win fixture with (4,1) left empty: the hint targets it with the solution digit', () => {
     const board = solutionGrid(WIN_PUZZLE);
     const line = board[3];
@@ -288,5 +313,41 @@ describe('play-page seed helpers and constants', () => {
     expect(WIN_MESSAGE.codePointAt(WIN_MESSAGE.indexOf('розв') + 4)).toBe(0x27);
     expect(WIN_MESSAGE).toBe(`Вітаємо, головоломку розв${String.fromCodePoint(0x27)}язано!`);
     expect(/[A-Za-z]/.test(WIN_MESSAGE)).toBe(false);
+  });
+});
+
+describe('the dialog stubs of installPageLifecycle (jsdom has no showModal or close)', () => {
+  installPageLifecycle();
+  afterAll(() => {
+    // the afterEach of installPageLifecycle has removed them: no production code or later file sees a stub
+    expect('showModal' in HTMLDialogElement.prototype).toBe(false);
+    expect('close' in HTMLDialogElement.prototype).toBe(false);
+  });
+
+  it('showModal sets open and is counted, a second showModal throws, close removes open and is counted, in a log', () => {
+    const dialog = document.createElement('dialog');
+    expect(showModalCalls()).toBe(0);
+    expect(closeCalls()).toBe(0);
+    dialog.showModal();
+    expect(dialog.hasAttribute('open')).toBe(true);
+    expect(() => dialog.showModal()).toThrow();
+    expect(showModalCalls()).toBe(1);
+    const seen: boolean[] = [];
+    onDialogClose(() => seen.push(dialog.hasAttribute('open')));
+    dialog.close();
+    expect(dialog.hasAttribute('open')).toBe(false);
+    expect(seen, 'the hook runs inside close(), while the dialog is still open').toEqual([true]);
+    expect(closeCalls()).toBe(1);
+    expect(dialogLog).toEqual(['showModal', 'close']);
+  });
+
+  it('the counters, the log and the hook start fresh in every test', () => {
+    expect(showModalCalls()).toBe(0);
+    expect(closeCalls()).toBe(0);
+    expect(dialogLog).toEqual([]);
+    const dialog = document.createElement('dialog');
+    dialog.showModal();
+    dialog.close(); // the hook of the previous test is gone: nothing throws and nothing is recorded outside the log
+    expect(dialogLog).toEqual(['showModal', 'close']);
   });
 });

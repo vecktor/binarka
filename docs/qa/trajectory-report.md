@@ -15,7 +15,7 @@ Result: PASS, 5 warning(s)
 | 2026-10-04-add-rules-and-reset | **unclean** | 20 | yes | ui |
 | 2026-10-04-add-size-selector | clean | 15 | yes | ui |
 | 2026-10-04-update-hint-sentences | clean | 8 | yes | engine |
-| 2026-10-06-add-hinted-cell | **unclean** | 2 | yes | ui |
+| 2026-10-06-add-hinted-cell | **unclean** | 3 | yes | ui |
 | 2026-10-06-update-page-layout | **unclean** | 6 | yes | ui |
 
 ## Cross-slice module overlap

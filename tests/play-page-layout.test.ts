@@ -27,6 +27,7 @@ import {
   WIN_PUZZLE,
   allCells,
   bySize,
+  confirmYes,
   expectInDocumentOrder,
   fillFrom,
   generateSpy,
@@ -37,6 +38,7 @@ import {
   mountPage,
   pressHint,
   pressNew,
+  pressReset,
   q,
   rulesPanel,
   seedQueue,
@@ -53,7 +55,6 @@ const RULES_BUTTON = '[data-action="rules"]';
 const POPOVER_METHODS = ['showPopover', 'hidePopover', 'togglePopover'] as const;
 const HEADINGS = 'h1, h2, h3, h4, h5, h6';
 
-const pressReset = (root: ParentNode): void => q(root, '[data-action="reset"]').click();
 const idleLine = (root: ParentNode): HTMLElement => q(root, '[data-message="idle"]');
 
 /** The rules panel as read now: texts without aria-hidden descendants (A-26), and the ids that tie it to its buttons. */
@@ -401,8 +402,11 @@ describe('@trace FR-61 the order and the message area survive every board change
     } else {
       pressHint(root);
       expect(hintMessage(root), 'premise: the hint message has text').not.toBe('');
+      // the hint filled a cell, so the board has an entry: «Нова головоломка» and «Скинути» are asked first (FR-60) and the test
+      // confirms; selectSize presses the size button and confirms
       if (action === 'new puzzle') {
         pressNew(root);
+        confirmYes(root);
         expect(spy.calls, 'premise: a new puzzle was really generated').toHaveLength(2);
       } else if (action === 'size 4') {
         selectSize(root, 4);
@@ -412,6 +416,7 @@ describe('@trace FR-61 the order and the message area survive every board change
         expect(q(root, '[data-board]').getAttribute('data-size')).toBe('8');
       } else {
         pressReset(root);
+        confirmYes(root);
       }
     }
 
@@ -477,6 +482,7 @@ describe('@trace FR-64 the idle line stays in the DOM and untouched', () => {
       pressHint(root);
       expect(hintMessage(root), 'premise: the hint message has text before the reset').not.toBe('');
       pressReset(root);
+      confirmYes(root); // the hint-filled cell is an entry: the reset is asked first (FR-60)
       expect(hintMessage(root), 'premise: the reset cleared the hint message').toBe('');
     }
 
