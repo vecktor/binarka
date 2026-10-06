@@ -6,9 +6,9 @@
   "headRef": "HEAD",
   "dimensions": {
     "correctness": {
-      "confirmed": 1,
+      "confirmed": 2,
       "contested": 0,
-      "rejected": 1
+      "rejected": 0
     },
     "security": {
       "confirmed": 0,
@@ -16,9 +16,9 @@
       "rejected": 0
     },
     "spec-compliance": {
-      "confirmed": 3,
+      "confirmed": 2,
       "contested": 0,
-      "rejected": 0
+      "rejected": 1
     },
     "visual": {
       "confirmed": 1,
@@ -27,12 +27,14 @@
     }
   },
   "confirmedTitles": [
-    "role=\"dialog\" popover never moves focus into the panel when it opens",
-    "role=\"dialog\" on the rules panel is behaviour with no backing requirement or task (undocumented scope drift from fix round 1)",
-    "Commit message says the idle line uses U+00A0 escapes, but strings.ts has literal invisible NBSP bytes",
-    "The real-browser check evidence was captured at e9c2709, before the fix commit that changed the panel markup",
-    "375 rules-open still cuts off the «Зрозуміло» close button that the README says it shows"
+    "docs/current-state.md still describes the stopped run: it says the user decisions, the fix and the 3.7 re-run are pending, but all three are done",
+    "current-state.md Next task 0.3 has a literal NBSP where the escape was meant, so the M19 note reads wrongly",
+    "Task 3.7 is ticked, but its step (g) record is missing: docs/current-state.md is stale and contradicts HEAD",
+    "Per-mount uniqueness of the panel heading id is required but not tested",
+    "Idle line wraps with the em dash starting the second line at 375 px"
   ],
   "clean": false,
-  "generatedAt": "2026-10-05T18:58:00Z"
+  "generatedAt": "2026-10-06T03:51:09Z",
+  "runId": "wf_319f4046-80b",
+  "persistedBy": "orchestrator, from the run's result (its persist agent returned empty and wrote nothing); review run 3 of update-page-layout"
 }

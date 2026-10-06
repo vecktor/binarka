@@ -44,3 +44,23 @@ Minor:
 3. `tests/no-image-assets.test.ts` is green by design (a guard); record it so in the red run.
 4. The scan could include `public/`.
 5. Observation only.
+
+## Folders D and F (2026-10-06 about 09:17 UTC+5:30, session `heuristic-lovelace-5e57b4`)
+
+Fresh read-only spec-compliance-auditor (Sonnet) per folder; `openspec validate --strict` passes for both. Verdict for both: **needs fixes before tests**.
+
+### D `update-win-apostrophe`
+
+1. **Major.** `tests/play-page-size-selector.test.ts:465` and `:482` pin U+0027 (`String.fromCodePoint(0x27)`) in "Win at 4x4/8x8"; D's list of deliberately changed tests (design.md:41-51, tasks.md:8-9) omits them, so D cannot go green without editing them; nobody owns them (C rewrites that file).
+2. **Major.** Archive order is hedged ("before or after C" in proposal.md:29, "recommended after C" in design.md:31, no gate in tasks 3.9). No header collision forces an order; pin one (D after C, with C's rewrite comparing to `WIN_MESSAGE`), or fix 1 inside D.
+3. Minor. Re-grep the DOM-contract sentence after A's archive before the hand edit.
+4. Minor. The new scenario's GIVEN could name the two routes (final click, final hint).
+5. Minor. Confirm `check:trace` is the same script as `check-traceability` (it is).
+
+### F `add-rule-solvable-generator`
+
+1. **Critical.** Scenario 2 (specs/puzzle-engine/spec.md:17-22) and tasks 1.1(b), 1.4 claim the first hint on the board `. 0 . 0 / 1 0 . . / . . 0 . / . . . .` is `none`; the auditor ran the engine: the first hint is a pair fill, `none` comes after 7 fills with empty cells left. Rewrite the THEN as "repeated fill ends on `none` with empty cells left", or use a fixture whose first hint is `none`.
+2. Minor. design.md:21 attributes the "closed upward" argument to carving; it justifies scenario 3 (partial boards) instead.
+3. Minor. tasks.md:8 says the count rule fills the last cell; the pair rule fires first (`steps` is still 1).
+
+Checks that passed for F: faithful to FR-27, A-5, A-30; dropping the solver from carving is sound and uniqueness stays independently tested (`tests/generator-unique.test.ts` with `oracleSolve`); timing rests on the unchanged `tests/generator-timing.test.ts`; non-rule-solvable counts today reproduced (46 of 60 seeds).

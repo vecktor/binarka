@@ -275,6 +275,23 @@ describe('@trace FR-57 two mounts stay independent', () => {
     expect(panelA.querySelector('button')?.getAttribute('popovertarget')).toBe(idA);
     expect(panelB.querySelector('button')?.getAttribute('popovertarget')).toBe(idB);
   });
+
+  // Added after review run 3 (wf_319f4046-80b): the heading id is unique per mount too (spec «Rules panel»). Coverage of a
+  // clause the code already meets (green from the start), not red evidence.
+  it('each panel is named by the h2 «Правила» inside its own panel, and the two heading ids differ', () => {
+    const a = mountPage({ seedSource: () => 1 });
+    const b = mountPage({ seedSource: () => 2 });
+    const labels = [rulesPanel(a), rulesPanel(b)].map((panel) => {
+      const labelId = panel.getAttribute('aria-labelledby') ?? '';
+      expect(labelId, 'aria-labelledby is set').not.toBe('');
+      const heading = document.getElementById(labelId);
+      expect(heading?.tagName).toBe('H2');
+      expect(panel.contains(heading), 'the heading is inside its own panel').toBe(true);
+      expect(heading?.textContent?.trim()).toBe(RULES_LABEL);
+      return labelId;
+    });
+    expect(labels[0]).not.toBe(labels[1]);
+  });
 });
 
 describe('@trace FR-57 the panel survives every board change', () => {
