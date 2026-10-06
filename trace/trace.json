@@ -700,7 +700,15 @@
         "openspec/changes/update-controls-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -783,10 +791,6 @@
     {
       "check": "test-trace",
       "msg": "FR-27 has no test annotated \"@trace FR-27\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-59 has no test annotated \"@trace FR-59\""
     },
     {
       "check": "test-trace",

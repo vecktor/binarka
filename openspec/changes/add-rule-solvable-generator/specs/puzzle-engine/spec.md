@@ -14,11 +14,11 @@ Traces: FR-27
 - **AND** every filled cell was empty before the call and receives the value that the puzzle's `solution` holds for that cell
 - **AND** the number of calls equals the number of empty cells of the givens, and the final board equals the puzzle's `solution`
 
-#### Scenario: A board with a unique solution but no applicable rule is not a generator output
+#### Scenario: A board with a unique solution that the rules cannot finish is not a generator output
 
 - **GIVEN** the 4×4 board with rows `. 0 . 0`, `1 0 . .`, `. . 0 .` and `. . . .` (its solver result is 1, and its unique solution is `1 0 1 0`, `1 0 0 1`, `0 1 0 1`, `0 1 1 0`)
-- **WHEN** a hint is requested on it
-- **THEN** no cell is targeted and the no-rule sentence of FR-25 is returned, so the board is not solvable by the three rules alone
+- **WHEN** the test repeats: ask the hint engine for a hint on the board, and write the hint's value into the hint's cell, until a call does not return `kind: 'fill'` or no cell is empty
+- **THEN** the repetition ends on a call that returns `kind: 'none'` with the no-rule sentence of FR-25 while at least one cell is still empty (on the current engine: 7 fills, then `none` with 4 empty cells left), so the board never reaches its solution and is not solvable by the three rules alone (its first hint is a fill; the stop comes later)
 - **AND** its givens are not equal to the givens of `generate(4, seed)` for any seed from 1 to 20
 
 #### Scenario: A hint is always available on a correct partial board
