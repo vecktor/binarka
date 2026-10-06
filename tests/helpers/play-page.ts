@@ -248,6 +248,18 @@ export function violationCells(root: ParentNode): Array<[number, number]> {
   return sortedCells(out);
 }
 
+/** Cells (1-based [row, col], sorted) that carry the class cell-hinted (FR-59). Asserts N*N cells first. */
+export function hintedCells(root: ParentNode): Array<[number, number]> {
+  expectedBoardSize(root);
+  const out: Array<[number, number]> = [];
+  for (const el of allCells(root)) {
+    if (el.classList.contains('cell-hinted')) {
+      out.push([Number(el.getAttribute('data-row')), Number(el.getAttribute('data-col'))]);
+    }
+  }
+  return sortedCells(out);
+}
+
 /**
  * The cells the page must highlight for a board, from the real rule checker, 1-based, de-duplicated and sorted.
  * 'three' and 'duplicate' violations highlight the cells the checker lists. A 'count' violation highlights EVERY

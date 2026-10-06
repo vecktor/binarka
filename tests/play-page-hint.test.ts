@@ -18,6 +18,7 @@ import {
   expectPageStructure,
   expectedHint,
   hintMessage,
+  hintedCells,
   installPageLifecycle,
   makePuzzle,
   mountFixture,
@@ -91,8 +92,28 @@ describe('@trace FR-39 the hint button fills one cell', () => {
       const after = texts(root);
       const changed = after.flatMap((t, i) => (t !== before[i] ? [i] : []));
       expect(changed).toEqual([(row - 1) * 6 + (col - 1)]);
+      // FR-39 / FR-59 (add-hinted-cell): the filled cell is an ordinary player cell that carries the marker, no other does
+      expect(cellEl(root, row, col).classList.contains('cell-hinted')).toBe(true);
+      expect(cellEl(root, row, col).getAttribute('data-given')).toBe('false');
+      expect(cellEl(root, row, col).classList.contains('cell-given')).toBe(false);
+      expect(hintedCells(root)).toEqual([[row, col]]);
     });
   }
+
+  it('The filled cell carries the marker (FR-59): the target has cell-hinted, data-given false, no cell-given; no other cell has it', () => {
+    const root = mountFixture(PAIR_COL);
+    expect(hintedCells(root)).toEqual([]);
+    expect(targetCell(expectedHint(root))).toEqual([3, 4]);
+
+    pressHint(root);
+
+    const target = cellEl(root, 3, 4);
+    expect(target.classList.contains('cell-hinted')).toBe(true);
+    expect(target.getAttribute('data-given')).toBe('false');
+    expect(target.classList.contains('cell-given')).toBe(false);
+    expect(allCells(root).filter((c) => c !== target && c.classList.contains('cell-hinted'))).toEqual([]);
+    expect(hintedCells(root)).toEqual([[3, 4]]);
+  });
 
   it('Hint fills the targeted cell on a real generated board (seed 2)', () => {
     const root = mountPage({ seedSource: () => 2 });
@@ -108,6 +129,7 @@ describe('@trace FR-39 the hint button fills one cell', () => {
     const after = texts(root);
     expect(cellText(root, row, col)).toBe(String(h.value));
     expect(after.flatMap((t, i) => (t !== before[i] ? [i] : []))).toEqual([(row - 1) * 6 + (col - 1)]);
+    expect(hintedCells(root)).toEqual([[row, col]]); // FR-59
   });
 
   it('Zero-based target maps to the one-based cell: engine row 2, col 2 is data-row 3, data-col 3', () => {
@@ -124,6 +146,10 @@ describe('@trace FR-39 the hint button fills one cell', () => {
     expect(cellText(root, 2, 2)).toBe('');
     // nothing sits at the unconverted position either (a 0-based page would have written data-row 2, data-col 2)
     expect(texts(root).filter((t) => t !== '')).toHaveLength(3);
+    // FR-59: the marker is on the one-based cell, not on the unconverted position
+    expect(cellEl(root, 3, 3).classList.contains('cell-hinted')).toBe(true);
+    expect(cellEl(root, 2, 2).classList.contains('cell-hinted')).toBe(false);
+    expect(hintedCells(root)).toEqual([[3, 3]]);
   });
 
   it('Count rule fills only one cell, the first empty one of the line', () => {
@@ -139,6 +165,9 @@ describe('@trace FR-39 the hint button fills one cell', () => {
     expect(cellText(root, 5, 4)).toBe('1');
     expect(cellText(root, 5, 5)).toBe('');
     expect(texts(root).flatMap((t, i) => (t !== before[i] ? [i] : []))).toEqual([4 * 6 + 3]);
+    // FR-59: only that cell carries the marker, not the other empty cells of the line
+    expect(hintedCells(root)).toEqual([[5, 4]]);
+    expect(cellEl(root, 5, 5).classList.contains('cell-hinted')).toBe(false);
   });
 
   it('Hint-filled cell stays editable: a hint-filled 1 follows the player cycle (1, empty, 0)', () => {
@@ -156,6 +185,19 @@ describe('@trace FR-39 the hint button fills one cell', () => {
     expect(cellEl(root, 3, 3).getAttribute('data-given')).toBe('false');
   });
 
+  it('Hint-filled cell stays editable (FR-59): the click removes cell-hinted, the cell is the hinted one before it', () => {
+    const root = mountFixture(PAIR_ROW);
+    pressHint(root);
+    expect(cellEl(root, 3, 3).classList.contains('cell-hinted')).toBe(true);
+
+    clickCell(root, 3, 3);
+
+    expect(cellText(root, 3, 3)).toBe('');
+    expect(cellEl(root, 3, 3).getAttribute('data-given')).toBe('false');
+    expect(cellEl(root, 3, 3).classList.contains('cell-hinted')).toBe(false);
+    expect(hintedCells(root)).toEqual([]);
+  });
+
   it('No fill when the engine has no target: kind none', () => {
     const root = mountFixture(ISOLATED);
     expectPageStructure(root);
@@ -166,6 +208,7 @@ describe('@trace FR-39 the hint button fills one cell', () => {
     pressHint(root);
 
     expect(snapshot(root)).toEqual(before);
+    expect(hintedCells(root)).toEqual([]); // FR-59: no target, no marker
   });
 
   it('No fill when the engine has no target: kind broken', () => {
@@ -178,6 +221,7 @@ describe('@trace FR-39 the hint button fills one cell', () => {
     pressHint(root);
 
     expect(texts(root)).toEqual(before);
+    expect(hintedCells(root)).toEqual([]); // FR-59: no target, no marker
   });
 });
 

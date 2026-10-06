@@ -1,0 +1,57 @@
+# Red run of add-hinted-cell (phase B), confirmed by the orchestrator
+# 2026-10-06 09:28 (UTC+5:30), worktree heuristic-lovelace-5e57b4, src/ at 6d2bd79 (no src change), tests by the test-engineer (uncommitted at the run)
+# Result: 28 failed, 465 passed of 493 (before: 475 of 475). Failing files: tests/play-page-hinted-cell.test.ts (16 of 16), tests/play-page-hint.test.ts (12, added FR-39 marker assertions).
+# Every failure is an assertion on the missing cell-hinted marker; no import, syntax or setup error.
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 28 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of zeros in a column)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of ones in a row)
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (count of zeros in a row)
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > The filled cell carries the marker (FR-59): the target has cell-hinted, data-given false, no cell-given; no other cell has it
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell on a real generated board (seed 2)
+AssertionError: expected [] to deeply equal [ [ 4, 4 ] ]
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Zero-based target maps to the one-based cell: engine row 2, col 2 is data-row 3, data-col 3
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Count rule fills only one cell, the first empty one of the line
+AssertionError: expected [] to deeply equal [ [ 5, 4 ] ]
+ FAIL  tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint-filled cell stays editable (FR-59): the click removes cell-hinted, the cell is the hinted one before it
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 no cell carries the marker at mount, and no given ever does > No cell carries the marker at mount; after a hint no given cell carries it
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 no cell carries the marker at mount, and no given ever does > A given never carries the marker even after every kind of click and a second hint
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 a second hint moves the marker > A second hint moves the marker: exactly one cell, X after the first press, then Y and not X
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > Click on a non-given cell other than X removes the marker
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > Click on X itself removes the marker (the cell follows the player cycle)
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > «Нова головоломка» removes the marker, and a later hint marks exactly one cell again
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > A size change to 4 removes the marker (the injected generator returns a 4x4 fixture)
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > A size change to 8 removes the marker (the injected generator returns a 8x8 fixture)
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > «Скинути» removes the marker and empties the hint-filled cell
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 actions that change no cell keep the marker > Click on a given cell keeps the marker: once, and again twice more
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 actions that change no cell keep the marker > A hint with no rule applying keeps the marker (kind none, after PAIR_ROW was hinted)
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 actions that change no cell keep the marker > A hint on a broken board keeps the marker (HINT_BREAKS: the hint fill itself breaks a rule)
+AssertionError: expected [] to deeply equal [ [ 1, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 actions that change no cell keep the marker > Opening and closing the rules panel keeps the marker (the page code does not touch it)
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 a failed generation keeps the marker > The generator throws for size 8: the board stays 6x6 with the same snapshot and X keeps the marker
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 a hint that wins keeps the marker on the filled cell > The winning hint shows the win message and exactly the filled cell carries the marker
+AssertionError: expected [] to deeply equal [ [ 4, 1 ] ]
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 two mounts are independent > A hint on the first page leaves the second page without a marker
+AssertionError: expected [] to deeply equal [ [ 3, 3 ] ]
+ Test Files  2 failed | 20 passed (22)
+      Tests  28 failed | 465 passed (493)
