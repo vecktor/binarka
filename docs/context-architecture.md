@@ -26,7 +26,8 @@ Loaded only when the task touches it, so its tokens are not paid on unrelated tu
 |---|---|
 | working in a domain | `src/engine/` code + that domain's spec under `openspec/specs/<capability>/` |
 | a reusable procedure applies | a `SKILL.md` skill (vendored under `.agents/skills/`, listed in `skills-lock.json`) |
-| using a framework API | the installed package's bundled docs (`node_modules/<pkg>/dist/docs/`) — never memory |
+| writing or reviewing code | `docs/coding-conventions.md` (ADR-0003) |
+| using a Vite or Vitest API or option | the version-matched docs vendored in `.vendor-docs/<pkg>/` (ADR-0003; `npm run check:docs` after upgrades) — never memory. Vite and Vitest ship no docs in their packages, unlike Next.js (`node_modules/next/dist/docs/`) |
 | doing QA / release | the QA pack under `docs/qa/`, the trajectory/traceability reports |
 | resuming work | `docs/current-state.md` (read, not embedded) |
 
@@ -43,6 +44,6 @@ Loaded only when the task touches it, so its tokens are not paid on unrelated tu
 
 ## Current decision
 
-- **Static budget:** 4k. **Today:** about 3k (AGENTS.md is 12.3 KB, most of it the six factory lessons).
-- **Recently demoted to dynamic:** nothing yet.
-- **Owning ADR:** ADR-0002-context-architecture.
+- **Static budget:** 4k. **Today:** about 3.1k (AGENTS.md is 12.6 KB, most of it the six factory lessons).
+- **Recently added to the dynamic layer (2026-10-06):** the coding conventions and the vendored Vite/Vitest docs. The static layer only gained a two-sentence pointer to them (about 50 tokens), not a docs index.
+- **Owning ADRs:** ADR-0002-context-architecture; ADR-0003 for the conventions and framework-docs rows.
