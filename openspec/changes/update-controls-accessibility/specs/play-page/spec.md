@@ -99,7 +99,7 @@ Traces: FR-60, FR-42, FR-43, FR-58, FR-59
 
 ### Requirement: Pressing the shown size changes nothing
 
-Pressing the size button of the size already shown SHALL be a no-op (FR-66): no dialog, no new puzzle, no seed taken, no generator call, and the board, both messages, the highlights, `aria-checked` and `cell-hinted` unchanged (FR-59). This holds on a board with player entries and on a board without. The shown size is the size of the board shown: when no board is shown (the generation at mount failed), no size is shown, and a press of any size button generates a board of that size at once (there are no entries to confirm).
+Pressing the size button of the size already shown SHALL be a no-op (FR-66): no dialog, no new puzzle, no seed taken, no generator call, and the board, both messages, the highlights, `aria-checked` and `cell-hinted` unchanged (FR-59). This holds on a board with player entries and on a board without. When no board is shown (the generation at mount failed), the no-op rule does not apply: «Поле 6×6» keeps `aria-checked="true"` from mount (see «Grid size selector»), and a press of any size button, «Поле 6×6» included, generates a board of that size at once (there are no entries to confirm).
 
 Traces: FR-66, FR-59, FR-43
 

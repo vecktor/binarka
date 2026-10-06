@@ -165,6 +165,7 @@ describe('@trace FR-66 @trace FR-43 with no board shown, a size button generates
     });
     const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
     expect(root.querySelectorAll('[data-cell]'), 'premise: no board is shown').toHaveLength(0);
+    expect(checkedSize(root), 'with no board, «Поле 6×6» keeps aria-checked from mount').toBe(6);
 
     pressSizeButton(root, 6);
 

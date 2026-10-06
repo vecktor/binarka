@@ -16,7 +16,7 @@
 | (h) Space, then Enter on an empty cell; right arrow | Space wrote 0, Enter wrote 1; the arrow key changed nothing and kept focus | script check |
 | (h) Space on «Поле 6×6» with entries | Dialog opened | script check |
 | (i) Cell labels (accessible name, read from `aria-label`) | «Рядок 1, стовпець 1, порожньо», a given «Рядок 1, стовпець 2, 0, задано», a hinted «Рядок 2, стовпець 6, 1, підказка» | script check |
-| Dialog at 1280 opened by keyboard | Centred over the page; focus ring on «Так, почати» | `1280-confirm-dialog-keyboard-b43c855.jpg` |
+| Dialog at 1280 opened by keyboard | Centred over the page; focus ring on «Так, почати» (**superseded** by fix `25aa306`, see run 3) | `1280-confirm-dialog-keyboard-b43c855.jpg` |
 | Console | No errors | `read_console_messages` |
 
 ## Run 2: review fix round 1 (uncommitted fix on top of `b43c855`, committed right after)
@@ -26,3 +26,15 @@
 Superseded observation from run 1 (the user then chose the safe focus, 2026-10-06): `showModal()` focuses the first button, «Так, почати», the destructive choice. The frozen design (`design/v0/components/binarka-page.tsx:240`) has the same order and no `autofocus`, and the spec leaves the dialog's focus to the held NFR-12. Putting the initial focus on «Скасувати» would be a design change.
 
 No screen reader was run; (i) reads the accessible name the browser exposes from `aria-label`.
+
+## Run 3: after the confirming review `wf_388c10c0-f21`, at `25aa306`
+
+2026-10-06 about 12:55 (UTC+5:30), same setup, 1280×800.
+
+| Step | Observation | Evidence |
+|---|---|---|
+| Dialog opened by keyboard (focus on «Нова головоломка», Enter, one cell played) | Dialog open; focus on «Скасувати» with `:focus-visible` true, the ring is drawn on «Скасувати»; Enter on it closed the dialog and kept the move | `1280-confirm-dialog-keyboard-25aa306.jpg`, script check |
+| (i) Computed accessible names from the browser's accessibility tree (`find` over the tree, not the attribute) | `button "Рядок 1, стовпець 1, 0"`, `button "Рядок 1, стовпець 2, порожньо"`, `button "Рядок 1, стовпець 4, 1, задано"`, `button "Рядок 4, стовпець 4, 1, підказка"`: the computed name is the label, the digit text does not merge into it | accessibility tree |
+
+Still not done: no screen reader was run (held NFR-12, NOT-EARNED).
+
