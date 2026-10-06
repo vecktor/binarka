@@ -75,7 +75,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     item.appendChild(example);
     rulesList.appendChild(item);
   });
-  const closeButton = el('button', { type: 'button', class: 'rules-close', popovertarget: panelId, popovertargetaction: 'hide' }, BUTTONS.rulesClose);
+  const closeButton = el('button', { type: 'button', class: 'rules-close', popovertarget: panelId, popovertargetaction: 'hide', autofocus: '' }, BUTTONS.rulesClose);
   rulesPanel.append(el('h2', { id: panelTitleId }, RULES.heading), rulesList, closeButton);
 
   root.replaceChildren(header, sizeSelect, boardHost, buttons, messages, rulesPanel);

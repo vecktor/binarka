@@ -177,6 +177,20 @@ describe('@trace FR-57 the rules panel at mount', () => {
     expect(heading?.tagName).toBe('H2');
     expect(heading?.textContent?.trim()).toBe(RULES_LABEL);
   });
+
+  // Added in review fix round 2 (confirming run wf_912df3de-71f; the user chose `autofocus`, 2026-10-06): a declarative
+  // popover moves focus only to an `autofocus` descendant, so «Зрозуміло» carries it. Scenario "The panel is a named dialog
+  // and takes focus when opened". jsdom cannot open a popover; the focus move itself is checked in the real browser (3.7).
+  it('«Зрозуміло» has the autofocus attribute and no other element of the root has it', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const panel = rulesPanel(root);
+    const focused = Array.from(root.querySelectorAll('[autofocus]'));
+    expect(focused, 'exactly one autofocus element in the root').toHaveLength(1);
+    const close = focused[0] as HTMLElement;
+    expect(close.tagName).toBe('BUTTON');
+    expect(panel.contains(close), 'the autofocus element is inside the panel').toBe(true);
+    expect(close.textContent?.trim()).toBe(RULES_CLOSE_LABEL);
+  });
 });
 
 describe('@trace FR-57 no rules block under the board and no details element', () => {

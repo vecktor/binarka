@@ -22,7 +22,7 @@ export const RULES = {
 } as const;
 
 // Two non-breaking spaces (U+00A0) keep "0 і 1" together.
-export const IDLE = 'Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.';
+export const IDLE = 'Натискайте клітинки, щоб ставити 0\u00A0і\u00A01. Правила — кнопка «Правила» вгорі.';
 
 // ASCII apostrophe until slice D changes it.
 export const WIN = "Вітаємо, головоломку розв'язано!";
