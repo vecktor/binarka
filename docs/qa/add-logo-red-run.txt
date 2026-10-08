@@ -1,0 +1,24 @@
+# Red run: add-logo (phase E, FR-72, TC-14)
+
+Run by the orchestrator at 2026-10-09 02:55 (UTC+5:30) in a scratch copy of worktree claude/ux-phases-d-h: tracked files at HEAD f05f676 plus the two new test files; src/ byte-identical to HEAD (diff -r and git diff --quiet HEAD -- src clean).
+Command: npx vitest run. Result: 8 failed, 674 passed, 682 total (1 of 34 files failed). The 670 existing tests all pass.
+
+All 8 failures are AssertionErrors because the header holds no svg (expected 1, received 0); no import, type or syntax error.
+The orchestrator added one line to the seed test (logoOf(root)) so it asserts its GIVEN «the logo present»; it now fails red too.
+
+Guards that pass before the logo exists (not red evidence, tasks.md 1.3): the three tests of tests/no-image-assets.test.ts (no image file under src/ or public/ (absent), no icon link or img in index.html, no url( in style.css) and «No image file is used» (no img/image/use/picture/object/embed/canvas, no src; the href checks are vacuous without an svg).
+
+## Failing tests
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > One decorative inline logo in the header
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > The logo holds no text
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > The mini board shows 1 0 / 0 1
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > Circle and 0/1 rays
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > The logo survives every board change > presses «Нова головоломка»
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > The logo survives every board change > changes the size to 4 and to 8
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > The logo survives every board change > reaches a win
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > The logo does not leak the seed
+
+## Summary lines
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 33 passed (34)
+      Tests  8 failed | 674 passed (682)

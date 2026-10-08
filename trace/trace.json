@@ -969,7 +969,10 @@
         "openspec/changes/add-logo/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/no-image-assets.test.ts",
+        "tests/play-page-logo.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -992,10 +995,6 @@
     {
       "check": "test-trace",
       "msg": "FR-27 has no test annotated \"@trace FR-27\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-72 has no test annotated \"@trace FR-72\""
     },
     {
       "check": "recording-evidence",
