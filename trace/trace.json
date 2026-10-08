@@ -618,7 +618,8 @@
     {
       "id": "FR-40",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-win-apostrophe/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -744,7 +745,8 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-win-apostrophe/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -804,7 +806,8 @@
     {
       "id": "FR-63",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-win-apostrophe/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -891,7 +894,8 @@
     {
       "id": "FR-67",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-win-apostrophe/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -954,7 +958,8 @@
     {
       "id": "FR-71",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-win-apostrophe/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
