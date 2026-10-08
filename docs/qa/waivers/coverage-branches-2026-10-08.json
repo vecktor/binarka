@@ -1,0 +1,7 @@
+{
+  "check": "coverage-ratchet",
+  "metrics": ["branches"],
+  "reason": "Merge of the accessibility line into main, 2026-10-08. Branch coverage fell from 88.44% to 87.12% (345 of 396) because the accessibility code adds guard branches that no requirement or spec sentence describes: events on the board that are not on a cell, cell positions out of range, hint and reset with no board shown, and null guards required by noUncheckedIndexedAccess. The user's rule for this integration is that tests come only from requirements and specs, so these guards get no tests; lines, statements and functions coverage rose. Decided by the user in chat on 2026-10-08 ('Waive branches'), autonomy-log row 46.",
+  "decidedBy": "user",
+  "date": "2026-10-08"
+}
