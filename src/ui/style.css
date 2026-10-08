@@ -32,20 +32,26 @@ h1 {
   margin: 8px 0 16px;
 }
 
-.board {
+.page-header {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  --n: 6;
-  --cell-max: 48px;
-  touch-action: manipulation;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.board-row {
+.rules-button {
+  flex: none;
+  min-height: 2.75rem;
+}
+
+.board {
   display: grid;
+  --n: 6;
+  --cell-max: 48px;
   grid-template-columns: repeat(var(--n), minmax(0, var(--cell-max)));
   gap: 2px;
   justify-content: center;
+  touch-action: manipulation;
 }
 
 .board[data-size='4'] {
@@ -77,6 +83,10 @@ h1 {
   border-width: 1px;
   border-style: solid;
   border-color: var(--color-cell-border);
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -88,6 +98,13 @@ h1 {
   border-width: 2px;
   border-color: var(--color-given-border);
   cursor: default;
+}
+
+.cell-hinted {
+  /* Non-colour cue: dashed border, italic and bold digit (design/v0/app/binarka.css .cell-hinted). */
+  border: 2px dashed #4b5563;
+  font-style: italic;
+  font-weight: 700;
 }
 
 .cell-violation {
@@ -114,8 +131,7 @@ h1 {
   margin: 16px 0 8px;
 }
 
-button,
-select {
+button {
   font: inherit;
   padding: 10px 16px;
   border-width: 1px;
@@ -140,36 +156,179 @@ select:focus-visible {
   margin: 6px 0;
 }
 
+.message:empty {
+  display: none;
+}
+
+.message-idle {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.messages:has([data-message='hint']:not(:empty), [data-message='win']:not(:empty)) .message-idle {
+  display: none;
+}
+
 .message-win {
   font-weight: 700;
   color: var(--color-win-text);
 }
 
-.size-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+/* Segmented size control (ported in part from design/v0/app/binarka.css .size-picker). */
+.size-control {
+  display: flex;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto 12px;
+  padding: 3px;
+  gap: 3px;
+  box-sizing: border-box;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+  background: #fff;
 }
 
+.size-control button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 8px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.size-control button[aria-checked='true'] {
+  border-color: #2563eb;
+  background: #dbeafe;
+  color: #1f2937;
+  font-weight: 700;
+}
+
+/* Confirmation dialog (ported in part from design/v0/app/binarka.css .confirm). */
+.confirm {
+  width: min(22rem, calc(100vw - 32px));
+  max-width: none;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #9ca3af;
+  border-radius: 12px;
+  background: #fff;
+  color: #1f2937;
+  text-align: left;
+}
+
+.confirm::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.confirm p {
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.confirm-buttons {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.confirm-buttons button {
+  flex: 1 1 auto;
+  min-height: 2.75rem;
+  font-weight: 700;
+}
+
+/* Rules popover: bottom sheet below 48rem, centred panel from 48rem. */
 .rules {
-  max-width: 100%;
-  margin-top: 1rem;
-  overflow-wrap: anywhere;
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: 55dvh;
+  margin: 0;
+  padding: 20px 16px 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  border: 1px solid #d1d5db;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+  color: #1f2937;
+  text-align: left;
+}
+
+.rules::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 48rem) {
+  .rules {
+    inset: 0;
+    width: 28rem;
+    max-width: calc(100% - 2rem);
+    height: fit-content;
+    margin: auto;
+    padding: 24px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+  }
 }
 
 .rules h2 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 8px;
   font-size: 1.1rem;
 }
 
 .rules ul {
-  margin: 0;
-  text-align: left;
-  padding-left: 1.25rem;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
 }
 
 .rules li {
-  margin-bottom: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0;
+  border-top: 1px solid #e5e7eb;
   line-height: 1.4;
+}
+
+.rule-example {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+  background: #f9fafb;
+}
+
+.mini-answer {
+  border: 2px dashed #2563eb;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.mini-sep {
+  padding: 0 8px;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.rules-close {
+  width: 100%;
+  min-height: 2.75rem;
+  font-weight: 700;
 }

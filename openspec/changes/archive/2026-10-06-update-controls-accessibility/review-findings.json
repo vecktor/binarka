@@ -1,0 +1,41 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "update-controls-accessibility",
+  "change": "update-controls-accessibility",
+  "baseRef": "2e38207",
+  "headRef": "HEAD",
+  "dimensions": {
+    "spec-compliance": {
+      "confirmed": 4,
+      "contested": 0,
+      "rejected": 1
+    },
+    "visual": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 2
+    },
+    "correctness": {
+      "confirmed": 0,
+      "contested": 1,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "aria-checked stays on «Поле 6×6» when no board is shown, but the new clause says no size is shown",
+    "Task 3.7 is ticked, but step (j) (screenshot paths recorded in docs/current-state.md) is not done",
+    "Step (i) of 3.7 ran neither a screen reader nor the accessibility inspector",
+    "No test covers a generator failure after «Так, почати» for «Нова головоломка»",
+    "Keyboard-dialog screenshot shows the focus behaviour that fix 25aa306 replaced, and no screenshot shows the current behaviour",
+    "With no board shown after a failed mount generation, «Поле 6×6» still has aria-checked=\"true\""
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-06T07:27:01Z",
+  "runId": "wf_388c10c0-f21",
+  "persistedBy": "orchestrator, from the run's result (the run wrote no review-findings.json); confirming run of update-controls-accessibility"
+}

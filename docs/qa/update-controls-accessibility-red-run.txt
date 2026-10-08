@@ -1,0 +1,246 @@
+# Red run of update-controls-accessibility (phase C), confirmed by the orchestrator
+# 2026-10-06 10:02 (UTC+5:30), worktree heuristic-lovelace-5e57b4, src/ at 4741e3e (no src change), tests by the test-engineer (uncommitted at the run)
+# Result: 130 failed, 431 passed of 561 (before: 493 of 493); 13 of 26 files red. 62 new tests all red; 68 existing or rewritten tests red (most through the radiogroup helper).
+# No SyntaxError, import, ReferenceError or TypeError: every failure is an AssertionError (select still in the page, no dialog, no cell labels, cells still div, no aria-disabled, no strings).
+# Green by design: 7 helper self-checks (stubs, fixtures) and 1 characterisation guard (no Cyrillic outside src/ui/strings.ts).
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 130 ⎯⎯⎯⎯⎯⎯
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 every cell is a native button at size 4 > Every cell is a native button: 4x4 cells, type=button, no negative tabindex, in reading order from (1,1) to (4,4)
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 every cell is a native button at size 8 > Every cell is a native button: 8x8 cells, type=button, no negative tabindex, in reading order from (1,1) to (8,8)
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 every cell is a native button at size 4 > Labels use the size of the board: the last cell (4,4) reads «Рядок 4, стовпець 4, порожньо»
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 every cell is a native button at size 8 > Labels use the size of the board: the last cell (8,8) reads «Рядок 8, стовпець 8, порожньо»
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 every cell is a native button at size 6 > Every cell is a native button: 6x6 cells, type=button, no negative tabindex, in reading order from (1,1) to (6,6)
+AssertionError: cell 1,1 is a button element: expected 'DIV' to be 'BUTTON' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 every cell is a native button at size 6 > Labels use the size of the board: the last cell (6,6) reads «Рядок 6, стовпець 6, порожньо»
+AssertionError: cell 6,6 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 givens are aria-disabled, not disabled > Givens are aria-disabled, not disabled: every given has aria-disabled="true" and no disabled; every non-given has neither
+AssertionError: a given has aria-disabled="true": expected null to be 'true' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 givens are aria-disabled, not disabled > a click on a given still changes nothing (FR-33) and the given keeps aria-disabled
+AssertionError: expected null to be 'true' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 givens are aria-disabled, not disabled > a hint-filled or player-filled cell never gets aria-disabled
+AssertionError: premise: a given of this fixture is aria-disabled: expected null to be 'true' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 the controls are in the tab order > The controls are in the tab order: the three size buttons, hint, reset, new and rules are buttons, not disabled, with no negative tabindex
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-62 the controls are in the tab order > no cell, size button, action button or rules button has a negative tabindex after play either (a hint, a click, a new board)
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 the four label forms > The four label forms: empty, digit, given, hint-filled
+AssertionError: cell 3,2 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 the four label forms > a label has no Latin letters at any state (NFR-5)
+AssertionError: every cell has a label: expected '' not to be '' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 labels follow every change of the cell > Labels follow every change of the cell: three clicks give 0, 1, порожньо with the same R and C
+AssertionError: cell 2,5 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 labels follow every change of the cell > a hint adds «, підказка», and a click on that cell removes the suffix and moves the digit on in the cycle
+AssertionError: cell 3,3 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 labels follow every change of the cell > a second hint moves the suffix: the old cell loses «, підказка» and keeps its digit, the new cell gains it
+AssertionError: cell 3,3 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 labels follow every change of the cell > after «Скинути» (confirmed when entries exist) every non-given cell reads «…, порожньо» and every given keeps «, задано»
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 labels follow every change of the cell > after a new puzzle (confirmed when entries exist) the labels describe the new board
+AssertionError: cell 3,3 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 labels follow every change of the cell > after a size change (confirmed when entries exist) the labels describe the new board, with the new N in the last cell
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 labels follow every change of the cell > a cancelled confirmation changes no label
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 a violation adds no suffix > A violation adds no suffix: three equal digits side by side in non-given cells carry cell-violation and the plain label
+AssertionError: cell 2,1 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 a violation adds no suffix > a given cell that is part of a violation keeps exactly «, задано»
+AssertionError: cell 3,1 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 a violation adds no suffix > a hint-filled cell that also violates keeps «, підказка» (the FR forbids a suffix for the violation, not for the hint)
+AssertionError: cell 1,3 has an aria-label: expected null not to be null
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 the label at the board edge for every size > on an untouched blank 4xNaN board every cell is «Рядок R, стовпець C, порожньо»
+ FAIL  tests/play-page-cells.test.ts > @trace FR-63 the label at the board edge for every size > on an untouched blank 8xNaN board every cell is «Рядок R, стовпець C, порожньо»
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 the dialog at mount > The dialog at mount: one closed dialog after the rules panel, outside the board, the header and the messages, with its text and two buttons
+AssertionError: exactly one dialog: expected  to have a length of 1 but got +0
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-42 @trace FR-43 @trace FR-58 no player entries means no dialog > table: «Нова головоломка», «Поле 4×4» and «Скинути» act at once on a board with only givens
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 a board with entries asks first and changes nothing yet > «Нова головоломка»: showModal once, the dialog is open, board, size, messages, highlights and cell-hinted unchanged, no seed, no generator call
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 a board with entries asks first and changes nothing yet > «Поле 8×8»: showModal once, the dialog is open, board, size, messages, highlights and cell-hinted unchanged, no seed, no generator call
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 a board with entries asks first and changes nothing yet > «Скинути»: showModal once, the dialog is open, board, size, messages, highlights and cell-hinted unchanged, no seed, no generator call
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Так, почати» closes the dialog and then performs the action > «Нова головоломка»: close() runs once and BEFORE the action; then the effect of the row, both messages empty, no cell-hinted
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Так, почати» closes the dialog and then performs the action > «Поле 8×8»: close() runs once and BEFORE the action; then the effect of the row, both messages empty, no cell-hinted
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Так, почати» closes the dialog and then performs the action > «Скинути»: close() runs once and BEFORE the action; then the effect of the row, both messages empty, no cell-hinted
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Так, почати» closes the dialog and then performs the action > «Скинути»: the givens of the board are kept and every other cell is empty (the pure givens grid)
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Так, почати» closes the dialog and then performs the action > the late `close` event that a browser fires after close() neither undoes nor repeats the confirmed action
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Скасувати» leaves everything unchanged > «Нова головоломка» then «Скасувати»: close() once, dialog closed, state as before, no seed, no generator call, showModal once in all
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Скасувати» leaves everything unchanged > «Поле 8×8» then «Скасувати»: close() once, dialog closed, state as before, no seed, no generator call, showModal once in all
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Скасувати» leaves everything unchanged > «Скинути» then «Скасувати»: close() once, dialog closed, state as before, no seed, no generator call, showModal once in all
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Скасувати» leaves everything unchanged > a cancelled action is dropped: it is not performed later, and a later request performs only itself
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-43 @trace FR-51 @trace FR-66 a cancelled or no-op action takes no seed > A cancelled or no-op action takes no seed: new + «Скасувати», «Поле 8×8» + «Скасувати», «Скинути» + «Так, почати» and the shown size leave both counts as they were
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 Escape leaves everything unchanged and drops the action > Escape (cancel, then close, no button pressed): nothing changes, no seed, no generator call; a second request opens the dialog again and performs once
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 a hint-filled cell counts as a player entry > A hint-filled cell counts: after only «Підказка» the new puzzle button asks, and the board is unchanged until «Так, почати»
+AssertionError: a hint-filled cell is an entry: the dialog opened once: expected +0 to be 1 // Object.is equality
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 A-28 a solved board still asks > A solved board still asks (A-28): «Нова головоломка» opens the dialog; board and win message are unchanged until «Так, почати»
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 A-28 a solved board still asks > A solved board still asks (A-28): «Поле 8×8» opens the dialog; board and win message are unchanged until «Так, почати»
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 A-28 a solved board still asks > A solved board still asks (A-28): «Скинути» opens the dialog; board and win message are unchanged until «Так, почати»
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-60 entries that were cleared again do not count > Entries that were cleared again do not count: three clicks on a non-given cell and a click on a given leave no entry, so the new puzzle acts at once
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-controls-text.test.ts > @trace NFR-5 the new texts are Ukrainian > The new texts are Ukrainian: the collection holds the group name, the three size labels, the confirmation text and both buttons
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-controls-text.test.ts > @trace NFR-5 the new texts are Ukrainian > the multiplication sign of the size labels is U+00D7, not the Latin letter x
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-controls-text.test.ts > @trace NFR-5 the new texts are Ukrainian > the cell labels stay Ukrainian after play: a digit, a given, a hint-filled cell (every label has Cyrillic and no Latin letter)
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-controls-text.test.ts > @trace NFR-5 no Cyrillic text outside the strings module (re-run after the new texts) > src/ui/strings.ts, the single module, carries the new texts (read as source text, never imported by a test)
+AssertionError: strings.ts contains «Розмір поля»: expected '// Every Ukrainian page text lives he…' to contain 'Розмір поля'
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row of an 8x8 board: the fifth 0 highlights all eight cells of row 1 and nothing else
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row of a 4x4 board: the third 0 highlights all four cells of row 1 and nothing else
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many ones in the last column of an 8x8 board: the fifth 1 highlights all eight cells of column 8 and nothing else
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > A size change recomputes the highlights: the 16 cells of the new 4x4 board have none and no old cell remains
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-hint.test.ts > @trace FR-40 the hint message stays until the next hint or a new puzzle > The next hint replaces it and a new puzzle clears it
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > «Нова головоломка» removes the marker, and a later hint marks exactly one cell again
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > A size change to 4 removes the marker (the injected generator returns a 4x4 fixture)
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > A size change to 8 removes the marker (the injected generator returns a 8x8 fixture)
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 later board changes remove the marker > «Скинути» removes the marker and empties the hint-filled cell
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-59 a failed generation keeps the marker > The generator throws for size 8: the board stays 6x6 with the same snapshot and X keeps the marker
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the panel survives every board change > after size 4 there is still exactly one panel, the same element, with the same texts and the button naming its id
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the panel survives every board change > after size 8 there is still exactly one panel, the same element, with the same texts and the button naming its id
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after new puzzle the nine elements still exist once, in the same order, and the messages are in the same message area
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after size 4 the nine elements still exist once, in the same order, and the messages are in the same message area
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after size 8 the nine elements still exist once, in the same order, and the messages are in the same message area
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-layout.test.ts > @trace FR-61 the order and the message area survive every board change > after reset the nine elements still exist once, in the same order, and the messages are in the same message area
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-layout.test.ts > @trace FR-64 the idle line stays in the DOM and untouched > after reset the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle after play: a fresh generator(6, 7) board, no entries, both messages cleared
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > @trace FR-43 New puzzle keeps the chosen size: at 8x8 the button gives an 8x8 board and the selector keeps 8
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > @trace FR-43 New puzzle keeps the chosen size at 4x4 as well, and clears both messages
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle mid-game removes highlights: a clean new puzzle shows none
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle mid-game: highlights follow the new puzzle givens only (old ones are gone)
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the seed calls follow the puzzles generated > @trace FR-43 @trace FR-51 Seed calls follow the puzzles generated: seeds 1..4 with sizes 6, 6, 4, 8 and four seed-source calls
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-40 the hint message is cleared by a size change that shows a new puzzle > @trace FR-43 Hint message cleared by a size change: a sentence and a click since, then selecting 4x4 empties it
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: no text node, title or attribute value contains the seed in any form
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text includes the size buttons: «Поле 4×4», «Поле 6×6» and «Поле 8×8» exactly
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > the label attribute of an option or optgroup is page text: it is collected and would fail the Ukrainian check
+AssertionError: expected …(4) to have a length of +0 but got 4
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Board follows the chosen size: with the real generator, selecting 8x8 gives data-size 8 and 64 cells (rows and columns 1..8)
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset clears highlights that come from the player and the hint message
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset clears highlights that come from the player and the hint message
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset after a win empties the win message, and the board is editable again
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset after a win empties the win message, and the board is editable again
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset takes no seed and calls no generator: untouched, confirmed (twice) and cancelled presses leave the counts as after mount
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset takes no seed and calls no generator: untouched, confirmed (twice) and cancelled presses leave the counts as after mount
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset on an untouched board changes nothing: same cell text and classes, same messages
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset on an untouched board changes nothing: same cell text and classes, same messages
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset empties player cells (also the hint-filled one) and keeps givens, data-size and the selector
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset clears highlights that come from the player and the hint message
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset recomputes highlights: violations caused by the givens themselves stay, the player's are gone
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset after a win empties the win message, and the board is editable again
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset takes no seed and calls no generator: untouched, confirmed (twice) and cancelled presses leave the counts as after mount
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset on an untouched board changes nothing: same cell text and classes, same messages
+AssertionError: expected an element matching [data-dialog="confirm"]: expected null not to be null
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-43 the size control is a radiogroup of three buttons > structure and default: role radiogroup, aria-label «Розмір поля», three button[type=button][role=radio] in the order 4, 6, 8; 6 is checked
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-43 the size control is a radiogroup of three buttons > the buttons are native buttons in the tab order: no disabled attribute and no negative tabindex
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-43 the size control is a radiogroup of three buttons > no free value exists: the control has exactly three buttons and no select, input or option element, and the page has no select
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-43 @trace FR-60 aria-checked stays on the shown size until the confirmation > a press on a board with entries leaves aria-checked on 6 while the dialog is open and after «Скасувати»
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-66 @trace FR-59 @trace FR-43 pressing the shown size is a no-op at size 4 > with entries, a hint sentence, cell-hinted and cell-violation: «Поле 4×4» changes nothing
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-66 @trace FR-59 @trace FR-43 pressing the shown size is a no-op at size 8 > with entries, a hint sentence, cell-hinted and cell-violation: «Поле 8×8» changes nothing
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-66 @trace FR-59 @trace FR-43 pressing the shown size is a no-op at size 4 > on an untouched board: «Поле 4×4» takes no seed, calls no generator and shows no dialog
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-66 @trace FR-59 @trace FR-43 pressing the shown size is a no-op at size 8 > on an untouched board: «Поле 8×8» takes no seed, calls no generator and shows no dialog
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-66 @trace FR-59 @trace FR-43 pressing the shown size is a no-op at size 6 > with entries, a hint sentence, cell-hinted and cell-violation: «Поле 6×6» changes nothing
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-66 @trace FR-59 @trace FR-43 pressing the shown size is a no-op at size 6 > on an untouched board: «Поле 6×6» takes no seed, calls no generator and shows no dialog
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-control.test.ts > @trace FR-66 @trace FR-43 a press of the shown size does not disturb a later change > after pressing the shown size, a press of another size on a board with entries still asks, then performs once
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 the size control is offered and 6 is selected at mount > Size control structure and default: a radiogroup «Розмір поля» of three radio buttons «Поле 4×4», «Поле 6×6», «Поле 8×8»; the second is checked
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 the size control is offered and 6 is selected at mount > Size control structure and default with the real engine generator
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 the size control is offered and 6 is selected at mount > Size buttons are native buttons in the tab order, and a click on each (what Enter and Space do) selects its size
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 4x4 on a board without entries: real generator, second seed, 16 cells with data-row/data-col 1..4, givens equal generate(4, 2)
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 8x8 after play: asked first (board and aria-checked unchanged), then after «Так, почати» 64 cells, no entries, hint and marker gone, highlights only for the new givens
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 8x8 after a win: asked (a solved board has entries), then the win message is cleared and the board is 8x8 with 64 cells
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Going back to 6x6: after 8x8 (reached on an untouched board) the board is 6x6 with 36 cells and aria-checked is on 6 only
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > aria-checked stays on the shown size until the confirmation, and after «Скасувати»
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > A change takes exactly one seed and passes the chosen size: (6, 1), (4, 2), (8, 3) and three seed-source calls
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > The choice is not remembered: a new mount starts at 6 and nothing is written to localStorage or sessionStorage
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 the size control always shows the size of the board that is shown (also away from 6) > at 8x8 a failed change to 4 keeps aria-checked on 8, not on the default 6
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator error keeps the previous board: same cells, messages, highlights, marker; aria-checked on 6; dialog closed; one seed taken
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (a 6x6 fixture for size 8)
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (8 rows with the last row 7 cells long for size 8)
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (8 rows with the first row 9 cells long for size 8)
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (7 rows of 8 cells for size 8)
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > a failed change keeps the win message too (a solved board has entries, so the change was asked first)
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Hint at 4x4: the pair fill lands on (2,3), nothing else changes, the engine sentence is shown, the cell is marked
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Hint at 8x8: the pair fill lands on (8,6), nothing else changes, the engine sentence is shown, the cell is marked
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Win at 4x4: clicking the one open cell until it shows the solution digit shows the win message
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Win at 8x8: clicking the open cell (8,8) until it shows the solution digit shows the win message
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 violations in the givens of a new board show at once > Violations in the givens of a new 8x8 board show at once: exactly (8,1), (8,2), (8,3)
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 violations in the givens of a new board show at once > A count violation in the last column of a new 8x8 board shows at once: all eight cells of column 8, none outside
+AssertionError: the size control is a radiogroup: expected null to be 'radiogroup' // Object.is equality
+ Test Files  13 failed | 13 passed (26)
+      Tests  130 failed | 431 passed (561)

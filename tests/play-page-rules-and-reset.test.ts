@@ -1,14 +1,16 @@
-// Play page: the rules block (FR-57) and the reset button (FR-58). Scenarios of the delta spec
-// openspec/changes/add-rules-and-reset/specs/play-page/spec.md ("Rules block", "Reset button"). Written FIRST (red).
+// Play page: the reset button (FR-58). Scenarios of the delta spec
+// openspec/changes/add-rules-and-reset/specs/play-page/spec.md ("Reset button"). Written FIRST (red).
+// The rules-block scenarios (FR-57) that used to live here were removed by the change update-page-layout: the rules are now
+// a popover panel, covered by tests/play-page-layout.test.ts ("Rules panel").
 // Reset scenarios that touch the board run for N = 4, 6, 8, each with a fixture puzzle of size N (the page is mounted at 6
 // and the player selects 4 or 8, the injected generator returning the fixture).
 // NEVER enumerate the 8x8 grids: the 8x8 fixtures carry a hand-written solution (tests/helpers/play-page.ts).
+// Change update-controls-accessibility (FR-67): a press of «Скинути» on a board with entries is asked first, so those tests press
+// and then confirm with `confirmYes`; on an untouched board it acts at once with no dialog.
 import { describe, expect, it } from 'vitest';
 import type { Puzzle } from '../src/engine/index';
 import {
   BLANK,
-  BLANK_4,
-  BLANK_8,
   BROKEN_SENTENCE,
   DIRTY_8_ROW,
   DIRTY_GIVENS,
@@ -22,8 +24,12 @@ import {
   allCells,
   bySize,
   cellEl,
+  checkedSize,
   checkerCells,
   clickCell,
+  confirmNo,
+  confirmYes,
+  dialogIsOpen,
   collectPageText,
   fillFrom,
   generateSpy,
@@ -34,12 +40,12 @@ import {
   makePuzzle,
   mountPage,
   pressHint,
-  pressNew,
+  pressReset,
   q,
   readBoard,
   seedQueue,
   selectSize,
-  sizeSelect,
+  showModalCalls,
   snapshot,
   solutionGrid,
   violationCells,
@@ -47,15 +53,6 @@ import {
 } from './helpers/play-page';
 
 installPageLifecycle();
-
-const RULES = '[data-section="rules"]';
-const RULES_HEADING = 'Правила';
-const RULES_ITEMS = [
-  'Не більше двох однакових цифр поспіль у рядку чи стовпці.',
-  'У кожному рядку та стовпці порівну нулів і одиниць.',
-  'Усі рядки різні, і всі стовпці різні.',
-];
-const LATIN = /[A-Za-z]/;
 
 /** 4x4 whose only givens are three 0 in row 1: the checker reports `three` at once (inconsistent fixture). */
 const DIRTY_4 = makePuzzle(givensOf(4, [[1, 1, 0], [1, 2, 0], [1, 3, 0]]), { inconsistent: true });
@@ -99,81 +96,10 @@ function mountAtSize(puzzle: Puzzle): Mounted {
   return { root, seeds, spy };
 }
 
-const pressReset = (root: ParentNode): void => { q(root, '[data-action="reset"]').click(); };
-
 /** Cell texts and data-given flags only (no classes), row-major. */
 function textsAndGivens(root: ParentNode): string[] {
   return allCells(root).map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}|${c.textContent}|${c.getAttribute('data-given')}`);
 }
-
-// ---------------------------------------------------------------------------------------------------------
-// Rules block (FR-57, NFR-5)
-// ---------------------------------------------------------------------------------------------------------
-
-/** The rules block as read now: asserts it is unique, outside and after the board; returns its element, heading and items. */
-function readRules(root: HTMLElement): { el: HTMLElement; headings: string[]; items: string[] } {
-  const found = root.querySelectorAll<HTMLElement>(RULES);
-  expect(found, 'exactly one rules block').toHaveLength(1);
-  const el = found[0];
-  expect.assert(el !== undefined, 'the rules block exists');
-  const board = q(root, '[data-board]');
-  expect(board.contains(el), 'the rules block is not inside [data-board]').toBe(false);
-  expect(el.contains(board), 'the board is not inside the rules block').toBe(false);
-  expect(
-    (board.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
-    'the rules block follows [data-board] in document order',
-  ).toBe(true);
-  const headings = Array.from(el.querySelectorAll('h1, h2, h3, h4, h5, h6')).map((h) => h.textContent);
-  const items = Array.from(el.querySelectorAll('li')).map((li) => li.textContent);
-  return { el, headings, items };
-}
-
-describe('@trace FR-57 @trace NFR-5 the rules block is shown at mount', () => {
-  it('Rules block at mount: one block after the board, heading «Правила», three li items in order, no Latin letters', () => {
-    const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: BLANK }) });
-    const rules = readRules(root);
-
-    expect(rules.headings).toEqual([RULES_HEADING]);
-    expect(rules.items).toEqual(RULES_ITEMS);
-    expect(rules.el.querySelectorAll('li')).toHaveLength(3);
-    for (const text of [...rules.headings, ...rules.items]) expect(text, `no Latin letter in "${text}"`).not.toMatch(LATIN);
-  });
-});
-
-describe('@trace FR-57 the rules block survives every board change', () => {
-  const ACTIONS = ['new puzzle', 'size 4', 'size 8', 'win'] as const;
-
-  it.each(ACTIONS)('after %s there is still exactly one rules block, the same element, after the board, with the same texts', (action) => {
-    const seeds = seedQueue([1, 2, 3]);
-    const spy = generateSpy(bySize({ 6: WIN_PUZZLE, 4: BLANK_4, 8: BLANK_8 }));
-    const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
-    const atMount = readRules(root);
-    expect(atMount.headings).toEqual([RULES_HEADING]);
-    expect(atMount.items).toEqual(RULES_ITEMS);
-    const boardAtMount = q(root, '[data-board]');
-
-    if (action === 'new puzzle') {
-      pressNew(root);
-      expect(spy.calls).toHaveLength(2); // premise: a new puzzle was really generated
-    } else if (action === 'size 4') {
-      selectSize(root, 4);
-      expect(q(root, '[data-board]').getAttribute('data-size')).toBe('4');
-    } else if (action === 'size 8') {
-      selectSize(root, 8);
-      expect(q(root, '[data-board]').getAttribute('data-size')).toBe('8');
-    } else {
-      fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE));
-      expect(winMessage(root)).toBe(WIN_MESSAGE);
-    }
-
-    const after = readRules(root);
-    expect(after.el, 'the block is created once at mount, not rebuilt with the board').toBe(atMount.el);
-    expect(after.headings).toEqual(atMount.headings);
-    expect(after.items).toEqual(atMount.items);
-    // a board change really happened where the board is replaced (so "same element" is not about an untouched page)
-    if (action === 'size 4' || action === 'size 8') expect(allCells(root).length).not.toBe(boardAtMount.querySelectorAll('[data-cell]').length);
-  });
-});
 
 // ---------------------------------------------------------------------------------------------------------
 // Reset button (FR-58, NFR-5)
@@ -209,6 +135,8 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(playerFilled.length, 'premise: clicked cells plus the hint-filled cell show a digit').toBeGreaterThanOrEqual(3);
 
     pressReset(root);
+    expect(dialogIsOpen(root), 'the board has entries: asked first (FR-67)').toBe(true);
+    confirmYes(root);
 
     for (const el of allCells(root)) {
       if (el.getAttribute('data-given') === 'false') {
@@ -219,7 +147,8 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(allCells(root).filter((c) => c.getAttribute('data-given') === 'true')).toHaveLength(givensBefore.length);
     expect(allCells(root)).toHaveLength(n * n);
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
-    expect(sizeSelect(root).value).toBe(String(n));
+    expect(checkedSize(root)).toBe(n);
+    expect(root.querySelectorAll('[data-control="size"] [aria-checked="true"]'), 'aria-checked is on one button only').toHaveLength(1);
     // the board is the pure givens grid
     expect(readBoard(root)).toEqual(pair.givens);
   });
@@ -234,6 +163,7 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(hintMessage(root)).toBe(BROKEN_SENTENCE);
 
     pressReset(root);
+    confirmYes(root);
 
     expect(violationCells(root)).toEqual([]);
     expect(allCells(root).filter((c) => c.classList.contains('cell-violation'))).toHaveLength(0);
@@ -252,6 +182,7 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(withPlayer.length).toBeGreaterThan(fromGivens.length);
 
     pressReset(root);
+    confirmYes(root);
 
     expect(violationCells(root)).toEqual(fromGivens);
     for (const [r, c] of dirtyClicks) expect(cellEl(root, r, c).textContent).toBe('');
@@ -268,6 +199,9 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     const col = Number(open[0]?.getAttribute('data-col'));
 
     pressReset(root);
+    expect(dialogIsOpen(root), 'a solved board has entries: asked (A-29)').toBe(true);
+    expect(winMessage(root), 'unchanged until the confirmation').toBe(WIN_MESSAGE);
+    confirmYes(root);
 
     expect(q(root, '[data-message="win"]').textContent).toBe('');
     expect(open.length).toBe(allCells(root).filter((c) => c.getAttribute('data-given') === 'false' && c.textContent === '').length);
@@ -277,27 +211,45 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
   });
 
-  it('Reset takes no seed and calls no generator: one press and two more leave the counts as after mount', () => {
+  it('Reset takes no seed and calls no generator: untouched, confirmed (twice) and cancelled presses leave the counts as after mount', () => {
     const { root, seeds, spy } = mountAtSize(pair);
     const firstClick = clicks[0];
     expect.assert(firstClick !== undefined, 'premise: the fixture has a click');
-    const [firstRow, firstCol] = firstClick;
-    clickCell(root, firstRow, firstCol, 1);
+    const [r, c] = firstClick;
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
     expect(seedCalls, 'premise: the mount (and the size change) took seeds').toBeGreaterThan(0);
     expect(generatorCalls).toBeGreaterThan(0);
-    expect(cellEl(root, firstRow, firstCol).textContent).toBe('0');
 
+    // the untouched board: at once, no dialog
     pressReset(root);
+    expect(showModalCalls()).toBe(0);
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
-    expect(cellEl(root, firstRow, firstCol).textContent, 'the press did reset').toBe('');
 
+    // an entry, a press and the confirmation
+    clickCell(root, r, c, 1);
+    expect(cellEl(root, r, c).textContent).toBe('0');
     pressReset(root);
+    expect(dialogIsOpen(root)).toBe(true);
+    confirmYes(root);
+    expect(cellEl(root, r, c).textContent, 'the confirmed press did reset').toBe('');
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
+
+    // the same once more
+    clickCell(root, r, c, 1);
     pressReset(root);
+    confirmYes(root);
+    expect(cellEl(root, r, c).textContent).toBe('');
+    expect(seeds.calls()).toBe(seedCalls);
+    expect(spy.calls).toHaveLength(generatorCalls);
+
+    // a cancelled press: nothing is reset, still no seed and no generator call
+    clickCell(root, r, c, 1);
+    pressReset(root);
+    confirmNo(root);
+    expect(cellEl(root, r, c).textContent, 'the cancelled press did not reset').toBe('0');
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
   });
@@ -313,10 +265,12 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
 
     pressReset(root);
 
+    expect(showModalCalls(), 'an untouched board asks nothing').toBe(0);
+    expect(dialogIsOpen(root)).toBe(false);
     expect(snapshot(root)).toEqual(cellsBefore);
     expect(hintMessage(root)).toBe(hintBefore);
     expect(winMessage(root)).toBe(winBefore);
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
-    expect(sizeSelect(root).value).toBe(String(n));
+    expect(checkedSize(root)).toBe(n);
   });
 });

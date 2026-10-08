@@ -1,7 +1,7 @@
 import { findViolations, generate, hint, isSolved } from '../engine/index';
 import type { Cell, Grid, Puzzle } from '../engine/index';
-import { cellName, classifyKey, moveTarget } from './grid';
 import { defaultSeedSource } from './seed';
+import { BUTTONS, CONFIRM, IDLE, RULES, SIZE_GROUP, TITLE, WIN, cellLabel, sizeLabel } from './strings';
 
 export interface PlayPageOptions {
   seedSource?: () => number;
@@ -9,12 +9,12 @@ export interface PlayPageOptions {
 }
 
 const SIZES = [4, 6, 8];
-const RULES_ITEMS = [
-  'Не більше двох однакових цифр поспіль у рядку чи стовпці.',
-  'У кожному рядку та стовпці порівну нулів і одиниць.',
-  'Усі рядки різні, і всі стовпці різні.',
-];
-const WIN_TEXT = "Вітаємо, головоломку розв'язано!";
+// Decorative examples of the rules (digits and the not-equal sign only, aria-hidden). A trailing "?" marks the answer cell.
+// Typed as one entry per rule text, so adding or removing a rule in strings.ts fails the type check.
+type OnePerRule<T> = { readonly [K in keyof T]: readonly string[] };
+const RULE_EXAMPLES: OnePerRule<typeof RULES.items> = [['0', '0', '1?'], ['0', '1', '0', '1?'], ['0', '1', '1', '0', '\u2260', '1', '0', '0', '1']];
+
+let panelCounter = 0;
 
 function copyGrid(grid: Grid): Grid {
   return grid.map((row) => [...row]);
@@ -32,35 +32,80 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const seedSource = options.seedSource ?? defaultSeedSource;
   const makePuzzle = options.generate ?? generate;
 
-  document.title = 'Бінарка';
+  document.title = TITLE;
 
-  const heading = el('h1', {}, 'Бінарка');
+  panelCounter += 1;
+  const panelId = `rules-panel-${panelCounter}`;
+  const panelTitleId = `rules-title-${panelCounter}`;
+
+  const rulesButton = el('button', { type: 'button', class: 'rules-button', 'data-action': 'rules', popovertarget: panelId }, BUTTONS.rules);
+  const header = el('header', { class: 'page-header' });
+  header.append(el('h1', {}, TITLE), rulesButton);
+
   const boardHost = el('div', { class: 'board-host' });
-  const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, 'Підказка');
-  const newButton = el('button', { type: 'button', 'data-action': 'new' }, 'Нова головоломка');
-  const sizeSelect = el('select', { 'data-control': 'size' });
-  const sizeLabel = el('label', { class: 'size-label' });
-  sizeLabel.append(el('span', { class: 'size-label-text' }, 'Розмір поля'), sizeSelect);
+  const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, BUTTONS.hint);
+  const newButton = el('button', { type: 'button', 'data-action': 'new' }, BUTTONS.newPuzzle);
+  const sizeControl = el('div', { 'data-control': 'size', role: 'radiogroup', 'aria-label': SIZE_GROUP, class: 'size-control' });
+  const sizeButtons = new Map<number, HTMLButtonElement>();
   for (const n of SIZES) {
-    const option = el('option', { value: String(n) }, `Поле ${n}×${n}`);
-    if (n === 6) option.selected = true;
-    sizeSelect.appendChild(option);
+    const option = el('button', { type: 'button', role: 'radio', 'aria-checked': n === 6 ? 'true' : 'false', 'data-size-option': String(n) }, sizeLabel(n));
+    sizeButtons.set(n, option);
+    sizeControl.appendChild(option);
   }
-  const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, 'Скинути');
+  const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, BUTTONS.reset);
   const buttons = el('div', { class: 'buttons' });
   buttons.append(hintButton, resetButton, newButton);
-  const rules = el('section', { 'data-section': 'rules', class: 'rules' });
+
+  const idleMessage = el('p', { 'data-message': 'idle', class: 'message message-idle' }, IDLE);
+  const hintMessage = el('p', { 'data-message': 'hint', class: 'message' });
+  const winMessage = el('p', { 'data-message': 'win', class: 'message message-win' });
+  const messages = el('div', { class: 'messages' });
+  messages.append(idleMessage, hintMessage, winMessage);
+
+  const rulesPanel = el('div', { popover: 'auto', id: panelId, class: 'rules', 'data-section': 'rules', role: 'dialog', 'aria-labelledby': panelTitleId });
   const rulesList = el('ul');
-  for (const text of RULES_ITEMS) rulesList.appendChild(el('li', {}, text));
-  rules.append(el('h2', {}, 'Правила'), rulesList);
-  const hintMessage = el('p', { 'data-message': 'hint', class: 'message', role: 'status' });
-  const winMessage = el('p', { 'data-message': 'win', class: 'message message-win', role: 'status' });
-  root.replaceChildren(heading, sizeLabel, boardHost, rules, buttons, hintMessage, winMessage);
+  RULES.items.forEach((text, i) => {
+    const item = el('li');
+    item.appendChild(el('span', { class: 'rule-text' }, text));
+    const example = el('span', { class: 'rule-example', 'aria-hidden': 'true' });
+    for (const token of RULE_EXAMPLES[i] ?? []) {
+      if (token === '\u2260') example.appendChild(el('span', { class: 'mini-sep' }, token));
+      else if (token.endsWith('?')) example.appendChild(el('span', { class: 'mini mini-answer' }, token.slice(0, -1)));
+      else example.appendChild(el('span', { class: 'mini' }, token));
+    }
+    item.appendChild(example);
+    rulesList.appendChild(item);
+  });
+  const closeButton = el('button', { type: 'button', class: 'rules-close', popovertarget: panelId, popovertargetaction: 'hide', autofocus: '' }, BUTTONS.rulesClose);
+  rulesPanel.append(el('h2', { id: panelTitleId }, RULES.heading), rulesList, closeButton);
+
+  const dialogTextId = `confirm-text-${panelCounter}`;
+  const dialog = el('dialog', { 'data-dialog': 'confirm', class: 'confirm', 'aria-labelledby': dialogTextId });
+  const yesButton = el('button', { type: 'button', 'data-confirm': 'yes' }, CONFIRM.yes);
+  const noButton = el('button', { type: 'button', 'data-confirm': 'no' }, CONFIRM.no);
+  const dialogButtons = el('div', { class: 'confirm-buttons' });
+  dialogButtons.append(yesButton, noButton);
+  dialog.append(el('p', { id: dialogTextId }, CONFIRM.text), dialogButtons);
+
+  root.replaceChildren(header, sizeControl, boardHost, buttons, messages, rulesPanel, dialog);
 
   let size = 6;
   let givens: Grid = [];
   let board: Grid = [];
   let cellEls: HTMLElement[][] = [];
+  let hinted: [number, number] | null = null;
+
+  let pending: (() => void) | null = null;
+
+  function setHinted(next: [number, number] | null): void {
+    const old = hinted;
+    if (old !== null) cellEls[old[0]]?.[old[1]]?.classList.remove('cell-hinted');
+    hinted = next;
+    if (next !== null) cellEls[next[0]]?.[next[1]]?.classList.add('cell-hinted');
+    // The hint suffix of the label follows the marker.
+    if (old !== null) renderCell(old[0], old[1]);
+    if (next !== null) renderCell(next[0], next[1]);
+  }
 
   function renderCell(r: number, c: number): void {
     const node = cellEls[r]?.[c];
@@ -68,11 +113,12 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     const given = givens[r]?.[c] !== null && givens[r]?.[c] !== undefined;
     const value = board[r]?.[c] ?? null;
     node.textContent = value === null ? '' : String(value);
-    node.setAttribute('aria-label', cellName(r + 1, c + 1, value));
     node.setAttribute('data-given', given ? 'true' : 'false');
-    if (given) node.setAttribute('aria-readonly', 'true');
-    else node.removeAttribute('aria-readonly');
     node.classList.toggle('cell-given', given);
+    if (given) node.setAttribute('aria-disabled', 'true');
+    else node.removeAttribute('aria-disabled');
+    const isHinted = hinted !== null && hinted[0] === r && hinted[1] === c;
+    node.setAttribute('aria-label', cellLabel(r + 1, c + 1, value, given, isHinted));
   }
 
   function refreshHighlights(): void {
@@ -86,116 +132,53 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
       }
     }
     for (let r = 0; r < n; r++) {
-      for (let c = 0; c < n; c++) {
-        const node = cellEls[r]?.[c];
-        if (node === undefined) continue;
-        const bad = marked.has(`${r},${c}`);
-        node.classList.toggle('cell-violation', bad);
-        if (bad) node.setAttribute('aria-invalid', 'true');
-        else node.removeAttribute('aria-invalid');
-      }
+      for (let c = 0; c < n; c++) cellEls[r]?.[c]?.classList.toggle('cell-violation', marked.has(`${r},${c}`));
     }
   }
 
   function updateWin(): void {
-    winMessage.textContent = isSolved(board) ? WIN_TEXT : '';
-  }
-
-  function setTabStop(r: number, c: number, focus: boolean): void {
-    for (let i = 0; i < cellEls.length; i++) {
-      const rowEls = cellEls[i] ?? [];
-      for (let j = 0; j < rowEls.length; j++) rowEls[j]?.setAttribute('tabindex', i === r && j === c ? '0' : '-1');
-    }
-    if (focus) cellEls[r]?.[c]?.focus();
-  }
-
-  function cycleCell(r: number, c: number): void {
-    const row = board[r];
-    if (givens[r]?.[c] !== null || row === undefined) return; // given or unknown cell: ignore
-    const current = row[c] ?? null;
-    const next: Cell = current === null ? 0 : current === 0 ? 1 : null;
-    row[c] = next;
-    renderCell(r, c);
-    refreshHighlights();
-    updateWin();
-  }
-
-  function cellPosition(event: Event): [number, number] | null {
-    const target = event.target;
-    if (!(target instanceof Element)) return null;
-    const node = target.closest<HTMLElement>('[data-cell]');
-    if (node === null) return null;
-    const r = Number(node.getAttribute('data-row')) - 1;
-    const c = Number(node.getAttribute('data-col')) - 1;
-    if (!Number.isInteger(r) || !Number.isInteger(c) || r < 0 || c < 0 || r >= board.length || c >= board.length) return null;
-    return [r, c];
+    winMessage.textContent = isSolved(board) ? WIN : '';
   }
 
   function onBoardClick(event: Event): void {
-    const pos = cellPosition(event);
-    if (pos === null) return;
-    setTabStop(pos[0], pos[1], true);
-    cycleCell(pos[0], pos[1]);
-  }
-
-  function onBoardFocusIn(event: Event): void {
-    const pos = cellPosition(event);
-    if (pos !== null) setTabStop(pos[0], pos[1], false);
-  }
-
-  function onBoardKeydown(event: KeyboardEvent): void {
-    const pos = cellPosition(event);
-    if (pos === null) return;
-    const action = classifyKey(event);
-    if (action === 'ignore') return;
-    event.preventDefault();
-    if (action === 'move') {
-      const dest = moveTarget(event.key, event.ctrlKey, pos[0] + 1, pos[1] + 1, board.length);
-      if (dest !== null) setTabStop(dest[0] - 1, dest[1] - 1, true);
-    } else if (!event.repeat) {
-      cycleCell(pos[0], pos[1]);
-    }
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const node = target.closest<HTMLElement>('[data-cell]');
+    if (node === null) return;
+    const r = Number(node.getAttribute('data-row')) - 1;
+    const c = Number(node.getAttribute('data-col')) - 1;
+    if (givens[r]?.[c] !== null) return; // given (or unknown) cell: ignore
+    const current = board[r]?.[c] ?? null;
+    const next: Cell = current === null ? 0 : current === 0 ? 1 : null;
+    (board[r] as Cell[])[c] = next;
+    renderCell(r, c);
+    setHinted(null);
+    refreshHighlights();
+    updateWin();
   }
 
   function showPuzzle(puzzle: Puzzle, n: number): void {
     if (puzzle.givens.length !== n || puzzle.givens.some((row) => row.length !== n)) {
       throw new Error(`puzzle is not ${n}x${n}`);
     }
+    hinted = null; // the old cell elements are replaced below
     givens = copyGrid(puzzle.givens);
     board = copyGrid(puzzle.givens);
-    const boardEl = el('div', {
-      'data-board': '',
-      'data-size': String(n),
-      class: 'board',
-      role: 'grid',
-      'aria-label': `Поле ${n}×${n}`,
-    });
+    const boardEl = el('div', { 'data-board': '', 'data-size': String(n), class: 'board' });
     cellEls = [];
     for (let r = 0; r < n; r++) {
       const rowEls: HTMLElement[] = [];
-      const rowNode = el('div', { class: 'board-row', role: 'row' });
       for (let c = 0; c < n; c++) {
-        const cell = el('div', {
-          'data-cell': '',
-          'data-row': String(r + 1),
-          'data-col': String(c + 1),
-          class: 'cell',
-          role: 'gridcell',
-          tabindex: '-1',
-        });
+        const cell = el('button', { type: 'button', 'data-cell': '', 'data-row': String(r + 1), 'data-col': String(c + 1), class: 'cell' });
         rowEls.push(cell);
-        rowNode.appendChild(cell);
+        boardEl.appendChild(cell);
       }
-      boardEl.appendChild(rowNode);
       cellEls.push(rowEls);
     }
     boardEl.addEventListener('click', onBoardClick);
-    boardEl.addEventListener('focusin', onBoardFocusIn);
-    boardEl.addEventListener('keydown', onBoardKeydown);
     boardHost.replaceChildren(boardEl);
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) renderCell(r, c);
     refreshHighlights();
-    setTabStop(0, 0, false);
   }
 
   function newPuzzle(requestedSize: number): boolean {
@@ -213,49 +196,77 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     const h = hint(board);
     hintMessage.textContent = h.sentence;
     if (h.kind !== 'fill') return;
-    const row = board[h.row];
-    if (row === undefined) return; // hint() only names cells of the board it was given
-    row[h.col] = h.value;
-    renderCell(h.row, h.col);
+    (board[h.row] as Cell[])[h.col] = h.value;
+    setHinted([h.row, h.col]); // renders the cell with its new value and label
     refreshHighlights();
     updateWin();
   });
 
-  resetButton.addEventListener('click', () => {
-    if (board.length === 0) return;
-    board = copyGrid(givens);
-    for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
-    refreshHighlights();
-    hintMessage.textContent = '';
-    winMessage.textContent = '';
-  });
+  /** True when a non-given cell is not empty (a hint-filled cell counts; so does a solved board). */
+  function hasEntries(): boolean {
+    return board.some((row, r) => row.some((value, c) => givens[r]?.[c] === null && value !== null));
+  }
 
-  function restoreSelect(): void {
-    for (const option of Array.from(sizeSelect.options)) {
-      if (option.value === String(size)) option.selected = true;
+  /** Run the action at once on a board without entries; otherwise keep it pending and ask. */
+  function requestAction(action: () => void): void {
+    if (!hasEntries()) {
+      action();
+      return;
+    }
+    pending = action;
+    if (!dialog.hasAttribute('open')) {
+      dialog.showModal();
+      noButton.focus(); // the safe choice is the default (A-20)
     }
   }
 
-  sizeSelect.addEventListener('change', () => {
-    const chosen = SIZES.find((n) => String(n) === sizeSelect.value);
-    if (chosen === undefined) {
-      restoreSelect();
-      return;
-    }
-    if (newPuzzle(chosen)) {
-      hintMessage.textContent = '';
-      winMessage.textContent = '';
-    } else {
-      restoreSelect();
-    }
-  });
+  function resetBoard(): void {
+    if (board.length === 0) return;
+    board = copyGrid(givens);
+    for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
+    setHinted(null);
+    refreshHighlights();
+    hintMessage.textContent = '';
+    winMessage.textContent = '';
+  }
 
-  newButton.addEventListener('click', () => {
+  function startNewPuzzle(): void {
     if (newPuzzle(size)) {
       hintMessage.textContent = '';
       winMessage.textContent = '';
     }
+  }
+
+  function changeSize(n: number): void {
+    if (newPuzzle(n)) {
+      for (const [m, button] of sizeButtons) button.setAttribute('aria-checked', m === n ? 'true' : 'false');
+      hintMessage.textContent = '';
+      winMessage.textContent = '';
+    }
+  }
+
+  yesButton.addEventListener('click', () => {
+    const action = pending; // captured first: the late `close` event must not drop it
+    pending = null;
+    dialog.close();
+    action?.();
   });
+  noButton.addEventListener('click', () => {
+    pending = null;
+    dialog.close();
+  });
+  dialog.addEventListener('close', () => {
+    pending = null;
+  });
+
+  resetButton.addEventListener('click', () => { requestAction(resetBoard); });
+  newButton.addEventListener('click', () => { requestAction(startNewPuzzle); });
+  for (const [n, button] of sizeButtons) {
+    button.addEventListener('click', () => {
+      if (n === size && board.length > 0) return; // the shown size is a no-op; with no board shown, no size is shown
+      requestAction(() => { changeSize(n); });
+    });
+  }
 
   newPuzzle(size);
 }

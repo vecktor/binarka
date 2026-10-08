@@ -1,0 +1,44 @@
+# Бінарка — Held requirements (signed in intent, not yet in force)
+
+Status: signed in intent by the user in chat on 2026-10-05 at about 23:31 ("signed, defaults for all six", autonomy-log row 66), UX decisions 1-30. HELD, not part of `docs/requirements.md`.
+
+Why held: `scripts/check-acceptance-methods.mjs` reads `docs/requirements.md`, and a declared verification method without a mechanism fails the check. A row written here is invisible to that check on purpose. Each row moves into `docs/requirements.md` (by a further signed step, IDs unchanged) only when its mechanism is built and seen failing against today's page. NFR-14 moves last, only after `npm run check:visual` is seen failing. NFR-11 and NFR-15 move only after a `check:vision` script exists (slice H) and is seen failing. Until then every row here is NOT-EARNED, never PASS (BC-6, process honesty).
+
+Meanwhile NFR-7, TC-13 and A-14 stay at their current signed wording in `docs/requirements.md`.
+
+Dependency approval: the user approved `@playwright/test`, `@axe-core/playwright`, `pixelmatch` and `pngjs` as dev dependencies on 2026-10-05 about 23:20 (in chat), effective after the signing; not yet installed. The `check:vision` mechanism needs a script, not a package. Motion that respects `prefers-reduced-motion` is design-only; no row is written for it.
+
+Pending tags are written as `verify: <tag> (pending: …)`. Amendment markers carry the date 2026-10-05.
+
+## Non-functional requirements (held)
+
+| ID | Phase | Area | Description | Verification |
+|---|---|---|---|---|
+| NFR-7 | MVP | Compatibility | Playwright browser tests of the play page in a real Chromium browser carry the layout, accessibility and pixel requirements NFR-10 to NFR-14; a failing run fails the gate. Other browsers are not tested (A-14). (amended 2026-10-05: was «Future … Playwright end-to-end browser tests of the play page in a real browser»; dependency approved 2026-10-05) | verify: e2e (pending: mechanism to be built — @playwright/test approved 2026-10-05; must be shown runnable and failing first) |
+| NFR-10 | MVP | Usability | At 6×6 on a 375×812 viewport the board, the buttons and the message area fit together on one screen with no vertical scroll, including while a hint or win message is shown; the message area reserves its height so the buttons do not move when a message appears (the 5-7 px button shift between play and win, decision 23, is accepted). (UX decisions 2 and 12) (numbered NFR-9 until 2026-10-08) | verify: e2e (pending: mechanism to be built — @playwright/test approved 2026-10-05; must be shown runnable and failing first) |
+| NFR-11 | MVP | Usability | A violation, a given, a player entry and the hinted cell each differ from the others by a cue that is not colour alone (for example weight, border, shape or marker), so the four states stay distinguishable without colour. The DOM markers behind the cues are FR-32 (`cell-given`), FR-35 to FR-37 (`cell-violation`) and FR-66 (`cell-hinted`). (UX decision 5) (numbered NFR-10 until 2026-10-08) | verify: vision-verify (pending: no `check:vision` mechanism exists; slice H builds the script and it must be seen failing first) |
+| NFR-12 | MVP | Usability | At every viewport the 4×4 and 6×6 cells and all controls (the size buttons, «Підказка», «Скинути», «Нова головоломка», «Правила», «Зрозуміло», the dialog buttons) are at least 44×44 CSS px. 8×8 cells may be smaller on phones and on screens too short for 44 px, but are at least 24×24 CSS px at every viewport. Below these floors the page scrolls; cells never shrink further. (Measured design values: 8×8 cells 35.3 px at 320, 42.1 at 375, 24.0 at 1280×420.) (UX decisions 13, 20, 22) (numbered NFR-11 until 2026-10-08) | verify: e2e (pending: mechanism to be built — @playwright/test approved 2026-10-05; must be shown runnable and failing first) |
+| NFR-13 | MVP | Usability | Every interactive control (cells, size buttons, action buttons, «Правила», dialog buttons, «Зрозуміло») shows a visible focus indicator when focused from the keyboard; the page has no automatically detectable accessibility violation at 6×6 in the default, hint, win, rules and confirmation states. (UX decision 8) (numbered NFR-12 until 2026-10-08) | verify: a11y (pending: mechanism to be built — @playwright/test and @axe-core/playwright approved 2026-10-05; `check:a11y` must be shown runnable and failing first) |
+| NFR-14 | MVP | Usability | PENDING — not declared until `npm run check:visual` is proven runnable and seen failing against today's page. The page matches the frozen reference `design/v0-screenshots/review-set-5/` (78 shots; `SHA1SUMS` of the set 661048f7f4feee6d955511d2cc41478f5de522cd; design commit `736260a`) per shot, each shot scoring at least 0.98 on its own (no page average; threshold set by the user 2026-10-05 about 23:48, autonomy-log row 68); the product is captured under the same conditions as the reference: reduced motion forced, the framed window focused (the dialog's focus ring), the pointer kept off the page, viewport-cropped (never full page), scrollbars hidden, device scale 2, the same machine and fonts. This covers placement of the rules panel (bottom sheet below 48rem, centred panel from 48rem), the idle line visibility, board sizing and the other layout decisions (16, 21 and the rest). Per-shot, not a page average. (UX decisions 25, 30, plus 1, 9, 16, 21 and other layout decisions) (numbered NFR-13 until 2026-10-08) | verify: pixel-diff (pending: mechanism to be built — @playwright/test, pixelmatch, pngjs approved 2026-10-05; still needs `quality/visual-parity.config.json`; `check:visual` must be shown runnable and failing against today's page before this NFR is declared) |
+| NFR-15 | MVP | Usability | The logo is legible at 40 px: the four digits of the 2×2 mini board «1 0 / 0 1» can be told apart at 40×40 CSS px, and the logo carries no text. (UX decision 10) (numbered NFR-14 until 2026-10-08) | verify: vision-verify (pending: no `check:vision` mechanism exists; slice H builds the script and it must be seen failing first) |
+
+Notes on the held NFRs:
+
+- NFR-10, NFR-12: not local-verifiable (jsdom has no layout). Sampled checks; coverage is `sampled`, not continuum. NFR-10 samples one viewport in three states (default, hint, win). NFR-12 samples the viewports 320×700, 375×812, 768×1024, 1024×768, 1366×650, 1440×900, 1280×420, 844×390.
+- NFR-11: perception of a cue is a rendering fact. The DOM-assertable half is already in FR-32, FR-35 to FR-37 and FR-66. Optional second tag once the visual check is built: pixel-diff against `review-set-5` (via NFR-14).
+- NFR-13: the structural half (cells are buttons with labels, FR-69 and FR-70; the radiogroup, FR-43) is local-verifiable in those rows. Contrast of the warm dark theme (decision 17) falls under this check.
+- NFR-14: today `npm run check:visual` exits 1 (no config; Playwright, pixelmatch, pngjs not installed). Sampling declaration: 7 pages × 5 viewports × 2 themes + 3 extra viewports + the logo at 40, 56, 64 px; coverage is `sampled`. The escalation path (finer sweep) is named when the check is set up. It also carries the placement and visibility parts left out of FR-57, FR-68, FR-71 and FR-72.
+- NFR-15: fallback if the mini board fails at 40 px: the digits "01" as shapes (decision 10). Review set 5 has a 40 px logo capture.
+- NFR-7: until each mechanism exists, the NFRs it carries (NFR-10 to NFR-15) stay held (never silently dropped, BC-6).
+
+## Constraints (held)
+
+| ID | Phase | Description |
+|---|---|---|
+| TC-13 | MVP | The page's DOM contract and the engine are tested in jsdom with Vitest. Layout, contrast, focus, touch-target size and pixel fidelity are checked in a real browser with Playwright (NFR-10 to NFR-14). Browser and device support: see A-14. (amended 2026-10-05: was «The page is tested in jsdom only; no real-browser testing tonight, so rendering defects jsdom cannot see are not caught. Browser and device support is not claimed (see A-14).»; the approval of @playwright/test, @axe-core/playwright, pixelmatch and pngjs under TC-10 was given on 2026-10-05) |
+
+Note: TC-13 describes the intended end state; until each Playwright check is built and seen failing, the NFRs it carries are held, not PASS.
+
+## Assumptions (held)
+
+- **A-14:** target browsers are current evergreen Chromium (tested), Firefox and Safari (supported by design, untested; the page uses `popover`, `<dialog>` and `:has()`); phones from 320 px wide are supported (layout NFR-10, NFR-12, NFR-14). (amended 2026-10-05: was «target browsers are current desktop evergreen browsers; mobile layout and visual polish are not specified and not verified tonight (TC-13).») Until the Playwright checks run, the layout claims are design intent, reported NOT-EARNED.

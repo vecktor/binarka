@@ -11,7 +11,7 @@ const workflowGlobals = Object.fromEntries(
 // JavaScript (this file and the locked workflow harness files) keeps the earlier non-type-aware tier, so a
 // harness update cannot be blocked by rules chosen for our TypeScript.
 export default defineConfig(
-  globalIgnores(['dist/', 'node_modules/', 'coverage/', 'openspec/', 'scripts/', 'evals/']),
+  globalIgnores(['dist/', 'node_modules/', 'coverage/', 'openspec/', 'scripts/', 'evals/', 'design/']),
   {
     files: ['**/*.ts'],
     extends: [js.configs.recommended, tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked],

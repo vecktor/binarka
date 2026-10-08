@@ -20,6 +20,8 @@ import {
   checkerCells,
   clickCell,
   clickUntil,
+  confirmYes,
+  dialogIsOpen,
   expectPageStructure,
   expectedHint,
   generatorBySize,
@@ -28,9 +30,9 @@ import {
   mountPage,
   mountThenSelect,
   pressHint,
+  pressSizeButton,
   readBoard,
   seedQueue,
-  selectSize,
   setCellTo,
   setCol,
   setRow,
@@ -320,7 +322,10 @@ describe('@trace FR-38 highlighting follows every board change', () => {
     const oldCells = allCells(root);
     expect(oldCells.filter((c) => c.classList.contains('cell-violation'))).toHaveLength(3);
 
-    selectSize(root, 4);
+    pressSizeButton(root, 4);
+    expect(dialogIsOpen(root), 'the board has entries: the change is asked first (FR-67)').toBe(true);
+    expect(violationCells(root), 'the highlights follow the board shown, which has not changed yet').toEqual([[3, 1], [3, 2], [3, 3]]);
+    confirmYes(root);
 
     expect(boardSize(root)).toBe(4);
     expect(allCells(root)).toHaveLength(16);

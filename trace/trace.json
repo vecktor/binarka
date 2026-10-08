@@ -30,7 +30,7 @@
     "FR-24": "MVP",
     "FR-25": "MVP",
     "FR-26": "MVP",
-    "FR-27": "Future",
+    "FR-27": "MVP",
     "FR-56": "Future",
     "FR-28": "MVP",
     "FR-29": "MVP",
@@ -60,6 +60,14 @@
     "FR-63": "MVP",
     "FR-64": "MVP",
     "FR-65": "MVP",
+    "FR-66": "MVP",
+    "FR-67": "MVP",
+    "FR-68": "MVP",
+    "FR-69": "MVP",
+    "FR-70": "MVP",
+    "FR-71": "MVP",
+    "FR-72": "MVP",
+    "FR-73": "MVP",
     "FR-44": "Future",
     "FR-45": "Future",
     "FR-46": "Future",
@@ -248,7 +256,8 @@
     {
       "id": "FR-14",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -259,7 +268,8 @@
     {
       "id": "FR-15",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -320,6 +330,7 @@
       "planned": true,
       "tests": [
         "tests/generator.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
@@ -328,7 +339,8 @@
     {
       "id": "FR-19",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -350,7 +362,8 @@
     {
       "id": "FR-21",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -372,7 +385,8 @@
     {
       "id": "FR-23",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -394,7 +408,9 @@
     {
       "id": "FR-25",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -405,12 +421,23 @@
     {
       "id": "FR-26",
       "specs": [
+        "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
         "tests/hint.test.ts"
       ],
+      "recordings": []
+    },
+    {
+      "id": "FR-27",
+      "specs": [
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
       "recordings": []
     },
     {
@@ -506,7 +533,8 @@
     {
       "id": "FR-33",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -521,7 +549,8 @@
     {
       "id": "FR-34",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -535,7 +564,8 @@
     {
       "id": "FR-35",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -547,7 +577,8 @@
     {
       "id": "FR-36",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -559,7 +590,8 @@
     {
       "id": "FR-37",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -571,7 +603,8 @@
     {
       "id": "FR-38",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -595,7 +628,8 @@
     {
       "id": "FR-40",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -608,7 +642,9 @@
     {
       "id": "FR-41",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md",
+        "openspec/changes/update-win-apostrophe/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -623,6 +659,11 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
@@ -631,16 +672,27 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-semantics.test.ts",
-        "tests/play-page-size-selector.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
@@ -653,12 +705,17 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
-        "tests/play-page-rules-and-reset.test.ts",
-        "tests/play-page-rules-and-reset.test.ts"
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts"
       ],
       "recordings": []
     },
@@ -669,6 +726,11 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-reset-accessibility.test.ts",
         "tests/play-page-reset-accessibility.test.ts",
         "tests/play-page-rules-and-reset.test.ts",
@@ -679,7 +741,8 @@
     {
       "id": "FR-59",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -717,7 +780,8 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -742,7 +806,8 @@
     {
       "id": "FR-61",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -774,7 +839,8 @@
     {
       "id": "FR-62",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -791,7 +857,8 @@
     {
       "id": "FR-63",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -805,7 +872,8 @@
     {
       "id": "FR-64",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -819,7 +887,8 @@
     {
       "id": "FR-65",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -848,10 +917,145 @@
         "tests/play-page-stylesheet.test.ts"
       ],
       "recordings": []
+    },
+    {
+      "id": "FR-66",
+      "specs": [
+        "openspec/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-size-control.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-67",
+      "specs": [
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-size-control.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-68",
+      "specs": [
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-69",
+      "specs": [
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-70",
+      "specs": [
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-cells.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-71",
+      "specs": [
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-72",
+      "specs": [
+        "openspec/changes/add-logo/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-73",
+      "specs": [
+        "openspec/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts"
+      ],
+      "recordings": []
     }
   ],
   "failures": [],
   "warnings": [
+    {
+      "check": "test-trace",
+      "msg": "FR-27 has no test annotated \"@trace FR-27\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-72 has no test annotated \"@trace FR-72\""
+    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"
@@ -966,6 +1170,10 @@
     },
     {
       "check": "recording-evidence",
+      "msg": "FR-27 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
       "msg": "FR-28 is not referenced by any recording manifest under docs/qa/"
     },
     {
@@ -1075,6 +1283,54 @@
     {
       "check": "recording-evidence",
       "msg": "FR-65 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-66 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-67 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-68 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-69 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-70 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-71 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-72 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-73 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-logo\" is not archived"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-rule-solvable-generator\" is not archived"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"reconcile-ux-accessibility\" is not archived"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"update-win-apostrophe\" is not archived"
     }
   ]
 }

@@ -1,0 +1,35 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "add-hinted-cell",
+  "change": "add-hinted-cell",
+  "baseRef": "2446162",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 2
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "Task 3.7 is ticked, but the browser-check evidence leaves out steps (d), (f) and (h), and step (d) asks for an action the spec now says cannot happen",
+    "Task 3.7 is ticked, but the browser check skipped steps (d), (f), the size-change removal in (g), and step (h)"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-06T04:08:13Z"
+}

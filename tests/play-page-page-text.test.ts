@@ -22,7 +22,7 @@ import {
   q,
   seedQueue,
   selectSize,
-  sizeSelect,
+  sizeButtons,
   solutionGrid,
   winMessage,
 } from './helpers/play-page';
@@ -78,14 +78,15 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
     }
   });
 
-  it('Static page text includes the size options: «Поле 4×4», «Поле 6×6» and «Поле 8×8» exactly', () => {
+  it('Static page text includes the size buttons: «Поле 4×4», «Поле 6×6» and «Поле 8×8» exactly', () => {
     const root = mountFixture(WIN_PUZZLE);
     const texts = collectPageText(root).map((t) => t.trim());
     for (const label of ['Поле 4×4', 'Поле 6×6', 'Поле 8×8']) {
       expect(texts, `collected text contains ${label}`).toContain(label);
     }
-    // the sign is the multiplication sign U+00D7, not the Latin letter x, and it is exactly three options
-    expect(Array.from(sizeSelect(root).options).map((o) => o.textContent)).toEqual(['Поле 4×4', 'Поле 6×6', 'Поле 8×8']);
+    // the sign is the multiplication sign U+00D7, not the Latin letter x, and it is exactly three buttons (the size control is a
+    // radiogroup of buttons since change update-controls-accessibility; it was three option elements)
+    expect(sizeButtons(root).map((b) => b.textContent)).toEqual(['Поле 4×4', 'Поле 6×6', 'Поле 8×8']);
     expect('Поле 4×4'.codePointAt(6)).toBe(0xd7);
     for (const text of texts) {
       expect(/\p{Script=Cyrillic}/u.test(text), `"${text}" has Cyrillic letters`).toBe(true);
@@ -94,11 +95,16 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
   });
 
   it('the label attribute of an option or optgroup is page text: it is collected and would fail the Ukrainian check', () => {
+    // The page has no select any more (the size control is a radiogroup), so the test builds its own select element inside a
+    // mounted page: the collector must still read the label attribute of option and optgroup.
     const root = mountFixture(WIN_PUZZLE);
-    const select = sizeSelect(root);
-    expect(select.options).toHaveLength(3);
+    const select = document.createElement('select');
+    root.appendChild(select);
+    const option = document.createElement('option');
+    option.textContent = 'Поле';
+    select.appendChild(option);
     // a Latin label on an option would be shown by a browser instead of the option text (NFR-5)
-    select.options[0]?.setAttribute('label', 'Size four');
+    option.setAttribute('label', 'Size four');
     const group = document.createElement('optgroup');
     group.setAttribute('label', 'Sizes');
     select.appendChild(group);
@@ -106,10 +112,10 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
     expect(texts).toContain('Size four');
     expect(texts).toContain('Sizes');
     expect(texts.some((t) => /[A-Za-z]/.test(t))).toBe(true);
-    // and the page as mounted carries no such attribute: nothing in it has a label attribute at all
+    // and the page as mounted carries no such attribute and no option at all
     const fresh = mountFixture(WIN_PUZZLE);
     expect(fresh.querySelectorAll('option[label], optgroup[label]')).toHaveLength(0);
-    expect(fresh.querySelectorAll('option')).toHaveLength(3);
+    expect(fresh.querySelectorAll('option, select')).toHaveLength(0);
   });
 
   it('the button labels are exactly the two Ukrainian labels of the DOM contract', () => {

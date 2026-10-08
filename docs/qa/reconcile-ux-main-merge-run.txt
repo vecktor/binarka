@@ -1,0 +1,2256 @@
+# Merge of claude/heuristic-lovelace-5e57b4 (72c4abd) into main (cf6ad37), resolved tree before the merge commit (after restoring the UX .board grid layout)
+# Run: npx vitest run, 2026-10-09 00:55 +0530. Expected red: main's slice-6 accessibility tests (grid, select, roving tabindex, old cell names, FR-63 roles) and the Cyrillic scan hitting main's src/ui/grid.ts; fixed by reconcile-ux-accessibility.
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/slice4-handoff-archive-9f35e8
+
+ ❯ tests/ui-strings.test.ts (5 tests | 1 failed) 64ms
+   ❯ @trace NFR-5 no Cyrillic text outside the strings module (2)
+     × scans src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts, and none holds a Cyrillic character (comments included) 10ms
+ ❯ tests/play-page-reset-accessibility.test.ts (3 tests | 3 failed) 97ms
+   ❯ @trace FR-58 @trace FR-61 a reset keeps the accessible names and states in step with the board (2)
+     × after a reset every cell name matches its text and no cell keeps aria-invalid once the highlights are gone 54ms
+     × a reset keeps aria-invalid on cells whose highlight comes from the givens, and aria-readonly on every given 15ms
+   ❯ @trace FR-58 @trace FR-59 a reset shows no new board, so the Tab stop stays where it was (1)
+     × the Tab stop stays on the cell the player moved it to 25ms
+ ❯ tests/play-page-wcag.test.ts (2 tests | 2 failed) 42ms
+   ❯ the page meets the accessibility requirements (NFR-9) (2)
+     × @trace NFR-9 @trace NFR-5 Every button, the select and every gridcell has a non-empty Ukrainian accessible name 36ms
+     × @trace NFR-9 No element of the page has a positive tabindex, before and after play 4ms
+ ❯ tests/play-page-controls-text.test.ts (5 tests | 1 failed) 80ms
+   ❯ @trace NFR-5 no Cyrillic text outside the strings module (re-run after the new texts) (2)
+     × src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts hold no Cyrillic character 7ms
+ ❯ tests/play-page-rendering.test.ts (10 tests | 1 failed) 344ms
+   ❯ @trace FR-59 @trace FR-61 two mounts keep separate Tab stops and have no duplicate ids (1)
+     × @trace FR-59 @trace FR-61 two mounts on two roots keep separate Tab stops and have no duplicate ids 24ms
+ ❯ tests/play-page-page-text.test.ts (7 tests | 2 failed) 218ms
+   ❯ @trace NFR-5 the page text is Ukrainian (7)
+     × @trace FR-61 @trace FR-62 Static page text: every collected text has Cyrillic letters and no Latin letters 54ms
+     × @trace NFR-5 @trace FR-61 Accessible names at every size: 4x4 and 8x8 board names and cell names match the pattern, Cyrillic, no Latin 11ms
+ ❯ tests/play-page-semantics.test.ts (25 tests | 24 failed) 460ms
+   ❯ the board, rows and cells have grid roles (6)
+     × @trace FR-61 Roles and name of the default board: grid «Поле 6×6», 6 rows of 6 gridcells in column order 22ms
+     × @trace FR-61 The grid name follows the size: «Поле 4×4» with 4 rows of 4, then «Поле 8×8» with 8 rows of 8 (real generator) 20ms
+     × @trace FR-61 A failed size change keeps the grid and its name «Поле 6×6» 8ms
+     × @trace FR-61 The cell contract is unchanged and no descendant of a root has an id 11ms
+     × @trace FR-61 Two mounts in one document have no duplicate id (and no id at all below the roots) 13ms
+     × @trace FR-61 @trace FR-34 The digit stays the cell text (FR-34) and the name is a separate attribute 8ms
+   ❯ cells expose a Ukrainian name and their state (11)
+     × @trace FR-61 Names of a fresh board: «Рядок 2, стовпець 3: порожня», «Рядок 3, стовпець 1: 0», and every name matches the cell 3ms
+     × @trace FR-61 The name follows a click, Enter and Space: 0, 1, порожня 8ms
+     × @trace FR-61 The name follows a hint fill: the filled cell ends with its digit 13ms
+     × @trace FR-61 A new puzzle and a size change give fresh names (no name of the old board survives) 7ms
+     × @trace FR-61 A size change gives names for the new board: 16 names «Рядок R, стовпець C: …», the given at 2,1 reads 0 4ms
+     × @trace FR-61 Givens are read-only and other cells are not: aria-readonly="true" on givens only, also after a click and a hint fill 4ms
+     × @trace FR-61 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true" 18ms
+     × @trace FR-61 @trace FR-38 The invalid state is removed with the highlight, and the attribute is absent, never "false" 12ms
+     × @trace FR-61 @trace FR-36 A line with too many of one digit is invalid as a whole: all six cells of the row, nothing outside 13ms
+     × @trace FR-61 @trace FR-37 Violating givens are invalid at once, each also read-only (DIRTY_GIVENS) 2ms
+     × @trace FR-64 The violation cue is also in the DOM: each of the three cells has cell-violation and aria-invalid, and no other cell has the attribute 3ms
+   ❯ the size selector has a visible Ukrainian label (4)
+     × @trace FR-62 The select is labelled: one wrapping label.size-label with the own text «Розмір поля» 3ms
+     × @trace FR-62 The label is visible: computed display and visibility of the label and its span, and no hiding declaration 92ms
+     × @trace FR-62 Two mounts label their own selects, with no id or for anywhere below either root 21ms
+     × @trace FR-62 @trace FR-43 The label does not break the selector: options 4, 6, 8 with their labels, value 6 then 4, no aria-label 3ms
+   ❯ the hint and win messages are status regions (4)
+     × @trace FR-63 Present, empty and typed at mount: role="status", no tabindex, exactly two status elements in the root 9ms
+     × @trace FR-63 The same two elements carry every message: hint, click, new puzzle, size change and a win 3ms
+     × @trace FR-63 A click that wins leaves the focus on the clicked cell, not on a status region 58ms
+ ❯ tests/play-page-keyboard.test.ts (39 tests | 39 failed) 582ms
+   ❯ the board is a single Tab stop (12)
+     × @trace FR-59 Exactly one Tab stop at mount: cell 1,1 has tabindex 0, the other 35 have -1, nothing else has a tabindex 25ms
+     × @trace FR-59 A new puzzle resets the Tab stop to cell 1,1 and does not move focus 11ms
+     × @trace FR-59 A size change resets the Tab stop to cell 1,1 and does not move focus 5ms
+     × @trace FR-59 A failed size change keeps the same cell as the Tab stop 24ms
+     × @trace FR-59 A new puzzle whose generation fails keeps the previous board and its Tab stop 21ms
+     × @trace FR-59 A hint fill leaves the Tab stop and the focus (PAIR_ROW fills 3,3 with 1) 6ms
+     × @trace FR-59 A hint fill does not reset a Tab stop that is elsewhere either 9ms
+     × @trace FR-59 Focus makes a cell the Tab stop (focus() with no click and no key) 7ms
+     × @trace FR-59 A hint that fills nothing leaves the Tab stop and every cell (ISOLATED) 38ms
+     × @trace FR-59 A hint that fills nothing leaves a Tab stop that is elsewhere, and the focus 4ms
+     × @trace FR-59 Cycling a cell leaves the Tab stop (Enter on cell 1,1) 3ms
+     × @trace FR-59 Enter and Space on a cell that is not the Tab stop leave the Tab stop where it is 12ms
+   ❯ Arrow, Home and End keys move the focus (11)
+     × @trace FR-59 Arrow keys move one cell: right, down, left, up from 3,3 4ms
+     × @trace FR-59 Arrow keys stop at the edges and corners, no wrapping, and are prevented 2ms
+     × @trace FR-59 The edges follow N: at 4x4 and 8x8 an arrow stops at the last row and column of that board 13ms
+     × @trace FR-59 Home and End move within the row, and are prevented on the first and last cell too 4ms
+     × @trace FR-59 Home and End give the first and last column of N at 4x4 and 8x8 14ms
+     × @trace FR-59 Ctrl+End and Ctrl+Home move to the last and first cell of the board at N = 4, 6 and 8 5ms
+     × @trace FR-59 @trace FR-33 Keys on a given cell navigate and change nothing (WIN_PUZZLE given 0 at 1,3) 14ms
+     × @trace FR-59 The position comes from the event target, not from the Tab stop 9ms
+     × @trace FR-59 Modified keys are not handled and not prevented: Ctrl, Shift and Alt with an arrow, Alt and Shift with Home 5ms
+     × @trace FR-59 Keys the board does not handle are not prevented: Tab, Shift+Tab, PageDown, PageUp, Escape and letters 3ms
+     × @trace FR-59 A keydown whose target is not inside a cell is ignored and not prevented (the board, a row) 65ms
+   ❯ Enter and Space cycle a cell, a click moves the Tab stop and the focus (10)
+     × @trace FR-60 @trace FR-34 Enter cycles a player cell: 0, 1, empty, each press prevented 10ms
+     × @trace FR-60 @trace FR-34 Space cycles a player cell: 0, 1, empty, each press prevented 2ms
+     × @trace FR-60 A held key cycles once: the first Enter gives 0 and three repeats change nothing, all prevented 2ms
+     × @trace FR-60 Modified Enter and Space are not handled and not prevented: Ctrl, Alt and Shift 8ms
+     × @trace FR-60 A click moves the Tab stop and the focus to a player cell, and cycles it 2ms
+     × @trace FR-60 Enter and Space do not move the focus 2ms
+     × @trace FR-60 Keyboard play reaches the win message, and the focus is never moved by the presses 81ms
+     × @trace FR-60 Three equal digits made with Enter carry cell-violation exactly as with clicks 29ms
+     × @trace FR-60 Keys and clicks give the same board step by step: texts, givens, classes, names, aria-invalid and messages 4ms
+     × @trace FR-38 @trace FR-60 Highlight appears at once after Enter or Space: 0, then 1, empty, then 0 again (PAIR_LEFT) 7ms
+   ❯ given cells are locked: only the Tab stop and the focus may move (3)
+     × @trace FR-33 @trace FR-60 A click on a given moves only the Tab stop and the focus 27ms
+     × @trace FR-33 @trace FR-60 Clicking a given three times changes nothing and keeps the focus on it 33ms
+     × @trace FR-33 @trace FR-60 Enter and Space on a given change nothing, are prevented, and move neither focus nor Tab stop 34ms
+   ❯ the Tab stop and focus work at every size (1)
+     × @trace FR-59 @trace FR-60 At 4x4 and 8x8 a click moves the Tab stop and focus, and a new puzzle resets it to 1,1 17ms
+   ❯ review round 1: one cycle after a rebuild, and mounting keeps the focus (2)
+     × @trace FR-60 After a rebuild (a new puzzle, then a size change) one Enter still cycles a player cell exactly once 14ms
+     × @trace FR-59 Mounting the page does not move DOM focus 2ms
+ ❯ tests/play-page-stylesheet.test.ts (31 tests | 8 failed) 675ms
+   ❯ the colours are tokens (FR-65) (8)
+     × @trace FR-65 No colour literal is left: no hex, rgb(), hsl() ... outside :root, wherever the rule is in the file 28ms
+     × @trace FR-65 Every colour-bearing shorthand has a var(--color-...) colour (or is none or 0) 6ms
+     × @trace FR-65 Every color, background-color, border-color and outline-color is one declared token or an allowed keyword 7ms
+     × @trace FR-65 The button and select rule takes text, fill and border from the control tokens 4ms
+   ❯ visible, unobscured focus indicators (FR-65) (5)
+     × @trace FR-65 The stylesheet stays inside the build target: no :has( and no !important 5ms
+   ❯ rows are kept in the accessibility tree and the label is not hidden (3)
+     × @trace FR-62 The size-label rules have no hiding declaration and .size-label has a gap of at least 4px 3ms
+     × @trace FR-62 The label and its text compute a display other than none and a visibility that is shown (injected stylesheet) 22ms
+   ❯ the selector sets its own colours and the board disables double-tap zoom (FR-65) (2)
+     × @trace FR-65 The select declares color var(--color-text) and background-color var(--color-control-bg) 3ms
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 81 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-controls-text.test.ts > @trace NFR-5 no Cyrillic text outside the strings module (re-run after the new texts) > src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts hold no Cyrillic character
+AssertionError: files with a Cyrillic character outside src/ui/strings.ts: expected [ 'src/ui/grid.ts' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "src/ui/grid.ts",
++ ]
+
+ ❯ tests/play-page-controls-text.test.ts:126:84
+    124|     }
+    125|     const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f…
+    126|     expect(offenders, 'files with a Cyrillic character outside src/ui/…
+       |                                                                                    ^
+    127|   });
+    128|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 Exactly one Tab stop at mount: cell 1,1 has tabindex 0, the other 35 have -1, nothing else has a tabindex
+AssertionError: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ tests/play-page-keyboard.test.ts:73:40
+     71|     const cells = allCells(root);
+     72|     expect(cells).toHaveLength(36);
+     73|     expect(tabStopCells(root).map(rc)).toEqual(['1,1']);
+       |                                        ^
+     74|     expect(cells.filter((c) => c.getAttribute('tabindex') === '-1')).t…
+     75|     expect(q(root, '[data-board]').hasAttribute('tabindex')).toBe(fals…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 A new puzzle resets the Tab stop to cell 1,1 and does not move focus
+AssertionError: the only Tab stop is the cell 3,4: expected [] to deeply equal [ '3,4' ]
+
+- Expected
++ Received
+
+- [
+-   "3,4",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:88:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 A size change resets the Tab stop to cell 1,1 and does not move focus
+AssertionError: DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectActive tests/helpers/play-page.ts:460:113
+    458| /** Assert that `el` is `document.activeElement` (a boolean check, so …
+    459| export function expectActive(el: Element, what: string): void {
+    460|   expect(document.activeElement === el, `${what} (DOM focus is on ${de…
+       |                                                                                                                 ^
+    461| }
+    462|
+ ❯ tests/play-page-keyboard.test.ts:102:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 A failed size change keeps the same cell as the Tab stop
+AssertionError: the only Tab stop is the cell 2,2: expected [] to deeply equal [ '2,2' ]
+
+- Expected
++ Received
+
+- [
+-   "2,2",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:114:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 A new puzzle whose generation fails keeps the previous board and its Tab stop
+AssertionError: expected [ { size: 6, seed: 1 } ] to have a length of 2 but got 1
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ tests/play-page-keyboard.test.ts:131:23
+    129|     const stop = cellEl(root, 5, 3);
+    130|     pressNew(root);
+    131|     expect(spy.calls).toHaveLength(2);
+       |                       ^
+    132|     expect(tabStopCells(root)).toEqual([stop]);
+    133|     expect(stop.isConnected).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 A hint fill leaves the Tab stop and the focus (PAIR_ROW fills 3,3 with 1)
+AssertionError: the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:138:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 A hint fill does not reset a Tab stop that is elsewhere either
+AssertionError: the only Tab stop is the cell 5,5: expected [] to deeply equal [ '5,5' ]
+
+- Expected
++ Received
+
+- [
+-   "5,5",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:150:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 Focus makes a cell the Tab stop (focus() with no click and no key)
+AssertionError: the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:161:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 A hint that fills nothing leaves the Tab stop and every cell (ISOLATED)
+AssertionError: the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:171:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 A hint that fills nothing leaves a Tab stop that is elsewhere, and the focus
+AssertionError: the only Tab stop is the cell 4,4: expected [] to deeply equal [ '4,4' ]
+
+- Expected
++ Received
+
+- [
+-   "4,4",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:184:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 Cycling a cell leaves the Tab stop (Enter on cell 1,1)
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:190:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-59 Enter and Space on a cell that is not the Tab stop leave the Tab stop where it is
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:197:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 Arrow keys move one cell: right, down, left, up from 3,3
+AssertionError: "ArrowRight" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:219:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 Arrow keys stop at the edges and corners, no wrapping, and are prevented
+AssertionError: "ArrowUp" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:243:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 The edges follow N: at 4x4 and 8x8 an arrow stops at the last row and column of that board
+AssertionError: "ArrowRight" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:253:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 Home and End move within the row, and are prevented on the first and last cell too
+AssertionError: "Home" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:269:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 Home and End give the first and last column of N at 4x4 and 8x8
+AssertionError: "End" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:289:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 Ctrl+End and Ctrl+Home move to the last and first cell of the board at N = 4, 6 and 8
+AssertionError: "End" {"ctrlKey":true} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:300:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 @trace FR-33 Keys on a given cell navigate and change nothing (WIN_PUZZLE given 0 at 1,3)
+AssertionError: "ArrowDown" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:323:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 The position comes from the event target, not from the Tab stop
+AssertionError: the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:336:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 Modified keys are not handled and not prevented: Ctrl, Shift and Alt with an arrow, Alt and Shift with Home
+AssertionError: expected null to be '0' // Object.is equality
+
+- Expected:
+"0"
+
++ Received:
+null
+
+ ❯ tests/play-page-keyboard.test.ts:355:45
+    353|       press(cell, key, init, false);
+    354|       expectActive(cell, `${key} ${JSON.stringify(init)} leaves focus`…
+    355|       expect(cell.getAttribute('tabindex')).toBe('0');
+       |                                             ^
+    356|       expectTabStop(root, 3, 3);
+    357|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 Keys the board does not handle are not prevented: Tab, Shift+Tab, PageDown, PageUp, Escape and letters
+AssertionError: the only Tab stop is the cell 3,3: expected [] to deeply equal [ '3,3' ]
+
+- Expected
++ Received
+
+- [
+-   "3,3",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:377:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-59 A keydown whose target is not inside a cell is ignored and not prevented (the board, a row)
+AssertionError: the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:391:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 @trace FR-34 Enter cycles a player cell: 0, 1, empty, each press prevented
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:404:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 @trace FR-34 Space cycles a player cell: 0, 1, empty, each press prevented
+AssertionError: " " {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:413:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 A held key cycles once: the first Enter gives 0 and three repeats change nothing, all prevented
+AssertionError: "Enter" {"repeat":false} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:421:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 Modified Enter and Space are not handled and not prevented: Ctrl, Alt and Shift
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:442:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 A click moves the Tab stop and the focus to a player cell, and cycles it
+AssertionError: the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:448:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 Enter and Space do not move the focus
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:458:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 Keyboard play reaches the win message, and the focus is never moved by the presses
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:472:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 Three equal digits made with Enter carry cell-violation exactly as with clicks
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:485:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-60 Keys and clicks give the same board step by step: texts, givens, classes, names, aria-invalid and messages
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ step tests/play-page-keyboard.test.ts:504:9
+ ❯ tests/play-page-keyboard.test.ts:511:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-38 @trace FR-60 Highlight appears at once after Enter or Space: 0, then 1, empty, then 0 again (PAIR_LEFT)
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:533:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > given cells are locked: only the Tab stop and the focus may move > @trace FR-33 @trace FR-60 A click on a given moves only the Tab stop and the focus
+AssertionError: the only Tab stop is the cell 1,3: expected [] to deeply equal [ '1,3' ]
+
+- Expected
++ Received
+
+- [
+-   "1,3",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:572:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > given cells are locked: only the Tab stop and the focus may move > @trace FR-33 @trace FR-60 Clicking a given three times changes nothing and keeps the focus on it
+AssertionError: the only Tab stop is the cell 2,5: expected [] to deeply equal [ '2,5' ]
+
+- Expected
++ Received
+
+- [
+-   "2,5",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:583:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > given cells are locked: only the Tab stop and the focus may move > @trace FR-33 @trace FR-60 Enter and Space on a given change nothing, are prevented, and move neither focus nor Tab stop
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:593:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > the Tab stop and focus work at every size > @trace FR-59 @trace FR-60 At 4x4 and 8x8 a click moves the Tab stop and focus, and a new puzzle resets it to 1,1
+AssertionError: the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:614:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > review round 1: one cycle after a rebuild, and mounting keeps the focus > @trace FR-60 After a rebuild (a new puzzle, then a size change) one Enter still cycles a player cell exactly once
+AssertionError: "Enter" {} is prevented: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ press tests/play-page-keyboard.test.ts:59:123
+     57| function press(target: Element, key: string, init: KeyboardEventInit =…
+     58|   const event = pressKey(target, key, init);
+     59|   expect(event.defaultPrevented, `${JSON.stringify(key)} ${JSON.string…
+       |                                                                                                                           ^
+     60| }
+     61|
+ ❯ tests/play-page-keyboard.test.ts:631:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/81]⎯
+
+ FAIL  tests/play-page-keyboard.test.ts > review round 1: one cycle after a rebuild, and mounting keeps the focus > @trace FR-59 Mounting the page does not move DOM focus
+AssertionError: the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-keyboard.test.ts:648:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/81]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > @trace FR-61 @trace FR-62 Static page text: every collected text has Cyrillic letters and no Latin letters
+AssertionError: expected null to be 'Поле 6×6' // Object.is equality
+
+- Expected:
+"Поле 6×6"
+
++ Received:
+null
+
+ ❯ tests/play-page-page-text.test.ts:48:64
+     46|     // the board name as an aria-label and the 36 cell names (a new sc…
+     47|     expect(trimmed).toContain('Розмір поля');
+     48|     expect(q(root, '[data-board]').getAttribute('aria-label')).toBe('П…
+       |                                                                ^
+     49|     expect(trimmed.filter((t) => t === 'Поле 6×6'), 'the option text a…
+     50|     expect(trimmed.filter((t) => /^Рядок [1-6], стовпець [1-6]: (порож…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/81]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > @trace NFR-5 @trace FR-61 Accessible names at every size: 4x4 and 8x8 board names and cell names match the pattern, Cyrillic, no Latin
+AssertionError: expected '' to be 'Поле 4×4' // Object.is equality
+
+- Expected
++ Received
+
+- Поле 4×4
+
+ ❯ tests/play-page-page-text.test.ts:71:24
+     69|       selectSize(root, n);
+     70|       const names = [q(root, '[data-board]').getAttribute('aria-label'…
+     71|       expect(names[0]).toBe(`Поле ${n}×${n}`);
+       |                        ^
+     72|       expect(names).toHaveLength(1 + n * n);
+     73|       for (const name of names.slice(1)) expect(name).toMatch(/^Рядок …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/81]⎯
+
+ FAIL  tests/play-page-rendering.test.ts > @trace FR-59 @trace FR-61 two mounts keep separate Tab stops and have no duplicate ids > @trace FR-59 @trace FR-61 two mounts on two roots keep separate Tab stops and have no duplicate ids
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/play-page-rendering.test.ts:129:29
+    127|     const a = mountPage({ seedSource: () => 1, generate: () => BLANK }…
+    128|     const b = mountPage({ seedSource: () => 1, generate: () => BLANK }…
+    129|     expect(tabStopCells(a)).toHaveLength(1);
+       |                             ^
+    130|     expect(tabStopCells(b)).toHaveLength(1);
+    131|     clickCell(a, 3, 4);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/81]⎯
+
+ FAIL  tests/play-page-reset-accessibility.test.ts > @trace FR-58 @trace FR-61 a reset keeps the accessible names and states in step with the board > after a reset every cell name matches its text and no cell keeps aria-invalid once the highlights are gone
+AssertionError: name of cell 1,1: expected 'Рядок 1, стовпець 1, порожньо' to be 'Рядок 1, стовпець 1: порожня' // Object.is equality
+
+Expected: "Рядок 1, стовпець 1: порожня"
+Received: "Рядок 1, стовпець 1, порожньо"
+
+ ❯ expectNamesAndStates tests/play-page-reset-accessibility.test.ts:37:75
+     35|     const row = Number(cell.getAttribute('data-row'));
+     36|     const col = Number(cell.getAttribute('data-col'));
+     37|     expect(cell.getAttribute('aria-label'), `name of cell ${row},${col…
+       |                                                                           ^
+     38|     const highlighted = cell.classList.contains('cell-violation');
+     39|     expect(cell.getAttribute('aria-invalid'), `aria-invalid of cell ${…
+ ❯ tests/play-page-reset-accessibility.test.ts:48:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/81]⎯
+
+ FAIL  tests/play-page-reset-accessibility.test.ts > @trace FR-58 @trace FR-61 a reset keeps the accessible names and states in step with the board > a reset keeps aria-invalid on cells whose highlight comes from the givens, and aria-readonly on every given
+AssertionError: premise: the player's cell 4,1 is highlighted: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ tests/play-page-reset-accessibility.test.ts:64:118
+     62|     const fromPlayer: [number, number][] = [[4, 1], [4, 2], [4, 3]];
+     63|     for (const [r, c] of fromPlayer) {
+     64|       expect(cellEl(root, r, c).getAttribute('aria-invalid'), `premise…
+       |                                                                                                                      ^
+     65|     }
+     66|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/81]⎯
+
+ FAIL  tests/play-page-reset-accessibility.test.ts > @trace FR-58 @trace FR-59 a reset shows no new board, so the Tab stop stays where it was > the Tab stop stays on the cell the player moved it to
+AssertionError: the only Tab stop is the cell 2,2: expected [] to deeply equal [ '2,2' ]
+
+- Expected
++ Received
+
+- [
+-   "2,2",
+- ]
++ []
+
+ ❯ expectTabStop tests/helpers/play-page.ts:476:64
+    474| export function expectTabStop(root: ParentNode, row: number, col: numb…
+    475|   const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-…
+    476|   expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual…
+       |                                                                ^
+    477|   for (const cell of allCells(root)) {
+    478|     if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tab…
+ ❯ tests/play-page-reset-accessibility.test.ts:87:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-61 Roles and name of the default board: grid «Поле 6×6», 6 rows of 6 gridcells in column order
+AssertionError: expected null to be 'grid' // Object.is equality
+
+- Expected:
+"grid"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:75:40
+     73|     const root = mountFixture(BLANK);
+     74|     const board = q(root, '[data-board]');
+     75|     expect(board.getAttribute('role')).toBe('grid');
+       |                                        ^
+     76|     expect(board.getAttribute('aria-label')).toBe('Поле 6×6');
+     77|     const rows = rowEls(root);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-61 The grid name follows the size: «Поле 4×4» with 4 rows of 4, then «Поле 8×8» with 8 rows of 8 (real generator)
+AssertionError: expected null to be 'Поле 4×4' // Object.is equality
+
+- Expected:
+"Поле 4×4"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:99:48
+     97|       selectSize(root, n);
+     98|       const board = q(root, '[data-board]');
+     99|       expect(board.getAttribute('aria-label')).toBe(`Поле ${n}×${n}`);
+       |                                                ^
+    100|       expect(board.getAttribute('role')).toBe('grid');
+    101|       const rows = rowEls(root);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-61 A failed size change keeps the grid and its name «Поле 6×6»
+AssertionError: expected null to be 'Поле 6×6' // Object.is equality
+
+- Expected:
+"Поле 6×6"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:115:46
+    113|     selectSize(root, 8);
+    114|     const board = q(root, '[data-board]');
+    115|     expect(board.getAttribute('aria-label')).toBe('Поле 6×6');
+       |                                              ^
+    116|     expect(board.getAttribute('role')).toBe('grid');
+    117|     expect(rowEls(root)).toHaveLength(6);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-61 The cell contract is unchanged and no descendant of a root has an id
+AssertionError: expected null to be 'gridcell' // Object.is equality
+
+- Expected:
+"gridcell"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:132:41
+    130|       expect(cell.classList.contains('cell-given')).toBe(given === 'tr…
+    131|       expect(['', '0', '1']).toContain(cell.textContent);
+    132|       expect(cell.getAttribute('role')).toBe('gridcell');
+       |                                         ^
+    133|     }
+    134|     expect(cells.filter((c) => c.classList.contains('cell-given'))).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-61 Two mounts in one document have no duplicate id (and no id at all below the roots)
+AssertionError: expected [ 'rules-panel-5', …(5) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "rules-panel-5",
++   "rules-title-5",
++   "confirm-text-5",
++   "rules-panel-6",
++   "rules-title-6",
++   "confirm-text-6",
++ ]
+
+ ❯ tests/play-page-semantics.test.ts:149:17
+    147|     const b = mountFixture(BLANK);
+    148|     const ids = [...a.querySelectorAll('[id]'), ...b.querySelectorAll(…
+    149|     expect(ids).toEqual([]);
+       |                 ^
+    150|     expect(document.querySelectorAll('[id]')).toHaveLength(0);
+    151|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-61 @trace FR-34 The digit stays the cell text (FR-34) and the name is a separate attribute
+AssertionError: expected 'Рядок 3, стовпець 1, 0, задано' to be 'Рядок 3, стовпець 1: 0' // Object.is equality
+
+Expected: "Рядок 3, стовпець 1: 0"
+Received: "Рядок 3, стовпець 1, 0, задано"
+
+ ❯ tests/play-page-semantics.test.ts:156:59
+    154|     const root = mountFixture(PAIR_ROW);
+    155|     expect(cellText(root, 3, 1)).toBe('0'); // the digit stays the tex…
+    156|     expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок …
+       |                                                           ^
+    157|     expect(cellEl(root, 3, 3).textContent).toBe('');
+    158|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 Names of a fresh board: «Рядок 2, стовпець 3: порожня», «Рядок 3, стовпець 1: 0», and every name matches the cell
+AssertionError: expected 'Рядок 2, стовпець 3, порожньо' to be 'Рядок 2, стовпець 3: порожня' // Object.is equality
+
+Expected: "Рядок 2, стовпець 3: порожня"
+Received: "Рядок 2, стовпець 3, порожньо"
+
+ ❯ tests/play-page-semantics.test.ts:168:59
+    166|   it('@trace FR-61 Names of a fresh board: «Рядок 2, стовпець 3: порож…
+    167|     const root = mountFixture(PAIR_ROW);
+    168|     expect(cellEl(root, 2, 3).getAttribute('aria-label')).toBe('Рядок …
+       |                                                           ^
+    169|     expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок …
+    170|     expect(cellEl(root, 6, 6).getAttribute('aria-label')).toBe('Рядок …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 The name follows a click, Enter and Space: 0, 1, порожня
+AssertionError: expected 'Рядок 2, стовпець 3, 0' to be 'Рядок 2, стовпець 3: 0' // Object.is equality
+
+Expected: "Рядок 2, стовпець 3: 0"
+Received: "Рядок 2, стовпець 3, 0"
+
+ ❯ tests/play-page-semantics.test.ts:179:45
+    177|     const cell = cellEl(root, 2, 3);
+    178|     clickCell(root, 2, 3);
+    179|     expect(cell.getAttribute('aria-label')).toBe('Рядок 2, стовпець 3:…
+       |                                             ^
+    180|     pressKey(cell, 'Enter');
+    181|     expect(cell.getAttribute('aria-label')).toBe('Рядок 2, стовпець 3:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 The name follows a hint fill: the filled cell ends with its digit
+AssertionError: expected 'Рядок 3, стовпець 3, порожньо' to be 'Рядок 3, стовпець 3: порожня' // Object.is equality
+
+Expected: "Рядок 3, стовпець 3: порожня"
+Received: "Рядок 3, стовпець 3, порожньо"
+
+ ❯ tests/play-page-semantics.test.ts:190:59
+    188|   it('@trace FR-61 The name follows a hint fill: the filled cell ends …
+    189|     const root = mountFixture(PAIR_ROW);
+    190|     expect(cellEl(root, 3, 3).getAttribute('aria-label')).toBe('Рядок …
+       |                                                           ^
+    191|     pressHint(root);
+    192|     expect(cellText(root, 3, 3)).toBe('1');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 A new puzzle and a size change give fresh names (no name of the old board survives)
+AssertionError: expected 'Рядок 3, стовпець 1, 0, задано' to be 'Рядок 3, стовпець 1: 0' // Object.is equality
+
+Expected: "Рядок 3, стовпець 1: 0"
+Received: "Рядок 3, стовпець 1, 0, задано"
+
+ ❯ tests/play-page-semantics.test.ts:200:59
+    198|     const spy = generateSpy((i) => (i === 0 ? PAIR_ROW : BLANK));
+    199|     const root = mountPage({ seedSource: seedQueue([1, 2]).source, gen…
+    200|     expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок …
+       |                                                           ^
+    201|     clickCell(root, 1, 1);
+    202|     expect(cellEl(root, 1, 1).getAttribute('aria-label')).toBe('Рядок …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 A size change gives names for the new board: 16 names «Рядок R, стовпець C: …», the given at 2,1 reads 0
+AssertionError: expected [ …(16) ] to deeply equal [ …(16) ]
+
+- Expected
++ Received
+
+  [
+-   "Рядок 1, стовпець 1: порожня",
+-   "Рядок 1, стовпець 2: порожня",
+-   "Рядок 1, стовпець 3: порожня",
+-   "Рядок 1, стовпець 4: порожня",
+-   "Рядок 2, стовпець 1: 0",
+-   "Рядок 2, стовпець 2: 0",
+-   "Рядок 2, стовпець 3: порожня",
+-   "Рядок 2, стовпець 4: порожня",
+-   "Рядок 3, стовпець 1: порожня",
+-   "Рядок 3, стовпець 2: порожня",
+-   "Рядок 3, стовпець 3: порожня",
+-   "Рядок 3, стовпець 4: порожня",
+-   "Рядок 4, стовпець 1: порожня",
+-   "Рядок 4, стовпець 2: порожня",
+-   "Рядок 4, стовпець 3: порожня",
+-   "Рядок 4, стовпець 4: порожня",
++   "Рядок 1, стовпець 1, порожньо",
++   "Рядок 1, стовпець 2, порожньо",
++   "Рядок 1, стовпець 3, порожньо",
++   "Рядок 1, стовпець 4, порожньо",
++   "Рядок 2, стовпець 1, 0, задано",
++   "Рядок 2, стовпець 2, 0, задано",
++   "Рядок 2, стовпець 3, порожньо",
++   "Рядок 2, стовпець 4, порожньо",
++   "Рядок 3, стовпець 1, порожньо",
++   "Рядок 3, стовпець 2, порожньо",
++   "Рядок 3, стовпець 3, порожньо",
++   "Рядок 3, стовпець 4, порожньо",
++   "Рядок 4, стовпець 1, порожньо",
++   "Рядок 4, стовпець 2, порожньо",
++   "Рядок 4, стовпець 3, порожньо",
++   "Рядок 4, стовпець 4, порожньо",
+  ]
+
+ ❯ tests/play-page-semantics.test.ts:217:31
+    215|     selectSize(root, 4);
+    216|     expect(allCells(root)).toHaveLength(16);
+    217|     expect(actualNames(root)).toEqual(expectedNames(root));
+       |                               ^
+    218|     expect(cellEl(root, 2, 1).getAttribute('aria-label')).toBe('Рядок …
+    219|     expect(cellEl(root, 4, 4).getAttribute('aria-label')).toBe('Рядок …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 Givens are read-only and other cells are not: aria-readonly="true" on givens only, also after a click and a hint fill
+AssertionError: expected [] to deeply equal [ '3,1', '3,2' ]
+
+- Expected
++ Received
+
+- [
+-   "3,1",
+-   "3,2",
+- ]
++ []
+
+ ❯ tests/play-page-semantics.test.ts:225:51
+    223|     const root = mountFixture(PAIR_ROW);
+    224|     const givens = ['3,1', '3,2'];
+    225|     expect(attributeCells(root, 'aria-readonly')).toEqual(givens);
+       |                                                   ^
+    226|     for (const cell of allCells(root)) {
+    227|       if (cell.getAttribute('data-given') === 'true') expect(cell.getA…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"
+AssertionError: expected [] to deeply equal [ '4,1', '4,2', '4,3' ]
+
+- Expected
++ Received
+
+- [
+-   "4,1",
+-   "4,2",
+-   "4,3",
+- ]
++ []
+
+ ❯ tests/play-page-semantics.test.ts:245:50
+    243|     expect(cellText(root, 4, 1)).toBe('0');
+    244|     expect(violationCells(root)).toEqual([[4, 1], [4, 2], [4, 3]]);
+    245|     expect(attributeCells(root, 'aria-invalid')).toEqual(['4,1', '4,2'…
+       |                                                  ^
+    246|     for (const cell of allCells(root).filter((c) => c.classList.contai…
+    247|       expect(cell.getAttribute('aria-invalid')).toBe('true');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-38 The invalid state is removed with the highlight, and the attribute is absent, never "false"
+AssertionError: expected [] to have a length of 3 but got +0
+
+- Expected
++ Received
+
+- 3
++ 0
+
+ ❯ tests/play-page-semantics.test.ts:254:50
+    252|     const root = mountFixture(PAIR_LEFT);
+    253|     clickCell(root, 4, 1);
+    254|     expect(attributeCells(root, 'aria-invalid')).toHaveLength(3);
+       |                                                  ^
+    255|     clickUntil(root, 4, 1, '');
+    256|     expect(violationCells(root)).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-36 A line with too many of one digit is invalid as a whole: all six cells of the row, nothing outside
+AssertionError: expected [] to deeply equal [ '1,1', '1,2', '1,3', '1,4', …(2) ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+-   "1,2",
+-   "1,3",
+-   "1,4",
+-   "1,5",
+-   "1,6",
+- ]
++ []
+
+ ❯ tests/play-page-semantics.test.ts:270:50
+    268|     const row1 = ['1,1', '1,2', '1,3', '1,4', '1,5', '1,6'];
+    269|     expect(violationCells(root).map(([r, c]) => `${r},${c}`)).toEqual(…
+    270|     expect(attributeCells(root, 'aria-invalid')).toEqual(row1);
+       |                                                  ^
+    271|   });
+    272|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-37 Violating givens are invalid at once, each also read-only (DIRTY_GIVENS)
+AssertionError: expected [] to deeply equal [ '1,1', '1,2', '1,3' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+-   "1,2",
+-   "1,3",
+- ]
++ []
+
+ ❯ tests/play-page-semantics.test.ts:275:50
+    273|   it('@trace FR-61 @trace FR-37 Violating givens are invalid at once, …
+    274|     const root = mountFixture(DIRTY_GIVENS);
+    275|     expect(attributeCells(root, 'aria-invalid')).toEqual(['1,1', '1,2'…
+       |                                                  ^
+    276|     for (const col of [1, 2, 3]) {
+    277|       const cell = cellEl(root, 1, col);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-64 The violation cue is also in the DOM: each of the three cells has cell-violation and aria-invalid, and no other cell has the attribute
+AssertionError: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:292:49
+    290|       const cell = cellEl(root, r, c);
+    291|       expect(cell.classList.contains('cell-violation')).toBe(true);
+    292|       expect(cell.getAttribute('aria-invalid')).toBe('true');
+       |                                                 ^
+    293|     }
+    294|     for (const cell of allCells(root)) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the size selector has a visible Ukrainian label > @trace FR-62 The select is labelled: one wrapping label.size-label with the own text «Розмір поля»
+AssertionError: the size selector is a select element: expected 'DIV' to be 'SELECT' // Object.is equality
+
+Expected: "SELECT"
+Received: "DIV"
+
+ ❯ sizeSelect tests/helpers/play-page.ts:417:63
+    415| export function sizeSelect(root: ParentNode): HTMLSelectElement {
+    416|   const el = q(root, '[data-control="size"]');
+    417|   expect(el.tagName, 'the size selector is a select element').toBe('SE…
+       |                                                               ^
+    418|   return el as HTMLSelectElement;
+    419| }
+ ❯ tests/play-page-semantics.test.ts:307:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the size selector has a visible Ukrainian label > @trace FR-62 The label is visible: computed display and visibility of the label and its span, and no hiding declaration
+AssertionError: expected an element matching label.size-label
+ ❯ q tests/helpers/play-page.ts:221:10
+    219| export function q(root: ParentNode, selector: string): HTMLElement {
+    220|   const el = root.querySelector<HTMLElement>(selector);
+    221|   expect.assert(el !== null, `expected an element matching ${selector}…
+       |          ^
+    222|   return el;
+    223| }
+ ❯ tests/play-page-semantics.test.ts:331:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the size selector has a visible Ukrainian label > @trace FR-62 Two mounts label their own selects, with no id or for anywhere below either root
+AssertionError: the size selector is a select element: expected 'DIV' to be 'SELECT' // Object.is equality
+
+Expected: "SELECT"
+Received: "DIV"
+
+ ❯ sizeSelect tests/helpers/play-page.ts:417:63
+    415| export function sizeSelect(root: ParentNode): HTMLSelectElement {
+    416|   const el = q(root, '[data-control="size"]');
+    417|   expect(el.tagName, 'the size selector is a select element').toBe('SE…
+       |                                                               ^
+    418|   return el as HTMLSelectElement;
+    419| }
+ ❯ tests/play-page-semantics.test.ts:347:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the size selector has a visible Ukrainian label > @trace FR-62 @trace FR-43 The label does not break the selector: options 4, 6, 8 with their labels, value 6 then 4, no aria-label
+AssertionError: the size selector is a select element: expected 'DIV' to be 'SELECT' // Object.is equality
+
+Expected: "SELECT"
+Received: "DIV"
+
+ ❯ sizeSelect tests/helpers/play-page.ts:417:63
+    415| export function sizeSelect(root: ParentNode): HTMLSelectElement {
+    416|   const el = q(root, '[data-control="size"]');
+    417|   expect(el.tagName, 'the size selector is a select element').toBe('SE…
+       |                                                               ^
+    418|   return el as HTMLSelectElement;
+    419| }
+ ❯ tests/play-page-semantics.test.ts:357:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-63 Present, empty and typed at mount: role="status", no tabindex, exactly two status elements in the root
+AssertionError: expected null to be 'status' // Object.is equality
+
+- Expected:
+"status"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:379:43
+    377|     for (const name of ['hint', 'win']) {
+    378|       const region = q(root, `[data-message="${name}"]`);
+    379|       expect(region.getAttribute('role')).toBe('status');
+       |                                           ^
+    380|       expect(region.textContent).toBe('');
+    381|       expect(region.hasAttribute('tabindex')).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-63 The same two elements carry every message: hint, click, new puzzle, size change and a win
+AssertionError: expected null to be 'status' // Object.is equality
+
+- Expected:
+"status"
+
++ Received:
+null
+
+ ❯ same tests/play-page-semantics.test.ts:397:47
+    395|       expect(q(root, '[data-message="win"]'), `${what}: the win region…
+    396|       expect(hintRegion.isConnected && winRegion.isConnected).toBe(tru…
+    397|       expect(hintRegion.getAttribute('role')).toBe('status');
+       |                                               ^
+    398|       expect(winRegion.getAttribute('role')).toBe('status');
+    399|       expect(root.querySelectorAll('[role="status"]')).toHaveLength(2);
+ ❯ tests/play-page-semantics.test.ts:402:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/81]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-63 A click that wins leaves the focus on the clicked cell, not on a status region
+AssertionError: after the winning click (DOM focus is on <body>): expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ expectActive tests/helpers/play-page.ts:460:113
+    458| /** Assert that `el` is `document.activeElement` (a boolean check, so …
+    459| export function expectActive(el: Element, what: string): void {
+    460|   expect(document.activeElement === el, `${what} (DOM focus is on ${de…
+       |                                                                                                                 ^
+    461| }
+    462|
+ ❯ tests/play-page-semantics.test.ts:446:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[70/81]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 No colour literal is left: no hex, rgb(), hsl() ... outside :root, wherever the rule is in the file
+AssertionError: expected [ …(94) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".cell-hinted { border: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-color: rgb(75, 85, 99) }",
++   ".cell-hinted { border-top: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-top-color: rgb(75, 85, 99) }",
++   ".cell-hinted { border-right: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-right-color: rgb(75, 85, 99) }",
++   ".cell-hinted { border-bottom: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-bottom-color: rgb(75, 85, 99) }",
++   ".cell-hinted { border-left: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-left-color: rgb(75, 85, 99) }",
++   ".message-idle { color: rgb(107, 114, 128) }",
++   ".size-control { border: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-color: rgb(156, 163, 175) }",
++   ".size-control { border-top: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-top-color: rgb(156, 163, 175) }",
++   ".size-control { border-right: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-right-color: rgb(156, 163, 175) }",
++   ".size-control { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-bottom-color: rgb(156, 163, 175) }",
++   ".size-control { border-left: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-left-color: rgb(156, 163, 175) }",
++   ".size-control { background-color: rgb(255, 255, 255) }",
++   ".size-control { background: rgb(255, 255, 255) }",
++   ".size-control button { color: rgb(75, 85, 99) }",
++   ".size-control button[aria-checked='true'] { border-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { border-top-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { border-right-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { border-bottom-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { border-left-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { background-color: rgb(219, 234, 254) }",
++   ".size-control button[aria-checked='true'] { background: rgb(219, 234, 254) }",
++   ".size-control button[aria-checked='true'] { color: rgb(31, 41, 55) }",
++   ".confirm { border: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-color: rgb(156, 163, 175) }",
++   ".confirm { border-top: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-top-color: rgb(156, 163, 175) }",
++   ".confirm { border-right: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-right-color: rgb(156, 163, 175) }",
++   ".confirm { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-bottom-color: rgb(156, 163, 175) }",
++   ".confirm { border-left: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-left-color: rgb(156, 163, 175) }",
++   ".confirm { background-color: rgb(255, 255, 255) }",
++   ".confirm { background: rgb(255, 255, 255) }",
++   ".confirm { color: rgb(31, 41, 55) }",
++   ".confirm::backdrop { background-color: rgba(0, 0, 0, 0.45) }",
++   ".confirm::backdrop { background: rgba(0, 0, 0, 0.45) }",
++   ".rules { border-color: rgb(209, 213, 219) rgb(209, 213, 219) currentcolor }",
++   ".rules { border-top: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-top-color: rgb(209, 213, 219) }",
++   ".rules { border-right: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-right-color: rgb(209, 213, 219) }",
++   ".rules { border-left: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-left-color: rgb(209, 213, 219) }",
++   ".rules { background-color: rgb(255, 255, 255) }",
++   ".rules { background: rgb(255, 255, 255) }",
++   ".rules { color: rgb(31, 41, 55) }",
++   ".rules::backdrop { background-color: rgba(0, 0, 0, 0.3) }",
++   ".rules::backdrop { background: rgba(0, 0, 0, 0.3) }",
++   "@media (min-width: 48rem) .rules { border: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-color: rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-top: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-top-color: rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-right: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-right-color: rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-bottom: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-bottom-color: rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-left: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-left-color: rgb(209, 213, 219) }",
++   ".rules li { border-top: 1px solid rgb(229, 231, 235) }",
++   ".rules li { border-top-color: rgb(229, 231, 235) }",
++   ".mini { border: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-color: rgb(156, 163, 175) }",
++   ".mini { border-top: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-top-color: rgb(156, 163, 175) }",
++   ".mini { border-right: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-right-color: rgb(156, 163, 175) }",
++   ".mini { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-bottom-color: rgb(156, 163, 175) }",
++   ".mini { border-left: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-left-color: rgb(156, 163, 175) }",
++   ".mini { background-color: rgb(249, 250, 251) }",
++   ".mini { background: rgb(249, 250, 251) }",
++   ".mini-answer { border: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-color: rgb(37, 99, 235) }",
++   ".mini-answer { border-top: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-top-color: rgb(37, 99, 235) }",
++   ".mini-answer { border-right: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-right-color: rgb(37, 99, 235) }",
++   ".mini-answer { border-bottom: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-bottom-color: rgb(37, 99, 235) }",
++   ".mini-answer { border-left: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-left-color: rgb(37, 99, 235) }",
++   ".mini-sep { color: rgb(107, 114, 128) }",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:67:42
+     65|     const parsed = readStyles();
+     66|     expect(parsed.rules.length, 'the walk found the rules').toBeGreate…
+     67|     expect(scanColours(parsed).literals).toEqual([]);
+       |                                          ^
+     68|   });
+     69|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[71/81]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 Every colour-bearing shorthand has a var(--color-...) colour (or is none or 0)
+AssertionError: expected [ …(47) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".cell-hinted { border: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-top: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-right: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-bottom: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-left: 2px dashed rgb(75, 85, 99) }",
++   ".size-control { border: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-top: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-right: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-left: 1px solid rgb(156, 163, 175) }",
++   ".size-control { background: rgb(255, 255, 255) }",
++   ".size-control button { border: 2px solid transparent }",
++   ".size-control button { border-top: 2px solid transparent }",
++   ".size-control button { border-right: 2px solid transparent }",
++   ".size-control button { border-bottom: 2px solid transparent }",
++   ".size-control button { border-left: 2px solid transparent }",
++   ".size-control button { background: transparent }",
++   ".size-control button[aria-checked='true'] { background: rgb(219, 234, 254) }",
++   ".confirm { border: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-top: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-right: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-left: 1px solid rgb(156, 163, 175) }",
++   ".confirm { background: rgb(255, 255, 255) }",
++   ".confirm::backdrop { background: rgba(0, 0, 0, 0.45) }",
++   ".rules { border-top: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-right: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-left: 1px solid rgb(209, 213, 219) }",
++   ".rules { background: rgb(255, 255, 255) }",
++   ".rules::backdrop { background: rgba(0, 0, 0, 0.3) }",
++   "@media (min-width: 48rem) .rules { border: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-top: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-right: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-bottom: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-left: 1px solid rgb(209, 213, 219) }",
++   ".rules li { border-top: 1px solid rgb(229, 231, 235) }",
++   ".mini { border: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-top: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-right: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-left: 1px solid rgb(156, 163, 175) }",
++   ".mini { background: rgb(249, 250, 251) }",
++   ".mini-answer { border: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-top: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-right: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-bottom: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-left: 2px dashed rgb(37, 99, 235) }",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:75:50
+     73|
+     74|   it('@trace FR-65 Every colour-bearing shorthand has a var(--color-..…
+     75|     expect(scanColours(readStyles()).shorthands).toEqual([]);
+       |                                                  ^
+     76|   });
+     77|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[72/81]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 Every color, background-color, border-color and outline-color is one declared token or an allowed keyword
+AssertionError: expected [ …(21) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".cell-hinted { border-color: rgb(75, 85, 99) }",
++   ".message-idle { color: rgb(107, 114, 128) }",
++   ".size-control { border-color: rgb(156, 163, 175) }",
++   ".size-control { background-color: rgb(255, 255, 255) }",
++   ".size-control button { color: rgb(75, 85, 99) }",
++   ".size-control button[aria-checked='true'] { border-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { background-color: rgb(219, 234, 254) }",
++   ".size-control button[aria-checked='true'] { color: rgb(31, 41, 55) }",
++   ".confirm { border-color: rgb(156, 163, 175) }",
++   ".confirm { background-color: rgb(255, 255, 255) }",
++   ".confirm { color: rgb(31, 41, 55) }",
++   ".confirm::backdrop { background-color: rgba(0, 0, 0, 0.45) }",
++   ".rules { border-color: rgb(209, 213, 219) rgb(209, 213, 219) currentcolor }",
++   ".rules { background-color: rgb(255, 255, 255) }",
++   ".rules { color: rgb(31, 41, 55) }",
++   ".rules::backdrop { background-color: rgba(0, 0, 0, 0.3) }",
++   "@media (min-width: 48rem) .rules { border-color: rgb(209, 213, 219) }",
++   ".mini { border-color: rgb(156, 163, 175) }",
++   ".mini { background-color: rgb(249, 250, 251) }",
++   ".mini-answer { border-color: rgb(37, 99, 235) }",
++   ".mini-sep { color: rgb(107, 114, 128) }",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:79:56
+     77|
+     78|   it('@trace FR-65 Every color, background-color, border-color and out…
+     79|     expect(scanColours(readStyles()).colourProperties).toEqual([]);
+       |                                                        ^
+     80|   });
+     81|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[73/81]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 The button and select rule takes text, fill and border from the control tokens
+AssertionError: select { color: var(--color-text) }: expected undefined to be 'var(--color-text)' // Object.is equality
+
+- Expected:
+"var(--color-text)"
+
++ Received:
+undefined
+
+ ❯ expectDecl tests/play-page-stylesheet.test.ts:39:118
+     37| /** Assert the merged declaration `property` of the rules for `selecto…
+     38| function expectDecl(parsed: ParsedStyles, selector: string, property: …
+     39|   expect(declarationsFor(parsed, selector).get(property)?.toLowerCase(…
+       |                                                                                                                      ^
+     40| }
+     41|
+ ❯ tests/play-page-stylesheet.test.ts:106:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[74/81]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > visible, unobscured focus indicators (FR-65) > @trace FR-65 The stylesheet stays inside the build target: no :has( and no !important
+AssertionError: expected ':root {\n  --color-page: #f9fafb;\n  …' not to match /:has\(/i
+
+- Expected:
+/:has\(/i
+
++ Received:
+":root {
+  --color-page: #f9fafb;
+  --color-text: #1f2937;
+  --color-cell-bg: #ffffff;
+  --color-cell-border: #6b7280;
+  --color-given-bg: #e5e7eb;
+  --color-given-border: #374151;
+  --color-violation-bg: #fecaca;
+  --color-violation-border: #b91c1c;
+  --color-violation-text: #991b1b;
+  --color-focus: #1d4ed8;
+  --color-control-bg: #ffffff;
+  --color-control-border: #6b7280;
+  --color-win-text: #166534;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-text);
+  background-color: var(--color-page);
+}
+
+#app {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 16px;
+  text-align: center;
+}
+
+h1 {
+  margin: 8px 0 16px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rules-button {
+  flex: none;
+  min-height: 2.75rem;
+}
+
+.board {
+  display: grid;
+  --n: 6;
+  --cell-max: 48px;
+  grid-template-columns: repeat(var(--n), minmax(0, var(--cell-max)));
+  gap: 2px;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.board[data-size='4'] {
+  --n: 4;
+}
+
+.board[data-size='8'] {
+  --n: 8;
+}
+
+.board[data-size='4'] .cell,
+.board[data-size='6'] .cell {
+  font-size: 22px;
+}
+
+.board[data-size='8'] .cell {
+  font-size: 18px;
+}
+
+.cell {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  aspect-ratio: 1;
+  font-size: 22px;
+  background-color: var(--color-cell-bg);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-cell-border);
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cell-given {
+  font-weight: 700;
+  background-color: var(--color-given-bg);
+  border-width: 2px;
+  border-color: var(--color-given-border);
+  cursor: default;
+}
+
+.cell-hinted {
+  /* Non-colour cue: dashed border, italic and bold digit (design/v0/app/binarka.css .cell-hinted). */
+  border: 2px dashed #4b5563;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.cell-violation {
+  background-color: var(--color-violation-bg);
+  border-width: 3px;
+  border-color: var(--color-violation-border);
+  color: var(--color-violation-text);
+}
+
+.cell:focus-visible {
+  outline-style: solid;
+  outline-width: 3px;
+  outline-color: var(--color-focus);
+  outline-offset: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 16px 0 8px;
+}
+
+button {
+  font: inherit;
+  padding: 10px 16px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-control-border);
+  border-radius: 6px;
+  color: var(--color-text);
+  background-color: var(--color-control-bg);
+  cursor: pointer;
+}
+
+button:focus-visible,
+select:focus-visible {
+  outline-style: solid;
+  outline-width: 3px;
+  outline-color: var(--color-focus);
+  outline-offset: 2px;
+}
+
+.message {
+  min-height: 1.4em;
+  margin: 6px 0;
+}
+
+.message:empty {
+  display: none;
+}
+
+.message-idle {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.messages:has([data-message='hint']:not(:empty), [data-message='win']:not(:empty)) .message-idle {
+  display: none;
+}
+
+.message-win {
+  font-weight: 700;
+  color: var(--color-win-text);
+}
+
+/* Segmented size control (ported in part from design/v0/app/binarka.css .size-picker). */
+.size-control {
+  display: flex;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto 12px;
+  padding: 3px;
+  gap: 3px;
+  box-sizing: border-box;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.size-control button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 8px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.size-control button[aria-checked='true'] {
+  border-color: #2563eb;
+  background: #dbeafe;
+  color: #1f2937;
+  font-weight: 700;
+}
+
+/* Confirmation dialog (ported in part from design/v0/app/binarka.css .confirm). */
+.confirm {
+  width: min(22rem, calc(100vw - 32px));
+  max-width: none;
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #9ca3af;
+  border-radius: 12px;
+  background: #fff;
+  color: #1f2937;
+  text-align: left;
+}
+
+.confirm::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.confirm p {
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.confirm-buttons {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.confirm-buttons button {
+  flex: 1 1 auto;
+  min-height: 2.75rem;
+  font-weight: 700;
+}
+
+/* Rules popover: bottom sheet below 48rem, centred panel from 48rem. */
+.rules {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: 55dvh;
+  margin: 0;
+  padding: 20px 16px 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  border: 1px solid #d1d5db;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+  color: #1f2937;
+  text-align: left;
+}
+
+.rules::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 48rem) {
+  .rules {
+    inset: 0;
+    width: 28rem;
+    max-width: calc(100% - 2rem);
+    height: fit-content;
+    margin: auto;
+    padding: 24px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+  }
+}
+
+.rules h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.rules ul {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.rules li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0;
+  border-top: 1px solid #e5e7eb;
+  line-height: 1.4;
+}
+
+.rule-example {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+  background: #f9fafb;
+}
+
+.mini-answer {
+  border: 2px dashed #2563eb;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.mini-sep {
+  padding: 0 8px;
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.rules-close {
+  width: 100%;
+  min-height: 2.75rem;
+  font-weight: 700;
+}
+"
+
+ ❯ tests/play-page-stylesheet.test.ts:210:22
+    208|   it('@trace FR-65 The stylesheet stays inside the build target: no :h…
+    209|     const text = readStyleText();
+    210|     expect(text).not.toMatch(/:has\(/i);
+       |                      ^
+    211|     expect(text).not.toMatch(/!\s*important/i);
+    212|     const parsed = readStyles();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[75/81]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > rows are kept in the accessibility tree and the label is not hidden > @trace FR-62 The size-label rules have no hiding declaration and .size-label has a gap of at least 4px
+AssertionError: a .size-label rule exists: expected 0 to be greater than 0
+ ❯ tests/play-page-stylesheet.test.ts:227:90
+    225|   it('@trace FR-62 The size-label rules have no hiding declaration and…
+    226|     const parsed = readStyles();
+    227|     expect(rulesWithSelector(parsed, '.size-label').length, 'a .size-l…
+       |                                                                                          ^
+    228|     expect(hidingDeclarations(parsed)).toEqual([]);
+    229|     expect(px(declarationsFor(parsed, '.size-label').get('gap')), '.si…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[76/81]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > rows are kept in the accessibility tree and the label is not hidden > @trace FR-62 The label and its text compute a display other than none and a visibility that is shown (injected stylesheet)
+AssertionError: expected an element matching label.size-label
+ ❯ q tests/helpers/play-page.ts:221:10
+    219| export function q(root: ParentNode, selector: string): HTMLElement {
+    220|   const el = root.querySelector<HTMLElement>(selector);
+    221|   expect.assert(el !== null, `expected an element matching ${selector}…
+       |          ^
+    222|   return el;
+    223| }
+ ❯ tests/play-page-stylesheet.test.ts:235:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[77/81]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the selector sets its own colours and the board disables double-tap zoom (FR-65) > @trace FR-65 The select declares color var(--color-text) and background-color var(--color-control-bg)
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/play-page-stylesheet.test.ts:247:56
+    245|   it('@trace FR-65 The select declares color var(--color-text) and bac…
+    246|     const parsed = readStyles();
+    247|     expect(rulesWithSelector(parsed, 'select').length).toBeGreaterThan…
+       |                                                        ^
+    248|     expectDecl(parsed, 'select', 'color', 'var(--color-text)');
+    249|     expectDecl(parsed, 'select', 'background-color', 'var(--color-cont…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[78/81]⎯
+
+ FAIL  tests/play-page-wcag.test.ts > the page meets the accessibility requirements (NFR-9) > @trace NFR-9 @trace NFR-5 Every button, the select and every gridcell has a non-empty Ukrainian accessible name
+AssertionError: the size selector is a select element: expected 'DIV' to be 'SELECT' // Object.is equality
+
+Expected: "SELECT"
+Received: "DIV"
+
+ ❯ sizeSelect tests/helpers/play-page.ts:417:63
+    415| export function sizeSelect(root: ParentNode): HTMLSelectElement {
+    416|   const el = q(root, '[data-control="size"]');
+    417|   expect(el.tagName, 'the size selector is a select element').toBe('SE…
+       |                                                               ^
+    418|   return el as HTMLSelectElement;
+    419| }
+ ❯ accessibleNames tests/play-page-wcag.test.ts:27:17
+ ❯ tests/play-page-wcag.test.ts:45:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[79/81]⎯
+
+ FAIL  tests/play-page-wcag.test.ts > the page meets the accessibility requirements (NFR-9) > @trace NFR-9 No element of the page has a positive tabindex, before and after play
+AssertionError: the cells carry tabindex: expected 0 to be greater than 0
+ ❯ check tests/play-page-wcag.test.ts:64:61
+     62|     const check = (): void => {
+     63|       const tabindexed = Array.from(root.querySelectorAll('[tabindex]'…
+     64|       expect(tabindexed.length, 'the cells carry tabindex').toBeGreate…
+       |                                                             ^
+     65|       for (const el of tabindexed) expect(Number(el.getAttribute('tabi…
+     66|     };
+ ❯ tests/play-page-wcag.test.ts:67:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[80/81]⎯
+
+ FAIL  tests/ui-strings.test.ts > @trace NFR-5 no Cyrillic text outside the strings module > scans src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts, and none holds a Cyrillic character (comments included)
+AssertionError: files with a Cyrillic character outside src/ui/strings.ts: expected [ 'src/ui/grid.ts' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "src/ui/grid.ts",
++ ]
+
+ ❯ tests/ui-strings.test.ts:131:84
+    129|     expect(names).not.toContain('src/ui/strings.ts');
+    130|     const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f…
+    131|     expect(offenders, 'files with a Cyrillic character outside src/ui/…
+       |                                                                                    ^
+    132|   });
+    133|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[81/81]⎯
+
+
+ Test Files  9 failed | 23 passed (32)
+      Tests  81 failed | 618 passed (699)
+   Start at  00:54:32
+   Duration  31.81s (tests 58%, environment 31%, import 8%, transform 2%)
+
+Environment  jsdom was created 32 times · 24.63s total, 31% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+

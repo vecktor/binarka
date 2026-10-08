@@ -1,0 +1,40 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "update-page-layout",
+  "change": "update-page-layout",
+  "baseRef": "fc897ac",
+  "headRef": "HEAD",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 2,
+      "contested": 0,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 2,
+      "contested": 0,
+      "rejected": 1
+    },
+    "visual": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "docs/current-state.md still describes the stopped run: it says the user decisions, the fix and the 3.7 re-run are pending, but all three are done",
+    "current-state.md Next task 0.3 has a literal NBSP where the escape was meant, so the M19 note reads wrongly",
+    "Task 3.7 is ticked, but its step (g) record is missing: docs/current-state.md is stale and contradicts HEAD",
+    "Per-mount uniqueness of the panel heading id is required but not tested",
+    "Idle line wraps with the em dash starting the second line at 375 px"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-06T03:51:09Z",
+  "runId": "wf_319f4046-80b",
+  "persistedBy": "orchestrator, from the run's result (its persist agent returned empty and wrote nothing); review run 3 of update-page-layout"
+}

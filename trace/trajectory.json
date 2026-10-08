@@ -47,6 +47,33 @@
       "processComplete": true
     },
     {
+      "slice": "2026-10-06-add-hinted-cell",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 6,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
+      "slice": "2026-10-06-update-controls-accessibility",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 8,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
+      "slice": "2026-10-06-update-page-layout",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 12,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
       "slice": "2026-10-08-add-page-accessibility",
       "reviewEvidence": "clean",
       "trailerCommits": 7,
@@ -74,6 +101,18 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-04-add-rules-and-reset: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-06-add-hinted-cell: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-06-update-controls-accessibility: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-06-update-page-layout: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "in-scope",
