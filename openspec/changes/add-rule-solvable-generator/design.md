@@ -38,9 +38,9 @@ Input validation is untouched: an odd N, N below 4 or above 16, a size that is n
 
 None. Grep of `tests/` for `generate(` and pinned grids (2026-10-06) found these uses, each unaffected:
 
-- Compare with a live `generate(...)` call, so they follow the generator whatever the givens are: `tests/cli.test.ts` (lines 81, 94), `tests/play-page-rendering.test.ts` (lines 41, 76), `tests/play-page-new-puzzle-and-seed.test.ts` (lines 48, 62, 223), `tests/play-page-size-selector.test.ts` (lines 108 to 114), `tests/generator.test.ts` (shape, determinism, validation), `tests/generator-unique.test.ts` (FR-15), `tests/generator-timing.test.ts` (NFR-1 to NFR-3).
-- Pin a solution, not givens: `SOLUTION_8_TEXT` in `tests/helpers/play-page.ts` (the 8×8 solution of seed 1), asserted at `tests/play-page-helpers.test.ts` line 106. Unchanged by decision 4.
-- The premise `generate(4, 1).givens` differs from `generate(4, 2).givens` (`tests/play-page-size-selector.test.ts` line 114) was checked on the scratch copy and still holds; task 2.4 re-checks it on the real code.
+- Compare with a live `generate(...)` call, so they follow the generator whatever the givens are: `tests/cli.test.ts` (lines 81, 94), `tests/play-page-rendering.test.ts` (lines 41, 76), `tests/play-page-new-puzzle-and-seed.test.ts` (lines 55, 72, 239 as of 2026-10-09), `tests/play-page-size-selector.test.ts` (lines 129 to 135), `tests/generator.test.ts` (shape, determinism, validation), `tests/generator-unique.test.ts` (FR-15), `tests/generator-timing.test.ts` (NFR-1 to NFR-3).
+- Pin a solution, not givens: `SOLUTION_8_TEXT` in `tests/helpers/play-page.ts` (the 8×8 solution of seed 1), asserted at `tests/play-page-helpers.test.ts` line 134. Unchanged by decision 4.
+- The premise `generate(4, 1).givens` differs from `generate(4, 2).givens` (`tests/play-page-size-selector.test.ts` line 135) was checked on the scratch copy and still holds; task 2.4 re-checks it on the real code.
 - No test, helper or eval pins generated givens literally (`evals/` and `scripts/` do not call `generate`). Hand-written fixtures (`PAIR_ROW`, `WIN_PUZZLE`, the hint boards) do not use the generator. If task 2.4 finds one that breaks, it is changed deliberately, listed in the test commit by FR, and recorded here.
 
 New tests only: `tests/generator-rule-solvable.test.ts` (`@trace FR-27`).
@@ -49,7 +49,7 @@ New tests only: `tests/generator-rule-solvable.test.ts` (`@trace FR-27`).
 
 - **NFR-3 pressure at N = 8** (the plan names it): measured margin is two orders of magnitude on the scratch copy; the stop condition of decision 6 and the 50% tripwire guard it; the bounds are never relaxed.
 - **The carving predicate is not monotone in some corner** (a removal accepted, a later state stuck): carving itself does not depend on monotonicity (every removal is re-checked, decision 1); the closed-upward argument in decision 1 is what the partial-board scenario relies on. The FR-27 test checks the final puzzles over 60 puzzles, and the scenario on partial boards (120 boards) checks that consequence from the other side.
-- **Random draws shift** and the solutions change: task 2.3 keeps the order; `tests/play-page-helpers.test.ts` line 106 fails loudly if not.
+- **Random draws shift** and the solutions change: task 2.3 keeps the order; `tests/play-page-helpers.test.ts` line 134 fails loudly if not.
 - **Puzzles get denser** (more givens at N = 6 and 8): not a requirement; difficulty is FR-44 (Future). Recorded in `docs/current-state.md`.
 - **A hint-engine change later breaks the guarantee** (the check depends on `hint`): the FR-27 test runs against the real `hint` over the seed set, so such a change fails it.
 
