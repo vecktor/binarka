@@ -119,7 +119,8 @@ describe('the board, rows and cells have grid roles', () => {
   });
 
   it('@trace FR-59 The cell contract is unchanged and no descendant of a root has an id', () => {
-    const root = mountFixture(WIN_PUZZLE);
+    // a per-size generator, so the size change below really rebuilds the board (a fixed 6x6 fixture would make it fail)
+    const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: WIN_PUZZLE, 4: BLANK_4 }) });
     const cells = allCells(root);
     expect(cells).toHaveLength(36);
     for (const cell of cells) {
@@ -135,6 +136,8 @@ describe('the board, rows and cells have grid roles', () => {
     // after a click, a hint, a size change and a new puzzle too: no id appears later
     clickCell(root, 1, 1);
     pressHint(root);
+    selectSize(root, 4);
+    expect(q(root, '[data-board]').getAttribute('data-size'), 'the size change really rebuilt the board').toBe('4');
     pressNew(root);
     expect(root.querySelectorAll('[id]')).toHaveLength(0);
   });

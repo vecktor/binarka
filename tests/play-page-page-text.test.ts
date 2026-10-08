@@ -30,7 +30,7 @@ import {
 installPageLifecycle();
 
 describe('@trace NFR-5 the page text is Ukrainian', () => {
-  it('Static page text: every collected text has Cyrillic letters and no Latin letters', () => {
+  it('@trace FR-59 @trace FR-60 Static page text: every collected text has Cyrillic letters and no Latin letters', () => {
     const root = mountFixture(WIN_PUZZLE);
     expectPageStructure(root);
     const texts = collectPageText(root);
@@ -48,28 +48,12 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
     expect(q(root, '[data-board]').getAttribute('aria-label')).toBe('Поле 6×6');
     expect(trimmed.filter((t) => t === 'Поле 6×6'), 'the option text and the board aria-label').toHaveLength(2);
     expect(trimmed.filter((t) => /^Рядок [1-6], стовпець [1-6]: (порожня|0|1)$/.test(t))).toHaveLength(36);
-
-    for (const text of texts) {
-      expect(/\p{Script=Cyrillic}/u.test(text), `"${text}" has Cyrillic letters`).toBe(true);
-      expect(/[A-Za-z]/.test(text), `"${text}" has no Latin letters`).toBe(false);
-    }
-  });
-
-  // Slice 4 (add-page-accessibility), DELIBERATE CHANGE of "Static page text" (a new scenario line, nothing removed):
-  // the collected texts also include the visible label, the board name as an aria-label and the 36 cell names.
-  it('@trace NFR-5 @trace FR-59 @trace FR-60 Static page text includes «Розмір поля», the board name «Поле 6×6» as an aria-label and the 36 cell names', () => {
-    const root = mountFixture(WIN_PUZZLE);
-    const texts = collectPageText(root);
-    const trimmed = texts.map((t) => t.trim());
-    expect(trimmed).toContain('Розмір поля');
-    // «Поле 6×6» is also an option text, so the board name must appear a second time: as the aria-label of the board
-    expect(q(root, '[data-board]').getAttribute('aria-label')).toBe('Поле 6×6');
-    expect(trimmed.filter((t) => t === 'Поле 6×6')).toHaveLength(2);
+    // each cell's exact name is collected (folded in from a duplicate test; review finding F6)
     for (const cell of allCells(root)) {
       const name = cellName(Number(cell.getAttribute('data-row')), Number(cell.getAttribute('data-col')), cell.textContent);
       expect(trimmed, `the cell name «${name}» is collected`).toContain(name);
     }
-    expect(trimmed.filter((t) => /^Рядок \d, стовпець \d: (порожня|0|1)$/.test(t))).toHaveLength(36);
+
     for (const text of texts) {
       expect(/\p{Script=Cyrillic}/u.test(text), `"${text}" has Cyrillic letters`).toBe(true);
       expect(/[A-Za-z]/.test(text), `"${text}" has no Latin letters`).toBe(false);

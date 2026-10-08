@@ -321,7 +321,7 @@ Traces: FR-61, FR-40, FR-41
 - **GIVEN** a mounted page where the test gave DOM focus to `[data-action="hint"]`
 - **WHEN** the player presses the hint button and the hint text appears
 - **THEN** `document.activeElement` is still `[data-action="hint"]` and is not a status region
-- **AND** after a second hint press on a fixture board whose hint fill solves it, so the win message appears, `document.activeElement` is still `[data-action="hint"]`
+- **AND** on a fixture board whose single hint fill solves it, after that hint press the win message appears and `document.activeElement` is still `[data-action="hint"]`
 
 #### Scenario: A click that wins leaves the focus on the clicked cell
 

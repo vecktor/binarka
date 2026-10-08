@@ -623,3 +623,31 @@ describe('the Tab stop and focus work at every size', () => {
     expectTabStop(root, 1, 1);
   });
 });
+
+describe('review round 1: one cycle after a rebuild, and mounting keeps the focus', () => {
+  it('@trace FR-58 After a rebuild (a new puzzle, then a size change) one Enter still cycles a player cell exactly once', () => {
+    const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
+    pressNew(root);
+    press(cellEl(root, 2, 3), 'Enter');
+    expect(cellText(root, 2, 3), 'one Enter after a new puzzle is one cycle').toBe('0');
+    selectSize(root, 4);
+    expect(q(root, '[data-board]').getAttribute('data-size'), 'the size change rebuilt the board').toBe('4');
+    press(cellEl(root, 2, 2), 'Enter');
+    expect(cellText(root, 2, 2), 'one Enter after a size change is one cycle').toBe('0');
+  });
+
+  it('@trace FR-57 Mounting the page does not move DOM focus', () => {
+    const outside = document.createElement('button');
+    outside.type = 'button';
+    document.body.append(outside);
+    try {
+      outside.focus();
+      expect(document.activeElement).toBe(outside);
+      const root = mountFixture(BLANK);
+      expect(document.activeElement, 'the mount left the focus where it was').toBe(outside);
+      expectTabStop(root, 1, 1);
+    } finally {
+      outside.remove();
+    }
+  });
+});

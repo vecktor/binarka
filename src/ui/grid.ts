@@ -8,7 +8,6 @@ export interface KeyInfo {
   altKey: boolean;
   metaKey: boolean;
   shiftKey: boolean;
-  repeat: boolean;
 }
 
 /** Accessible name of a cell; `row` and `col` are 1-based. */

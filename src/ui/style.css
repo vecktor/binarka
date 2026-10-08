@@ -126,13 +126,7 @@ select {
   cursor: pointer;
 }
 
-button:focus-visible {
-  outline-style: solid;
-  outline-width: 3px;
-  outline-color: var(--color-focus);
-  outline-offset: 2px;
-}
-
+button:focus-visible,
 select:focus-visible {
   outline-style: solid;
   outline-width: 3px;
@@ -150,12 +144,9 @@ select:focus-visible {
   color: var(--color-win-text);
 }
 
-select {
-  margin-bottom: 12px;
-}
-
 .size-label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 12px;
 }

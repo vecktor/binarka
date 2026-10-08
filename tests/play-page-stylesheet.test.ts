@@ -19,6 +19,7 @@ import {
 import {
   TOKEN_NAMES,
   contrastProblems,
+  contrastRatio,
   declarationsFor,
   hidingDeclarations,
   injectPageStyles,
@@ -315,4 +316,14 @@ describe('the cascade gives each cell state its border and the colours whose con
       expect(getComputedStyle(document.body).backgroundColor).toBe(rgbOf(token(parsed, '--color-page')));
     });
   }
+});
+
+describe('the contrast helper is not vacuous', () => {
+  it('@trace FR-63 contrastRatio gives 21:1 for black on white, 1:1 for equal colours and 1.41:1 (below 3:1) for the old given fill on the page', () => {
+    expect(contrastRatio('#000000', '#ffffff')).toBeCloseTo(21, 5);
+    expect(contrastRatio('#6b7280', '#6b7280')).toBeCloseTo(1, 5);
+    const oldGivenFill = contrastRatio('#d1d5db', '#f9fafb');
+    expect(oldGivenFill).toBeCloseTo(1.41, 2);
+    expect(oldGivenFill).toBeLessThan(3);
+  });
 });

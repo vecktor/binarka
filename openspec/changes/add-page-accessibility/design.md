@@ -166,8 +166,8 @@ Decisions 1 to 6 and 8 to 11 are local to `src/ui/` and reversible: not ADR-wort
 
 ## Data model
 
-Closure state added to `mountPlayPage`: `tabStop: [row, col]` (0-based) for the board
-shown. DOM (per board): `[data-board][role=grid][aria-label][data-size]` with N
+No closure state is added for the Tab stop: the one cell with `tabindex="0"` IS the Tab stop
+(the DOM is the single source of truth; review round 1, F1). DOM (per board): `[data-board][role=grid][aria-label][data-size]` with N
 `.board-row[role=row]`, each with N `[data-cell][role=gridcell][tabindex][aria-label]`
 (+ `data-row`, `data-col`, `data-given`, classes, optional `aria-readonly`,
 `aria-invalid`). Page: `h1`, `label.size-label > (span + select[data-control=size])`,

@@ -687,6 +687,7 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
         "tests/play-page-rendering.test.ts",
         "tests/play-page-rendering.test.ts"
       ],
@@ -699,6 +700,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
@@ -799,6 +801,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
