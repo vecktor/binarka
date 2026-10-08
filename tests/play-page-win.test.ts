@@ -27,7 +27,7 @@ import {
 installPageLifecycle();
 
 describe('@trace FR-41 the win message appears when the board is solved', () => {
-  it('Final click solves the board: the exact Ukrainian message, apostrophe U+0027', () => {
+  it('Final click solves the board: the exact Ukrainian message, apostrophe U+02BC', () => {
     const root = mountFixture(WIN_PUZZLE);
     expectPageStructure(root);
     fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE), [[6, 6]]);
@@ -42,7 +42,7 @@ describe('@trace FR-41 the win message appears when the board is solved', () => 
 
     expect(isSolved(readBoard(root))).toBe(true);
     expect(winMessage(root)).toBe(WIN_MESSAGE);
-    expect(winMessage(root)).toBe(`Вітаємо, головоломку розв${String.fromCodePoint(0x27)}язано!`);
+    expect(winMessage(root)).toBe(`Вітаємо, головоломку розв${String.fromCodePoint(0x2bc)}язано!`);
   });
 
   it('Final click solves the board when the last cell was empty', () => {
@@ -70,6 +70,41 @@ describe('@trace FR-41 the win message appears when the board is solved', () => 
 
     expect(cellText(root, 4, 1)).toBe('1');
     expect(winMessage(root)).toBe(WIN_MESSAGE);
+  });
+
+  // Scenario «The apostrophe is U+02BC and no other character»: one test per route, the same checks for both.
+  const expectApostropheIsU02BC = (text: string): void => {
+    expect(text).toBe(`Вітаємо, головоломку розв${String.fromCodePoint(0x2bc)}язано!`);
+    expect(text.codePointAt(text.indexOf('розв') + 4)).toBe(0x2bc);
+    expect(text).toHaveLength(32);
+    expect(text.includes(String.fromCodePoint(0x27))).toBe(false);
+    expect(text.includes(String.fromCodePoint(0x2019))).toBe(false);
+    expect(/\p{Script=Cyrillic}/u.test(text)).toBe(true);
+    expect(/[A-Za-z]/.test(text)).toBe(false);
+    expect(/\p{Script=Latin}/u.test(text)).toBe(false);
+  };
+
+  it('The apostrophe is U+02BC and no other character: win reached by the final click', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE), [[6, 6]]);
+    setCellTo(root, 6, 6, 0);
+    expect(winMessage(root)).toBe('');
+
+    clickUntil(root, 6, 6, '1');
+
+    expect(isSolved(readBoard(root))).toBe(true);
+    expectApostropheIsU02BC(q(root, '[data-message="win"]').textContent);
+  });
+
+  it('The apostrophe is U+02BC and no other character: win reached by the final hint', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE), [[4, 1]]);
+    expect(winMessage(root)).toBe('');
+
+    pressHint(root);
+
+    expect(isSolved(readBoard(root))).toBe(true);
+    expectApostropheIsU02BC(q(root, '[data-message="win"]').textContent);
   });
 
   it('Full board with a violation is not a win', () => {

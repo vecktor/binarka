@@ -1,0 +1,42 @@
+# Red run: update-win-apostrophe (phase D, FR-41)
+
+Run by the orchestrator at 2026-10-09 02:36 (UTC+5:30) in a scratch copy of the worktree claude/ux-phases-d-h:
+tracked files at HEAD 2c3201c plus the uncommitted test edits of tasks 1.3 and 1.4; src/ byte-identical to HEAD (diff -r and git diff --quiet HEAD -- src both clean).
+Command: npx vitest run. Result: 25 failed, 645 passed, 670 total (9 of 32 files failed).
+Every failure is an AssertionError: expected the win text with U+02BC, received it with U+0027. No import, type or syntax error.
+
+Changed or new tests (FR-41 / NFR-5) failing: play-page-win (6: the U+02BC final-click test, the two new route tests, and three that compare to WIN_MESSAGE), play-page-page-text (1, NFR-5).
+Collateral (compare to WIN_MESSAGE, not edited): confirm 3, hinted-cell 1, layout 3, new-puzzle-and-seed 1, rules-and-reset 3, semantics 3 (incl. FR-63 'The same two elements carry every message'), size-selector 4.
+tests/play-page-helpers.test.ts passes before src changes by design (it compares the helper constant with literals).
+
+## Failing tests
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 A-29 a solved board still asks > A solved board still asks (A-29): «Нова головоломка» opens the dialog; board and win message are unchanged until «Так, почати»
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 A-29 a solved board still asks > A solved board still asks (A-29): «Поле 8×8» opens the dialog; board and win message are unchanged until «Так, почати»
+ FAIL  tests/play-page-confirm.test.ts > @trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 A-29 a solved board still asks > A solved board still asks (A-29): «Скинути» opens the dialog; board and win message are unchanged until «Так, почати»
+ FAIL  tests/play-page-hinted-cell.test.ts > @trace FR-66 a hint that wins keeps the marker on the filled cell > The winning hint shows the win message and exactly the filled cell carries the marker
+ FAIL  tests/play-page-layout.test.ts > @trace FR-57 the panel survives every board change > after win there is still exactly one panel, the same element, with the same texts and the button naming its id
+ FAIL  tests/play-page-layout.test.ts > @trace FR-68 the order and the message area survive every board change > after win the nine elements still exist once, in the same order, and the messages are in the same message area
+ FAIL  tests/play-page-layout.test.ts > @trace FR-71 the idle line stays in the DOM and untouched > after win the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute
+ FAIL  tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle after play: a fresh generator(6, 7) board, no entries, both messages cleared
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Win message text: exactly the Ukrainian message, with Cyrillic letters and no Latin letters
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 4 > Reset after a win empties the win message, and the board is editable again
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 6 > Reset after a win empties the win message, and the board is editable again
+ FAIL  tests/play-page-rules-and-reset.test.ts > @trace FR-58 reset at size 8 > Reset after a win empties the win message, and the board is editable again
+ FAIL  tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-63 The same two elements carry every message: hint, click, new puzzle, size change and a win
+ FAIL  tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-63 Focus never moves to a message: after a hint press and after a hint fill that wins, it stays on the hint button
+ FAIL  tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-63 @trace FR-60 A click that wins leaves the focus on the cell that had it, not on a status region
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 8x8 after a win: asked (a solved board has entries), then the win message is cleared and the board is 8x8 with 64 cells
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > a failed change keeps the win message too (a solved board has entries, so the change was asked first)
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Win at 4x4: clicking the one open cell until it shows the solution digit shows the win message
+ FAIL  tests/play-page-size-selector.test.ts > @trace FR-43 hint and win work at the chosen size > Win at 8x8: clicking the open cell (8,8) until it shows the solution digit shows the win message
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board: the exact Ukrainian message, apostrophe U+02BC
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board when the last cell was empty
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final hint solves the board
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > The apostrophe is U+02BC and no other character: win reached by the final click
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > The apostrophe is U+02BC and no other character: win reached by the final hint
+ FAIL  tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Board stays editable after a win: the next click follows the cycle and the message disappears
+
+## Summary lines
+⎯⎯⎯⎯⎯⎯ Failed Tests 25 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  9 failed | 23 passed (32)
+      Tests  25 failed | 645 passed (670)

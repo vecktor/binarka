@@ -147,7 +147,7 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
 
     const text = winMessage(root);
     expect(text).toBe(WIN_MESSAGE);
-    expect(text).toBe(`Вітаємо, головоломку розв${String.fromCodePoint(0x27)}язано!`);
+    expect(text).toBe(`Вітаємо, головоломку розв${String.fromCodePoint(0x2bc)}язано!`);
     expect(/\p{Script=Cyrillic}/u.test(text)).toBe(true);
     expect(/[A-Za-z]/.test(text)).toBe(false);
   });

@@ -11,8 +11,8 @@ import { removeInjectedStyles } from './css';
 
 /** The default board size of the page (6); other sizes are chosen with `selectSize`. */
 export const SIZE = 6;
-/** The win message of FR-41, with the ASCII apostrophe U+0027. */
-export const WIN_MESSAGE = "Вітаємо, головоломку розв'язано!";
+/** The win message of FR-41, with the modifier letter apostrophe U+02BC (not the ASCII apostrophe U+0027). */
+export const WIN_MESSAGE = "Вітаємо, головоломку розвʼязано!";
 /** The engine's two no-target hint sentences (puzzle-engine spec, FR-25 / FR-26). */
 export const NO_RULE_SENTENCE = 'Жодне з трьох правил зараз не підказує наступного ходу.';
 export const BROKEN_SENTENCE = 'Спершу виправте порушення правил, підсвічене на полі.';

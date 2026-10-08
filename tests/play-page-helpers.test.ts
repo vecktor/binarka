@@ -330,9 +330,9 @@ describe('play-page seed helpers and constants', () => {
     expect(q.calls()).toBe(5);
   });
 
-  it('the win message uses the ASCII apostrophe U+0027 and no Latin letters', () => {
-    expect(WIN_MESSAGE.codePointAt(WIN_MESSAGE.indexOf('розв') + 4)).toBe(0x27);
-    expect(WIN_MESSAGE).toBe(`Вітаємо, головоломку розв${String.fromCodePoint(0x27)}язано!`);
+  it('the win message uses the modifier letter apostrophe U+02BC and no Latin letters', () => {
+    expect(WIN_MESSAGE.codePointAt(WIN_MESSAGE.indexOf('розв') + 4)).toBe(0x2bc);
+    expect(WIN_MESSAGE).toBe(`Вітаємо, головоломку розв${String.fromCodePoint(0x2bc)}язано!`);
     expect(/[A-Za-z]/.test(WIN_MESSAGE)).toBe(false);
   });
 });
