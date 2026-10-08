@@ -1,0 +1,401 @@
+RED RUN: add-page-accessibility (slice 4, test-first evidence)
+Date: 2026-10-06 17:43 (UTC+5:30; the host clock reads +0530)
+Command: npx vitest run --reporter=verbose   (the whole suite; npm run test:run is the same command)
+Tree: HEAD a4ab3d5 (docs: handoff for ADR-0004 and the signed accessibility amendment) plus UNCOMMITTED files. The change
+  folder openspec/changes/add-page-accessibility/ and the amended docs (docs/requirements.md, docs/mvp-capability-plan.md,
+  docs/frontend-conventions.md, trace/*) were not committed yet when this ran (tasks.md 1.1 expects the change folder to be
+  committed first; the orchestrator commits). The test files below are the only other difference from HEAD.
+State of src/: UNCHANGED slice-3 page. `git diff --stat -- src package.json package-lock.json` is empty and no stub exists
+  anywhere in src/ (no src/ui/grid.ts): a red test fails on an assertion because the page has no grid, no tabindex, no
+  names, no tokens, never because a module is missing. No test imports src/ui/grid.ts.
+
+Result: 12 failed files, 10 passed files; 137 tests failed, 411 passed (548 tests; the slice-3 baseline was 418 tests, all
+  green, so 130 tests are new and 47 slice-2/3 tests are red by design, see below).
+tsc: `npx tsc --noEmit` exits 0 with the new files.
+lint: `npx eslint .` (npm run lint; typescript-eslint strictTypeChecked + stylisticTypeChecked, type-aware) exits 0.
+
+Per file (baseline total -> now; failed / passed now):
+  tests/play-page-keyboard.test.ts        new, 37 tests:  37 failed /   0 passed
+  tests/play-page-semantics.test.ts       new, 25 tests:  23 failed /   2 passed
+  tests/play-page-stylesheet.test.ts      new, 30 tests:  25 failed /   5 passed
+  tests/play-page-wcag.test.ts            new,  2 tests:   2 failed /   0 passed
+  tests/play-page-helpers.test.ts         45 -> 78 (+33):  0 failed /  78 passed   (helper self-checks, no @trace)
+  tests/play-page-page-text.test.ts        6 ->  8 (+2):   3 failed /   5 passed   (2 new + 1 old via expectPageStructure)
+  tests/play-page-rendering.test.ts        9 -> 10 (+1):   4 failed /   6 passed   (1 new + 3 old via expectPageStructure)
+  tests/play-page-click-cycle.test.ts      6:              1 failed /   5 passed   (old, via expectPageStructure)
+  tests/play-page-highlighting.test.ts    19:             13 failed /   6 passed   (old, via expectPageStructure)
+  tests/play-page-hint.test.ts            20:             10 failed /  10 passed   (old, via expectPageStructure)
+  tests/play-page-new-puzzle-and-seed     13:              6 failed /   7 passed   (old, via expectPageStructure)
+  tests/play-page-size-selector.test.ts   24:             11 failed /  13 passed   (old, via expectPageStructure)
+  tests/play-page-win.test.ts              5:              2 failed /   3 passed   (old, via expectPageStructure)
+  engine and CLI files (cli, engine-purity, generator*, hint*, rules, solver): 0 failed, 271 passed, untouched.
+  Failing tests: 37 + 23 + 25 + 2 (new files) + 2 + 1 (new tests in page-text and rendering) = 90 new, and 47 old = 137.
+  Passing new tests: helpers 33, semantics 2, stylesheet 5 (listed below), 130 - 33 - 2 - 5 - 90 = 0 other.
+
+Every failure is an ASSERTION (no TypeError, ReferenceError or missing module: 0 matches). The first failure line, grouped:
+  47 x  the board has role="grid": expected null to be 'grid'          (every old test that reaches expectPageStructure)
+   8 x  the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+   8 x  "Enter" {} is prevented: expected false to be true
+  11 x  cell R,C takes DOM focus (DOM focus is on <body>): expected false to be true     (a cell with no tabindex cannot focus)
+   2 x  expected null to be 'status'   |   2 x  expected an element matching label.size-label
+   4 x  --color-cell-border is declared in :root as #rrggbb            (the cascade and contrast tests, token missing)
+   3 x  expected [ '1px', '1px', '1px', '1px' ] to deeply equal [ '1px', '2px', '3px', '3px' ]   (the cascade, N = 4, 6, 8)
+   1 x  --color-page is declared once in the top-level :root: expected [] to have a length of 1 but got +0
+   1 x  expected [ 'Бінарка', 'Поле 4×4', …(5) ] to include 'Розмір поля'
+   1 x  after the winning click (DOM focus is on <body>): expected false to be true
+  and, one each: expected null to be 'Рядок 2, стовпець 3: порожня' | expected null to be 'Поле 6×6' | expected null to be 'true'
+  (aria-invalid) | expected [] to deeply equal [ '3,1', '3,2' ] (aria-readonly) | select { color: var(--color-text) }: expected
+  undefined to be 'var(--color-text)' | .cell:focus-visible rule missing | .size-label rule missing | .board { touch-action }.
+
+Why every slice-2/3 page test that calls expectPageStructure is red BY DESIGN (tasks 5.6): expectPageStructure(root, size) now also
+  requires role="grid" and the name «Поле N×N» on the board, N role="row" children each holding N role="gridcell" cells, one
+  wrapping label for the size select, role="status" on both messages and exactly one cell with tabindex="0". It has 35 call
+  sites in 8 files; 47 existing TESTS reach it (one site is inside playedBoard() in the size-selector file, which 5 tests call).
+  Counted as failing tests, not call sites. The 6x6 behaviour they check is unchanged and they go green once the page has the
+  grid. The grid role is asserted first, so their first failure line is the same readable one.
+Old tests that stay green at red (their behaviour is unchanged and they do not reach expectPageStructure): 371 of the 418
+  (271 engine and CLI, 45 helper self-checks, and 55 page tests: click-cycle 5, highlighting 6, hint 10, new-puzzle-and-seed 7,
+  page-text 5, rendering 6 including the unchanged "mounting replaces the previous content of the root", size-selector 13,
+  win 3). 371 + 47 red-by-design = 418. 411 passed = 371 + 40 new passing tests (33 + 2 + 5, listed next).
+
+New tests that PASS at red, and why (guards that hold on today's page and would fail a regression):
+  play-page-helpers.test.ts, 33 new self-checks (css helper on literal samples, pressKey, focusCell, tabStopCells, rowEls,
+    cellName, ownLabelText, contrastRatio, and the new four-kinds fixtures PAIR_PLUS_4 and PAIR_PLUS_8): they test the helpers
+    and the real engine, never the page, so they pass here by design. contrastRatio gives 21, 1, 1.41; the design token values
+    pass every pair; a weak token, a missing token and a conditional @media :root override are reported.
+  play-page-semantics: "Two mounts in one document have no duplicate id" (the page has no ids today) and "Focus never moves to a
+    message" (the page never calls focus() today).
+  play-page-stylesheet: "No CSS named colour is left", "No --color-* property is declared outside :root", "Nothing removes the
+    outline", "stays inside the build target: no :has( and no !important", "No rule uses display: contents" (the stylesheet has
+    none of these today).
+
+Task 5.10 (existing tests unaffected by the DOM change), searched again at the red stage with
+  grep -nE "\.children|firstElementChild|lastElementChild|childNodes|nextElementSibling|previousElementSibling|parentElement|:scope|
+  querySelector(All)?\('[^']*>|innerHTML|firstChild|lastChild" over tests/*.test.ts and tests/helpers/play-page.ts:
+  no NEW hit among the old tests. The only hits are the old `root.innerHTML = '<p id="old">...'` (sets up a root before a
+  mount, unchanged), the old `t.parentElement?.closest('[data-cell]')` in collectPageText (text nodes inside a cell; works with
+  the row wrappers), and two lines of the new helpers (board.children for the rows, by design). Nothing was silently adapted.
+
+Deliberate changes of existing tests and helpers (none weakened; each follows the signed spec):
+  tests/helpers/play-page.ts: expectPageStructure extended (5.6); additions pressKey, tabStopCells, rowEls, focusCell, cellName,
+    expectTabStop, expectFocusOn, expectActive, ownLabelText, fixtures PAIR_PLUS_4 and PAIR_PLUS_8 (also in FIXTURES, so the
+    helper self-check validates them); installPageLifecycle also removes the <style> elements a test injected.
+  tests/play-page-page-text.test.ts: two NEW tests (5.7): the collected texts include «Розмір поля», the board name as an
+    aria-label (counted twice with the option text) and the 36 cell names; "Accessible names at every size". Old tests untouched.
+  tests/play-page-rendering.test.ts: one NEW test (5.8) next to the old ones, which are untouched.
+  tests/play-page-helpers.test.ts: self-checks added (5.9); old ones untouched.
+
+Reference implementation and mutants (kept OUTSIDE the repository, in the session scratchpad a11y-ref/):
+  A reference implementation of the spec (src/ui/grid.ts, play-page.ts, style.css, written from the design) in a scratch copy
+  passes 548/548 (22 files); the same implementation passed 549/549 in three consecutive runs
+  before one redundant declared-level stylesheet test was removed, and 548/548 once after. 59 mutants of it, run one at a time against the page tests, were ALL caught
+  by at least one test: arrow wraps at the edges; Home and End swapped; Ctrl ignored; Space not prevented; an edge press not
+  prevented; Enter and Space on a given not prevented; held Enter cycles; Ctrl+Arrow, Shift+Arrow, Alt+Home handled; Ctrl+Enter
+  handled; PageDown and Tab prevented; the key position taken from the remembered Tab stop; N hard-wired to 6; the grid name
+  stuck at 6x6; aria-invalid missing, "false", or only on the listed cells of a count line; aria-readonly "false" on players;
+  a stale cell name; a Latin name; cell or row role missing; label hidden, not wrapping, or with an id or an aria-label on
+  the select; win status role missing; a status region replaced; focus moved to the win message; the Tab stop not following
+  focusin; all cells tabindex 0; hint resetting or moving the Tab stop; a hint without a fill resetting it; a new puzzle or a
+  failed size change touching it; a click not focusing or not moving the Tab stop on a given; focus-ring offset 0; outline
+  removed; violation or ordinary border width changed; a given in violation showing the 2px border (rule order);
+  a later higher-specificity rule resetting the 8x8 border; a literal colour; a named colour in a shorthand; a --color token
+  outside :root; a token redefined in @media that fails contrast; weak focus, weak violation text, given border equal to the
+  cell border; :has( and !important; display: contents; select without its colours; board without touch-action.
+  Disclosure: the first version of the mutant "an edge press is not prevented" reported MISSED (0 failing): it patched
+  preventDefault AFTER it had already run, so it changed nothing (an inert mutant, not a weak test). It was rewritten to skip
+  the call and was then caught by 3 keyboard tests; the final full run of all 59 mutants shows 59 CAUGHT, 0 MISSED.
+
+
+Task 5.12 (npm run check:trace, run after the tests were written; its generated report was reverted, not committed here):
+  "traceability: 54 MVP FRs checked, 0 failure(s), 55 warning(s)". Tagged-test counts in the generated matrix: FR-57 26, FR-58 14,
+  FR-59 21, FR-60 7, FR-61 4, FR-62 4, FR-63 22 (each had none before); FR-33 1 -> 5, FR-34 1 -> 4, FR-38 1 -> 3. NFR-9 and
+  NFR-5 are tagged (play-page-wcag, page-text) but the matrix has no NFR rows, so they cannot be confirmed from it. The
+  warnings are the existing "not referenced by any recording manifest" ones and the active change.
+
+Limits of the stylesheet reader, found while writing it (jsdom 29 / css-tree; also reported to the orchestrator):
+  - Inside ONE rule the CSSOM keeps only the last declaration of a property, so "each token declared once" can only detect a
+    duplicate across two :root rules.
+  - css-tree drops a rule it cannot parse (for example @property) without a trace, so "throw on an unknown rule type" fires only
+    for rule types jsdom builds (@import, @font-face, @namespace, @page are caught and tested).
+  - jsdom prints "Could not parse CSS stylesheet" on stderr for some nested rules it nevertheless builds; that cannot be
+    captured from a test.
+  - jsdom rewrites a colour literal outside custom properties to rgb(r, g, b), so the FR-63 literal regex fires through its
+    rgb( alternative; failure messages show rgb(255, 255, 255) where the file says #fff. Token values in :root stay verbatim.
+  - jsdom serialises `border: none` as `medium` and `outline: 0` as `0px`; the scan allows `none`, 0, 0px and medium.
+  - Lengths are read in px only; a ring written in rem would fail the "at least 2px" check on purpose (reported, not widened).
+
+----- the failing tests of the verbose vitest output (137 x, with the first failure line of each) -----
+ × tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-59 Roles and name of the default board: grid «Поле 6×6», 6 rows of 6 gridcells in column order 26ms
+   → expected null to be 'grid' // Object.is equality
+ × tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-59 The grid name follows the size: «Поле 4×4» with 4 rows of 4, then «Поле 8×8» with 8 rows of 8 (real generator) 17ms
+   → expected null to be 'Поле 4×4' // Object.is equality
+ × tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-59 A failed size change keeps the grid and its name «Поле 6×6» 9ms
+   → expected null to be 'Поле 6×6' // Object.is equality
+ × tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-59 The cell contract is unchanged and no descendant of a root has an id 3ms
+   → expected null to be 'gridcell' // Object.is equality
+ × tests/play-page-semantics.test.ts > the board, rows and cells have grid roles > @trace FR-59 @trace FR-34 The digit stays the cell text (FR-34) and the name is a separate attribute 7ms
+   → expected null to be 'Рядок 3, стовпець 1: 0' // Object.is equality
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 Names of a fresh board: «Рядок 2, стовпець 3: порожня», «Рядок 3, стовпець 1: 0», and every name matches the cell 6ms
+   → expected null to be 'Рядок 2, стовпець 3: порожня' // Object.is equality
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 The name follows a click, Enter and Space: 0, 1, порожня 3ms
+   → expected null to be 'Рядок 2, стовпець 3: 0' // Object.is equality
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 The name follows a hint fill: the filled cell ends with its digit 3ms
+   → expected null to be 'Рядок 3, стовпець 3: порожня' // Object.is equality
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 A new puzzle and a size change give fresh names (no name of the old board survives) 2ms
+   → expected null to be 'Рядок 3, стовпець 1: 0' // Object.is equality
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 A size change gives names for the new board: 16 names «Рядок R, стовпець C: …», the given at 2,1 reads 0 4ms
+   → expected [ null, null, null, null, null, …(11) ] to deeply equal [ …(16) ]
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 Givens are read-only and other cells are not: aria-readonly="true" on givens only, also after a click and a hint fill 2ms
+   → expected [] to deeply equal [ '3,1', '3,2' ]
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > New puzzle after play: a fresh generator(6, 7) board, no entries, both messages cleared 26ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-42 the new puzzle button replaces the board > @trace FR-43 New puzzle keeps the chosen size: at 8x8 the button gives an 8x8 board and the selector keeps 8 3ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 Exactly one Tab stop at mount: cell 1,1 has tabindex 0, the other 35 have -1, nothing else has a tabindex 33ms
+   → expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 A new puzzle resets the Tab stop to cell 1,1 and does not move focus 12ms
+   → the only Tab stop is the cell 3,4: expected [] to deeply equal [ '3,4' ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 A size change resets the Tab stop to cell 1,1 and does not move focus 18ms
+   → the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 A failed size change keeps the same cell as the Tab stop 4ms
+   → the only Tab stop is the cell 2,2: expected [] to deeply equal [ '2,2' ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 A new puzzle whose generation fails keeps the previous board and its Tab stop 18ms
+   → expected [] to deeply equal [ <div data-cell …(4)></div> ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 A hint fill leaves the Tab stop and the focus (PAIR_ROW fills 3,3 with 1) 2ms
+   → the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 A hint fill does not reset a Tab stop that is elsewhere either 4ms
+   → the only Tab stop is the cell 5,5: expected [] to deeply equal [ '5,5' ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 Focus makes a cell the Tab stop (focus() with no click and no key) 2ms
+   → the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a row are highlighted 19ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Three equal digits in a column are highlighted 7ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-35 three or more equal digits side by side are highlighted > Two equal digits are not highlighted 3ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row: the fourth 0 highlights all six cells of the row and nothing else 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many ones in a column: the fourth 1 highlights all six cells of the column and nothing else 4ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row of an 8x8 board: the fifth 0 highlights all eight cells of row 1 and nothing else 12ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Too many zeros in a row of a 4x4 board: the third 0 highlights all four cells of row 1 and nothing else 5ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a row) 29ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a column) 9ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of ones in a row) 3ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (pair of zeros in a column) 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of zeros in a column) 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (sandwich of ones in a row) 7ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > Hint fills the targeted cell and no other (count of zeros in a row) 14ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Injected seed gives a reproducible page: two pages with seed 42 and the real generator are identical 28ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Default seed source with the real generator: a 6x6 board is rendered and no error is thrown 3ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: no text node, title or attribute value contains the seed in any form 45ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-new-puzzle-and-seed.test.ts > @trace FR-51 the seed is chosen outside the engine, injectable and not shown > Seed is not shown: the same holds on a fixture board and on a root that held other content 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-36 a line with more than N/2 of one digit is highlighted > Exactly N/2 is not highlighted: a full row of three 0 and three 1 22ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete rows: both rows highlighted, nothing else 5ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > Two identical complete columns: both columns highlighted, nothing else 3ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-37 identical complete rows or columns are highlighted > A row with an empty cell is not compared 4ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > Highlight appears immediately, in the same click handling 11ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 the size selector is offered and 6 is selected at mount > Selector options and default: a select with the options 4, 6, 8 labelled «Поле 4×4», «Поле 6×6», «Поле 8×8» 34ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 the size selector is offered and 6 is selected at mount > Selector options and default with the real engine generator 10ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 4x4: real generator, second seed, 16 cells with data-row/data-col 1..4, givens equal generate(4, 2) 4ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 choosing a size starts a new puzzle of that size > Choose 8x8 after play: 64 empty-or-given cells, hint message empty, highlights only for the new givens 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true" 4ms
+   → expected [] to deeply equal [ '4,1', '4,2', '4,3' ]
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 @trace FR-38 The invalid state is removed with the highlight, and the attribute is absent, never "false" 7ms
+   → expected [] to have a length of 3 but got +0
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 @trace FR-36 A line with too many of one digit is invalid as a whole: all six cells of the row, nothing outside 50ms
+   → expected [] to deeply equal [ '1,1', '1,2', '1,3', '1,4', …(2) ]
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-59 @trace FR-37 Violating givens are invalid at once, each also read-only (DIRTY_GIVENS) 4ms
+   → expected [] to deeply equal [ '1,1', '1,2', '1,3' ]
+ × tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-62 The violation cue is also in the DOM: each of the three cells has cell-violation and aria-invalid, and no other cell has the attribute 5ms
+   → expected null to be 'true' // Object.is equality
+ × tests/play-page-semantics.test.ts > the size selector has a visible Ukrainian label > @trace FR-60 The select is labelled: one wrapping label.size-label with the own text «Розмір поля» 2ms
+   → expected  to have a length of 1 but got +0
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a value outside the offered sizes is ignored > Value outside the offered sizes is ignored: 5, 10, abc, 6.0, " 6", 06, 0x6 and empty, each tried in turn 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a value outside the offered sizes is ignored > Value outside the offered sizes with no option selected: selectedIndex -1 is repaired to the option 6 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 A hint that fills nothing leaves the Tab stop and every cell (ISOLATED) 18ms
+   → the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 A hint that fills nothing leaves a Tab stop that is elsewhere, and the focus 23ms
+   → the only Tab stop is the cell 4,4: expected [] to deeply equal [ '4,4' ]
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 Cycling a cell leaves the Tab stop (Enter on cell 1,1) 2ms
+   → "Enter" {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > the board is a single Tab stop > @trace FR-57 Enter and Space on a cell that is not the Tab stop leave the Tab stop where it is 2ms
+   → "Enter" {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 Arrow keys move one cell: right, down, left, up from 3,3 2ms
+   → cell 3,3 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 Arrow keys stop at the edges and corners, no wrapping, and are prevented 2ms
+   → cell 1,1 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 The edges follow N: at 4x4 and 8x8 an arrow stops at the last row and column of that board 2ms
+   → cell 3,4 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 Home and End move within the row, and are prevented on the first and last cell too 2ms
+   → cell 3,4 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 Home and End give the first and last column of N at 4x4 and 8x8 2ms
+   → cell 2,2 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 Ctrl+End and Ctrl+Home move to the last and first cell of the board at N = 4, 6 and 8 9ms
+   → cell 2,3 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 @trace FR-33 Keys on a given cell navigate and change nothing (WIN_PUZZLE given 0 at 1,3) 20ms
+   → cell 1,3 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 The position comes from the event target, not from the Tab stop 1ms
+   → the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 Modified keys are not handled and not prevented: Ctrl, Shift and Alt with an arrow, Alt and Shift with Home 1ms
+   → cell 3,3 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 Keys the board does not handle are not prevented: Tab, Shift+Tab, PageDown, PageUp, Escape and letters 1ms
+   → cell 3,3 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Arrow, Home and End keys move the focus > @trace FR-57 A keydown whose target is not inside a cell is ignored and not prevented (the board, a row) 18ms
+   → the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 @trace FR-34 Enter cycles a player cell: 0, 1, empty, each press prevented 1ms
+   → "Enter" {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 @trace FR-34 Space cycles a player cell: 0, 1, empty, each press prevented 1ms
+   → " " {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 A held key cycles once: the first Enter gives 0 and three repeats change nothing, all prevented 1ms
+   → "Enter" {"repeat":false} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 Modified Enter and Space are not handled and not prevented: Ctrl, Alt and Shift 1ms
+   → "Enter" {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 A click moves the Tab stop and the focus to a player cell, and cycles it 1ms
+   → the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 Enter and Space do not move the focus 1ms
+   → cell 2,2 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > No rule applies: shows the no-rule sentence and fills nothing 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-39 the hint button fills one cell > No fill when the engine has no target: kind none 2ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-hint.test.ts > @trace FR-40 the hint button shows the engine sentence > Initial state has no hint message (and the region exists) 1ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-highlighting.test.ts > @trace FR-38 highlighting follows every board change > A new puzzle recomputes highlights from its own givens (a board whose givens break a rule is highlighted at once) 1ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 Keyboard play reaches the win message, and the focus is never moved by the presses 60ms
+   → "Enter" {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 Three equal digits made with Enter carry cell-violation exactly as with clicks 4ms
+   → "Enter" {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-58 Keys and clicks give the same board step by step: texts, givens, classes, names, aria-invalid and messages 2ms
+   → "Enter" {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > Enter and Space cycle a cell, a click moves the Tab stop and the focus > @trace FR-38 @trace FR-58 Highlight appears at once after Enter or Space: 0, then 1, empty, then 0 again (PAIR_LEFT) 2ms
+   → "Enter" {} is prevented: expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > given cells are locked: only the Tab stop and the focus may move > @trace FR-33 @trace FR-58 A click on a given moves only the Tab stop and the focus 9ms
+   → the only Tab stop is the cell 1,3: expected [] to deeply equal [ '1,3' ]
+ × tests/play-page-keyboard.test.ts > given cells are locked: only the Tab stop and the focus may move > @trace FR-33 @trace FR-58 Clicking a given three times changes nothing and keeps the focus on it 24ms
+   → the only Tab stop is the cell 2,5: expected [] to deeply equal [ '2,5' ]
+ × tests/play-page-keyboard.test.ts > given cells are locked: only the Tab stop and the focus may move > @trace FR-33 @trace FR-58 Enter and Space on a given change nothing, are prevented, and move neither focus nor Tab stop 3ms
+   → cell 3,3 takes DOM focus (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-keyboard.test.ts > the Tab stop and focus work at every size > @trace FR-57 @trace FR-58 At 4x4 and 8x8 a click moves the Tab stop and focus, and a new puzzle resets it to 1,1 2ms
+   → the only Tab stop is the cell 1,1: expected [] to deeply equal [ '1,1' ]
+ × tests/play-page-semantics.test.ts > the size selector has a visible Ukrainian label > @trace FR-60 The label is visible: computed display and visibility of the label and its span, and no hiding declaration 66ms
+   → expected an element matching label.size-label
+ × tests/play-page-semantics.test.ts > the size selector has a visible Ukrainian label > @trace FR-60 Two mounts label their own selects, with no id or for anywhere below either root 14ms
+   → the select has a label
+ × tests/play-page-semantics.test.ts > the size selector has a visible Ukrainian label > @trace FR-60 @trace FR-43 The label does not break the selector: options 4, 6, 8 with their labels, value 6 then 4, no aria-label 3ms
+   → expected  to have a length of 1 but got +0
+ × tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-61 Present, empty and typed at mount: role="status", no tabindex, exactly two status elements in the root 2ms
+   → expected null to be 'status' // Object.is equality
+ × tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-61 The same two elements carry every message: hint, click, new puzzle, size change and a win 2ms
+   → expected null to be 'status' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator error keeps the previous board: same cells, messages, highlights; selector restored; one seed taken 1ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (a 6x6 fixture for size 8) 1ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (8 rows with the last row 7 cells long for size 8) 1ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (8 rows with the first row 9 cells long for size 8) 1ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-size-selector.test.ts > @trace FR-43 a generator failure keeps the previous board > A generator result of the wrong size keeps the previous board (7 rows of 8 cells for size 8) 1ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-61 A click that wins leaves the focus on the clicked cell, not on a status region 31ms
+   → after the winning click (DOM focus is on <body>): expected false to be true // Object.is equality
+ × tests/play-page-click-cycle.test.ts > @trace FR-33 given cells are locked > Clicking a given cell changes nothing (once, then twice more) 19ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Final click solves the board: the exact Ukrainian message, apostrophe U+0027 20ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-stylesheet.test.ts > the colours are tokens (FR-63) > @trace FR-63 Tokens exist and are literal: 13 names, each declared once in the top-level :root as #rrggbb 50ms
+   → --color-page is declared once in the top-level :root: expected [] to have a length of 1 but got +0
+ × tests/play-page-stylesheet.test.ts > the colours are tokens (FR-63) > @trace FR-63 No colour literal is left: no hex, rgb(), hsl() ... outside :root, wherever the rule is in the file 5ms
+   → expected [ …(38) ] to deeply equal []
+ × tests/play-page-stylesheet.test.ts > the colours are tokens (FR-63) > @trace FR-63 Every colour-bearing shorthand has a var(--color-...) colour (or is none or 0) 6ms
+   → expected [ …(15) ] to deeply equal []
+ × tests/play-page-stylesheet.test.ts > the colours are tokens (FR-63) > @trace FR-63 Every color, background-color, border-color and outline-color is one declared token or an allowed keyword 8ms
+   → expected [ …(11) ] to deeply equal []
+ × tests/play-page-stylesheet.test.ts > the colours are tokens (FR-63) > @trace FR-63 The named rules take their colours from the named tokens, written with the longhands 3ms
+   → body { background-color: var(--color-page) }: expected 'rgb(249, 250, 251)' to be 'var(--color-page)' // Object.is equality
+ × tests/play-page-stylesheet.test.ts > the colours are tokens (FR-63) > @trace FR-63 The button and select rule takes text, fill and border from the control tokens 2ms
+   → button { color: var(--color-text) }: expected undefined to be 'var(--color-text)' // Object.is equality
+ × tests/play-page-stylesheet.test.ts > contrast (FR-63, NFR-9) > @trace FR-63 Cell borders have 3:1 against the page, the cell and the given fill 3ms
+   → --color-cell-border is declared in :root as #rrggbb
+ × tests/play-page-stylesheet.test.ts > contrast (FR-63, NFR-9) > @trace FR-63 @trace FR-62 The given cue has 3:1 and is not the fill: 2px border in its own colour, bold digits 2ms
+   → --color-given-border is declared in :root as #rrggbb
+ × tests/play-page-stylesheet.test.ts > contrast (FR-63, NFR-9) > @trace FR-63 @trace FR-62 The violation cue has 3:1 against the page, the cell and the violation fill 2ms
+   → --color-violation-border is declared in :root as #rrggbb
+ × tests/play-page-stylesheet.test.ts > contrast (FR-63, NFR-9) > @trace FR-63 The focus ring has 3:1 against the page and every cell background 1ms
+   → --color-focus is declared in :root as #rrggbb
+ × tests/play-page-stylesheet.test.ts > contrast (FR-63, NFR-9) > @trace FR-63 @trace NFR-9 The control border has 3:1 and the text pairs have 4.5:1 1ms
+   → --color-control-border is declared in :root as #rrggbb
+ × tests/play-page-stylesheet.test.ts > contrast (FR-63, NFR-9) > @trace FR-63 @trace NFR-9 Every pair holds for the top-level token set and for every set a conditional :root block makes 5ms
+   → token set "top-level": expected [ …(20) ] to deeply equal []
+ × tests/play-page-stylesheet.test.ts > visible, unobscured focus indicators (FR-63) > @trace FR-63 Focus-visible rules exist for the cell, the button and the select: solid, at least 2px, the focus token 2ms
+   → a rule for .cell:focus-visible: expected 0 to be greater than 0
+ × tests/play-page-stylesheet.test.ts > visible, unobscured focus indicators (FR-63) > @trace FR-63 The cell ring is outside the border and above the neighbours: offset 2px, position relative, z-index at least 1 1ms
+   → .cell:focus-visible { outline-offset: 2px }: expected undefined to be '2px' // Object.is equality
+ × tests/play-page-stylesheet.test.ts > visible, unobscured focus indicators (FR-63) > @trace FR-63 The button and select rings have a positive outline-offset 1ms
+   → button:focus-visible outline-offset: expected NaN to be greater than 0
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Default board is 6x6: data-size 6, exactly 36 cells, every (row, col) pair 1..6 once 29ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > Board follows the chosen size: with the real generator, selecting 8x8 gives data-size 8 and 64 cells (rows and columns 1..8) 8ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-rendering.test.ts > @trace FR-31 the page renders a 6x6 board from the generator > mounting is synchronous and replaces the previous content of the root 9ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-win.test.ts > @trace FR-41 the win message appears when the board is solved > Full board with a violation is not a win 3ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-rendering.test.ts > @trace FR-57 @trace FR-59 two mounts keep separate Tab stops and have no duplicate ids > @trace FR-57 @trace FR-59 two mounts on two roots keep separate Tab stops and have no duplicate ids 8ms
+   → expected [] to have a length of 1 but got +0
+ × tests/play-page-stylesheet.test.ts > rows are kept in the accessibility tree and the label is not hidden > @trace FR-60 The size-label rules have no hiding declaration and .size-label has a gap of at least 4px 1ms
+   → a .size-label rule exists: expected 0 to be greater than 0
+ × tests/play-page-stylesheet.test.ts > rows are kept in the accessibility tree and the label is not hidden > @trace FR-60 The label and its text compute a display other than none and a visibility that is shown (injected stylesheet) 10ms
+   → expected an element matching label.size-label
+ × tests/play-page-stylesheet.test.ts > the selector sets its own colours and the board disables double-tap zoom (FR-63) > @trace FR-63 The select declares color var(--color-text) and background-color var(--color-control-bg) 2ms
+   → select { color: var(--color-text) }: expected undefined to be 'var(--color-text)' // Object.is equality
+ × tests/play-page-stylesheet.test.ts > the selector sets its own colours and the board disables double-tap zoom (FR-63) > @trace FR-63 The board sets touch-action: manipulation and [data-board] has the class board 2ms
+   → .board { touch-action: manipulation }: expected undefined to be 'manipulation' // Object.is equality
+ × tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-62 The computed border is heavier for a violation at 4x4: 1px, 2px, 3px and 3px 70ms
+   → expected [ '1px', '1px', '1px', '1px' ] to deeply equal [ '1px', '2px', '3px', '3px' ]
+ × tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-62 The computed border is heavier for a violation at 6x6: 1px, 2px, 3px and 3px 21ms
+   → expected [ '1px', '1px', '1px', '1px' ] to deeply equal [ '1px', '2px', '3px', '3px' ]
+ × tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-62 The computed border is heavier for a violation at 8x8: 1px, 2px, 3px and 3px 31ms
+   → expected [ '1px', '1px', '1px', '1px' ] to deeply equal [ '1px', '2px', '3px', '3px' ]
+ × tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-63 The cascade gives each cell kind the token colours at 4x4, and the page the page colour 9ms
+   → --color-cell-border is declared in :root as #rrggbb
+ × tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-63 The cascade gives each cell kind the token colours at 6x6, and the page the page colour 14ms
+   → --color-cell-border is declared in :root as #rrggbb
+ × tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-63 The cascade gives each cell kind the token colours at 8x8, and the page the page colour 11ms
+   → --color-cell-border is declared in :root as #rrggbb
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > Static page text: every collected text has Cyrillic letters and no Latin letters 40ms
+   → the board has role="grid": expected null to be 'grid' // Object.is equality
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > @trace NFR-5 @trace FR-59 @trace FR-60 Static page text includes «Розмір поля», the board name «Поле 6×6» as an aria-label and the 36 cell names 8ms
+   → expected [ 'Бінарка', 'Поле 4×4', …(5) ] to include 'Розмір поля'
+ × tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > @trace NFR-5 @trace FR-59 Accessible names at every size: 4x4 and 8x8 board names and cell names match the pattern, Cyrillic, no Latin 5ms
+   → expected '' to be 'Поле 4×4' // Object.is equality
+ × tests/play-page-wcag.test.ts > the page meets the accessibility requirements (NFR-9) > @trace NFR-9 @trace NFR-5 Every button, the select and every gridcell has a non-empty Ukrainian accessible name 19ms
+   → the size select has a label
+ × tests/play-page-wcag.test.ts > the page meets the accessibility requirements (NFR-9) > @trace NFR-9 No element of the page has a positive tabindex, before and after play 3ms
+   → the cells carry tabindex: expected 0 to be greater than 0
