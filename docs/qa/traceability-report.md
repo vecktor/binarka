@@ -42,7 +42,7 @@ Result: PASS, 56 warning(s)
 | FR-52 | yes | yes | 1 | - |
 | FR-53 | yes | yes | 1 | - |
 | FR-54 | yes | yes | 1 | - |
-| FR-31 | yes | yes | 1 | - |
+| FR-31 | yes | yes | 2 | - |
 | FR-32 | yes | yes | 1 | - |
 | FR-33 | yes | yes | 5 | - |
 | FR-34 | yes | yes | 4 | - |
@@ -56,10 +56,10 @@ Result: PASS, 56 warning(s)
 | FR-42 | yes | yes | 2 | - |
 | FR-43 | yes | yes | 12 | - |
 | FR-57 | yes | yes | 2 | - |
-| FR-58 | yes | yes | 2 | - |
-| FR-59 | yes | yes | 27 | - |
+| FR-58 | yes | yes | 4 | - |
+| FR-59 | yes | yes | 28 | - |
 | FR-60 | yes | yes | 15 | - |
-| FR-61 | yes | yes | 21 | - |
+| FR-61 | yes | yes | 22 | - |
 | FR-62 | yes | yes | 7 | - |
 | FR-63 | yes | yes | 4 | - |
 | FR-64 | yes | yes | 4 | - |

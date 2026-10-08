@@ -487,6 +487,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/main-entry.test.ts",
         "tests/play-page-rendering.test.ts"
       ],
       "recordings": []
@@ -668,6 +669,8 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-reset-accessibility.test.ts",
+        "tests/play-page-reset-accessibility.test.ts",
         "tests/play-page-rules-and-reset.test.ts",
         "tests/play-page-rules-and-reset.test.ts"
       ],
@@ -706,7 +709,8 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-rendering.test.ts",
-        "tests/play-page-rendering.test.ts"
+        "tests/play-page-rendering.test.ts",
+        "tests/play-page-reset-accessibility.test.ts"
       ],
       "recordings": []
     },
@@ -746,6 +750,7 @@
         "tests/play-page-page-text.test.ts",
         "tests/play-page-rendering.test.ts",
         "tests/play-page-rendering.test.ts",
+        "tests/play-page-reset-accessibility.test.ts",
         "tests/play-page-semantics.test.ts",
         "tests/play-page-semantics.test.ts",
         "tests/play-page-semantics.test.ts",

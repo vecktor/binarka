@@ -1,0 +1,40 @@
+RED RUN: merge of the accessibility line into main (integration test evidence)
+Date: 2026-10-08 17:06:24 (UTC+5:30)
+Command: npx vitest run --reporter=verbose   (the whole suite; npm run test:run is the same command)
+Tree: the merge of claude/a11y-fr-renumber (09b0e71) into main (db76f02) with every conflict resolved and before any
+  integration fix: the tree of the merge commit on branch claude/integrate-a11y-main.
+
+Result: 1 failed file, 22 passed files; 1 test failed, 576 passed (577 tests).
+tsc: `npx tsc --noEmit` exits 0.
+lint: `npx eslint .` reports 14 errors, all in main's tests/play-page-rules-and-reset.test.ts, which was written before the
+  ADR-0003 strict type-aware lint (fixed in a later commit with no change to any assertion).
+
+The failing test:
+  tests/play-page-wcag.test.ts > the page meets the accessibility requirements (NFR-9) > @trace NFR-9 @trace NFR-5 Every
+  button, the select and every gridcell has a non-empty Ukrainian accessible name
+  AssertionError: expected [ Array(40) ] to have a length of 39 but got 40
+    46|     expect(names).toHaveLength(2 + 1 + 36);
+  Cause: the test was written for the accessibility line's page, which had two buttons. The merged page has three, because
+  main's slice 4 adds «Скинути» [data-action="reset"] (FR-58), and the merged DOM contract in
+  openspec/specs/play-page/spec.md lists the three buttons. DELIBERATE CHANGE, not a weakening: the count stays exact
+  (3 + 1 + 36), and the test now also expects the name «Скинути».
+
+New tests, written from the merged spec (tests/play-page-reset-accessibility.test.ts, tests/main-entry.test.ts):
+  They passed on their first run: the merged code already does what the merged spec requires, so they pin behaviour
+  rather than drive a fix. Every assertion comes from a sentence of the spec:
+  - "Cells expose a Ukrainian name and their state": the name always matches the cell's text content; aria-invalid is on
+    exactly the cells with cell-violation; aria-readonly is on every given and on no other cell (after a reset too).
+  - "Reset button": a reset empties the player's cells and removes every highlight that does not come from the givens.
+  - "The board is a single Tab stop": the Tab stop follows focus and goes back to row 1, column 1 only when a board is
+    first shown; a reset shows no new board, so the Tab stop stays.
+  - "Mount entry point and fixtures": src/main.ts calls mountPlayPage with the #app element (default 6x6 board).
+  Assertions with no spec sentence behind them were dropped by the user's rule (no change that cannot be derived from
+  the requirements and specs): the order of the three buttons in the Tab sequence, "no role inside the rules block",
+  and "focus stays on «Скинути» after a reset".
+
+Mutants of src/ui/play-page.ts, run one at a time in a scratch copy against tests/play-page-reset-accessibility.test.ts:
+  M1 a reset sets the cell text without rewriting aria-label .............. CAUGHT
+  M2 a reset moves the Tab stop to row 1, column 1 ......................... CAUGHT
+  M3 aria-invalid stays on an empty player cell after its highlight goes ... CAUGHT
+
+After the integration commits: 581 of 581 tests pass (25 files), lint 0, tsc 0.

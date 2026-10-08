@@ -43,7 +43,8 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
   it('@trace NFR-9 @trace NFR-5 Every button, the select and every gridcell has a non-empty Ukrainian accessible name', () => {
     const root = mountFixture(WIN_PUZZLE);
     const names = accessibleNames(root);
-    expect(names).toHaveLength(2 + 1 + 36);
+    // Three buttons since the merge into main on 2026-10-08: «Підказка», «Скинути» (FR-58) and «Нова головоломка».
+    expect(names).toHaveLength(3 + 1 + 36);
     for (const { what, name } of names) {
       expect(name, `${what} has a name`).not.toBe('');
       expect(/\p{Script=Cyrillic}/u.test(name), `${what} "${name}" has Cyrillic letters`).toBe(true);
@@ -51,6 +52,7 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
     }
     const all = names.map((n) => n.name);
     expect(all).toContain(HINT_LABEL);
+    expect(all).toContain('Скинути');
     expect(all).toContain(NEW_LABEL);
     expect(all).toContain('Розмір поля');
   });
