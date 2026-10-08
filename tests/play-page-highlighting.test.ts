@@ -323,7 +323,7 @@ describe('@trace FR-38 highlighting follows every board change', () => {
     expect(oldCells.filter((c) => c.classList.contains('cell-violation'))).toHaveLength(3);
 
     pressSizeButton(root, 4);
-    expect(dialogIsOpen(root), 'the board has entries: the change is asked first (FR-60)').toBe(true);
+    expect(dialogIsOpen(root), 'the board has entries: the change is asked first (FR-67)').toBe(true);
     expect(violationCells(root), 'the highlights follow the board shown, which has not changed yet').toEqual([[3, 1], [3, 2], [3, 3]]);
     confirmYes(root);
 

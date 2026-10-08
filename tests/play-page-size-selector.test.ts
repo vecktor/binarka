@@ -1,6 +1,6 @@
 // Play page: the size control (FR-43), a radiogroup of three buttons. Scenarios of the delta spec
 // openspec/changes/update-controls-accessibility/specs/play-page/spec.md ("Grid size selector"). This file was a select-based
-// test of the change add-size-selector; it is REWRITTEN (not weakened) for the segmented control and the confirmation (FR-60).
+// test of the change add-size-selector; it is REWRITTEN (not weakened) for the segmented control and the confirmation (FR-67).
 // DELETED on purpose with the behaviour the spec removes (a value outside 4, 6 and 8 has no input path any more): the group
 // "a value outside the offered sizes is ignored" (three tests), and the ignored-value half of "the selector always shows the size
 // of the board that is shown" (its failed-change half is kept below).
@@ -201,7 +201,7 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
     expect(violationCells(root)).toEqual([]);
 
     pressSizeButton(root, 8);
-    expect(dialogIsOpen(root), 'a solved board has entries (A-28)').toBe(true);
+    expect(dialogIsOpen(root), 'a solved board has entries (A-29)').toBe(true);
     expect(winMessage(root), 'unchanged until the confirmation').toBe(WIN_MESSAGE);
     expect(boardSize(root)).toBe(6);
     confirmYes(root);

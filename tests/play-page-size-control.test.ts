@@ -1,8 +1,8 @@
-// Play page: the segmented size control (FR-43) and pressing the size already shown (FR-66). Scenarios of the delta spec
+// Play page: the segmented size control (FR-43) and pressing the size already shown (FR-73). Scenarios of the delta spec
 // openspec/changes/update-controls-accessibility/specs/play-page/spec.md ("Grid size selector", "Pressing the shown size changes
 // nothing"). Written FIRST (red): the page still has a select.
 // A size button is found by its position and its text; the data-size-option hook is not in the spec. Exact texts are literals.
-// Tab order is covered by attributes only (native button, no disabled, no negative tabindex); real focus is the held NFR-12.
+// Tab order is covered by attributes only (native button, no disabled, no negative tabindex); real focus is the held NFR-13.
 import { describe, expect, it } from 'vitest';
 import {
   BLANK_4,
@@ -73,7 +73,7 @@ describe('@trace FR-43 the size control is a radiogroup of three buttons', () =>
   });
 });
 
-describe('@trace FR-43 @trace FR-60 aria-checked stays on the shown size until the confirmation', () => {
+describe('@trace FR-43 @trace FR-67 aria-checked stays on the shown size until the confirmation', () => {
   it('a press on a board with entries leaves aria-checked on 6 while the dialog is open and after «Скасувати»', () => {
     const { root } = mountPlayedBoard();
 
@@ -91,7 +91,7 @@ describe('@trace FR-43 @trace FR-60 aria-checked stays on the shown size until t
 
 const CASES = [{ n: 4 }, { n: 6 }, { n: 8 }];
 
-describe.each(CASES)('@trace FR-66 @trace FR-59 @trace FR-43 pressing the shown size is a no-op at size $n', ({ n }) => {
+describe.each(CASES)('@trace FR-73 @trace FR-66 @trace FR-43 pressing the shown size is a no-op at size $n', ({ n }) => {
   it(`with entries, a hint sentence, cell-hinted and cell-violation: «Поле ${n}×${n}» changes nothing`, () => {
     const { root, seeds, spy } = mountPlayedBoard(n);
     const before = pageState(root);
@@ -140,7 +140,7 @@ describe.each(CASES)('@trace FR-66 @trace FR-59 @trace FR-43 pressing the shown 
   });
 });
 
-describe('@trace FR-66 @trace FR-43 a press of the shown size does not disturb a later change', () => {
+describe('@trace FR-73 @trace FR-43 a press of the shown size does not disturb a later change', () => {
   it('after pressing the shown size, a press of another size on a board with entries still asks, then performs once', () => {
     const { root, seeds } = mountPlayedBoard();
     const seedCalls = seeds.calls();
@@ -156,7 +156,7 @@ describe('@trace FR-66 @trace FR-43 a press of the shown size does not disturb a
 });
 
 // Added in review fix round 1 (wf_c621c8e9-bc8, contested finding): the shown size is the size of the board shown.
-describe('@trace FR-66 @trace FR-43 with no board shown, a size button generates', () => {
+describe('@trace FR-73 @trace FR-43 with no board shown, a size button generates', () => {
   it('after a failed generation at mount, «Поле 6×6» generates a 6x6 board at once', () => {
     const seeds = seedQueue([1, 2]);
     const spy = generateSpy((i) => {

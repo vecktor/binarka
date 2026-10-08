@@ -2,9 +2,9 @@
 
 ### Requirement: Hinted cell marker
 
-The cell that the hint button filled SHALL carry the class `cell-hinted` until the next board change, and at most one cell SHALL carry it at any time (FR-59). The marker SHALL be removed by any later board change: a click on a non-given cell (including the hinted cell itself), a hint that fills another cell (the marker then moves to that new cell), «Нова головоломка», a size change and «Скинути». The marker SHALL NOT be removed by an action that changes no cell: a click on a given cell (FR-33), a hint that fills no cell (FR-25, FR-26), opening or closing the rules panel (FR-57), a failed generation that keeps the previous board (FR-43), a cancelled confirmation (FR-60) and a press of the already selected size (FR-66). An action that needs confirmation (FR-60) removes the marker when it is performed, not when it is requested. A given cell SHALL never carry the marker, and no cell carries it at mount. Which cue the marker draws (a cue that is not colour alone) is rendering and is covered by the held NFR-10 and NFR-13, see `docs/requirements-held.md`; this requirement pins the class only.
+The cell that the hint button filled SHALL carry the class `cell-hinted` until the next board change, and at most one cell SHALL carry it at any time (FR-66). The marker SHALL be removed by any later board change: a click on a non-given cell (including the hinted cell itself), a hint that fills another cell (the marker then moves to that new cell), «Нова головоломка», a size change and «Скинути». The marker SHALL NOT be removed by an action that changes no cell: a click on a given cell (FR-33), a hint that fills no cell (FR-25, FR-26), opening or closing the rules panel (FR-57), a failed generation that keeps the previous board (FR-43), a cancelled confirmation (FR-67) and a press of the already selected size (FR-73). An action that needs confirmation (FR-67) removes the marker when it is performed, not when it is requested. A given cell SHALL never carry the marker, and no cell carries it at mount. Which cue the marker draws (a cue that is not colour alone) is rendering and is covered by the held NFR-11 and NFR-14, see `docs/requirements-held.md`; this requirement pins the class only.
 
-Traces: FR-59, FR-39
+Traces: FR-66, FR-39
 
 #### Scenario: No cell carries the marker at mount
 
@@ -71,9 +71,9 @@ Traces: FR-59, FR-39
 
 ### Requirement: Hint button fills one cell
 
-The page SHALL, when the hint button is pressed and the hint engine returns a target cell, write the engine's value into exactly that cell and into no other cell, and SHALL give that cell the class `cell-hinted` (FR-39, FR-59). A hint-filled cell SHALL be an ordinary player cell: `data-given="false"`, no `cell-given` class, and it can be changed by clicking (the click removes `cell-hinted`, see «Hinted cell marker»).
+The page SHALL, when the hint button is pressed and the hint engine returns a target cell, write the engine's value into exactly that cell and into no other cell, and SHALL give that cell the class `cell-hinted` (FR-39, FR-66). A hint-filled cell SHALL be an ordinary player cell: `data-given="false"`, no `cell-given` class, and it can be changed by clicking (the click removes `cell-hinted`, see «Hinted cell marker»).
 
-Traces: FR-39, FR-59
+Traces: FR-39, FR-66
 
 #### Scenario: Hint fills the targeted cell
 

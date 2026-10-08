@@ -1,10 +1,10 @@
-// Play page: rules panel (FR-57), page document order (FR-61) and idle line (FR-64).
+// Play page: rules panel (FR-57), page document order (FR-68) and idle line (FR-71).
 // Scenarios of the delta spec openspec/changes/update-page-layout/specs/play-page/spec.md ("Rules panel",
 // "Page document order", "Idle line"). Written FIRST (red).
 //
 // jsdom has no popover behaviour (no showPopover/hidePopover/togglePopover) and no layout: these tests assert attributes,
 // DOM position and that no popover method is called. Where the panel or the idle line is drawn and whether the idle line is
-// visible is layout, covered by the held NFR-9 / NFR-13 / NFR-14 and NOT claimed here.
+// visible is layout, covered by the held NFR-10 / NFR-14 / NFR-15 and NOT claimed here.
 // Exact texts are literals (tests/helpers/play-page.ts); this file never imports src/ui/strings.ts.
 //
 // CHARACTERISATION GUARDS: the scenarios below marked "(characterisation guard)" already pass against the page of the slice
@@ -75,7 +75,7 @@ function readPanel(root: HTMLElement): {
   };
 }
 
-/** Assert the nine elements of FR-61 exist exactly once in the root and follow each other in the specified order. */
+/** Assert the nine elements of FR-68 exist exactly once in the root and follow each other in the specified order. */
 function expectNineInOrder(root: HTMLElement): void {
   const elements = PAGE_ORDER.map((selector) => {
     expect(root.querySelectorAll(selector), `exactly one ${selector}`).toHaveLength(1);
@@ -334,10 +334,10 @@ describe('@trace FR-57 the panel survives every board change', () => {
 });
 
 // ---------------------------------------------------------------------------------------------------------
-// Page document order (FR-61)
+// Page document order (FR-68)
 // ---------------------------------------------------------------------------------------------------------
 
-describe('@trace FR-61 order at mount', () => {
+describe('@trace FR-68 order at mount', () => {
   it('header, size control, board, hint, reset, new buttons, idle, hint and win messages follow each other in this order', () => {
     const root = mountFixture(WIN_PUZZLE);
     expectNineInOrder(root);
@@ -353,7 +353,7 @@ describe('@trace FR-61 order at mount', () => {
   });
 });
 
-describe('@trace FR-61 the message area holds the three messages', () => {
+describe('@trace FR-68 the message area holds the three messages', () => {
   it('the parent of the idle line holds exactly idle, hint, win in this order and follows the three action buttons', () => {
     const root = mountFixture(WIN_PUZZLE);
     const area = messageArea(root);
@@ -370,7 +370,7 @@ describe('@trace FR-61 the message area holds the three messages', () => {
   });
 });
 
-describe('@trace FR-61 the panel is outside the sequence', () => {
+describe('@trace FR-68 the panel is outside the sequence', () => {
   it('the panel is not inside the header, the message area or [data-board], and it follows the message area', () => {
     const root = mountFixture(WIN_PUZZLE);
     const panel = rulesPanel(root);
@@ -382,7 +382,7 @@ describe('@trace FR-61 the panel is outside the sequence', () => {
   });
 });
 
-describe('@trace FR-61 the order and the message area survive every board change', () => {
+describe('@trace FR-68 the order and the message area survive every board change', () => {
   const ACTIONS = ['new puzzle', 'size 4', 'size 8', 'reset', 'win'] as const;
 
   it.each(ACTIONS)('after %s the nine elements still exist once, in the same order, and the messages are in the same message area', (action) => {
@@ -402,7 +402,7 @@ describe('@trace FR-61 the order and the message area survive every board change
     } else {
       pressHint(root);
       expect(hintMessage(root), 'premise: the hint message has text').not.toBe('');
-      // the hint filled a cell, so the board has an entry: «Нова головоломка» and «Скинути» are asked first (FR-60) and the test
+      // the hint filled a cell, so the board has an entry: «Нова головоломка» and «Скинути» are asked first (FR-67) and the test
       // confirms; selectSize presses the size button and confirms
       if (action === 'new puzzle') {
         pressNew(root);
@@ -431,10 +431,10 @@ describe('@trace FR-61 the order and the message area survive every board change
 });
 
 // ---------------------------------------------------------------------------------------------------------
-// Idle line (FR-64)
+// Idle line (FR-71)
 // ---------------------------------------------------------------------------------------------------------
 
-describe('@trace FR-64 idle line text, code point by code point', () => {
+describe('@trace FR-71 idle line text, code point by code point', () => {
   it('the text equals the sentence with two U+00A0 and the Cyrillic і (U+0456) after the first one', () => {
     const root = mountFixture(WIN_PUZZLE);
     const text = idleLine(root).textContent ?? '';
@@ -456,7 +456,7 @@ describe('@trace FR-64 idle line text, code point by code point', () => {
   });
 });
 
-describe('@trace FR-64 the idle line stays in the DOM and untouched', () => {
+describe('@trace FR-71 the idle line stays in the DOM and untouched', () => {
   const ACTIONS = ['hint', 'win', 'new puzzle', 'reset'] as const;
 
   it.each(ACTIONS)('after %s the idle line is in the DOM once, with the same text, no hidden attribute and no style attribute', (action) => {
@@ -482,7 +482,7 @@ describe('@trace FR-64 the idle line stays in the DOM and untouched', () => {
       pressHint(root);
       expect(hintMessage(root), 'premise: the hint message has text before the reset').not.toBe('');
       pressReset(root);
-      confirmYes(root); // the hint-filled cell is an entry: the reset is asked first (FR-60)
+      confirmYes(root); // the hint-filled cell is an entry: the reset is asked first (FR-67)
       expect(hintMessage(root), 'premise: the reset cleared the hint message').toBe('');
     }
 
@@ -493,7 +493,7 @@ describe('@trace FR-64 the idle line stays in the DOM and untouched', () => {
   });
 });
 
-describe('@trace FR-64 the hint and win messages are empty at mount', () => {
+describe('@trace FR-71 the hint and win messages are empty at mount', () => {
   // (characterisation guard) passes against the page before this change: both elements exist and are empty with no child node.
   // Must stay green: the CSS rule that shows the idle line while both are empty relies on it (:empty).
   it('both have empty text content and no child node', () => {

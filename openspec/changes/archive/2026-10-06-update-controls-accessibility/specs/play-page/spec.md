@@ -2,9 +2,9 @@
 
 ### Requirement: Confirmation before discarding player entries
 
-«Нова головоломка», a press of a size button of another size and «Скинути» SHALL ask for confirmation only when the board has player entries (FR-60). A player entry is a non-given cell that is not empty; a cell filled by a hint counts as one (A-8); a board that was just solved has entries, so the confirmation is also asked after a win (A-28). The confirmation SHALL be a native `<dialog>` `[data-dialog="confirm"]`, created once at mount inside the page root, outside the board element and outside the sequence of «Page document order» (it follows the rules panel), closed at mount, and opened with `showModal()`. It SHALL hold the text «Почати заново? Ваші ходи на цьому полі буде втрачено.» and exactly two `<button type="button">`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати». «Так, почати» SHALL close the dialog (calling `close()`) and then perform the pending action exactly as it would on an untouched board. «Скасувати», and Escape (the dialog's `cancel` and `close` events with no button pressed), SHALL close the dialog and leave unchanged the board, the size (`aria-checked`), the hint message, the win message, the highlights and `cell-hinted`; no seed is taken and the generator is not called. A cancelled action is dropped: it is never performed later. On a board with no player entries the action happens at once and `showModal()` is never called. Reading rule: wherever another requirement of this capability says that pressing «Нова головоломка», changing the size or pressing «Скинути» has an effect (for example «Highlighting follows every board change», «Hint message stays until the next hint or a new puzzle» and the size steps of «Board rendering and default size»), the effect happens when the action is performed: at once on a board without player entries, after «Так, почати» on a board with entries; a requested but unperformed action has no effect. The dialog SHALL have `aria-labelledby` naming the `id` of the element that holds its text (unique per mount), so assistive technology announces the question (A-20). When the page opens the dialog it SHALL move focus to «Скасувати» (after `showModal()`), so that the safe choice is the default and two key presses cannot discard the player's moves (A-20; the user's decision of 2026-10-06, review round 1). Where the dialog is drawn and its focus ring are layout and are covered by the held NFR-12 and NFR-13, see `docs/requirements-held.md`.
+«Нова головоломка», a press of a size button of another size and «Скинути» SHALL ask for confirmation only when the board has player entries (FR-67). A player entry is a non-given cell that is not empty; a cell filled by a hint counts as one (A-8); a board that was just solved has entries, so the confirmation is also asked after a win (A-29). The confirmation SHALL be a native `<dialog>` `[data-dialog="confirm"]`, created once at mount inside the page root, outside the board element and outside the sequence of «Page document order» (it follows the rules panel), closed at mount, and opened with `showModal()`. It SHALL hold the text «Почати заново? Ваші ходи на цьому полі буде втрачено.» and exactly two `<button type="button">`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати». «Так, почати» SHALL close the dialog (calling `close()`) and then perform the pending action exactly as it would on an untouched board. «Скасувати», and Escape (the dialog's `cancel` and `close` events with no button pressed), SHALL close the dialog and leave unchanged the board, the size (`aria-checked`), the hint message, the win message, the highlights and `cell-hinted`; no seed is taken and the generator is not called. A cancelled action is dropped: it is never performed later. On a board with no player entries the action happens at once and `showModal()` is never called. Reading rule: wherever another requirement of this capability says that pressing «Нова головоломка», changing the size or pressing «Скинути» has an effect (for example «Highlighting follows every board change», «Hint message stays until the next hint or a new puzzle» and the size steps of «Board rendering and default size»), the effect happens when the action is performed: at once on a board without player entries, after «Так, почати» on a board with entries; a requested but unperformed action has no effect. The dialog SHALL have `aria-labelledby` naming the `id` of the element that holds its text (unique per mount), so assistive technology announces the question (A-20). When the page opens the dialog it SHALL move focus to «Скасувати» (after `showModal()`), so that the safe choice is the default and two key presses cannot discard the player's moves (A-20; the user's decision of 2026-10-06, review round 1). Where the dialog is drawn and its focus ring are layout and are covered by the held NFR-13 and NFR-14, see `docs/requirements-held.md`.
 
-Traces: FR-60, FR-42, FR-43, FR-58, FR-59
+Traces: FR-67, FR-42, FR-43, FR-58, FR-66
 
 #### Scenario: The dialog at mount
 
@@ -85,7 +85,7 @@ Traces: FR-60, FR-42, FR-43, FR-58, FR-59
 - **WHEN** the player presses «Нова головоломка»
 - **THEN** `showModal` was called once and the board is unchanged until `[data-confirm="yes"]` is pressed
 
-#### Scenario: A solved board still asks (A-28)
+#### Scenario: A solved board still asks (A-29)
 
 - **GIVEN** a fixture puzzle whose solution the test knows, solved by clicks so that the win message is shown
 - **WHEN** the player presses «Скинути», and in separate runs «Нова головоломка» and the button of another size
@@ -99,9 +99,9 @@ Traces: FR-60, FR-42, FR-43, FR-58, FR-59
 
 ### Requirement: Pressing the shown size changes nothing
 
-Pressing the size button of the size already shown SHALL be a no-op (FR-66): no dialog, no new puzzle, no seed taken, no generator call, and the board, both messages, the highlights, `aria-checked` and `cell-hinted` unchanged (FR-59). This holds on a board with player entries and on a board without. When no board is shown (the generation at mount failed), the no-op rule does not apply: «Поле 6×6» keeps `aria-checked="true"` from mount (see «Grid size selector»), and a press of any size button, «Поле 6×6» included, generates a board of that size at once (there are no entries to confirm).
+Pressing the size button of the size already shown SHALL be a no-op (FR-73): no dialog, no new puzzle, no seed taken, no generator call, and the board, both messages, the highlights, `aria-checked` and `cell-hinted` unchanged (FR-66). This holds on a board with player entries and on a board without. When no board is shown (the generation at mount failed), the no-op rule does not apply: «Поле 6×6» keeps `aria-checked="true"` from mount (see «Grid size selector»), and a press of any size button, «Поле 6×6» included, generates a board of that size at once (there are no entries to confirm).
 
-Traces: FR-66, FR-59, FR-43
+Traces: FR-73, FR-66, FR-43
 
 #### Scenario: The shown size is a no-op at every size
 
@@ -124,9 +124,9 @@ Traces: FR-66, FR-59, FR-43
 
 ### Requirement: Cells are buttons
 
-Every board cell `[data-cell]` SHALL be a `<button type="button">`, reachable by Tab in reading order and activated by Enter and Space as a native button (FR-62, A-20). A given cell SHALL be a button with `aria-disabled="true"` and without the `disabled` attribute, so it stays focusable and readable; a click on it changes nothing (FR-33). A non-given cell SHALL have neither `disabled` nor `aria-disabled="true"`. No cell, no size button, no action button and no rules button SHALL carry a negative `tabindex`, so Tab reaches each of them (A-24). Cells are in the document in reading order (row by row, left to right). Enter and Space are the native activation of a button and are not re-implemented by the page; jsdom does not turn a keydown into a click, so these two keys are covered by the element type and attributes, and real focus and keyboard behaviour are covered by the held NFR-12, see `docs/requirements-held.md`. Arrow keys are not required (A-24) and are not specified.
+Every board cell `[data-cell]` SHALL be a `<button type="button">`, reachable by Tab in reading order and activated by Enter and Space as a native button (FR-69, A-20). A given cell SHALL be a button with `aria-disabled="true"` and without the `disabled` attribute, so it stays focusable and readable; a click on it changes nothing (FR-33). A non-given cell SHALL have neither `disabled` nor `aria-disabled="true"`. No cell, no size button, no action button and no rules button SHALL carry a negative `tabindex`, so Tab reaches each of them (A-24). Cells are in the document in reading order (row by row, left to right). Enter and Space are the native activation of a button and are not re-implemented by the page; jsdom does not turn a keydown into a click, so these two keys are covered by the element type and attributes, and real focus and keyboard behaviour are covered by the held NFR-13, see `docs/requirements-held.md`. Arrow keys are not required (A-24) and are not specified.
 
-Traces: FR-62
+Traces: FR-69
 
 #### Scenario: Every cell is a native button at each size
 
@@ -157,9 +157,9 @@ Traces: FR-62
 
 ### Requirement: Cell labels
 
-Every cell SHALL have an `aria-label` in Ukrainian of the form «Рядок R, стовпець C, V» followed by an optional suffix, where R and C are the 1-based row and column and V is «порожньо» for an empty cell, «0» for a zero and «1» for a one (FR-63). A given cell appends «, задано»; the cell that a hint filled (FR-59) appends «, підказка»; any other cell has no suffix, and a cell does not get a suffix for being in violation. The label SHALL be updated after every change of the cell (a click, a hint, reset, a new puzzle, a size change). A label contains no Latin letters (NFR-5).
+Every cell SHALL have an `aria-label` in Ukrainian of the form «Рядок R, стовпець C, V» followed by an optional suffix, where R and C are the 1-based row and column and V is «порожньо» for an empty cell, «0» for a zero and «1» for a one (FR-70). A given cell appends «, задано»; the cell that a hint filled (FR-66) appends «, підказка»; any other cell has no suffix, and a cell does not get a suffix for being in violation. The label SHALL be updated after every change of the cell (a click, a hint, reset, a new puzzle, a size change). A label contains no Latin letters (NFR-5).
 
-Traces: FR-63, FR-59, NFR-5
+Traces: FR-70, FR-66, NFR-5
 
 #### Scenario: The four label forms
 
@@ -201,7 +201,7 @@ Traces: FR-63, FR-59, NFR-5
 
 Every text that the confirmation dialog, the size control and the cells expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5). This covers the group name «Розмір поля», the labels «Поле 4×4», «Поле 6×6» and «Поле 8×8», the confirmation text «Почати заново? Ваші ходи на цьому полі буде втрачено.», «Так, почати», «Скасувати», every cell label of «Cell labels», and any `aria-label`, `title`, `alt` or `label` attribute among them. Digits, «×» and the cell digits are not Latin letters. By the user's code-organisation decision of 2026-10-05 (not a requirement) these texts are kept in `src/ui/strings.ts`, the single module created by `update-page-layout`; the source scan of «Ukrainian texts of the header, rules panel and idle line» guards it.
 
-Traces: NFR-5, FR-43, FR-60, FR-63
+Traces: NFR-5, FR-43, FR-67, FR-70
 
 #### Scenario: The new texts are Ukrainian
 
@@ -215,9 +215,9 @@ Traces: NFR-5, FR-43, FR-60, FR-63
 
 ### Requirement: Grid size selector
 
-The page SHALL offer a size control `[data-control="size"]`, a segmented control: an element with `role="radiogroup"` and the accessible name «Розмір поля» (`aria-label`), holding exactly three `<button type="button" role="radio">` elements labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8» (sizes 4, 6, 8, in this order) (FR-43, A-24). The button of the size of the board shown SHALL have `aria-checked="true"` and the other two `aria-checked="false"`; 6×6 is selected when the page is mounted. One press of a button of another size SHALL start a new puzzle of that size from a new seed taken from the seed source (one seed per generation attempt), render a board of that size, and clear the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker; when the board has player entries the page SHALL first ask for confirmation (FR-60) and start the new puzzle only after «Так, почати». Until the confirmation, and after «Скасувати», `aria-checked` stays on the size of the board shown. The page assumes that `generate(n, seed)` returns an n×n puzzle: if the generator throws, or the returned `puzzle.givens` is not n rows of n cells, the page SHALL treat it as a generator failure and keep the previous board, the previous messages and highlights, `cell-hinted` and the previous size, and `aria-checked` SHALL stay on the size of the board that is shown, with no uncaught error. The page reads a size only from the three buttons, never from a free value: the behaviour «a changed value that is not exactly 4, 6 or 8 is ignored» of the earlier select-based control is REMOVED, because with three fixed buttons no free value can be submitted; the invariant that exactly three sizes exist is carried by «exactly three buttons». Pressing the button of the size already shown is specified by «Pressing the shown size changes nothing». Rules, hint and win message work at the chosen size exactly as at 6. The page MUST NOT remember the choice: a reload or a new mount starts at 6 (TC-12).
+The page SHALL offer a size control `[data-control="size"]`, a segmented control: an element with `role="radiogroup"` and the accessible name «Розмір поля» (`aria-label`), holding exactly three `<button type="button" role="radio">` elements labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8» (sizes 4, 6, 8, in this order) (FR-43, A-24). The button of the size of the board shown SHALL have `aria-checked="true"` and the other two `aria-checked="false"`; 6×6 is selected when the page is mounted. One press of a button of another size SHALL start a new puzzle of that size from a new seed taken from the seed source (one seed per generation attempt), render a board of that size, and clear the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker; when the board has player entries the page SHALL first ask for confirmation (FR-67) and start the new puzzle only after «Так, почати». Until the confirmation, and after «Скасувати», `aria-checked` stays on the size of the board shown. The page assumes that `generate(n, seed)` returns an n×n puzzle: if the generator throws, or the returned `puzzle.givens` is not n rows of n cells, the page SHALL treat it as a generator failure and keep the previous board, the previous messages and highlights, `cell-hinted` and the previous size, and `aria-checked` SHALL stay on the size of the board that is shown, with no uncaught error. The page reads a size only from the three buttons, never from a free value: the behaviour «a changed value that is not exactly 4, 6 or 8 is ignored» of the earlier select-based control is REMOVED, because with three fixed buttons no free value can be submitted; the invariant that exactly three sizes exist is carried by «exactly three buttons». Pressing the button of the size already shown is specified by «Pressing the shown size changes nothing». Rules, hint and win message work at the chosen size exactly as at 6. The page MUST NOT remember the choice: a reload or a new mount starts at 6 (TC-12).
 
-Traces: FR-43, FR-60, FR-59
+Traces: FR-43, FR-67, FR-66
 
 #### Scenario: Size control structure and default
 
@@ -252,7 +252,7 @@ Traces: FR-43, FR-60, FR-59
 #### Scenario: Choose 8x8 after a win
 
 - **GIVEN** a 6x6 fixture board on which the win message is shown (the board is solved, so no cell has `cell-violation`), and an injected `generate` that returns an 8x8 fixture puzzle for size 8
-- **WHEN** the player presses «Поле 8×8» and then `[data-confirm="yes"]` (a solved board has entries, A-28)
+- **WHEN** the player presses «Поле 8×8» and then `[data-confirm="yes"]` (a solved board has entries, A-29)
 - **THEN** `[data-message="win"]` has empty text content and `[data-board]` has `data-size="8"` and 64 cells
 
 #### Scenario: Going back to 6x6
@@ -321,9 +321,9 @@ Traces: FR-43, FR-60, FR-59
 
 ### Requirement: New puzzle button
 
-The page SHALL, when the «Нова головоломка» button is pressed on a board without player entries, replace the board at once with a puzzle generated for the currently shown size from a new seed; when the board has player entries it SHALL first ask for confirmation (FR-60) and replace the board only after «Так, почати». Replacing the board SHALL clear the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker (FR-42, FR-59). The size control keeps its state: `aria-checked` stays on the size of the board shown. The page MUST NOT require the new puzzle to differ from the old one.
+The page SHALL, when the «Нова головоломка» button is pressed on a board without player entries, replace the board at once with a puzzle generated for the currently shown size from a new seed; when the board has player entries it SHALL first ask for confirmation (FR-67) and replace the board only after «Так, почати». Replacing the board SHALL clear the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker (FR-42, FR-66). The size control keeps its state: `aria-checked` stays on the size of the board shown. The page MUST NOT require the new puzzle to differ from the old one.
 
-Traces: FR-42, FR-43, FR-60, FR-59
+Traces: FR-42, FR-43, FR-67, FR-66
 
 #### Scenario: New puzzle after play
 
@@ -358,7 +358,7 @@ Traces: FR-42, FR-43, FR-60, FR-59
 
 ### Requirement: Reset button
 
-The page SHALL offer a button `[data-action="reset"]` labelled «Скинути» (NFR-5). When the board has player entries, pressing it SHALL first ask for confirmation (FR-60) and reset only after «Так, почати»; on an untouched board it SHALL act at once, with no dialog, and change no cell text, no class and no message (FR-58). Resetting SHALL set every non-given cell to empty, including cells filled by a hint, keep every given cell's text and `data-given` value, keep the current size (any of 4, 6 and 8) in `[data-board]`'s `data-size` and in the size control (`aria-checked` unchanged), remove every `cell-violation` class that does not come from the givens themselves (the highlights are recomputed for the reset board), empty `[data-message="hint"]` and `[data-message="win"]`, remove `cell-hinted` (FR-59), and keep the board editable. Reset SHALL NOT call the seed source or the generator. It works after a win (the solved board has entries, so the confirmation is asked, A-28). Reset is size-independent: the scenarios that touch the board are run for each N in the table below, each with a fixture puzzle of size N. Undo and restoring a saved state are not part of reset (FR-47 and FR-46 are Future).
+The page SHALL offer a button `[data-action="reset"]` labelled «Скинути» (NFR-5). When the board has player entries, pressing it SHALL first ask for confirmation (FR-67) and reset only after «Так, почати»; on an untouched board it SHALL act at once, with no dialog, and change no cell text, no class and no message (FR-58). Resetting SHALL set every non-given cell to empty, including cells filled by a hint, keep every given cell's text and `data-given` value, keep the current size (any of 4, 6 and 8) in `[data-board]`'s `data-size` and in the size control (`aria-checked` unchanged), remove every `cell-violation` class that does not come from the givens themselves (the highlights are recomputed for the reset board), empty `[data-message="hint"]` and `[data-message="win"]`, remove `cell-hinted` (FR-66), and keep the board editable. Reset SHALL NOT call the seed source or the generator. It works after a win (the solved board has entries, so the confirmation is asked, A-29). Reset is size-independent: the scenarios that touch the board are run for each N in the table below, each with a fixture puzzle of size N. Undo and restoring a saved state are not part of reset (FR-47 and FR-46 are Future).
 
 | N |
 |---|
@@ -366,7 +366,7 @@ The page SHALL offer a button `[data-action="reset"]` labelled «Скинути�
 | 6 |
 | 8 |
 
-Traces: FR-58, FR-60, FR-59, NFR-5
+Traces: FR-58, FR-67, FR-66, NFR-5
 
 #### Scenario: Reset empties player cells and keeps givens and size
 
@@ -403,9 +403,9 @@ Traces: FR-58, FR-60, FR-59, NFR-5
 
 ### Requirement: Seed is chosen outside the engine, injectable and not shown
 
-The page SHALL obtain the seed for each puzzle from a seed source outside `src/engine/`, calling it exactly once for each generation attempt (the mount, each performed press of the new puzzle button and each performed change to another size, including an attempt whose generator call throws), and at no other time: never for a press of the size already shown (FR-66), never for a requested action that the player cancelled (FR-60) and never for reset. It SHALL accept an injected seed source (contract in the DOM contract section) so tests are deterministic, and MUST NOT display the seed anywhere on the page, including in locale-formatted or separator-split form. When no seed source is injected, the default source SHALL give a different seed on each call (no two consecutive calls return the same seed) and every seed it returns SHALL be an integer from 0 to 2^31 - 1 inclusive. That range is the seed domain pinned by FR-51 and A-25.
+The page SHALL obtain the seed for each puzzle from a seed source outside `src/engine/`, calling it exactly once for each generation attempt (the mount, each performed press of the new puzzle button and each performed change to another size, including an attempt whose generator call throws), and at no other time: never for a press of the size already shown (FR-73), never for a requested action that the player cancelled (FR-67) and never for reset. It SHALL accept an injected seed source (contract in the DOM contract section) so tests are deterministic, and MUST NOT display the seed anywhere on the page, including in locale-formatted or separator-split form. When no seed source is injected, the default source SHALL give a different seed on each call (no two consecutive calls return the same seed) and every seed it returns SHALL be an integer from 0 to 2^31 - 1 inclusive. That range is the seed domain pinned by FR-51 and A-25.
 
-Traces: FR-31, FR-42, FR-43, FR-51, FR-60, FR-66
+Traces: FR-31, FR-42, FR-43, FR-51, FR-67, FR-73
 
 #### Scenario: Injected seed gives a reproducible page
 

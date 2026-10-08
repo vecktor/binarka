@@ -1,8 +1,8 @@
-// Play page: cells are buttons (FR-62) with Ukrainian labels (FR-63). Scenarios of the delta spec
+// Play page: cells are buttons (FR-69) with Ukrainian labels (FR-70). Scenarios of the delta spec
 // openspec/changes/update-controls-accessibility/specs/play-page/spec.md ("Cells are buttons", "Cell labels"). Written FIRST (red):
 // the cells are still div elements without aria-label.
-// jsdom does not turn Enter or Space into a click and has no focus ring: FR-62 is covered by the element type and attributes;
-// real keyboard behaviour and focus are the held NFR-12 (docs/requirements-held.md), not claimed here.
+// jsdom does not turn Enter or Space into a click and has no focus ring: FR-69 is covered by the element type and attributes;
+// real keyboard behaviour and focus are the held NFR-13 (docs/requirements-held.md), not claimed here.
 // Coordinates are 1-based (data-row / data-col). Label texts are literals; this file never imports src/ui/strings.ts.
 import { describe, expect, it } from 'vitest';
 import {
@@ -87,7 +87,7 @@ function mountAtSize(puzzle: Puzzle): HTMLElement {
   return root;
 }
 
-describe.each(FIXTURES)('@trace FR-62 every cell is a native button at size $n', ({ n, puzzle }) => {
+describe.each(FIXTURES)('@trace FR-69 every cell is a native button at size $n', ({ n, puzzle }) => {
   it(`Every cell is a native button: ${n}x${n} cells, type=button, no negative tabindex, in reading order from (1,1) to (${n},${n})`, () => {
     const root = mountAtSize(puzzle);
     const cells = allCells(root);
@@ -117,7 +117,7 @@ describe.each(FIXTURES)('@trace FR-62 every cell is a native button at size $n',
   });
 });
 
-describe('@trace FR-62 givens are aria-disabled, not disabled', () => {
+describe('@trace FR-69 givens are aria-disabled, not disabled', () => {
   it('Givens are aria-disabled, not disabled: every given has aria-disabled="true" and no disabled; every non-given has neither', () => {
     const root = mountFixture(TWO_PAIRS);
     const givens = allCells(root).filter((c) => c.getAttribute('data-given') === 'true');
@@ -157,7 +157,7 @@ describe('@trace FR-62 givens are aria-disabled, not disabled', () => {
   });
 });
 
-describe('@trace FR-62 the controls are in the tab order', () => {
+describe('@trace FR-69 the controls are in the tab order', () => {
   it('The controls are in the tab order: the three size buttons, hint, reset, new and rules are buttons, not disabled, with no negative tabindex', () => {
     const root = mountFixture(PAIR_ROW);
     const controls = [
@@ -188,7 +188,7 @@ describe('@trace FR-62 the controls are in the tab order', () => {
   });
 });
 
-describe('@trace FR-63 the four label forms', () => {
+describe('@trace FR-70 the four label forms', () => {
   // Givens 1 at (1,4), 0 at (5,3), 1 at (5,4), 1 at (5,5): the first hint is the pair rule, row 5, column 6, value 0.
   const FOUR_FORMS = makePuzzle(givensOf(6, [[1, 4, 1], [5, 3, 0], [5, 4, 1], [5, 5, 1]]), { inconsistent: true });
 
@@ -230,7 +230,7 @@ describe('@trace FR-63 the four label forms', () => {
   });
 });
 
-describe('@trace FR-63 labels follow every change of the cell', () => {
+describe('@trace FR-70 labels follow every change of the cell', () => {
   it('Labels follow every change of the cell: three clicks give 0, 1, порожньо with the same R and C', () => {
     const root = mountFixture(PAIR_ROW);
     expect(isGivenCell(root, 2, 5)).toBe(false);
@@ -333,7 +333,7 @@ describe('@trace FR-63 labels follow every change of the cell', () => {
   });
 });
 
-describe('@trace FR-63 a violation adds no suffix', () => {
+describe('@trace FR-70 a violation adds no suffix', () => {
   it('A violation adds no suffix: three equal digits side by side in non-given cells carry cell-violation and the plain label', () => {
     const root = mountFixture(BLANK);
     clickCell(root, 2, 1);
@@ -360,7 +360,7 @@ describe('@trace FR-63 a violation adds no suffix', () => {
   });
 
   it('a hint-filled cell that also violates keeps «, підказка» (the FR forbids a suffix for the violation, not for the hint)', () => {
-    // HINT_BREAKS: the hint fill (1,3) = 0 completes 0 0 0 in column 3. Literal reading of FR-63: the cell the hint filled appends
+    // HINT_BREAKS: the hint fill (1,3) = 0 completes 0 0 0 in column 3. Literal reading of FR-70: the cell the hint filled appends
     // «, підказка»; being in violation adds nothing.
     const root = mountFixture(HINT_BREAKS);
     pressHint(root);
@@ -373,7 +373,7 @@ describe('@trace FR-63 a violation adds no suffix', () => {
   });
 });
 
-describe('@trace FR-63 the label at the board edge for every size', () => {
+describe('@trace FR-70 the label at the board edge for every size', () => {
   it.each([[4, BLANK_4], [8, BLANK_8]] as const)('on an untouched blank %ix%i board every cell is «Рядок R, стовпець C, порожньо»', (n, puzzle) => {
     const root = mountAtSize(puzzle);
     for (let r = 1; r <= n; r++) for (let c = 1; c <= n; c++) expect(cellLabel(root, r, c)).toBe(`Рядок ${r}, стовпець ${c}, порожньо`);

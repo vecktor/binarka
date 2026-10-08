@@ -58,14 +58,14 @@ Result: PASS, 63 warning(s)
 | FR-43 | yes | yes | 21 | - |
 | FR-57 | yes | yes | 6 | - |
 | FR-58 | yes | yes | 7 | - |
-| FR-59 | yes | yes | 13 | - |
-| FR-60 | yes | yes | 12 | - |
-| FR-61 | yes | yes | 4 | - |
-| FR-62 | yes | yes | 3 | - |
-| FR-63 | yes | yes | 4 | - |
-| FR-64 | yes | yes | 3 | - |
-| FR-65 | yes | yes | - | - |
-| FR-66 | yes | yes | 4 | - |
+| FR-66 | yes | yes | 13 | - |
+| FR-67 | yes | yes | 12 | - |
+| FR-68 | yes | yes | 4 | - |
+| FR-69 | yes | yes | 3 | - |
+| FR-70 | yes | yes | 4 | - |
+| FR-71 | yes | yes | 3 | - |
+| FR-72 | yes | yes | - | - |
+| FR-73 | yes | yes | 4 | - |
 
 ## Failures
 
@@ -74,7 +74,7 @@ None.
 ## Warnings
 
 - **test-trace**: FR-27 has no test annotated "@trace FR-27"
-- **test-trace**: FR-65 has no test annotated "@trace FR-65"
+- **test-trace**: FR-72 has no test annotated "@trace FR-72"
 - **recording-evidence**: FR-1 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-2 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-3 is not referenced by any recording manifest under docs/qa/
@@ -125,14 +125,14 @@ None.
 - **recording-evidence**: FR-43 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-57 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-58 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-59 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-60 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-61 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-62 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-63 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-64 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-65 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-66 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-67 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-68 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-69 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-70 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-71 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-72 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-73 is not referenced by any recording manifest under docs/qa/
 - **active-changes**: active change "add-logo" is not archived
 - **active-changes**: active change "add-rule-solvable-generator" is not archived
 - **active-changes**: active change "update-win-apostrophe" is not archived

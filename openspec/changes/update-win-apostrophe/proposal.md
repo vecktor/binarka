@@ -2,7 +2,7 @@
 
 ## Why
 
-UX decision 14 of the amendment signed on 2026-10-05 about 23:31 (autonomy-log row 57, `docs/design/ux-decisions.md`): the win message used the ASCII apostrophe, which is a typographic error in Ukrainian text. FR-41 was amended: the message is exactly «Вітаємо, головоломку розвʼязано!» with the modifier letter ʼ (U+02BC) as the apostrophe; it was «e.g. «Вітаємо, головоломку розв'язано!»» with U+0027. The play-page baseline and its tests pin the old code point, so this is a product change, not only a design one: the spec, the tests and one constant change together. This is slice D of `docs/mvp-capability-plan.md` section 4.7 ("a one-line change with its test constant").
+UX decision 14 of the amendment signed on 2026-10-05 about 23:31 (autonomy-log row 66, `docs/design/ux-decisions.md`): the win message used the ASCII apostrophe, which is a typographic error in Ukrainian text. FR-41 was amended: the message is exactly «Вітаємо, головоломку розвʼязано!» with the modifier letter ʼ (U+02BC) as the apostrophe; it was «e.g. «Вітаємо, головоломку розв'язано!»» with U+0027. The play-page baseline and its tests pin the old code point, so this is a product change, not only a design one: the spec, the tests and one constant change together. This is slice D of `docs/mvp-capability-plan.md` section 4.8 ("a one-line change with its test constant").
 
 ## What Changes
 

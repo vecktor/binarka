@@ -5,7 +5,7 @@
 // Reset scenarios that touch the board run for N = 4, 6, 8, each with a fixture puzzle of size N (the page is mounted at 6
 // and the player selects 4 or 8, the injected generator returning the fixture).
 // NEVER enumerate the 8x8 grids: the 8x8 fixtures carry a hand-written solution (tests/helpers/play-page.ts).
-// Change update-controls-accessibility (FR-60): a press of «Скинути» on a board with entries is asked first, so those tests press
+// Change update-controls-accessibility (FR-67): a press of «Скинути» on a board with entries is asked first, so those tests press
 // and then confirm with `confirmYes`; on an untouched board it acts at once with no dialog.
 import { describe, expect, it } from 'vitest';
 import type { Puzzle } from '../src/engine/index';
@@ -133,7 +133,7 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(playerFilled.length, 'premise: clicked cells plus the hint-filled cell show a digit').toBeGreaterThanOrEqual(3);
 
     pressReset(root);
-    expect(dialogIsOpen(root), 'the board has entries: asked first (FR-60)').toBe(true);
+    expect(dialogIsOpen(root), 'the board has entries: asked first (FR-67)').toBe(true);
     confirmYes(root);
 
     for (const el of allCells(root)) {
@@ -197,7 +197,7 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     const col = Number(open[0]?.getAttribute('data-col'));
 
     pressReset(root);
-    expect(dialogIsOpen(root), 'a solved board has entries: asked (A-28)').toBe(true);
+    expect(dialogIsOpen(root), 'a solved board has entries: asked (A-29)').toBe(true);
     expect(winMessage(root), 'unchanged until the confirmation').toBe(WIN_MESSAGE);
     confirmYes(root);
 

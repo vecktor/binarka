@@ -1,4 +1,4 @@
-// Play page: the confirmation before discarding player entries (FR-60). Scenarios of the delta spec
+// Play page: the confirmation before discarding player entries (FR-67). Scenarios of the delta spec
 // openspec/changes/update-controls-accessibility/specs/play-page/spec.md ("Confirmation before discarding player entries").
 // Written FIRST (red): the page has no dialog yet.
 // jsdom has no showModal/close: tests/helpers/play-page.ts installs counted stubs (showModal sets `open`, close removes it) and
@@ -66,7 +66,7 @@ const ACTIONS: Array<{ name: string; press: (root: HTMLElement) => void }> = [
   { name: '«Скинути»', press: pressReset },
 ];
 
-describe('@trace FR-60 the dialog at mount', () => {
+describe('@trace FR-67 the dialog at mount', () => {
   it('The dialog at mount: one closed dialog after the rules panel, outside the board, the header and the messages, with its text and two buttons', () => {
     const root = mountPage({ seedSource: () => 1, generate: () => PAIR_ROW });
     expect(root.querySelectorAll('[data-dialog="confirm"]'), 'exactly one dialog').toHaveLength(1);
@@ -95,7 +95,7 @@ describe('@trace FR-60 the dialog at mount', () => {
 
 // Added in review fix round 1 of update-controls-accessibility (wf_c621c8e9-bc8; the user chose the safe focus,
 // 2026-10-06). Scenario "The dialog is named by its question and opens on «Скасувати»".
-describe('@trace FR-60 the dialog is named by its question and opens on «Скасувати»', () => {
+describe('@trace FR-67 the dialog is named by its question and opens on «Скасувати»', () => {
   it('aria-labelledby names the question inside the dialog, unique per mount; opening moves focus to «Скасувати»', () => {
     const root = mountPage({ seedSource: () => 1, generate: () => PAIR_ROW });
     const other = mountPage({ seedSource: () => 2, generate: () => PAIR_ROW });
@@ -114,7 +114,7 @@ describe('@trace FR-60 the dialog is named by its question and opens on «Ска
   });
 });
 
-describe('@trace FR-60 @trace FR-42 @trace FR-43 @trace FR-58 no player entries means no dialog', () => {
+describe('@trace FR-67 @trace FR-42 @trace FR-43 @trace FR-58 no player entries means no dialog', () => {
   it('table: «Нова головоломка», «Поле 4×4» and «Скинути» act at once on a board with only givens', () => {
     // «Нова головоломка»
     {
@@ -165,7 +165,7 @@ describe('@trace FR-60 @trace FR-42 @trace FR-43 @trace FR-58 no player entries 
   });
 });
 
-describe('@trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 a board with entries asks first and changes nothing yet', () => {
+describe('@trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 a board with entries asks first and changes nothing yet', () => {
   it.each(ACTIONS)('$name: showModal once, the dialog is open, board, size, messages, highlights and cell-hinted unchanged, no seed, no generator call', ({ press }) => {
     const { root, seeds, spy } = mountPlayedBoard();
     const before = pageState(root);
@@ -193,7 +193,7 @@ describe('@trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 a boa
   });
 });
 
-describe('@trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Так, почати» closes the dialog and then performs the action', () => {
+describe('@trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 «Так, почати» closes the dialog and then performs the action', () => {
   it.each(ACTIONS)('$name: close() runs once and BEFORE the action; then the effect of the row, both messages empty, no cell-hinted', ({ name, press }) => {
     const { root, seeds, spy }: PlayedPage = mountPlayedBoard();
     const stateBefore = pageState(root);
@@ -283,7 +283,7 @@ describe('@trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Т�
   });
 });
 
-describe('@trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «Скасувати» leaves everything unchanged', () => {
+describe('@trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 «Скасувати» leaves everything unchanged', () => {
   it.each(ACTIONS)('$name then «Скасувати»: close() once, dialog closed, state as before, no seed, no generator call, showModal once in all', ({ press }) => {
     const { root, seeds, spy } = mountPlayedBoard();
     const before = pageState(root);
@@ -323,7 +323,7 @@ describe('@trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 «С�
   });
 });
 
-describe('@trace FR-60 @trace FR-43 @trace FR-51 @trace FR-66 a cancelled or no-op action takes no seed', () => {
+describe('@trace FR-67 @trace FR-43 @trace FR-51 @trace FR-73 a cancelled or no-op action takes no seed', () => {
   it('A cancelled or no-op action takes no seed: new + «Скасувати», «Поле 8×8» + «Скасувати», «Скинути» + «Так, почати» and the shown size leave both counts as they were', () => {
     const { root, seeds, spy } = mountPlayedBoard();
     const seedCalls = seeds.calls();
@@ -346,7 +346,7 @@ describe('@trace FR-60 @trace FR-43 @trace FR-51 @trace FR-66 a cancelled or no-
   });
 });
 
-describe('@trace FR-60 Escape leaves everything unchanged and drops the action', () => {
+describe('@trace FR-67 Escape leaves everything unchanged and drops the action', () => {
   it('Escape (cancel, then close, no button pressed): nothing changes, no seed, no generator call; a second request opens the dialog again and performs once', () => {
     const { root, seeds, spy } = mountPlayedBoard();
     const before = pageState(root);
@@ -380,7 +380,7 @@ describe('@trace FR-60 Escape leaves everything unchanged and drops the action',
   });
 });
 
-describe('@trace FR-60 @trace FR-59 a hint-filled cell counts as a player entry', () => {
+describe('@trace FR-67 @trace FR-66 a hint-filled cell counts as a player entry', () => {
   it('A hint-filled cell counts: after only «Підказка» the new puzzle button asks, and the board is unchanged until «Так, почати»', () => {
     const seeds = seedQueue([1, 2]);
     const spy = generateSpy((i) => (i === 0 ? PAIR_ROW : TWO_PAIRS));
@@ -400,8 +400,8 @@ describe('@trace FR-60 @trace FR-59 a hint-filled cell counts as a player entry'
   });
 });
 
-describe('@trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 A-28 a solved board still asks', () => {
-  it.each(ACTIONS)('A solved board still asks (A-28): $name opens the dialog; board and win message are unchanged until «Так, почати»', ({ name, press }) => {
+describe('@trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 A-29 a solved board still asks', () => {
+  it.each(ACTIONS)('A solved board still asks (A-29): $name opens the dialog; board and win message are unchanged until «Так, почати»', ({ name, press }) => {
     const seeds = seedQueue([1, 2]);
     const spy = generateSpy(bySize({ 6: WIN_PUZZLE, 8: BLANK_8 }));
     const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
@@ -424,7 +424,7 @@ describe('@trace FR-60 @trace FR-59 @trace FR-42 @trace FR-43 @trace FR-58 A-28 
   });
 });
 
-describe('@trace FR-60 entries that were cleared again do not count', () => {
+describe('@trace FR-67 entries that were cleared again do not count', () => {
   it('Entries that were cleared again do not count: three clicks on a non-given cell and a click on a given leave no entry, so the new puzzle acts at once', () => {
     const seeds = seedQueue([1, 2]);
     const spy = generateSpy((i) => (i === 0 ? PAIR_ROW : TWO_PAIRS));

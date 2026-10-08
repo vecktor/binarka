@@ -53,14 +53,14 @@
     "FR-43": "MVP",
     "FR-57": "MVP",
     "FR-58": "MVP",
-    "FR-59": "MVP",
-    "FR-60": "MVP",
-    "FR-61": "MVP",
-    "FR-62": "MVP",
-    "FR-63": "MVP",
-    "FR-64": "MVP",
-    "FR-65": "MVP",
     "FR-66": "MVP",
+    "FR-67": "MVP",
+    "FR-68": "MVP",
+    "FR-69": "MVP",
+    "FR-70": "MVP",
+    "FR-71": "MVP",
+    "FR-72": "MVP",
+    "FR-73": "MVP",
     "FR-44": "Future",
     "FR-45": "Future",
     "FR-46": "Future",
@@ -705,7 +705,7 @@
       "recordings": []
     },
     {
-      "id": "FR-59",
+      "id": "FR-66",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -728,7 +728,7 @@
       "recordings": []
     },
     {
-      "id": "FR-60",
+      "id": "FR-67",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -750,7 +750,7 @@
       "recordings": []
     },
     {
-      "id": "FR-61",
+      "id": "FR-68",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -764,7 +764,7 @@
       "recordings": []
     },
     {
-      "id": "FR-62",
+      "id": "FR-69",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -777,7 +777,7 @@
       "recordings": []
     },
     {
-      "id": "FR-63",
+      "id": "FR-70",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -791,7 +791,7 @@
       "recordings": []
     },
     {
-      "id": "FR-64",
+      "id": "FR-71",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -804,7 +804,7 @@
       "recordings": []
     },
     {
-      "id": "FR-65",
+      "id": "FR-72",
       "specs": [
         "openspec/changes/add-logo/specs/play-page/spec.md"
       ],
@@ -813,7 +813,7 @@
       "recordings": []
     },
     {
-      "id": "FR-66",
+      "id": "FR-73",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -835,7 +835,7 @@
     },
     {
       "check": "test-trace",
-      "msg": "FR-65 has no test annotated \"@trace FR-65\""
+      "msg": "FR-72 has no test annotated \"@trace FR-72\""
     },
     {
       "check": "recording-evidence",
@@ -1039,35 +1039,35 @@
     },
     {
       "check": "recording-evidence",
-      "msg": "FR-59 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-60 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-61 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-62 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-63 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-64 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-65 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
       "msg": "FR-66 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-67 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-68 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-69 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-70 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-71 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-72 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-73 is not referenced by any recording manifest under docs/qa/"
     },
     {
       "check": "active-changes",

@@ -1,6 +1,6 @@
 // Play page: the new puzzle button (FR-42) and the seed requirement (FR-51: chosen outside the engine, injectable,
 // never shown, default source in 0..2^31-1 with no two consecutive equal). Scenarios of play-page/spec.md.
-// Change update-controls-accessibility (FR-60, FR-66): a press of «Нова головоломка» or of another size on a board with entries
+// Change update-controls-accessibility (FR-67, FR-73): a press of «Нова головоломка» or of another size on a board with entries
 // is asked first, so those tests press and then confirm with `confirmYes`; the ignored-value step is replaced by the press of the
 // size already shown.
 import { describe, expect, it } from 'vitest';
@@ -65,7 +65,7 @@ describe('@trace FR-42 the new puzzle button replaces the board', () => {
     expect(seeds.calls()).toBe(1);
 
     pressNew(root);
-    expect(dialogIsOpen(root), 'a board with entries asks first (FR-60)').toBe(true);
+    expect(dialogIsOpen(root), 'a board with entries asks first (FR-67)').toBe(true);
     expect(seeds.calls(), 'no seed before the confirmation').toBe(1);
     confirmYes(root);
 
@@ -189,7 +189,7 @@ describe('@trace FR-42 the seed calls follow the puzzles generated', () => {
     expect(seeds.calls()).toBe(2);
     pressSizeButton(root, 4);
     expect(seeds.calls()).toBe(3);
-    // a press of the size already shown takes no seed and calls no generator (FR-66)
+    // a press of the size already shown takes no seed and calls no generator (FR-73)
     pressSizeButton(root, 4);
     expect(seeds.calls()).toBe(3);
     expect(spy.calls).toHaveLength(3);

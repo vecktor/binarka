@@ -17,7 +17,7 @@ export const NO_RULE_SENTENCE = 'Жодне з трьох правил зара�
 export const BROKEN_SENTENCE = 'Спершу виправте порушення правил, підсвічене на полі.';
 export const HINT_LABEL = 'Підказка';
 export const NEW_LABEL = 'Нова головоломка';
-/** The page title and the header text (FR-61). Exact literals: tests never import src/ui/strings.ts. */
+/** The page title and the header text (FR-68). Exact literals: tests never import src/ui/strings.ts. */
 export const TITLE_TEXT = 'Бінарка';
 export const RULES_LABEL = 'Правила';
 export const RULES_CLOSE_LABEL = 'Зрозуміло';
@@ -28,11 +28,11 @@ export const RULES_ITEMS = [
   'Усі рядки різні, і всі стовпці різні.',
 ];
 /**
- * The idle line of FR-64. The two spaces inside «0 і 1» are U+00A0 (written as the escape, never as a literal NBSP);
+ * The idle line of FR-71. The two spaces inside «0 і 1» are U+00A0 (written as the escape, never as a literal NBSP);
  * the «і» between them is the Cyrillic letter U+0456; the dash is U+2014.
  */
 export const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 0\u00A0і\u00A01. Правила — кнопка «Правила» вгорі.';
-/** FR-61 document order of the page, as selectors; the rules panel is outside this sequence. */
+/** FR-68 document order of the page, as selectors; the rules panel is outside this sequence. */
 export const PAGE_ORDER = [
   'header',
   '[data-control="size"]',
@@ -51,7 +51,7 @@ export const PAGE_ORDER = [
 
 const roots: HTMLElement[] = [];
 
-// ---- the dialog stubs (FR-60). jsdom 29 has HTMLDialogElement but neither showModal nor close (design.md, "jsdom limits").
+// ---- the dialog stubs (FR-67). jsdom 29 has HTMLDialogElement but neither showModal nor close (design.md, "jsdom limits").
 // The stubs are installed before each test and removed after it; the page has no production fallback. showModal sets the
 // `open` attribute (and throws InvalidStateError on an open dialog, as a browser does), close removes it. Neither stub
 // dispatches an event: a test that needs Escape or the late `close` event uses `dialogEscape` / `dialogLateClose`.
@@ -303,7 +303,7 @@ export function violationCells(root: ParentNode): Array<[number, number]> {
   return sortedCells(out);
 }
 
-/** Cells (1-based [row, col], sorted) that carry the class cell-hinted (FR-59). Asserts N*N cells first. */
+/** Cells (1-based [row, col], sorted) that carry the class cell-hinted (FR-66). Asserts N*N cells first. */
 export function hintedCells(root: ParentNode): Array<[number, number]> {
   expectedBoardSize(root);
   const out: Array<[number, number]> = [];
@@ -347,7 +347,7 @@ export function rulesPanel(root: ParentNode): HTMLElement {
   return found[0] as HTMLElement;
 }
 
-/** The message area of FR-61: the parent element of the idle line (asserts the idle line exists). */
+/** The message area of FR-68: the parent element of the idle line (asserts the idle line exists). */
 export function messageArea(root: ParentNode): HTMLElement {
   const parent = q(root, '[data-message="idle"]').parentElement;
   expect(parent, 'the idle line has a parent element').not.toBeNull();
@@ -385,7 +385,7 @@ export function expectPageStructure(root: ParentNode, size = 6): void {
   q(root, '[data-action="new"]');
   q(root, '[data-message="hint"]');
   q(root, '[data-message="win"]');
-  // FR-61 (update-page-layout): the header with the title heading and the rules button, the idle line, the rules panel
+  // FR-68 (update-page-layout): the header with the title heading and the rules button, the idle line, the rules panel
   const header = q(root, 'header');
   const headings = Array.from(header.querySelectorAll('h1, h2, h3, h4, h5, h6'));
   expect(headings.map((h) => h.textContent), 'the header holds the title heading').toContain(TITLE_TEXT);
@@ -393,7 +393,7 @@ export function expectPageStructure(root: ParentNode, size = 6): void {
   q(root, '[data-message="idle"]');
   rulesPanel(root);
   messageArea(root);
-  // the document order of FR-61 (the panel is outside the sequence)
+  // the document order of FR-68 (the panel is outside the sequence)
   expectInDocumentOrder(PAGE_ORDER.map((selector) => q(root, selector)));
 }
 
@@ -480,7 +480,7 @@ export function trackErrors(): ErrorTracker {
   return { errors, stop: () => window.removeEventListener('error', listener) };
 }
 
-// ---- the size control (FR-43, FR-66): a radiogroup of three buttons, found by order and label, never by a data hook ----
+// ---- the size control (FR-43, FR-73): a radiogroup of three buttons, found by order and label, never by a data hook ----
 
 /** The sizes, in the order of the three buttons. */
 const SIZE_ORDER = [4, 6, 8];
@@ -518,7 +518,7 @@ export function checkedSize(root: ParentNode): number {
   return checked[0] as number;
 }
 
-/** True when the board shown has a player entry: a non-given cell that is not empty (FR-60, A-8, A-28). Read from the DOM only. */
+/** True when the board shown has a player entry: a non-given cell that is not empty (FR-67, A-8, A-29). Read from the DOM only. */
 export function hasPlayerEntries(root: ParentNode): boolean {
   return allCells(root).some((c) => c.getAttribute('data-given') === 'false' && (c.textContent ?? '') !== '');
 }
@@ -527,7 +527,7 @@ export function hasPlayerEntries(root: ParentNode): boolean {
 export const pressSizeButton = (root: ParentNode, n: number): void => sizeButton(root, n).click();
 export const pressReset = (root: ParentNode): void => q(root, '[data-action="reset"]').click();
 
-// ---- the confirmation dialog (FR-60) ----
+// ---- the confirmation dialog (FR-67) ----
 
 /** `[data-dialog="confirm"]`, asserted to be a <dialog> element. */
 export function dialogOf(root: ParentNode): HTMLDialogElement {
@@ -591,7 +591,7 @@ export function resetBoard(root: ParentNode): void {
 
 /**
  * The player chooses a size: press its button and, when the dialog opened, press «Так, почати». The dialog must open exactly
- * when the board has entries and the size differs from the one shown (FR-60, FR-66). No uncaught error is allowed.
+ * when the board has entries and the size differs from the one shown (FR-67, FR-73). No uncaught error is allowed.
  */
 export function selectSize(root: ParentNode, size: number): void {
   const asks = hasPlayerEntries(root) && checkedSize(root) !== size;

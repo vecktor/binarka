@@ -1,7 +1,7 @@
-// Play page: the hinted cell marker (FR-59). Scenarios of the delta spec
+// Play page: the hinted cell marker (FR-66). Scenarios of the delta spec
 // openspec/changes/add-hinted-cell/specs/play-page/spec.md ("Hinted cell marker"). Written FIRST (red): the class
 // `cell-hinted` does not exist yet.
-// The cancelled confirmation (FR-60) and the press of the size already shown (FR-66) are written by change
+// The cancelled confirmation (FR-67) and the press of the size already shown (FR-73) are written by change
 // update-controls-accessibility in tests/play-page-confirm.test.ts and tests/play-page-size-control.test.ts. Here, since that
 // change, a press of «Нова головоломка», of another size and of «Скинути» on a board with a hint-filled cell is asked first (a
 // hint-filled cell is a player entry, A-8) and the tests confirm it: the marker goes when the action is performed.
@@ -79,7 +79,7 @@ function pageWithHintAndSizes(): { root: HTMLElement; x: [number, number] } {
   return { root, x };
 }
 
-describe('@trace FR-59 no cell carries the marker at mount, and no given ever does', () => {
+describe('@trace FR-66 no cell carries the marker at mount, and no given ever does', () => {
   it('No cell carries the marker at mount; after a hint no given cell carries it', () => {
     const root = mountFixture(PAIR_ROW);
     expectPageStructure(root);
@@ -107,7 +107,7 @@ describe('@trace FR-59 no cell carries the marker at mount, and no given ever do
   });
 });
 
-describe('@trace FR-59 a second hint moves the marker', () => {
+describe('@trace FR-66 a second hint moves the marker', () => {
   it('A second hint moves the marker: exactly one cell, X after the first press, then Y and not X', () => {
     const root = mountFixture(TWO_PAIRS);
     expect(hintedCells(root)).toEqual([]);
@@ -135,7 +135,7 @@ describe('@trace FR-59 a second hint moves the marker', () => {
   });
 });
 
-describe('@trace FR-59 later board changes remove the marker', () => {
+describe('@trace FR-66 later board changes remove the marker', () => {
   it('Click on a non-given cell other than X removes the marker', () => {
     const { root, x } = pageWithHint();
     expect(isGivenCell(root, 1, 1)).toBe(false);
@@ -206,7 +206,7 @@ describe('@trace FR-59 later board changes remove the marker', () => {
   });
 });
 
-describe('@trace FR-59 actions that change no cell keep the marker', () => {
+describe('@trace FR-66 actions that change no cell keep the marker', () => {
   it('Click on a given cell keeps the marker: once, and again twice more', () => {
     const { root, x } = pageWithHint();
     const digit = cellText(root, x[0], x[1]);
@@ -277,7 +277,7 @@ describe('@trace FR-59 actions that change no cell keep the marker', () => {
   });
 });
 
-describe('@trace FR-59 a failed generation keeps the marker', () => {
+describe('@trace FR-66 a failed generation keeps the marker', () => {
   it('The generator throws for size 8: the board stays 6x6 with the same snapshot and X keeps the marker', () => {
     const { root, x } = pageWithHint(PAIR_ROW); // mountFixture: the injected generator throws for every size but 6
     const before = snapshot(root);
@@ -293,7 +293,7 @@ describe('@trace FR-59 a failed generation keeps the marker', () => {
   });
 });
 
-describe('@trace FR-59 a hint that wins keeps the marker on the filled cell', () => {
+describe('@trace FR-66 a hint that wins keeps the marker on the filled cell', () => {
   it('The winning hint shows the win message and exactly the filled cell carries the marker', () => {
     const root = mountFixture(WIN_PUZZLE);
     fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE), [[4, 1]]);
@@ -311,7 +311,7 @@ describe('@trace FR-59 a hint that wins keeps the marker on the filled cell', ()
   });
 });
 
-describe('@trace FR-59 two mounts are independent', () => {
+describe('@trace FR-66 two mounts are independent', () => {
   it('A hint on the first page leaves the second page without a marker', () => {
     const first = mountFixture(PAIR_ROW);
     const second = mountFixture(PAIR_ROW);
