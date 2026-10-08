@@ -503,8 +503,7 @@
     {
       "id": "FR-33",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -519,8 +518,7 @@
     {
       "id": "FR-34",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -534,8 +532,7 @@
     {
       "id": "FR-35",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -547,8 +544,7 @@
     {
       "id": "FR-36",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -560,8 +556,7 @@
     {
       "id": "FR-37",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -573,8 +568,7 @@
     {
       "id": "FR-38",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -598,8 +592,7 @@
     {
       "id": "FR-40",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -612,8 +605,7 @@
     {
       "id": "FR-41",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -636,8 +628,7 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -659,7 +650,7 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -696,7 +687,7 @@
     {
       "id": "FR-58",
       "specs": [
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -721,7 +712,7 @@
     {
       "id": "FR-59",
       "specs": [
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -752,7 +743,7 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -769,7 +760,7 @@
     {
       "id": "FR-61",
       "specs": [
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -783,7 +774,7 @@
     {
       "id": "FR-62",
       "specs": [
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -797,7 +788,7 @@
     {
       "id": "FR-63",
       "specs": [
-        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1045,10 +1036,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-63 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-page-accessibility\" is not archived"
     }
   ]
 }

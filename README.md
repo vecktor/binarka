@@ -10,6 +10,8 @@ npm run dev
 
 Opens a 6×6 puzzle in the browser: click a cell to cycle empty, 0, 1; rule violations turn red; «Підказка» fills one cell and explains the rule; «Нова головоломка» starts another puzzle of the same size. The size selector above the board («Поле 4×4», «Поле 6×6», «Поле 8×8») starts a new puzzle of the chosen size; the choice is not remembered, a reload starts at 6×6. Page text is Ukrainian.
 
+Keyboard: Tab reaches the size selector (labelled «Розмір поля»), the board as a single stop, and the two buttons. Inside the board, the arrow keys move one cell and stop at the edges; Home and End jump to the ends of the row, and Ctrl+Home and Ctrl+End to the first and last cell. Enter or Space cycles the focused cell, like a click. Hint and win messages are announced as status updates. Colours are CSS custom properties in `:root` of `src/ui/style.css`; the UI rules are in `docs/frontend-conventions.md`.
+
 ## Print a puzzle from the command line
 
 ```bash

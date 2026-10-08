@@ -5,7 +5,7 @@ archived slice took: review evidence, `Slice:` trailers, and module scope.
 It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
-Scope: 3 archived slice(s).
+Scope: 4 archived slice(s).
 Result: PASS, 1 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
@@ -13,6 +13,7 @@ Result: PASS, 1 warning(s)
 | 2026-10-04-add-play-page | clean | 6 | yes | ui |
 | 2026-10-04-add-puzzle-engine | **unclean** | 8 | yes | engine |
 | 2026-10-04-add-size-selector | clean | 15 | yes | ui |
+| 2026-10-08-add-page-accessibility | clean | 4 | yes | ui |
 
 ## Cross-slice module overlap
 

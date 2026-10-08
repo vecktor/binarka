@@ -27,6 +27,15 @@
         "ui"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-08-add-page-accessibility",
+      "reviewEvidence": "clean",
+      "trailerCommits": 4,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [],
