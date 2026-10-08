@@ -407,47 +407,35 @@ export function expectPageStructure(root: ParentNode, size = 6): void {
   expectInDocumentOrder(PAGE_ORDER.map((selector) => q(root, selector)));
 }
 
-/**
- * The size selector `[data-control="size"]`, asserted to be a <select> (slice 6 on `main`). Kept by the merge with the
- * UX line only so the slice-6 tests compile; the UX size control is a radiogroup, so these assertions fail until the
- * reconciliation change rewrites those tests (FR-62).
- */
-export function sizeSelect(root: ParentNode): HTMLSelectElement {
-  const el = q(root, '[data-control="size"]');
-  expect(el.tagName, 'the size selector is a select element').toBe('SELECT');
-  return el as HTMLSelectElement;
-}
-
 // ---------------------------------------------------------------------------------------------------------
 // Slice 6 (FR-59 to FR-63): keyboard, Tab stop, roles and names
 // ---------------------------------------------------------------------------------------------------------
 
 /**
- * Dispatch a bubbling, CANCELABLE `keydown` on `el` and return the event, so a test reads `defaultPrevented` after the
- * dispatch. A non-cancelable event can never show a `preventDefault()` call, which would make every "not prevented"
- * check vacuous; `init.cancelable` can switch it off for the helper self-check only. A single space is `key: ' '`.
- * No uncaught listener error is allowed (dispatchEvent swallows them, see `trackErrors`).
+ * Dispatch a bubbling, CANCELABLE `keydown` or `keyup` on `el` and return the event, so a test reads `defaultPrevented`
+ * after the dispatch. A non-cancelable event can never show a `preventDefault()` call, which would make every "not
+ * prevented" check vacuous; `init.cancelable` can switch it off for the helper self-check only. A single space is
+ * `key: ' '`; `repeat` and the modifiers go through `init`. No uncaught listener error is allowed (dispatchEvent
+ * swallows them, see `trackErrors`).
  */
-export function pressKey(el: Element, key: string, init: KeyboardEventInit = {}): KeyboardEvent {
-  const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init });
+export function pressKeyEvent(el: Element, type: 'keydown' | 'keyup', key: string, init: KeyboardEventInit = {}): KeyboardEvent {
+  const event = new KeyboardEvent(type, { key, bubbles: true, cancelable: true, ...init });
   const tracker = trackErrors();
   try {
     el.dispatchEvent(event);
   } finally {
     tracker.stop();
   }
-  expect(tracker.errors, `no uncaught error while handling keydown "${key}"`).toEqual([]);
+  expect(tracker.errors, `no uncaught error while handling ${type} "${key}"`).toEqual([]);
   return event;
 }
 
-/** The cells with `tabindex="0"` (a page has exactly one). */
-export const tabStopCells = (root: ParentNode): HTMLElement[] =>
-  allCells(root).filter((cell) => cell.getAttribute('tabindex') === '0');
+/** `pressKeyEvent` for a `keydown`. */
+export function pressKey(el: Element, key: string, init: KeyboardEventInit = {}): KeyboardEvent {
+  return pressKeyEvent(el, 'keydown', key, init);
+}
 
-/** The children of `[data-board]`: the row elements (FR-61). */
-export const rowEls = (root: ParentNode): HTMLElement[] => Array.from(q(root, '[data-board]').children) as HTMLElement[];
-
-/** Give a cell DOM focus and assert it took it (a cell with no `tabindex` cannot, which is the red-stage failure). */
+/** Give a cell DOM focus and assert it took it (an element that cannot take focus fails here). */
 export function focusCell(root: ParentNode, row: number, col: number): HTMLElement {
   const el = cellEl(root, row, col);
   el.focus();
@@ -466,29 +454,20 @@ function describeElement(el: Element | null): string {
   return `<${el.tagName.toLowerCase()}${attrs.map((a) => ` ${a}="${el.getAttribute(a) ?? ''}"`).join('')}>`;
 }
 
-/** The accessible name of a cell, «Рядок R, стовпець C: V», V = «порожня» for empty text, else the digit (FR-61). */
-export const cellName = (row: number, col: number, text: string): string =>
-  `Рядок ${row}, стовпець ${col}: ${text === '' ? 'порожня' : text}`;
-
-/** Assert that the cell at (row, col) is the ONLY cell with tabindex 0, and that every other cell has tabindex -1. */
-export function expectTabStop(root: ParentNode, row: number, col: number): void {
-  const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}`);
-  expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual([`${row},${col}`]);
-  for (const cell of allCells(root)) {
-    if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tabindex'), 'every other cell has tabindex -1').toBe('-1');
-  }
+/**
+ * The FR-70 label a cell must carry, built from its own `data-row`, `data-col`, text, `data-given` and the class
+ * `cell-hinted`: «Рядок R, стовпець C, V» with V «порожньо», «0» or «1», then «, задано» for a given or «, підказка» for a
+ * hinted cell (a violation adds no suffix). Written independently of the page: it does not import src/ui/strings.ts.
+ */
+export function expectedCellLabel(cell: Element): string {
+  const value = cell.textContent === '' ? 'порожньо' : cell.textContent;
+  const suffix = cell.getAttribute('data-given') === 'true' ? ', задано' : cell.classList.contains('cell-hinted') ? ', підказка' : '';
+  return `Рядок ${cell.getAttribute('data-row') ?? ''}, стовпець ${cell.getAttribute('data-col') ?? ''}, ${value}${suffix}`;
 }
 
 /** Assert that DOM focus is on the cell at (row, col). */
 export function expectFocusOn(root: ParentNode, row: number, col: number): void {
   expectActive(cellEl(root, row, col), `DOM focus is on cell ${row},${col}`);
-}
-
-/** The text of a label without the text of the form control inside it (the control's options are not the label). */
-export function ownLabelText(label: HTMLElement): string {
-  const clone = label.cloneNode(true) as HTMLElement;
-  for (const control of Array.from(clone.querySelectorAll('select, input, textarea, button'))) control.remove();
-  return clone.textContent.replace(/\s+/g, ' ').trim();
 }
 
 // ---------------------------------------------------------------------------------------------------------

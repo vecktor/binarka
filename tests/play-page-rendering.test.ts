@@ -10,7 +10,6 @@ import {
   cellText,
   clickCell,
   expectPageStructure,
-  expectTabStop,
   generateSpy,
   installPageLifecycle,
   mountFixture,
@@ -20,7 +19,6 @@ import {
   seedQueue,
   selectSize,
   snapshot,
-  tabStopCells,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -120,23 +118,24 @@ describe('@trace FR-31 the page renders a 6x6 board from the generator', () => {
   });
 });
 
-// Slice 6 (add-page-accessibility), DELIBERATE CHANGE: a new test next to the two-mounts test above (that one and
-// "mounting replaces the previous content of the root" are unchanged and must stay green).
-describe('@trace FR-59 @trace FR-61 two mounts keep separate Tab stops and have no duplicate ids', () => {
-  it('@trace FR-59 @trace FR-61 two mounts on two roots keep separate Tab stops and have no duplicate ids', () => {
+// A test next to the two-mounts test above (that one and "mounting replaces the previous content of the root" are unchanged
+// and must stay green). reconcile-ux-accessibility: no element has a tabindex (FR-59) and each mount has three ids (FR-61).
+describe('@trace FR-59 @trace FR-61 two mounts have no tabindex and no duplicate ids', () => {
+  it('@trace FR-59 @trace FR-61 two mounts on two roots have no tabindex, stay independent and have three different ids each', () => {
     const a = mountPage({ seedSource: () => 1, generate: () => BLANK });
     const b = mountPage({ seedSource: () => 1, generate: () => BLANK });
-    expect(tabStopCells(a)).toHaveLength(1);
-    expect(tabStopCells(b)).toHaveLength(1);
+    expect(a.querySelectorAll('[tabindex]')).toHaveLength(0);
+    expect(b.querySelectorAll('[tabindex]')).toHaveLength(0);
     clickCell(a, 3, 4);
-    expectTabStop(a, 3, 4); // a click moves only A's Tab stop
-    expectTabStop(b, 1, 1);
     clickCell(b, 5, 2);
-    expectTabStop(a, 3, 4);
-    expectTabStop(b, 5, 2);
-    expect(a.querySelectorAll('[id]')).toHaveLength(0);
-    expect(b.querySelectorAll('[id]')).toHaveLength(0);
-    expect(document.querySelectorAll('[id]')).toHaveLength(0);
+    expect(a.querySelectorAll('[tabindex]')).toHaveLength(0);
+    expect(b.querySelectorAll('[tabindex]')).toHaveLength(0);
+    const idsA = Array.from(a.querySelectorAll('[id]'), (e) => e.id);
+    const idsB = Array.from(b.querySelectorAll('[id]'), (e) => e.id);
+    expect(idsA).toHaveLength(3);
+    expect(idsB).toHaveLength(3);
+    expect(new Set([...idsA, ...idsB]).size, 'the six ids are pairwise different').toBe(6);
+    expect(document.querySelectorAll('[id]')).toHaveLength(6);
   });
 });
 

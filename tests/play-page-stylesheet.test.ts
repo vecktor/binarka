@@ -1,27 +1,28 @@
-// Play page: the stylesheet requirements, read from src/ui/style.css (FR-64, FR-65; FR-61 and FR-62 for the rules that
-// would hide rows and the label). Part (a) walks the parsed CSSOM; part (b) lets jsdom compute the cascade of the
-// injected text. jsdom never matches :focus-visible and applies no @media or nested rule to computed style, so those are
-// judged at declaration level only (A-28, TC-13). Scenarios of
-// openspec/changes/add-page-accessibility/specs/play-page/spec.md; the helper is tests/helpers/css.ts.
+// Play page: the stylesheet requirements, read from src/ui/style.css (FR-64, FR-65; FR-61 for the rule that would drop the
+// semantics of the board group and its buttons; FR-63 for the status regions that stay rendered while empty). Part (a) walks
+// the parsed CSSOM; part (b) lets jsdom compute the cascade of the injected text. jsdom never matches :focus-visible and
+// applies no @media or nested rule to computed style, so those are judged at declaration level only (A-28, TC-13). Scenarios of
+// openspec/specs/play-page/spec.md (reconcile-ux-accessibility); the helper is tests/helpers/css.ts.
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,
   PAIR_PLUS_4,
   PAIR_PLUS_8,
   PAIR_ROW_PLUS,
+  allCells,
   cellEl,
   clickCell,
   installPageLifecycle,
   mountFixture,
   mountThenSelect,
   q,
+  rulesPanel,
 } from './helpers/play-page';
 import {
   TOKEN_NAMES,
   contrastProblems,
   contrastRatio,
   declarationsFor,
-  hidingDeclarations,
   injectPageStyles,
   px,
   readStyleText,
@@ -44,6 +45,25 @@ function token(parsed: ParsedStyles, name: string): string {
   const value = parsed.tokens[name];
   expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), `${name} is declared in :root as #rrggbb`);
   return value;
+}
+
+/** The subject of a selector: its last compound selector (after the last combinator outside brackets and parentheses). */
+function subjectOf(selector: string): string {
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < selector.length; i++) {
+    const ch = selector.charAt(i);
+    if (ch === '(' || ch === '[') depth += 1;
+    else if (ch === ')' || ch === ']') depth -= 1;
+    else if (depth === 0 && /[\s>+~]/.test(ch)) start = i + 1;
+  }
+  return selector.slice(start);
+}
+
+/** The token name of a value that is a single `var(--color-x)` of a token declared in :root, else undefined. */
+function tokenOf(parsed: ParsedStyles, value: string | undefined): string | undefined {
+  const name = /^var\(\s*(--color-[\w-]+)\s*\)$/.exec(value ?? '')?.[1];
+  return name !== undefined && name in parsed.tokens ? name : undefined;
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -95,14 +115,14 @@ describe('the colours are tokens (FR-65)', () => {
     expectDecl(parsed, '.cell-violation', 'background-color', 'var(--color-violation-bg)');
     expectDecl(parsed, '.cell-violation', 'color', 'var(--color-violation-text)');
     expectDecl(parsed, '.message-win', 'color', 'var(--color-win-text)');
-    for (const selector of ['.cell:focus-visible', 'button:focus-visible', 'select:focus-visible']) {
+    for (const selector of ['.cell:focus-visible', 'button:focus-visible']) {
       expectDecl(parsed, selector, 'outline-color', 'var(--color-focus)');
     }
   });
 
-  it('@trace FR-65 The button and select rule takes text, fill and border from the control tokens', () => {
+  it('@trace FR-65 The button rule takes text, fill and border from the control tokens', () => {
     const parsed = readStyles();
-    for (const selector of ['button', 'select']) {
+    for (const selector of ['button']) {
       expectDecl(parsed, selector, 'color', 'var(--color-text)');
       expectDecl(parsed, selector, 'background-color', 'var(--color-control-bg)');
       expectDecl(parsed, selector, 'border-color', 'var(--color-control-border)');
@@ -161,9 +181,9 @@ describe('contrast (FR-65, NFR-9)', () => {
 });
 
 describe('visible, unobscured focus indicators (FR-65)', () => {
-  const targets = ['.cell:focus-visible', 'button:focus-visible', 'select:focus-visible'];
+  const targets = ['.cell:focus-visible', 'button:focus-visible'];
 
-  it('@trace FR-65 Focus-visible rules exist for the cell, the button and the select: solid, at least 2px, the focus token', () => {
+  it('@trace FR-65 Focus-visible rules exist for the cell and the button: solid, at least 2px, the focus token', () => {
     const parsed = readStyles();
     for (const selector of targets) {
       expect(rulesWithSelector(parsed, selector).length, `a rule for ${selector}`).toBeGreaterThan(0);
@@ -181,9 +201,9 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
     expect(Number.isInteger(zIndex) && zIndex >= 1, `z-index ${zIndex} is an integer of at least 1`).toBe(true);
   });
 
-  it('@trace FR-65 The button and select rings have a positive outline-offset', () => {
+  it('@trace FR-65 The button ring has a positive outline-offset', () => {
     const parsed = readStyles();
-    for (const selector of ['button:focus-visible', 'select:focus-visible']) {
+    for (const selector of ['button:focus-visible']) {
       expect(px(declarationsFor(parsed, selector).get('outline-offset')), `${selector} outline-offset`).toBeGreaterThan(0);
     }
   });
@@ -205,13 +225,40 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
     expect(removing).toEqual([]);
   });
 
-  it('@trace FR-65 The stylesheet stays inside the build target: no :has( and no !important', () => {
-    const text = readStyleText();
-    expect(text).not.toMatch(/:has\(/i);
-    expect(text).not.toMatch(/!\s*important/i);
+  it('@trace FR-65 Every page button is a button element, so button:focus-visible (and .cell:focus-visible for the cells) applies to it', () => {
+    const root = mountFixture(BLANK);
+    const panel = rulesPanel(root);
+    const radios = Array.from(root.querySelectorAll('[role="radio"]'));
+    expect(radios, 'the three size buttons').toHaveLength(3);
+    const panelButtons = Array.from(panel.querySelectorAll('button'));
+    expect(panelButtons, 'premise: the rules panel holds one button, its close button').toHaveLength(1);
+    const buttons: Element[] = [
+      q(root, '[data-action="rules"]'),
+      ...radios,
+      q(root, '[data-action="hint"]'),
+      q(root, '[data-action="reset"]'),
+      q(root, '[data-action="new"]'),
+      ...panelButtons,
+      q(root, '[data-confirm="yes"]'),
+      q(root, '[data-confirm="no"]'),
+      ...allCells(root),
+    ];
+    expect(buttons).toHaveLength(1 + 3 + 3 + 1 + 2 + 36);
+    for (const button of buttons) {
+      expect(button.tagName, `${button.getAttribute('data-action') ?? button.getAttribute('data-confirm') ?? button.getAttribute('role') ?? 'cell'} is a button element`).toBe('BUTTON');
+    }
+  });
+
+  it('@trace FR-65 The stylesheet stays inside the build target, with one :has( exception: no !important; exactly one rule has :has(, its subject is .message-idle and it declares only display: none', () => {
+    expect(readStyleText()).not.toMatch(/!\s*important/i);
     const parsed = readStyles();
     expect(parsed.rules.flatMap((r) => r.declarations.filter((d) => d.important))).toEqual([]);
-    expect(parsed.rules.flatMap((r) => r.selectors.filter((s) => s.includes(':has(')))).toEqual([]);
+    const withHas = parsed.rules.filter((r) => r.selectors.some((s) => s.includes(':has(')));
+    expect(withHas, 'exactly one rule contains :has(').toHaveLength(1);
+    const rule = withHas[0];
+    expect.assert(rule !== undefined, 'premise: one rule contains :has(');
+    expect(rule.selectors.map(subjectOf), 'the subject of its selector is .message-idle').toEqual(['.message-idle']);
+    expect(rule.declarations.map((d) => `${d.property}: ${d.value}`), 'it declares nothing but display: none').toEqual(['display: none']);
   });
 });
 
@@ -221,32 +268,23 @@ describe('rows are kept in the accessibility tree and the label is not hidden', 
     const parsed = readStyles();
     expect(parsed.rules.flatMap((r) => r.declarations.filter((d) => d.property === 'display' && d.value === 'contents'))).toEqual([]);
   });
-
-  it('@trace FR-62 The size-label rules have no hiding declaration and .size-label has a gap of at least 4px', () => {
-    const parsed = readStyles();
-    expect(rulesWithSelector(parsed, '.size-label').length, 'a .size-label rule exists').toBeGreaterThan(0);
-    expect(hidingDeclarations(parsed)).toEqual([]);
-    expect(px(declarationsFor(parsed, '.size-label').get('gap')), '.size-label gap').toBeGreaterThanOrEqual(4);
-  });
-
-  it('@trace FR-62 The label and its text compute a display other than none and a visibility that is shown (injected stylesheet)', () => {
-    injectPageStyles();
-    const root = mountFixture(BLANK);
-    const label = q(root, 'label.size-label');
-    for (const el of [label, q(label, '.size-label-text')]) {
-      const style = getComputedStyle(el);
-      expect(style.display).not.toBe('none');
-      expect(['hidden', 'collapse']).not.toContain(style.visibility);
-    }
-  });
 });
 
 describe('the selector sets its own colours and the board disables double-tap zoom (FR-65)', () => {
-  it('@trace FR-65 The select declares color var(--color-text) and background-color var(--color-control-bg)', () => {
+  it('@trace FR-65 The size buttons declare a color and a background-color token, unchecked and checked, with 4.5:1 between them', () => {
     const parsed = readStyles();
-    expect(rulesWithSelector(parsed, 'select').length).toBeGreaterThan(0);
-    expectDecl(parsed, 'select', 'color', 'var(--color-text)');
-    expectDecl(parsed, 'select', 'background-color', 'var(--color-control-bg)');
+    const unchecked = declarationsFor(parsed, '.size-control button');
+    const checkedOwn = declarationsFor(parsed, ".size-control button[aria-checked='true']");
+    expect(rulesWithSelector(parsed, '.size-control button').length, 'a rule for the size buttons').toBeGreaterThan(0);
+    expect(rulesWithSelector(parsed, ".size-control button[aria-checked='true']").length, 'a rule for the checked size button').toBeGreaterThan(0);
+    const checked = new Map([...unchecked, ...checkedOwn]); // the declarations of the checked state: its own laid over the unchecked ones
+    for (const [state, declarations] of [['unchecked', unchecked], ['checked', checked]] as const) {
+      const fg = tokenOf(parsed, declarations.get('color'));
+      const bg = tokenOf(parsed, declarations.get('background-color'));
+      expect.assert(fg !== undefined, `${state}: color is a single var(--color-...) of a declared token (is ${declarations.get('color') ?? 'missing'})`);
+      expect.assert(bg !== undefined, `${state}: background-color is a single var(--color-...) of a declared token (is ${declarations.get('background-color') ?? 'missing'})`);
+      expect(contrastRatio(token(parsed, fg), token(parsed, bg)), `${state}: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+    }
   });
 
   it('@trace FR-65 The board sets touch-action: manipulation and [data-board] has the class board', () => {
@@ -254,6 +292,33 @@ describe('the selector sets its own colours and the board disables double-tap zo
     expectDecl(parsed, '.board', 'touch-action', 'manipulation');
     const root = mountFixture(BLANK);
     expect(q(root, '[data-board]').classList.contains('board')).toBe(true);
+  });
+});
+
+describe('the hint and win regions stay rendered while empty (FR-63)', () => {
+  /** The selector of a rule as a subject without its pseudo-classes and pseudo-elements, with single-quoted attribute values. */
+  const baseOf = (selector: string): string => subjectOf(selector).replace(/::?[\w-]+(\([^()]*\))?/g, '').replaceAll('"', "'");
+  const regionSubjects = new Set(['.message', '.message-win', "[data-message='hint']", "[data-message='win']"]);
+
+  it('@trace FR-63 Empty hint and win regions stay rendered: they compute no display none and no hidden visibility, and no rule of theirs declares either', () => {
+    injectPageStyles();
+    const root = mountFixture(BLANK);
+    for (const name of ['hint', 'win']) {
+      const region = q(root, `[data-message="${name}"]`);
+      expect(region.textContent, `premise: the ${name} region is empty`).toBe('');
+      const style = getComputedStyle(region);
+      expect(style.display, `the empty ${name} region computes a display`).not.toBe('none');
+      expect(['hidden', 'collapse'], `the empty ${name} region is not hidden`).not.toContain(style.visibility);
+    }
+    const parsed = readStyles();
+    const own = parsed.rules.filter((r) => r.selectors.some((s) => regionSubjects.has(baseOf(s))));
+    expect(own.length, 'the walk found the rules of the message regions').toBeGreaterThan(0);
+    const hiding = own.flatMap((r) =>
+      r.declarations
+        .filter((d) => (d.property === 'display' && d.value === 'none') || (d.property === 'visibility' && ['hidden', 'collapse'].includes(d.value)))
+        .map((d) => `${r.selectors.join(', ')} { ${d.property}: ${d.value} }`),
+    );
+    expect(hiding).toEqual([]);
   });
 });
 

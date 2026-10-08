@@ -302,26 +302,6 @@ export function scanColours(parsed: ParsedStyles): ColourScan {
   return scan;
 }
 
-/** Declarations of the rules whose selector contains `size-label` that hide the label (FR-62). */
-export function hidingDeclarations(parsed: ParsedStyles): string[] {
-  const hits: string[] = [];
-  for (const rule of parsed.rules) {
-    if (!rule.selectors.some((s) => s.includes('size-label'))) continue;
-    for (const { property, value } of rule.declarations) {
-      const v = value.toLowerCase();
-      const hides =
-        (property === 'display' && v === 'none') ||
-        (property === 'visibility' && (v === 'hidden' || v === 'collapse')) ||
-        (property === 'opacity' && Number(v) === 0) ||
-        (property === 'clip' && v !== 'auto') ||
-        (property === 'clip-path' && v !== 'none') ||
-        (property === 'font-size' && px(v) === 0);
-      if (hides) hits.push(`${rule.selectors.join(', ')} { ${property}: ${value} }`);
-    }
-  }
-  return hits;
-}
-
 // ---------------------------------------------------------------------------------------------------------
 // Tokens and contrast (FR-65)
 // ---------------------------------------------------------------------------------------------------------

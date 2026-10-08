@@ -1,6 +1,7 @@
-// Play page: the accessibility umbrella (NFR-9) and the Ukrainian accessible names (NFR-5). Every interactive element has
-// a non-empty Ukrainian accessible name, and nothing has a positive tabindex. This does NOT claim real screen-reader or
-// browser coverage (A-28, TC-13); the details live in play-page-keyboard, -semantics and -stylesheet.
+// Play page: the accessibility umbrella (NFR-9) and the Ukrainian accessible names (NFR-5). Every button, the radiogroup and
+// the board group have a non-empty Ukrainian accessible name, and no element has a tabindex. This does NOT claim real
+// screen-reader or browser coverage (A-28, TC-13); the details live in play-page-keyboard, -semantics and -stylesheet.
+// Scenarios of openspec/specs/play-page/spec.md (reconcile-ux-accessibility).
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,
@@ -9,42 +10,38 @@ import {
   WIN_PUZZLE,
   allCells,
   clickCell,
+  expectedCellLabel,
   installPageLifecycle,
   mountFixture,
-  ownLabelText,
   pressHint,
-  sizeSelect,
 } from './helpers/play-page';
 
 installPageLifecycle();
 
-/** The accessible name of each interactive element of the page, by the rule of the spec (text, label text, aria-label). */
+/** The accessible name of each button (its aria-label when it has one, else its text), of the radiogroup and of the board group. */
 function accessibleNames(root: HTMLElement): { what: string; name: string }[] {
   const names: { what: string; name: string }[] = [];
   for (const button of Array.from(root.querySelectorAll('button'))) {
-    names.push({ what: `button ${button.getAttribute('data-action') ?? ''}`, name: button.textContent.trim() });
+    const what = button.hasAttribute('data-cell')
+      ? `cell ${button.getAttribute('data-row') ?? ''},${button.getAttribute('data-col') ?? ''}`
+      : `button ${button.getAttribute('data-action') ?? button.textContent.trim()}`;
+    names.push({ what, name: (button.getAttribute('aria-label') ?? button.textContent).trim() });
   }
-  const label = sizeSelect(root).labels[0];
-  expect.assert(label !== undefined, 'the size select has a label');
-  names.push({ what: 'size select', name: ownLabelText(label) });
-  const cells = Array.from(root.querySelectorAll('[role="gridcell"]'));
-  expect(cells, 'the board has its gridcells').toHaveLength(allCells(root).length);
-  expect(cells.length).toBeGreaterThan(0);
-  for (const cell of cells) {
-    names.push({
-      what: `gridcell ${cell.getAttribute('data-row') ?? ''},${cell.getAttribute('data-col') ?? ''}`,
-      name: (cell.getAttribute('aria-label') ?? '').trim(),
-    });
+  for (const group of [...Array.from(root.querySelectorAll('[role="radiogroup"]')), ...Array.from(root.querySelectorAll('[data-board]'))]) {
+    names.push({ what: `group ${group.getAttribute('role') ?? 'board'}`, name: (group.getAttribute('aria-label') ?? '').trim() });
   }
   return names;
 }
 
 describe('the page meets the accessibility requirements (NFR-9)', () => {
-  it('@trace NFR-9 @trace NFR-5 Every button, the select and every gridcell has a non-empty Ukrainian accessible name', () => {
+  it('@trace NFR-9 @trace NFR-5 Every button, the radiogroup and the board have a non-empty Ukrainian accessible name', () => {
     const root = mountFixture(WIN_PUZZLE);
     const names = accessibleNames(root);
-    // Three buttons since the merge into main on 2026-10-08: «Підказка», «Скинути» (FR-58) and «Нова головоломка».
-    expect(names).toHaveLength(3 + 1 + 36);
+    // 46 buttons (36 cells, the three size radios, «Підказка», «Скинути», «Нова головоломка», «Правила», «Зрозуміло»,
+    // «Так, почати» and «Скасувати») and two groups (the radiogroup and the board)
+    expect(root.querySelectorAll('button')).toHaveLength(46);
+    expect(allCells(root)).toHaveLength(36);
+    expect(names).toHaveLength(46 + 2);
     for (const { what, name } of names) {
       expect(name, `${what} has a name`).not.toBe('');
       expect(/\p{Script=Cyrillic}/u.test(name), `${what} "${name}" has Cyrillic letters`).toBe(true);
@@ -55,14 +52,15 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
     expect(all).toContain('Скинути');
     expect(all).toContain(NEW_LABEL);
     expect(all).toContain('Розмір поля');
+    expect(all).toContain('Поле 6×6');
+    for (const cell of allCells(root)) expect(all).toContain(expectedCellLabel(cell));
   });
 
-  it('@trace NFR-9 No element of the page has a positive tabindex, before and after play', () => {
+  it('@trace NFR-9 No element of the page has a tabindex, before and after play', () => {
     const root = mountFixture(BLANK);
     const check = (): void => {
-      const tabindexed = Array.from(root.querySelectorAll('[tabindex]'));
-      expect(tabindexed.length, 'the cells carry tabindex').toBeGreaterThan(0);
-      for (const el of tabindexed) expect(Number(el.getAttribute('tabindex'))).toBeLessThanOrEqual(0);
+      expect(root.hasAttribute('tabindex'), 'the root has no tabindex').toBe(false);
+      expect(root.querySelectorAll('[tabindex]'), 'no element of the root has a tabindex attribute').toHaveLength(0);
     };
     check();
     clickCell(root, 2, 2);

@@ -8,14 +8,14 @@ Decisions D1 (`:has()` allowed in the one idle-line selector; now in the signed 
 
 ## 1. Failing tests first (red)
 
-- [ ] 1.1 Read `docs/qa/reconcile-ux-main-merge-run.txt` and `git show 603b631 -- tests/` (the signed merge commit) once, so the 81 failing tests below are matched against the real files. Every file named here was read; the account of the 81 is in 1.8.
-- [ ] 1.2 `tests/helpers/play-page.ts` and `tests/helpers/css.ts`, helper changes (each follows from a changed requirement; no assertion is weakened):
+- [x] 1.1 Read `docs/qa/reconcile-ux-main-merge-run.txt` and `git show 603b631 -- tests/` (the signed merge commit) once, so the 81 failing tests below are matched against the real files. Every file named here was read; the account of the 81 is in 1.8.
+- [x] 1.2 `tests/helpers/play-page.ts` and `tests/helpers/css.ts`, helper changes (each follows from a changed requirement; no assertion is weakened):
   - remove `sizeSelect` (the temporary shim of the merge; FR-62: no `select`), `ownLabelText` (FR-62: no `label`), `tabStopCells`, `rowEls`, `expectTabStop` (FR-59: no Tab stop; FR-61: no row elements); in `css.ts` remove `hidingDeclarations` (FR-62: no `size-label`). Keep `pressKey`, `focusCell`, `expectActive`, `expectFocusOn` (still used).
   - add `pressKeyEvent(el, type, key, init)` for `keydown` or `keyup` (bubbling, cancelable, `repeat` and the modifiers through `init`, the same uncaught-error check as `pressKey`); `pressKey` stays as the keydown shortcut and its three self-tests stay untouched. The delta scenarios dispatch `keyup` and `repeat: true` (FR-60: «The page SHALL NOT handle key events on a cell»), which `pressKey` (keydown only, `tests/helpers/play-page.ts:429`) cannot do. One self-test is added (A) in `play-page-helpers.test.ts`: the `keyup` bubbles and is cancelable, carries key, modifiers and `repeat`, `defaultPrevented` follows a listener, and a throwing listener fails the helper.
   - replace `cellName(row, col, text)` («Рядок R, стовпець C: V») by `expectedCellLabel(cell)`, which builds the FR-70 label from `data-row`, `data-col`, the text, `data-given` and the class `cell-hinted` (FR-61: the name is the FR-70 label). The helper is written independently of the page (no import of `strings.ts`).
   - the reset tests use `resetBoard` (already in the file; it presses «Скинути» and confirms when entries exist), not a new helper (see 1.5).
   - NOT changed: `expectPageStructure` keeps the UX body; restoring `main`'s grid/status checks in it would turn about 49 calls in 10 files red for no signed reason. The roles are asserted by the dedicated tests below.
-- [ ] 1.3 `tests/play-page-keyboard.test.ts` (39 tests, all red now). Eleven replacement tests, none added (T5 is a rewrite of kb-21 and kb-23). Replacement tests, each tagged `@trace`: T1 FR-59, T2 FR-59, T3 FR-59, T4 FR-59, T5 FR-59, T6 FR-59 + FR-33, T7 FR-59, T8 FR-60, T9 FR-60 + FR-33, T10 FR-60, T11 FR-33 + FR-60. Spec scenarios in brackets.
+- [x] 1.3 `tests/play-page-keyboard.test.ts` (39 tests, all red now). Eleven replacement tests, none added (T5 is a rewrite of kb-21 and kb-23). Replacement tests, each tagged `@trace`: T1 FR-59, T2 FR-59, T3 FR-59, T4 FR-59, T5 FR-59, T6 FR-59 + FR-33, T7 FR-59, T8 FR-60, T9 FR-60 + FR-33, T10 FR-60, T11 FR-33 + FR-60. Spec scenarios in brackets.
   - T1 [Every cell is a Tab stop in reading order]: no `tabindex` anywhere in the root; the last size button < cell (1,1) < … < cell (6,6) < hint button.
   - T2 [Showing a board does not move the focus]: a new puzzle, a size change and a reset (untouched board, so performed at once) leave focus on the pressed button.
   - T3 [A hint leaves the focus on the hint button]: with a fill (PAIR_ROW) and without (ISOLATED).
@@ -67,7 +67,7 @@ Decisions D1 (`:has()` allowed in the one idle-line selector; now in the signed 
   | kb-38 After a rebuild one Enter still cycles once | X | its target was a double key listener after a rebuild; FR-60: the page handles no key event on a cell |
   | kb-39 Mounting the page does not move DOM focus | R → T4 | FR-59: «Showing a board (at mount, …) never moves the focus»; only `expectTabStop` is dropped |
 
-- [ ] 1.4 `tests/play-page-semantics.test.ts` (25 tests, 24 red now; sem-24 is green and stays). Fates are by the delta requirements «The board is a labelled group of cell buttons», «Cells expose a Ukrainian name and their state», «The size radiogroup has an accessible name», «The hint and win messages are status regions».
+- [x] 1.4 `tests/play-page-semantics.test.ts` (25 tests, 24 red now; sem-24 is green and stays). Fates are by the delta requirements «The board is a labelled group of cell buttons», «Cells expose a Ukrainian name and their state», «The size radiogroup has an accessible name», «The hint and win messages are status regions».
 
   | Old test | Fate | Derives from |
   |---|---|---|
@@ -93,12 +93,12 @@ Decisions D1 (`:has()` allowed in the one idle-line selector; now in the signed 
   | sem-20 Two mounts label their own selects | X | FR-62 (no label); the ids/`for` half moved into sem-04 and sem-05 |
   | sem-21 The label does not break the selector (options, value) | R | FR-62: «each size button is labelled by its own visible text «Поле N×N» and carries no `aria-label` or `aria-labelledby`»; the select behaviour is FR-43 (size-control tests, U) |
   | sem-22 Status regions present, empty, typed at mount | U | FR-63 kept (red now, green through 3.3) |
-  | sem-23 The same two elements carry every message | U | same |
+  | sem-23 The same two elements carry every message | R (one line, changed by the orchestrator after the implementer stopped on it) | FR-67 «… ask for confirmation only when the board has player entries …»: after the hint fill and the click the board has entries, so `pressNew` only opens the dialog; the line becomes `startNewPuzzle` (press, then «Так, почати»), as in sem-10, rst-01 and rst-02. The role assertions are unchanged. This second reason was hidden behind the missing `role="status"` in the red run. |
   | sem-24 Focus never moves to a message | U | FR-63; green now |
   | sem-25 A click that wins leaves the focus on the clicked cell | R | FR-60: a click no longer moves the focus (jsdom `click()` does not focus); the test focuses the cell first and asserts it keeps the focus |
   | new: The idle line has no role | A | FR-63: «the idle line of FR-71 has no role» |
 
-- [ ] 1.5 Smaller files.
+- [x] 1.5 Smaller files.
 
   | Old test | Fate | Derives from |
   |---|---|---|
@@ -112,7 +112,7 @@ Decisions D1 (`:has()` allowed in the one idle-line selector; now in the signed 
   | pt-02 Accessible names at every size | R | the delta MODIFIED «Ukrainian page text»: pattern `/^Рядок [1-8], стовпець [1-8], (порожньо\|0\|1)(, задано\|, підказка)?$/` |
   | the other five tests of `play-page-page-text` | U | |
 
-- [ ] 1.6 `tests/play-page-stylesheet.test.ts` (31 tests, 8 red now).
+- [x] 1.6 `tests/play-page-stylesheet.test.ts` (31 tests, 8 red now).
 
   | Old test | Fate | Derives from |
   |---|---|---|
@@ -135,7 +135,7 @@ Decisions D1 (`:has()` allowed in the one idle-line selector; now in the signed 
   | new: Empty hint and win regions stay rendered | A | FR-63: «While empty they stay rendered (not `display: none`, so the first message is announced)» (delta scenario «Empty status regions stay rendered»): computed `display`/`visibility` of the two empty regions in the injected stylesheet, and no rule with subject `.message`, `.message-win` or `[data-message=…]` that declares `display: none` or `visibility: hidden`. Red now: `.message:empty { display: none }` |
   | new: Every page button is a `button` element, so `button:focus-visible` applies | A | FR-65: «every cell and every page button … shows a `:focus-visible` indicator» (delta scenario «Every page button is a button element») |
 
-- [ ] 1.7 `tests/play-page-helpers.test.ts` (helper self-tests; green now) and the two source scans.
+- [x] 1.7 `tests/play-page-helpers.test.ts` (helper self-tests; green now) and the two source scans.
 
   | Old test | Fate | Derives from |
   |---|---|---|
@@ -147,14 +147,14 @@ Decisions D1 (`:has()` allowed in the one idle-line selector; now in the signed 
   | new: `pressKeyEvent` dispatches a bubbling, cancelable `keyup`/`keydown` with key, modifiers and `repeat` | A | FR-60: the delta scenarios dispatch `keyup` and `repeat: true`; see 1.2 |
   | `tests/ui-strings.test.ts` source scan, `tests/play-page-controls-text.test.ts` source scan (red now) | U | rule «Cyrillic only in `strings.ts`»; green when 3.4 deletes `src/ui/grid.ts` |
 
-- [ ] 1.8 Account of the 81 failing tests (the sum is checked against `docs/qa/reconcile-ux-main-merge-run.txt`): keyboard 39 (20 R, 19 X), semantics 24 (16 R, 2 X, 6 U), stylesheet 8 (3 R, 2 X, 3 U), wcag 2 (2 R), reset-accessibility 3 (2 R, 1 X), page-text 2 (2 R), rendering 1 (1 R), ui-strings 1 (U), controls-text 1 (U). Totals: 46 R, 24 X, 11 U (the U go green through 3.2, 3.3, 3.4, 3.7). Besides the 81: R ss-07, ss-15, ss-17 (green now); helper self-tests 2 R and 2 X (green now); A (4): the idle-line test (semantics), the empty-status-regions test and the page-button test (stylesheet), the `pressKeyEvent` self-test (helpers). The keyboard file goes from 39 to 11 tests. No other test changes; `git diff --stat -- tests/` is attached to the commit and shows no other file.
-- [ ] 1.9 In each rewritten file, keep the header comment true (it names scenarios of an archived change): point it at `openspec/specs/play-page/spec.md`.
+- [x] 1.8 Account of the 81 failing tests (the sum is checked against `docs/qa/reconcile-ux-main-merge-run.txt`): keyboard 39 (20 R, 19 X), semantics 24 (16 R, 2 X, 6 U), stylesheet 8 (3 R, 2 X, 3 U), wcag 2 (2 R), reset-accessibility 3 (2 R, 1 X), page-text 2 (2 R), rendering 1 (1 R), ui-strings 1 (U), controls-text 1 (U). Totals: 46 R, 24 X, 11 U (the U go green through 3.2, 3.3, 3.4, 3.7). Besides the 81: R ss-07, ss-15, ss-17 (green now); helper self-tests 2 R and 2 X (green now); A (4): the idle-line test (semantics), the empty-status-regions test and the page-button test (stylesheet), the `pressKeyEvent` self-test (helpers). The keyboard file goes from 39 to 11 tests. No other test changes; `git diff --stat -- tests/` is attached to the commit and shows no other file.
+- [x] 1.9 In each rewritten file, keep the header comment true (it names scenarios of an archived change): point it at `openspec/specs/play-page/spec.md`.
 
 ## 2. Confirm red
 
-- [ ] 2.1 Run `npm run test:run`. Expected red, for the right reason: sem-01…12, 16, 18, 21, 25 (no `role="group"`, no `aria-disabled` names, no `aria-invalid`, no `role="status"`), wcag-01, rendering/reset/page-text rewrites that read the FR-70 label or the new roles, the new idle-line test, the new empty-status-regions test (`.message:empty { display: none }`), the stylesheet tests of 1.6 that read the CSS, and the two source scans (`grid.ts`). Not an import error and not a failure in an untouched test.
-- [ ] 2.2 Record which rewritten tests are green at the start and why (T1 to T11, the focus tests, the radiogroup-name tests: the UX page already has no `tabindex`, no key handler and a named radiogroup). They are regression guards, not proof of the new behaviour; the red ones are. Save the output and the two lists to `docs/qa/reconcile-ux-accessibility-red-run.txt`.
-- [ ] 2.3 Check that autonomy-log row 79 records the user's answers of 2026-10-09 (D1, D2, the FR-60 test shape, the four additions of about 01:20) and that `docs/requirements.md` carries them (FR-59, FR-60, FR-61, FR-62, FR-63, FR-65 and the closing note). Nothing is added to either file by this change.
+- [x] 2.1 (done: 22 red, all assertions; the listed sem-04 to sem-12, sem-18, sem-21, sem-25 were already green, see `docs/qa/reconcile-ux-accessibility-red-run.txt`) Run `npm run test:run`. Expected red, for the right reason: sem-01…12, 16, 18, 21, 25 (no `role="group"`, no `aria-disabled` names, no `aria-invalid`, no `role="status"`), wcag-01, rendering/reset/page-text rewrites that read the FR-70 label or the new roles, the new idle-line test, the new empty-status-regions test (`.message:empty { display: none }`), the stylesheet tests of 1.6 that read the CSS, and the two source scans (`grid.ts`). Not an import error and not a failure in an untouched test.
+- [x] 2.2 Record which rewritten tests are green at the start and why (T1 to T11, the focus tests, the radiogroup-name tests: the UX page already has no `tabindex`, no key handler and a named radiogroup). They are regression guards, not proof of the new behaviour; the red ones are. Save the output and the two lists to `docs/qa/reconcile-ux-accessibility-red-run.txt`.
+- [x] 2.3 Check that autonomy-log row 79 records the user's answers of 2026-10-09 (D1, D2, the FR-60 test shape, the four additions of about 01:20) and that `docs/requirements.md` carries them (FR-59, FR-60, FR-61, FR-62, FR-63, FR-65 and the closing note). Nothing is added to either file by this change.
 
 ## 3. Implementation
 

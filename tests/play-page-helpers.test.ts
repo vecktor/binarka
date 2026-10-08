@@ -37,10 +37,9 @@ import {
   WIN_PUZZLE,
   allSolutions,
   bySize,
-  cellName,
   checkerCells,
   collectPageText,
-  expectTabStop,
+  expectedCellLabel,
   fixedGenerate,
   focusCell,
   generateSpy,
@@ -48,14 +47,12 @@ import {
   keepsGivens,
   makePuzzle,
   messageArea,
-  ownLabelText,
   pressKey,
+  pressKeyEvent,
   rawGenerateSpy,
-  rowEls,
   rulesPanel,
   seedQueue,
   solutionGrid,
-  tabStopCells,
   textWithoutHidden,
   trackErrors,
 } from './helpers/play-page';
@@ -66,7 +63,6 @@ import {
   contrastProblems,
   contrastRatio,
   declarationsFor,
-  hidingDeclarations,
   namedColoursIn,
   parseStyles,
   px,
@@ -563,18 +559,6 @@ describe('css helper: scanColours (the colour scan) and the lookups', () => {
     expect(namedColoursIn('translate(0, 0) tangent redundant')).toEqual([]);
   });
 
-  it('hidingDeclarations finds every way to hide the label, and nothing else', () => {
-    const hiding = parseStyles(`
-      .size-label { display: none; visibility: hidden; opacity: 0; clip: rect(0 0 0 0); clip-path: inset(50%); font-size: 0; }
-      .box .size-label-text { visibility: collapse; }
-      .other { display: none; }
-    `);
-    expect(hidingDeclarations(hiding)).toHaveLength(7);
-    const fine = parseStyles('.size-label { display: inline-flex; align-items: center; gap: 8px; opacity: 1; font-size: 14px; }');
-    expect(hidingDeclarations(fine)).toEqual([]);
-    expect(hidingDeclarations(parseStyles('.cell { display: none; }'))).toEqual([]);
-  });
-
   it('withTokensInlined replaces var(--color-x) by the :root value and leaves other var() alone', () => {
     const out = withTokensInlined(':root { --color-a: #112233; } .x { color: var(--color-a); border-color: var( --color-a ); width: var(--w); background-color: var(--color-missing); }');
     expect(out).toContain('color: #112233;');
@@ -597,15 +581,13 @@ describe('css helper: scanColours (the colour scan) and the lookups', () => {
 });
 
 describe('page helpers for keys, focus, rows and names', () => {
+  /** Two button cells and a div cell that cannot take focus (no tabindex). */
   function sampleBoard(): HTMLElement {
     const root = document.createElement('div');
-    const rows = [1, 2]
-      .map(
-        (r) =>
-          `<div role="row">${[1, 2].map((c) => `<div data-cell data-row="${r}" data-col="${c}" tabindex="${r === 1 && c === 2 ? 0 : -1}"></div>`).join('')}</div>`,
-      )
-      .join('');
-    root.innerHTML = `<div data-board data-size="2">${rows}</div><div data-cell data-row="3" data-col="1"></div>`;
+    root.innerHTML =
+      '<button type="button" data-cell data-row="1" data-col="1"></button>' +
+      '<button type="button" data-cell data-row="1" data-col="2"></button>' +
+      '<div data-cell data-row="3" data-col="1"></div>';
     document.body.appendChild(root);
     return root;
   }
@@ -653,31 +635,68 @@ describe('page helpers for keys, focus, rows and names', () => {
     }
   });
 
-  it('tabStopCells, rowEls, expectTabStop and focusCell read a sample board; focusCell fails on a cell that cannot take focus', () => {
+  it('pressKeyEvent dispatches a bubbling, cancelable keyup (or keydown) that carries key, modifiers and repeat; defaultPrevented follows the listener; a throwing listener fails it', () => {
+    const outer = document.createElement('div');
+    const inner = document.createElement('span');
+    outer.appendChild(inner);
+    const seen: KeyboardEvent[] = [];
+    outer.addEventListener('keyup', (e) => {
+      seen.push(e);
+      if (e.key === 'Enter') e.preventDefault();
+    });
+    const prevented = pressKeyEvent(inner, 'keyup', 'Enter', { ctrlKey: true, altKey: true, shiftKey: true, repeat: true });
+    expect(prevented.type).toBe('keyup');
+    expect(prevented.bubbles).toBe(true);
+    expect(prevented.cancelable).toBe(true);
+    expect(prevented.key).toBe('Enter');
+    expect([prevented.ctrlKey, prevented.altKey, prevented.shiftKey, prevented.repeat]).toEqual([true, true, true, true]);
+    expect(prevented.defaultPrevented).toBe(true);
+    expect(seen).toHaveLength(1); // it bubbled to the outer listener
+    const plain = pressKeyEvent(inner, 'keyup', ' ');
+    expect(plain.key).toBe(' ');
+    expect([plain.ctrlKey, plain.altKey, plain.shiftKey, plain.repeat]).toEqual([false, false, false, false]);
+    expect(plain.defaultPrevented).toBe(false);
+    // a keydown through the same helper is the keydown of pressKey
+    expect(pressKeyEvent(inner, 'keydown', 'a').type).toBe('keydown');
+    // a non-cancelable event can never show preventDefault(): why the page tests insist on cancelable
+    expect(pressKeyEvent(inner, 'keyup', 'Enter', { cancelable: false }).defaultPrevented).toBe(false);
+
+    const quiet = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const node = document.createElement('div');
+    node.addEventListener('keyup', () => {
+      throw new Error('handler blew up');
+    });
+    try {
+      expect(() => pressKeyEvent(node, 'keyup', 'a')).toThrow(/no uncaught error/);
+    } finally {
+      quiet.mockRestore();
+    }
+  });
+
+  it('focusCell takes focus on a button cell and fails on a cell that cannot take focus', () => {
     const root = sampleBoard();
-    expect(tabStopCells(root)).toHaveLength(1);
-    expect(tabStopCells(root)[0]?.getAttribute('data-col')).toBe('2');
-    expect(rowEls(root)).toHaveLength(2);
-    expect(rowEls(root).every((r) => r.getAttribute('role') === 'row')).toBe(true);
-    expect(() => {
-      expectTabStop(root, 1, 1);
-    }).toThrow(/only Tab stop/);
     expect(focusCell(root, 1, 2)).toBe(document.activeElement);
-    expect(() => focusCell(root, 3, 1)).toThrow(/takes DOM focus/); // no tabindex: jsdom cannot focus it
+    expect(focusCell(root, 1, 1)).toBe(document.activeElement);
+    expect(() => focusCell(root, 3, 1)).toThrow(/takes DOM focus/); // a div with no tabindex: jsdom cannot focus it
     root.remove();
   });
 
-  it('cellName spells the Ukrainian name, «порожня» for an empty cell', () => {
-    expect(cellName(2, 3, '')).toBe('Рядок 2, стовпець 3: порожня');
-    expect(cellName(3, 1, '0')).toBe('Рядок 3, стовпець 1: 0');
-    expect(cellName(6, 6, '1')).toBe('Рядок 6, стовпець 6: 1');
-  });
-
-  it('ownLabelText drops the select and its options and collapses whitespace', () => {
-    const label = document.createElement('label');
-    label.innerHTML = '<span class="size-label-text"> Розмір\n  поля </span><select><option>Поле 4×4</option></select>';
-    expect(label.textContent).toContain('Поле 4×4');
-    expect(ownLabelText(label)).toBe('Розмір поля');
+  it('expectedCellLabel spells the FR-70 label: «порожньо» for an empty cell, «, задано» on a given, «, підказка» on a hinted cell, no suffix otherwise', () => {
+    const cell = (row: number, col: number, text: string, given: boolean, className = ''): HTMLElement => {
+      const el = document.createElement('button');
+      el.setAttribute('data-row', String(row));
+      el.setAttribute('data-col', String(col));
+      el.setAttribute('data-given', given ? 'true' : 'false');
+      if (className !== '') el.className = className;
+      el.textContent = text;
+      return el;
+    };
+    expect(expectedCellLabel(cell(2, 3, '', false))).toBe('Рядок 2, стовпець 3, порожньо');
+    expect(expectedCellLabel(cell(3, 1, '0', true, 'cell-given'))).toBe('Рядок 3, стовпець 1, 0, задано');
+    expect(expectedCellLabel(cell(6, 6, '1', false))).toBe('Рядок 6, стовпець 6, 1');
+    expect(expectedCellLabel(cell(5, 6, '0', false, 'cell-hinted'))).toBe('Рядок 5, стовпець 6, 0, підказка');
+    expect(expectedCellLabel(cell(4, 2, '1', false, 'cell-violation')), 'a violation adds no suffix').toBe('Рядок 4, стовпець 2, 1');
+    expect(expectedCellLabel(cell(1, 4, '1', true, 'cell-given cell-violation')), 'a given in a violation').toBe('Рядок 1, стовпець 4, 1, задано');
   });
 });
 

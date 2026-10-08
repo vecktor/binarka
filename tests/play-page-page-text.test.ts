@@ -10,9 +10,9 @@ import {
   WIN_MESSAGE,
   WIN_PUZZLE,
   allCells,
-  cellName,
   collectPageText,
   expectPageStructure,
+  expectedCellLabel,
   fillFrom,
   generatorBySize,
   installPageLifecycle,
@@ -42,15 +42,15 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
     expect(document.title).not.toBe('');
     expect(texts).toContain(document.title);
 
-    // Slice 6 (add-page-accessibility), DELIBERATE CHANGE (tasks 5.7): the collected texts also include the visible label,
+    // Slice 6 (add-page-accessibility), DELIBERATE CHANGE (tasks 5.7): the collected texts also include the radiogroup name,
     // the board name as an aria-label and the 36 cell names (a new scenario line; nothing removed).
     expect(trimmed).toContain('Розмір поля');
     expect(q(root, '[data-board]').getAttribute('aria-label')).toBe('Поле 6×6');
     expect(trimmed.filter((t) => t === 'Поле 6×6'), 'the option text and the board aria-label').toHaveLength(2);
-    expect(trimmed.filter((t) => /^Рядок [1-6], стовпець [1-6]: (порожня|0|1)$/.test(t))).toHaveLength(36);
+    expect(trimmed.filter((t) => /^Рядок [1-6], стовпець [1-6], (порожньо|0|1)(, задано|, підказка)?$/.test(t))).toHaveLength(36);
     // each cell's exact name is collected (folded in from a duplicate test; review finding F6)
     for (const cell of allCells(root)) {
-      const name = cellName(Number(cell.getAttribute('data-row')), Number(cell.getAttribute('data-col')), cell.textContent);
+      const name = expectedCellLabel(cell);
       expect(trimmed, `the cell name «${name}» is collected`).toContain(name);
     }
 
@@ -70,7 +70,7 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
       const names = [q(root, '[data-board]').getAttribute('aria-label') ?? '', ...allCells(root).map((c) => c.getAttribute('aria-label') ?? '')];
       expect(names[0]).toBe(`Поле ${n}×${n}`);
       expect(names).toHaveLength(1 + n * n);
-      for (const name of names.slice(1)) expect(name).toMatch(/^Рядок [1-8], стовпець [1-8]: (порожня|0|1)$/);
+      for (const name of names.slice(1)) expect(name).toMatch(/^Рядок [1-8], стовпець [1-8], (порожньо|0|1)(, задано|, підказка)?$/);
       for (const name of names) {
         expect(/\p{Script=Cyrillic}/u.test(name), `"${name}" has Cyrillic letters`).toBe(true);
         expect(/[A-Za-z]/.test(name), `"${name}" has no Latin letters`).toBe(false);

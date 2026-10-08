@@ -541,7 +541,6 @@
         "tests/play-page-click-cycle.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts"
       ],
       "recordings": []
@@ -555,8 +554,6 @@
       "planned": true,
       "tests": [
         "tests/play-page-click-cycle.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
         "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
@@ -609,7 +606,6 @@
       "planned": true,
       "tests": [
         "tests/play-page-highlighting.test.ts",
-        "tests/play-page-keyboard.test.ts",
         "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
@@ -687,7 +683,6 @@
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
-        "tests/play-page-semantics.test.ts",
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
@@ -732,7 +727,6 @@
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-reset-accessibility.test.ts",
-        "tests/play-page-reset-accessibility.test.ts",
         "tests/play-page-rules-and-reset.test.ts",
         "tests/play-page-rules-and-reset.test.ts"
       ],
@@ -753,27 +747,8 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
         "tests/play-page-rendering.test.ts",
-        "tests/play-page-rendering.test.ts",
-        "tests/play-page-reset-accessibility.test.ts"
+        "tests/play-page-rendering.test.ts"
       ],
       "recordings": []
     },
@@ -789,17 +764,7 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts",
-        "tests/play-page-keyboard.test.ts"
+        "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
     },
@@ -846,11 +811,7 @@
       "tests": [
         "tests/play-page-page-text.test.ts",
         "tests/play-page-semantics.test.ts",
-        "tests/play-page-semantics.test.ts",
-        "tests/play-page-semantics.test.ts",
-        "tests/play-page-semantics.test.ts",
-        "tests/play-page-stylesheet.test.ts",
-        "tests/play-page-stylesheet.test.ts"
+        "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
     },
@@ -865,7 +826,9 @@
         "tests/play-page-semantics.test.ts",
         "tests/play-page-semantics.test.ts",
         "tests/play-page-semantics.test.ts",
-        "tests/play-page-semantics.test.ts"
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-stylesheet.test.ts"
       ],
       "recordings": []
     },
@@ -892,6 +855,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",

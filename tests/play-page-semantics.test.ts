@@ -1,12 +1,13 @@
-// Play page: grid roles, Ukrainian names and states, the labelled size selector, the status regions and the DOM side of
-// the violation cue (FR-61, FR-62, FR-63, FR-64). Scenarios of
-// openspec/changes/add-page-accessibility/specs/play-page/spec.md. Computed style comes from jsdom with
-// src/ui/style.css injected (tests/helpers/css.ts); screen-reader output is not tested (A-28).
+// Play page: the labelled group of cell buttons, the Ukrainian names and states, the accessible name of the size
+// radiogroup, the status regions and the DOM side of the violation cue (FR-61, FR-62, FR-63, FR-64). Scenarios of
+// openspec/specs/play-page/spec.md (reconcile-ux-accessibility). Computed style comes from jsdom with src/ui/style.css
+// injected where a test needs it (tests/helpers/css.ts); screen-reader output is not tested (A-28).
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,
   BLANK_4,
   DIRTY_GIVENS,
+  IDLE_TEXT,
   PAIR_4,
   PAIR_LEFT,
   PAIR_ROW,
@@ -15,44 +16,43 @@ import {
   WIN_PUZZLE,
   allCells,
   cellEl,
-  cellName,
   cellText,
   clickCell,
   clickUntil,
   expectActive,
+  expectedCellLabel,
   expectedHint,
   fillFrom,
+  focusCell,
   generateSpy,
   generatorBySize,
   hintMessage,
   installPageLifecycle,
   mountFixture,
   mountPage,
-  ownLabelText,
   pressHint,
-  pressKey,
   pressNew,
   q,
-  rowEls,
+  rulesPanel,
   seedQueue,
   selectSize,
   setRow,
-  sizeSelect,
+  sizeButtons,
+  sizeControl,
   solutionGrid,
+  startNewPuzzle,
   violationCells,
   winMessage,
 } from './helpers/play-page';
-import { hidingDeclarations, injectPageStyles, readStyles } from './helpers/css';
 
 installPageLifecycle();
 
-const CELL_NAME = /^Рядок \d+, стовпець \d+: (порожня|0|1)$/;
+/** The FR-70 label, with its optional suffix, written independently of the page. */
+const CELL_NAME = /^Рядок \d+, стовпець \d+, (порожньо|0|1)(, задано|, підказка)?$/;
 
-/** The name the page must give a cell from its position and its text: the rule of FR-61 written independently of the page. */
+/** The name the page must give a cell: the FR-70 label built from its position, text and state (tests/helpers/play-page.ts). */
 function expectedNames(root: HTMLElement): string[] {
-  return allCells(root).map((c) =>
-    cellName(Number(c.getAttribute('data-row')), Number(c.getAttribute('data-col')), c.textContent),
-  );
+  return allCells(root).map((c) => expectedCellLabel(c));
 }
 
 function actualNames(root: HTMLElement): (string | null)[] {
@@ -64,61 +64,73 @@ const attributeCells = (root: HTMLElement, attribute: string): string[] =>
     .filter((c) => c.hasAttribute(attribute))
     .map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}`);
 
-// ---------------------------------------------------------------------------------------------------------
-// FR-61: grid, rows, cells
-// ---------------------------------------------------------------------------------------------------------
+/** The ids under a root: the elements that carry an `id` attribute. */
+const idElements = (root: HTMLElement): Element[] => Array.from(root.querySelectorAll('[id]'));
 
-describe('the board, rows and cells have grid roles', () => {
-  it('@trace FR-61 Roles and name of the default board: grid «Поле 6×6», 6 rows of 6 gridcells in column order', () => {
+/** Every non-whitespace text node under a root, trimmed (attribute values are not text nodes). */
+function textNodesOf(root: HTMLElement): string[] {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const out: string[] = [];
+  for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+    const text = (node as Text).data.trim();
+    if (text !== '') out.push(text);
+  }
+  return out;
+}
+
+/** The three elements that may carry an id (FR-61): the rules panel, its heading and the element holding the confirmation text. */
+function expectedIdElements(root: HTMLElement): Element[] {
+  const panel = rulesPanel(root);
+  const heading = panel.querySelector('h1, h2, h3, h4, h5, h6');
+  expect.assert(heading !== null, 'the rules panel has a heading');
+  const dialog = q(root, '[data-dialog="confirm"]');
+  const text = dialog.querySelector('[id]');
+  expect.assert(text !== null, 'the confirmation dialog has an element with an id (its text)');
+  return [panel, heading, text];
+}
+
+describe('the board is a labelled group of cell buttons', () => {
+  it('@trace FR-61 Role and name of the default board: group «Поле 6×6» whose children are exactly the 36 cells in reading order, no grid, row or gridcell role', () => {
     const root = mountFixture(BLANK);
     const board = q(root, '[data-board]');
-    expect(board.getAttribute('role')).toBe('grid');
+    expect(board.getAttribute('role')).toBe('group');
     expect(board.getAttribute('aria-label')).toBe('Поле 6×6');
-    const rows = rowEls(root);
-    expect(rows).toHaveLength(6);
-    rows.forEach((row, i) => {
-      expect(row.getAttribute('role'), `child ${i + 1} is a row`).toBe('row');
-      expect(row.parentElement).toBe(board);
-      const cells = Array.from(row.querySelectorAll<HTMLElement>('[data-cell]'));
-      expect(cells, `row ${i + 1}`).toHaveLength(6);
-      expect(cells.map((c) => c.getAttribute('data-row'))).toEqual(Array<string>(6).fill(String(i + 1)));
-      expect(cells.map((c) => c.getAttribute('data-col'))).toEqual(['1', '2', '3', '4', '5', '6']);
-      for (const cell of cells) {
-        expect(cell.getAttribute('role')).toBe('gridcell');
-        expect(cell.parentElement, 'the cell is a child of its row, not of the board').toBe(row);
-      }
+    const children = Array.from(board.children);
+    expect(children).toHaveLength(36);
+    expect(children).toEqual(allCells(root));
+    children.forEach((child, i) => {
+      expect(child.hasAttribute('data-cell'), `child ${i + 1} is a cell`).toBe(true);
+      expect(child.getAttribute('data-row'), `child ${i + 1} row`).toBe(String(Math.floor(i / 6) + 1));
+      expect(child.getAttribute('data-col'), `child ${i + 1} col`).toBe(String((i % 6) + 1));
     });
-    expect(Array.from(board.children).filter((child) => child.hasAttribute('data-cell'))).toHaveLength(0);
+    expect(root.querySelectorAll('[role="grid"], [role="row"], [role="gridcell"]')).toHaveLength(0);
+    for (const cell of allCells(root)) expect(cell.hasAttribute('role'), 'a cell carries no role attribute').toBe(false);
   });
 
-  it('@trace FR-61 The grid name follows the size: «Поле 4×4» with 4 rows of 4, then «Поле 8×8» with 8 rows of 8 (real generator)', () => {
+  it('@trace FR-61 The group name follows the size: «Поле 4×4» with 16 cell children, then «Поле 8×8» with 64 (real generator)', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2, 3]).source });
     for (const n of [4, 8]) {
       selectSize(root, n);
       const board = q(root, '[data-board]');
       expect(board.getAttribute('aria-label')).toBe(`Поле ${n}×${n}`);
-      expect(board.getAttribute('role')).toBe('grid');
-      const rows = rowEls(root);
-      expect(rows).toHaveLength(n);
-      for (const row of rows) {
-        expect(row.getAttribute('role')).toBe('row');
-        expect(row.querySelectorAll('[role="gridcell"]')).toHaveLength(n);
-      }
+      expect(board.getAttribute('role')).toBe('group');
       expect(allCells(root)).toHaveLength(n * n);
+      expect(Array.from(board.children)).toEqual(allCells(root));
+      expect(root.querySelectorAll('[role="grid"], [role="row"], [role="gridcell"]')).toHaveLength(0);
     }
   });
 
-  it('@trace FR-61 A failed size change keeps the grid and its name «Поле 6×6»', () => {
+  it('@trace FR-61 A failed size change keeps the board, its name «Поле 6×6», its role and its 36 cells', () => {
     const root = mountFixture(BLANK); // throws for size 8
     selectSize(root, 8);
     const board = q(root, '[data-board]');
     expect(board.getAttribute('aria-label')).toBe('Поле 6×6');
-    expect(board.getAttribute('role')).toBe('grid');
-    expect(rowEls(root)).toHaveLength(6);
-    expect(rowEls(root).every((r) => r.querySelectorAll('[data-cell]').length === 6)).toBe(true);
+    expect(board.getAttribute('role')).toBe('group');
+    expect(allCells(root)).toHaveLength(36);
+    expect(Array.from(board.children)).toEqual(allCells(root));
   });
 
-  it('@trace FR-61 The cell contract is unchanged and no descendant of a root has an id', () => {
+  it('@trace FR-61 The cell contract is unchanged and exactly three elements have an id: the rules panel, its heading and the confirmation text', () => {
     // a per-size generator, so the size change below really rebuilds the board (a fixed 6x6 fixture would make it fail)
     const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: WIN_PUZZLE, 4: BLANK_4 }) });
     const cells = allCells(root);
@@ -129,31 +141,39 @@ describe('the board, rows and cells have grid roles', () => {
       expect(['true', 'false']).toContain(given);
       expect(cell.classList.contains('cell-given')).toBe(given === 'true');
       expect(['', '0', '1']).toContain(cell.textContent);
-      expect(cell.getAttribute('role')).toBe('gridcell');
+      expect(cell.hasAttribute('role'), 'a cell carries no role attribute').toBe(false);
     }
     expect(cells.filter((c) => c.classList.contains('cell-given'))).toHaveLength(10);
-    expect(root.querySelectorAll('[id]')).toHaveLength(0);
-    // after a click, a hint, a size change and a new puzzle too: no id appears later
+    const three = expectedIdElements(root);
+    expect(idElements(root), 'exactly the rules panel, its heading and the confirmation text have an id').toEqual(three);
+    expect(three).toHaveLength(3);
+    for (const el of three) expect(el.id, 'each id ends in the number of the mount').toMatch(/\d+$/);
+    expect(root.querySelectorAll('[for]'), 'no for attribute').toHaveLength(0);
+    // after a click, a hint, a size change and a new puzzle the same three elements are the only ones with an id
     clickCell(root, 1, 1);
     pressHint(root);
     selectSize(root, 4);
     expect(q(root, '[data-board]').getAttribute('data-size'), 'the size change really rebuilt the board').toBe('4');
     pressNew(root);
-    expect(root.querySelectorAll('[id]')).toHaveLength(0);
+    expect(idElements(root)).toEqual(three);
+    expect(root.querySelectorAll('[for]')).toHaveLength(0);
   });
 
-  it('@trace FR-61 Two mounts in one document have no duplicate id (and no id at all below the roots)', () => {
+  it('@trace FR-61 Two mounts in one document share no id: three ids each, six different ones, and no other id in the document', () => {
     const a = mountFixture(BLANK);
     const b = mountFixture(BLANK);
-    const ids = [...a.querySelectorAll('[id]'), ...b.querySelectorAll('[id]')].map((e) => e.id);
-    expect(ids).toEqual([]);
-    expect(document.querySelectorAll('[id]')).toHaveLength(0);
+    const idsA = idElements(a).map((e) => e.id);
+    const idsB = idElements(b).map((e) => e.id);
+    expect(idsA).toHaveLength(3);
+    expect(idsB).toHaveLength(3);
+    expect(new Set([...idsA, ...idsB]).size, 'the six ids are pairwise different').toBe(6);
+    expect(document.querySelectorAll('[id]'), 'the document holds exactly those six').toHaveLength(6);
   });
 
   it('@trace FR-61 @trace FR-34 The digit stays the cell text (FR-34) and the name is a separate attribute', () => {
     const root = mountFixture(PAIR_ROW);
     expect(cellText(root, 3, 1)).toBe('0'); // the digit stays the text content (FR-34), the name replaces it only for AT
-    expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1: 0');
+    expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1, 0, задано');
     expect(cellEl(root, 3, 3).textContent).toBe('');
   });
 });
@@ -163,51 +183,51 @@ describe('the board, rows and cells have grid roles', () => {
 // ---------------------------------------------------------------------------------------------------------
 
 describe('cells expose a Ukrainian name and their state', () => {
-  it('@trace FR-61 Names of a fresh board: «Рядок 2, стовпець 3: порожня», «Рядок 3, стовпець 1: 0», and every name matches the cell', () => {
+  it('@trace FR-61 Names of a fresh board: «Рядок 2, стовпець 3, порожньо», «Рядок 3, стовпець 1, 0, задано», and every name is the FR-70 label of its cell', () => {
     const root = mountFixture(PAIR_ROW);
-    expect(cellEl(root, 2, 3).getAttribute('aria-label')).toBe('Рядок 2, стовпець 3: порожня');
-    expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1: 0');
-    expect(cellEl(root, 6, 6).getAttribute('aria-label')).toBe('Рядок 6, стовпець 6: порожня');
+    expect(cellEl(root, 2, 3).getAttribute('aria-label')).toBe('Рядок 2, стовпець 3, порожньо');
+    expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1, 0, задано');
+    expect(cellEl(root, 6, 6).getAttribute('aria-label')).toBe('Рядок 6, стовпець 6, порожньо');
     expect(actualNames(root)).toEqual(expectedNames(root));
     for (const name of actualNames(root)) expect(name).toMatch(CELL_NAME);
   });
 
-  it('@trace FR-61 The name follows a click, Enter and Space: 0, 1, порожня', () => {
+  it('@trace FR-61 The name follows three clicks: 0, 1, порожньо', () => {
     const root = mountFixture(BLANK);
     const cell = cellEl(root, 2, 3);
     clickCell(root, 2, 3);
-    expect(cell.getAttribute('aria-label')).toBe('Рядок 2, стовпець 3: 0');
-    pressKey(cell, 'Enter');
-    expect(cell.getAttribute('aria-label')).toBe('Рядок 2, стовпець 3: 1');
-    pressKey(cell, ' ');
-    expect(cell.getAttribute('aria-label')).toBe('Рядок 2, стовпець 3: порожня');
+    expect(cell.getAttribute('aria-label')).toBe('Рядок 2, стовпець 3, 0');
+    clickCell(root, 2, 3);
+    expect(cell.getAttribute('aria-label')).toBe('Рядок 2, стовпець 3, 1');
+    clickCell(root, 2, 3);
+    expect(cell.getAttribute('aria-label')).toBe('Рядок 2, стовпець 3, порожньо');
     expect(cell.textContent).toBe('');
     expect(actualNames(root)).toEqual(expectedNames(root));
   });
 
-  it('@trace FR-61 The name follows a hint fill: the filled cell ends with its digit', () => {
+  it('@trace FR-61 The name follows a hint fill: the filled cell ends with its digit and «, підказка»', () => {
     const root = mountFixture(PAIR_ROW);
-    expect(cellEl(root, 3, 3).getAttribute('aria-label')).toBe('Рядок 3, стовпець 3: порожня');
+    expect(cellEl(root, 3, 3).getAttribute('aria-label')).toBe('Рядок 3, стовпець 3, порожньо');
     pressHint(root);
     expect(cellText(root, 3, 3)).toBe('1');
-    expect(cellEl(root, 3, 3).getAttribute('aria-label')).toBe('Рядок 3, стовпець 3: 1');
+    expect(cellEl(root, 3, 3).getAttribute('aria-label')).toBe('Рядок 3, стовпець 3, 1, підказка');
     expect(actualNames(root)).toEqual(expectedNames(root));
   });
 
   it('@trace FR-61 A new puzzle and a size change give fresh names (no name of the old board survives)', () => {
     const spy = generateSpy((i) => (i === 0 ? PAIR_ROW : BLANK));
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: spy.generate });
-    expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1: 0');
+    expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1, 0, задано');
     clickCell(root, 1, 1);
-    expect(cellEl(root, 1, 1).getAttribute('aria-label')).toBe('Рядок 1, стовпець 1: 0');
-    pressNew(root); // BLANK: the given at 3,1 is gone, the entry at 1,1 is gone
+    expect(cellEl(root, 1, 1).getAttribute('aria-label')).toBe('Рядок 1, стовпець 1, 0');
+    startNewPuzzle(root); // the board has an entry, so this confirms «Так, почати» (FR-67); BLANK: the given at 3,1 and the entry at 1,1 are gone
     expect(cellText(root, 3, 1)).toBe('');
-    expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1: порожня');
-    expect(cellEl(root, 1, 1).getAttribute('aria-label')).toBe('Рядок 1, стовпець 1: порожня');
+    expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1, порожньо');
+    expect(cellEl(root, 1, 1).getAttribute('aria-label')).toBe('Рядок 1, стовпець 1, порожньо');
     expect(actualNames(root)).toEqual(expectedNames(root));
   });
 
-  it('@trace FR-61 A size change gives names for the new board: 16 names «Рядок R, стовпець C: …», the given at 2,1 reads 0', () => {
+  it('@trace FR-61 A size change gives names for the new board: 16 FR-70 labels, the given at 2,1 reads «0, задано»', () => {
     const root = mountPage({
       seedSource: seedQueue([1, 2]).source,
       generate: generatorBySize({ 6: BLANK, 4: PAIR_4 }),
@@ -215,25 +235,30 @@ describe('cells expose a Ukrainian name and their state', () => {
     selectSize(root, 4);
     expect(allCells(root)).toHaveLength(16);
     expect(actualNames(root)).toEqual(expectedNames(root));
-    expect(cellEl(root, 2, 1).getAttribute('aria-label')).toBe('Рядок 2, стовпець 1: 0');
-    expect(cellEl(root, 4, 4).getAttribute('aria-label')).toBe('Рядок 4, стовпець 4: порожня');
+    expect(cellEl(root, 2, 1).getAttribute('aria-label')).toBe('Рядок 2, стовпець 1, 0, задано');
+    expect(cellEl(root, 4, 4).getAttribute('aria-label')).toBe('Рядок 4, стовпець 4, порожньо');
   });
 
-  it('@trace FR-61 Givens are read-only and other cells are not: aria-readonly="true" on givens only, also after a click and a hint fill', () => {
+  it('@trace FR-61 Givens are aria-disabled and nothing is aria-readonly: aria-disabled="true" on givens only, also after a click and a hint fill', () => {
     const root = mountFixture(PAIR_ROW);
     const givens = ['3,1', '3,2'];
-    expect(attributeCells(root, 'aria-readonly')).toEqual(givens);
+    const noReadonly = (): void => {
+      expect(root.querySelectorAll('[aria-readonly]'), 'no element has aria-readonly').toHaveLength(0);
+    };
+    expect(attributeCells(root, 'aria-disabled')).toEqual(givens);
     for (const cell of allCells(root)) {
-      if (cell.getAttribute('data-given') === 'true') expect(cell.getAttribute('aria-readonly')).toBe('true');
+      if (cell.getAttribute('data-given') === 'true') expect(cell.getAttribute('aria-disabled')).toBe('true');
     }
+    noReadonly();
     clickCell(root, 5, 5);
-    expect(attributeCells(root, 'aria-readonly')).toEqual(givens);
+    expect(attributeCells(root, 'aria-disabled')).toEqual(givens);
     pressHint(root); // fills 3,3
     expect(cellText(root, 3, 3)).toBe('1');
-    expect(attributeCells(root, 'aria-readonly')).toEqual(givens);
-    expect(cellEl(root, 3, 3).hasAttribute('aria-readonly')).toBe(false);
+    expect(attributeCells(root, 'aria-disabled')).toEqual(givens);
+    expect(cellEl(root, 3, 3).hasAttribute('aria-disabled')).toBe(false);
     clickCell(root, 3, 1); // a click on a given does not change it either
-    expect(attributeCells(root, 'aria-readonly')).toEqual(givens);
+    expect(attributeCells(root, 'aria-disabled')).toEqual(givens);
+    noReadonly();
   });
 
   it('@trace FR-61 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"', () => {
@@ -270,15 +295,16 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(attributeCells(root, 'aria-invalid')).toEqual(row1);
   });
 
-  it('@trace FR-61 @trace FR-37 Violating givens are invalid at once, each also read-only (DIRTY_GIVENS)', () => {
+  it('@trace FR-61 @trace FR-37 Violating givens are invalid at once, each also aria-disabled (DIRTY_GIVENS)', () => {
     const root = mountFixture(DIRTY_GIVENS);
     expect(attributeCells(root, 'aria-invalid')).toEqual(['1,1', '1,2', '1,3']);
     for (const col of [1, 2, 3]) {
       const cell = cellEl(root, 1, col);
       expect(cell.getAttribute('aria-invalid')).toBe('true');
-      expect(cell.getAttribute('aria-readonly')).toBe('true');
+      expect(cell.getAttribute('aria-disabled')).toBe('true');
     }
-    expect(attributeCells(root, 'aria-readonly')).toEqual(['1,1', '1,2', '1,3']);
+    expect(attributeCells(root, 'aria-disabled')).toEqual(['1,1', '1,2', '1,3']);
+    expect(root.querySelectorAll('[aria-readonly]')).toHaveLength(0);
   });
 
   it('@trace FR-64 The violation cue is also in the DOM: each of the three cells has cell-violation and aria-invalid, and no other cell has the attribute', () => {
@@ -298,72 +324,34 @@ describe('cells expose a Ukrainian name and their state', () => {
 });
 
 // ---------------------------------------------------------------------------------------------------------
-// FR-62: the labelled size selector
+// FR-62: the size radiogroup has an accessible name
 // ---------------------------------------------------------------------------------------------------------
 
-describe('the size selector has a visible Ukrainian label', () => {
-  it('@trace FR-62 The select is labelled: one wrapping label.size-label with the own text «Розмір поля»', () => {
+describe('the size radiogroup has an accessible name', () => {
+  it('@trace FR-62 The radiogroup is named «Розмір поля» by its aria-label; no label, no select, no for, and no text node shows the name', () => {
     const root = mountFixture(BLANK);
-    const select = sizeSelect(root);
-    expect(select.labels).toHaveLength(1);
-    const label = select.labels[0];
-    expect.assert(label !== undefined, 'the select has a label');
-    expect(label.tagName).toBe('LABEL');
-    expect(label.classList.contains('size-label')).toBe(true);
-    expect(label.contains(select)).toBe(true);
-    expect(ownLabelText(label)).toBe('Розмір поля');
-    expect(/\p{Script=Cyrillic}/u.test(ownLabelText(label))).toBe(true);
-    expect(/[A-Za-z]/.test(ownLabelText(label))).toBe(false);
-    const span = label.querySelector('.size-label-text');
-    expect(span?.textContent.trim()).toBe('Розмір поля');
-    // neither the label nor an ancestor inside the root is hidden
-    for (let node: Element | null = label; node !== null && node !== root.parentElement; node = node.parentElement) {
-      expect(node.hasAttribute('hidden'), `${node.tagName} is not hidden`).toBe(false);
-      expect(node.hasAttribute('aria-hidden'), `${node.tagName} is not aria-hidden`).toBe(false);
-    }
-    expect(select.hasAttribute('aria-label')).toBe(false);
-    expect(select.hasAttribute('aria-labelledby')).toBe(false);
+    const group = sizeControl(root);
+    expect(group.getAttribute('role')).toBe('radiogroup');
+    expect(group.getAttribute('aria-label')).toBe('Розмір поля');
+    expect(group.hasAttribute('aria-labelledby')).toBe(false);
+    expect(root.querySelectorAll('label'), 'no label element').toHaveLength(0);
+    expect(root.querySelectorAll('select'), 'no select element').toHaveLength(0);
+    expect(root.querySelectorAll('[for]'), 'no for attribute').toHaveLength(0);
+    const texts = textNodesOf(root);
+    expect(texts.length, 'premise: the page has text nodes').toBeGreaterThan(5);
+    expect(texts, 'no text of the page shows «Розмір поля»').not.toContain('Розмір поля');
   });
 
-  it('@trace FR-62 The label is visible: computed display and visibility of the label and its span, and no hiding declaration', () => {
-    injectPageStyles();
+  it('@trace FR-62 Each size button is named by its own text «Поле N×N», with no aria-label and no aria-labelledby', () => {
     const root = mountFixture(BLANK);
-    const label = q(root, 'label.size-label');
-    const span = q(label, '.size-label-text');
-    for (const el of [label, span]) {
-      const style = getComputedStyle(el);
-      expect(style.display, `${el.className} display`).not.toBe('none');
-      expect(['hidden', 'collapse']).not.toContain(style.visibility);
+    const buttons = sizeButtons(root);
+    expect(buttons.map((b) => b.textContent)).toEqual(['Поле 4×4', 'Поле 6×6', 'Поле 8×8']);
+    for (const button of buttons) {
+      expect(button.hasAttribute('aria-label'), `${button.textContent} has no aria-label`).toBe(false);
+      expect(button.hasAttribute('aria-labelledby'), `${button.textContent} has no aria-labelledby`).toBe(false);
+      expect(/\p{Script=Cyrillic}/u.test(button.textContent), `${button.textContent} has Cyrillic letters`).toBe(true);
+      expect(/[A-Za-z]/.test(button.textContent), `${button.textContent} has no Latin letters`).toBe(false);
     }
-    const parsed = readStyles();
-    expect(parsed.rules.filter((r) => r.selectors.some((s) => s.includes('size-label'))).length, 'the size-label rules exist').toBeGreaterThan(0);
-    expect(hidingDeclarations(parsed)).toEqual([]);
-  });
-
-  it('@trace FR-62 Two mounts label their own selects, with no id or for anywhere below either root', () => {
-    const a = mountFixture(BLANK);
-    const b = mountFixture(BLANK);
-    for (const root of [a, b]) {
-      const label = sizeSelect(root).labels[0];
-      expect.assert(label !== undefined, 'the select has a label');
-      expect(root.contains(label)).toBe(true);
-      expect(root.querySelectorAll('[id], [for]')).toHaveLength(0);
-    }
-    expect(sizeSelect(a).labels[0]).not.toBe(sizeSelect(b).labels[0]);
-  });
-
-  it('@trace FR-62 @trace FR-43 The label does not break the selector: options 4, 6, 8 with their labels, value 6 then 4, no aria-label', () => {
-    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
-    const select = sizeSelect(root);
-    expect(Array.from(select.options).map((o) => o.value)).toEqual(['4', '6', '8']);
-    expect(Array.from(select.options).map((o) => o.textContent)).toEqual(['Поле 4×4', 'Поле 6×6', 'Поле 8×8']);
-    expect(select.value).toBe('6');
-    expect(select.labels).toHaveLength(1);
-    selectSize(root, 4);
-    expect(select.value).toBe('4');
-    expect(select.labels).toHaveLength(1);
-    expect(select.hasAttribute('aria-label')).toBe(false);
-    expect(select.hasAttribute('aria-labelledby')).toBe(false);
   });
 });
 
@@ -406,7 +394,7 @@ describe('the hint and win messages are status regions', () => {
     expect(hintMessage(root)).toBe(sentence);
     clickCell(root, 5, 5);
     same('click');
-    pressNew(root);
+    startNewPuzzle(root); // the board has entries, so «Нова головоломка» asks first (FR-67)
     same('new puzzle');
     expect(hintMessage(root)).toBe('');
     selectSize(root, 4);
@@ -437,13 +425,21 @@ describe('the hint and win messages are status regions', () => {
     expectActive(button, 'after the hint fill that wins');
   });
 
-  it('@trace FR-63 A click that wins leaves the focus on the clicked cell, not on a status region', () => {
+  it('@trace FR-63 The idle line has no role: no role attribute, and it still holds the idle text', () => {
+    const root = mountFixture(BLANK);
+    const idle = q(root, '[data-message="idle"]');
+    expect(idle.hasAttribute('role')).toBe(false);
+    expect(idle.textContent).toBe(IDLE_TEXT);
+  });
+
+  it('@trace FR-63 @trace FR-60 A click that wins leaves the focus on the cell that had it, not on a status region', () => {
     const root = mountFixture(WIN_PUZZLE);
     fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE), [[4, 1]]);
     expect(winMessage(root)).toBe('');
+    const cell = focusCell(root, 4, 1);
     clickUntil(root, 4, 1, '1');
     expect(winMessage(root)).toBe(WIN_MESSAGE);
-    expectActive(cellEl(root, 4, 1), 'after the winning click');
+    expectActive(cell, 'after the winning click');
     expect(document.activeElement?.getAttribute('role')).not.toBe('status');
   });
 });

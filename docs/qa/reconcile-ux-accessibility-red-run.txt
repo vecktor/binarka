@@ -1,0 +1,674 @@
+# Red run of reconcile-ux-accessibility (tests first), confirmed by the orchestrator
+
+Run: `npx vitest run` on `claude/reconcile-ux-main` at b4d338e plus the uncommitted test changes, 2026-10-09 01:49 +0530.
+Result: 22 failed, 646 passed (668); 7 of 32 files red. No TypeError, SyntaxError, ReferenceError or import error: every failure is an assertion.
+Baseline before the tests: 81 failed of 699 (docs/qa/reconcile-ux-main-merge-run.txt). Changed files: the 10 listed in tasks.md 1.2 to 1.7, nothing else under tests/.
+
+Each failure and the implementation task that turns it green:
+- semantics, board group (3): no role="group" or aria-label «Поле N×N» on [data-board] (FR-61) - task 3.1
+- semantics, cell state (5) and reset-accessibility (2): no aria-invalid on highlighted cells (FR-61, FR-64 DOM cue, FR-58) - task 3.2
+- semantics, status regions (2): no role="status" on hint and win (FR-63) - task 3.3
+- page-text (2) and wcag-01 (1): the board has no Ukrainian name (FR-61, NFR-5, NFR-9) - task 3.1
+- stylesheet colour tokens (3, untouched tests) and size-button colours (1): UX colour literals (FR-65, D2) - task 3.7
+- stylesheet, empty regions stay rendered (1, added): .message:empty { display: none } (FR-63) - task 3.6a
+- ui-strings and controls-text (2, untouched tests): Cyrillic in the unused src/ui/grid.ts (NFR-5 strings rule) - task 3.4 (delete grid.ts)
+
+Green at the start, as regression guards (design.md decision 3, tasks.md 2.2): keyboard T1 to T11 (no tabindex and no key handler on the UX page); semantics sem-04 to sem-12, sem-18, sem-21, sem-24, sem-25 and the idle-line test (FR-70 labels, aria-disabled, three ids, named radiogroup already present); stylesheet ss-07, ss-08, ss-15, ss-17, ss-19 and the page-button test; wcag-02; the rendering rewrite; the helper self-tests. tasks.md 2.1 had listed sem-04 to sem-12, sem-18, sem-21 and sem-25 as red; that expectation was stale (the UX page already meets them) and no assertion was added to make them red.
+
+Orchestrator check of the user's rule (a test changes only when a changed requirement, spec sentence or rule calls for it):
+- The test-engineer's added page-button test (FR-65) also asserted "nothing else in the rules panel can be pressed" and "no element plays a button without being one". Neither is in the scenario «Every page button is a button element»; both were removed by the orchestrator. The count of one button in the rules panel stays, as the premise that identifies its close button.
+- sem-16 asserts no aria-readonly anywhere: from the delta sentence «SHALL NOT set aria-readonly on any element» and the scenario «Givens are aria-disabled and nothing is aria-readonly». Kept.
+- sem-10 uses startNewPuzzle (press, then «Так, почати»): from FR-67's confirmation sentence, the same reason tasks.md gives for rst-01 and rst-02. Kept.
+
+- sem-23 («The same two elements carry every message», listed U) pressed «Нова головоломка» on a board with entries; under FR-67 that only opens the dialog, so the test could never go green. The implementer stopped on it without editing it; the orchestrator changed that one line to startNewPuzzle (press, then «Так, почати»), the derivation sem-10, rst-01 and rst-02 already use, and recorded it as R in tasks.md. Re-run of the corrected tests against the source of b4d338e in a scratch copy (2026-10-09 01:53 +0530): the same 22 failures, sem-23 still red for its real reason (no role="status").
+
+Raw output follows.
+
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/slice4-handoff-archive-9f35e8
+
+ ❯ tests/ui-strings.test.ts (5 tests | 1 failed) 47ms
+   ❯ @trace NFR-5 no Cyrillic text outside the strings module (2)
+     × scans src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts, and none holds a Cyrillic character (comments included) 9ms
+ ❯ tests/play-page-wcag.test.ts (2 tests | 1 failed) 60ms
+   ❯ the page meets the accessibility requirements (NFR-9) (2)
+     × @trace NFR-9 @trace NFR-5 Every button, the radiogroup and the board have a non-empty Ukrainian accessible name 33ms
+ ❯ tests/play-page-controls-text.test.ts (5 tests | 1 failed) 123ms
+   ❯ @trace NFR-5 no Cyrillic text outside the strings module (re-run after the new texts) (2)
+     × src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts hold no Cyrillic character 41ms
+ ❯ tests/play-page-reset-accessibility.test.ts (2 tests | 2 failed) 121ms
+   ❯ @trace FR-58 @trace FR-61 a reset keeps the accessible names and states in step with the board (2)
+     × after a reset every cell name matches its text and no cell keeps aria-invalid once the highlights are gone 63ms
+     × a reset keeps aria-invalid on cells whose highlight comes from the givens, and aria-disabled on every given 57ms
+ ❯ tests/play-page-page-text.test.ts (7 tests | 2 failed) 185ms
+   ❯ @trace NFR-5 the page text is Ukrainian (7)
+     × @trace FR-61 @trace FR-62 Static page text: every collected text has Cyrillic letters and no Latin letters 35ms
+     × @trace NFR-5 @trace FR-61 Accessible names at every size: 4x4 and 8x8 board names and cell names match the pattern, Cyrillic, no Latin 7ms
+ ❯ tests/play-page-semantics.test.ts (24 tests | 10 failed) 317ms
+   ❯ the board is a labelled group of cell buttons (6)
+     × @trace FR-61 Role and name of the default board: group «Поле 6×6» whose children are exactly the 36 cells in reading order, no grid, row or gridcell role 23ms
+     × @trace FR-61 The group name follows the size: «Поле 4×4» with 16 cell children, then «Поле 8×8» with 64 (real generator) 18ms
+     × @trace FR-61 A failed size change keeps the board, its name «Поле 6×6», its role and its 36 cells 24ms
+   ❯ cells expose a Ukrainian name and their state (11)
+     × @trace FR-61 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true" 6ms
+     × @trace FR-61 @trace FR-38 The invalid state is removed with the highlight, and the attribute is absent, never "false" 4ms
+     × @trace FR-61 @trace FR-36 A line with too many of one digit is invalid as a whole: all six cells of the row, nothing outside 16ms
+     × @trace FR-61 @trace FR-37 Violating givens are invalid at once, each also aria-disabled (DIRTY_GIVENS) 7ms
+     × @trace FR-64 The violation cue is also in the DOM: each of the three cells has cell-violation and aria-invalid, and no other cell has the attribute 4ms
+   ❯ the hint and win messages are status regions (5)
+     × @trace FR-63 Present, empty and typed at mount: role="status", no tabindex, exactly two status elements in the root 2ms
+     × @trace FR-63 The same two elements carry every message: hint, click, new puzzle, size change and a win 9ms
+ ❯ tests/play-page-stylesheet.test.ts (31 tests | 5 failed) 476ms
+   ❯ the colours are tokens (FR-65) (8)
+     × @trace FR-65 No colour literal is left: no hex, rgb(), hsl() ... outside :root, wherever the rule is in the file 20ms
+     × @trace FR-65 Every colour-bearing shorthand has a var(--color-...) colour (or is none or 0) 10ms
+     × @trace FR-65 Every color, background-color, border-color and outline-color is one declared token or an allowed keyword 6ms
+   ❯ the selector sets its own colours and the board disables double-tap zoom (FR-65) (2)
+     × @trace FR-65 The size buttons declare a color and a background-color token, unchecked and checked, with 4.5:1 between them 3ms
+   ❯ the hint and win regions stay rendered while empty (FR-63) (1)
+     × @trace FR-63 Empty hint and win regions stay rendered: they compute no display none and no hidden visibility, and no rule of theirs declares either 44ms
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 22 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-controls-text.test.ts > @trace NFR-5 no Cyrillic text outside the strings module (re-run after the new texts) > src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts hold no Cyrillic character
+AssertionError: files with a Cyrillic character outside src/ui/strings.ts: expected [ 'src/ui/grid.ts' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "src/ui/grid.ts",
++ ]
+
+ ❯ tests/play-page-controls-text.test.ts:126:84
+    124|     }
+    125|     const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f…
+    126|     expect(offenders, 'files with a Cyrillic character outside src/ui/…
+       |                                                                                    ^
+    127|   });
+    128|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/22]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > @trace FR-61 @trace FR-62 Static page text: every collected text has Cyrillic letters and no Latin letters
+AssertionError: expected null to be 'Поле 6×6' // Object.is equality
+
+- Expected:
+"Поле 6×6"
+
++ Received:
+null
+
+ ❯ tests/play-page-page-text.test.ts:48:64
+     46|     // the board name as an aria-label and the 36 cell names (a new sc…
+     47|     expect(trimmed).toContain('Розмір поля');
+     48|     expect(q(root, '[data-board]').getAttribute('aria-label')).toBe('П…
+       |                                                                ^
+     49|     expect(trimmed.filter((t) => t === 'Поле 6×6'), 'the option text a…
+     50|     expect(trimmed.filter((t) => /^Рядок [1-6], стовпець [1-6], (порож…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/22]⎯
+
+ FAIL  tests/play-page-page-text.test.ts > @trace NFR-5 the page text is Ukrainian > @trace NFR-5 @trace FR-61 Accessible names at every size: 4x4 and 8x8 board names and cell names match the pattern, Cyrillic, no Latin
+AssertionError: expected '' to be 'Поле 4×4' // Object.is equality
+
+- Expected
++ Received
+
+- Поле 4×4
+
+ ❯ tests/play-page-page-text.test.ts:71:24
+     69|       selectSize(root, n);
+     70|       const names = [q(root, '[data-board]').getAttribute('aria-label'…
+     71|       expect(names[0]).toBe(`Поле ${n}×${n}`);
+       |                        ^
+     72|       expect(names).toHaveLength(1 + n * n);
+     73|       for (const name of names.slice(1)) expect(name).toMatch(/^Рядок …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/22]⎯
+
+ FAIL  tests/play-page-reset-accessibility.test.ts > @trace FR-58 @trace FR-61 a reset keeps the accessible names and states in step with the board > after a reset every cell name matches its text and no cell keeps aria-invalid once the highlights are gone
+AssertionError: aria-invalid of cell 2,1: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ expectNamesAndStates tests/play-page-reset-accessibility.test.ts:32:85
+     30|     expect(cell.getAttribute('aria-label'), `name of cell ${row},${col…
+     31|     const highlighted = cell.classList.contains('cell-violation');
+     32|     expect(cell.getAttribute('aria-invalid'), `aria-invalid of cell ${…
+       |                                                                                     ^
+     33|   }
+     34| }
+ ❯ tests/play-page-reset-accessibility.test.ts:41:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/22]⎯
+
+ FAIL  tests/play-page-reset-accessibility.test.ts > @trace FR-58 @trace FR-61 a reset keeps the accessible names and states in step with the board > a reset keeps aria-invalid on cells whose highlight comes from the givens, and aria-disabled on every given
+AssertionError: premise: the player's cell 4,1 is highlighted: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ tests/play-page-reset-accessibility.test.ts:57:118
+     55|     const fromPlayer: [number, number][] = [[4, 1], [4, 2], [4, 3]];
+     56|     for (const [r, c] of fromPlayer) {
+     57|       expect(cellEl(root, r, c).getAttribute('aria-invalid'), `premise…
+       |                                                                                                                      ^
+     58|     }
+     59|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board is a labelled group of cell buttons > @trace FR-61 Role and name of the default board: group «Поле 6×6» whose children are exactly the 36 cells in reading order, no grid, row or gridcell role
+AssertionError: expected null to be 'group' // Object.is equality
+
+- Expected:
+"group"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:96:40
+     94|     const root = mountFixture(BLANK);
+     95|     const board = q(root, '[data-board]');
+     96|     expect(board.getAttribute('role')).toBe('group');
+       |                                        ^
+     97|     expect(board.getAttribute('aria-label')).toBe('Поле 6×6');
+     98|     const children = Array.from(board.children);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board is a labelled group of cell buttons > @trace FR-61 The group name follows the size: «Поле 4×4» with 16 cell children, then «Поле 8×8» with 64 (real generator)
+AssertionError: expected null to be 'Поле 4×4' // Object.is equality
+
+- Expected:
+"Поле 4×4"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:115:48
+    113|       selectSize(root, n);
+    114|       const board = q(root, '[data-board]');
+    115|       expect(board.getAttribute('aria-label')).toBe(`Поле ${n}×${n}`);
+       |                                                ^
+    116|       expect(board.getAttribute('role')).toBe('group');
+    117|       expect(allCells(root)).toHaveLength(n * n);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the board is a labelled group of cell buttons > @trace FR-61 A failed size change keeps the board, its name «Поле 6×6», its role and its 36 cells
+AssertionError: expected null to be 'Поле 6×6' // Object.is equality
+
+- Expected:
+"Поле 6×6"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:127:46
+    125|     selectSize(root, 8);
+    126|     const board = q(root, '[data-board]');
+    127|     expect(board.getAttribute('aria-label')).toBe('Поле 6×6');
+       |                                              ^
+    128|     expect(board.getAttribute('role')).toBe('group');
+    129|     expect(allCells(root)).toHaveLength(36);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"
+AssertionError: expected [] to deeply equal [ '4,1', '4,2', '4,3' ]
+
+- Expected
++ Received
+
+- [
+-   "4,1",
+-   "4,2",
+-   "4,3",
+- ]
++ []
+
+ ❯ tests/play-page-semantics.test.ts:270:50
+    268|     expect(cellText(root, 4, 1)).toBe('0');
+    269|     expect(violationCells(root)).toEqual([[4, 1], [4, 2], [4, 3]]);
+    270|     expect(attributeCells(root, 'aria-invalid')).toEqual(['4,1', '4,2'…
+       |                                                  ^
+    271|     for (const cell of allCells(root).filter((c) => c.classList.contai…
+    272|       expect(cell.getAttribute('aria-invalid')).toBe('true');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-38 The invalid state is removed with the highlight, and the attribute is absent, never "false"
+AssertionError: expected [] to have a length of 3 but got +0
+
+- Expected
++ Received
+
+- 3
++ 0
+
+ ❯ tests/play-page-semantics.test.ts:279:50
+    277|     const root = mountFixture(PAIR_LEFT);
+    278|     clickCell(root, 4, 1);
+    279|     expect(attributeCells(root, 'aria-invalid')).toHaveLength(3);
+       |                                                  ^
+    280|     clickUntil(root, 4, 1, '');
+    281|     expect(violationCells(root)).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-36 A line with too many of one digit is invalid as a whole: all six cells of the row, nothing outside
+AssertionError: expected [] to deeply equal [ '1,1', '1,2', '1,3', '1,4', …(2) ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+-   "1,2",
+-   "1,3",
+-   "1,4",
+-   "1,5",
+-   "1,6",
+- ]
++ []
+
+ ❯ tests/play-page-semantics.test.ts:295:50
+    293|     const row1 = ['1,1', '1,2', '1,3', '1,4', '1,5', '1,6'];
+    294|     expect(violationCells(root).map(([r, c]) => `${r},${c}`)).toEqual(…
+    295|     expect(attributeCells(root, 'aria-invalid')).toEqual(row1);
+       |                                                  ^
+    296|   });
+    297|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-37 Violating givens are invalid at once, each also aria-disabled (DIRTY_GIVENS)
+AssertionError: expected [] to deeply equal [ '1,1', '1,2', '1,3' ]
+
+- Expected
++ Received
+
+- [
+-   "1,1",
+-   "1,2",
+-   "1,3",
+- ]
++ []
+
+ ❯ tests/play-page-semantics.test.ts:300:50
+    298|   it('@trace FR-61 @trace FR-37 Violating givens are invalid at once, …
+    299|     const root = mountFixture(DIRTY_GIVENS);
+    300|     expect(attributeCells(root, 'aria-invalid')).toEqual(['1,1', '1,2'…
+       |                                                  ^
+    301|     for (const col of [1, 2, 3]) {
+    302|       const cell = cellEl(root, 1, col);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-64 The violation cue is also in the DOM: each of the three cells has cell-violation and aria-invalid, and no other cell has the attribute
+AssertionError: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:318:49
+    316|       const cell = cellEl(root, r, c);
+    317|       expect(cell.classList.contains('cell-violation')).toBe(true);
+    318|       expect(cell.getAttribute('aria-invalid')).toBe('true');
+       |                                                 ^
+    319|     }
+    320|     for (const cell of allCells(root)) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-63 Present, empty and typed at mount: role="status", no tabindex, exactly two status elements in the root
+AssertionError: expected null to be 'status' // Object.is equality
+
+- Expected:
+"status"
+
++ Received:
+null
+
+ ❯ tests/play-page-semantics.test.ts:367:43
+    365|     for (const name of ['hint', 'win']) {
+    366|       const region = q(root, `[data-message="${name}"]`);
+    367|       expect(region.getAttribute('role')).toBe('status');
+       |                                           ^
+    368|       expect(region.textContent).toBe('');
+    369|       expect(region.hasAttribute('tabindex')).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/22]⎯
+
+ FAIL  tests/play-page-semantics.test.ts > the hint and win messages are status regions > @trace FR-63 The same two elements carry every message: hint, click, new puzzle, size change and a win
+AssertionError: expected null to be 'status' // Object.is equality
+
+- Expected:
+"status"
+
++ Received:
+null
+
+ ❯ same tests/play-page-semantics.test.ts:385:47
+    383|       expect(q(root, '[data-message="win"]'), `${what}: the win region…
+    384|       expect(hintRegion.isConnected && winRegion.isConnected).toBe(tru…
+    385|       expect(hintRegion.getAttribute('role')).toBe('status');
+       |                                               ^
+    386|       expect(winRegion.getAttribute('role')).toBe('status');
+    387|       expect(root.querySelectorAll('[role="status"]')).toHaveLength(2);
+ ❯ tests/play-page-semantics.test.ts:390:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/22]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 No colour literal is left: no hex, rgb(), hsl() ... outside :root, wherever the rule is in the file
+AssertionError: expected [ …(94) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".cell-hinted { border: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-color: rgb(75, 85, 99) }",
++   ".cell-hinted { border-top: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-top-color: rgb(75, 85, 99) }",
++   ".cell-hinted { border-right: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-right-color: rgb(75, 85, 99) }",
++   ".cell-hinted { border-bottom: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-bottom-color: rgb(75, 85, 99) }",
++   ".cell-hinted { border-left: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-left-color: rgb(75, 85, 99) }",
++   ".message-idle { color: rgb(107, 114, 128) }",
++   ".size-control { border: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-color: rgb(156, 163, 175) }",
++   ".size-control { border-top: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-top-color: rgb(156, 163, 175) }",
++   ".size-control { border-right: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-right-color: rgb(156, 163, 175) }",
++   ".size-control { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-bottom-color: rgb(156, 163, 175) }",
++   ".size-control { border-left: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-left-color: rgb(156, 163, 175) }",
++   ".size-control { background-color: rgb(255, 255, 255) }",
++   ".size-control { background: rgb(255, 255, 255) }",
++   ".size-control button { color: rgb(75, 85, 99) }",
++   ".size-control button[aria-checked='true'] { border-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { border-top-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { border-right-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { border-bottom-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { border-left-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { background-color: rgb(219, 234, 254) }",
++   ".size-control button[aria-checked='true'] { background: rgb(219, 234, 254) }",
++   ".size-control button[aria-checked='true'] { color: rgb(31, 41, 55) }",
++   ".confirm { border: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-color: rgb(156, 163, 175) }",
++   ".confirm { border-top: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-top-color: rgb(156, 163, 175) }",
++   ".confirm { border-right: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-right-color: rgb(156, 163, 175) }",
++   ".confirm { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-bottom-color: rgb(156, 163, 175) }",
++   ".confirm { border-left: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-left-color: rgb(156, 163, 175) }",
++   ".confirm { background-color: rgb(255, 255, 255) }",
++   ".confirm { background: rgb(255, 255, 255) }",
++   ".confirm { color: rgb(31, 41, 55) }",
++   ".confirm::backdrop { background-color: rgba(0, 0, 0, 0.45) }",
++   ".confirm::backdrop { background: rgba(0, 0, 0, 0.45) }",
++   ".rules { border-color: rgb(209, 213, 219) rgb(209, 213, 219) currentcolor }",
++   ".rules { border-top: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-top-color: rgb(209, 213, 219) }",
++   ".rules { border-right: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-right-color: rgb(209, 213, 219) }",
++   ".rules { border-left: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-left-color: rgb(209, 213, 219) }",
++   ".rules { background-color: rgb(255, 255, 255) }",
++   ".rules { background: rgb(255, 255, 255) }",
++   ".rules { color: rgb(31, 41, 55) }",
++   ".rules::backdrop { background-color: rgba(0, 0, 0, 0.3) }",
++   ".rules::backdrop { background: rgba(0, 0, 0, 0.3) }",
++   "@media (min-width: 48rem) .rules { border: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-color: rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-top: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-top-color: rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-right: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-right-color: rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-bottom: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-bottom-color: rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-left: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-left-color: rgb(209, 213, 219) }",
++   ".rules li { border-top: 1px solid rgb(229, 231, 235) }",
++   ".rules li { border-top-color: rgb(229, 231, 235) }",
++   ".mini { border: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-color: rgb(156, 163, 175) }",
++   ".mini { border-top: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-top-color: rgb(156, 163, 175) }",
++   ".mini { border-right: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-right-color: rgb(156, 163, 175) }",
++   ".mini { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-bottom-color: rgb(156, 163, 175) }",
++   ".mini { border-left: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-left-color: rgb(156, 163, 175) }",
++   ".mini { background-color: rgb(249, 250, 251) }",
++   ".mini { background: rgb(249, 250, 251) }",
++   ".mini-answer { border: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-color: rgb(37, 99, 235) }",
++   ".mini-answer { border-top: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-top-color: rgb(37, 99, 235) }",
++   ".mini-answer { border-right: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-right-color: rgb(37, 99, 235) }",
++   ".mini-answer { border-bottom: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-bottom-color: rgb(37, 99, 235) }",
++   ".mini-answer { border-left: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-left-color: rgb(37, 99, 235) }",
++   ".mini-sep { color: rgb(107, 114, 128) }",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:87:42
+     85|     const parsed = readStyles();
+     86|     expect(parsed.rules.length, 'the walk found the rules').toBeGreate…
+     87|     expect(scanColours(parsed).literals).toEqual([]);
+       |                                          ^
+     88|   });
+     89|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/22]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 Every colour-bearing shorthand has a var(--color-...) colour (or is none or 0)
+AssertionError: expected [ …(47) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".cell-hinted { border: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-top: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-right: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-bottom: 2px dashed rgb(75, 85, 99) }",
++   ".cell-hinted { border-left: 2px dashed rgb(75, 85, 99) }",
++   ".size-control { border: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-top: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-right: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".size-control { border-left: 1px solid rgb(156, 163, 175) }",
++   ".size-control { background: rgb(255, 255, 255) }",
++   ".size-control button { border: 2px solid transparent }",
++   ".size-control button { border-top: 2px solid transparent }",
++   ".size-control button { border-right: 2px solid transparent }",
++   ".size-control button { border-bottom: 2px solid transparent }",
++   ".size-control button { border-left: 2px solid transparent }",
++   ".size-control button { background: transparent }",
++   ".size-control button[aria-checked='true'] { background: rgb(219, 234, 254) }",
++   ".confirm { border: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-top: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-right: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".confirm { border-left: 1px solid rgb(156, 163, 175) }",
++   ".confirm { background: rgb(255, 255, 255) }",
++   ".confirm::backdrop { background: rgba(0, 0, 0, 0.45) }",
++   ".rules { border-top: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-right: 1px solid rgb(209, 213, 219) }",
++   ".rules { border-left: 1px solid rgb(209, 213, 219) }",
++   ".rules { background: rgb(255, 255, 255) }",
++   ".rules::backdrop { background: rgba(0, 0, 0, 0.3) }",
++   "@media (min-width: 48rem) .rules { border: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-top: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-right: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-bottom: 1px solid rgb(209, 213, 219) }",
++   "@media (min-width: 48rem) .rules { border-left: 1px solid rgb(209, 213, 219) }",
++   ".rules li { border-top: 1px solid rgb(229, 231, 235) }",
++   ".mini { border: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-top: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-right: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-bottom: 1px solid rgb(156, 163, 175) }",
++   ".mini { border-left: 1px solid rgb(156, 163, 175) }",
++   ".mini { background: rgb(249, 250, 251) }",
++   ".mini-answer { border: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-top: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-right: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-bottom: 2px dashed rgb(37, 99, 235) }",
++   ".mini-answer { border-left: 2px dashed rgb(37, 99, 235) }",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:95:50
+     93|
+     94|   it('@trace FR-65 Every colour-bearing shorthand has a var(--color-..…
+     95|     expect(scanColours(readStyles()).shorthands).toEqual([]);
+       |                                                  ^
+     96|   });
+     97|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/22]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 Every color, background-color, border-color and outline-color is one declared token or an allowed keyword
+AssertionError: expected [ …(21) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".cell-hinted { border-color: rgb(75, 85, 99) }",
++   ".message-idle { color: rgb(107, 114, 128) }",
++   ".size-control { border-color: rgb(156, 163, 175) }",
++   ".size-control { background-color: rgb(255, 255, 255) }",
++   ".size-control button { color: rgb(75, 85, 99) }",
++   ".size-control button[aria-checked='true'] { border-color: rgb(37, 99, 235) }",
++   ".size-control button[aria-checked='true'] { background-color: rgb(219, 234, 254) }",
++   ".size-control button[aria-checked='true'] { color: rgb(31, 41, 55) }",
++   ".confirm { border-color: rgb(156, 163, 175) }",
++   ".confirm { background-color: rgb(255, 255, 255) }",
++   ".confirm { color: rgb(31, 41, 55) }",
++   ".confirm::backdrop { background-color: rgba(0, 0, 0, 0.45) }",
++   ".rules { border-color: rgb(209, 213, 219) rgb(209, 213, 219) currentcolor }",
++   ".rules { background-color: rgb(255, 255, 255) }",
++   ".rules { color: rgb(31, 41, 55) }",
++   ".rules::backdrop { background-color: rgba(0, 0, 0, 0.3) }",
++   "@media (min-width: 48rem) .rules { border-color: rgb(209, 213, 219) }",
++   ".mini { border-color: rgb(156, 163, 175) }",
++   ".mini { background-color: rgb(249, 250, 251) }",
++   ".mini-answer { border-color: rgb(37, 99, 235) }",
++   ".mini-sep { color: rgb(107, 114, 128) }",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:99:56
+     97|
+     98|   it('@trace FR-65 Every color, background-color, border-color and out…
+     99|     expect(scanColours(readStyles()).colourProperties).toEqual([]);
+       |                                                        ^
+    100|   });
+    101|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/22]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the selector sets its own colours and the board disables double-tap zoom (FR-65) > @trace FR-65 The size buttons declare a color and a background-color token, unchecked and checked, with 4.5:1 between them
+AssertionError: unchecked: color is a single var(--color-...) of a declared token (is rgb(75, 85, 99))
+ ❯ tests/play-page-stylesheet.test.ts:284:14
+    282|       const fg = tokenOf(parsed, declarations.get('color'));
+    283|       const bg = tokenOf(parsed, declarations.get('background-color'));
+    284|       expect.assert(fg !== undefined, `${state}: color is a single var…
+       |              ^
+    285|       expect.assert(bg !== undefined, `${state}: background-color is a…
+    286|       expect(contrastRatio(token(parsed, fg), token(parsed, bg)), `${s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/22]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the hint and win regions stay rendered while empty (FR-63) > @trace FR-63 Empty hint and win regions stay rendered: they compute no display none and no hidden visibility, and no rule of theirs declares either
+AssertionError: the empty hint region computes a display: expected 'none' not to be 'none' // Object.is equality
+ ❯ tests/play-page-stylesheet.test.ts:310:80
+    308|       expect(region.textContent, `premise: the ${name} region is empty…
+    309|       const style = getComputedStyle(region);
+    310|       expect(style.display, `the empty ${name} region computes a displ…
+       |                                                                                ^
+    311|       expect(['hidden', 'collapse'], `the empty ${name} region is not …
+    312|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/22]⎯
+
+ FAIL  tests/play-page-wcag.test.ts > the page meets the accessibility requirements (NFR-9) > @trace NFR-9 @trace NFR-5 Every button, the radiogroup and the board have a non-empty Ukrainian accessible name
+AssertionError: group board has a name: expected '' not to be '' // Object.is equality
+ ❯ tests/play-page-wcag.test.ts:46:46
+     44|     expect(names).toHaveLength(46 + 2);
+     45|     for (const { what, name } of names) {
+     46|       expect(name, `${what} has a name`).not.toBe('');
+       |                                              ^
+     47|       expect(/\p{Script=Cyrillic}/u.test(name), `${what} "${name}" has…
+     48|       expect(/[A-Za-z]/.test(name), `${what} "${name}" has no Latin le…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/22]⎯
+
+ FAIL  tests/ui-strings.test.ts > @trace NFR-5 no Cyrillic text outside the strings module > scans src/ui/*.ts, src/ui/*.css (not strings.ts) and src/main.ts, and none holds a Cyrillic character (comments included)
+AssertionError: files with a Cyrillic character outside src/ui/strings.ts: expected [ 'src/ui/grid.ts' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "src/ui/grid.ts",
++ ]
+
+ ❯ tests/ui-strings.test.ts:131:84
+    129|     expect(names).not.toContain('src/ui/strings.ts');
+    130|     const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f…
+    131|     expect(offenders, 'files with a Cyrillic character outside src/ui/…
+       |                                                                                    ^
+    132|   });
+    133|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/22]⎯
+
+
+ Test Files  7 failed | 25 passed (32)
+      Tests  22 failed | 646 passed (668)
+   Start at  01:48:13
+   Duration  30.48s (tests 59%, environment 31%, import 8%, transform 2%)
+
+Environment  jsdom was created 32 times · 23.20s total, 31% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
