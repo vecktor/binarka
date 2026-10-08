@@ -85,7 +85,7 @@
     {
       "slice": "2026-10-08-reconcile-ux-accessibility",
       "reviewEvidence": "unclean",
-      "trailerCommits": 4,
+      "trailerCommits": 5,
       "libDomains": [
         "ui"
       ],
