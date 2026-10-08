@@ -131,6 +131,7 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
 
   it('No image file is used', () => {
     const root = mountFixture(WIN_PUZZLE);
+    logoOf(root); // the logo is mounted, so the href checks below run on it
     expect(root.querySelectorAll('img, image, use, picture, object, embed, canvas').length).toBe(0);
     const everyElement = [root, ...Array.from(root.querySelectorAll('*'))];
     expect(everyElement.filter((el) => el.hasAttribute('src'))).toEqual([]);
@@ -160,17 +161,14 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
       expectSameLogo(root, atMount);
     });
 
-    it('changes the size to 4 and to 8', () => {
+    it.each([4, 8] as const)('changes the size to %i', (size) => {
       const root = mountPage({
-        seedSource: seedQueue([1, 2, 3]).source,
+        seedSource: seedQueue([1, 2]).source,
         generate: generatorBySize({ 6: BLANK, 4: BLANK_4, 8: BLANK_8 }),
       });
       const atMount = logoOf(root);
-      selectSize(root, 4);
-      expect(boardSize(root)).toBe(4);
-      expectSameLogo(root, atMount);
-      selectSize(root, 8);
-      expect(boardSize(root)).toBe(8);
+      selectSize(root, size);
+      expect(boardSize(root)).toBe(size);
       expectSameLogo(root, atMount);
     });
 

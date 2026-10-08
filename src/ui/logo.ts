@@ -1,7 +1,7 @@
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const RAY_COUNT = 12;
 
-function svgEl(tag: string, attrs: Record<string, string>): SVGElement {
+function svgEl<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, string>): SVGElementTagNameMap[K] {
   const node = document.createElementNS(SVG_NS, tag);
   for (const [name, value] of Object.entries(attrs)) node.setAttribute(name, value);
   return node;
@@ -21,7 +21,7 @@ export function createLogo(): SVGSVGElement {
     'aria-hidden': 'true',
     focusable: 'false',
     viewBox: '0 0 64 64',
-  }) as SVGSVGElement;
+  });
 
   for (let index = 0; index < RAY_COUNT; index += 1) {
     const group = svgEl('g', { transform: `rotate(${(360 / RAY_COUNT) * index} 32 32)` });

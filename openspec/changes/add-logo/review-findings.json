@@ -1,0 +1,46 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "change add-logo (FR-72, TC-14). All files live in the worktree /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-phases-d-h (use absolute paths there; the session cwd is a different, older worktree). Spec delta: openspec/changes/add-logo/. Red commit 5ffa9ec, green 7e483fe.",
+  "change": "add-logo",
+  "baseRef": "f05f676",
+  "headRef": "7e483fe",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 2,
+      "contested": 1,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 3,
+      "contested": 2,
+      "rejected": 2
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "Size-change case runs 4 then 8 on one mount; the spec requires a fresh mount for each",
+    "The href/xlink:href checks in «No image file is used» pass with nothing to check when there is no svg",
+    "Size-change scenario requires a separate fresh run for 4 and for 8, but the test does both in one run",
+    "'No id' and 'mount-once' are enforced only indirectly; the requirement text has no 'no id' clause",
+    "Some href/xlink:href checks in 'No image file is used' would pass if the svg were absent"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-08T21:33:14Z",
+  "runId": "wf_c61dbc19-566",
+  "dispositions": {
+    "size change one mount (confirmed x2, minor and major)": "fixed: two runs via it.each([4, 8]), each from a fresh mount (scenario: \"each from a freshly mounted page\", \"(one run)\")",
+    "href checks vacuous without svg (confirmed x2)": "fixed: «No image file is used» calls logoOf(root) first",
+    "no id / mount-once only indirect (confirmed, minor)": "accepted, no change: FR-72 and the delta have no \"no id\" sentence; the baseline id rule (play-page spec, DOM contract) and tests/play-page-semantics.test.ts (6 ids in the document) cover it; mount-once is pinned by «The logo survives every board change». A new spec sentence would go beyond FR-72 (user rule).",
+    "as SVGSVGElement cast (contested x2)": "fixed: svgEl is generic over SVGElementTagNameMap, no cast",
+    "design-only attributes untested (contested)": "accepted as design-only (design.md decisions 1 and 3): focusable, viewBox and no width/height are not in FR-72; no test added (user rule)"
+  }
+}
