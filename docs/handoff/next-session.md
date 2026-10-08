@@ -69,6 +69,8 @@ Commit trailers: `Slice: <change-name>` and `Refs: FR-x` on every commit touchin
 
 ## FIRST: reconcile with `main` and merge (the user's decisions of 2026-10-09, autonomy-log row 77)
 
+**Status 2026-10-09 02:15: reconciled on branch `claude/reconcile-ux-main`** (merge `603b631`, slice `reconcile-ux-accessibility` archived, autonomy-log rows 78 to 80, `docs/current-state.md`). What remains of this section is step 4: fast-forward `main` to that branch once the user approves, and push if the user says so. Then run phases D to H on `main`, in a worktree off `main`; the fast-forward instruction at the top of this file then means `main`.
+
 Do this before phase D. Phases D to H then run on `main`.
 
 1. Work in a new worktree off `main` (`cf6ad37` or newer); merge `claude/heuristic-lovelace-5e57b4` (pushed, tip `6dd7eb5`, ids already renumbered: FR-66..73, NFR-10..15, A-29..32, rows 50..77, M18..M21, plan 4.8). Expect conflicts in about 18 files. Check `main`'s newest row and M number first; renumber further only if `main` took more ids.

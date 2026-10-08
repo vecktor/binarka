@@ -533,8 +533,7 @@
     {
       "id": "FR-33",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -548,8 +547,7 @@
     {
       "id": "FR-34",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -561,8 +559,7 @@
     {
       "id": "FR-35",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -574,8 +571,7 @@
     {
       "id": "FR-36",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -587,8 +583,7 @@
     {
       "id": "FR-37",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -600,8 +595,7 @@
     {
       "id": "FR-38",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -624,8 +618,7 @@
     {
       "id": "FR-40",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -639,7 +632,6 @@
       "id": "FR-41",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md",
         "openspec/changes/update-win-apostrophe/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -668,8 +660,7 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -700,8 +691,7 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -735,8 +725,7 @@
     {
       "id": "FR-59",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -755,8 +744,7 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -771,8 +759,7 @@
     {
       "id": "FR-61",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -804,8 +791,7 @@
     {
       "id": "FR-62",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -818,8 +804,7 @@
     {
       "id": "FR-63",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -835,8 +820,7 @@
     {
       "id": "FR-64",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -850,8 +834,7 @@
     {
       "id": "FR-65",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -908,8 +891,7 @@
     {
       "id": "FR-67",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -931,8 +913,7 @@
     {
       "id": "FR-68",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -946,8 +927,7 @@
     {
       "id": "FR-69",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -960,8 +940,7 @@
     {
       "id": "FR-70",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -975,8 +954,7 @@
     {
       "id": "FR-71",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1287,10 +1265,6 @@
     {
       "check": "active-changes",
       "msg": "active change \"add-rule-solvable-generator\" is not archived"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"reconcile-ux-accessibility\" is not archived"
     },
     {
       "check": "active-changes",

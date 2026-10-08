@@ -127,7 +127,7 @@ Source: `docs/design/ux-decisions.md`; frozen reference `design/README.md` and `
   - a per-slice review with clean evidence in `review-findings.json`;
   - archived with `Slice: add-page-accessibility` commits.
 
-### 4.9 `reconcile-ux-accessibility` (added 2026-10-09 by the user's decisions, autonomy-log rows 77 to 79)
+### 4.9 `reconcile-ux-accessibility` (added 2026-10-09 by the user's decisions, autonomy-log rows 77 to 79; archived 2026-10-09, row 80)
 
 Runs on `claude/reconcile-ux-main` after the merge of the UX line into `main` (`603b631`) and before phases D to H, which then run on `main`. Owns the rewritten text of FR-59 to FR-63 and FR-65 and NFR-9 (the ids stay owned by slice 6, section 4.7; no new FR). Steps as for every slice: change folder by the spec-writer with an independent audit, tests first (each changed test derives from a changed requirement, spec sentence or rule, listed in its `tasks.md`), implementation, review-gate, a real-browser check at 375 and 1280 px, archive.
 

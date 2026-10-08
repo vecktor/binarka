@@ -42,7 +42,7 @@
   "clean": false,
   "generatedAt": "2026-10-09",
   "runId": "wf_0cb9028b-e5e",
-  "persistedBy": "orchestrator, from the run's result (the run wrote no review-findings.json, reviewEvidence null); first run of reconcile-ux-accessibility, before the fix round",
+  "persistedBy": "orchestrator, from the run's result (the run wrote no review-findings.json, reviewEvidence null); first run of reconcile-ux-accessibility, before the fix round; updated by the orchestrator with the confirming run (wf_fba99710-0a3), which was not clean (7 evidence/doc findings, 0 code defects)",
   "dispositions": {
     "fixed": [
       "ss-19 raw-text :has( count restored (test + delta scenario)",
@@ -61,5 +61,24 @@
       "aria-invalid on a native button: kept by the user's decision of 2026-10-09 (autonomy-log row 78); the browser check read the attribute from the DOM, not from the accessibility tree",
       "FR-60 real keys and FR-38's key path rest on browser evidence (docs/qa/reconcile-ux-accessibility/README.md, 5.4a)"
     ]
+  },
+  "confirmingRun": {
+    "runId": "wf_fba99710-0a3",
+    "baseRef": "b4d338e",
+    "headRef": "3d4e488",
+    "confirmedTitles": [
+      "Tasks 5.1, 5.2 and 5.4 are ticked, but five screenshots and the drift-notes file they name do not exist; only the 5.3 deviation is recorded",
+      "5.4 asks for ArrowRight, Home and End on a cell, but the README records them only on a given cell",
+      "ss-19 row in the tasks.md 1.4 table has an extra trailing cell, which breaks the table",
+      "Tasks 5.1, 5.2 and 5.4 are ticked, but five of the screenshots they name do not exist, and 5.6 says to tick them only with their files in place",
+      "5.4: the browser check pressed arrow, Home and End only on a given cell, never on a player cell",
+      "docs/current-state.md still says the change is 'to be written', though it is implemented and has been through one fix round",
+      "The 1280 px still is too small and off-centre to show what the README says it shows"
+    ],
+    "contested": 0,
+    "rejected": 0,
+    "codeDefects": 0,
+    "note": "Every confirmed finding is about evidence or docs, none about src/ or test logic: ticked 5.1, 5.2, 5.4 without the named 1280 shots and drift-notes file; arrow keys pressed only on a given cell; a broken tasks.md table row; docs/current-state.md stale; an unreadable 1280 still.",
+    "dispositions": "Closed after the run, without a third review run (one fix round and one confirming run, as the handoff rules say): 1280-mount, 1280-8x8, 1280-focus-cell, 1280-focus-button taken at scale 1 on 3d4e488 (source unchanged since 85485ac); 375-drift-notes.md written; arrows, Home and End re-checked on an empty player cell; the ss-19 row fixed; docs/current-state.md updated at archive; the small 1280 still kept as a record only."
   }
 }

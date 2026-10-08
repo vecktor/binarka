@@ -125,7 +125,7 @@ Decisions D1 (`:has()` allowed in the one idle-line selector; now in the signed 
   | ss-16 The cell ring is outside the border | U | |
   | ss-17 The button and select rings have a positive offset | R | FR-65: `button:focus-visible` only |
   | ss-18 Nothing removes the outline | U | |
-  | ss-19 No `:has(` and no `!important` (red now) | R | the user's decision D1 (project rule 20 changed) and the delta sentence «SHALL NOT contain `:has(` except in the one selector that hides the idle line»: now «no `!important`; exactly one rule contains `:has(`, its subject is `.message-idle`, its only declaration is `display: none`» (scenario «… with one `:has(` exception»); green through 3.8 | The raw-text count of `:has(` (exactly one) was added back (review-gate fix round, 2026-10-09): the old test checked the raw text, and the delta scenario now says so.
+  | ss-19 No `:has(` and no `!important` (red now) | R | the user's decision D1 (project rule 20 changed) and the delta sentence «SHALL NOT contain `:has(` except in the one selector that hides the idle line»: now «no `!important`; exactly one rule contains `:has(`, its subject is `.message-idle`, its only declaration is `display: none`» (scenario «… with one `:has(` exception»); green through 3.8 The raw-text count of `:has(` (exactly one) was added back (review-gate fix round, 2026-10-09): the old test checked the raw text, and the delta scenario now says so. |
   | ss-20 No rule uses `display: contents` | U | kept in the FR-61 requirement (design decision 6); its describe title («rows are kept in the accessibility tree and the label is not hidden») and the comment on the test are stale and stay as they are, the test body is unchanged |
   | ss-21 The size-label rules have no hiding declaration (red now) | X | FR-62: no label, no `.size-label` rule |
   | ss-22 The label computes a display (red now) | X | same |
@@ -172,8 +172,8 @@ Decisions D1 (`:has()` allowed in the one idle-line selector; now in the signed 
 
 ## 4. Review gate
 
-- [ ] 4.1 Run the review-gate with `change: reconcile-ux-accessibility` (one run, one fix round for confirmed defects, one confirming run). Ask the reviewer in particular: does any removed test in 1.3 to 1.7 guard behaviour that no remaining test guards; does any rewritten test assert less than the sentence it derives from; is `git diff --stat -- tests/` limited to the files and tests of this list.
-- [ ] 4.2 Record the report path in `docs/current-state.md` (evidence path, not a verdict).
+- [x] 4.1 (done: run wf_0cb9028b-e5e, fix round 3d4e488, confirming run wf_fba99710-0a3 not clean on evidence/docs only, archived by the user's choice; review-findings.json) Run the review-gate with `change: reconcile-ux-accessibility` (one run, one fix round for confirmed defects, one confirming run). Ask the reviewer in particular: does any removed test in 1.3 to 1.7 guard behaviour that no remaining test guards; does any rewritten test assert less than the sentence it derives from; is `git diff --stat -- tests/` limited to the files and tests of this list.
+- [x] 4.2 (done: docs/current-state.md) Record the report path in `docs/current-state.md` (evidence path, not a verdict).
 
 ## 5. Real-browser check (do not tick a task until its evidence exists)
 
@@ -185,16 +185,16 @@ No database exists; this section is the smoke test. Current Chromium, `npm run d
 - [x] 5.4 Keyboard walk, no mouse, at 1280 px: from the address bar press Tab: «Правила», «Поле 4×4», «Поле 6×6», «Поле 8×8», cell (1,1), …, cell (6,6) in reading order, «Підказка», «Скинути», «Нова головоломка». Press Enter on a cell: it cycles to 0; Space: to 1; again: empty; the focus ring stays on the same cell (FR-60). Press ArrowRight, Home, End on a cell: nothing moves, the page does not scroll differently (FR-59). Enter on a given: nothing changes. Take `1280-focus-cell` and `1280-focus-button` showing the ring.
 - [x] 5.4a Real Enter and Space (the jsdom tests cannot press them): on an empty non-given cell press Enter three times and Space three times, with no mouse; record the digit after each press (0, 1, empty, 0, 1, empty) and that the focus ring stays on the same cell each time; on a given cell press Enter and Space and record that nothing changes and the ring stays; press Enter on a size button and check it selects the size (a dialog if entries exist). Evidence: `1280-enter-space-cell.jpg` (cell after the third press with the ring) and a list of the observed digits in `docs/qa/reconcile-ux-accessibility/README.md`.
 - [x] 5.5 Idle line: it shows at mount and hides after «Підказка» (the one `:has(` rule of D1); at 375 px take `375-hint-shown`, and compare the layout of the message area with `375-mount` (empty regions take no space; with text the layout is as before 3.6a). Open «Правила» (popover), press «Зрозуміло»; press «Скинути» after two moves: the dialog opens with focus on «Скасувати».
-- [ ] 5.6 Record the evidence paths and what was observed (and what was not) in `docs/current-state.md`; stop the server. Tick 5.1 to 5.5 (5.4a included) only with their files in place.
+- [x] 5.6 (done: docs/current-state.md; server stopped after the archive) Record the evidence paths and what was observed (and what was not) in `docs/current-state.md`; stop the server. Tick 5.1 to 5.5 (5.4a included) only with their files in place.
 
 ## 6. Validation, docs and archive
 
-- [ ] 6.1 Run `npm run lint`.
-- [ ] 6.2 Run `npm run test:run`.
-- [ ] 6.3 Run `npm run build`.
-- [ ] 6.4 Run `npx openspec validate reconcile-ux-accessibility --strict`.
-- [ ] 6.5 Run `npx openspec validate --all --strict`.
-- [ ] 6.6 Update `README.md` (keyboard use: Tab, Enter and Space; no arrow keys), `docs/current-state.md` (last update in UTC+5:30, phase, evidence paths from section 5, a «Scope NOT delivered» line: held NFR-10 to NFR-14, real screen readers, the D2 palette drift until G2), `docs/mvp-capability-plan.md` (one line for this change), and cite autonomy-log row 79 (already recorded by the orchestrator; no new row is needed for the answers).
-- [ ] 6.7 Smoke gate: section 5 is the manual smoke test of this change; re-run 5.3 to 5.5 (5.4a included) after the last code change. Archive (6.8) happens only when 6.1 to 6.6 passed and 5.1 to 5.6 (5.4a included) are ticked with evidence.
-- [ ] 6.8 Run `npx openspec archive reconcile-ux-accessibility --yes` (a normal merge, NOT `--skip-specs`); in the same commit apply the nine preamble replacements of `design.md` «Preamble replacement text» to `openspec/specs/play-page/spec.md` by hand; then run `grep -n 'tabindex\|Tab stop\|aria-readonly\|gridcell\|role="row"\|role="grid"\|: порожня' openspec/specs/play-page/spec.md` and read every hit.
-- [ ] 6.9 Run `npx openspec validate --all --strict` and `npm run check:trace` (FR-59 to FR-65, NFR-9 and NFR-5 cited and traced; no active change left except the three UX-line changes that are not this one).
+- [x] 6.1 Run `npm run lint`.
+- [x] 6.2 Run `npm run test:run`.
+- [x] 6.3 Run `npm run build`.
+- [x] 6.4 (done before the archive, after the fix round) Run `npx openspec validate reconcile-ux-accessibility --strict`.
+- [x] 6.5 Run `npx openspec validate --all --strict`.
+- [x] 6.6 Update `README.md` (keyboard use: Tab, Enter and Space; no arrow keys), `docs/current-state.md` (last update in UTC+5:30, phase, evidence paths from section 5, a «Scope NOT delivered» line: held NFR-10 to NFR-14, real screen readers, the D2 palette drift until G2), `docs/mvp-capability-plan.md` (one line for this change), and cite autonomy-log row 79 (already recorded by the orchestrator; no new row is needed for the answers).
+- [x] 6.7 (done: re-run on 3d4e488, source unchanged since 85485ac; README) Smoke gate: section 5 is the manual smoke test of this change; re-run 5.3 to 5.5 (5.4a included) after the last code change. Archive (6.8) happens only when 6.1 to 6.6 passed and 5.1 to 5.6 (5.4a included) are ticked with evidence.
+- [x] 6.8 Run `npx openspec archive reconcile-ux-accessibility --yes` (a normal merge, NOT `--skip-specs`); in the same commit apply the nine preamble replacements of `design.md` «Preamble replacement text» to `openspec/specs/play-page/spec.md` by hand; then run `grep -n 'tabindex\|Tab stop\|aria-readonly\|gridcell\|role="row"\|role="grid"\|: порожня' openspec/specs/play-page/spec.md` and read every hit.
+- [x] 6.9 Run `npx openspec validate --all --strict` and `npm run check:trace` (FR-59 to FR-65, NFR-9 and NFR-5 cited and traced; no active change left except the three UX-line changes that are not this one).
