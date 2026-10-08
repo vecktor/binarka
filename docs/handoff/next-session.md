@@ -67,6 +67,15 @@ Commit trailers: `Slice: <change-name>` and `Refs: FR-x` on every commit touchin
 - If the GPG probe fails: commit with `--no-gpg-sign`, log it, and leave the re-sign (with a backup branch) for when the user is back.
 - **Not authorised:** push, PR, merge, any other dependency, hook, settings or `AGENTS.md` change, changing the frozen design or `review-set-5`, relaxing a test or a bound. Stop and ask.
 
+## FIRST: reconcile with `main` and merge (the user's decisions of 2026-10-09, autonomy-log row 77)
+
+Do this before phase D. Phases D to H then run on `main`.
+
+1. Work in a new worktree off `main` (`cf6ad37` or newer); merge `claude/heuristic-lovelace-5e57b4` (pushed, tip `6dd7eb5`, ids already renumbered: FR-66..73, NFR-10..15, A-29..32, rows 50..77, M18..M21, plan 4.8). Expect conflicts in about 18 files. Check `main`'s newest row and M number first; renumber further only if `main` took more ids.
+2. Requirements amendment, signed by the user in chat before any code: the **UX page model wins** (every cell a `<button>` with its Ukrainian label, the size radiogroup, the rules popover with ids, the confirmation dialog), and `main`'s accessibility rules that fit it stay (FR-63 status roles, FR-64 non-colour violation border, FR-65 3:1 contrast and `:focus-visible`, NFR-9 WCAG 2.2 AA re-scoped). Rewrite `main`'s FR-59 (one grid Tab stop), FR-60, FR-61 (`role="grid"`), FR-62 (labelled select) and the "no ids under the root" rule so they fit the UX model; reconcile A-20, A-26, A-28 and the UX amendments of FR-57 and FR-58.
+3. A reconciliation change folder (spec-writer, independent audit), tests first (the a11y tests of slice 6 that assert grid, select or rules-block behaviour change on purpose and are listed by FR), implementation, review-gate, real-browser check, archive. `eslint.config.js`: keep ADR-0003's `globalIgnores` and add the UX line's `design/` ignore to it.
+4. Merge into `main` only after the battery is green and the user approves; push is the user's call.
+
 ## State at the 2026-10-06 handoff (session `heuristic-lovelace-5e57b4`)
 
 - Phases A, B and C are archived on branch `claude/heuristic-lovelace-5e57b4`. Fast-forward to it. Next: **D**, then E, F, G1, G2, H.
