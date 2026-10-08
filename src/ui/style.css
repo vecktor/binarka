@@ -30,6 +30,32 @@ body {
 
 h1 {
   margin: 8px 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo {
+  flex: none;
+  color: var(--color-text);
+}
+
+.logo .logo-cell {
+  fill: var(--color-cell-bg);
+}
+
+.logo .logo-digit {
+  fill: currentcolor;
+}
+
+.logo .logo-digit-ring {
+  fill: none;
+  stroke: currentcolor;
+}
+
+.page-header h1 .logo {
+  width: 3.5rem;
+  height: 3.5rem;
 }
 
 .page-header {
@@ -277,6 +303,11 @@ button:focus-visible {
 }
 
 @media (min-width: 48rem) {
+  .page-header h1 .logo {
+    width: 4rem;
+    height: 4rem;
+  }
+
   .rules {
     inset: 0;
     width: 28rem;

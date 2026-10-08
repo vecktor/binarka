@@ -1,5 +1,6 @@
 import { findViolations, generate, hint, isSolved } from '../engine/index';
 import type { Cell, Grid, Puzzle } from '../engine/index';
+import { createLogo } from './logo';
 import { defaultSeedSource } from './seed';
 import { BUTTONS, CONFIRM, IDLE, RULES, SIZE_GROUP, TITLE, WIN, cellLabel, sizeLabel } from './strings';
 
@@ -40,7 +41,9 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
 
   const rulesButton = el('button', { type: 'button', class: 'rules-button', 'data-action': 'rules', popovertarget: panelId }, BUTTONS.rules);
   const header = el('header', { class: 'page-header' });
-  header.append(el('h1', {}, TITLE), rulesButton);
+  const title = el('h1', {}, TITLE);
+  title.prepend(createLogo());
+  header.append(title, rulesButton);
 
   const boardHost = el('div', { class: 'board-host' });
   const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, BUTTONS.hint);
