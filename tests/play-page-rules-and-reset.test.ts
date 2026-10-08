@@ -71,9 +71,9 @@ interface SizeCase {
   /** 1-based cell that, set to 0 by one click, makes a third 0 next to the two given 0 of `pair` (a violation of the player's own) */
   thirdZero: [number, number];
   /** 1-based non-given cells the player clicks (cell, number of clicks) before the hint */
-  clicks: Array<[number, number, number]>;
+  clicks: [number, number, number][];
   /** 1-based non-given cells of `dirty` the player clicks (cell, clicks) so that more cells than the givens' own are highlighted */
-  dirtyClicks: Array<[number, number, number]>;
+  dirtyClicks: [number, number, number][];
 }
 
 const CASES: SizeCase[] = [
@@ -99,11 +99,11 @@ function mountAtSize(puzzle: Puzzle): Mounted {
   return { root, seeds, spy };
 }
 
-const pressReset = (root: ParentNode): void => q(root, '[data-action="reset"]').click();
+const pressReset = (root: ParentNode): void => { q(root, '[data-action="reset"]').click(); };
 
 /** Cell texts and data-given flags only (no classes), row-major. */
 function textsAndGivens(root: ParentNode): string[] {
-  return allCells(root).map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}|${c.textContent ?? ''}|${c.getAttribute('data-given')}`);
+  return allCells(root).map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}|${c.textContent}|${c.getAttribute('data-given')}`);
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -114,7 +114,8 @@ function textsAndGivens(root: ParentNode): string[] {
 function readRules(root: HTMLElement): { el: HTMLElement; headings: string[]; items: string[] } {
   const found = root.querySelectorAll<HTMLElement>(RULES);
   expect(found, 'exactly one rules block').toHaveLength(1);
-  const el = found[0] as HTMLElement;
+  const el = found[0];
+  expect.assert(el !== undefined, 'the rules block exists');
   const board = q(root, '[data-board]');
   expect(board.contains(el), 'the rules block is not inside [data-board]').toBe(false);
   expect(el.contains(board), 'the board is not inside the rules block').toBe(false);
@@ -122,8 +123,8 @@ function readRules(root: HTMLElement): { el: HTMLElement; headings: string[]; it
     (board.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
     'the rules block follows [data-board] in document order',
   ).toBe(true);
-  const headings = Array.from(el.querySelectorAll('h1, h2, h3, h4, h5, h6')).map((h) => h.textContent ?? '');
-  const items = Array.from(el.querySelectorAll('li')).map((li) => li.textContent ?? '');
+  const headings = Array.from(el.querySelectorAll('h1, h2, h3, h4, h5, h6')).map((h) => h.textContent);
+  const items = Array.from(el.querySelectorAll('li')).map((li) => li.textContent);
   return { el, headings, items };
 }
 
@@ -200,7 +201,9 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     const afterHint = textsAndGivens(root);
     const hintCells = afterHint.flatMap((s, i) => (s !== beforeHint[i] ? [i] : []));
     expect(hintCells, 'premise: the hint filled exactly one cell').toHaveLength(1);
-    expect(afterHint[hintCells[0] as number]?.endsWith('|false'), 'premise: the hint cell is a player cell').toBe(true);
+    const hintIndex = hintCells[0];
+    expect.assert(hintIndex !== undefined, 'premise: the hint filled a cell');
+    expect(afterHint[hintIndex]?.endsWith('|false'), 'premise: the hint cell is a player cell').toBe(true);
     expect(hintMessage(root)).not.toBe('');
     const playerFilled = allCells(root).filter((c) => c.getAttribute('data-given') === 'false' && c.textContent !== '');
     expect(playerFilled.length, 'premise: clicked cells plus the hint-filled cell show a digit').toBeGreaterThanOrEqual(3);
@@ -276,17 +279,20 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
 
   it('Reset takes no seed and calls no generator: one press and two more leave the counts as after mount', () => {
     const { root, seeds, spy } = mountAtSize(pair);
-    clickCell(root, clicks[0]?.[0] as number, clicks[0]?.[1] as number, 1);
+    const firstClick = clicks[0];
+    expect.assert(firstClick !== undefined, 'premise: the fixture has a click');
+    const [firstRow, firstCol] = firstClick;
+    clickCell(root, firstRow, firstCol, 1);
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
     expect(seedCalls, 'premise: the mount (and the size change) took seeds').toBeGreaterThan(0);
     expect(generatorCalls).toBeGreaterThan(0);
-    expect(cellEl(root, clicks[0]?.[0] as number, clicks[0]?.[1] as number).textContent).toBe('0');
+    expect(cellEl(root, firstRow, firstCol).textContent).toBe('0');
 
     pressReset(root);
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
-    expect(cellEl(root, clicks[0]?.[0] as number, clicks[0]?.[1] as number).textContent, 'the press did reset').toBe('');
+    expect(cellEl(root, firstRow, firstCol).textContent, 'the press did reset').toBe('');
 
     pressReset(root);
     expect(seeds.calls()).toBe(seedCalls);
