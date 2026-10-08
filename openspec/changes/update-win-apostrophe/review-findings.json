@@ -1,0 +1,34 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "change update-win-apostrophe (FR-41, U+02BC). All files live in the worktree /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-phases-d-h (use absolute paths there; the session cwd is a different, older worktree). Spec delta: openspec/changes/update-win-apostrophe/",
+  "change": "update-win-apostrophe",
+  "baseRef": "2c3201c",
+  "headRef": "99df705",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 0,
+      "contested": 1,
+      "rejected": 2
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 0,
+      "contested": 1,
+      "rejected": 4
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [],
+  "clean": true,
+  "generatedAt": "2026-10-08T21:11:16Z",
+  "runId": "wf_44aae8a0-f44",
+  "persistedBy": "The workflow persist step wrote this file into the session cwd worktree (bold-brattain-59cd03), not the change worktree; the orchestrator moved it here unchanged except for runId and this note (2026-10-09)."
+}

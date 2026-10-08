@@ -93,7 +93,7 @@ describe('@trace FR-41 the win message appears when the board is solved', () => 
     clickUntil(root, 6, 6, '1');
 
     expect(isSolved(readBoard(root))).toBe(true);
-    expectApostropheIsU02BC(q(root, '[data-message="win"]').textContent);
+    expectApostropheIsU02BC(winMessage(root));
   });
 
   it('The apostrophe is U+02BC and no other character: win reached by the final hint', () => {
@@ -104,7 +104,7 @@ describe('@trace FR-41 the win message appears when the board is solved', () => 
     pressHint(root);
 
     expect(isSolved(readBoard(root))).toBe(true);
-    expectApostropheIsU02BC(q(root, '[data-message="win"]').textContent);
+    expectApostropheIsU02BC(winMessage(root));
   });
 
   it('Full board with a violation is not a win', () => {
