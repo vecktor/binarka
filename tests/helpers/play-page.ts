@@ -250,8 +250,8 @@ export const winMessage = (root: ParentNode): string => q(root, '[data-message="
 
 /**
  * Assert the structural elements every rendered page has (so a negative check can never pass on an empty page): the
- * board of `size` (6 by default) as an ARIA grid of `size` rows (FR-59), the size selector with its wrapping label
- * (FR-43, FR-60), both buttons, both status regions (FR-61) and exactly one Tab stop (FR-57).
+ * board of `size` (6 by default) as an ARIA grid of `size` rows (FR-61), the size selector with its wrapping label
+ * (FR-43, FR-62), both buttons, both status regions (FR-63) and exactly one Tab stop (FR-59).
  * Slice 4 (add-page-accessibility) DELIBERATE CHANGE: the grid, row, label, status and Tab stop checks follow the new
  * spec; no old check was removed or weakened. The grid role is asserted FIRST so that the first failure line of every
  * red test that reaches this helper names the missing grid.
@@ -281,7 +281,7 @@ export function expectPageStructure(root: ParentNode, size = 6): void {
 }
 
 // ---------------------------------------------------------------------------------------------------------
-// Slice 4 (FR-57 to FR-61): keyboard, Tab stop, roles and names
+// Slice 4 (FR-59 to FR-63): keyboard, Tab stop, roles and names
 // ---------------------------------------------------------------------------------------------------------
 
 /**
@@ -306,7 +306,7 @@ export function pressKey(el: Element, key: string, init: KeyboardEventInit = {})
 export const tabStopCells = (root: ParentNode): HTMLElement[] =>
   allCells(root).filter((cell) => cell.getAttribute('tabindex') === '0');
 
-/** The children of `[data-board]`: the row elements (FR-59). */
+/** The children of `[data-board]`: the row elements (FR-61). */
 export const rowEls = (root: ParentNode): HTMLElement[] => Array.from(q(root, '[data-board]').children) as HTMLElement[];
 
 /** Give a cell DOM focus and assert it took it (a cell with no `tabindex` cannot, which is the red-stage failure). */
@@ -328,7 +328,7 @@ function describeElement(el: Element | null): string {
   return `<${el.tagName.toLowerCase()}${attrs.map((a) => ` ${a}="${el.getAttribute(a) ?? ''}"`).join('')}>`;
 }
 
-/** The accessible name of a cell, «Рядок R, стовпець C: V», V = «порожня» for empty text, else the digit (FR-59). */
+/** The accessible name of a cell, «Рядок R, стовпець C: V», V = «порожня» for empty text, else the digit (FR-61). */
 export const cellName = (row: number, col: number, text: string): string =>
   `Рядок ${row}, стовпець ${col}: ${text === '' ? 'порожня' : text}`;
 
@@ -693,7 +693,7 @@ export const PAIR_8 = makePuzzle(givensOf(8, [[8, 7, 0], [8, 8, 0]]), { solution
 /** 8x8 whose solution is SOLUTION_8_TEXT and whose givens are every cell except the non-given (8,8), whose digit is 0. */
 export const WIN_8 = winFixture(parseBoard(SOLUTION_8_TEXT), [8, 8]);
 /**
- * Slice 4 (FR-62): PAIR_ROW_PLUS at N = 4 and N = 8, so that one click on (3,3) gives all four cell kinds at every size:
+ * Slice 4 (FR-64): PAIR_ROW_PLUS at N = 4 and N = 8, so that one click on (3,3) gives all four cell kinds at every size:
  * ordinary (1,1), a plain given far from the run, a violating player cell (3,3) and the givens (3,1), (3,2) in the violation.
  */
 export const PAIR_PLUS_4 = makePuzzle(givensOf(4, [[3, 1, 0], [3, 2, 0], [4, 4, 1]]));

@@ -55,13 +55,13 @@ Result: PASS, 54 warning(s)
 | FR-41 | yes | yes | 1 | - |
 | FR-42 | yes | yes | 2 | - |
 | FR-43 | yes | yes | 12 | - |
-| FR-57 | yes | yes | 27 | - |
-| FR-58 | yes | yes | 15 | - |
-| FR-59 | yes | yes | 21 | - |
-| FR-60 | yes | yes | 7 | - |
-| FR-61 | yes | yes | 4 | - |
-| FR-62 | yes | yes | 4 | - |
-| FR-63 | yes | yes | 23 | - |
+| FR-59 | yes | yes | 27 | - |
+| FR-60 | yes | yes | 15 | - |
+| FR-61 | yes | yes | 21 | - |
+| FR-62 | yes | yes | 7 | - |
+| FR-63 | yes | yes | 4 | - |
+| FR-64 | yes | yes | 4 | - |
+| FR-65 | yes | yes | 23 | - |
 
 ## Failures
 
@@ -116,10 +116,10 @@ None.
 - **recording-evidence**: FR-41 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-42 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-43 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-57 is not referenced by any recording manifest under docs/qa/
-- **recording-evidence**: FR-58 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-59 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-60 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-61 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-62 is not referenced by any recording manifest under docs/qa/
 - **recording-evidence**: FR-63 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-64 is not referenced by any recording manifest under docs/qa/
+- **recording-evidence**: FR-65 is not referenced by any recording manifest under docs/qa/

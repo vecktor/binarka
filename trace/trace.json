@@ -51,13 +51,13 @@
     "FR-41": "MVP",
     "FR-42": "MVP",
     "FR-43": "MVP",
-    "FR-57": "MVP",
-    "FR-58": "MVP",
     "FR-59": "MVP",
     "FR-60": "MVP",
     "FR-61": "MVP",
     "FR-62": "MVP",
     "FR-63": "MVP",
+    "FR-64": "MVP",
+    "FR-65": "MVP",
     "FR-44": "Future",
     "FR-45": "Future",
     "FR-46": "Future",
@@ -648,7 +648,7 @@
       "recordings": []
     },
     {
-      "id": "FR-57",
+      "id": "FR-59",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -685,7 +685,7 @@
       "recordings": []
     },
     {
-      "id": "FR-58",
+      "id": "FR-60",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -710,7 +710,7 @@
       "recordings": []
     },
     {
-      "id": "FR-59",
+      "id": "FR-61",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -741,7 +741,7 @@
       "recordings": []
     },
     {
-      "id": "FR-60",
+      "id": "FR-62",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -758,7 +758,7 @@
       "recordings": []
     },
     {
-      "id": "FR-61",
+      "id": "FR-63",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -772,7 +772,7 @@
       "recordings": []
     },
     {
-      "id": "FR-62",
+      "id": "FR-64",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -786,7 +786,7 @@
       "recordings": []
     },
     {
-      "id": "FR-63",
+      "id": "FR-65",
       "specs": [
         "openspec/specs/play-page/spec.md"
       ],
@@ -1011,14 +1011,6 @@
     },
     {
       "check": "recording-evidence",
-      "msg": "FR-57 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-58 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
       "msg": "FR-59 is not referenced by any recording manifest under docs/qa/"
     },
     {
@@ -1036,6 +1028,14 @@
     {
       "check": "recording-evidence",
       "msg": "FR-63 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-64 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-65 is not referenced by any recording manifest under docs/qa/"
     }
   ]
 }

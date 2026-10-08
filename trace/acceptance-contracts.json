@@ -379,27 +379,11 @@
         "status": "artifact-ok"
       }
     ],
-    "FR-57": [
-      {
-        "method": "local-verifiable",
-        "mechanism": "npm:test:run",
-        "artifact": "tests/play-page-keyboard.test.ts",
-        "status": "artifact-ok"
-      }
-    ],
-    "FR-58": [
-      {
-        "method": "local-verifiable",
-        "mechanism": "npm:test:run",
-        "artifact": "tests/play-page-keyboard.test.ts",
-        "status": "artifact-ok"
-      }
-    ],
     "FR-59": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": "tests/play-page-page-text.test.ts",
+        "artifact": "tests/play-page-keyboard.test.ts",
         "status": "artifact-ok"
       }
     ],
@@ -407,7 +391,7 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": "tests/play-page-page-text.test.ts",
+        "artifact": "tests/play-page-keyboard.test.ts",
         "status": "artifact-ok"
       }
     ],
@@ -415,7 +399,7 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": "tests/play-page-semantics.test.ts",
+        "artifact": "tests/play-page-page-text.test.ts",
         "status": "artifact-ok"
       }
     ],
@@ -423,11 +407,27 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": "tests/play-page-semantics.test.ts",
+        "artifact": "tests/play-page-page-text.test.ts",
         "status": "artifact-ok"
       }
     ],
     "FR-63": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-semantics.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-64": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-semantics.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-65": [
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",

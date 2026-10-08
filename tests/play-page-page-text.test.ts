@@ -30,7 +30,7 @@ import {
 installPageLifecycle();
 
 describe('@trace NFR-5 the page text is Ukrainian', () => {
-  it('@trace FR-59 @trace FR-60 Static page text: every collected text has Cyrillic letters and no Latin letters', () => {
+  it('@trace FR-61 @trace FR-62 Static page text: every collected text has Cyrillic letters and no Latin letters', () => {
     const root = mountFixture(WIN_PUZZLE);
     expectPageStructure(root);
     const texts = collectPageText(root);
@@ -60,7 +60,7 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
     }
   });
 
-  it('@trace NFR-5 @trace FR-59 Accessible names at every size: 4x4 and 8x8 board names and cell names match the pattern, Cyrillic, no Latin', () => {
+  it('@trace NFR-5 @trace FR-61 Accessible names at every size: 4x4 and 8x8 board names and cell names match the pattern, Cyrillic, no Latin', () => {
     const root = mountPage({
       seedSource: seedQueue([1, 2, 3]).source,
       generate: generatorBySize({ 4: BLANK_4, 6: BLANK, 8: BLANK_8 }),

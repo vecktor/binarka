@@ -122,8 +122,8 @@ describe('@trace FR-31 the page renders a 6x6 board from the generator', () => {
 
 // Slice 4 (add-page-accessibility), DELIBERATE CHANGE: a new test next to the two-mounts test above (that one and
 // "mounting replaces the previous content of the root" are unchanged and must stay green).
-describe('@trace FR-57 @trace FR-59 two mounts keep separate Tab stops and have no duplicate ids', () => {
-  it('@trace FR-57 @trace FR-59 two mounts on two roots keep separate Tab stops and have no duplicate ids', () => {
+describe('@trace FR-59 @trace FR-61 two mounts keep separate Tab stops and have no duplicate ids', () => {
+  it('@trace FR-59 @trace FR-61 two mounts on two roots keep separate Tab stops and have no duplicate ids', () => {
     const a = mountPage({ seedSource: () => 1, generate: () => BLANK });
     const b = mountPage({ seedSource: () => 1, generate: () => BLANK });
     expect(tabStopCells(a)).toHaveLength(1);

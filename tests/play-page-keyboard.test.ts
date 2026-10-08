@@ -1,4 +1,4 @@
-// Play page: keyboard operation, the single Tab stop and the click focus (FR-57, FR-58; FR-33, FR-34 and FR-38 as MODIFIED
+// Play page: keyboard operation, the single Tab stop and the click focus (FR-59, FR-60; FR-33, FR-34 and FR-38 as MODIFIED
 // by add-page-accessibility). Scenarios of openspec/changes/add-page-accessibility/specs/play-page/spec.md.
 // Every key event is a bubbling, CANCELABLE keydown (pressKey): a non-cancelable event can never show preventDefault().
 import { describe, expect, it } from 'vitest';
@@ -66,7 +66,7 @@ const rc = (el: Element): string => `${el.getAttribute('data-row')},${el.getAttr
 // ---------------------------------------------------------------------------------------------------------
 
 describe('the board is a single Tab stop', () => {
-  it('@trace FR-57 Exactly one Tab stop at mount: cell 1,1 has tabindex 0, the other 35 have -1, nothing else has a tabindex', () => {
+  it('@trace FR-59 Exactly one Tab stop at mount: cell 1,1 has tabindex 0, the other 35 have -1, nothing else has a tabindex', () => {
     const root = mountFixture(BLANK);
     const cells = allCells(root);
     expect(cells).toHaveLength(36);
@@ -82,7 +82,7 @@ describe('the board is a single Tab stop', () => {
     }
   });
 
-  it('@trace FR-57 A new puzzle resets the Tab stop to cell 1,1 and does not move focus', () => {
+  it('@trace FR-59 A new puzzle resets the Tab stop to cell 1,1 and does not move focus', () => {
     const root = mountFixture(BLANK);
     clickCell(root, 3, 4);
     expectTabStop(root, 3, 4);
@@ -95,7 +95,7 @@ describe('the board is a single Tab stop', () => {
     expectPageStructure(root);
   });
 
-  it('@trace FR-57 A size change resets the Tab stop to cell 1,1 and does not move focus', () => {
+  it('@trace FR-59 A size change resets the Tab stop to cell 1,1 and does not move focus', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 8: BLANK_8 }) });
     const select = q(root, '[data-control="size"]');
     select.focus();
@@ -107,7 +107,7 @@ describe('the board is a single Tab stop', () => {
     expectPageStructure(root, 8);
   });
 
-  it('@trace FR-57 A failed size change keeps the same cell as the Tab stop', () => {
+  it('@trace FR-59 A failed size change keeps the same cell as the Tab stop', () => {
     const root = mountFixture(BLANK); // the fixture generator throws for size 8
     clickCell(root, 2, 2);
     const stop = cellEl(root, 2, 2);
@@ -119,7 +119,7 @@ describe('the board is a single Tab stop', () => {
     for (const cell of allCells(root)) if (cell !== stop) expect(cell.getAttribute('tabindex')).toBe('-1');
   });
 
-  it('@trace FR-57 A new puzzle whose generation fails keeps the previous board and its Tab stop', () => {
+  it('@trace FR-59 A new puzzle whose generation fails keeps the previous board and its Tab stop', () => {
     const spy = rawGenerateSpy((i) => {
       if (i === 0) return BLANK;
       throw new Error('generator failed');
@@ -133,7 +133,7 @@ describe('the board is a single Tab stop', () => {
     expect(stop.isConnected).toBe(true);
   });
 
-  it('@trace FR-57 A hint fill leaves the Tab stop and the focus (PAIR_ROW fills 3,3 with 1)', () => {
+  it('@trace FR-59 A hint fill leaves the Tab stop and the focus (PAIR_ROW fills 3,3 with 1)', () => {
     const root = mountFixture(PAIR_ROW);
     expectTabStop(root, 1, 1);
     const hintButton = q(root, '[data-action="hint"]');
@@ -144,7 +144,7 @@ describe('the board is a single Tab stop', () => {
     expectActive(hintButton, 'DOM focus');
   });
 
-  it('@trace FR-57 A hint fill does not reset a Tab stop that is elsewhere either', () => {
+  it('@trace FR-59 A hint fill does not reset a Tab stop that is elsewhere either', () => {
     const root = mountFixture(PAIR_ROW);
     clickCell(root, 5, 5);
     expectTabStop(root, 5, 5);
@@ -156,7 +156,7 @@ describe('the board is a single Tab stop', () => {
     expectActive(hintButton, 'DOM focus');
   });
 
-  it('@trace FR-57 Focus makes a cell the Tab stop (focus() with no click and no key)', () => {
+  it('@trace FR-59 Focus makes a cell the Tab stop (focus() with no click and no key)', () => {
     const root = mountFixture(BLANK);
     expectTabStop(root, 1, 1);
     expect(focusCell(root, 4, 2)).toBe(cellEl(root, 4, 2));
@@ -165,7 +165,7 @@ describe('the board is a single Tab stop', () => {
     expectTabStop(root, 6, 6);
   });
 
-  it('@trace FR-57 A hint that fills nothing leaves the Tab stop and every cell (ISOLATED)', () => {
+  it('@trace FR-59 A hint that fills nothing leaves the Tab stop and every cell (ISOLATED)', () => {
     const root = mountFixture(ISOLATED);
     const before = snapshot(root);
     expectTabStop(root, 1, 1);
@@ -175,7 +175,7 @@ describe('the board is a single Tab stop', () => {
     expectTabStop(root, 1, 1);
   });
 
-  it('@trace FR-57 A hint that fills nothing leaves a Tab stop that is elsewhere, and the focus', () => {
+  it('@trace FR-59 A hint that fills nothing leaves a Tab stop that is elsewhere, and the focus', () => {
     const root = mountFixture(ISOLATED);
     clickCell(root, 4, 4);
     const hintButton = q(root, '[data-action="hint"]');
@@ -185,14 +185,14 @@ describe('the board is a single Tab stop', () => {
     expectActive(hintButton, 'DOM focus');
   });
 
-  it('@trace FR-57 Cycling a cell leaves the Tab stop (Enter on cell 1,1)', () => {
+  it('@trace FR-59 Cycling a cell leaves the Tab stop (Enter on cell 1,1)', () => {
     const root = mountFixture(BLANK);
     press(cellEl(root, 1, 1), 'Enter');
     expect(cellText(root, 1, 1)).toBe('0');
     expectTabStop(root, 1, 1);
   });
 
-  it('@trace FR-57 Enter and Space on a cell that is not the Tab stop leave the Tab stop where it is', () => {
+  it('@trace FR-59 Enter and Space on a cell that is not the Tab stop leave the Tab stop where it is', () => {
     const root = mountFixture(BLANK);
     press(cellEl(root, 4, 4), 'Enter');
     press(cellEl(root, 4, 4), ' ');
@@ -206,7 +206,7 @@ describe('the board is a single Tab stop', () => {
 // ---------------------------------------------------------------------------------------------------------
 
 describe('Arrow, Home and End keys move the focus', () => {
-  it('@trace FR-57 Arrow keys move one cell: right, down, left, up from 3,3', () => {
+  it('@trace FR-59 Arrow keys move one cell: right, down, left, up from 3,3', () => {
     const root = mountFixture(BLANK);
     focusCell(root, 3, 3);
     const steps: [string, number, number][] = [
@@ -222,7 +222,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     }
   });
 
-  it('@trace FR-57 Arrow keys stop at the edges and corners, no wrapping, and are prevented', () => {
+  it('@trace FR-59 Arrow keys stop at the edges and corners, no wrapping, and are prevented', () => {
     const root = mountFixture(BLANK);
     const edges: [string, number, number][] = [
       ['ArrowUp', 1, 1],
@@ -246,7 +246,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     }
   });
 
-  it('@trace FR-57 The edges follow N: at 4x4 and 8x8 an arrow stops at the last row and column of that board', () => {
+  it('@trace FR-59 The edges follow N: at 4x4 and 8x8 an arrow stops at the last row and column of that board', () => {
     for (const [puzzle, n] of [[BLANK_4, 4], [BLANK_8, 8]] as const) {
       const root = mountThenSelect(puzzle);
       const right = focusCell(root, 3, n);
@@ -263,7 +263,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     }
   });
 
-  it('@trace FR-57 Home and End move within the row, and are prevented on the first and last cell too', () => {
+  it('@trace FR-59 Home and End move within the row, and are prevented on the first and last cell too', () => {
     const root = mountFixture(BLANK);
     focusCell(root, 3, 4);
     press(focused(), 'Home');
@@ -282,7 +282,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     expectTabStop(root, 3, 1);
   });
 
-  it('@trace FR-57 Home and End give the first and last column of N at 4x4 and 8x8', () => {
+  it('@trace FR-59 Home and End give the first and last column of N at 4x4 and 8x8', () => {
     for (const [puzzle, n] of [[BLANK_4, 4], [BLANK_8, 8]] as const) {
       const root = mountThenSelect(puzzle);
       focusCell(root, 2, 2);
@@ -293,7 +293,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     }
   });
 
-  it('@trace FR-57 Ctrl+End and Ctrl+Home move to the last and first cell of the board at N = 4, 6 and 8', () => {
+  it('@trace FR-59 Ctrl+End and Ctrl+Home move to the last and first cell of the board at N = 4, 6 and 8', () => {
     for (const [puzzle, n] of [[BLANK_4, 4], [BLANK, 6], [BLANK_8, 8]] as const) {
       const root = mountThenSelect(puzzle);
       focusCell(root, 2, 3);
@@ -306,7 +306,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     }
   });
 
-  it('@trace FR-57 @trace FR-33 Keys on a given cell navigate and change nothing (WIN_PUZZLE given 0 at 1,3)', () => {
+  it('@trace FR-59 @trace FR-33 Keys on a given cell navigate and change nothing (WIN_PUZZLE given 0 at 1,3)', () => {
     const root = mountFixture(WIN_PUZZLE);
     expect(cellText(root, 1, 3)).toBe('0');
     expect(cellEl(root, 1, 3).getAttribute('data-given')).toBe('true');
@@ -331,7 +331,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     expect(snapshot(root)).toEqual(before);
   });
 
-  it('@trace FR-57 The position comes from the event target, not from the Tab stop', () => {
+  it('@trace FR-59 The position comes from the event target, not from the Tab stop', () => {
     const root = mountFixture(BLANK);
     expectTabStop(root, 1, 1);
     press(cellEl(root, 5, 2), 'ArrowRight');
@@ -339,7 +339,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     expectTabStop(root, 5, 3);
   });
 
-  it('@trace FR-57 Modified keys are not handled and not prevented: Ctrl, Shift and Alt with an arrow, Alt and Shift with Home', () => {
+  it('@trace FR-59 Modified keys are not handled and not prevented: Ctrl, Shift and Alt with an arrow, Alt and Shift with Home', () => {
     const root = mountFixture(BLANK);
     const cell = focusCell(root, 3, 3);
     const modified: [string, KeyboardEventInit][] = [
@@ -360,7 +360,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     expectFocusOn(root, 3, 4);
   });
 
-  it('@trace FR-57 Keys the board does not handle are not prevented: Tab, Shift+Tab, PageDown, PageUp, Escape and letters', () => {
+  it('@trace FR-59 Keys the board does not handle are not prevented: Tab, Shift+Tab, PageDown, PageUp, Escape and letters', () => {
     const root = mountFixture(BLANK);
     const cell = focusCell(root, 3, 3);
     const unhandled: [string, KeyboardEventInit][] = [
@@ -381,7 +381,7 @@ describe('Arrow, Home and End keys move the focus', () => {
     press(cell, 'ArrowDown');
   });
 
-  it('@trace FR-57 A keydown whose target is not inside a cell is ignored and not prevented (the board, a row)', () => {
+  it('@trace FR-59 A keydown whose target is not inside a cell is ignored and not prevented (the board, a row)', () => {
     const root = mountFixture(BLANK);
     const before = snapshot(root);
     press(q(root, '[data-board]'), 'ArrowRight', {}, false);
@@ -397,7 +397,7 @@ describe('Arrow, Home and End keys move the focus', () => {
 // ---------------------------------------------------------------------------------------------------------
 
 describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus', () => {
-  it('@trace FR-58 @trace FR-34 Enter cycles a player cell: 0, 1, empty, each press prevented', () => {
+  it('@trace FR-60 @trace FR-34 Enter cycles a player cell: 0, 1, empty, each press prevented', () => {
     const root = mountFixture(BLANK);
     const cell = cellEl(root, 2, 3);
     for (const expected of ['0', '1', '']) {
@@ -406,7 +406,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     }
   });
 
-  it('@trace FR-58 @trace FR-34 Space cycles a player cell: 0, 1, empty, each press prevented', () => {
+  it('@trace FR-60 @trace FR-34 Space cycles a player cell: 0, 1, empty, each press prevented', () => {
     const root = mountFixture(BLANK);
     const cell = cellEl(root, 2, 3);
     for (const expected of ['0', '1', '']) {
@@ -415,7 +415,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     }
   });
 
-  it('@trace FR-58 A held key cycles once: the first Enter gives 0 and three repeats change nothing, all prevented', () => {
+  it('@trace FR-60 A held key cycles once: the first Enter gives 0 and three repeats change nothing, all prevented', () => {
     const root = mountFixture(BLANK);
     const cell = cellEl(root, 2, 3);
     press(cell, 'Enter', { repeat: false });
@@ -428,7 +428,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     expect(other.textContent).toBe('0');
   });
 
-  it('@trace FR-58 Modified Enter and Space are not handled and not prevented: Ctrl, Alt and Shift', () => {
+  it('@trace FR-60 Modified Enter and Space are not handled and not prevented: Ctrl, Alt and Shift', () => {
     const root = mountFixture(BLANK);
     const cell = cellEl(root, 2, 3);
     press(cell, 'Enter', { ctrlKey: true }, false);
@@ -443,7 +443,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     expect(cell.textContent).toBe('0');
   });
 
-  it('@trace FR-58 A click moves the Tab stop and the focus to a player cell, and cycles it', () => {
+  it('@trace FR-60 A click moves the Tab stop and the focus to a player cell, and cycles it', () => {
     const root = mountFixture(BLANK);
     expectTabStop(root, 1, 1);
     clickCell(root, 4, 2);
@@ -452,7 +452,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     expectFocusOn(root, 4, 2);
   });
 
-  it('@trace FR-58 Enter and Space do not move the focus', () => {
+  it('@trace FR-60 Enter and Space do not move the focus', () => {
     const root = mountFixture(BLANK);
     focusCell(root, 2, 2);
     press(cellEl(root, 5, 5), 'Enter');
@@ -463,7 +463,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     expectTabStop(root, 2, 2);
   });
 
-  it('@trace FR-58 Keyboard play reaches the win message, and the focus is never moved by the presses', () => {
+  it('@trace FR-60 Keyboard play reaches the win message, and the focus is never moved by the presses', () => {
     const root = mountFixture(WIN_PUZZLE);
     fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE), [[4, 1]]);
     expect(winMessage(root)).toBe('');
@@ -479,7 +479,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     expect(winMessage(root)).toBe('');
   });
 
-  it('@trace FR-58 Three equal digits made with Enter carry cell-violation exactly as with clicks', () => {
+  it('@trace FR-60 Three equal digits made with Enter carry cell-violation exactly as with clicks', () => {
     const viaKeys = mountFixture(PAIR_ROW);
     const viaClicks = mountFixture(PAIR_ROW);
     press(cellEl(viaKeys, 3, 3), 'Enter');
@@ -488,7 +488,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     expect(violationCells(viaKeys)).toEqual(violationCells(viaClicks));
   });
 
-  it('@trace FR-58 Keys and clicks give the same board step by step: texts, givens, classes, names, aria-invalid and messages', () => {
+  it('@trace FR-60 Keys and clicks give the same board step by step: texts, givens, classes, names, aria-invalid and messages', () => {
     const keys = mountFixture(WIN_PUZZLE);
     const clicks = mountFixture(WIN_PUZZLE);
     const observe = (root: HTMLElement): unknown => ({
@@ -525,7 +525,7 @@ describe('Enter and Space cycle a cell, a click moves the Tab stop and the focus
     expect(allCells(keys).every((c) => c.getAttribute('aria-label') !== null)).toBe(true);
   });
 
-  it('@trace FR-38 @trace FR-58 Highlight appears at once after Enter or Space: 0, then 1, empty, then 0 again (PAIR_LEFT)', () => {
+  it('@trace FR-38 @trace FR-60 Highlight appears at once after Enter or Space: 0, then 1, empty, then 0 again (PAIR_LEFT)', () => {
     const root = mountFixture(PAIR_LEFT);
     expect(violationCells(root)).toEqual([]);
     const cell = cellEl(root, 4, 1);
@@ -560,7 +560,7 @@ describe('given cells are locked: only the Tab stop and the focus may move', () 
     return root;
   }
 
-  it('@trace FR-33 @trace FR-58 A click on a given moves only the Tab stop and the focus', () => {
+  it('@trace FR-33 @trace FR-60 A click on a given moves only the Tab stop and the focus', () => {
     const root = playedBoard();
     expect(cellText(root, 1, 3)).toBe('0');
     expect(cellEl(root, 1, 3).getAttribute('data-given')).toBe('true');
@@ -575,7 +575,7 @@ describe('given cells are locked: only the Tab stop and the focus may move', () 
     expect([hintMessage(root), winMessage(root)]).toEqual(messages);
   });
 
-  it('@trace FR-33 @trace FR-58 Clicking a given three times changes nothing and keeps the focus on it', () => {
+  it('@trace FR-33 @trace FR-60 Clicking a given three times changes nothing and keeps the focus on it', () => {
     const root = mountFixture(WIN_PUZZLE);
     const before = snapshot(root);
     clickCell(root, 2, 5, 3);
@@ -584,7 +584,7 @@ describe('given cells are locked: only the Tab stop and the focus may move', () 
     expectFocusOn(root, 2, 5);
   });
 
-  it('@trace FR-33 @trace FR-58 Enter and Space on a given change nothing, are prevented, and move neither focus nor Tab stop', () => {
+  it('@trace FR-33 @trace FR-60 Enter and Space on a given change nothing, are prevented, and move neither focus nor Tab stop', () => {
     const root = playedBoard();
     focusCell(root, 3, 3);
     const before = snapshot(root);
@@ -608,7 +608,7 @@ describe('given cells are locked: only the Tab stop and the focus may move', () 
 // ---------------------------------------------------------------------------------------------------------
 
 describe('the Tab stop and focus work at every size', () => {
-  it('@trace FR-57 @trace FR-58 At 4x4 and 8x8 a click moves the Tab stop and focus, and a new puzzle resets it to 1,1', () => {
+  it('@trace FR-59 @trace FR-60 At 4x4 and 8x8 a click moves the Tab stop and focus, and a new puzzle resets it to 1,1', () => {
     for (const puzzle of [BLANK_4, BLANK_8]) {
       const root = mountThenSelect(puzzle);
       expectTabStop(root, 1, 1);
@@ -625,7 +625,7 @@ describe('the Tab stop and focus work at every size', () => {
 });
 
 describe('review round 1: one cycle after a rebuild, and mounting keeps the focus', () => {
-  it('@trace FR-58 After a rebuild (a new puzzle, then a size change) one Enter still cycles a player cell exactly once', () => {
+  it('@trace FR-60 After a rebuild (a new puzzle, then a size change) one Enter still cycles a player cell exactly once', () => {
     const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
     pressNew(root);
     press(cellEl(root, 2, 3), 'Enter');
@@ -636,7 +636,7 @@ describe('review round 1: one cycle after a rebuild, and mounting keeps the focu
     expect(cellText(root, 2, 2), 'one Enter after a size change is one cycle').toBe('0');
   });
 
-  it('@trace FR-57 Mounting the page does not move DOM focus', () => {
+  it('@trace FR-59 Mounting the page does not move DOM focus', () => {
     const outside = document.createElement('button');
     outside.type = 'button';
     document.body.append(outside);

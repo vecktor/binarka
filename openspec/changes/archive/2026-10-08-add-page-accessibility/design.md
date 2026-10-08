@@ -3,7 +3,7 @@
 ## Goals
 
 - Make the play page operable and understandable without a mouse and without sight, as
-  NFR-9 and FR-57 to FR-63 require: APG grid pattern, Ukrainian names, one Tab stop,
+  NFR-9 and FR-59 to FR-65 require: APG grid pattern, Ukrainian names, one Tab stop,
   labelled select, status regions, a second violation cue, 3:1 contrast, visible focus.
 - Verify all of it in jsdom (Vitest) and by tests that read `src/ui/style.css` (A-26).
   Keep every existing `data-*` attribute and class, so slices 2 and 3 stay valid.
@@ -37,7 +37,7 @@
    `renderCell`, which every change already calls. `aria-readonly="true"` on givens only
    and `aria-invalid="true"` on violations only; both attributes are removed, not set to
    `"false"`, because absent is the default and a test can say "no cell has it".
-   A given's name does not say «задана»: `aria-readonly` carries it (FR-59 example).
+   A given's name does not say «задана»: `aria-readonly` carries it (FR-61 example).
 3. **Where the Tab stop is.** Exactly one cell has `tabindex="0"` always, and the Tab stop
    follows focus (APG: it is the last focused cell). A `focusin` listener on the board makes
    whichever cell receives focus the Tab stop, so a click, a key move, a mouse focus or a
@@ -52,11 +52,11 @@
    | Enter or Space | unchanged | unchanged |
    | hint, with or without a fill | unchanged | unchanged: the hint button keeps it |
 
-   Reasons: (1,1) is a stable entry point beyond the signed text (FR-57 does not say); a
+   Reasons: (1,1) is a stable entry point beyond the signed text (FR-59 does not say); a
    rebuild must never steal focus from the control the player just used (a keyboard user
    pressing «Нова головоломка» must stay on it). A hint does not move the Tab stop (the
    orchestrator's decision, 2026-10-06: the Tab stop is the last focused cell, and a hint
-   focuses nothing). A click moves the Tab stop to a given too because FR-58 says "a cell"
+   focuses nothing). A click moves the Tab stop to a given too because FR-60 says "a cell"
    and a real browser focuses a clicked `tabindex="-1"` cell; FR-33 still holds (text,
    `data-given`, classes, highlights and messages unchanged). jsdom does not focus on
    `click()`, so the click handler calls `focus()` itself (and `focusin` does the rest).
@@ -67,7 +67,7 @@
    Arrow keys, Home, End (Ctrl+Home, Ctrl+End), Enter, Space (`key === ' '`). Modifiers:
    Alt and Shift disable every handled key; Ctrl only gives Home and End their
    board meaning, and disables the rest. Meta combinations are not specified: Meta+Home
-   and Meta+End are "not required" (FR-57 names Ctrl; macOS laptops reach Ctrl+Home with
+   and Meta+End are "not required" (FR-59 names Ctrl; macOS laptops reach Ctrl+Home with
    Ctrl+Fn+Left). The implementation ignores Meta combinations so browser shortcuts keep
    working; no test asserts it. `preventDefault()` is called for every handled press, including an
    Arrow at an edge and Enter or Space on a given (otherwise Space scrolls the page),
@@ -119,7 +119,7 @@
    ADR-0005.
 8. **The given cue is a border, not the fill.** Today a given is bold digits on `#d1d5db`,
    whose fill is 1.41:1 against the page: it fails 3:1 and cannot be made to pass without
-   a dark cell that hurts the digit contrast. The cue FR-63 measures is therefore the given
+   a dark cell that hurts the digit contrast. The cue FR-65 measures is therefore the given
    border: 2px in `--color-given-border`, with bold digits; the fill stays as decoration
    (`#e5e7eb`) and the requirement says it is not the cue. Widths: ordinary 1px, given
    2px, violation 3px, so each state is distinguishable without colour. `.cell-violation`
@@ -130,7 +130,7 @@
 9. **Focus ring outside the cell.** `.cell:focus-visible`: `outline-style: solid`,
    `outline-width: 3px`, `outline-color: var(--color-focus)`, `outline-offset: 2px`,
    `position: relative`, `z-index: 1`. Outside, so the ring does not paint over the 3px
-   violation border (an inset ring would hide FR-62's cue while the cell is focused);
+   violation border (an inset ring would hide FR-64's cue while the cell is focused);
    `z-index` so a later neighbour does not cover it (2.4.11). Geometry: the cells are 2px
    apart, so with offset 2px the ring spans 2px to 5px from the cell's border edge: its
    inner side touches the page colour in the gap and its outer edge lands on the neighbour's
@@ -213,9 +213,9 @@ The delta merge touches requirements only. Archive with
 and in the SAME commit edit this non-requirement text of `openspec/specs/play-page/spec.md`:
 
 1. **Purpose:** add that the page is keyboard-operable and exposes grid roles, Ukrainian
-   names and status regions (WCAG 2.2 AA for FR-57 to FR-63), and that cells are focusable
+   names and status regions (WCAG 2.2 AA for FR-59 to FR-65), and that cells are focusable
    grid cells rather than plain clickable ones.
-2. **Ownership:** "FR-31 to FR-43" becomes "FR-31 to FR-43 and FR-57 to FR-63, and NFR-9";
+2. **Ownership:** "FR-31 to FR-43" becomes "FR-31 to FR-43 and FR-59 to FR-65, and NFR-9";
    NFR-5 now also traces the accessible names (board, cells, size label).
 3. **DOM contract:** board is `role="grid"` with `aria-label` «Поле N×N»; N `role="row"`
    children each holding the N cells of a row; cells are `role="gridcell"` with `tabindex`
@@ -227,12 +227,12 @@ and in the SAME commit edit this non-requirement text of `openspec/specs/play-pa
    (bubbling, cancelable `keydown`; `key` names). Also amend the sentence "Scenarios are
    decided from the DOM only (text content, classes, data attributes, element presence)"
    so it also allows roles and ARIA attributes, `tabindex`, `document.activeElement`,
-   computed style in jsdom, and the parsed text of `src/ui/style.css` (FR-62, FR-63).
+   computed style in jsdom, and the parsed text of `src/ui/style.css` (FR-64, FR-65).
 4. **Mount contract:** "the board, the size selector, buttons and both message regions are in
    `root`" stays; add that the label is in `root` too.
 5. **Exclusions:** replace "Keyboard play and screen-reader support have no requirements
    (A-20)" by "Keyboard play and the roles, names and states screen readers use are MVP
-   requirements (NFR-9, FR-57 to FR-63; A-20 is superseded). Real screen-reader output and
+   requirements (NFR-9, FR-59 to FR-65; A-20 is superseded). Real screen-reader output and
    real-browser rendering are not tested (A-26, TC-13)". Add the three items the user
    declined (autonomy-log row 34): 44 px phone targets (8×8 cells are 41 px at 375 px),
    confirm or Undo before progress is discarded, puzzle state in the URL. Keep "Mobile

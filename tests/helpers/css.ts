@@ -1,4 +1,4 @@
-// Stylesheet reader for the accessibility tests (FR-62, FR-63; design.md decision 10).
+// Stylesheet reader for the accessibility tests (FR-64, FR-65; design.md decision 10).
 //
 // `parseStyles(text)` injects the text into a <style> element of the jsdom document and walks the parsed CSSOM
 // (jsdom 29 uses css-tree), recursing into nested style rules (`&` resolved), @media, @supports, @layer,
@@ -207,10 +207,10 @@ export function px(value: string | undefined): number {
 }
 
 // ---------------------------------------------------------------------------------------------------------
-// Colour scan (FR-63)
+// Colour scan (FR-65)
 // ---------------------------------------------------------------------------------------------------------
 
-/** The literal pattern of the FR-63 requirement. */
+/** The literal pattern of the FR-65 requirement. */
 export const COLOUR_LITERAL = /#[0-9a-f]{3,8}\b|\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/i;
 
 /** The CSS Color 4 named colours. */
@@ -275,7 +275,7 @@ export interface ColourScan {
 }
 
 /**
- * The colour scan of FR-63 over every declaration outside `:root` rules, wherever it is in the file (top level, nested
+ * The colour scan of FR-65 over every declaration outside `:root` rules, wherever it is in the file (top level, nested
  * rules, at-rules, keyframes). Messages read `selector { property: value }` for the failure output.
  */
 export function scanColours(parsed: ParsedStyles): ColourScan {
@@ -302,7 +302,7 @@ export function scanColours(parsed: ParsedStyles): ColourScan {
   return scan;
 }
 
-/** Declarations of the rules whose selector contains `size-label` that hide the label (FR-60). */
+/** Declarations of the rules whose selector contains `size-label` that hide the label (FR-62). */
 export function hidingDeclarations(parsed: ParsedStyles): string[] {
   const hits: string[] = [];
   for (const rule of parsed.rules) {
@@ -323,7 +323,7 @@ export function hidingDeclarations(parsed: ParsedStyles): string[] {
 }
 
 // ---------------------------------------------------------------------------------------------------------
-// Tokens and contrast (FR-63)
+// Tokens and contrast (FR-65)
 // ---------------------------------------------------------------------------------------------------------
 
 export const TOKEN_NAMES = [
@@ -384,7 +384,7 @@ export interface ContrastPair {
 const pairs = (group: PairGroup, fg: string, bgs: string[], min: number): ContrastPair[] =>
   bgs.map((bg) => ({ group, fg: `--color-${fg}`, bg: `--color-${bg}`, min }));
 
-/** Every pair of FR-63: 3 for borders, cues and rings, 4.5 for text. */
+/** Every pair of FR-65: 3 for borders, cues and rings, 4.5 for text. */
 export const CONTRAST_PAIRS: ContrastPair[] = [
   ...pairs('cell-border', 'cell-border', ['page', 'cell-bg', 'given-bg'], 3),
   ...pairs('violation-cue', 'violation-border', ['page', 'cell-bg', 'violation-bg'], 3),

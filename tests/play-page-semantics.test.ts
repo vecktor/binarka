@@ -1,5 +1,5 @@
 // Play page: grid roles, Ukrainian names and states, the labelled size selector, the status regions and the DOM side of
-// the violation cue (FR-59, FR-60, FR-61, FR-62). Scenarios of
+// the violation cue (FR-61, FR-62, FR-63, FR-64). Scenarios of
 // openspec/changes/add-page-accessibility/specs/play-page/spec.md. Computed style comes from jsdom with
 // src/ui/style.css injected (tests/helpers/css.ts); screen-reader output is not tested (A-26).
 import { describe, expect, it } from 'vitest';
@@ -48,7 +48,7 @@ installPageLifecycle();
 
 const CELL_NAME = /^Рядок \d+, стовпець \d+: (порожня|0|1)$/;
 
-/** The name the page must give a cell from its position and its text: the rule of FR-59 written independently of the page. */
+/** The name the page must give a cell from its position and its text: the rule of FR-61 written independently of the page. */
 function expectedNames(root: HTMLElement): string[] {
   return allCells(root).map((c) =>
     cellName(Number(c.getAttribute('data-row')), Number(c.getAttribute('data-col')), c.textContent),
@@ -65,11 +65,11 @@ const attributeCells = (root: HTMLElement, attribute: string): string[] =>
     .map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}`);
 
 // ---------------------------------------------------------------------------------------------------------
-// FR-59: grid, rows, cells
+// FR-61: grid, rows, cells
 // ---------------------------------------------------------------------------------------------------------
 
 describe('the board, rows and cells have grid roles', () => {
-  it('@trace FR-59 Roles and name of the default board: grid «Поле 6×6», 6 rows of 6 gridcells in column order', () => {
+  it('@trace FR-61 Roles and name of the default board: grid «Поле 6×6», 6 rows of 6 gridcells in column order', () => {
     const root = mountFixture(BLANK);
     const board = q(root, '[data-board]');
     expect(board.getAttribute('role')).toBe('grid');
@@ -91,7 +91,7 @@ describe('the board, rows and cells have grid roles', () => {
     expect(Array.from(board.children).filter((child) => child.hasAttribute('data-cell'))).toHaveLength(0);
   });
 
-  it('@trace FR-59 The grid name follows the size: «Поле 4×4» with 4 rows of 4, then «Поле 8×8» with 8 rows of 8 (real generator)', () => {
+  it('@trace FR-61 The grid name follows the size: «Поле 4×4» with 4 rows of 4, then «Поле 8×8» with 8 rows of 8 (real generator)', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2, 3]).source });
     for (const n of [4, 8]) {
       selectSize(root, n);
@@ -108,7 +108,7 @@ describe('the board, rows and cells have grid roles', () => {
     }
   });
 
-  it('@trace FR-59 A failed size change keeps the grid and its name «Поле 6×6»', () => {
+  it('@trace FR-61 A failed size change keeps the grid and its name «Поле 6×6»', () => {
     const root = mountFixture(BLANK); // throws for size 8
     selectSize(root, 8);
     const board = q(root, '[data-board]');
@@ -118,7 +118,7 @@ describe('the board, rows and cells have grid roles', () => {
     expect(rowEls(root).every((r) => r.querySelectorAll('[data-cell]').length === 6)).toBe(true);
   });
 
-  it('@trace FR-59 The cell contract is unchanged and no descendant of a root has an id', () => {
+  it('@trace FR-61 The cell contract is unchanged and no descendant of a root has an id', () => {
     // a per-size generator, so the size change below really rebuilds the board (a fixed 6x6 fixture would make it fail)
     const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: WIN_PUZZLE, 4: BLANK_4 }) });
     const cells = allCells(root);
@@ -142,7 +142,7 @@ describe('the board, rows and cells have grid roles', () => {
     expect(root.querySelectorAll('[id]')).toHaveLength(0);
   });
 
-  it('@trace FR-59 Two mounts in one document have no duplicate id (and no id at all below the roots)', () => {
+  it('@trace FR-61 Two mounts in one document have no duplicate id (and no id at all below the roots)', () => {
     const a = mountFixture(BLANK);
     const b = mountFixture(BLANK);
     const ids = [...a.querySelectorAll('[id]'), ...b.querySelectorAll('[id]')].map((e) => e.id);
@@ -150,7 +150,7 @@ describe('the board, rows and cells have grid roles', () => {
     expect(document.querySelectorAll('[id]')).toHaveLength(0);
   });
 
-  it('@trace FR-59 @trace FR-34 The digit stays the cell text (FR-34) and the name is a separate attribute', () => {
+  it('@trace FR-61 @trace FR-34 The digit stays the cell text (FR-34) and the name is a separate attribute', () => {
     const root = mountFixture(PAIR_ROW);
     expect(cellText(root, 3, 1)).toBe('0'); // the digit stays the text content (FR-34), the name replaces it only for AT
     expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1: 0');
@@ -159,11 +159,11 @@ describe('the board, rows and cells have grid roles', () => {
 });
 
 // ---------------------------------------------------------------------------------------------------------
-// FR-59: names and states
+// FR-61: names and states
 // ---------------------------------------------------------------------------------------------------------
 
 describe('cells expose a Ukrainian name and their state', () => {
-  it('@trace FR-59 Names of a fresh board: «Рядок 2, стовпець 3: порожня», «Рядок 3, стовпець 1: 0», and every name matches the cell', () => {
+  it('@trace FR-61 Names of a fresh board: «Рядок 2, стовпець 3: порожня», «Рядок 3, стовпець 1: 0», and every name matches the cell', () => {
     const root = mountFixture(PAIR_ROW);
     expect(cellEl(root, 2, 3).getAttribute('aria-label')).toBe('Рядок 2, стовпець 3: порожня');
     expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1: 0');
@@ -172,7 +172,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     for (const name of actualNames(root)) expect(name).toMatch(CELL_NAME);
   });
 
-  it('@trace FR-59 The name follows a click, Enter and Space: 0, 1, порожня', () => {
+  it('@trace FR-61 The name follows a click, Enter and Space: 0, 1, порожня', () => {
     const root = mountFixture(BLANK);
     const cell = cellEl(root, 2, 3);
     clickCell(root, 2, 3);
@@ -185,7 +185,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(actualNames(root)).toEqual(expectedNames(root));
   });
 
-  it('@trace FR-59 The name follows a hint fill: the filled cell ends with its digit', () => {
+  it('@trace FR-61 The name follows a hint fill: the filled cell ends with its digit', () => {
     const root = mountFixture(PAIR_ROW);
     expect(cellEl(root, 3, 3).getAttribute('aria-label')).toBe('Рядок 3, стовпець 3: порожня');
     pressHint(root);
@@ -194,7 +194,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(actualNames(root)).toEqual(expectedNames(root));
   });
 
-  it('@trace FR-59 A new puzzle and a size change give fresh names (no name of the old board survives)', () => {
+  it('@trace FR-61 A new puzzle and a size change give fresh names (no name of the old board survives)', () => {
     const spy = generateSpy((i) => (i === 0 ? PAIR_ROW : BLANK));
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: spy.generate });
     expect(cellEl(root, 3, 1).getAttribute('aria-label')).toBe('Рядок 3, стовпець 1: 0');
@@ -207,7 +207,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(actualNames(root)).toEqual(expectedNames(root));
   });
 
-  it('@trace FR-59 A size change gives names for the new board: 16 names «Рядок R, стовпець C: …», the given at 2,1 reads 0', () => {
+  it('@trace FR-61 A size change gives names for the new board: 16 names «Рядок R, стовпець C: …», the given at 2,1 reads 0', () => {
     const root = mountPage({
       seedSource: seedQueue([1, 2]).source,
       generate: generatorBySize({ 6: BLANK, 4: PAIR_4 }),
@@ -219,7 +219,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(cellEl(root, 4, 4).getAttribute('aria-label')).toBe('Рядок 4, стовпець 4: порожня');
   });
 
-  it('@trace FR-59 Givens are read-only and other cells are not: aria-readonly="true" on givens only, also after a click and a hint fill', () => {
+  it('@trace FR-61 Givens are read-only and other cells are not: aria-readonly="true" on givens only, also after a click and a hint fill', () => {
     const root = mountFixture(PAIR_ROW);
     const givens = ['3,1', '3,2'];
     expect(attributeCells(root, 'aria-readonly')).toEqual(givens);
@@ -236,7 +236,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(attributeCells(root, 'aria-readonly')).toEqual(givens);
   });
 
-  it('@trace FR-59 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"', () => {
+  it('@trace FR-61 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"', () => {
     const root = mountFixture(PAIR_LEFT);
     expect(attributeCells(root, 'aria-invalid')).toEqual([]);
     clickCell(root, 4, 1);
@@ -248,7 +248,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     }
   });
 
-  it('@trace FR-59 @trace FR-38 The invalid state is removed with the highlight, and the attribute is absent, never "false"', () => {
+  it('@trace FR-61 @trace FR-38 The invalid state is removed with the highlight, and the attribute is absent, never "false"', () => {
     const root = mountFixture(PAIR_LEFT);
     clickCell(root, 4, 1);
     expect(attributeCells(root, 'aria-invalid')).toHaveLength(3);
@@ -258,7 +258,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(root.querySelectorAll('[aria-invalid="false"]')).toHaveLength(0);
   });
 
-  it('@trace FR-59 @trace FR-36 A line with too many of one digit is invalid as a whole: all six cells of the row, nothing outside', () => {
+  it('@trace FR-61 @trace FR-36 A line with too many of one digit is invalid as a whole: all six cells of the row, nothing outside', () => {
     const root = mountFixture(BLANK);
     setRow(root, 1, '0 0 1 0 1 .'); // three 0 and two 1: no rule is broken
     expect(violationCells(root)).toEqual([]);
@@ -270,7 +270,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(attributeCells(root, 'aria-invalid')).toEqual(row1);
   });
 
-  it('@trace FR-59 @trace FR-37 Violating givens are invalid at once, each also read-only (DIRTY_GIVENS)', () => {
+  it('@trace FR-61 @trace FR-37 Violating givens are invalid at once, each also read-only (DIRTY_GIVENS)', () => {
     const root = mountFixture(DIRTY_GIVENS);
     expect(attributeCells(root, 'aria-invalid')).toEqual(['1,1', '1,2', '1,3']);
     for (const col of [1, 2, 3]) {
@@ -281,7 +281,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     expect(attributeCells(root, 'aria-readonly')).toEqual(['1,1', '1,2', '1,3']);
   });
 
-  it('@trace FR-62 The violation cue is also in the DOM: each of the three cells has cell-violation and aria-invalid, and no other cell has the attribute', () => {
+  it('@trace FR-64 The violation cue is also in the DOM: each of the three cells has cell-violation and aria-invalid, and no other cell has the attribute', () => {
     const root = mountFixture(PAIR_ROW);
     clickCell(root, 3, 3);
     const three = ['3,1', '3,2', '3,3'];
@@ -298,11 +298,11 @@ describe('cells expose a Ukrainian name and their state', () => {
 });
 
 // ---------------------------------------------------------------------------------------------------------
-// FR-60: the labelled size selector
+// FR-62: the labelled size selector
 // ---------------------------------------------------------------------------------------------------------
 
 describe('the size selector has a visible Ukrainian label', () => {
-  it('@trace FR-60 The select is labelled: one wrapping label.size-label with the own text «Розмір поля»', () => {
+  it('@trace FR-62 The select is labelled: one wrapping label.size-label with the own text «Розмір поля»', () => {
     const root = mountFixture(BLANK);
     const select = sizeSelect(root);
     expect(select.labels).toHaveLength(1);
@@ -325,7 +325,7 @@ describe('the size selector has a visible Ukrainian label', () => {
     expect(select.hasAttribute('aria-labelledby')).toBe(false);
   });
 
-  it('@trace FR-60 The label is visible: computed display and visibility of the label and its span, and no hiding declaration', () => {
+  it('@trace FR-62 The label is visible: computed display and visibility of the label and its span, and no hiding declaration', () => {
     injectPageStyles();
     const root = mountFixture(BLANK);
     const label = q(root, 'label.size-label');
@@ -340,7 +340,7 @@ describe('the size selector has a visible Ukrainian label', () => {
     expect(hidingDeclarations(parsed)).toEqual([]);
   });
 
-  it('@trace FR-60 Two mounts label their own selects, with no id or for anywhere below either root', () => {
+  it('@trace FR-62 Two mounts label their own selects, with no id or for anywhere below either root', () => {
     const a = mountFixture(BLANK);
     const b = mountFixture(BLANK);
     for (const root of [a, b]) {
@@ -352,7 +352,7 @@ describe('the size selector has a visible Ukrainian label', () => {
     expect(sizeSelect(a).labels[0]).not.toBe(sizeSelect(b).labels[0]);
   });
 
-  it('@trace FR-60 @trace FR-43 The label does not break the selector: options 4, 6, 8 with their labels, value 6 then 4, no aria-label', () => {
+  it('@trace FR-62 @trace FR-43 The label does not break the selector: options 4, 6, 8 with their labels, value 6 then 4, no aria-label', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
     const select = sizeSelect(root);
     expect(Array.from(select.options).map((o) => o.value)).toEqual(['4', '6', '8']);
@@ -368,11 +368,11 @@ describe('the size selector has a visible Ukrainian label', () => {
 });
 
 // ---------------------------------------------------------------------------------------------------------
-// FR-61: status regions
+// FR-63: status regions
 // ---------------------------------------------------------------------------------------------------------
 
 describe('the hint and win messages are status regions', () => {
-  it('@trace FR-61 Present, empty and typed at mount: role="status", no tabindex, exactly two status elements in the root', () => {
+  it('@trace FR-63 Present, empty and typed at mount: role="status", no tabindex, exactly two status elements in the root', () => {
     const root = mountFixture(BLANK);
     for (const name of ['hint', 'win']) {
       const region = q(root, `[data-message="${name}"]`);
@@ -383,7 +383,7 @@ describe('the hint and win messages are status regions', () => {
     expect(root.querySelectorAll('[role="status"]')).toHaveLength(2);
   });
 
-  it('@trace FR-61 The same two elements carry every message: hint, click, new puzzle, size change and a win', () => {
+  it('@trace FR-63 The same two elements carry every message: hint, click, new puzzle, size change and a win', () => {
     const root = mountPage({
       seedSource: seedQueue([1, 2, 3, 4]).source,
       generate: generatorBySize({ 6: PAIR_ROW, 4: WIN_4 }),
@@ -418,7 +418,7 @@ describe('the hint and win messages are status regions', () => {
     expect(winRegion.textContent).toBe(WIN_MESSAGE);
   });
 
-  it('@trace FR-61 Focus never moves to a message: after a hint press and after a hint fill that wins, it stays on the hint button', () => {
+  it('@trace FR-63 Focus never moves to a message: after a hint press and after a hint fill that wins, it stays on the hint button', () => {
     const root = mountFixture(PAIR_ROW);
     const hintButton = q(root, '[data-action="hint"]');
     hintButton.focus();
@@ -437,7 +437,7 @@ describe('the hint and win messages are status regions', () => {
     expectActive(button, 'after the hint fill that wins');
   });
 
-  it('@trace FR-61 A click that wins leaves the focus on the clicked cell, not on a status region', () => {
+  it('@trace FR-63 A click that wins leaves the focus on the clicked cell, not on a status region', () => {
     const root = mountFixture(WIN_PUZZLE);
     fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE), [[4, 1]]);
     expect(winMessage(root)).toBe('');
