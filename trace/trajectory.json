@@ -94,7 +94,7 @@
     {
       "slice": "2026-10-08-update-win-apostrophe",
       "reviewEvidence": "clean",
-      "trailerCommits": 1,
+      "trailerCommits": 2,
       "libDomains": [
         "ui"
       ],
