@@ -360,7 +360,7 @@ Traces: FR-63, FR-40, FR-41, FR-71
 #### Scenario: The same elements carry every message
 
 - **GIVEN** a mounted page, with the two region elements remembered by the test
-- **WHEN** the player presses the hint button, then clicks a cell, then presses the new puzzle button, then selects 4×4, then solves a fixture board so the win message shows
+- **WHEN** the player presses the hint button, then clicks a cell, then presses the new puzzle button and confirms «Так, почати» (the board has entries, FR-67), then selects 4×4, then solves a fixture board so the win message shows
 - **THEN** after each step `[data-message="hint"]` and `[data-message="win"]` are the same element objects as at mount, still connected to the root, still `role="status"`, and the hint region shows the engine sentence and the win region shows «Вітаємо, головоломку розв'язано!» when the earlier requirements say so
 
 #### Scenario: Focus never moves to a message
@@ -496,6 +496,7 @@ Traces: FR-65
 - **WHEN** the test searches the text for `!important` and collects the rules whose selector contains `:has(`
 - **THEN** there is no `!important`, anywhere
 - **AND** exactly one rule contains `:has(`, the subject of its selector (its last compound selector) is `.message-idle`, and its only declaration is `display: none`
+- **AND** the raw text of the file contains `:has(` exactly once, so no rule the parser drops and no at-rule prelude holds another
 
 ### Requirement: The size buttons set their own colours and the board disables double-tap zoom
 

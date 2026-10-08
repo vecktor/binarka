@@ -255,6 +255,7 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
     expect(parsed.rules.flatMap((r) => r.declarations.filter((d) => d.important))).toEqual([]);
     const withHas = parsed.rules.filter((r) => r.selectors.some((s) => s.includes(':has(')));
     expect(withHas, 'exactly one rule contains :has(').toHaveLength(1);
+    expect(readStyleText().match(/:has\(/gi) ?? [], 'the raw text holds :has( exactly once (no rule the parser drops, no at-rule prelude)').toHaveLength(1);
     const rule = withHas[0];
     expect.assert(rule !== undefined, 'premise: one rule contains :has(');
     expect(rule.selectors.map(subjectOf), 'the subject of its selector is .message-idle').toEqual(['.message-idle']);

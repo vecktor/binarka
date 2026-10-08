@@ -1,0 +1,65 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "reconcile-ux-accessibility",
+  "change": "reconcile-ux-accessibility",
+  "baseRef": "b4d338e",
+  "headRef": "85485ac",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 5,
+      "contested": 1,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 6,
+      "contested": 2,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 1
+    }
+  },
+  "confirmedTitles": [
+    "ss-19 rewrite dropped the raw-text :has( check, so the one-exception rule can be bypassed by rules css-tree fails to parse",
+    "frontend-conventions gap table still lists G3, G4 and G6 as open, though the code now closes them",
+    "tasks.md 1.8 tally of the 81 failing tests does not match the 1.4 table (sem-23 moved from U to R; sem-24 is not among the red)",
+    "T5 lost three modifier cases from kb-21 (Ctrl+Arrow, Alt+Home, Shift+Home) that the requirement sentence still covers",
+    "Idle-line and mini-sep text use a border token, so their text contrast is not covered by the FR-65 contrast tests",
+    "Scenario 'A new board has fresh names' is only partly tested: no test covers a size change on a board with entries followed by a confirm",
+    "Tasks 3.5, 3.6a and 3.7 are ticked, but the evidence they name (section 5) is unticked, uncommitted and partly missing",
+    "Scenario 'The same elements carry every message' does not say 'and confirms', but sem-23 now confirms through startNewPuzzle",
+    "sem-10's second change (pressNew to startNewPuzzle) is missing from its own tasks.md row",
+    "D2 mapping puts a border token on text (.message-idle, .mini-sep use --color-control-border), and no test guards its 4.5:1 text contrast",
+    "frontend-conventions.md gap table still lists G3 (and the G4/G6 'Now' column) as open after this change fixed them"
+  ],
+  "contestedTitles": [
+    "aria-invalid on a native <button> may be unsupported or deprecated in ARIA 1.2, so the only violation state assistive tech gets may be ignored",
+    "Coverage summary: 64 scenarios: 63 implemented, 1 partial, 0 missing, 0 contradicted",
+    "FR-60's real Enter/Space path (and FR-38's key path, whose kb-33 test was removed) rests only on browser step 5.4a, which is still unticked"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-09",
+  "runId": "wf_0cb9028b-e5e",
+  "persistedBy": "orchestrator, from the run's result (the run wrote no review-findings.json, reviewEvidence null); first run of reconcile-ux-accessibility, before the fix round",
+  "dispositions": {
+    "fixed": [
+      "ss-19 raw-text :has( count restored (test + delta scenario)",
+      "frontend-conventions gap table G3 to G6 done, G8 partly, status line, text-contrast line",
+      "tasks.md 1.8 tally (47 R, 24 X, 10 U)",
+      "T5 modifier cases Ctrl+Arrow, Alt+Home, Shift+Home restored",
+      "sem-11 now has a player entry before the size change, so the confirm path of the scenario is tested (major)",
+      "sem-23 scenario says 'and confirms'",
+      "sem-10 row gives the FR-67 reason",
+      "section 5 evidence committed with the fix round; 5.3 deviation recorded"
+    ],
+    "declined": [
+      "idle-line and rule-separator text contrast test: text contrast (WCAG 1.4.3) is not in the signed NFR-9 list, so a new test would not derive from a changed requirement (the user's rule); measured 4.63:1 on the page, unchanged value under D2; noted for G2 in docs/frontend-conventions.md"
+    ],
+    "contested_kept": [
+      "aria-invalid on a native button: kept by the user's decision of 2026-10-09 (autonomy-log row 78); the browser check read the attribute from the DOM, not from the accessibility tree",
+      "FR-60 real keys and FR-38's key path rest on browser evidence (docs/qa/reconcile-ux-accessibility/README.md, 5.4a)"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # Frontend conventions — Бінарка (HTML, CSS, DOM, accessibility)
 
-Status: **ACCEPTED** by the user on 2026-10-06, with Vercel's guidelines vendored at `.vendor-docs/web-interface-guidelines/AGENTS.md`. ADR-0004 covers how this file is loaded. Reconciled with the UX model by the change `reconcile-ux-accessibility` (signed FR-59 to FR-65, NFR-9; the board is a labelled group of button cells, Tab only). G1, G2 and G9 in §9 are done in that model; the other gaps stay open.
+Status: **ACCEPTED** by the user on 2026-10-06, with Vercel's guidelines vendored at `.vendor-docs/web-interface-guidelines/AGENTS.md`. ADR-0004 covers how this file is loaded. Reconciled with the UX model by the change `reconcile-ux-accessibility` (signed FR-59 to FR-65, NFR-9; the board is a labelled group of button cells, Tab only). G1 to G6 and G9 in §9 are done in that model, G8 partly; G7 stays open.
 
 Applies to `index.html`, `src/main.ts` and `src/ui/**` (TypeScript and CSS). TypeScript, tooling and test rules stay in `docs/coding-conventions.md`. Vite's own handling of HTML, CSS and assets is in §7 of that file.
 
@@ -81,15 +81,15 @@ Measured 2026-10-06 on `b748b11`. The contrast ratios were computed with the WCA
 |---|---|---|---|
 | G1 | §2, WCAG 2.1.1 and 4.1.2 | **done** (reconcile-ux-accessibility): cells are `<button>`s in a labelled group, with names and states | rules 5–9 |
 | G2 | rule 10, WCAG 3.3.2 | **done**: the size control is a radiogroup of buttons named «Розмір поля» | rules 1 and 10 |
-| G3 | rule 11, WCAG 4.1.3 | the hint and win paragraphs are not live regions | `role="status"` |
-| G4 | rule 14, WCAG 1.4.1 | violations are shown by colour only (fill 1.45:1 against white) | a second cue plus `aria-invalid`; for example a 2 px `#b91c1c` border (4.47:1 or better) |
-| G5 | rule 13, WCAG 1.4.11 | cell border `#9ca3af` is 2.43:1 against the page and 2.54:1 against a cell | `#6b7280` (4.63:1 against the page, 3.28:1 against a given cell) |
-| G6 | rule 12, WCAG 2.4.7 | no focus style; cells cannot take focus | a `:focus-visible` ring, together with G1 |
+| G3 | rule 11, WCAG 4.1.3 | **done** (reconcile-ux-accessibility): the hint and win paragraphs are `role="status"`, rendered while empty | `role="status"` |
+| G4 | rule 14, WCAG 1.4.1 | **done**: a 3 px `--color-violation-border` border plus `aria-invalid="true"` | a second cue plus `aria-invalid`; for example a 2 px `#b91c1c` border (4.47:1 or better) |
+| G5 | rule 13, WCAG 1.4.11 | **done**: cell border `--color-cell-border` `#6b7280` | `#6b7280` (4.63:1 against the page, 3.28:1 against a given cell) |
+| G6 | rule 12, WCAG 2.4.7 | **done**: cells are buttons; `.cell:focus-visible` and `button:focus-visible` rings | a `:focus-visible` ring, together with G1 |
 | G7 | rule 16 (Vercel 44 px) | 8×8 cells at 375 px are 41 px | accept and record, or reduce the gaps |
-| G8 | §8 | progress is discarded silently; URL has no state | product decision |
+| G8 | §8 | partly done: FR-67 asks before entries are discarded; the URL has no state (declined, A-28) | product decision |
 | G9 | rule 15 (Vercel) | **done**: there is no `<select>`; the size buttons set `color` and `background-color` tokens | rule 15 |
 
-Already fine: all text contrast (5.74:1 or better); `lang="uk"`; zoom allowed; buttons are native; 8×8 targets are above WCAG's 24 px; layout works at 375 px.
+Already fine: all text contrast (4.63:1 or better: the idle line and the rule-example separator use `--color-control-border` `#6b7280` on the page; text contrast is not in NFR-9's list and is not tested, a note for G2); `lang="uk"`; zoom allowed; buttons are native; 8×8 targets are above WCAG's 24 px; layout works at 375 px.
 
 ## Sources (checked 2026-10-06)
 

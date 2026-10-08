@@ -232,6 +232,7 @@ describe('cells expose a Ukrainian name and their state', () => {
       seedSource: seedQueue([1, 2]).source,
       generate: generatorBySize({ 6: BLANK, 4: PAIR_4 }),
     });
+    clickCell(root, 1, 1); // a player entry, so the size change asks and selectSize confirms «Так, почати» (FR-67)
     selectSize(root, 4);
     expect(allCells(root)).toHaveLength(16);
     expect(actualNames(root)).toEqual(expectedNames(root));

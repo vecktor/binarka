@@ -156,6 +156,9 @@ describe('every cell is its own Tab stop and the page handles no key on the boar
         ['End', { ctrlKey: true }],
         ['ArrowRight', { shiftKey: true }],
         ['ArrowRight', { altKey: true }],
+        ['ArrowRight', { ctrlKey: true }],
+        ['Home', { altKey: true }],
+        ['Home', { shiftKey: true }],
       ];
       for (const [key, init] of onCell) {
         pressNotPrevented(cell, key, init);
