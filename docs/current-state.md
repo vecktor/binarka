@@ -6,7 +6,7 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-08 21:39:16 (UTC+5:30; Kyiv 19:09 on 2026-10-08)
+- **Date and time:** 2026-10-08 23:42:00 (UTC+5:30; Kyiv 21:12 on 2026-10-08)
 - **Current phase:** Phase 4
 - **Last completed gate:** G3
 - **Active change:** none (slices 1 to 6 are archived); the accessibility line is merged into `main` (Progress)
@@ -21,7 +21,7 @@
 - **Next task:**
   1. **The UX line** (Open items; `docs/qa/worktree-survey-2026-10-08.md`): first the user's product decision about its page model, then its renumbering against this `main` and a real merge.
   2. `da31f60` (branch `claude/bold-lalande-74a0ed`, unsigned): the user decides whether it is kept (renumber its row 41 and M16, sign, rebase) or abandoned.
-  3. Open from the review, not caused by the merge (they were already on `main`): FR-58 says a reset clears every highlight, while the Reset requirement in the spec keeps the highlights that the givens themselves cause (the code and the tests follow the spec); amending FR-58 is the user's call. The plan's dependency graph and schedule (sections 3 and 6) stop before slices 4 to 6.
+  3. Open from the review, not caused by the merge: the plan's dependency graph and schedule (sections 3 and 6) stop before slices 4 to 6. Settled: FR-58 says a reset clears every highlight, while the Reset requirement in the spec keeps the highlights that the givens themselves cause; the user accepted the difference on 2026-10-08 (autonomy-log row 48), so FR-58 keeps its wording and the spec, the code and the tests stay as they are.
   4. ADR-0004 path rule: confirmed for `src/ui/**` on 2026-10-08 (`docs/adr/0004-scoped-conventions.md`, Decision record); `index.html` alone is not separately confirmed.
   5. From `main`'s handoff, left for later (the lecturer accepts late work): the video (BC-8 deliverable, NOT delivered on 2026-10-04), G6 and G7 (below), the optional global review-gate and trajectory-eval.
   6. Then `npm run retro:digest`, the PR text and the README branch.
