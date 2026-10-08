@@ -57,8 +57,8 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   buttons.append(hintButton, resetButton, newButton);
 
   const idleMessage = el('p', { 'data-message': 'idle', class: 'message message-idle' }, IDLE);
-  const hintMessage = el('p', { 'data-message': 'hint', class: 'message' });
-  const winMessage = el('p', { 'data-message': 'win', class: 'message message-win' });
+  const hintMessage = el('p', { 'data-message': 'hint', class: 'message', role: 'status' });
+  const winMessage = el('p', { 'data-message': 'win', class: 'message message-win', role: 'status' });
   const messages = el('div', { class: 'messages' });
   messages.append(idleMessage, hintMessage, winMessage);
 
@@ -132,7 +132,14 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
       }
     }
     for (let r = 0; r < n; r++) {
-      for (let c = 0; c < n; c++) cellEls[r]?.[c]?.classList.toggle('cell-violation', marked.has(`${r},${c}`));
+      for (let c = 0; c < n; c++) {
+        const cellEl = cellEls[r]?.[c];
+        if (!cellEl) continue;
+        const isMarked = marked.has(`${r},${c}`);
+        cellEl.classList.toggle('cell-violation', isMarked);
+        if (isMarked) cellEl.setAttribute('aria-invalid', 'true');
+        else cellEl.removeAttribute('aria-invalid');
+      }
     }
   }
 
@@ -164,7 +171,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     hinted = null; // the old cell elements are replaced below
     givens = copyGrid(puzzle.givens);
     board = copyGrid(puzzle.givens);
-    const boardEl = el('div', { 'data-board': '', 'data-size': String(n), class: 'board' });
+    const boardEl = el('div', { 'data-board': '', 'data-size': String(n), class: 'board', role: 'group', 'aria-label': sizeLabel(n) });
     cellEls = [];
     for (let r = 0; r < n; r++) {
       const rowEls: HTMLElement[] = [];

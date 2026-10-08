@@ -102,7 +102,9 @@ h1 {
 
 .cell-hinted {
   /* Non-colour cue: dashed border, italic and bold digit (design/v0/app/binarka.css .cell-hinted). */
-  border: 2px dashed #4b5563;
+  border-width: 2px;
+  border-style: dashed;
+  border-color: var(--color-given-border);
   font-style: italic;
   font-weight: 700;
 }
@@ -143,8 +145,7 @@ button {
   cursor: pointer;
 }
 
-button:focus-visible,
-select:focus-visible {
+button:focus-visible {
   outline-style: solid;
   outline-width: 3px;
   outline-color: var(--color-focus);
@@ -157,11 +158,12 @@ select:focus-visible {
 }
 
 .message:empty {
-  display: none;
+  min-height: 0;
+  margin: 0;
 }
 
 .message-idle {
-  color: #6b7280;
+  color: var(--color-control-border);
   font-size: 0.875rem;
 }
 
@@ -183,9 +185,11 @@ select:focus-visible {
   padding: 3px;
   gap: 3px;
   box-sizing: border-box;
-  border: 1px solid #9ca3af;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-control-border);
   border-radius: 8px;
-  background: #fff;
+  background-color: var(--color-control-bg);
 }
 
 .size-control button {
@@ -193,16 +197,18 @@ select:focus-visible {
   min-width: 0;
   min-height: 2.75rem;
   padding: 0 8px;
-  border: 2px solid transparent;
-  background: transparent;
-  color: #4b5563;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  background-color: var(--color-control-bg);
+  color: var(--color-text);
   white-space: nowrap;
 }
 
 .size-control button[aria-checked='true'] {
-  border-color: #2563eb;
-  background: #dbeafe;
-  color: #1f2937;
+  border-color: var(--color-focus);
+  background-color: var(--color-given-bg);
+  color: var(--color-text);
   font-weight: 700;
 }
 
@@ -213,15 +219,18 @@ select:focus-visible {
   margin: auto;
   padding: 20px;
   box-sizing: border-box;
-  border: 1px solid #9ca3af;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-control-border);
   border-radius: 12px;
-  background: #fff;
-  color: #1f2937;
+  background-color: var(--color-control-bg);
+  color: var(--color-text);
   text-align: left;
 }
 
 .confirm::backdrop {
-  background: rgba(0, 0, 0, 0.45);
+  background-color: var(--color-text);
+  opacity: 0.45;
 }
 
 .confirm p {
@@ -253,16 +262,18 @@ select:focus-visible {
   padding: 20px 16px 16px;
   box-sizing: border-box;
   overflow-y: auto;
-  border: 1px solid #d1d5db;
-  border-bottom: none;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: var(--color-given-bg);
   border-radius: 12px 12px 0 0;
-  background: #fff;
-  color: #1f2937;
+  background-color: var(--color-control-bg);
+  color: var(--color-text);
   text-align: left;
 }
 
 .rules::backdrop {
-  background: rgba(0, 0, 0, 0.3);
+  background-color: var(--color-text);
+  opacity: 0.3;
 }
 
 @media (min-width: 48rem) {
@@ -273,7 +284,9 @@ select:focus-visible {
     height: fit-content;
     margin: auto;
     padding: 24px;
-    border: 1px solid #d1d5db;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-given-bg);
     border-radius: 12px;
   }
 }
@@ -294,7 +307,9 @@ select:focus-visible {
   flex-direction: column;
   gap: 6px;
   padding: 8px 0;
-  border-top: 1px solid #e5e7eb;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--color-given-bg);
   line-height: 1.4;
 }
 
@@ -310,20 +325,24 @@ select:focus-visible {
   justify-content: center;
   width: 1.75rem;
   height: 1.75rem;
-  border: 1px solid #9ca3af;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-control-border);
   border-radius: 4px;
-  background: #f9fafb;
+  background-color: var(--color-page);
 }
 
 .mini-answer {
-  border: 2px dashed #2563eb;
+  border-width: 2px;
+  border-style: dashed;
+  border-color: var(--color-focus);
   font-style: italic;
   font-weight: 700;
 }
 
 .mini-sep {
   padding: 0 8px;
-  color: #6b7280;
+  color: var(--color-control-border);
   font-weight: 700;
 }
 
