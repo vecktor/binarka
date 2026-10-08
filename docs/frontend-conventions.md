@@ -15,7 +15,7 @@ MDN is the reference for the APIs themselves.
 
 ## 1. HTML and semantics
 
-1. Use native elements before ARIA: `<button type="button">` for actions, `<select>` for the size, and a `<label for>` for every form control. Use ARIA roles only where no native element fits (the board, §2). Sources: Vercel "Prefer native semantics … before ARIA"; WCAG 4.1.2.
+1. Use native elements before ARIA: `<button type="button">` for actions, `<select>` for the size, and a visible `<label>` for every form control. The label is either `<label for>`, or a wrapping `<label>` when the same markup can be mounted more than once in a document. The play page mounts per root, so ids would collide and a wrapping label is used (amended 2026-10-06, slice 4 critic). Use ARIA roles only where no native element fits (the board, §2). Sources: Vercel "Prefer native semantics … before ARIA"; WCAG 4.1.2; MDN `<label>`.
 2. One `<h1>`, `lang="uk"`, an accurate `<title>`. Never disable zoom: no `user-scalable=no`, no `maximum-scale` (Vercel NEVER rule).
 3. Classes are for styling. `data-*` attributes are the scripting and test contract (the play-page spec's DOM contract): keep them when markup changes. Do not use ID selectors or `!important` in CSS (Google HTML/CSS guide).
 4. Build the DOM with `createElement` and `textContent`, never `innerHTML` (as in `docs/coding-conventions.md` §7).
@@ -82,7 +82,7 @@ Measured 2026-10-06 on `b748b11`. The contrast ratios were computed with the WCA
 | # | Rule | Now | Proposed fix |
 |---|---|---|---|
 | G1 | §2, WCAG 2.1.1 and 4.1.2 | cells are `<div>`s with only a click handler: no keyboard access, no role, name or state | APG grid (rules 5–9) |
-| G2 | rule 10, WCAG 3.3.2 | the size `<select>` has no label | a visible `<label for>`, for example «Розмір поля» |
+| G2 | rule 10, WCAG 3.3.2 | the size `<select>` has no label | a visible wrapping `<label>` «Розмір поля» (no ids, see rule 1) |
 | G3 | rule 11, WCAG 4.1.3 | the hint and win paragraphs are not live regions | `role="status"` |
 | G4 | rule 14, WCAG 1.4.1 | violations are shown by colour only (fill 1.45:1 against white) | a second cue plus `aria-invalid`; for example a 2 px `#b91c1c` border (4.47:1 or better) |
 | G5 | rule 13, WCAG 1.4.11 | cell border `#9ca3af` is 2.43:1 against the page and 2.54:1 against a cell | `#6b7280` (4.63:1 against the page, 3.28:1 against a given cell) |

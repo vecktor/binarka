@@ -51,6 +51,13 @@
     "FR-41": "MVP",
     "FR-42": "MVP",
     "FR-43": "MVP",
+    "FR-57": "MVP",
+    "FR-58": "MVP",
+    "FR-59": "MVP",
+    "FR-60": "MVP",
+    "FR-61": "MVP",
+    "FR-62": "MVP",
+    "FR-63": "MVP",
     "FR-44": "Future",
     "FR-45": "Future",
     "FR-46": "Future",
@@ -65,6 +72,7 @@
     "NFR-6": "MVP",
     "NFR-7": "Future",
     "NFR-8": "MVP",
+    "NFR-9": "MVP",
     "TC-1": "MVP",
     "TC-2": "MVP",
     "TC-3": "MVP",
@@ -495,66 +503,84 @@
     {
       "id": "FR-33",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
-        "tests/play-page-click-cycle.test.ts"
+        "tests/play-page-click-cycle.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts"
       ],
       "recordings": []
     },
     {
       "id": "FR-34",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
-        "tests/play-page-click-cycle.test.ts"
+        "tests/play-page-click-cycle.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
     },
     {
       "id": "FR-35",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
-        "tests/play-page-highlighting.test.ts"
+        "tests/play-page-highlighting.test.ts",
+        "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
     },
     {
       "id": "FR-36",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
-        "tests/play-page-highlighting.test.ts"
+        "tests/play-page-highlighting.test.ts",
+        "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
     },
     {
       "id": "FR-37",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
-        "tests/play-page-highlighting.test.ts"
+        "tests/play-page-highlighting.test.ts",
+        "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
     },
     {
       "id": "FR-38",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
-        "tests/play-page-highlighting.test.ts"
+        "tests/play-page-highlighting.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-semantics.test.ts"
       ],
       "recordings": []
     },
@@ -572,7 +598,8 @@
     {
       "id": "FR-40",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -585,7 +612,8 @@
     {
       "id": "FR-41",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -608,7 +636,8 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -616,6 +645,7 @@
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
+        "tests/play-page-semantics.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
@@ -623,6 +653,177 @@
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-57",
+      "specs": [
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-rendering.test.ts",
+        "tests/play-page-rendering.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-58",
+      "specs": [
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-59",
+      "specs": [
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-page-text.test.ts",
+        "tests/play-page-page-text.test.ts",
+        "tests/play-page-rendering.test.ts",
+        "tests/play-page-rendering.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-stylesheet.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-60",
+      "specs": [
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-page-text.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-61",
+      "specs": [
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-62",
+      "specs": [
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts"
+      ],
+      "recordings": []
+    },
+    {
+      "id": "FR-63",
+      "specs": [
+        "openspec/changes/add-page-accessibility/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-stylesheet.test.ts"
       ],
       "recordings": []
     }
@@ -816,6 +1017,38 @@
     {
       "check": "recording-evidence",
       "msg": "FR-43 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-57 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-58 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-59 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-60 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-61 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-62 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-63 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-page-accessibility\" is not archived"
     }
   ]
 }

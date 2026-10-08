@@ -1,6 +1,6 @@
 # MVP Capability Change Plan
 
-Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3.
+Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24); AMENDED on 2026-10-06 by the user's decision: slice 4 `add-page-accessibility` added for NFR-9 and FR-57 to FR-63 (autonomy-log row 34)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3.
 
 Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amendment re-signed 18:45), and the baseline specs `openspec/specs/puzzle-engine/spec.md` and `openspec/specs/play-page/spec.md`.
 
@@ -18,6 +18,7 @@ Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amend
 | 1 | `add-puzzle-engine` | `puzzle-engine` | FR-1 to FR-17, FR-19 to FR-26, FR-28 to FR-30, FR-49 to FR-54 (34) | NFR-1, NFR-2, NFR-3, NFR-4, NFR-5 (hint sentences), NFR-6 (eval, graded after slice 2), NFR-8 | — | serialize |
 | 2 | `add-play-page` | `play-page` | FR-31 to FR-42 (12) | NFR-5 (page text) | 1 | serialize (consumes the slice 1 interface) |
 | 3 | `add-size-selector` (added 21:00, user decision) | `play-page` | FR-43 (1) | NFR-5 (option labels) | 2 | serialize |
+| 4 | `add-page-accessibility` (added 2026-10-06, user decision) | `play-page` | FR-57 to FR-63 (7) | NFR-9; NFR-5 (accessible names) | 3 | serialize |
 
 **Cross-cutting rules every change honours:** TC-7 and TC-8 (engine is pure TypeScript, no DOM, no `Math.random`), TC-3 (tests in `tests/`, `*.test.ts`, `@trace` with plain IDs), TC-10 (no new dependencies without the user), test-first per slice (AGENTS.md), and "exactly one solution" is never weakened.
 
@@ -71,6 +72,29 @@ flowchart LR
 - `npm run gate:status`, `npm run retro:digest`, handoff.
 - **Gates that will not pass tonight, by design, and are reported as such:** G7 runs `traceability --release --strict-recordings`, which needs a recording manifest for every MVP FR and accepts no waiver; no recordings are built (Playwright is not installed, NFR-7 is Future), so **G7 will report FAIL**. Recordings and visual checks stay NOT-EARNED. G5 (coverage) is attempted, not promised.
 
+### 4.5 `add-page-accessibility` (added 2026-10-06 by the user's decision, autonomy-log row 34)
+
+- **Scope in:** the play page follows `docs/frontend-conventions.md` and fixes gaps G1–G6 and G9 of its §9, as FR-57 to FR-63 and NFR-9 require:
+  - the board as a WAI-ARIA grid with one Tab stop and arrow, Home/End and Ctrl+Home/End keys;
+  - Enter or Space cycles a cell;
+  - Ukrainian accessible names, `aria-readonly` on givens and `aria-invalid` on violations;
+  - a visible «Розмір поля» label;
+  - `role="status"` messages;
+  - a heavier violation border;
+  - at least 3:1 contrast for borders, cues and focus;
+  - `:focus-visible` rings, an explicit select text colour, and `touch-action: manipulation`.
+- **Scope out:** 44 px phone targets (G7), confirm or Undo before discarding progress and state in the URL (G8), real-browser and screen-reader tests (TC-13, NFR-7), and axe (`scripts/check-a11y.mjs` needs Playwright).
+- **Baseline spec impact:** `play-page/spec.md` is amended together with the change:
+  - ADDED requirements for FR-57 to FR-63 and NFR-9;
+  - MODIFIED requirements wherever the DOM contract or existing scenarios change;
+  - the non-requirement text: the DOM contract, ownership, and the Exclusions line that cites A-20, which is superseded.
+- **Definition of done:**
+  - tests first and seen red;
+  - lint, test:run, build and strict validation pass;
+  - a keyboard check in the built-in browser (TC-13 smoke);
+  - a per-slice review with clean evidence in `review-findings.json`;
+  - archived with `Slice: add-page-accessibility` commits.
+
 ## 5. FR coverage check
 
 | FR | Slice | FR | Slice | FR | Slice |
@@ -91,8 +115,11 @@ flowchart LR
 | FR-14 | 1 | FR-32 | 2 | FR-54 | 1 |
 | FR-15 | 1 | FR-33 | 2 | | |
 | FR-16 | 1 | FR-34 | 2 | FR-43 | 3 |
+| FR-57 | 4 | FR-60 | 4 | FR-63 | 4 |
+| FR-58 | 4 | FR-61 | 4 | | |
+| FR-59 | 4 | FR-62 | 4 | | |
 
-Total: **47 MVP FRs across 3 slices** (34 in slice 1, 12 in slice 2, 1 in slice 3; no gaps, no duplicates).
+Total: **54 MVP FRs across 4 slices** (34 in slice 1, 12 in slice 2, 1 in slice 3, 7 in slice 4; no gaps, no duplicates).
 
 ## 6. Sequencing and schedule
 
