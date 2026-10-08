@@ -69,7 +69,7 @@ Commit trailers: `Slice: <change-name>` and `Refs: FR-x` on every commit touchin
 
 ## FIRST: reconcile with `main` and merge (the user's decisions of 2026-10-09, autonomy-log row 77)
 
-**Status 2026-10-09 02:15: reconciled on branch `claude/reconcile-ux-main`** (merge `603b631`, slice `reconcile-ux-accessibility` archived, autonomy-log rows 78 to 80, `docs/current-state.md`). What remains of this section is step 4: fast-forward `main` to that branch once the user approves, and push if the user says so. Then run phases D to H on `main`, in a worktree off `main`; the fast-forward instruction at the top of this file then means `main`.
+**Status 2026-10-09 02:25: DONE.** Reconciled on branch `claude/reconcile-ux-main` (merge `603b631`, slice `reconcile-ux-accessibility` archived, autonomy-log rows 78 to 80); step 4 done too: `main` was fast-forwarded to `68a90c6` and pushed with the user's approval in chat at about 02:20 (autonomy-log row 81). Phases D to H now run in a worktree off `main` (branch `claude/ux-phases-d-h`); the fast-forward instruction at the top of this file means `main` or the newest "Working branch" in `docs/current-state.md`.
 
 Do this before phase D. Phases D to H then run on `main`.
 
