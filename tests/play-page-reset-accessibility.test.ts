@@ -4,8 +4,9 @@
 // - "Cells expose a Ukrainian name and their state": the name "always matches the cell's text content"; `aria-invalid` is
 //   on "exactly the cells that carry the class `cell-violation`"; `aria-readonly` is on every given and on no other cell.
 // - "Reset button": a reset empties the player's cells and removes every highlight that does not come from the givens.
-// - "The board is a single Tab stop": the Tab stop follows focus, and it is reset to row 1, column 1 only when a board
-//   is first shown (at mount, after the new puzzle button, after a size change); a reset shows no new board.
+// - "The board is a single Tab stop": the Tab stop follows focus (the cell that receives DOM focus becomes the Tab stop),
+//   and it goes to row 1, column 1 when a board is first shown (at mount, after the new puzzle button, after an accepted
+//   size change). A reset focuses no cell and shows no new board, so neither rule moves the Tab stop.
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,
@@ -57,11 +58,18 @@ describe('@trace FR-58 @trace FR-61 a reset keeps the accessible names and state
     const root = mountFixture(DIRTY_GIVENS);
     const fromGivens = violationCells(root);
     expect(fromGivens.length, 'premise: the givens themselves break a rule').toBeGreaterThan(0);
-    setRow(root, 4, '1 . . . . .');
-    expect(cellEl(root, 4, 1).textContent, 'premise: a player entry exists').toBe('1');
+    setRow(root, 4, '1 1 1 . . .');
+    const fromPlayer: [number, number][] = [[4, 1], [4, 2], [4, 3]];
+    for (const [r, c] of fromPlayer) {
+      expect(cellEl(root, r, c).getAttribute('aria-invalid'), `premise: the player's cell ${r},${c} is highlighted`).toBe('true');
+    }
 
     pressReset(root);
-    expect(violationCells(root), 'the highlights from the givens stay').toEqual(fromGivens);
+    expect(violationCells(root), 'only the highlights from the givens stay').toEqual(fromGivens);
+    for (const [r, c] of fromPlayer) {
+      expect(cellEl(root, r, c).textContent, `the reset emptied cell ${r},${c}`).toBe('');
+      expect(cellEl(root, r, c).hasAttribute('aria-invalid'), `cell ${r},${c} lost aria-invalid`).toBe(false);
+    }
     expectNamesAndStates(root);
     for (const cell of allCells(root)) {
       const given = cell.getAttribute('data-given') === 'true';

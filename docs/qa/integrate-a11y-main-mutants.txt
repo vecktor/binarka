@@ -1,0 +1,68 @@
+MUTANTS: tests/play-page-reset-accessibility.test.ts against src/ui/play-page.ts (integration of the accessibility line into main)
+Date: 2026-10-08 21:36:18 +0530
+How: in a scratch copy of the merged tree, each mutant below was applied to src/ui/play-page.ts alone, the test file was
+  run (npx vitest run tests/play-page-reset-accessibility.test.ts), and the file was restored before the next mutant.
+  The test file is the version after the review fix round (the givens test makes a player highlight of its own).
+Unmutated: 3 of 3 tests pass. Result: 4 of 4 mutants CAUGHT.
+
+=== M1 a reset sets the cell text without rewriting aria-label
+@@ -224,7 +224,7 @@
+   resetButton.addEventListener('click', () => {
+     if (board.length === 0) return;
+     board = copyGrid(givens);
+-    for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
++    for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) { const n = cellEls[r]?.[c]; if (n) n.textContent = board[r]?.[c] === null ? '' : String(board[r]?.[c]); }
+     refreshHighlights();
+     hintMessage.textContent = '';
+     winMessage.textContent = '';
+--- result:
+     × after a reset every cell name matches its text and no cell keeps aria-invalid once the highlights are gone
+     × a reset keeps aria-invalid on cells whose highlight comes from the givens, and aria-readonly on every given
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 1 passed (3)
+
+=== M2 a reset moves the Tab stop to row 1, column 1
+@@ -226,6 +226,7 @@
+     board = copyGrid(givens);
+     for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
+     refreshHighlights();
++    setTabStop(0, 0, false);
+     hintMessage.textContent = '';
+     winMessage.textContent = '';
+   });
+--- result:
+     × the Tab stop stays on the cell the player moved it to
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 2 passed (3)
+
+=== M3 aria-invalid stays on an empty player cell after its highlight goes
+@@ -92,7 +92,7 @@
+         const bad = marked.has(`${r},${c}`);
+         node.classList.toggle('cell-violation', bad);
+         if (bad) node.setAttribute('aria-invalid', 'true');
+-        else node.removeAttribute('aria-invalid');
++        else if (!node.classList.contains('cell-given') && node.textContent === '') { /* stale */ } else node.removeAttribute('aria-invalid');
+       }
+     }
+   }
+--- result:
+     × after a reset every cell name matches its text and no cell keeps aria-invalid once the highlights are gone
+     × a reset keeps aria-invalid on cells whose highlight comes from the givens, and aria-readonly on every given
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 1 passed (3)
+
+=== M4 a reset does not recompute the highlights
+@@ -225,7 +225,6 @@
+     if (board.length === 0) return;
+     board = copyGrid(givens);
+     for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
+-    refreshHighlights();
+     hintMessage.textContent = '';
+     winMessage.textContent = '';
+   });
+--- result:
+     × after a reset every cell name matches its text and no cell keeps aria-invalid once the highlights are gone
+     × a reset keeps aria-invalid on cells whose highlight comes from the givens, and aria-readonly on every given
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 1 passed (3)
+

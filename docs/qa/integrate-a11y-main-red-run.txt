@@ -32,9 +32,11 @@ New tests, written from the merged spec (tests/play-page-reset-accessibility.tes
   the requirements and specs): the order of the three buttons in the Tab sequence, "no role inside the rules block",
   and "focus stays on «Скинути» after a reset".
 
-Mutants of src/ui/play-page.ts, run one at a time in a scratch copy against tests/play-page-reset-accessibility.test.ts:
-  M1 a reset sets the cell text without rewriting aria-label .............. CAUGHT
-  M2 a reset moves the Tab stop to row 1, column 1 ......................... CAUGHT
-  M3 aria-invalid stays on an empty player cell after its highlight goes ... CAUGHT
+Mutants of src/ui/play-page.ts: four, all CAUGHT; each mutant's diff and test output are in
+  docs/qa/integrate-a11y-main-mutants.txt (run again after the review fix round, which strengthened the givens test).
 
 After the integration commits: 581 of 581 tests pass (25 files), lint 0, tsc 0.
+
+Re-run on the committed merge (review fix round, 2026-10-08 21:35:06): the run above was taken at 17:06 on the
+  staged resolution, before the merge commit existed. `git archive 7c02bec` (tree b6a4777eee1f8cf3e65e3a6085acacf8bdb437c3)
+  gives the same result: 1 failed (the same assertion, 39 expected and 40 found), 576 passed of 577.
