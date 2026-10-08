@@ -41,5 +41,5 @@ export const RULES = {
 // Two non-breaking spaces (U+00A0) keep "0 і 1" together.
 export const IDLE = 'Натискайте клітинки, щоб ставити 0\u00A0і\u00A01. Правила — кнопка «Правила» вгорі.';
 
-// ASCII apostrophe until slice D changes it.
-export const WIN = "Вітаємо, головоломку розв'язано!";
+// FR-41: the win text uses the modifier letter apostrophe U+02BC, not ASCII U+0027.
+export const WIN = "Вітаємо, головоломку розвʼязано!";
