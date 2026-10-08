@@ -1,0 +1,18 @@
+{
+  "id": "COR-1",
+  "ts": "2026-10-08T15:55:21.060Z",
+  "utterance": "AUTO: waiver created (docs/qa/waivers/coverage-branches-2026-10-08.json) — an evidence requirement was waived; record why and disposition this correction.",
+  "contradictedClaim": null,
+  "mappedReqIds": [],
+  "gateThatShouldHaveCaught": null,
+  "failureMode": "skipped-convention",
+  "failureModeSource": "detector",
+  "source": "auto-waiver",
+  "autoKey": "waiver-created:docs/qa/waivers/coverage-branches-2026-10-08.json",
+  "disposition": {
+    "status": "waived",
+    "by": "user, in chat on 2026-10-08 (\"Waive branches\"), recorded by the agent",
+    "ts": "2026-10-08T15:55:29.699Z",
+    "note": "Branch coverage 88.44% -> 87.12% after the merge of the accessibility line into main. The uncovered branches are guards that no requirement or spec sentence describes; by the user rule for this integration, tests come only from requirements and specs. Lines, statements and functions were ratcheted up to 94, 91.32 and 92.1. Waiver: docs/qa/waivers/coverage-branches-2026-10-08.json, applied once by 56a434f and then retired to docs/qa/waivers/consumed/ so that a later --update cannot reuse it; decision: docs/autonomy-log.md row 46."
+  }
+}

@@ -92,3 +92,7 @@ Verified on 2026-10-06:
 
 - **B:** a fresh subagent that read `src/ui/seed.ts` got `src/ui/CLAUDE.md` and, through its import, `src/ui/AGENTS.md` injected on demand.
 - **C:** not verified yet. Neither this session nor a fresh subagent got the rule when reading `index.html` or `src/ui/seed.ts`. Per the Claude Code docs, subagents take their instruction files from the main conversation, which started before the rule file existed. **Check in the next new session:** read `index.html` and confirm that the frontend rule appears.
+
+Verified on 2026-10-08:
+
+- **C:** seen in a main session whose working directory was the worktree `slice4-handoff-archive-28c4de`. The rule file reached that worktree mid-session, through the merge of the accessibility line into `main`. Reading `src/ui/play-page.ts` then put the rule's text into the context, together with `src/ui/CLAUDE.md` and `src/ui/AGENTS.md`. So a path rule also loads on demand for a rule file that appears after the session started; the guess above, that rule files are read only at session start, does not hold. Reading `index.html` afterwards added nothing, most likely because the text was already in the context, so `index.html` is not separately confirmed. Evidence: that session's transcript, which is not stored in the repository.

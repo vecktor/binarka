@@ -279,7 +279,7 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": "tests/play-page-rendering.test.ts",
+        "artifact": "tests/main-entry.test.ts",
         "status": "artifact-ok"
       }
     ],
@@ -391,7 +391,7 @@
       {
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
-        "artifact": "tests/play-page-rules-and-reset.test.ts",
+        "artifact": "tests/play-page-reset-accessibility.test.ts",
         "status": "artifact-ok"
       }
     ],
