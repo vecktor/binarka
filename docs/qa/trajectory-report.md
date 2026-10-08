@@ -5,7 +5,7 @@ archived slice took: review evidence, `Slice:` trailers, and module scope.
 It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
-Scope: 10 archived slice(s).
+Scope: 11 archived slice(s).
 Result: PASS, 7 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
@@ -20,6 +20,7 @@ Result: PASS, 7 warning(s)
 | 2026-10-06-update-page-layout | **unclean** | 12 | yes | ui |
 | 2026-10-08-add-page-accessibility | clean | 7 | yes | ui |
 | 2026-10-08-reconcile-ux-accessibility | **unclean** | 5 | yes | ui |
+| 2026-10-08-update-win-apostrophe | clean | 1 | yes | ui |
 
 ## Cross-slice module overlap
 

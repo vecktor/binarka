@@ -90,6 +90,15 @@
         "ui"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-08-update-win-apostrophe",
+      "reviewEvidence": "clean",
+      "trailerCommits": 1,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [

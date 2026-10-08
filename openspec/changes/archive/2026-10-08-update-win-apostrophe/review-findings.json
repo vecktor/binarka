@@ -1,0 +1,102 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "confirming run, change update-win-apostrophe (FR-41, U+02BC). All files live in the worktree /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-phases-d-h (use absolute paths there; the session cwd is a different, older worktree). Spec delta: openspec/changes/update-win-apostrophe/. The first run wf_44aae8a0-f44 was clean; 80e752b is its fix round.",
+  "change": "update-win-apostrophe",
+  "baseRef": "2c3201c",
+  "headRef": "80e752b",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 1
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 0,
+      "contested": 1,
+      "rejected": 0
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [],
+  "clean": true,
+  "generatedAt": "2026-10-08T21:16:00Z",
+  "runId": "wf_78532afa-f40",
+  "persistedBy": "Both review-gate runs persisted into the session-cwd worktree (bold-brattain-59cd03); the orchestrator moved them here and keeps the confirming run at the top level and the first run under \"rounds\" (2026-10-09).",
+  "rounds": [
+    {
+      "generatedBy": "review-gate",
+      "scope": "change update-win-apostrophe (FR-41, U+02BC). All files live in the worktree /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-phases-d-h (use absolute paths there; the session cwd is a different, older worktree). Spec delta: openspec/changes/update-win-apostrophe/",
+      "change": "update-win-apostrophe",
+      "baseRef": "2c3201c",
+      "headRef": "99df705",
+      "dimensions": {
+        "correctness": {
+          "confirmed": 0,
+          "contested": 1,
+          "rejected": 2
+        },
+        "security": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        },
+        "spec-compliance": {
+          "confirmed": 0,
+          "contested": 1,
+          "rejected": 4
+        },
+        "visual": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        }
+      },
+      "confirmedTitles": [],
+      "clean": true,
+      "generatedAt": "2026-10-08T21:11:16Z",
+      "runId": "wf_44aae8a0-f44"
+    },
+    {
+      "generatedBy": "review-gate",
+      "scope": "confirming run, change update-win-apostrophe (FR-41, U+02BC). All files live in the worktree /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-phases-d-h (use absolute paths there; the session cwd is a different, older worktree). Spec delta: openspec/changes/update-win-apostrophe/. The first run wf_44aae8a0-f44 was clean; 80e752b is its fix round.",
+      "change": "update-win-apostrophe",
+      "baseRef": "2c3201c",
+      "headRef": "80e752b",
+      "dimensions": {
+        "correctness": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 1
+        },
+        "security": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        },
+        "spec-compliance": {
+          "confirmed": 0,
+          "contested": 1,
+          "rejected": 0
+        },
+        "visual": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        }
+      },
+      "confirmedTitles": [],
+      "clean": true,
+      "generatedAt": "2026-10-08T21:16:00Z",
+      "runId": "wf_78532afa-f40"
+    }
+  ]
+}

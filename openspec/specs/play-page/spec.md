@@ -8,7 +8,7 @@ Ownership: this capability owns FR-31 to FR-43 (FR-39, FR-42 and FR-43 amended),
 
 ## DOM contract used by the scenarios
 
-Scenarios are decided from the DOM only (text content, classes, data attributes, element presence, roles and ARIA attributes, `tabindex`, `document.activeElement`, and computed style in jsdom), and, for FR-64 and FR-65, from the parsed text of `src/ui/style.css`. Indices are 1-based, matching the rows and columns shown to the player. The engine interface (`openspec/specs/puzzle-engine/spec.md`, test conventions) is 0-based, so a hint target with `row` r and `col` c is the cell with `data-row` = r + 1 and `data-col` = c + 1. The «» guillemets around labels and messages in this spec are quoting marks and are not part of the text. The apostrophe in «розв'язано» is the ASCII apostrophe U+0027 (as in FR-41); an equality check on the win message compares against that codepoint exactly.
+Scenarios are decided from the DOM only (text content, classes, data attributes, element presence, roles and ARIA attributes, `tabindex`, `document.activeElement`, and computed style in jsdom), and, for FR-64 and FR-65, from the parsed text of `src/ui/style.css`. Indices are 1-based, matching the rows and columns shown to the player. The engine interface (`openspec/specs/puzzle-engine/spec.md`, test conventions) is 0-based, so a hint target with `row` r and `col` c is the cell with `data-row` = r + 1 and `data-col` = c + 1. The «» guillemets around labels and messages in this spec are quoting marks and are not part of the text. The apostrophe in «розвʼязано» is the modifier letter ʼ (U+02BC) (as in FR-41); an equality check on the win message compares against that code point exactly.
 
 ### Mount entry point and fixtures (spec-made contract)
 
@@ -354,7 +354,7 @@ Traces: FR-40, FR-43
 
 ### Requirement: Win message when solved
 
-The page SHALL show the Ukrainian win message «Вітаємо, головоломку розв'язано!» in `[data-message="win"]` when the rule checker recognises the board as solved after a board change, whether the change is a click or a hint fill. While the board is not solved the win region SHALL have empty text content.
+The page SHALL show the Ukrainian win message «Вітаємо, головоломку розвʼязано!» in `[data-message="win"]` when the rule checker recognises the board as solved after a board change, whether the change is a click or a hint fill. The apostrophe in «розвʼязано» SHALL be the modifier letter ʼ (U+02BC), not the ASCII apostrophe U+0027 and not the right single quotation mark U+2019; an equality check on the win message compares against the code point U+02BC exactly (FR-41). While the board is not solved the win region SHALL have empty text content.
 
 Traces: FR-41
 
@@ -362,13 +362,22 @@ Traces: FR-41
 
 - **GIVEN** a fixture puzzle whose solution the test knows, with every cell filled with the solution except one non-given cell that shows another value (or is empty)
 - **WHEN** the player clicks that cell until it shows the solution digit
-- **THEN** `[data-message="win"]` has the exact text «Вітаємо, головоломку розв'язано!» (apostrophe U+0027)
+- **THEN** `[data-message="win"]` has the exact text «Вітаємо, головоломку розвʼязано!» (apostrophe U+02BC)
 
 #### Scenario: Final hint solves the board
 
 - **GIVEN** a fixture puzzle whose solution the test knows, with exactly one cell empty, every other cell holding the solution digit, and the hint engine targeting that cell with the solution digit
 - **WHEN** the player presses the hint button
-- **THEN** `[data-message="win"]` has the exact text «Вітаємо, головоломку розв'язано!» (apostrophe U+0027)
+- **THEN** `[data-message="win"]` has the exact text «Вітаємо, головоломку розвʼязано!» (apostrophe U+02BC)
+
+#### Scenario: The apostrophe is U+02BC and no other character
+
+- **GIVEN** a solved board with the win message shown, reached by either route: the final click of the scenario «Final click solves the board», or the final hint of the scenario «Final hint solves the board» (the checks below hold for both)
+- **WHEN** the test reads the text of `[data-message="win"]` code point by code point
+- **THEN** the text equals `Вітаємо, головоломку розв` + U+02BC + `язано!`
+- **AND** the code point right after «розв» is U+02BC (its length in UTF-16 code units is 1)
+- **AND** the text contains no U+0027 and no U+2019 anywhere
+- **AND** the text contains Cyrillic letters and no Latin letter (`/[A-Za-z]/` and `/\p{Script=Latin}/u` do not match it), so NFR-5 still holds
 
 #### Scenario: Full board with a violation is not a win
 
@@ -1160,7 +1169,7 @@ Traces: FR-63, FR-40, FR-41, FR-71
 
 - **GIVEN** a mounted page, with the two region elements remembered by the test
 - **WHEN** the player presses the hint button, then clicks a cell, then presses the new puzzle button and confirms «Так, почати» (the board has entries, FR-67), then selects 4×4, then solves a fixture board so the win message shows
-- **THEN** after each step `[data-message="hint"]` and `[data-message="win"]` are the same element objects as at mount, still connected to the root, still `role="status"`, and the hint region shows the engine sentence and the win region shows «Вітаємо, головоломку розв'язано!» when the earlier requirements say so
+- **THEN** after each step `[data-message="hint"]` and `[data-message="win"]` are the same element objects as at mount, still connected to the root, still `role="status"`, and the hint region shows the engine sentence and the win region shows «Вітаємо, головоломку розвʼязано!» (apostrophe U+02BC) when the earlier requirements say so
 
 #### Scenario: Focus never moves to a message
 
