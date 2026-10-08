@@ -1,8 +1,24 @@
+:root {
+  --color-page: #f9fafb;
+  --color-text: #1f2937;
+  --color-cell-bg: #ffffff;
+  --color-cell-border: #6b7280;
+  --color-given-bg: #e5e7eb;
+  --color-given-border: #374151;
+  --color-violation-bg: #fecaca;
+  --color-violation-border: #b91c1c;
+  --color-violation-text: #991b1b;
+  --color-focus: #1d4ed8;
+  --color-control-bg: #ffffff;
+  --color-control-border: #6b7280;
+  --color-win-text: #166534;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  color: #1f2937;
-  background: #f9fafb;
+  color: var(--color-text);
+  background-color: var(--color-page);
 }
 
 #app {
@@ -17,9 +33,16 @@ h1 {
 }
 
 .board {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   --n: 6;
   --cell-max: 48px;
+  touch-action: manipulation;
+}
+
+.board-row {
+  display: grid;
   grid-template-columns: repeat(var(--n), minmax(0, var(--cell-max)));
   gap: 2px;
   justify-content: center;
@@ -50,8 +73,10 @@ h1 {
   min-width: 0;
   aspect-ratio: 1;
   font-size: 22px;
-  background: #fff;
-  border: 1px solid #9ca3af;
+  background-color: var(--color-cell-bg);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-cell-border);
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -59,14 +84,26 @@ h1 {
 
 .cell-given {
   font-weight: 700;
-  background: #d1d5db;
+  background-color: var(--color-given-bg);
+  border-width: 2px;
+  border-color: var(--color-given-border);
   cursor: default;
 }
 
 .cell-violation {
-  background: #fecaca;
-  border-color: #dc2626;
-  color: #991b1b;
+  background-color: var(--color-violation-bg);
+  border-width: 3px;
+  border-color: var(--color-violation-border);
+  color: var(--color-violation-text);
+}
+
+.cell:focus-visible {
+  outline-style: solid;
+  outline-width: 3px;
+  outline-color: var(--color-focus);
+  outline-offset: 2px;
+  position: relative;
+  z-index: 1;
 }
 
 .buttons {
@@ -81,10 +118,21 @@ button,
 select {
   font: inherit;
   padding: 10px 16px;
-  border: 1px solid #6b7280;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-control-border);
   border-radius: 6px;
-  background: #fff;
+  color: var(--color-text);
+  background-color: var(--color-control-bg);
   cursor: pointer;
+}
+
+button:focus-visible,
+select:focus-visible {
+  outline-style: solid;
+  outline-width: 3px;
+  outline-color: var(--color-focus);
+  outline-offset: 2px;
 }
 
 .message {
@@ -94,10 +142,13 @@ select {
 
 .message-win {
   font-weight: 700;
-  color: #166534;
+  color: var(--color-win-text);
 }
 
-select {
+.size-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 12px;
 }
 

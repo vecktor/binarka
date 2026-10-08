@@ -45,6 +45,15 @@
         "engine"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-08-add-page-accessibility",
+      "reviewEvidence": "clean",
+      "trailerCommits": 7,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [

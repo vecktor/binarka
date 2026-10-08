@@ -7,6 +7,7 @@ import type { Cell, Grid, Hint, Puzzle } from '../../src/engine/index';
 import { mountPlayPage } from '../../src/ui/index';
 import type { PlayPageOptions } from '../../src/ui/index';
 import { VALID_4X4, boardOf, parseBoard, sortedCells } from './board';
+import { removeInjectedStyles } from './css';
 
 /** The default board size of the page (6); other sizes are chosen with `selectSize`. */
 export const SIZE = 6;
@@ -33,6 +34,7 @@ export function installPageLifecycle(): void {
     for (const root of roots.splice(0)) root.remove();
     document.body.replaceChildren();
     document.title = '';
+    removeInjectedStyles(); // stylesheets a test injected to read the cascade (tests/helpers/css.ts)
   });
 }
 
@@ -85,7 +87,7 @@ export function bySize(fixtures: Partial<Record<number, Puzzle>>): (callIndex: n
 
 export interface GenerateSpy {
   generate: (size: number, seed: number) => Puzzle;
-  calls: Array<{ size: number; seed: number }>;
+  calls: { size: number; seed: number }[];
 }
 
 /**
@@ -99,7 +101,7 @@ export function generateSpy(pick: (callIndex: number, size: number, seed: number
 
 /** Like `generateSpy` but returns whatever `pick` returns (or throws whatever it throws): for the generator-error scenarios. */
 export function rawGenerateSpy(pick: (callIndex: number, size: number, seed: number) => Puzzle): GenerateSpy {
-  const calls: Array<{ size: number; seed: number }> = [];
+  const calls: { size: number; seed: number }[] = [];
   return {
     calls,
     generate: (size, seed) => {
@@ -134,8 +136,8 @@ export function seedQueue(values: number[]): SeedQueue {
 
 export function q(root: ParentNode, selector: string): HTMLElement {
   const el = root.querySelector<HTMLElement>(selector);
-  expect(el, `expected an element matching ${selector}`).not.toBeNull();
-  return el as HTMLElement;
+  expect.assert(el !== null, `expected an element matching ${selector}`); // narrows el; expect().not.toBeNull() does not
+  return el;
 }
 
 export function cellEl(root: ParentNode, row: number, col: number): HTMLElement {
@@ -161,7 +163,7 @@ function expectedBoardSize(root: ParentNode): number {
   return n;
 }
 
-export const cellText = (root: ParentNode, row: number, col: number): string => cellEl(root, row, col).textContent ?? '';
+export const cellText = (root: ParentNode, row: number, col: number): string => cellEl(root, row, col).textContent;
 
 export const isGivenCell = (root: ParentNode, row: number, col: number): boolean =>
   cellEl(root, row, col).getAttribute('data-given') === 'true';
@@ -203,16 +205,16 @@ export function snapshot(root: ParentNode): string[] {
   for (let r = 1; r <= n; r++) {
     for (let c = 1; c <= n; c++) {
       const el = cellEl(root, r, c);
-      out.push(`${r},${c}|${el.textContent ?? ''}|${el.getAttribute('data-given')}|${[...el.classList].sort().join(' ')}`);
+      out.push(`${r},${c}|${el.textContent}|${el.getAttribute('data-given')}|${[...el.classList].sort().join(' ')}`);
     }
   }
   return out;
 }
 
 /** Cells (1-based [row, col], sorted) that carry the class cell-violation. Asserts N*N cells first. */
-export function violationCells(root: ParentNode): Array<[number, number]> {
+export function violationCells(root: ParentNode): [number, number][] {
   expectedBoardSize(root);
-  const out: Array<[number, number]> = [];
+  const out: [number, number][] = [];
   for (const el of allCells(root)) {
     if (el.classList.contains('cell-violation')) {
       out.push([Number(el.getAttribute('data-row')), Number(el.getAttribute('data-col'))]);
@@ -227,7 +229,7 @@ export function violationCells(root: ParentNode): Array<[number, number]> {
  * cell of its row or column (FR-36: "all six cells of that row"), although the checker lists only the cells holding
  * the over-represented digit.
  */
-export function checkerCells(board: Grid): Array<[number, number]> {
+export function checkerCells(board: Grid): [number, number][] {
   const seen = new Map<string, [number, number]>();
   const add = (r: number, c: number): void => void seen.set(`${r + 1},${c + 1}`, [r + 1, c + 1]);
   for (const v of findViolations(board)) {
@@ -243,21 +245,112 @@ export function checkerCells(board: Grid): Array<[number, number]> {
   return sortedCells([...seen.values()]);
 }
 
-export const hintMessage = (root: ParentNode): string => q(root, '[data-message="hint"]').textContent ?? '';
-export const winMessage = (root: ParentNode): string => q(root, '[data-message="win"]').textContent ?? '';
+export const hintMessage = (root: ParentNode): string => q(root, '[data-message="hint"]').textContent;
+export const winMessage = (root: ParentNode): string => q(root, '[data-message="win"]').textContent;
 
 /**
  * Assert the structural elements every rendered page has (so a negative check can never pass on an empty page): the
- * board of `size` (6 by default), the size selector (FR-43), both buttons and both message regions.
+ * board of `size` (6 by default) as an ARIA grid of `size` rows (FR-61), the size selector with its wrapping label
+ * (FR-43, FR-62), both buttons, both status regions (FR-63) and exactly one Tab stop (FR-59).
+ * Slice 6 (add-page-accessibility) DELIBERATE CHANGE: the grid, row, label, status and Tab stop checks follow the new
+ * spec; no old check was removed or weakened. The grid role is asserted FIRST so that the first failure line of every
+ * red test that reaches this helper names the missing grid.
  */
 export function expectPageStructure(root: ParentNode, size = 6): void {
-  expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(size));
+  const board = q(root, '[data-board]');
+  expect(board.getAttribute('role'), 'the board has role="grid"').toBe('grid');
+  expect(board.getAttribute('aria-label'), 'the board is named «Поле N×N»').toBe(`Поле ${size}×${size}`);
+  expect(board.getAttribute('data-size')).toBe(String(size));
+  const rows = Array.from(board.children);
+  expect(rows, `the board has ${size} row children`).toHaveLength(size);
+  rows.forEach((row, i) => {
+    expect(row.getAttribute('role'), `board child ${i + 1} has role="row"`).toBe('row');
+    const cells = Array.from(row.querySelectorAll('[data-cell]'));
+    expect(cells, `row ${i + 1} holds ${size} cells`).toHaveLength(size);
+    for (const cell of cells) expect(cell.getAttribute('role'), 'every cell has role="gridcell"').toBe('gridcell');
+  });
   expect(allCells(root)).toHaveLength(size * size);
-  q(root, '[data-control="size"]');
+  expect(tabStopCells(root), 'exactly one cell has tabindex="0"').toHaveLength(1);
+  const select = sizeSelect(root);
+  expect(select.labels, 'the size select has exactly one label').toHaveLength(1);
+  expect(select.labels[0]?.tagName, 'the label is a <label> that wraps the select').toBe('LABEL');
   q(root, '[data-action="hint"]');
   q(root, '[data-action="new"]');
-  q(root, '[data-message="hint"]');
-  q(root, '[data-message="win"]');
+  expect(q(root, '[data-message="hint"]').getAttribute('role'), 'the hint message is a status region').toBe('status');
+  expect(q(root, '[data-message="win"]').getAttribute('role'), 'the win message is a status region').toBe('status');
+}
+
+// ---------------------------------------------------------------------------------------------------------
+// Slice 6 (FR-59 to FR-63): keyboard, Tab stop, roles and names
+// ---------------------------------------------------------------------------------------------------------
+
+/**
+ * Dispatch a bubbling, CANCELABLE `keydown` on `el` and return the event, so a test reads `defaultPrevented` after the
+ * dispatch. A non-cancelable event can never show a `preventDefault()` call, which would make every "not prevented"
+ * check vacuous; `init.cancelable` can switch it off for the helper self-check only. A single space is `key: ' '`.
+ * No uncaught listener error is allowed (dispatchEvent swallows them, see `trackErrors`).
+ */
+export function pressKey(el: Element, key: string, init: KeyboardEventInit = {}): KeyboardEvent {
+  const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init });
+  const tracker = trackErrors();
+  try {
+    el.dispatchEvent(event);
+  } finally {
+    tracker.stop();
+  }
+  expect(tracker.errors, `no uncaught error while handling keydown "${key}"`).toEqual([]);
+  return event;
+}
+
+/** The cells with `tabindex="0"` (a page has exactly one). */
+export const tabStopCells = (root: ParentNode): HTMLElement[] =>
+  allCells(root).filter((cell) => cell.getAttribute('tabindex') === '0');
+
+/** The children of `[data-board]`: the row elements (FR-61). */
+export const rowEls = (root: ParentNode): HTMLElement[] => Array.from(q(root, '[data-board]').children) as HTMLElement[];
+
+/** Give a cell DOM focus and assert it took it (a cell with no `tabindex` cannot, which is the red-stage failure). */
+export function focusCell(root: ParentNode, row: number, col: number): HTMLElement {
+  const el = cellEl(root, row, col);
+  el.focus();
+  expectActive(el, `cell ${row},${col} takes DOM focus`);
+  return el;
+}
+
+/** Assert that `el` is `document.activeElement` (a boolean check, so a failure does not print the whole page). */
+export function expectActive(el: Element, what: string): void {
+  expect(document.activeElement === el, `${what} (DOM focus is on ${describeElement(document.activeElement)})`).toBe(true);
+}
+
+function describeElement(el: Element | null): string {
+  if (el === null) return 'nothing';
+  const attrs = ['data-action', 'data-control', 'data-row', 'data-col', 'role'].filter((a) => el.hasAttribute(a));
+  return `<${el.tagName.toLowerCase()}${attrs.map((a) => ` ${a}="${el.getAttribute(a) ?? ''}"`).join('')}>`;
+}
+
+/** The accessible name of a cell, «Рядок R, стовпець C: V», V = «порожня» for empty text, else the digit (FR-61). */
+export const cellName = (row: number, col: number, text: string): string =>
+  `Рядок ${row}, стовпець ${col}: ${text === '' ? 'порожня' : text}`;
+
+/** Assert that the cell at (row, col) is the ONLY cell with tabindex 0, and that every other cell has tabindex -1. */
+export function expectTabStop(root: ParentNode, row: number, col: number): void {
+  const stops = tabStopCells(root).map((c) => `${c.getAttribute('data-row')},${c.getAttribute('data-col')}`);
+  expect(stops, `the only Tab stop is the cell ${row},${col}`).toEqual([`${row},${col}`]);
+  for (const cell of allCells(root)) {
+    if (cell !== cellEl(root, row, col)) expect(cell.getAttribute('tabindex'), 'every other cell has tabindex -1').toBe('-1');
+  }
+}
+
+/** Assert that DOM focus is on the cell at (row, col). */
+export function expectFocusOn(root: ParentNode, row: number, col: number): void {
+  expectActive(cellEl(root, row, col), `DOM focus is on cell ${row},${col}`);
+}
+
+/** The text of a label without the text of the form control inside it (the control's options are not the label). */
+export function ownLabelText(label: HTMLElement): string {
+  const clone = label.cloneNode(true) as HTMLElement;
+  for (const control of Array.from(clone.querySelectorAll('select, input, textarea, button'))) control.remove();
+  return clone.textContent.replace(/\s+/g, ' ').trim();
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -306,7 +399,7 @@ export function setCol(root: ParentNode, col: number, text: string, only?: numbe
 }
 
 /** Fill every non-given cell with the digit of `grid` (0-based grid), except the 1-based cells in `skip`. */
-export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: Array<[number, number]> = []): void {
+export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: [number, number][] = []): void {
   const n = puzzle.givens.length;
   for (let r = 1; r <= n; r++) {
     for (let c = 1; c <= n; c++) {
@@ -319,8 +412,8 @@ export function fillFrom(root: ParentNode, puzzle: Puzzle, grid: Grid, skip: Arr
   }
 }
 
-export const pressHint = (root: ParentNode): void => q(root, '[data-action="hint"]').click();
-export const pressNew = (root: ParentNode): void => q(root, '[data-action="new"]').click();
+export const pressHint = (root: ParentNode): void => { q(root, '[data-action="hint"]').click(); };
+export const pressNew = (root: ParentNode): void => { q(root, '[data-action="new"]').click(); };
 
 // ---- the size selector (FR-43) ----
 
@@ -349,7 +442,7 @@ export function trackErrors(): ErrorTracker {
     errors.push(event.error ?? event.message);
   };
   window.addEventListener('error', listener);
-  return { errors, stop: () => window.removeEventListener('error', listener) };
+  return { errors, stop: () => { window.removeEventListener('error', listener); } };
 }
 
 /** Dispatch a bubbling `change` on the size selector, recording uncaught errors; asserts none were recorded. */
@@ -524,7 +617,7 @@ export function makePuzzle(givens: Grid, options: MakePuzzleOptions = {}): Puzzl
 }
 
 /** Board of size n with the listed givens only; cells are [row, col, value], 1-based. */
-export const givensOf = (n: number, cells: Array<[number, number, 0 | 1]>): Grid => boardOf(n, { cells });
+export const givensOf = (n: number, cells: [number, number, 0 | 1][]): Grid => boardOf(n, { cells });
 
 /** No givens at all. */
 export const BLANK = makePuzzle(givensOf(6, []));
@@ -599,6 +692,12 @@ export const BLANK_8 = makePuzzle(givensOf(8, []), { solution: SOLUTION_8_TEXT }
 export const PAIR_8 = makePuzzle(givensOf(8, [[8, 7, 0], [8, 8, 0]]), { solution: SOLUTION_8_TEXT });
 /** 8x8 whose solution is SOLUTION_8_TEXT and whose givens are every cell except the non-given (8,8), whose digit is 0. */
 export const WIN_8 = winFixture(parseBoard(SOLUTION_8_TEXT), [8, 8]);
+/**
+ * Slice 6 (FR-64): PAIR_ROW_PLUS at N = 4 and N = 8, so that one click on (3,3) gives all four cell kinds at every size:
+ * ordinary (1,1), a plain given far from the run, a violating player cell (3,3) and the givens (3,1), (3,2) in the violation.
+ */
+export const PAIR_PLUS_4 = makePuzzle(givensOf(4, [[3, 1, 0], [3, 2, 0], [4, 4, 1]]));
+export const PAIR_PLUS_8 = makePuzzle(givensOf(8, [[3, 1, 0], [3, 2, 0], [8, 8, 0]]), { solution: SOLUTION_8_TEXT });
 /** 8x8 whose only givens are 0 at (8,1), (8,2), (8,3): the checker reports `three` in row 8 at once (inconsistent fixture). */
 export const DIRTY_8_ROW = makePuzzle(givensOf(8, [[8, 1, 0], [8, 2, 0], [8, 3, 0]]), { solution: SOLUTION_8_TEXT, inconsistent: true });
 /** 8x8 whose only givens are 1 at column 8, rows 1, 2, 4, 6, 7: five 1s, no three side by side, `count` on column 8. */
@@ -614,7 +713,7 @@ function winFixture(solved: Grid, empty: [number, number]): Puzzle {
 }
 
 /** Every fixture, for the helper self-check. `consistent` = givens must be kept by the solution. */
-export const FIXTURES: Array<{ name: string; puzzle: Puzzle; consistent: boolean }> = [
+export const FIXTURES: { name: string; puzzle: Puzzle; consistent: boolean }[] = [
   { name: 'BLANK', puzzle: BLANK, consistent: true },
   { name: 'PAIR_ROW', puzzle: PAIR_ROW, consistent: true },
   { name: 'PAIR_LEFT', puzzle: PAIR_LEFT, consistent: true },
@@ -634,6 +733,8 @@ export const FIXTURES: Array<{ name: string; puzzle: Puzzle; consistent: boolean
   { name: 'WIN_8', puzzle: WIN_8, consistent: true },
   { name: 'DIRTY_8_ROW', puzzle: DIRTY_8_ROW, consistent: false },
   { name: 'DIRTY_8_COL', puzzle: DIRTY_8_COL, consistent: false },
+  { name: 'PAIR_PLUS_4', puzzle: PAIR_PLUS_4, consistent: true },
+  { name: 'PAIR_PLUS_8', puzzle: PAIR_PLUS_8, consistent: true },
 ];
 
 

@@ -57,7 +57,7 @@ export interface BoardSpec {
   /** columns by 1-based column number, written TOP TO BOTTOM, e.g. { 2: '0 0 1 0 0 .' } */
   cols?: Record<number, string>;
   /** single cells [row, col, value], 1-based row and col */
-  cells?: Array<[number, number, 0 | 1]>;
+  cells?: [number, number, 0 | 1][];
 }
 
 /** N x N board, every cell not listed is empty. */
@@ -66,12 +66,12 @@ export function boardOf(n: number, spec: BoardSpec): Grid {
   for (const [rowKey, text] of Object.entries(spec.rows ?? {})) {
     const tokens = text.trim().split(/\s+/);
     if (tokens.length !== n) throw new Error(`row ${rowKey} must have ${n} tokens`);
-    tokens.forEach((t, i) => setCell(board, Number(rowKey), i + 1, parseToken(t)));
+    tokens.forEach((t, i) => { setCell(board, Number(rowKey), i + 1, parseToken(t)); });
   }
   for (const [colKey, text] of Object.entries(spec.cols ?? {})) {
     const tokens = text.trim().split(/\s+/);
     if (tokens.length !== n) throw new Error(`column ${colKey} must have ${n} tokens`);
-    tokens.forEach((t, i) => setCell(board, i + 1, Number(colKey), parseToken(t)));
+    tokens.forEach((t, i) => { setCell(board, i + 1, Number(colKey), parseToken(t)); });
   }
   for (const [r, c, v] of spec.cells ?? []) setCell(board, r, c, v);
   return board;
@@ -86,7 +86,7 @@ export const VALID_4X4: Grid = parseBoard(`
 `);
 
 /** Sort violation cells so that comparisons do not depend on the (unpinned) cell order. */
-export function sortedCells(cells: Array<[number, number]>): Array<[number, number]> {
+export function sortedCells(cells: [number, number][]): [number, number][] {
   return [...cells].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 }
 

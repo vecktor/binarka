@@ -395,6 +395,62 @@
         "status": "artifact-ok"
       }
     ],
+    "FR-59": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-keyboard.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-60": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-keyboard.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-61": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-page-text.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-62": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-page-text.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-63": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-semantics.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-64": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-semantics.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "FR-65": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-stylesheet.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
     "NFR-1": [
       {
         "method": "local-verifiable",
@@ -448,6 +504,14 @@
         "method": "local-verifiable",
         "mechanism": "npm:test:run",
         "artifact": "tests/cli.test.ts",
+        "status": "artifact-ok"
+      }
+    ],
+    "NFR-9": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": "tests/play-page-stylesheet.test.ts",
         "status": "artifact-ok"
       }
     ]

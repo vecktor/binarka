@@ -363,7 +363,7 @@ describe('@trace FR-43 a generator failure keeps the previous board', () => {
     expect(sizeSelect(root).value).toBe('6');
   });
 
-  const WRONG_SIZE: Array<{ name: string; puzzle: Puzzle }> = [
+  const WRONG_SIZE: { name: string; puzzle: Puzzle }[] = [
     { name: 'a 6x6 fixture', puzzle: PAIR_ROW },
     { name: '8 rows with the last row 7 cells long', puzzle: { ...BLANK_8, givens: BLANK_8.givens.map((r, i) => (i === 7 ? r.slice(0, 7) : r)) } },
     { name: '8 rows with the first row 9 cells long', puzzle: { ...BLANK_8, givens: BLANK_8.givens.map((r, i) => (i === 0 ? [...r, null] : r)) } },

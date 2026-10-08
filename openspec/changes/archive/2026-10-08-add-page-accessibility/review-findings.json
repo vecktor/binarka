@@ -1,0 +1,37 @@
+{
+  "generatedBy": "orchestrator, from independent subagent reviews (code-reviewer, spec-compliance-auditor, two confirming code-reviewer runs); NOT the review-gate workflow, see tasks.md 6.8 and docs/autonomy-log.md row 35",
+  "scope": "add-page-accessibility",
+  "change": "add-page-accessibility",
+  "baseRef": "a4ab3d5",
+  "headRef": "uncommitted slice tree of 2026-10-06, later committed as the change, red, green and fix commits",
+  "dimensions": {
+    "correctness": { "confirmed": 6, "contested": 0, "rejected": 0 },
+    "spec-compliance": { "confirmed": 8, "contested": 0, "rejected": 0 },
+    "security": { "confirmed": 0, "contested": 0, "rejected": 0, "note": "covered by the code reviewer (textContent and setAttribute only; no innerHTML); no dedicated security reviewer" },
+    "visual": { "confirmed": 1, "contested": 0, "rejected": 0, "note": "the label offset (F2), confirmed by both reviewers and measured in the built-in browser" }
+  },
+  "rounds": [
+    { "round": 1, "reviewers": ["code-reviewer", "spec-compliance-auditor"], "blocker": 0, "major": 0, "minor": 14, "overlapping": 3, "coverage": "77 of 77 delta scenarios implemented, 0 contradictions with the baseline", "outcome": "every actionable finding fixed in the fix round" },
+    { "round": "confirming", "reviewers": ["code-reviewer (fresh)"], "blocker": 0, "major": 0, "minor": 1, "outcome": "F6 trace tags restored on the merged Static page text test" },
+    { "round": "final check", "reviewers": ["code-reviewer (fresh, haiku)"], "blocker": 0, "major": 0, "minor": 0, "outcome": "no defects" }
+  ],
+  "confirmedTitles": [
+    "F1 design.md and tasks.md described a tabStop closure variable the code does not have",
+    "F2 the size label text sat about 6 px below the select's centre",
+    "F3 no test pressed Enter or Space after a board rebuild",
+    "F4 duplicated focus-visible rule blocks for button and select",
+    "F5 dead repeat field in KeyInfo",
+    "F6 duplicated Static page text assertions (and, in the confirming run, the trace tags lost when merging them)",
+    "A3 the contrast-helper scenario of FR-63 had no tagged test",
+    "A4 the Focus never moves to a message scenario wording did not match its test",
+    "A5 no test checked that mounting does not move DOM focus",
+    "A6b a test comment promised a size change the test did not perform"
+  ],
+  "notFixedByDecision": [
+    "Meta key combinations are ignored without preventDefault: documented in design.md decision 4; the spec leaves them unspecified",
+    "Windows Chrome/Edge may fire change on each arrow key over a closed select, regenerating the board: belongs with the user's G8 decision (confirm or Undo)",
+    "keyboard operation of the native select popup could not be driven by the browser harness on macOS (docs/qa/add-page-accessibility/keyboard-check.md)"
+  ],
+  "clean": true,
+  "generatedAt": "2026-10-06T13:25:00Z"
+}

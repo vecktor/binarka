@@ -26,7 +26,9 @@
     "check:acceptance:artifact": "node scripts/check-acceptance-methods.mjs --mode=artifact",
     "check:process": "node scripts/check-process-ratchet.mjs",
     "check:integrity": "node scripts/check-factory-integrity.mjs",
-    "check:visual": "node scripts/check-visual-fidelity.mjs"
+    "check:visual": "node scripts/check-visual-fidelity.mjs",
+    "docs:vendor": "node scripts/vendor-docs.mjs",
+    "check:docs": "node scripts/vendor-docs.mjs --check"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

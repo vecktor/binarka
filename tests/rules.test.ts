@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { findViolations, isSolved } from '../src/engine/index';
 import { VALID_4X4, boardOf, cloneBoard, emptyBoard, matching, parseBoard, sortedCells } from './helpers/board';
 
-type Cells = Array<[number, number]>;
+type Cells = [number, number][];
 
 describe('@trace FR-1 three equal digits in a row', () => {
   it('run of three ones in row 1 is flagged with columns 2, 3 and 4', () => {

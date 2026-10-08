@@ -10,6 +10,7 @@ import {
   cellText,
   clickCell,
   expectPageStructure,
+  expectTabStop,
   generateSpy,
   installPageLifecycle,
   mountFixture,
@@ -19,6 +20,7 @@ import {
   seedQueue,
   selectSize,
   snapshot,
+  tabStopCells,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -118,8 +120,28 @@ describe('@trace FR-31 the page renders a 6x6 board from the generator', () => {
   });
 });
 
+// Slice 6 (add-page-accessibility), DELIBERATE CHANGE: a new test next to the two-mounts test above (that one and
+// "mounting replaces the previous content of the root" are unchanged and must stay green).
+describe('@trace FR-59 @trace FR-61 two mounts keep separate Tab stops and have no duplicate ids', () => {
+  it('@trace FR-59 @trace FR-61 two mounts on two roots keep separate Tab stops and have no duplicate ids', () => {
+    const a = mountPage({ seedSource: () => 1, generate: () => BLANK });
+    const b = mountPage({ seedSource: () => 1, generate: () => BLANK });
+    expect(tabStopCells(a)).toHaveLength(1);
+    expect(tabStopCells(b)).toHaveLength(1);
+    clickCell(a, 3, 4);
+    expectTabStop(a, 3, 4); // a click moves only A's Tab stop
+    expectTabStop(b, 1, 1);
+    clickCell(b, 5, 2);
+    expectTabStop(a, 3, 4);
+    expectTabStop(b, 5, 2);
+    expect(a.querySelectorAll('[id]')).toHaveLength(0);
+    expect(b.querySelectorAll('[id]')).toHaveLength(0);
+    expect(document.querySelectorAll('[id]')).toHaveLength(0);
+  });
+});
+
 describe('@trace FR-32 given cells are marked distinctly', () => {
-  const sources: Array<[string, () => HTMLElement]> = [
+  const sources: [string, () => HTMLElement][] = [
     ['fixture puzzle', () => mountFixture(WIN_PUZZLE)],
     ['generator output for seed 42', () => mountPage({ seedSource: () => 42 })],
   ];

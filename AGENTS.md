@@ -2,7 +2,13 @@
 
 # Stack
 
-TypeScript (strict), Vite, vanilla DOM, Vitest (jsdom), ESLint, OpenSpec, npm. See `docs/adr/0001-stack.md`. No framework docs to consult; do not add dependencies without asking the user (level 1).
+TypeScript (strict), Vite, vanilla DOM, Vitest (jsdom), ESLint, OpenSpec, npm. See `docs/adr/0001-stack.md`. Do not add dependencies without asking the user (level 1).
+
+## Conventions (read the matching file before editing; do not rely on memory)
+
+- TypeScript, tooling and tests: `docs/coding-conventions.md`
+- Page code (`index.html`, `src/main.ts`, `src/ui/**`): `docs/frontend-conventions.md`
+- Vite and Vitest APIs: the version-matched docs in `.vendor-docs/` (your training data predates the installed versions)
 
 Use `docs/requirements.md` to understand the requirements for the project.
 
@@ -109,7 +115,7 @@ clarity, empty-state usability, copy tone — scored 0-100 against a rubric.
 
 - macOS, zsh, npm. No `gh` CLI; use the GitHub web UI or connector.
 - Commits are GPG-signed; never use `--no-verify`, and never squash.
-- Commit trailers: `Slice: <change-name>` and `Refs: FR-x` on every commit touching `src/`.
+- Commit trailers: a slice commit touching `src/` carries `Slice: <change-name>` and `Refs: FR-x`; any other commit touching `src/` carries `Refs:` with the FR/NFR/TC/BC/BUG ids it serves. The commit-msg hook requires at least one of the two.
 
 <!-- BEGIN-FACTORY-LESSONS -->
 <!--
