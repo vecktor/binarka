@@ -5,7 +5,7 @@
 - Make the play page operable and understandable without a mouse and without sight, as
   NFR-9 and FR-59 to FR-65 require: APG grid pattern, Ukrainian names, one Tab stop,
   labelled select, status regions, a second violation cue, 3:1 contrast, visible focus.
-- Verify all of it in jsdom (Vitest) and by tests that read `src/ui/style.css` (A-26).
+- Verify all of it in jsdom (Vitest) and by tests that read `src/ui/style.css` (A-28).
   Keep every existing `data-*` attribute and class, so slices 2 and 3 stay valid.
 
 ## Non-goals
@@ -189,7 +189,7 @@ produce a raw 500; there is no inline form validation beyond the size select (sl
 
 ## Risks and mitigations
 
-- **jsdom is blind to layout, `:focus-visible` and screen readers (TC-13, A-26).**
+- **jsdom is blind to layout, `:focus-visible` and screen readers (TC-13, A-28).**
   Mitigation: CSS read through the CSSOM and computed style; a manual keyboard check in the built-in browser (task 6.10)
   with screenshots under `docs/qa/add-page-accessibility/`; NFR-7 stays Future.
 - **Row layout regression.** Rows share a template by construction only. Mitigation: the
@@ -233,7 +233,7 @@ and in the SAME commit edit this non-requirement text of `openspec/specs/play-pa
 5. **Exclusions:** replace "Keyboard play and screen-reader support have no requirements
    (A-20)" by "Keyboard play and the roles, names and states screen readers use are MVP
    requirements (NFR-9, FR-59 to FR-65; A-20 is superseded). Real screen-reader output and
-   real-browser rendering are not tested (A-26, TC-13)". Add the three items the user
+   real-browser rendering are not tested (A-28, TC-13)". Add the three items the user
    declined (autonomy-log row 34): 44 px phone targets (8×8 cells are 41 px at 375 px),
    confirm or Undo before progress is discarded, puzzle state in the URL. Keep "Mobile
    layout and visual polish are not specified (A-14)" as a separate sentence.

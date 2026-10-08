@@ -1,7 +1,7 @@
 // Play page: the stylesheet requirements, read from src/ui/style.css (FR-64, FR-65; FR-61 and FR-62 for the rules that
 // would hide rows and the label). Part (a) walks the parsed CSSOM; part (b) lets jsdom compute the cascade of the
 // injected text. jsdom never matches :focus-visible and applies no @media or nested rule to computed style, so those are
-// judged at declaration level only (A-26, TC-13). Scenarios of
+// judged at declaration level only (A-28, TC-13). Scenarios of
 // openspec/changes/add-page-accessibility/specs/play-page/spec.md; the helper is tests/helpers/css.ts.
 import { describe, expect, it } from 'vitest';
 import {

@@ -299,7 +299,7 @@ Traces: FR-62, FR-43, NFR-5
 
 ### Requirement: The hint and win messages are status regions
 
-The page SHALL give `[data-message="hint"]` and `[data-message="win"]` `role="status"`, SHALL have both elements in the root from the first render with empty text content until they have a message, and SHALL change only their text content afterwards: the same two elements stay in the page across hint presses, new puzzles, size changes and wins (a live region that is replaced is not announced) (FR-63). The page SHALL NOT move DOM focus to either region, and SHALL NOT give them a `tabindex`. There are exactly two elements with `role="status"` in the page. The announcement itself is a screen-reader behaviour that is not tested (A-26).
+The page SHALL give `[data-message="hint"]` and `[data-message="win"]` `role="status"`, SHALL have both elements in the root from the first render with empty text content until they have a message, and SHALL change only their text content afterwards: the same two elements stay in the page across hint presses, new puzzles, size changes and wins (a live region that is replaced is not announced) (FR-63). The page SHALL NOT move DOM focus to either region, and SHALL NOT give them a `tabindex`. There are exactly two elements with `role="status"` in the page. The announcement itself is a screen-reader behaviour that is not tested (A-28).
 
 Traces: FR-63, FR-40, FR-41
 
@@ -468,7 +468,7 @@ Traces: FR-65
 
 ### Requirement: The page meets the WCAG 2.2 AA criteria of the accessibility requirements
 
-The page SHALL meet WCAG 2.2 AA for what FR-59 to FR-65 cover (NFR-9): keyboard operation 2.1.1 (Arrow, Home, End, Enter and Space keys and a single Tab stop), name, role and value 4.1.2 (grid, row and gridcell roles, cell names, `aria-readonly`, `aria-invalid`), labels 3.3.2 (the visible «Розмір поля» label), status messages 4.1.3 (the two `role="status"` regions), use of colour 1.4.1 (the heavier violation border and `aria-invalid`), non-text contrast 1.4.11 (the 3:1 pairs) and visible focus 2.4.7 (the `:focus-visible` rules); the focus is also not hidden by neighbouring cells (2.4.11). Every interactive element of the page, that is every button, the select and every gridcell, SHALL have a non-empty accessible name in Ukrainian: the text of the button, the text of the label of the select, the `aria-label` of the gridcell. Real screen-reader output and real-browser rendering are not tested (A-26, TC-13).
+The page SHALL meet WCAG 2.2 AA for what FR-59 to FR-65 cover (NFR-9): keyboard operation 2.1.1 (Arrow, Home, End, Enter and Space keys and a single Tab stop), name, role and value 4.1.2 (grid, row and gridcell roles, cell names, `aria-readonly`, `aria-invalid`), labels 3.3.2 (the visible «Розмір поля» label), status messages 4.1.3 (the two `role="status"` regions), use of colour 1.4.1 (the heavier violation border and `aria-invalid`), non-text contrast 1.4.11 (the 3:1 pairs) and visible focus 2.4.7 (the `:focus-visible` rules); the focus is also not hidden by neighbouring cells (2.4.11). Every interactive element of the page, that is every button, the select and every gridcell, SHALL have a non-empty accessible name in Ukrainian: the text of the button, the text of the label of the select, the `aria-label` of the gridcell. Real screen-reader output and real-browser rendering are not tested (A-28, TC-13).
 
 Traces: NFR-9, NFR-5, FR-59, FR-60, FR-61, FR-62, FR-63, FR-64, FR-65
 

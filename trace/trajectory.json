@@ -31,7 +31,7 @@
     {
       "slice": "2026-10-08-add-page-accessibility",
       "reviewEvidence": "clean",
-      "trailerCommits": 5,
+      "trailerCommits": 6,
       "libDomains": [
         "ui"
       ],

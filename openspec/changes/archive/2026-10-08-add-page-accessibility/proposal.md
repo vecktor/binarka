@@ -8,7 +8,7 @@ screen-reader user cannot: cells are `<div>`s with a click handler only, the siz
 is shown by colour alone and the cell border is 2.43:1 against the page
 (`docs/frontend-conventions.md` section 9, gaps G1 to G6 and G9). The user signed the
 accessibility amendment on 2026-10-06 at about 16:05 (UTC+5:30), autonomy-log row 34:
-NFR-9, FR-59 to FR-65, A-26, A-20 superseded, and slice 4 in
+NFR-9, FR-59 to FR-65, A-28, A-20 superseded, and slice 4 in
 `docs/mvp-capability-plan.md` section 4.5. This change implements it.
 
 ## What Changes
@@ -31,7 +31,7 @@ NFR-9, FR-59 to FR-65, A-26, A-20 superseded, and slice 4 in
   Highlighting follows every board change, Ukrainian page text, now also accessible names). Non-requirement baseline text is edited by hand at archive
   (see `design.md`).
 - Tests: four new files, an extended `expectPageStructure`, a small CSS reader and a
-  contrast function. No new dependencies, no Playwright, no screen-reader test (A-26).
+  contrast function. No new dependencies, no Playwright, no screen-reader test (A-28).
 
 Scope in: NFR-9, FR-59 to FR-65, accessible names of NFR-5. Scope out: 44 px phone targets
 (G7), confirm or Undo and URL state (G8), real browsers and screen readers (TC-13,

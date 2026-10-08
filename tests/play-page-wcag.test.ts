@@ -1,6 +1,6 @@
 // Play page: the accessibility umbrella (NFR-9) and the Ukrainian accessible names (NFR-5). Every interactive element has
 // a non-empty Ukrainian accessible name, and nothing has a positive tabindex. This does NOT claim real screen-reader or
-// browser coverage (A-26, TC-13); the details live in play-page-keyboard, -semantics and -stylesheet.
+// browser coverage (A-28, TC-13); the details live in play-page-keyboard, -semantics and -stylesheet.
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,

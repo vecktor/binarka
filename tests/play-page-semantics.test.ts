@@ -1,7 +1,7 @@
 // Play page: grid roles, Ukrainian names and states, the labelled size selector, the status regions and the DOM side of
 // the violation cue (FR-61, FR-62, FR-63, FR-64). Scenarios of
 // openspec/changes/add-page-accessibility/specs/play-page/spec.md. Computed style comes from jsdom with
-// src/ui/style.css injected (tests/helpers/css.ts); screen-reader output is not tested (A-26).
+// src/ui/style.css injected (tests/helpers/css.ts); screen-reader output is not tested (A-28).
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,
