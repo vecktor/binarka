@@ -555,9 +555,25 @@ button:focus-visible {
   grid-column: 1 / -1;
 }
 
+/* Explicit rows (as in the design): the strip below spans every row, so auto-placement must not move the groups. */
+.setup-sheet > [data-control='size'] {
+  grid-row: 1;
+}
+
+.setup-sheet > [data-control='level'] {
+  grid-row: 2;
+}
+
+.setup-sheet > .setup-start {
+  grid-column: 1;
+}
+
+.setup-sheet > .setup-close {
+  grid-column: 2;
+}
+
 .setup-sheet > .setup-start,
 .setup-sheet > .setup-close {
-  grid-column: auto;
   grid-row: 3;
   align-self: end;
   position: sticky;
