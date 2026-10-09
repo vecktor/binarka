@@ -1,10 +1,9 @@
 import { findViolations } from './rules';
+import { nextFill } from './techniques';
+import type { Digit, Fill } from './techniques';
 import type { Grid, Hint } from './types';
 
-type Digit = 0 | 1;
-type Rule = 'pair' | 'sandwich' | 'count';
-
-const NO_RULE = 'Жодне з трьох правил зараз не підказує наступного ходу.';
+const NO_RULE = 'Жодне з правил зараз не підказує наступного ходу.';
 const BROKEN = 'Спершу виправте порушення правил, підсвічене на полі.';
 
 /**
@@ -46,66 +45,55 @@ function countSentence(axis: 'row' | 'col', line: number, d: Digit, n: number, e
   return `У ${inLine(axis)} ${line + 1} вже ${have}, а нулів і одиниць має бути порівну, тож ${ending}.`;
 }
 
-/** Deterministic hint from the board alone (never the solution); the board is not modified. */
-export function hint(board: Grid): Hint {
-  if (findViolations(board).length > 0) return { kind: 'broken', sentence: BROKEN };
-  const n = board.length;
-  const at = (axis: 'row' | 'col', line: number, i: number): 0 | 1 | null =>
-    (axis === 'row' ? board[line]?.[i] : board[i]?.[line]) ?? null;
-  const fill = (axis: 'row' | 'col', line: number, i: number, value: Digit, rule: Rule, sentence: string): Hint => ({
-    kind: 'fill',
-    row: axis === 'row' ? line : i,
-    col: axis === 'row' ? i : line,
-    value,
-    rule,
-    sentence,
-  });
+function balanceSentence(axis: 'row' | 'col', line: number, d: Digit): string {
+  const place = d === 0 ? 'одного нуля' : 'однієї одиниці';
+  const it = d === 0 ? 'його' : 'її';
+  const result = d === 0 ? 'одиниця' : 'нуль';
+  return `У ${inLine(axis)} ${line + 1} є місце лише для ${place}, і якщо поставити ${it} сюди, решта клітинок дасть три однакові цифри поспіль, тож тут ${result}.`;
+}
 
-  for (const rule of ['pair', 'sandwich', 'count'] as const) {
-    for (const axis of ['row', 'col'] as const) {
-      for (let line = 0; line < n; line++) {
-        if (rule === 'count') {
-          for (const d of [0, 1] as const) {
-            let have = 0;
-            let firstEmpty = -1;
-            let empties = 0;
-            for (let i = 0; i < n; i++) {
-              const v = at(axis, line, i);
-              if (v === d) have++;
-              else if (v === null) {
-                empties++;
-                if (firstEmpty === -1) firstEmpty = i;
-              }
-            }
-            if (have === n / 2 && firstEmpty !== -1) {
-              return fill(axis, line, firstEmpty, (1 - d) as Digit, 'count', countSentence(axis, line, d, n, empties));
-            }
-          }
-          continue;
-        }
-        for (let i = 0; i < n; i++) {
-          if (rule === 'pair') {
-            // targets in order of position: the cell before the pair at i - 1 and i (target i - 1),
-            // or the cell after (target i + 1)
-            const a = at(axis, line, i);
-            const b = at(axis, line, i + 1);
-            if (a === null || a !== b) continue;
-            const d = a;
-            if (i - 1 >= 0 && at(axis, line, i - 1) === null) {
-              return fill(axis, line, i - 1, (1 - d) as Digit, 'pair', pairSentence(axis, line, d));
-            }
-            if (i + 2 < n && at(axis, line, i + 2) === null) {
-              return fill(axis, line, i + 2, (1 - d) as Digit, 'pair', pairSentence(axis, line, d));
-            }
-          } else {
-            const a = at(axis, line, i);
-            if (a !== null && at(axis, line, i + 1) === null && at(axis, line, i + 2) === a) {
-              return fill(axis, line, i + 1, (1 - a) as Digit, 'sandwich', sandwichSentence(axis, line, a));
-            }
-          }
-        }
-      }
-    }
+function uniqueSentence(axis: 'row' | 'col', line: number, other: number, value: Digit): string {
+  const nominative = axis === 'row' ? 'Рядок' : 'Стовпець';
+  const instrumental = axis === 'row' ? 'рядком' : 'стовпцем';
+  const plural = axis === 'row' ? 'рядки' : 'стовпці';
+  return `${nominative} ${line + 1} збігається з повним ${instrumental} ${other + 1} усюди, крім двох порожніх клітинок, тож тут має бути ${value}, інакше ці ${plural} були б однакові.`;
+}
+
+function lookAheadSentence(row: number, col: number, value: Digit): string {
+  return `Якщо поставити ${1 - value} у рядку ${row + 1}, стовпці ${col + 1}, за кілька кроків порушиться правило, тож тут ${value}.`;
+}
+
+function sentenceOf(f: Fill, n: number): string {
+  const axis = f.axis ?? 'row';
+  const line = f.line ?? 0;
+  const digit = f.digit ?? 0;
+  switch (f.rule) {
+    case 'pair':
+      return pairSentence(axis, line, digit);
+    case 'sandwich':
+      return sandwichSentence(axis, line, digit);
+    case 'count':
+      return countSentence(axis, line, digit, n, f.empties ?? 1);
+    case 'balance':
+      return balanceSentence(axis, line, digit);
+    case 'unique':
+      return uniqueSentence(axis, line, f.other ?? 0, f.value);
+    case 'lookahead':
+      return lookAheadSentence(f.row, f.col, f.value);
   }
-  return { kind: 'none', sentence: NO_RULE };
+}
+
+/**
+ * Deterministic hint from the board alone (never the solution); the board is not modified.
+ * Techniques 1 to `ceiling` are allowed (FR-77); the default is the three basic rules.
+ */
+export function hint(board: Grid, ceiling = 1): Hint {
+  if (findViolations(board).length > 0) return { kind: 'broken', sentence: BROKEN };
+  const f = nextFill(board, ceiling);
+  if (f === null) return { kind: 'none', sentence: NO_RULE };
+  const sentence = sentenceOf(f, board.length);
+  if (f.rule === 'lookahead') {
+    return { kind: 'fill', row: f.row, col: f.col, value: f.value, rule: 'lookahead', steps: f.steps ?? 0, sentence };
+  }
+  return { kind: 'fill', row: f.row, col: f.col, value: f.value, rule: f.rule, sentence };
 }

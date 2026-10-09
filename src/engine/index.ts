@@ -4,3 +4,4 @@ export { countSolutions } from './solver';
 export { generate } from './generator';
 export { hint } from './hint';
 export { InvalidSizeError, InvalidSeedError, InvalidArgumentTypeError } from './types';
+export { InvalidLevelError, GenerationRunOutError } from './types';

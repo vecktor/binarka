@@ -19,7 +19,15 @@ export interface Violation {
 }
 
 export type Hint =
-  | { kind: 'fill'; row: number; col: number; value: 0 | 1; rule: 'pair' | 'sandwich' | 'count'; sentence: string }
+  | {
+      kind: 'fill';
+      row: number;
+      col: number;
+      value: 0 | 1;
+      rule: 'pair' | 'sandwich' | 'count' | 'balance' | 'unique';
+      sentence: string;
+    }
+  | { kind: 'fill'; row: number; col: number; value: 0 | 1; rule: 'lookahead'; steps: number; sentence: string }
   | { kind: 'none' | 'broken'; sentence: string };
 
 /** The size is not an even integer from 4 to 16. */
@@ -43,5 +51,25 @@ export class InvalidArgumentTypeError extends TypeError {
   constructor() {
     super('The size and the seed must be numbers.');
     this.name = 'InvalidArgumentTypeError';
+  }
+}
+
+/** The level is not an integer from 1 to 4, or a level above 1 was asked for size 4. */
+export class InvalidLevelError extends RangeError {
+  constructor(aboveOneAtFour = false) {
+    super(
+      aboveOneAtFour
+        ? 'Levels 2 to 4 need a size of 6 or 8.'
+        : 'The level must be a whole number from 1 to 4.',
+    );
+    this.name = 'InvalidLevelError';
+  }
+}
+
+/** No attempt within the limit gave a puzzle of exactly the requested level. */
+export class GenerationRunOutError extends Error {
+  constructor() {
+    super('No puzzle of the requested level was found within the attempt limit.');
+    this.name = 'GenerationRunOutError';
   }
 }

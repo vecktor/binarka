@@ -12,7 +12,7 @@
 //     techniques and stays a guard of the full scan once the techniques exist).
 import { describe, expect, it } from 'vitest';
 import type { Grid } from '../src/engine/index';
-import { hint } from './helpers/engine-shim';
+import { hint } from '../src/engine/index';
 import { COMBOS, SEEDS, copyOf, emptyCount, puzzleOf } from './helpers/levels';
 import { emptyBoard } from './helpers/board';
 import { BOARD_A, BOARD_B, LA_EQUAL, LA_FIVE, LA_FOUR, LA_TWO } from './helpers/technique-boards';

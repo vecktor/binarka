@@ -2,7 +2,7 @@
 // one solution for all levels (FR-14, FR-83), uniqueness by the solver and the independent oracle (FR-15), solvable by
 // the techniques of the level and exactly that level (FR-27, FR-82), plus two differential tests (the local violation
 // check against findViolations; solveByRules against a loop of public hint calls).
-// Written from the delta spec before the implementation exists. The new API is reached through the red-phase shim.
+// Written from the delta spec before the implementation exists.
 // Every failure message names N, level, seed and step.
 //
 // Green by design at red (the engine ignores the level today, so these describe unchanged behaviour and are guards,
@@ -17,7 +17,10 @@ import { countSolutions, findViolations, InvalidSeedError, InvalidSizeError } fr
 import type { Grid, Puzzle } from '../src/engine/index';
 import { mulberry32 } from '../src/engine/rng';
 import { cloneBoard, emptyBoard } from './helpers/board';
-import { errors, generate, hasLocalViolation, hint, solveByRules } from './helpers/engine-shim';
+import { InvalidLevelError, generate } from '../src/engine/index';
+import { hint } from './helpers/hint-type';
+import { hasLocalViolation } from '../src/engine/techniques';
+import { solveByRules } from '../src/engine/rule-solve';
 import { COMBOS, COMBOS_68, LONG, SEEDS, copyOf, emptyCount, findRetryCase, puzzleOf, walk } from './helpers/levels';
 import { oracleSolve } from './helpers/oracle';
 import {
@@ -69,7 +72,7 @@ describe('@trace FR-81 the level is an integer from 1 to 4', () => {
     });
     expect(e !== undefined, `generate(4, 1, ${level}) must throw`).toBe(true);
     expect(result).toBeUndefined();
-    expect(e).toBeInstanceOf(errors.InvalidLevelError);
+    expect(e).toBeInstanceOf(InvalidLevelError);
   });
 
   it('level 1 at size 4 returns a 4x4 puzzle', () => {
@@ -88,11 +91,11 @@ describe('@trace FR-81 the level is an integer from 1 to 4', () => {
   ] as [string, unknown][])('size 6, seed 1, level %s raises an InvalidLevelError and returns no puzzle', (_name, level) => {
     let result: Puzzle | undefined;
     const e = thrown(() => {
-      result = generate(6, 1, level);
+      result = generate(6, 1, level as number);
     });
     expect(e !== undefined, `generate(6, 1, ${_name}) must throw`).toBe(true);
     expect(result).toBeUndefined();
-    expect(e).toBeInstanceOf(errors.InvalidLevelError);
+    expect(e).toBeInstanceOf(InvalidLevelError);
   });
 
   it('the InvalidLevelError message is one English sentence without Cyrillic', () => {
@@ -103,7 +106,7 @@ describe('@trace FR-81 the level is an integer from 1 to 4', () => {
     expect(message).toMatch(/[A-Za-z]/);
     expect(message.match(/[.!?]/g) ?? []).toHaveLength(1);
     expect(message.endsWith('.')).toBe(true);
-    expect(e).toBeInstanceOf(errors.InvalidLevelError);
+    expect(e).toBeInstanceOf(InvalidLevelError);
     expect(e).toBeInstanceOf(RangeError);
   });
 
@@ -120,8 +123,8 @@ describe('@trace FR-81 the level is an integer from 1 to 4', () => {
   });
 
   it('size and seed errors come first: neither of those two errors is an InvalidLevelError', () => {
-    expect(thrown(() => generate(5, 1, 9))).not.toBeInstanceOf(errors.InvalidLevelError);
-    expect(thrown(() => generate(6, -1, 9))).not.toBeInstanceOf(errors.InvalidLevelError);
+    expect(thrown(() => generate(5, 1, 9))).not.toBeInstanceOf(InvalidLevelError);
+    expect(thrown(() => generate(6, -1, 9))).not.toBeInstanceOf(InvalidLevelError);
   });
 });
 

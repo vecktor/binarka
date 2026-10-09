@@ -11,7 +11,7 @@ import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { Grid } from '../src/engine/index';
 import { hasCyrillic, hasLatin, isOneSentence } from './helpers/board';
-import { errors, generate } from './helpers/engine-shim';
+import { GenerationRunOutError, generate } from '../src/engine/index';
 
 const TIMEOUT = 60_000;
 
@@ -185,7 +185,7 @@ describe('@trace FR-86 @trace FR-84 @trace NFR-8 a generator run-out is reported
   });
 
   it('the CLI module with a mocked engine whose generate throws GenerationRunOutError: stderr gets one English sentence, exit code 1, stdout nothing', async () => {
-    const RunOut = errors.GenerationRunOutError;
+    const RunOut = GenerationRunOutError;
     const mockedGenerate = vi.fn((): never => {
       throw new RunOut();
     });

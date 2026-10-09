@@ -1,0 +1,21 @@
+add-difficulty-engine, task 2.9 timing on the REAL code (src/engine), scratch script outside the repo
+(generate per (N, level), seeds 1..20, one warm-up call generate(N, 0, L) per combination, performance.now()).
+Machine: Apple M1 Max (Darwin arm64), node v22.21.1, date Fri Oct 9 16:20 +0530 2026.
+Load average during the run: 15.9 25.4 27.1 (machine heavily loaded, numbers are pessimistic). Single round.
+Columns: N, level, worst ms, seed of the worst, bound (NFR-1..3), share of bound, share of the 50% target (100/250/1500 ms).
+Run-outs: 0 (no generate call threw over the 180 combinations).
+N level worstMs seed bound share%of-bound share%of-50%target
+4 1 0.8 5 200 0.4% 0.8%
+6 1 0.8 2 500 0.2% 0.3%
+6 2 3.6 18 500 0.7% 1.5%
+6 3 1.7 20 500 0.3% 0.7%
+6 4 26.9 15 500 5.4% 10.8%
+8 1 2.1 14 3000 0.1% 0.1%
+8 2 4.3 14 3000 0.1% 0.3%
+8 3 2.7 20 3000 0.1% 0.2%
+8 4 49.1 5 3000 1.6% 3.3%
+hint(board,4) board A worst of 20: 0.32 ms, kind none
+hint(board,4) board B worst of 20: 0.39 ms, kind none
+
+Gate 2.10 (A-36): worst share of the 50% target is 10.8% (6x6 level 4, seed 15); no run-out; worst hint 0.39 ms (<< 100 ms).
+Result: PASSED, gate did not fire. The timing tests tests/generator-timing-levels.test.ts and tests/hint-budget.test.ts are green.

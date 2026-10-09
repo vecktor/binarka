@@ -1,0 +1,10 @@
+# Green run: add-difficulty-engine (DL1)
+
+Run by the orchestrator at 2026-10-09 16:24 (UTC+5:30) in worktree suspicious-lamarr-be0fd0 on the implementation of tasks 2.1 to 2.11 (capability-implementer, Sonnet), tests of 1f8af34 plus the shim removal of task 2.8a.
+- npm run lint: exit 0 (no output). npx tsc --noEmit: exit 0.
+- npm run test:run: 46 files, 1111 passed, 0 failed (the 170 red tests of the red run are green; the level-1 golden guard stayed green).
+- npm run build: ok. npx openspec validate --all --strict: 4 passed. node scripts/check-eval-ratchet.mjs: PASS. node scripts/check-traceability.mjs: 92 MVP FRs, 0 failures.
+- No Math.random under src/engine.
+- Timing (task 2.9, docs/qa/add-difficulty-engine/timing.txt): worst 26.9 ms at (6, 4) = 10.8% of the 50% target; 49.1 ms at (8, 4); 0 run-outs; hint(board, 4) at most 0.39 ms. Gate 2.10 passed.
+
+Test edits since the red commit 1f8af34 (task 2.8a, shim removal): imports switched to the real modules in 11 test files and tests/helpers/levels.ts; tests/helpers/engine-shim.ts deleted; tests/helpers/hint-type.ts added (an identity cast of the public hint to a wide type, replacing the shim's typing); typing edits: `level as number` in generator-level.test.ts, MAX_ATTEMPTS read directly and the index module spread in generator-run-out.test.ts. No assertion changed. One test was ADDED by the implementer in generator-run-out.test.ts («hint of the index is the hint of the engine (the same function)»): flagged for the review-gate (an implementer should not add tests).

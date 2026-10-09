@@ -1,8 +1,10 @@
 // Shared pieces of the level tests of add-difficulty-engine: the fixed seed set, the valid (N, level) combinations,
 // memoised puzzles (module-level cache: one per test file, Vitest isolates modules), the hint walk, and the search for a
-// combination that needs more than one attempt. The new API is reached through the red-phase shim.
+// combination that needs more than one attempt.
 import type { Grid, Puzzle } from '../../src/engine/index';
-import { buildPuzzle, errors, generate, hint } from './engine-shim';
+import { GenerationRunOutError, generate } from '../../src/engine/index';
+import { hint } from './hint-type';
+import { buildPuzzle } from '../../src/engine/generator';
 
 export const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
 export const LONG = 240_000;
@@ -104,7 +106,7 @@ let retryCase: RetryCase | null | undefined;
  */
 export function findRetryCase(): RetryCase {
   if (retryCase !== undefined && retryCase !== null) return retryCase;
-  const RunOut = errors.GenerationRunOutError;
+  const RunOut = GenerationRunOutError;
   for (const n of [6, 8]) {
     for (const level of [2, 3, 4]) {
       for (let seed = 1; seed <= 200; seed++) {

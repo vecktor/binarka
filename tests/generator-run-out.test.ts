@@ -1,7 +1,6 @@
 // At most 100 attempts and the distinct run-out error (FR-84), and the public engine interface (FR-81, FR-84, FR-77).
 // Written from the delta spec of add-difficulty-engine before the implementation exists. The new API
-// (`buildPuzzle`, `MAX_ATTEMPTS`, `GenerationRunOutError`, `InvalidLevelError`) is reached through the red-phase shim
-// (tests/helpers/engine-shim.ts), which throws «not implemented: <name>» on first use while an export is missing.
+// (`buildPuzzle`, `MAX_ATTEMPTS`, `GenerationRunOutError`, `InvalidLevelError`) is imported directly.
 // This file's reds are therefore mostly that deliberate message (task 1.12), except the assertions on the index module's
 // properties, which fail by assertion.
 // Green by design at red (guards of unchanged behaviour, not red evidence): no run-out over the 180 combinations (the
@@ -12,7 +11,12 @@ import { describe, expect, it } from 'vitest';
 import { InvalidArgumentTypeError, InvalidSeedError, InvalidSizeError } from '../src/engine/index';
 import type { Puzzle } from '../src/engine/index';
 import { isOneSentence } from './helpers/board';
-import { buildPuzzle, errors, generate, hint, indexModule, maxAttempts, solveByRules } from './helpers/engine-shim';
+import * as indexModuleNs from '../src/engine/index';
+import { GenerationRunOutError, InvalidLevelError, generate, hint } from '../src/engine/index';
+import { MAX_ATTEMPTS, buildPuzzle } from '../src/engine/generator';
+import { solveByRules } from '../src/engine/rule-solve';
+
+const indexModule: Record<string, unknown> = { ...indexModuleNs };
 import { COMBOS, LONG, SEEDS, findRetryCase } from './helpers/levels';
 import { LB_ROW } from './helpers/technique-boards';
 
@@ -27,7 +31,7 @@ function thrown(f: () => unknown): unknown {
 
 describe('@trace FR-84 generation makes at most 100 attempts', () => {
   it('the attempt bound MAX_ATTEMPTS of the generator module equals 100', () => {
-    expect(maxAttempts()).toBe(100);
+    expect(MAX_ATTEMPTS).toBe(100);
   });
 
   it('no run-out over the 180 combinations of the fixed seed set (any error from generate is a failure)', () => {
@@ -52,14 +56,14 @@ describe('@trace FR-84 generation makes at most 100 attempts', () => {
     });
     expect(e !== undefined, `buildPuzzle(${n}, ${seed}, ${level}, 1) must throw`).toBe(true);
     expect(result).toBeUndefined();
-    expect(e).toBeInstanceOf(errors.GenerationRunOutError);
+    expect(e).toBeInstanceOf(GenerationRunOutError);
   }, LONG);
 
   it('the run-out error is none of InvalidLevelError, InvalidSizeError and InvalidSeedError', () => {
     const { n, level, seed } = findRetryCase();
     const e = thrown(() => buildPuzzle(n, seed, level, 1));
-    expect(e).toBeInstanceOf(errors.GenerationRunOutError);
-    expect(e).not.toBeInstanceOf(errors.InvalidLevelError);
+    expect(e).toBeInstanceOf(GenerationRunOutError);
+    expect(e).not.toBeInstanceOf(InvalidLevelError);
     expect(e).not.toBeInstanceOf(InvalidSizeError);
     expect(e).not.toBeInstanceOf(InvalidSeedError);
     expect(e).not.toBeInstanceOf(InvalidArgumentTypeError);
@@ -76,7 +80,7 @@ describe('@trace FR-84 generation makes at most 100 attempts', () => {
   it('the run-out error message is one English sentence without Cyrillic letters', () => {
     const { n, level, seed } = findRetryCase();
     const e = thrown(() => buildPuzzle(n, seed, level, 1));
-    expect(e).toBeInstanceOf(errors.GenerationRunOutError);
+    expect(e).toBeInstanceOf(GenerationRunOutError);
     const message = (e as Error).message;
     expect(message).not.toMatch(/\p{Script=Cyrillic}/u);
     expect(message).toMatch(/[A-Za-z]/);
@@ -122,7 +126,7 @@ describe('@trace FR-81 @trace FR-84 @trace FR-77 the public engine interface exp
     expect(e).not.toBeInstanceOf(indexModule.GenerationRunOutError as new () => Error);
   });
 
-  it('hint of the index is the hint of the shim (the same function)', () => {
+  it('hint of the index is the hint of the engine (the same function)', () => {
     expect(indexModule.hint).toBe(hint);
   });
 });

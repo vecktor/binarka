@@ -16,7 +16,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { Grid } from '../src/engine/index';
-import { generate } from './helpers/engine-shim';
+import { generate } from '../src/engine/index';
 
 interface Entry {
   size: number;

@@ -1,6 +1,6 @@
 // Hint order and ceiling (FR-77) with the modified FR-23, FR-24, FR-25 and FR-26 scenarios of add-difficulty-engine.
 // Written from the delta spec before the implementation exists. Coordinates are 1-based in the spec, 0-based in the engine.
-// The ceiling argument is reached through the red-phase shim (tests/helpers/engine-shim.ts).
+// The ceiling argument is reached through the engine.
 // Green by design at red (unchanged behaviour, named here so they are not mistaken for red evidence): the default
 // ceiling equal to ceiling 1 on every board (today the ceiling is ignored), repeated calls give the same result, the
 // pair and count boards give the same fill at every ceiling, the broken-board scenarios at every ceiling, the
@@ -10,7 +10,7 @@ import { describe, expect, it } from 'vitest';
 import { countSolutions } from '../src/engine/index';
 import type { Grid } from '../src/engine/index';
 import { VALID_4X4, boardOf, cloneBoard, emptyBoard, parseBoard } from './helpers/board';
-import { hint } from './helpers/engine-shim';
+import { hint } from './helpers/hint-type';
 import {
   BROKEN_SENTENCE,
   COUNT_BOARD,

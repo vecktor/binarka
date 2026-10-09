@@ -9,7 +9,7 @@
 import { describe, expect, it } from 'vitest';
 import { countSolutions, findViolations } from '../src/engine/index';
 import type { Grid } from '../src/engine/index';
-import { hint } from './helpers/engine-shim';
+import { hint } from './helpers/hint-type';
 import type { Chain } from './helpers/technique-boards';
 import {
   BOARD_A,

@@ -1,7 +1,7 @@
 // NFR-4 (every hint sentence is exactly one sentence), NFR-5 (Ukrainian: Cyrillic, no Latin) and FR-22 (the sentence
 // names its line or cell) for the three new sentence kinds of add-difficulty-engine: line balance (FR-78), unique lines
 // (FR-79) and look-ahead (FR-80). Written from the delta spec before the implementation exists.
-// The sentences come from the engine through the red-phase shim (tests/helpers/engine-shim.ts), requested with the
+// The sentences come from the engine through the engine, requested with the
 // ceiling that allows their technique; each case first asserts the fill and its rule, so a placeholder or the
 // no-rule sentence cannot pass vacuously.
 // Coverage: line balance at N = 6 and 8 (row and column at 6, the 8x8 row of the threshold scenario); unique lines,
@@ -14,7 +14,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Grid } from '../src/engine/index';
 import { boardOf, hasCyrillic, hasLatin, isOneSentence, terminalMarkCount } from './helpers/board';
-import { hint } from './helpers/engine-shim';
+import { hint } from './helpers/hint-type';
 import {
   BROKEN_SENTENCE,
   LA_EQUAL,

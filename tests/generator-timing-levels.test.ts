@@ -12,7 +12,8 @@
 // not a test.
 import { describe, expect, it } from 'vitest';
 import type { Puzzle } from '../src/engine/index';
-import { generate, solveByRules } from './helpers/engine-shim';
+import { generate } from '../src/engine/index';
+import { solveByRules } from '../src/engine/rule-solve';
 import { COMBOS, SEEDS } from './helpers/levels';
 
 const BOUND_MS: Record<number, number> = { 4: 200, 6: 500, 8: 3000 };

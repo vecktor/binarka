@@ -1,11 +1,11 @@
 // Unique lines hint (technique 3). Written from the delta spec of add-difficulty-engine before the implementation exists.
 // Scenarios of «Requirement: Unique lines hint». Coordinates are 1-based in the spec and 0-based in the engine.
-// The ceiling argument is reached through the red-phase shim (tests/helpers/engine-shim.ts).
+// The ceiling argument is reached through the engine.
 // At red every test fails: the positive ones because technique 3 does not exist; the ceiling-2 and near-miss ones
 // (unchanged behaviour of the engine) only because the no-rule sentence is the new one (FR-25 as amended, row 87).
 import { describe, expect, it } from 'vitest';
 import { cloneBoard } from './helpers/board';
-import { hint } from './helpers/engine-shim';
+import { hint } from '../src/engine/index';
 import {
   NO_RULE_SENTENCE,
   UL_COL,

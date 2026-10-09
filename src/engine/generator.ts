@@ -1,16 +1,21 @@
 import { mulberry32, shuffle } from './rng';
 import { solveByRules } from './rule-solve';
-import { InvalidArgumentTypeError, InvalidSeedError, InvalidSizeError } from './types';
+import { GenerationRunOutError, InvalidArgumentTypeError, InvalidLevelError, InvalidSeedError, InvalidSizeError } from './types';
 import type { Cell, Grid, Puzzle } from './types';
 
 const MAX_SEED = 2147483647;
 /** Work limits (search nodes), never wall-clock time, so the output depends only on the seed (FR-14). */
 const FILL_NODE_BUDGET = 20000;
 
-function validate(size: number, seed: number): void {
+/** Attempts per puzzle (FR-84). */
+export const MAX_ATTEMPTS = 100;
+
+function validate(size: number, seed: number, level: unknown): void {
   if (typeof size !== 'number' || typeof seed !== 'number') throw new InvalidArgumentTypeError();
   if (!Number.isInteger(size) || size < 4 || size > 16 || size % 2 !== 0) throw new InvalidSizeError();
   if (!Number.isInteger(seed) || seed < 0 || seed > MAX_SEED) throw new InvalidSeedError();
+  if (typeof level !== 'number' || !Number.isInteger(level) || level < 1 || level > 4) throw new InvalidLevelError();
+  if (level > 1 && size === 4) throw new InvalidLevelError(true);
 }
 
 /**
@@ -76,26 +81,39 @@ function fillGrid(n: number, rng: () => number): (0 | 1)[][] | null {
   return place(0) ? (grid as (0 | 1)[][]) : null;
 }
 
-export function generate(size: number, seed: number): Puzzle {
-  validate(size, seed);
+/**
+ * Fill once, then per attempt: one shuffle of the positions from the continued stream and one carving pass whose
+ * predicate is «the walk at ceiling `level` solves the board». Level 1 accepts the first attempt; a higher level accepts
+ * an attempt only when the walk at `level - 1` does not solve the carved board. A retry never refills, so the solution is
+ * the same at every level. Run-out after `maxAttempts` throws; no candidate that failed the test is ever returned.
+ */
+export function buildPuzzle(size: number, seed: number, level: number, maxAttempts: number): Puzzle {
+  validate(size, seed, level);
   const rng = mulberry32(seed);
   let solution = fillGrid(size, rng);
   while (solution === null) solution = fillGrid(size, rng);
 
-  const givens: Grid = solution.map((row) => row.map((v): Cell => v));
-  const positions: [number, number][] = [];
-  for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) positions.push([r, c]);
-  shuffle(positions, rng);
-  // Invariant (FR-27, FR-15): the board is rule-solvable before and after every accepted removal. Every rule fill is
-  // forced, so a rule-solvable puzzle has exactly one solution. A removal that breaks this is undone.
-  // This relies on hint() making forced fills only (pair, sandwich, count; never a guess, never the duplicate-line rule):
-  // a hint that guessed would break FR-15 here, which tests/generator-unique.test.ts would catch.
-  for (const [r, c] of positions) {
-    const row = givens[r];
-    const keep = row?.[c];
-    if (row === undefined || keep === undefined) throw new RangeError(`generate: cell ${r}, ${c} is out of range`);
-    row[c] = null;
-    if (!solveByRules(givens).solved) row[c] = keep;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const givens: Grid = solution.map((row) => row.map((v): Cell => v));
+    const positions: [number, number][] = [];
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) positions.push([r, c]);
+    shuffle(positions, rng);
+    // Invariant (FR-27, FR-15): the board is rule-solvable at the ceiling before and after every accepted removal. Every
+    // rule fill is forced, so a rule-solvable puzzle has exactly one solution. A removal that breaks this is undone.
+    for (const [r, c] of positions) {
+      const row = givens[r];
+      const keep = row?.[c];
+      if (row === undefined || keep === undefined) throw new RangeError(`generate: cell ${r}, ${c} is out of range`);
+      row[c] = null;
+      if (!solveByRules(givens, level).solved) row[c] = keep;
+    }
+    if (level === 1 || !solveByRules(givens, level - 1).solved) {
+      return { size, givens, solution: solution.map((row) => [...row]) };
+    }
   }
-  return { size, givens, solution: solution.map((row) => [...row]) };
+  throw new GenerationRunOutError();
+}
+
+export function generate(size: number, seed: number, level = 1): Puzzle {
+  return buildPuzzle(size, seed, level, MAX_ATTEMPTS);
 }

@@ -1,11 +1,11 @@
 // Line balance hint (technique 2). Written from the delta spec of add-difficulty-engine before the implementation exists.
 // Scenarios of «Requirement: Line balance hint». Coordinates in the expectations are 1-based, as the spec writes them;
-// the engine's row and col are 0-based. The ceiling argument is reached through the red-phase shim (tests/helpers/engine-shim.ts).
+// the engine's row and col are 0-based. The ceiling argument is reached through the engine.
 // At red every test fails: the positive ones because technique 2 does not exist, the ceiling-1 and near-miss ones
 // (today's engine offers no such fill either, so their behaviour is unchanged) only because the no-rule sentence is
 // the new one (FR-25 as amended, autonomy-log row 87).
 import { describe, expect, it } from 'vitest';
-import { hint } from './helpers/engine-shim';
+import { hint } from '../src/engine/index';
 import {
   LB_COL,
   LB_COL_SENTENCE,
