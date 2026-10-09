@@ -1,0 +1,179 @@
+# add-difficulty-engine, task 0.2: timing spike for a fast level-4 check (A-36, Q5)
+
+Scratch measurement by a subagent. NOT product code and NOT acceptance evidence for NFR-1..3, NFR-16 or NFR-17 (those are 2.9 and the Vitest timing tests).
+Source: docs/qa/add-difficulty-engine/spike.ts.txt, run from a scratch dir holding it as spike.ts next to `engine/`, a copy of src/engine at ecf89a9 with `fillGrid` exported (the only edit). Nothing under src/ or tests/ was edited.
+The premise lines were re-run after the run-out list was added to the premise output; the timing source is otherwise the same file.
+Commands: `GOLDEN=<worktree>/tests/fixtures/level1-golden.json CAND=<0..5> npx tsx spike.ts` (timing, golden, hint read, properties), `CAND=<4|5> MODE=premise npx tsx spike.ts`, `MODE=diff npx tsx spike.ts`.
+
+Machine: Darwin Serhiis-MacBook-Pro.local 25.5.0 Darwin Kernel Version 25.5.0: Tue Jun  9 22:18:58 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T6000 arm64
+CPU: Apple M1 Max, 10 cores
+Node: v22.21.1
+Date: Fri Oct  9 13:56:23 +0530 2026
+
+## Protocol
+
+- One node process per candidate per round (no JIT warmth shared between candidates). Three rounds, candidates interleaved 0,1,2,3,4,5 per round.
+- Per valid (N, L): one untimed warm-up call (seed 1), then seeds 1..20 each timed with performance.now() around buildPuzzle(N, seed, L, 30). The generator path itself has no clock, no Math.random, no node budget in the level logic.
+- Bounds: NFR-1 200 ms (4,1); NFR-2 500 ms (6,L); NFR-3 3000 ms (8,L). Target (A-36 tripwire) = 50% of the bound: 100 / 250 / 1500 ms. "share of target" = worst / target; at most 100% meets the tripwire.
+- MACHINE LOAD WARNING: the dev machine was heavily loaded by other processes during the runs (IDE, browser, other sessions): 1-minute load average 125 down to 10 on 10 cores, printed per round below. Absolute numbers are inflated and noisy, most in round 1; the per-candidate maximum over the three rounds is reported as the conservative figure. Round 3 of candidate 0 (load 31: 6x6 L4 345 ms) reproduces the earlier prototype read (359 ms). Task 2.9 must re-measure on the real code.
+- Attempts, run-outs and givens are deterministic and identical in all rounds.
+
+## Candidates as implemented (cumulative)
+
+- 0: the prototype (docs/qa/difficulty-measurement/proto.ts.txt) with cap 4 and the pinned tie-breaks of decision 4 (t2 changed to cell-outer, digit-inner; t3 lowest agreeing complete line, first empty cell; t4 fewest steps, then row, column, v = 0 first). Technique 1 through today's hint() (sentences built), findViolations after the placement and after each step, two board copies per look-ahead candidate.
+- (a): sentence-free shared nextFill(board, ceiling) on the Grid (technique 1 re-implemented: rule-outer pair, sandwich, count; then axis, line; pair target i-1 before i+2; count target the first empty), one copy per look-ahead candidate, no wasted 5th step. The walk (solves) still runs findViolations before every step, like today's solveByRules via hint.
+- (b): stop the look-ahead scan at the first 0-step candidate.
+- (c): local violation check (the row and the column through the cell just set: triple, count, duplicate against every other complete line of that axis) instead of findViolations inside the look-ahead; in the walk, one full findViolations at the start, then a local check after each fill. Exact because the board before each single change is violation-free and every check follows exactly one change.
+- (d): flat Int8Array board (-1 empty) with an empties counter; look-ahead places the value and the propagated fills on the board and undoes them from a trail (no copy per candidate). Note: (d) also drops the per-line closures that the Grid versions (a)-(c) allocate, so its gain is not "undo" alone; the two are not separated here.
+- (e): for L = 2..4 only, per attempt one shuffle (no extra draw), pass 1 carves over all positions with the predicate "walk at L-1 solves", pass 2 goes over the remaining givens in the same shuffled order with "walk at L solves"; accept iff pass 2 removed at least one cell AND the walk at L-1 does not solve (the L-1 rejection test is kept). Level 1 is unchanged.
+
+## Tables (max of three rounds is the reported worst)
+
+### Candidate 0 prototype, cap 4, pinned tie-breaks
+load average (1 min) at the start of rounds 1/2/3: 125.0 / 92.8 / 30.8
+| N | L | worst ms, round 1 / 2 / 3 | max of 3 (seed) | target 50% | max share of target | max share of bound | avg att | max att | run-outs | avg givens |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 4 | 1 | 1.2 / 2.5 / 1.3 | 2.5 (seed 13) | 100 | 2% | 1% | 1.00 | 1 | 0 | 4.3/16 |
+| 6 | 1 | 7.1 / 7.4 / 7.2 | 7.4 (seed 4) | 250 | 3% | 1% | 1.00 | 1 | 0 | 9.2/36 |
+| 6 | 2 | 27.2 / 26.3 / 25.1 | 27.2 (seed 18) | 250 | 11% | 5% | 2.50 | 7 | 0 | 9.0/36 |
+| 6 | 3 | 42.2 / 27.6 / 11.0 | 42.2 (seed 14) | 250 | 17% | 8% | 1.30 | 3 | 0 | 8.4/36 |
+| 6 | 4 | 930.0 / 684.9 / 344.6 | 930.0 (seed 15) | 250 | 372% | 186% | 4.30 | 20 | 0 | 8.7/36 |
+| 8 | 1 | 239.3 / 435.1 / 15.9 | 435.1 (seed 13) | 1500 | 29% | 15% | 1.00 | 1 | 0 | 16.6/64 |
+| 8 | 2 | 69.4 / 47.2 / 34.6 | 69.4 (seed 17) | 1500 | 5% | 2% | 1.25 | 2 | 0 | 15.3/64 |
+| 8 | 3 | 69.5 / 209.2 / 17.8 | 209.2 (seed 17) | 1500 | 14% | 7% | 1.00 | 1 | 0 | 13.7/64 |
+| 8 | 4 | 2058.7 / 2138.7 / 799.9 | 2138.7 (seed 5) | 1500 | 143% | 71% | 3.10 | 11 | 0 | 14.1/64 |
+hint(board, 4) on stalled 8x8 boards A and B (worst of 20 calls each, per round): A1 5.43, B1 6.14, A2 5.60, B2 9.89, A3 5.84, B3 5.58 ms; max 9.89 ms = 9.9% of 100 ms
+
+### Candidate (a) sentence-free shared nextFill
+load average (1 min) at the start of rounds 1/2/3: 84.6 / 88.1 / 22.4
+| N | L | worst ms, round 1 / 2 / 3 | max of 3 (seed) | target 50% | max share of target | max share of bound | avg att | max att | run-outs | avg givens |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 4 | 1 | 1.8 / 1.9 / 1.7 | 1.9 (seed 6) | 100 | 2% | 1% | 1.00 | 1 | 0 | 4.3/16 |
+| 6 | 1 | 9.5 / 9.8 / 9.5 | 9.8 (seed 11) | 250 | 4% | 2% | 1.00 | 1 | 0 | 9.2/36 |
+| 6 | 2 | 48.0 / 79.5 / 48.3 | 79.5 (seed 18) | 250 | 32% | 16% | 2.50 | 7 | 0 | 9.0/36 |
+| 6 | 3 | 21.5 / 22.2 / 21.2 | 22.2 (seed 20) | 250 | 9% | 4% | 1.30 | 3 | 0 | 8.4/36 |
+| 6 | 4 | 445.4 / 432.9 / 449.4 | 449.4 (seed 15) | 250 | 180% | 90% | 4.30 | 20 | 0 | 8.7/36 |
+| 8 | 1 | 32.9 / 32.6 / 32.3 | 32.9 (seed 14) | 1500 | 2% | 1% | 1.00 | 1 | 0 | 16.6/64 |
+| 8 | 2 | 70.2 / 69.3 / 68.9 | 70.2 (seed 14) | 1500 | 5% | 2% | 1.25 | 2 | 0 | 15.3/64 |
+| 8 | 3 | 35.5 / 34.6 / 34.5 | 35.5 (seed 14) | 1500 | 2% | 1% | 1.00 | 1 | 0 | 13.7/64 |
+| 8 | 4 | 870.8 / 914.7 / 878.4 | 914.7 (seed 5) | 1500 | 61% | 30% | 3.10 | 11 | 0 | 14.1/64 |
+hint(board, 4) on stalled 8x8 boards A and B (worst of 20 calls each, per round): A1 27.74, B1 9.49, A2 5.56, B2 5.61, A3 5.67, B3 5.71 ms; max 27.74 ms = 27.7% of 100 ms
+
+### Candidate (a)+(b) stop at first 0-step candidate
+load average (1 min) at the start of rounds 1/2/3: 72.8 / 55.3 / 16.2
+| N | L | worst ms, round 1 / 2 / 3 | max of 3 (seed) | target 50% | max share of target | max share of bound | avg att | max att | run-outs | avg givens |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 4 | 1 | 5.0 / 13.8 / 1.7 | 13.8 (seed 2) | 100 | 14% | 7% | 1.00 | 1 | 0 | 4.3/16 |
+| 6 | 1 | 13.3 / 12.7 / 10.0 | 13.3 (seed 2) | 250 | 5% | 3% | 1.00 | 1 | 0 | 9.2/36 |
+| 6 | 2 | 93.3 / 75.2 / 49.0 | 93.3 (seed 18) | 250 | 37% | 19% | 2.50 | 7 | 0 | 9.0/36 |
+| 6 | 3 | 179.1 / 22.1 / 21.1 | 179.1 (seed 9) | 250 | 72% | 36% | 1.30 | 3 | 0 | 8.4/36 |
+| 6 | 4 | 1283.5 / 453.5 / 430.8 | 1283.5 (seed 15) | 250 | 513% | 257% | 4.30 | 20 | 0 | 8.7/36 |
+| 8 | 1 | 134.0 / 32.7 / 31.7 | 134.0 (seed 18) | 1500 | 9% | 4% | 1.00 | 1 | 0 | 16.6/64 |
+| 8 | 2 | 157.1 / 68.8 / 67.3 | 157.1 (seed 19) | 1500 | 10% | 5% | 1.25 | 2 | 0 | 15.3/64 |
+| 8 | 3 | 158.0 / 34.5 / 33.4 | 158.0 (seed 5) | 1500 | 11% | 5% | 1.00 | 1 | 0 | 13.7/64 |
+| 8 | 4 | 2303.8 / 861.8 / 850.4 | 2303.8 (seed 5) | 1500 | 154% | 77% | 3.10 | 11 | 0 | 14.1/64 |
+hint(board, 4) on stalled 8x8 boards A and B (worst of 20 calls each, per round): A1 20.77, B1 58.82, A2 5.56, B2 5.57, A3 5.52, B3 5.61 ms; max 58.82 ms = 58.8% of 100 ms
+
+### Candidate (a)+(b)+(c) local violation check
+load average (1 min) at the start of rounds 1/2/3: 63.3 / 40.7 / 11.8
+| N | L | worst ms, round 1 / 2 / 3 | max of 3 (seed) | target 50% | max share of target | max share of bound | avg att | max att | run-outs | avg givens |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 4 | 1 | 2.2 / 1.5 / 1.4 | 2.2 (seed 1) | 100 | 2% | 1% | 1.00 | 1 | 0 | 4.3/16 |
+| 6 | 1 | 15.6 / 7.5 / 7.4 | 15.6 (seed 12) | 250 | 6% | 3% | 1.00 | 1 | 0 | 9.2/36 |
+| 6 | 2 | 36.6 / 33.8 / 34.4 | 36.6 (seed 18) | 250 | 15% | 7% | 2.50 | 7 | 0 | 9.0/36 |
+| 6 | 3 | 30.9 / 15.6 / 14.7 | 30.9 (seed 20) | 250 | 12% | 6% | 1.30 | 3 | 0 | 8.4/36 |
+| 6 | 4 | 815.3 / 298.7 / 307.3 | 815.3 (seed 4) | 250 | 326% | 163% | 4.30 | 20 | 0 | 8.7/36 |
+| 8 | 1 | 52.1 / 22.3 / 22.5 | 52.1 (seed 17) | 1500 | 3% | 2% | 1.00 | 1 | 0 | 16.6/64 |
+| 8 | 2 | 117.0 / 46.3 / 46.2 | 117.0 (seed 4) | 1500 | 8% | 4% | 1.25 | 2 | 0 | 15.3/64 |
+| 8 | 3 | 103.5 / 24.0 / 23.8 | 103.5 (seed 19) | 1500 | 7% | 3% | 1.00 | 1 | 0 | 13.7/64 |
+| 8 | 4 | 844.1 / 547.5 / 543.6 | 844.1 (seed 5) | 1500 | 56% | 28% | 3.10 | 11 | 0 | 14.1/64 |
+hint(board, 4) on stalled 8x8 boards A and B (worst of 20 calls each, per round): A1 4.66, B1 4.12, A2 4.23, B2 3.97, A3 4.18, B3 3.92 ms; max 4.66 ms = 4.7% of 100 ms
+
+### Candidate (a)+(b)+(c)+(d) flat board with undo
+load average (1 min) at the start of rounds 1/2/3: 82.5 / 32.8 / 9.8
+| N | L | worst ms, round 1 / 2 / 3 | max of 3 (seed) | target 50% | max share of target | max share of bound | avg att | max att | run-outs | avg givens |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 4 | 1 | 1.0 / 0.8 / 0.8 | 1.0 (seed 2) | 100 | 1% | 0% | 1.00 | 1 | 0 | 4.3/16 |
+| 6 | 1 | 1.1 / 0.8 / 0.9 | 1.1 (seed 7) | 250 | 0% | 0% | 1.00 | 1 | 0 | 9.2/36 |
+| 6 | 2 | 4.1 / 3.5 / 3.6 | 4.1 (seed 18) | 250 | 2% | 1% | 2.50 | 7 | 0 | 9.0/36 |
+| 6 | 3 | 2.0 / 1.5 / 1.7 | 2.0 (seed 20) | 250 | 1% | 0% | 1.30 | 3 | 0 | 8.4/36 |
+| 6 | 4 | 28.8 / 25.3 / 26.5 | 28.8 (seed 15) | 250 | 12% | 6% | 4.30 | 20 | 0 | 8.7/36 |
+| 8 | 1 | 7.6 / 2.0 / 2.1 | 7.6 (seed 10) | 1500 | 1% | 0% | 1.00 | 1 | 0 | 16.6/64 |
+| 8 | 2 | 106.2 / 4.2 / 4.4 | 106.2 (seed 15) | 1500 | 7% | 4% | 1.25 | 2 | 0 | 15.3/64 |
+| 8 | 3 | 6.1 / 2.3 / 2.3 | 6.1 (seed 20) | 1500 | 0% | 0% | 1.00 | 1 | 0 | 13.7/64 |
+| 8 | 4 | 183.5 / 50.6 / 51.3 | 183.5 (seed 5) | 1500 | 12% | 6% | 3.10 | 11 | 0 | 14.1/64 |
+hint(board, 4) on stalled 8x8 boards A and B (worst of 20 calls each, per round): A1 0.59, B1 0.51, A2 0.42, B2 0.32, A3 0.37, B3 0.31 ms; max 0.59 ms = 0.6% of 100 ms
+
+### Candidate (a)..(d)+(e) two-pass carving for L 2-4
+load average (1 min) at the start of rounds 1/2/3: 88.7 / 30.8 / 9.8
+| N | L | worst ms, round 1 / 2 / 3 | max of 3 (seed) | target 50% | max share of target | max share of bound | avg att | max att | run-outs | avg givens |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 4 | 1 | 2.4 / 0.9 / 0.9 | 2.4 (seed 2) | 100 | 2% | 1% | 1.00 | 1 | 0 | 4.3/16 |
+| 6 | 1 | 2.7 / 0.9 / 0.8 | 2.7 (seed 7) | 250 | 1% | 1% | 1.00 | 1 | 0 | 9.2/36 |
+| 6 | 2 | 79.2 / 19.3 / 18.9 | 79.2 (seed 7) | 250 | 32% | 16% | 3.53 | 11 | 1 | 8.5/36 |
+| 6 | 3 | 62.2 / 3.2 / 3.3 | 62.2 (seed 4) | 250 | 25% | 12% | 2.25 | 5 | 0 | 8.0/36 |
+| 6 | 4 | 95.7 / 32.2 / 31.8 | 95.7 (seed 2) | 250 | 38% | 19% | 7.40 | 20 | 0 | 8.3/36 |
+| 8 | 1 | 2.3 / 2.2 / 2.1 | 2.3 (seed 14) | 1500 | 0% | 0% | 1.00 | 1 | 0 | 16.6/64 |
+| 8 | 2 | 16.2 / 15.7 / 16.6 | 16.6 (seed 14) | 1500 | 1% | 1% | 1.65 | 6 | 0 | 15.3/64 |
+| 8 | 3 | 9.4 / 9.1 / 9.2 | 9.4 (seed 13) | 1500 | 1% | 0% | 1.40 | 4 | 0 | 13.4/64 |
+| 8 | 4 | 485.7 / 165.1 / 178.4 | 485.7 (seed 9) | 1500 | 32% | 16% | 5.37 | 20 | 1 | 14.0/64 |
+hint(board, 4) on stalled 8x8 boards A and B (worst of 20 calls each, per round): A1 0.64, B1 1.22, A2 0.38, B2 0.33, A3 0.31, B3 0.36 ms; max 1.22 ms = 1.2% of 100 ms
+
+## Cross-checks
+
+- Identity of the output: candidates 0, (a), (b), (c), (d) produce byte-identical puzzles in every round (15 runs): digest of all 180 (N, L, seed) givens + attempts + solutions 40ee888a808a301e (level 1 part 16773cfa3fcec861, levels 2-4 part c7bab622aa8411d3). (e) differs only at levels 2-4 (a21292ad0e69ef7d; level 1 part identical, 16773cfa3fcec861). So (a)-(d) are pure speed-ups that keep the walk and the generator's choices.
+- Golden level 1 (tests/fixtures/level1-golden.json), every candidate, every round: entries 60/60 identical (CLI text and solution, accepted at attempt 1), extra hashes 540/540 identical.
+- Properties on each candidate's output, reference walk = candidate 0 (prototype semantics), solver = the copied src countSolutions:
+  - candidates 0, (a), (b), (c), (d): exact level 180/180 (walk at ceiling L reaches the solution; walk at L-1 does not, on violation-free givens, so it stops on "none" with an empty cell); countSolutions = 1 for 180/180; the solution at levels 2-4 equals the level-1 solution for 120/120 (N 6 and 8, seeds 1..20).
+  - (e): 2 run-outs in the fixed set ((6,2) seed 7, (8,4) seed 9); the other 178 pass all three properties.
+- (b) is a measured no-op: over 2463 look-ahead scans in the timed builds, 0 candidates had a 0-step contradiction (candidates (a), (b), (c), every round). Reason: technique 4 runs only when techniques 1-3 found nothing, and a placement that violates at once implies a technique-1 fill (a triple implies a pair or sandwich on that cell; a count overflow implies the count rule; a duplicate line implies a line with one empty cell whose majority digit already sits at N/2, so the count rule). It is harmless and stays for definiteness.
+- (c) differential test (MODE=diff, mulberry32 seed 12345, no Math.random): 99911 single-cell changes on violation-free boards of N 4/6/8 (11271 producing a violation, 29 of them a duplicate line) plus 742 targeted changes that complete a line into a copy of another line (rows and columns): local check (Grid and flat versions) vs findViolations(board).length > 0, 0 mismatches.
+- Timing assumption for the implementation: the numbers of (c)/(d) assume solveByRules does NOT run a full findViolations per step (one at the start, then the local check after each fill). Re-adding a per-step full check reintroduces part of the cost measured in (a)/(b).
+
+## NFR-17 first read: hint(board, 4) on the stalled 8x8 boards A and B of the spec
+
+- Both A and B return no fill at ceiling 3 and at ceiling 4 with every candidate (stalled as the spec says; the ceiling-4 call scans every empty cell with both values).
+- Worst of 20 calls each, after a warm-up (broken check + selection; candidate 0 builds the sentence through hint()): candidate 0 max 9.9 ms, (a) 27.7 ms (round 1, load 85), (b) 58.8 ms (round 1, load 73), (c) 4.7 ms, (d) 0.59 ms, (e) 1.22 ms. Budget 100 ms. Under (a)+(b)+(c)+(d): 0.6% of the budget.
+
+## Premise of the retry and run-out tests (N in 6/8, L 2..4, seeds 1..200)
+
+- Under (a)+(b)+(c)+(d) (the base construction): 438 of 1200 combinations need more than one attempt; first (N=6, L=2, seed=3) with 2 attempts. The premise of tests 1.6/1.7 holds.
+  Attempts histogram {"1":759,"2":169,"3":84,"4":58,"5":31,"6":19,"7":13,"8":14,"9":9,"10":6,"11":7,"12":6,"13":5,"14":1,"15":4,"16":2,"17":3,"18":1,"20":1,"23":2,"27":1,"29":1,"30":1}.
+- RISK FOR THE ORCHESTRATOR (outside the fixed seed set, so not a stop under A-36/FR-84 as written): under the base construction 3 of 1200 combinations RUN OUT at 30 attempts: (N=6, L=2, seed=83), (N=6, L=2, seed=140), (N=6, L=2, seed=187); one more needs exactly 30. The fixed set (seeds 1..20) has 0 run-outs. So `generate(6, 83, 2)` and `cli --size 6 --seed 83 --level 2` would throw GenerationRunOutError; the page (DL2, A-38) will meet run-outs for some seeds at 6x6 level 2. The tight spot is (6, 2), not level 4.
+- Under (e): 605 of 1200 need more than one attempt; 29 run-outs (6 at (6,2), 1 at (6,3), 19 at (6,4), 3 at (8,4)). (e) makes retries worse, not better.
+
+## Verdict reasoning
+
+- Candidate 0 fails the tripwire: 6x6 L4 up to 930 ms (372% of the 250 ms target; 345 ms = 138% in the quietest round), 8x8 L4 up to 2139 ms (143%).
+- Attribution: the speed-up arrives with (d) (flat Int8Array, undo trail, no per-line closures). (a)-(c) as Grid rewrites did not deliver a separate gain at 6x6 L4 against the prototype in quiet rounds, and (b) never triggers. Decision 8 should not credit (a) with a saving.
+- (a) and (a)+(b) still fail at 6x6 L4 (180% and 513%; quiet rounds about 430-450 ms). (a)+(b)+(c) still fails at 6x6 L4 (326% in round 1; about 300 ms = 120% in quiet rounds).
+- (a)+(b)+(c)+(d) meets the target at every valid (N, level) in every round, also under load 82: worst share 12% of the target (6x6 L4 28.8 ms seed 15; 8x8 L4 183.5 ms seed 5 under load, about 51 ms in quiet rounds), 0 run-outs in the fixed set, golden identical, properties pass, hint read 0.6 ms.
+- (e) is not needed and is rejected: it adds 2 run-outs in the fixed set (stop condition) and does not beat (d) on time. Why it regresses: after pass 1 the board is already maximal for ceiling L-1, so pass 2 succeeds only if some remaining given is removable at L; at (6,2) and (6,4) that set is often empty, so attempts and run-outs go up. No change to FR-83/FR-84 wording is needed, because (e) is not chosen.
+
+VERDICT: TARGET MET with candidates (a)+(b)+(c)+(d) and the base construction (carve with the walk at ceiling L, accept iff the walk at L-1 does not solve, level 1 accepts attempt 1 unconditionally, retry = new shuffle from the continued stream, at most 30 attempts); worst case 12% of the 50% target (6x6 L4 28.8 ms, 8x8 L4 183.5 ms under load), 0 run-outs over seeds 1..20, hint(A/B, 4) 0.6 ms of 100 ms. Caveat: 3 run-outs at (6, 2) for seeds 83, 140, 187 outside the fixed set (for the orchestrator and DL2, A-38).
+
+## Follow-up (orchestrator request, same day): attempt bound over seeds 1..1000, construction (a)+(b)+(c)+(d)
+
+Run: `CAND=4 MODE=stuck npx tsx spike.ts` and `CAND=4 MODE=followup npx tsx spike.ts` (modes appended to spike.ts.txt; the generator code is unchanged). Started 13:59 +0530 with load average 34 / 56 / 46 and ended 14:00 with 22 / 51 / 45 (1 / 5 / 15 min), same machine and node. Times come from one pass and are noisy.
+Method: each (N, L, seed) is built with an attempt bound of 500. The attempts it needs and its time are recorded, with performance.now() in the harness only. If a seed needs more than 30 attempts, it is also timed at bound 30, where it runs 30 failed attempts and then stops. "Smallest 0-run-out bound" is the largest number of attempts any seed in 1..1000 needed. At that bound every seed succeeds, so the worst time equals the worst time measured at bound 500.
+
+| N | L | run-outs at 30 (seeds) | p50 | p95 | p99 | max | fail at 500 | worst ms at bound 30 (seed) | smallest 0-run-out bound: worst ms (seed) |
+|---|---|---|---|---|---|---|---|---|---|
+| 6 | 2 | 15: 83,140,187,268,282,424,473,502,528,576,600,846,869,883,983 | 2 | 13 | 33 | 84 | 0 | 34.2 (983) | 84: 42.9 (502), 17% of the 250 ms target |
+| 6 | 3 | 0 | 1 | 2 | 3 | 6 | 0 | 3.6 (15) | 6: 3.6 (15) |
+| 6 | 4 | 3: 748,830,832 | 3 | 14 | 27 | 42 | 0 | 49.9 (228) | 42: 51.0 (830), 20% of 250 ms |
+| 8 | 2 | 0 | 1 | 2 | 4 | 12 | 0 | 20.1 (168) | 12: 20.1 (168) |
+| 8 | 3 | 0 | 1 | 1 | 2 | 4 | 0 | 12.3 (231) | 4: 12.3 (231) |
+| 8 | 4 | 0 | 2 | 7 | 14 | 27 | 0 | 112.6 (211) | 27: 112.6 (211), 8% of 1500 ms |
+
+Totals: 18 of 6000 (N, L, seed) run out at 30 attempts (0.3%): 15 at (6,2) (1.5% of its seeds) and 3 at (6,4). None fails at 500. The smallest single bound that gives 0 run-outs over seeds 1..1000 for every combination is 84.
+
+Seeds 83, 140, 187 at (6, 2): the generator's own stream succeeds at attempt 40, 47 and 32, well within 2000. Level 2 is reachable for each seed's solution grid. As a diagnostic only, random carving orders from a separate stream (mulberry32(seed ^ 0x5bd1e995)) reach an exact level-2 board at order 29, 15 and 311.
+
+Reading:
+- No seed in 1..1000 is unreachable. Every run-out at 30 is a slow tail, not a dead end. Attempt counts vary a lot between seeds: p50 is 1 to 3, but (6,2) has p99 33 and max 84. A finite bound therefore lowers the run-out rate, but this sample does not show that any bound reaches zero for all 2^31 seeds. The tail keeps growing with the sample: the max is 47 over seeds 1..200 (seed 140) and 84 over seeds 1..1000.
+- Cost per attempt is about 0.5 ms at (6,2) (84 attempts took 43 ms) and about 1.2 ms at (6,4) (42 attempts took 51 ms), under load.
+  - A bound of about 100 stays near or under 50% of NFR-2. It would have no run-outs on this 1000-seed sample. That is not a guarantee.
+  - A bound of 500 could cost about 600 ms for a slow (6,4) seed, which is over the 500 ms NFR-2 bound itself. 500 is not a safe choice.
+- Conclusion: raising the bound to about 100 removes every run-out seen in seeds 1..1000 and keeps time inside the tripwire. It cannot guarantee "never". The page still needs a fallback for a run-out, for example a deterministic retry with the next seed, which is A-38's DL2 decision. The CLI with an explicit seed keeps the FR-86 error path.
+- Any change to the 30 needs a signed change (FR-84, A-35). This section only measures; it does not change a bound.

@@ -1,0 +1,9 @@
+# Level-1 golden file provenance (add-difficulty-engine, task 0.1)
+
+Taken by the orchestrator at 2026-10-09 13:35 (UTC+5:30) from the UNCHANGED engine at commit ecf89a9f56e947e5c4efa36356706f39c36014dd (`git status --short src tests` empty).
+Script: docs/qa/add-difficulty-engine/golden.mjs.txt, run with `npx tsx`.
+- entries: 60 (N = 4, 6, 8 x seeds 1 to 20): `cli` is the exact stdout of `npm run --silent cli -- --size N --seed S`; `solution` is `generate(N, S).solution` as N strings of N digits.
+- extraHashes: 540 (N = 4, 6, 8 x seeds 21 to 200): SHA-256 of the CLI text format of `generate(N, S).givens` (tokens joined by spaces, rows by newlines, trailing newline; the same text the CLI prints, checked for N = 4, S = 1).
+- File: tests/fixtures/level1-golden.json, SHA-256 167f943c6584136015e8b261a8ed6df6ea43f2a955018741ae1b1ac2107facdd.
+
+This is a SAMPLED check of the seed space (600 seeds per size), not all seeds. Level-1 byte-identity for other seeds rests on the construction: the fill draws and the first shuffle are unchanged.

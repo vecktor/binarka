@@ -2,7 +2,7 @@
 
 ## Goals
 
-- `hint(board, ceiling = 1)` offers techniques 1 to ceiling in the order of FR-77 (default: today's three rules). `generate(size, seed, level = 1)` returns a puzzle that is solvable with techniques 1 to L and not with 1 to L − 1 (FR-82), unique (FR-15), deterministic (FR-14), with one solution per (N, seed) at every level (FR-83), in at most 30 attempts (FR-84).
+- `hint(board, ceiling = 1)` offers techniques 1 to ceiling in the order of FR-77 (default: today's three rules). `generate(size, seed, level = 1)` returns a puzzle that is solvable with techniques 1 to L and not with 1 to L − 1 (FR-82), unique (FR-15), deterministic (FR-14), with one solution per (N, seed) at every level (FR-83), in at most 100 attempts (FR-84).
 - Level 1 is byte-identical to today: same givens, same solution, same CLI text, for every (N, seed) (FR-14, FR-85). The golden file of task 0.1 is the guard.
 - NFR-16: every valid (N, level) keeps NFR-1 to NFR-3; the slice's own tripwire is 50% of each bound on the dev machine (A-36). NFR-17: one hint under 100 ms.
 - The page needs no code change in this slice and behaves as today: it calls `hint(board)` (ceiling 1) and `generate(n, seed)` (level 1). The page passes ceiling 4 in DL2 (FR-77 page clause).
@@ -12,7 +12,7 @@
 - Any page behaviour: the level control, the description lines, the rules panel section, the 4×4 behaviour (DL2, `add-level-selector`).
 - N = 4 above level 1 (A-34); N = 10 to 16 (FR-18); English sentences (FR-56); a `level` field on `Puzzle` (the page knows the level it asked for; a field can be added later without breaking anything).
 - Page behaviour for the hint button (DL2 passes ceiling 4 and owns the FR-66 hinted-cell page test change).
-- Relaxing NFR-1 to NFR-3, shrinking the seed set, loosening the level test, raising the 30 attempts or the 4-step cap, or weakening «exactly one solution».
+- Relaxing NFR-1 to NFR-3, shrinking the seed set, loosening the level test, raising the 100 attempts or the 4-step cap, or weakening «exactly one solution».
 
 ## Key decisions
 
@@ -30,6 +30,7 @@ A fill is forced if every valid completion of the board has that value in that c
 - `hint(board, ceiling = 1)`; `solveByRules(board, ceiling = 1)`; `generate(size, seed, level = 1)`. The user decided the default (autonomy-log row 88, option B): every existing caller keeps today's behaviour, the page is not touched in DL1, and DL2 calls `hint(board, 4)` for the FR-77 page clause.
 - Rejected alternative A (default 4, so the page gets four techniques with no page edit). Measured on a scratch copy (2026-10-09, not evidence): it fails five existing tests (the FR-24 hint test, three FR-27 fixture tests, the FR-66 page test), changes the page in DL1 before the level control exists, and needs those tests edited for an engine default. B keeps all of them unchanged except for the sentence of decision 12.
 - `Hint.rule` gains `balance`, `unique`, `lookahead`; a look-ahead hint also carries `steps` (forced fills, 0 to 4).
+- `src/engine/index.ts` exports `InvalidLevelError` and `GenerationRunOutError` (the page's retry in DL2 tells a run-out apart by `instanceof`, FR-88, A-38); `buildPuzzle`, `MAX_ATTEMPTS` and `solveByRules` stay internal. This is pinned by the requirement «The public engine interface exports the level API» and a test (task 1.7).
 - New errors in `types.ts`: `InvalidLevelError` (a `RangeError`: a bad level, and a level above 1 at N = 4) and `GenerationRunOutError` (an `Error`, distinct); each message is one English sentence.
 - Validation order: types, size, seed, level, then size with level.
 
@@ -61,24 +62,26 @@ A fill is forced if every valid completion of the board has that value in that c
 - A retry (levels 2 to 4) shuffles again from the continued stream and never calls `fillGrid` again: the solution is the same at every level and after any number of attempts.
 - No draw is added before the fill. No optimisation may change the attempt-1 walk of level 1; the golden file fails if it does. No clock, no `Math.random`, no node budget in the level logic.
 
-### 7. At most 30 attempts and a distinct error (FR-84, A-35, A-38)
+### 7. At most 100 attempts and a distinct error (FR-84, A-35, A-38)
 
-- `buildPuzzle(size, seed, level, maxAttempts)` is internal to `generator.ts` (exported there for tests, not from `index.ts`); `generate` calls it with the exported `MAX_ATTEMPTS = 30`.
+- `buildPuzzle(size, seed, level, maxAttempts)` is internal to `generator.ts` (exported there for tests, not from `index.ts`); `generate` calls it with the exported `MAX_ATTEMPTS = 100`. The user raised the bound from 30 to 100 (autonomy-log row 91, signed with row 92) after the spike.
 - Run-out throws `GenerationRunOutError`. No path returns a candidate that failed the L − 1 test.
-- The fixed seed set must show 0 run-outs for all 180 combinations. The prototype needed up to 20 of 30 attempts at 6×6 level 4 over seeds 1 to 20, so the margin is thin; a miss stops the slice, it does not change 30.
-- The tests cannot make `generate` itself hit 30 attempts, so the 30 is pinned by the constant and by the builder test with a limit of 1.
+- Evidence (scratch, `docs/qa/add-difficulty-engine/spike.txt`, not acceptance evidence): at 30 attempts 18 of 6000 (N, level, seed) combinations over seeds 1 to 1000 ran out (15 at 6×6 level 2, 3 at 6×6 level 4); the largest number of attempts needed over seeds 1 to 1000 is 84, and no seed in 1 to 1000 failed at an attempt bound of 500. The fixed seed set must still show 0 run-outs for all 180 combinations (a test). A run-out outside the fixed set is not excluded; DL1 only throws, and the page's handling (a retry, FR-88) is DL2's.
+- The tests cannot make `generate` itself hit 100 attempts, so the 100 is pinned by the constant and by the builder test with a small `maxAttempts` (1). The spike found 438 of 1200 combinations (N in 6 and 8, levels 2 to 4, seeds 1 to 200) that need more than one attempt, so the premise of that test holds.
 
-### 8. How level-4 generation stays fast (ADR-worthy: it chooses the construction; fixed by task 0.3)
+### 8. How level-4 generation stays fast: the chosen construction (task 0.3, evidence `docs/qa/add-difficulty-engine/spike.txt`)
 
-- Prior (not evidence): the prototype measured 359 ms (72% of the 500 ms bound) at 6×6 level 4 and 746 ms (25% of 3 s) at 8×8, with a full look-ahead rescan at every carving step. The default construction is the prototype's: carve with the predicate at L, test at L − 1, retry.
-- The spike (task 0.2) evaluates, in this order, changes that keep the semantics and the walk:
-  - (a) `nextFill` in `techniques.ts` shared by `hint` and `solveByRules`: no sentence building, no copy per step;
-  - (b) stop the look-ahead scan at the first 0-step candidate;
-  - (c) check only the lines through the changed cell instead of a full `findViolations` per propagation step (needs a differential test against `findViolations` on random boards, because two paths must agree);
-  - (d) a board with undo instead of a copy per candidate;
-  - (e) for levels 2 to 4 only, a different carving order (for example first carve to a maximal board for L − 1, then continue with the predicate at L) to reduce retries. It changes the givens of levels 2 to 4, which no test pins literally, so it is allowed, but it must be written into this decision before section 1 starts, and the wording of FR-83 («a retry reshuffles from the continued random stream») and FR-84 (the definition of an attempt) in the delta spec is re-checked against it and amended first if it no longer fits.
-- Rules for every candidate: level 1 output and the fill draws unchanged; the property tests (exact level, uniqueness, same solution) pass on its output; deterministic.
-- Stop rule (A-36): if no candidate brings the worst case of every valid (N, level) to at most 50% of its bound, or a run-out appears on the fixed seed set, the slice stops, the numbers go to `docs/qa/add-difficulty-engine/spike.txt`, and the user decides. No bound, cap, attempt limit or seed set is touched.
+- **Verdict of the spike: TARGET MET** with candidates (a)+(b)+(c)+(d) and the base construction; (e) is not used. The numbers are from a scratch program on a heavily loaded machine (worst of three rounds) and are not acceptance evidence; task 2.9 re-measures on the real code.
+- **Construction (unchanged generator).** Fill once (`fillGrid`, as today). Each attempt: one `shuffle` of the positions from the continued stream, then one carving pass in that order with the predicate «the walk at ceiling L solves the board». An attempt is accepted iff the walk at ceiling L − 1 does not solve the carved board. Level 1 accepts attempt 1 unconditionally (no L − 1 test). A retry reshuffles from the continued stream and never refills. At most 100 attempts. FR-83 and FR-84 keep their wording apart from the limit.
+- **Speed-ups used (semantics-preserving, byte-identical puzzles for all 180 combinations across candidates 0 and (a) to (d) in the spike):**
+  - (a) a sentence-free shared `nextFill(board, ceiling)` used by `hint` and by `solveByRules`;
+  - (b) stop the look-ahead scan at the first 0-step candidate. Measured as a no-op (0 of 2463 scans had a 0-step candidate, because a placement that violates at once always implies a technique-1 fill, which runs first). It stays for definiteness and is not credited with any saving;
+  - (c) a local violation check (the row and the column through the changed cell: triple, count, duplicate against every other complete line of that axis) instead of `findViolations` inside the look-ahead; in the walk, one full `findViolations` at the start and a local check after each fill. Exact because each check follows exactly one change on a violation-free board. A differential test against `findViolations` is required (the spike's 99911 changes on random boards plus 742 targeted duplicate-line changes had 0 mismatches);
+  - (d) a flat `Int8Array` board (−1 empty) with an empties counter, and an undo trail for the look-ahead instead of a board copy per candidate. The spike attributes the real gain to (d); (a) to (c) as Grid rewrites did not give a separate gain at 6×6 level 4 in quiet rounds.
+- **Spike numbers (worst of three rounds, 50% target: 100 / 250 / 1500 ms):** candidate 0 (the prototype) failed at 6×6 level 4 (up to 930 ms, 372% of the target; 345 ms in the quietest round) and 8×8 level 4 (2139 ms, 143%). With (a)+(b)+(c)+(d): worst 28.8 ms at 6×6 level 4 (seed 15) and 183.5 ms at 8×8 level 4 (seed 5, under load; about 51 ms quiet), at most 12% of the target at every valid (N, level); 0 run-outs over seeds 1 to 20; golden level 1 identical (60 of 60 and 540 of 540 hashes); exact level, uniqueness and same-solution properties pass for 180 of 180; `hint(board, 4)` on the stalled 8×8 boards A and B at most 0.59 ms (0.6% of 100 ms).
+- **Rejected:** (e) a two-pass carving for levels 2 to 4: it added run-outs in the fixed set and did not beat (d) on time.
+- **Caveat carried forward:** the (c)/(d) numbers assume `solveByRules` does not run a full `findViolations` per step; re-adding it gives back part of the cost. Task 2.4 and 2.9 keep this.
+- **Stop rule (A-36) stays for the real code:** if the real implementation exceeds 50% of any bound, shows a run-out on the fixed seed set, or the hint read exceeds 100 ms, the slice stops and asks; no bound, cap, attempt limit or seed set is touched.
 
 ### 9. Module layout
 
@@ -107,12 +110,12 @@ A fill is forced if every valid completion of the board has that value in that c
 
 - `Hint = { kind: 'fill', row, col, value, rule, sentence } | { kind: 'none' | 'broken', sentence }`; `rule: 'pair' | 'sandwich' | 'count' | 'balance' | 'unique' | 'lookahead'`; for `lookahead` also `steps: number`. Indices stay 0-based; sentences number from 1.
 - `generate(size: number, seed: number, level: number = 1): Puzzle`; `Puzzle` is unchanged. There is no `Level` type: the argument is validated at run time, because a string or `null` must be rejected.
-- Internal: `buildPuzzle`, `MAX_ATTEMPTS = 30`, `solveByRules(board, ceiling): { solved, steps }`, `nextFill`. No state, no storage (TC-12), no network (TC-11).
+- Internal: `buildPuzzle`, `MAX_ATTEMPTS = 100`, `solveByRules(board, ceiling): { solved, steps }`, `nextFill`. No state, no storage (TC-12), no network (TC-11).
 - Golden file `tests/fixtures/level1-golden.json`: for N in 4, 6, 8 and seeds 1 to 20, the stdout text of the unchanged CLI and the solution. Provenance (commit, command, SHA-256) in `docs/qa/add-difficulty-engine/golden-provenance.txt`.
 
 ## Error handling strategy
 
-- Generator: type, size and seed errors as before; `InvalidLevelError` for a level that is not an integer from 1 to 4 (`null`, strings, NaN and Infinity included; `undefined` means 1) and for a level above 1 at N = 4; `GenerationRunOutError` after 30 failed attempts. Three distinct classes; the run-out never returns a puzzle.
+- Generator: type, size and seed errors as before; `InvalidLevelError` for a level that is not an integer from 1 to 4 (`null`, strings, NaN and Infinity included; `undefined` means 1) and for a level above 1 at N = 4; `GenerationRunOutError` after 100 failed attempts. Three distinct classes; the run-out never returns a puzzle.
 - CLI: `parseNumber` is reused for `--level` (digits only). A level of `0` or `5` passes the grammar and is rejected by the generator. Every error is one English sentence on stderr, nothing on stdout, exit code 1; the run-out goes through the existing handler. The unknown-option sentence names `--level` (wording not pinned, A-22).
 - Hint: a malformed ceiling is out of contract (the baseline exclusion on malformed engine input applies). A board that breaks a rule gets the broken sentence at every ceiling (FR-26).
 - The page has no new path in this slice; a run-out on the page is DL2's (A-38). No authentication exists, so no redirect-to-login or forbidden case applies.
@@ -131,9 +134,9 @@ With the default ceiling 1 (decision 2) the engine tests of FR-24 and FR-27 and 
 ## Risks and mitigations
 
 - **Level 4 time (A-36).** Task 0.2 before any code; the stop rule; the 50% tripwire; a timing test per (N, level).
-- **Attempt bound too tight (A-35).** The prototype's maximum was 20 of 30. The 0-run-out test over 180 combinations; a miss stops the slice.
+- **Attempt bound (A-35).** Raised to 100 by the user after the spike (30 ran out for 18 of 6000 combinations over seeds 1 to 1000; the largest need was 84). The 0-run-out test over the 180 fixed combinations; a miss stops the slice. A run-out for an unseen seed stays possible in principle; the page retries (DL2, FR-88).
 - **Level 1 drifts** when the level-1 selection moves into `techniques.ts`. The golden file (60 entries) and the existing hint tests are green at the start and must be green at every commit.
-- **Two code paths for violations** (decision 8c). A differential test against `findViolations`, or do not do (c).
+- **Two code paths for violations** (decision 8c, chosen). A required differential test of the local check against `findViolations` on random boards and on targeted duplicate-line changes.
 - **The partial-board claim at level 4** (decision 3): a sample can fail. It is reported, not patched.
 - **The page keeps today's hints until DL2** (default ceiling 1). The only page-visible change in DL1 is the new no-rule sentence (FR-25). The smoke test checks it.
 - **The pinned sentences change later** (Q6). The strings are constants in `hint.ts`, and their tests are in one file.
@@ -167,6 +170,6 @@ Archive normally (not `--skip-specs`) and in the same commit edit the non-requir
 
 1. **Purpose:** the generator takes a level 1 to 4 (N = 6 and 8 offer all four, N = 4 only level 1) and the hint engine has four techniques.
 2. **Test conventions:** the fixed seed set is used by FR-15, FR-27, FR-82, FR-84, NFR-1 to NFR-3 and NFR-16, for (4, 1), (6, 1..4), (8, 1..4); the engine interface line becomes `generate(size, seed, level = 1)`, `hint(board, ceiling = 1)` with the six rule names and `steps`, the errors `InvalidLevelError` and `GenerationRunOutError`; the CLI line gains `--level`.
-3. **Exclusions:** replace «The generator takes no difficulty parameter.» and «The CLI never prints the solution and has no options other than the size and the seed.» (the CLI never prints the solution and has `--size`, `--seed`, `--level`); the FR-27 bullet covers (4, 1), (6, 1..4), (8, 1..4); add bullets: the page clause of FR-77 is verified in the play-page capability (DL2); `buildPuzzle`, `MAX_ATTEMPTS`, `solveByRules` and the error classes are test seams, internal and not part of the public interface, and 30 attempts cannot be forced through `generate` in a test; a ceiling outside 1 to 4 is unspecified; N = 4 above level 1 is rejected; FR-26's precedence covers techniques 2 to 4 (reading J, for the user to confirm); a line that cannot be completed without a reported violation within 4 steps is not a contradiction (A-37); the unique-lines case where the two digits of the complete line at the empty positions are equal concerns a board with no completion and is not scenario-tested (decision 1); the golden-file check is a sample of 60 seeds.
+3. **Exclusions:** replace «The generator takes no difficulty parameter.» and «The CLI never prints the solution and has no options other than the size and the seed.» (the CLI never prints the solution and has `--size`, `--seed`, `--level`); the FR-27 bullet covers (4, 1), (6, 1..4), (8, 1..4); add bullets: the page clause of FR-77 is verified in the play-page capability (DL2); `buildPuzzle`, `MAX_ATTEMPTS`, `solveByRules` and the error classes are test seams, internal and not part of the public interface, and 100 attempts cannot be forced through `generate` in a test, and a run-out outside the fixed seed set is possible in principle; a ceiling outside 1 to 4 is unspecified; N = 4 above level 1 is rejected; FR-26's precedence covers techniques 2 to 4 (reading J, for the user to confirm); a line that cannot be completed without a reported violation within 4 steps is not a contradiction (A-37); the unique-lines case where the two digits of the complete line at the empty positions are equal concerns a board with no completion and is not scenario-tested (decision 1); the golden-file check is a sample of 60 seeds.
 4. **Exclusions, specified error paths:** extend the list of specified error paths with a level that is not an integer from 1 to 4, a level above 1 at N = 4, a CLI level that breaks the grammar or is missing, and a generator run-out (`GenerationRunOutError`).
 5. Afterwards `npx openspec validate --all --strict`, `node scripts/check-traceability.mjs` (FR-74 to FR-86, NFR-16, NFR-17 cited and traced) and a grep of the baseline for «no difficulty» and «three rules alone».

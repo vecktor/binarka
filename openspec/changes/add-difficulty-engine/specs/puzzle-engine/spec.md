@@ -608,21 +608,41 @@ Traces: FR-83, FR-14
 - **WHEN** they are scanned for `Math.random`
 - **THEN** none contains it
 
-### Requirement: Generation makes at most 30 attempts
-The generator SHALL make at most 30 attempts to build a puzzle of the requested level, where an attempt is one shuffle of the removal order from the continued random stream, one carving pass and one level test (A-35). If all attempts fail, the generator SHALL throw a `GenerationRunOutError`, distinct from every validation error, whose message is one English sentence, and SHALL return no puzzle: it never returns a puzzle of the wrong level and never loosens the level test (FR-84). Over the fixed seed set, for every valid combination of N and level, the run-out error SHALL NOT occur (0 run-outs in 180 generations). Raising the bound of 30 needs a signed change. Level 1 accepts the first attempt without a level test, so it never runs out.
+### Requirement: Generation makes at most 100 attempts
+The generator SHALL make at most 100 attempts to build a puzzle of the requested level, where an attempt is one shuffle of the removal order from the continued random stream, one carving pass and one level test (A-35). If all attempts fail, the generator SHALL throw a `GenerationRunOutError`, distinct from every validation error, whose message is one English sentence, and SHALL return no puzzle: it never returns a puzzle of the wrong level and never loosens the level test (FR-84). Over the fixed seed set, for every valid combination of N and level, the run-out error SHALL NOT occur (0 run-outs in 180 generations). Raising the bound of 100 needs a signed change (the bound was raised from 30 by the user, autonomy-log row 91; evidence `docs/qa/add-difficulty-engine/spike.txt`). Level 1 accepts the first attempt without a level test, so it never runs out. A run-out outside the fixed seed set is not excluded by this requirement (the spike found none over seeds 1 to 1000 at the smallest sufficient bound of 84, which is a sample and not a proof); this capability only throws, and the page's reaction is the play-page capability's (FR-88, A-38).
 
 Traces: FR-84
 
 #### Scenario: No run-out over the fixed seed set
 - **GIVEN** each valid combination of N and level (4 with level 1; 6 and 8 with levels 1 to 4) and each seed from 1 to 20
 - **WHEN** the generator runs for the 180 combinations
-- **THEN** none raises a `GenerationRunOutError`, and the attempt bound `MAX_ATTEMPTS` exported by the generator module (not by `index.ts`) equals 30; `generate` takes this bound and no other
+- **THEN** none raises a `GenerationRunOutError`, and the attempt bound `MAX_ATTEMPTS` exported by the generator module (not by `index.ts`) equals 100; `generate` takes this bound and no other
 
 #### Scenario: Running out raises the distinct error
-- **GIVEN** the internal builder `buildPuzzle(size, seed, level, maxAttempts)` with a limit of 1 attempt, and a combination of N in 6 and 8, a level from 2 to 4 and a seed from 1 to 200 that needs more than one attempt (the test searches; it fails loudly, naming this premise, if none is found)
+- **GIVEN** the internal builder `buildPuzzle(size, seed, level, maxAttempts)` with a limit of 1 attempt, and a combination of N in 6 and 8, a level from 2 to 4 and a seed from 1 to 200 that needs more than one attempt (the test searches; the spike found 438 of 1200 such combinations over seeds 1 to 200, so the premise holds; it fails loudly, naming this premise, if none is found)
 - **WHEN** the builder runs for that combination with the limit of 1
 - **THEN** it raises a `GenerationRunOutError`, which is not an `InvalidLevelError`, `InvalidSizeError` or `InvalidSeedError`, and returns no puzzle
-- **AND** the builder with the limit of 30 for the same combination returns a puzzle that is exactly its level (solvable with that ceiling, not with the ceiling below)
+- **AND** the builder with the limit of 100 for the same combination returns a puzzle that is exactly its level (solvable with that ceiling, not with the ceiling below)
+
+### Requirement: The public engine interface exports the level API
+The module `src/engine/index.ts` SHALL export `generate`, `hint`, `InvalidLevelError` and `GenerationRunOutError` (besides the existing exports), so that the page (the play-page capability, FR-88, A-38) can tell a run-out from every other error by `instanceof` on classes imported from `../engine/index`. The public signatures are `generate(size, seed, level = 1)` (FR-81) and `hint(board, ceiling = 1)` (FR-77). `buildPuzzle`, `MAX_ATTEMPTS` and `solveByRules` are internal test seams and SHALL NOT be exported from `index.ts`. `GenerationRunOutError` and `InvalidLevelError` are distinct from each other and from `InvalidSizeError`, `InvalidSeedError` and `InvalidArgumentTypeError`; each message is one English sentence.
+
+Traces: FR-81, FR-84, FR-77
+
+#### Scenario: The classes and functions are imported from the index
+- **GIVEN** the module `src/engine/index.ts`
+- **WHEN** a test imports `generate`, `hint`, `InvalidLevelError` and `GenerationRunOutError` from it
+- **THEN** each import is defined, `generate` accepts a third argument (a level) and `hint` a second one (a ceiling), and none of `buildPuzzle`, `MAX_ATTEMPTS` and `solveByRules` is a property of the module
+
+#### Scenario: A forced run-out is recognised by the exported class
+- **GIVEN** a combination of N in 6 and 8, a level from 2 to 4 and a seed that needs more than one attempt (the search of «Running out raises the distinct error»), and the internal `buildPuzzle` with `maxAttempts` 1
+- **WHEN** the builder runs and the caught error is tested against the classes imported from `src/engine/index.ts`
+- **THEN** the error is an instance of the imported `GenerationRunOutError` and not an instance of the imported `InvalidLevelError`, `InvalidSizeError`, `InvalidSeedError` or `InvalidArgumentTypeError`
+
+#### Scenario: A level error is recognised by the exported class
+- **GIVEN** `generate(4, 1, 2)` and `generate(6, 1, 5)` called through the function imported from `src/engine/index.ts`
+- **WHEN** each throws
+- **THEN** each error is an instance of the imported `InvalidLevelError` and not of the imported `GenerationRunOutError`
 
 ### Requirement: CLI prints the puzzle of a level
 The CLI (`npm run cli -- --size <N> --seed <integer> --level <1 to 4>`) SHALL print the puzzle of that size, seed and level in the same shape as FR-28 (N lines of N space-separated tokens, `0` or `1` for givens and `.` for empty cells). Without `--level` the level is 1 and the output is byte-identical to the output before levels existed. The value follows the digits-only grammar of FR-53 (FR-85). The options may be given in any order.

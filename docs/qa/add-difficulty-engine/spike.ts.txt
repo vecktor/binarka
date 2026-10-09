@@ -1,0 +1,660 @@
+/*
+ * add-difficulty-engine, task 0.2: timing spike for a fast level-4 check (A-36, Q5).
+ * SCRATCH PROGRAM, not product code and not acceptance evidence. Lives outside src/.
+ * Layout: this file next to `engine/`, a copy of src/engine at ecf89a9 with `fillGrid` exported (the only edit).
+ *
+ * One process = one candidate (no JIT warmth shared between candidates):
+ *   CAND=0 npx tsx spike.ts   prototype (docs/qa/difficulty-measurement/proto.ts.txt), cap 4, pinned tie-breaks (decision 4)
+ *   CAND=1 ...                + (a) sentence-free shared selection (nextFill), one copy per look-ahead candidate
+ *   CAND=2 ...                + (b) stop the look-ahead scan at the first 0-step candidate
+ *   CAND=3 ...                + (c) local violation check (lines through the changed cell) instead of findViolations
+ *   CAND=4 ...                + (d) flat Int8Array board with undo trail instead of a copy per candidate
+ *   CAND=5 ...                + (e) two-pass carving for levels 2 to 4 (see buildPuzzle)
+ * Extra modes: MODE=diff (differential test of (c)/(d) local check vs findViolations, mulberry32 boards),
+ *              MODE=premise (attempts > 1 over N 6/8, L 2..4, seeds 1..200), MODE=props (property checks only).
+ * The generator path has no clock and no Math.random; performance.now() is used only by the measuring harness.
+ */
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { loadavg } from 'node:os';
+import { hint } from './engine/hint';
+import { findViolations } from './engine/rules';
+import { fillGrid } from './engine/generator';
+import { mulberry32, shuffle } from './engine/rng';
+import { countSolutions } from './engine/solver';
+import type { Cell, Grid } from './engine/types';
+
+const CAP = 4; // look-ahead cap (A-37)
+type D = 0 | 1;
+type Fill = { r: number; c: number; v: D; level: number; depth?: number };
+const copy = (b: Grid): Grid => b.map((r) => [...r]);
+const hasEmpty = (b: Grid) => b.some((row) => row.some((x) => x === null));
+
+// ---------------------------------------------------------------------------------------------------------------
+// Candidate 0: the prototype with cap 4 and the pinned tie-breaks of decision 4 (t2 cell-outer, digit-inner).
+// ---------------------------------------------------------------------------------------------------------------
+namespace P {
+  function lineCells(b: Grid, axis: 'row' | 'col', i: number): Cell[] {
+    const n = b.length; const out: Cell[] = [];
+    for (let k = 0; k < n; k++) out.push(axis === 'row' ? b[i]![k]! : b[k]![i]!);
+    return out;
+  }
+  const at = (axis: 'row' | 'col', i: number, k: number): [number, number] => (axis === 'row' ? [i, k] : [k, i]);
+  const hasTriple = (cells: Cell[]) => cells.some((x, k) => x !== null && cells[k + 1] === x && cells[k + 2] === x);
+  function t1(b: Grid): Fill | null | 'broken' {
+    const h = hint(b);
+    if (h.kind === 'broken') return 'broken';
+    return h.kind === 'fill' ? { r: h.row, c: h.col, v: h.value, level: 1 } : null;
+  }
+  function t2(b: Grid): Fill | null {
+    const n = b.length, half = n / 2;
+    for (const axis of ['row', 'col'] as const) for (let i = 0; i < n; i++) {
+      const cells = lineCells(b, axis, i);
+      const empties = cells.flatMap((x, k) => (x === null ? [k] : []));
+      if (empties.length < 2) continue;
+      for (const e of empties) for (const d of [0, 1] as const) { // pinned: cell-outer, digit-inner
+        if (cells.filter((x) => x === d).length !== half - 1) continue;
+        const hyp = cells.map((x, k) => (x !== null ? x : k === e ? d : ((1 - d) as D)));
+        if (hasTriple(hyp)) { const [r, c] = at(axis, i, e); return { r, c, v: (1 - d) as D, level: 2 }; }
+      }
+    }
+    return null;
+  }
+  function t3(b: Grid): Fill | null {
+    const n = b.length;
+    for (const axis of ['row', 'col'] as const) for (let i = 0; i < n; i++) {
+      const cells = lineCells(b, axis, i);
+      const empties = cells.flatMap((x, k) => (x === null ? [k] : []));
+      if (empties.length !== 2) continue;
+      for (let j = 0; j < n; j++) {
+        if (j === i) continue;
+        const other = lineCells(b, axis, j);
+        if (other.some((x) => x === null)) continue;
+        if (!cells.every((x, k) => x === null || x === other[k])) continue;
+        const e = empties[0]!; const [r, c] = at(axis, i, e);
+        return { r, c, v: (1 - (other[e] as number)) as D, level: 3 };
+      }
+    }
+    return null;
+  }
+  function contradicts(b: Grid, maxSteps: number): number {
+    const w = copy(b);
+    for (let s = 0; s <= maxSteps; s++) {
+      if (findViolations(w).length > 0) return s;
+      if (!hasEmpty(w)) return -1;
+      const f = step(w, 3);
+      if (f === 'broken') return s;
+      if (f === null) return -1;
+      w[f.r]![f.c] = f.v;
+    }
+    return -1;
+  }
+  function t4(b: Grid): Fill | null {
+    const n = b.length;
+    let best: Fill | null = null;
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      if (b[r]![c] !== null) continue;
+      for (const v of [0, 1] as const) {
+        const w = copy(b); w[r]![c] = v;
+        const d = contradicts(w, CAP);
+        if (d >= 0 && (best === null || d < best.depth!)) best = { r, c, v: (1 - v) as D, level: 4, depth: d };
+      }
+    }
+    return best;
+  }
+  export function step(b: Grid, L: number): Fill | null | 'broken' {
+    const a = t1(b); if (a !== null) return a;
+    if (L >= 2) { const x = t2(b); if (x) return x; }
+    if (L >= 3) { const x = t3(b); if (x) return x; }
+    if (L >= 4) { const x = t4(b); if (x) return x; }
+    return null;
+  }
+  export function solves(b: Grid, L: number): boolean {
+    const w = copy(b);
+    for (;;) {
+      if (!hasEmpty(w)) return true;
+      const f = step(w, L);
+      if (f === null || f === 'broken') return false;
+      w[f.r]![f.c] = f.v;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Candidates 1 to 3: Grid-based, sentence-free nextFill. Flags: b = stop at 0-step, c = local violation check.
+// ---------------------------------------------------------------------------------------------------------------
+/** Local check on a Grid: does row r or column c break a rule (triple, count, duplicate with another complete line)? */
+export function localViolatesGrid(b: Grid, r: number, c: number): boolean {
+  const n = b.length, half = n / 2;
+  for (let axis = 0; axis < 2; axis++) {
+    const line = axis === 0 ? r : c;
+    const g = (l: number, i: number): Cell => (axis === 0 ? b[l]![i]! : b[i]![l]!);
+    let zeros = 0, ones = 0, run = 0, prev: Cell = null;
+    for (let i = 0; i < n; i++) {
+      const v = g(line, i);
+      if (v === 0) zeros++; else if (v === 1) ones++;
+      if (v !== null && v === prev) { run++; if (run >= 3) return true; } else run = 1;
+      prev = v;
+    }
+    if (zeros > half || ones > half) return true;
+    if (zeros + ones === n) {
+      for (let o = 0; o < n; o++) {
+        if (o === line) continue;
+        let same = true;
+        for (let i = 0; i < n && same; i++) { const x = g(o, i); if (x === null || x !== g(line, i)) same = false; }
+        if (same) return true;
+      }
+    }
+  }
+  return false;
+}
+
+namespace A {
+  export const flags = { b: false, c: false };
+  export const counts = { t4Scans: 0, zeroStep: 0 };
+  function t1(b: Grid): Fill | null {
+    const n = b.length, half = n / 2;
+    for (let rule = 0; rule < 3; rule++) for (let axis = 0; axis < 2; axis++) for (let line = 0; line < n; line++) {
+      const g = (i: number): Cell => (i < 0 || i >= n ? null : axis === 0 ? b[line]![i]! : b[i]![line]!);
+      const mk = (i: number, v: D): Fill => (axis === 0 ? { r: line, c: i, v, level: 1 } : { r: i, c: line, v, level: 1 });
+      if (rule === 2) {
+        for (const d of [0, 1] as const) {
+          let have = 0, first = -1;
+          for (let i = 0; i < n; i++) { const v = g(i); if (v === d) have++; else if (v === null && first === -1) first = i; }
+          if (have === half && first !== -1) return mk(first, (1 - d) as D);
+        }
+        continue;
+      }
+      for (let i = 0; i < n; i++) {
+        const a = g(i);
+        if (a === null) continue;
+        if (rule === 0) {
+          if (g(i + 1) !== a) continue;
+          if (i - 1 >= 0 && g(i - 1) === null) return mk(i - 1, (1 - a) as D);
+          if (i + 2 < n && g(i + 2) === null) return mk(i + 2, (1 - a) as D);
+        } else if (g(i + 1) === null && g(i + 2) === a) return mk(i + 1, (1 - a) as D);
+      }
+    }
+    return null;
+  }
+  function t2(b: Grid): Fill | null {
+    const n = b.length, half = n / 2;
+    for (let axis = 0; axis < 2; axis++) for (let line = 0; line < n; line++) {
+      const g = (i: number): Cell => (axis === 0 ? b[line]![i]! : b[i]![line]!);
+      let zeros = 0, ones = 0, empties = 0;
+      for (let i = 0; i < n; i++) { const v = g(i); if (v === 0) zeros++; else if (v === 1) ones++; else empties++; }
+      if (empties < 2 || (zeros !== half - 1 && ones !== half - 1)) continue;
+      for (let e = 0; e < n; e++) {
+        if (g(e) !== null) continue;
+        for (const d of [0, 1] as const) {
+          if ((d === 0 ? zeros : ones) !== half - 1) continue;
+          let run = 0, prev = -1;
+          for (let k = 0; k < n; k++) {
+            const x = g(k); const hv = x !== null ? x : k === e ? d : 1 - d;
+            if (hv === prev) { if (++run >= 3) break; } else { run = 1; prev = hv; }
+          }
+          if (run >= 3) return axis === 0 ? { r: line, c: e, v: (1 - d) as D, level: 2 } : { r: e, c: line, v: (1 - d) as D, level: 2 };
+        }
+      }
+    }
+    return null;
+  }
+  function t3(b: Grid): Fill | null {
+    const n = b.length;
+    for (let axis = 0; axis < 2; axis++) for (let line = 0; line < n; line++) {
+      const g = (l: number, i: number): Cell => (axis === 0 ? b[l]![i]! : b[i]![l]!);
+      let empties = 0, first = -1;
+      for (let i = 0; i < n; i++) if (g(line, i) === null) { empties++; if (first === -1) first = i; }
+      if (empties !== 2) continue;
+      for (let o = 0; o < n; o++) {
+        if (o === line) continue;
+        let ok = true;
+        for (let i = 0; i < n && ok; i++) { const x = g(o, i); if (x === null) ok = false; else { const y = g(line, i); if (y !== null && y !== x) ok = false; } }
+        if (!ok) continue;
+        const v = (1 - (g(o, first) as number)) as D;
+        return axis === 0 ? { r: line, c: first, v, level: 3 } : { r: first, c: line, v, level: 3 };
+      }
+    }
+    return null;
+  }
+  const violates = (w: Grid, r: number, c: number): boolean => (flags.c ? localViolatesGrid(w, r, c) : findViolations(w).length > 0);
+  /** w already holds the placement at (r, c); returns the steps to a contradiction, or -1. */
+  function contradicts(w: Grid, r: number, c: number): number {
+    let lr = r, lc = c;
+    for (let s = 0; s <= CAP; s++) {
+      if (violates(w, lr, lc)) return s;
+      if (s === CAP || !hasEmpty(w)) return -1;
+      const f = t1(w) ?? t2(w) ?? t3(w);
+      if (f === null) return -1;
+      w[f.r]![f.c] = f.v; lr = f.r; lc = f.c;
+    }
+    return -1;
+  }
+  function t4(b: Grid): Fill | null {
+    counts.t4Scans++;
+    const n = b.length;
+    let best: Fill | null = null;
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      if (b[r]![c] !== null) continue;
+      for (const v of [0, 1] as const) {
+        const w = copy(b); w[r]![c] = v;
+        const d = contradicts(w, r, c);
+        if (d === 0) counts.zeroStep++;
+        if (d >= 0 && (best === null || d < best.depth!)) {
+          best = { r, c, v: (1 - v) as D, level: 4, depth: d };
+          if (flags.b && d === 0) return best;
+        }
+      }
+    }
+    return best;
+  }
+  /** Sentence-free selection, techniques 1 to L (no broken check: the caller does it). */
+  export function nextFill(b: Grid, L: number): Fill | null {
+    return t1(b) ?? (L >= 2 ? t2(b) : null) ?? (L >= 3 ? t3(b) : null) ?? (L >= 4 ? t4(b) : null);
+  }
+  export function solves(b: Grid, L: number): boolean {
+    const w = copy(b);
+    if (flags.c) {
+      if (!hasEmpty(w)) return true;
+      if (findViolations(w).length > 0) return false;
+      for (;;) {
+        const f = nextFill(w, L);
+        if (f === null) return false;
+        w[f.r]![f.c] = f.v;
+        if (!hasEmpty(w)) return true;
+        if (localViolatesGrid(w, f.r, f.c)) return false; // the next hint would be 'broken'
+      }
+    }
+    for (;;) {
+      if (!hasEmpty(w)) return true;
+      if (findViolations(w).length > 0) return false;
+      const f = nextFill(w, L);
+      if (f === null) return false;
+      w[f.r]![f.c] = f.v;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Candidate 4 (and 5): flat Int8Array board (-1 empty), local check, undo trail instead of a copy per candidate.
+// ---------------------------------------------------------------------------------------------------------------
+namespace F {
+  let n = 0, half = 0;
+  let cells = new Int8Array(0);
+  let emptyCount = 0;
+  const ix = (axis: number, line: number, i: number) => (axis === 0 ? line * n + i : i * n + line);
+  const g = (axis: number, line: number, i: number) => (i < 0 || i >= n ? -1 : cells[ix(axis, line, i)]!);
+  function set(idx: number, v: number) { cells[idx] = v; emptyCount--; }
+  function unset(idx: number) { cells[idx] = -1; emptyCount++; }
+  export function load(b: Grid) {
+    n = b.length; half = n / 2; cells = new Int8Array(n * n); emptyCount = 0;
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) { const v = b[r]![c]; cells[r * n + c] = v === null ? -1 : v!; if (v === null) emptyCount++; }
+  }
+  export function localViolates(idx: number): boolean {
+    const r = (idx / n) | 0, c = idx % n;
+    for (let axis = 0; axis < 2; axis++) {
+      const line = axis === 0 ? r : c;
+      let zeros = 0, ones = 0, run = 0, prev = -2;
+      for (let i = 0; i < n; i++) {
+        const v = cells[ix(axis, line, i)]!;
+        if (v === 0) zeros++; else if (v === 1) ones++;
+        if (v !== -1 && v === prev) { if (++run >= 3) return true; } else run = 1;
+        prev = v;
+      }
+      if (zeros > half || ones > half) return true;
+      if (zeros + ones === n) {
+        for (let o = 0; o < n; o++) {
+          if (o === line) continue;
+          let same = true;
+          for (let i = 0; i < n && same; i++) { const x = cells[ix(axis, o, i)]!; if (x === -1 || x !== cells[ix(axis, line, i)]) same = false; }
+          if (same) return true;
+        }
+      }
+    }
+    return false;
+  }
+  // a fill is encoded as idx*2+v (>= 0), or -1 for none
+  function t1(): number {
+    for (let rule = 0; rule < 3; rule++) for (let axis = 0; axis < 2; axis++) for (let line = 0; line < n; line++) {
+      if (rule === 2) {
+        for (let d = 0; d < 2; d++) {
+          let have = 0, first = -1;
+          for (let i = 0; i < n; i++) { const v = cells[ix(axis, line, i)]!; if (v === d) have++; else if (v === -1 && first === -1) first = i; }
+          if (have === half && first !== -1) return ix(axis, line, first) * 2 + (1 - d);
+        }
+        continue;
+      }
+      for (let i = 0; i < n; i++) {
+        const a = cells[ix(axis, line, i)]!;
+        if (a === -1) continue;
+        if (rule === 0) {
+          if (g(axis, line, i + 1) !== a) continue;
+          if (i - 1 >= 0 && cells[ix(axis, line, i - 1)] === -1) return ix(axis, line, i - 1) * 2 + (1 - a);
+          if (i + 2 < n && cells[ix(axis, line, i + 2)] === -1) return ix(axis, line, i + 2) * 2 + (1 - a);
+        } else if (g(axis, line, i + 1) === -1 && i + 1 < n && g(axis, line, i + 2) === a) return ix(axis, line, i + 1) * 2 + (1 - a);
+      }
+    }
+    return -1;
+  }
+  function t2(): number {
+    for (let axis = 0; axis < 2; axis++) for (let line = 0; line < n; line++) {
+      let zeros = 0, ones = 0, empties = 0;
+      for (let i = 0; i < n; i++) { const v = cells[ix(axis, line, i)]; if (v === 0) zeros++; else if (v === 1) ones++; else empties++; }
+      if (empties < 2 || (zeros !== half - 1 && ones !== half - 1)) continue;
+      for (let e = 0; e < n; e++) {
+        if (cells[ix(axis, line, e)] !== -1) continue;
+        for (let d = 0; d < 2; d++) {
+          if ((d === 0 ? zeros : ones) !== half - 1) continue;
+          let run = 0, prev = -1;
+          for (let k = 0; k < n; k++) {
+            const x = cells[ix(axis, line, k)]!; const hv = x !== -1 ? x : k === e ? d : 1 - d;
+            if (hv === prev) { if (++run >= 3) break; } else { run = 1; prev = hv; }
+          }
+          if (run >= 3) return ix(axis, line, e) * 2 + (1 - d);
+        }
+      }
+    }
+    return -1;
+  }
+  function t3(): number {
+    for (let axis = 0; axis < 2; axis++) for (let line = 0; line < n; line++) {
+      let empties = 0, first = -1;
+      for (let i = 0; i < n; i++) if (cells[ix(axis, line, i)] === -1) { empties++; if (first === -1) first = i; }
+      if (empties !== 2) continue;
+      for (let o = 0; o < n; o++) {
+        if (o === line) continue;
+        let ok = true;
+        for (let i = 0; i < n && ok; i++) { const x = cells[ix(axis, o, i)]!; if (x === -1) ok = false; else { const y = cells[ix(axis, line, i)]!; if (y !== -1 && y !== x) ok = false; } }
+        if (!ok) continue;
+        return ix(axis, line, first) * 2 + (1 - cells[ix(axis, o, first)]!);
+      }
+    }
+    return -1;
+  }
+  const trail = new Int32Array(64);
+  /** the placement is already set at idx; propagate; undo every step before returning. */
+  function contradicts(idx: number): number {
+    let top = 0, last = idx, res = -1;
+    for (let s = 0; s <= CAP; s++) {
+      if (localViolates(last)) { res = s; break; }
+      if (s === CAP || emptyCount === 0) break;
+      let f = t1(); if (f < 0) f = t2(); if (f < 0) f = t3();
+      if (f < 0) break;
+      last = f >> 1; set(last, f & 1); trail[top++] = last;
+    }
+    while (top > 0) unset(trail[--top]!);
+    return res;
+  }
+  let lastDepth = -1;
+  function t4(): number {
+    let best = -1, bestD = 99;
+    for (let idx = 0; idx < n * n; idx++) {
+      if (cells[idx] !== -1) continue;
+      for (let v = 0; v < 2; v++) {
+        set(idx, v);
+        const d = contradicts(idx);
+        unset(idx);
+        if (d >= 0 && d < bestD) { bestD = d; best = idx * 2 + (1 - v); if (d === 0) { lastDepth = 0; return best; } }
+      }
+    }
+    lastDepth = bestD;
+    return best;
+  }
+  export function nextFillFlat(L: number): number {
+    let f = t1();
+    if (f < 0 && L >= 2) f = t2();
+    if (f < 0 && L >= 3) f = t3();
+    if (f < 0 && L >= 4) f = t4();
+    return f;
+  }
+  export function solves(b: Grid, L: number): boolean {
+    if (!hasEmpty(b)) return true;
+    if (findViolations(b).length > 0) return false;
+    load(b);
+    for (;;) {
+      const f = nextFillFlat(L);
+      if (f < 0) return false;
+      set(f >> 1, f & 1);
+      if (emptyCount === 0) return true;
+      if (localViolates(f >> 1)) return false;
+    }
+  }
+  export function nextFill(b: Grid, L: number): Fill | null {
+    load(b);
+    const f = nextFillFlat(L);
+    if (f < 0) return null;
+    const idx = f >> 1;
+    return { r: (idx / n) | 0, c: idx % n, v: (f & 1) as D, level: 0 };
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Generator (buildPuzzle). Fill phase untouched; per attempt one shuffle from the continued stream.
+// ---------------------------------------------------------------------------------------------------------------
+type Impl = { solves: (b: Grid, L: number) => boolean; nextFill: (b: Grid, L: number) => Fill | null | 'broken' };
+const CAND = Number(process.env.CAND ?? 0);
+function implFor(cand: number): Impl {
+  if (cand === 0) return { solves: P.solves, nextFill: (b, L) => P.step(b, L) };
+  if (cand <= 3) {
+    A.flags.b = cand >= 2; A.flags.c = cand >= 3;
+    return { solves: A.solves, nextFill: (b, L) => (findViolations(b).length > 0 ? 'broken' : A.nextFill(b, L)) };
+  }
+  return { solves: F.solves, nextFill: (b, L) => (findViolations(b).length > 0 ? 'broken' : F.nextFill(b, L)) };
+}
+const impl = implFor(CAND);
+const TWO_PASS = CAND >= 5;
+
+type Built = { ok: boolean; attempt: number; givens: Grid; solution: (0 | 1)[][] };
+export function buildPuzzle(n: number, seed: number, L: number, maxAttempts: number): Built {
+  const rng = mulberry32(seed);
+  let sol = fillGrid(n, rng); while (sol === null) sol = fillGrid(n, rng);
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const g: Grid = sol.map((r) => r.map((v): Cell => v));
+    const pos: [number, number][] = [];
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) pos.push([r, c]);
+    shuffle(pos, rng);
+    if (!TWO_PASS || L === 1) {
+      for (const [r, c] of pos) { const k = g[r]![c]!; g[r]![c] = null; if (!impl.solves(g, L)) g[r]![c] = k; }
+      if (L === 1 || !impl.solves(g, L - 1)) return { ok: true, attempt, givens: g, solution: sol };
+    } else {
+      // (e) pass 1: carve to a board maximal for ceiling L-1; pass 2: same order, keep removals solvable at L.
+      for (const [r, c] of pos) { const k = g[r]![c]!; g[r]![c] = null; if (!impl.solves(g, L - 1)) g[r]![c] = k; }
+      let removed = 0;
+      for (const [r, c] of pos) { const k = g[r]![c]; if (k === null) continue; g[r]![c] = null; if (!impl.solves(g, L)) g[r]![c] = k!; else removed++; }
+      if (removed > 0 && !impl.solves(g, L - 1)) return { ok: true, attempt, givens: g, solution: sol };
+    }
+  }
+  return { ok: false, attempt: maxAttempts, givens: [], solution: sol };
+}
+
+const text = (g: Grid) => g.map((r) => r.map((c) => (c === null ? '.' : String(c))).join(' ')).join('\n') + '\n';
+const combos: [number, number][] = [[4, 1], [6, 1], [6, 2], [6, 3], [6, 4], [8, 1], [8, 2], [8, 3], [8, 4]];
+const target = (n: number) => (n === 4 ? 100 : n === 6 ? 250 : 1500);
+const bound = (n: number) => (n === 4 ? 200 : n === 6 ? 500 : 3000);
+
+const parse = (rows: string[]): Grid => rows.map((r) => r.split(' ').map((t): Cell => (t === '.' ? null : (Number(t) as D))));
+const BOARD_A = parse(['. . . . . . . 1', '. . . . 0 . 1 .', '0 . 1 0 . . . .', '. . . 1 . . . .', '. . . . . . . .', '. . . . . 0 1 .', '1 0 . . . . . 1', '. 1 . . . 1 . .']);
+const BOARD_B = parse(['. . . . . . . .', '0 . . 0 . . 1 .', '. . . 1 0 1 0 1', '. . . . 1 . . .', '. . . . . 0 . .', '. . . . 0 . 1 .', '0 . . 0 1 . . .', '. 1 . . . . 0 .']);
+
+const MODE = process.env.MODE ?? 'time';
+const OUT = process.env.OUT ?? '.';
+const log = (s: string) => console.log(s);
+
+if (MODE === 'time') {
+  // 1. timing table
+  const results: Record<string, { seed: number; ok: boolean; attempt: number; text: string; solution: string }[]> = {};
+  log(`CAND=${CAND} load average at start: ${loadavg().map((x) => x.toFixed(1)).join(' ')}`);
+  log('| N | L | worst ms | worst seed | target (50%) | share of target | share of bound | avg att | max att | run-outs | avg givens |');
+  log('|---|---|---|---|---|---|---|---|---|---|---|');
+  for (const [n, L] of combos) {
+    buildPuzzle(n, 1, L, 30); // warm-up
+    let worst = 0, worstSeed = 0, att = 0, maxAtt = 0, runouts = 0, givens = 0, ok = 0;
+    const rows: (typeof results)[string] = [];
+    for (let seed = 1; seed <= 20; seed++) {
+      const t0 = performance.now(); const p = buildPuzzle(n, seed, L, 30); const dt = performance.now() - t0;
+      if (dt > worst) { worst = dt; worstSeed = seed; }
+      if (!p.ok) { runouts++; rows.push({ seed, ok: false, attempt: 30, text: '', solution: '' }); continue; }
+      ok++; att += p.attempt; maxAtt = Math.max(maxAtt, p.attempt); givens += p.givens.flat().filter((x) => x !== null).length;
+      rows.push({ seed, ok: true, attempt: p.attempt, text: text(p.givens), solution: p.solution.map((r) => r.join('')).join('/') });
+    }
+    results[`${n},${L}`] = rows;
+    const t = target(n);
+    log(`| ${n} | ${L} | ${worst.toFixed(1)} | ${worstSeed} | ${t} | ${((100 * worst) / t).toFixed(0)}% | ${((100 * worst) / bound(n)).toFixed(0)}% | ${(att / Math.max(ok, 1)).toFixed(2)} | ${maxAtt} | ${runouts} | ${(givens / Math.max(ok, 1)).toFixed(1)}/${n * n} |`);
+  }
+  const digest = (keys: string[]) => createHash('sha256').update(JSON.stringify(keys.map((k) => results[k]))).digest('hex').slice(0, 16);
+  log(`digest all 180 (givens+attempts+solutions): ${digest(Object.keys(results))}; level 1 only: ${digest(['4,1', '6,1', '8,1'])}; levels 2-4 only: ${digest(Object.keys(results).filter((k) => !k.endsWith(',1')))}`);
+  if (CAND >= 1 && CAND <= 3) log(`look-ahead scans in the timed builds: ${A.counts.t4Scans}; candidates with a 0-step contradiction: ${A.counts.zeroStep}`);
+  writeFileSync(`${OUT}/results-${CAND}.json`, JSON.stringify(results));
+
+  // 2. golden check of level 1 (60 entries + 540 hashes)
+  const golden = JSON.parse(readFileSync(process.env.GOLDEN!, 'utf8')) as {
+    entries: { size: number; seed: number; cli: string; solution: string[] }[]; extraHashes: { size: number; seed: number; sha256: string }[];
+  };
+  let gOk = 0, gBad = 0, hOk = 0, hBad = 0;
+  for (const e of golden.entries) {
+    const p = buildPuzzle(e.size, e.seed, 1, 30);
+    if (p.ok && p.attempt === 1 && text(p.givens) === e.cli && JSON.stringify(p.solution.map((r) => r.join(''))) === JSON.stringify(e.solution)) gOk++; else gBad++;
+  }
+  for (const e of golden.extraHashes) {
+    const p = buildPuzzle(e.size, e.seed, 1, 30);
+    if (p.attempt === 1 && createHash('sha256').update(text(p.givens)).digest('hex') === e.sha256) hOk++; else hBad++;
+  }
+  log(`golden level 1: entries ${gOk}/${golden.entries.length} identical (${gBad} differ); extra hashes ${hOk}/${golden.extraHashes.length} identical (${hBad} differ)`);
+
+  // 3. NFR-17 first read: one hint (broken check + nextFill) at ceilings 3 and 4 on the stalled 8x8 boards A and B
+  for (const [name, b] of [['A', BOARD_A], ['B', BOARD_B]] as const) {
+    const r3 = impl.nextFill(b, 3), r4 = impl.nextFill(b, 4);
+    impl.nextFill(b, 4); // warm-up
+    let worst = 0;
+    for (let i = 0; i < 20; i++) { const t0 = performance.now(); impl.nextFill(b, 4); worst = Math.max(worst, performance.now() - t0); }
+    log(`hint board ${name}: ceiling 3 -> ${r3 === null ? 'none' : JSON.stringify(r3)}, ceiling 4 -> ${r4 === null ? 'none' : JSON.stringify(r4)}; worst of 20 at ceiling 4: ${worst.toFixed(2)} ms (${((100 * worst) / 100).toFixed(1)}% of 100 ms)`);
+  }
+}
+
+if (MODE === 'props' || MODE === 'time') {
+  // property checks on this candidate's output, with the candidate-0 walk (prototype semantics) as the reference
+  let exact = 0, notExact = 0, unique = 0, notUnique = 0, sameSol = 0, diffSol = 0, broken = 0;
+  for (const n of [4, 6, 8]) for (let seed = 1; seed <= 20; seed++) {
+    let sol1 = '';
+    for (const L of n === 4 ? [1] : [1, 2, 3, 4]) {
+      const p = buildPuzzle(n, seed, L, 30);
+      if (!p.ok) { notExact++; continue; }
+      const s = p.solution.map((r) => r.join('')).join('/');
+      if (L === 1) sol1 = s; else if (s === sol1) sameSol++; else diffSol++;
+      if (findViolations(p.givens).length > 0) broken++;
+      const atL = P.solves(p.givens, L);
+      const below = L === 1 ? false : P.solves(p.givens, L - 1);
+      if (atL && !below) exact++; else notExact++;
+      if (countSolutions(p.givens) === 1) unique++; else notUnique++;
+    }
+  }
+  log(`props (reference walk = candidate 0): exact level ${exact}/180 (${notExact} not), countSolutions 1: ${unique}/180 (${notUnique} not), same solution as level 1: ${sameSol}/120 (${diffSol} differ), givens with a violation: ${broken}`);
+}
+
+if (MODE === 'premise') {
+  let multi = 0, total = 0, runouts = 0; let first = '';
+  const hist: Record<number, number> = {};
+  const runList: string[] = [];
+  for (const n of [6, 8]) for (const L of [2, 3, 4]) for (let seed = 1; seed <= 200; seed++) {
+    const p = buildPuzzle(n, seed, L, 30); total++;
+    if (!p.ok) { runouts++; runList.push(`(N=${n}, L=${L}, seed=${seed})`); continue; }
+    hist[p.attempt] = (hist[p.attempt] ?? 0) + 1;
+    if (p.attempt > 1) { multi++; if (!first) first = `(N=${n}, L=${L}, seed=${seed}, attempts=${p.attempt})`; }
+  }
+  log(`premise CAND=${CAND}: ${multi}/${total} combinations need more than one attempt; first ${first || 'none'}; run-outs ${runouts} ${JSON.stringify(runList)}; attempts histogram ${JSON.stringify(hist)}`);
+}
+
+if (MODE === 'diff') {
+  // differential test: local check after one change on a clean board == findViolations(board).length > 0
+  const rng = mulberry32(12345);
+  let cases = 0, mismatches = 0, positives = 0, dupPositives = 0;
+  for (const n of [4, 6, 8]) for (let t = 0; t < 4000; t++) {
+    let b: Grid;
+    if (t % 2 === 0) b = Array.from({ length: n }, () => Array.from({ length: n }, (): Cell => null));
+    else { // start from a valid solution with some cells blanked, so complete (possibly duplicate) lines are common
+      let s = fillGrid(n, rng); while (s === null) s = fillGrid(n, rng);
+      b = s.map((r) => r.map((v): Cell => (rng() < (t % 4 === 1 ? 0.3 : 0.1) ? null : v)));
+    }
+    for (;;) {
+      const empties: [number, number][] = [];
+      b.forEach((row, r) => row.forEach((x, c) => { if (x === null) empties.push([r, c]); }));
+      if (empties.length === 0) break;
+      const [r, c] = empties[Math.floor(rng() * empties.length)]!;
+      b[r]![c] = rng() < 0.5 ? 0 : 1;
+      const full = findViolations(b);
+      const truth = full.length > 0;
+      const lg = localViolatesGrid(b, r, c);
+      F.load(b); const lf = F.localViolates(r * n + c);
+      cases++;
+      if (lg !== truth || lf !== truth) mismatches++;
+      if (truth) { positives++; if (full.some((v) => v.rule === 'duplicate')) dupPositives++; break; }
+    }
+  }
+  // targeted duplicate-line cases: copy line j onto line i (rows or columns), blank one cell of i, keep boards that are clean
+  let dupCases = 0, dupMismatch = 0;
+  for (const n of [4, 6, 8]) for (let t = 0; t < 3000; t++) {
+    let s = fillGrid(n, rng); while (s === null) s = fillGrid(n, rng);
+    const b: Grid = s.map((r) => r.map((v): Cell => (rng() < 0.15 ? null : v)));
+    const i = Math.floor(rng() * n); let j = Math.floor(rng() * n); if (j === i) j = (i + 1) % n;
+    const k = Math.floor(rng() * n); const col = t % 2 === 1;
+    for (let x = 0; x < n; x++) { if (col) b[x]![i] = s[x]![j]!; else b[i]![x] = s[j]![x]!; }
+    const [r, c] = col ? [k, i] : [i, k];
+    b[r]![c] = null;
+    if (findViolations(b).length > 0) continue;
+    b[r]![c] = col ? s[k]![j]! : s[j]![k]!;
+    const truth = findViolations(b).length > 0;
+    F.load(b);
+    dupCases++;
+    if (localViolatesGrid(b, r, c) !== truth || F.localViolates(r * n + c) !== truth) dupMismatch++;
+  }
+  log(`targeted duplicate-line changes: ${dupCases} clean boards completed into a copy of another line, mismatches: ${dupMismatch}`);
+  log(`differential local check vs findViolations: ${cases} single-cell changes on clean boards (N 4/6/8, mulberry32 seed 12345), ${positives} with a violation (${dupPositives} with a duplicate line), mismatches: ${mismatches} (Grid and flat checks)`);
+}
+
+if (MODE === 'followup') {
+  // (1)+(3): seeds 1..1000 at bound 500 (attempts + time); seeds needing > 30 re-timed at bound 30
+  const SEEDS = Number(process.env.SEEDS ?? 1000), BIG = 500;
+  const pct = (a: number[], p: number) => a[Math.min(a.length - 1, Math.ceil((p / 100) * a.length) - 1)]!;
+  for (const [n, L] of [[6, 2], [6, 3], [6, 4], [8, 2], [8, 3], [8, 4]] as const) {
+    buildPuzzle(n, 1, L, 30); // warm-up
+    const att: number[] = []; const fail500: number[] = []; const over30: number[] = [];
+    let worstAll = 0, worstAllSeed = 0, worst30ok = 0, worst30okSeed = 0;
+    for (let seed = 1; seed <= SEEDS; seed++) {
+      const t0 = performance.now(); const p = buildPuzzle(n, seed, L, BIG); const dt = performance.now() - t0;
+      if (!p.ok) { fail500.push(seed); continue; }
+      att.push(p.attempt);
+      if (dt > worstAll) { worstAll = dt; worstAllSeed = seed; }
+      if (p.attempt <= 30) { if (dt > worst30ok) { worst30ok = dt; worst30okSeed = seed; } } else over30.push(seed);
+    }
+    // at bound 30 the seeds needing > 30 run 30 failed attempts: time them at bound 30
+    let worstRun = 0, worstRunSeed = 0;
+    for (const seed of [...over30, ...fail500]) { const t0 = performance.now(); buildPuzzle(n, seed, L, 30); const dt = performance.now() - t0; if (dt > worstRun) { worstRun = dt; worstRunSeed = seed; } }
+    const sorted = [...att].sort((a, b) => a - b);
+    const maxAtt = sorted[sorted.length - 1]!;
+    const w30 = Math.max(worst30ok, worstRun), w30seed = worst30ok >= worstRun ? worst30okSeed : worstRunSeed;
+    log(`| ${n} | ${L} | ${over30.length + fail500.length} ${JSON.stringify([...over30, ...fail500].sort((a, b) => a - b))} | ${pct(sorted, 50)} | ${pct(sorted, 95)} | ${pct(sorted, 99)} | ${maxAtt} | ${fail500.length} ${JSON.stringify(fail500)} | ${w30.toFixed(1)} (seed ${w30seed}) | ${fail500.length === 0 ? `${maxAtt}: ${worstAll.toFixed(1)} (seed ${worstAllSeed})` : 'none <= 500'} |`);
+  }
+}
+
+if (MODE === 'stuck') {
+  // (2): seeds 83, 140, 187 at (6, 2): attempts up to 2000; diagnostic only: other carving orders from a separate stream
+  const n = 6, L = 2;
+  for (const seed of [83, 140, 187]) {
+    const p = buildPuzzle(n, seed, L, 2000);
+    let line = `seed ${seed}: generator ${p.ok ? `succeeds at attempt ${p.attempt}` : 'no success in 2000 attempts'}`;
+    // diagnostic: same solution grid, 20000 carving orders from mulberry32(seed ^ 0x5bd1e995) (NOT the generator's stream)
+    const rng0 = mulberry32(seed); let sol = fillGrid(n, rng0); while (sol === null) sol = fillGrid(n, rng0);
+    const drng = mulberry32((seed ^ 0x5bd1e995) >>> 0);
+    let found = -1; const minimal = new Set<string>();
+    for (let k = 1; k <= 20000 && found < 0; k++) {
+      const g: Grid = sol.map((r) => r.map((v): Cell => v));
+      const pos: [number, number][] = []; for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) pos.push([r, c]);
+      shuffle(pos, drng);
+      for (const [r, c] of pos) { const v = g[r]![c]!; g[r]![c] = null; if (!impl.solves(g, L)) g[r]![c] = v; }
+      minimal.add(text(g));
+      if (!impl.solves(g, 1)) found = k;
+    }
+    line += `; diagnostic random orders: ${found > 0 ? `level 2 reached at order ${found}` : `level 2 never reached in 20000 orders (${minimal.size} distinct carve-maximal boards, all solvable at ceiling 1)`}`;
+    log(line);
+  }
+}

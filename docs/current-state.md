@@ -154,6 +154,8 @@ Archived changes: `2026-10-04-add-puzzle-engine`, `2026-10-04-add-play-page`, `2
 
 ## Open items and risks
 
+- **Idea for later (the user, 2026-10-09 about 15:40, "shouldn't be done right now, but in future yes"; not a requirement, not signed):** store generation run-outs (`GenerationRunOutError`, FR-84) with their context (size, level, seed, attempts, the page action, the retry outcome) and alert someone about them. It conflicts with TC-11 (no network calls) and TC-12 (no persistence), so it needs a requirements amendment (for example a Future FR plus a TC change) before any work; until then the page retry (FR-88, A-38) is the only handling.
+
 - `npm audit`: 0 vulnerabilities after the user-approved downgrade of OpenSpec to 0.17.2 (exact pin; the 1.x line pulled in a vulnerable `braces`). OpenSpec 0.17.2 is older than the version `init` created `openspec/config.yaml` with; `validate` and `list` run, but re-check scenario and delta-spec behaviour when the first spec is written.
 - `@vitest/coverage-v8@5.0.3` is installed and `npm run test:coverage` is real (json-summary reporter, `src/**`). CI does not run it yet: adding it to the locked `ci.yml` needs a re-lock or a `Refs: PD-x` commit once the first tests exist (slice 1). G5 is "try to fit in", not promised.
 - `recordings`, `visual-fidelity` and `eval-ratchet` remain in the battery and will show NOT-EARNED.

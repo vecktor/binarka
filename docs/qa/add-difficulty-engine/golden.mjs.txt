@@ -1,0 +1,18 @@
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { writeFileSync } from 'node:fs';
+const { generate } = await import('/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/suspicious-lamarr-be0fd0/src/engine/index.ts');
+const entries = [];
+for (const size of [4, 6, 8]) for (let seed = 1; seed <= 20; seed++) {
+  const cli = execFileSync('npm', ['run', '--silent', 'cli', '--', '--size', String(size), '--seed', String(seed)], { encoding: 'utf8' });
+  entries.push({ size, seed, cli, solution: generate(size, seed).solution.map((r) => r.join('')) });
+}
+const extra = [];
+for (const size of [4, 6, 8]) for (let seed = 21; seed <= 200; seed++) {
+  const p = generate(size, seed);
+  const text = p.givens.map((r) => r.map((c) => (c === null ? '.' : String(c))).join(' ')).join('\n') + '\n';
+  extra.push({ size, seed, sha256: createHash('sha256').update(text).digest('hex') });
+}
+const json = JSON.stringify({ commit: 'ecf89a9f56e947e5c4efa36356706f39c36014dd', entries, extraHashes: extra }, null, 2) + '\n';
+writeFileSync('tests/fixtures/level1-golden.json', json);
+console.log(entries.length, extra.length, createHash('sha256').update(json).digest('hex'));

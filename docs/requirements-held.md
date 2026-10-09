@@ -35,6 +35,11 @@ Notes on the held NFRs:
   - NFR-12: the four level buttons and the disabled 4×4 ones (FR-91) must meet the 44×44 floor; four buttons with «Головоломка» and «Мозколамка» on a 320 px viewport may not fit on one row.
   - NFR-13: the focus and axe check extends to the level radiogroup.
   - NFR-14: OPEN CONFLICT with the frozen reference `design/v0-screenshots/review-set-5/` (no level control, no techniques section; every shot with the page body differs). Decision Q3: the user updates the design reference before the page slice (DL2) starts; the engine slice (DL1) does not wait. NFR-14 stays pending (not declared), so nothing fails today.
+- **Note (2026-10-09, setup sheet amendment signed in chat at about 14:09, autonomy-log rows 90 and 92; no row text changed, no row moved):** the two always-visible pickers are replaced by a summary button and a setup sheet (FR-95 to FR-99; structure A at every form factor, wireframe `design/wireframes/setup-controls-2026-10-09/`). This supersedes the layout notes above.
+  - NFR-10: the page body loses the two pickers and gains one 44 px summary button, so the board space returns; likely satisfied again with the original ~51.5 px cells. Not a claim: the sampled check does not exist; re-sample after the sheet design.
+  - NFR-12: the 44×44 floor now covers the summary button, the three size buttons, the four level buttons (taller, with descriptions that may wrap at 320 px), the unavailable 4×4 level buttons and the close button «Закрити».
+  - NFR-13: the focus and axe states gain "setup sheet open" (and open at 4×4); focus return to the summary button is included.
+  - NFR-14: conflict persists and grows. `review-set-6` is an intermediate set (row 89) with the two pickers on the page, not a reference. The designer makes the visual design of structure A (summary button; sheet as bottom sheet on the phone and centred panel on tablet and desktop; level options with descriptions; the 4×4 state with the reason and a non-colour cue; light and dark; focus rings), reviewed by a fresh design-reviewer; then the user names the reference set in chat. NFR-14 stays pending and not declared.
 
 ## Constraints (held)
 
