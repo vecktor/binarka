@@ -524,3 +524,36 @@ button:focus-visible {
   min-height: 2.75rem;
   font-weight: 700;
 }
+
+/* Footer-1 (signed wireframe, autonomy-log row 120): the start button about two thirds and the close button one third, in one row that
+   stays in view while the sheet scrolls; both stay direct children of the sheet. Only an open popover gets the grid, so
+   the closed sheet keeps the browser's hiding. */
+.setup-sheet:popover-open {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  column-gap: 8px;
+}
+
+.setup-sheet > * {
+  grid-column: 1 / -1;
+}
+
+.setup-sheet > .setup-start,
+.setup-sheet > .setup-close {
+  grid-column: auto;
+  position: sticky;
+  bottom: 0;
+}
+
+/* The start button (FR-101): its own colours from the existing tokens, the same touch-target floor as the close button. */
+.setup-start {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0;
+  border-width: 2px;
+  border-color: var(--color-focus);
+  color: var(--color-text);
+  background-color: var(--color-control-bg);
+  font-weight: 700;
+}

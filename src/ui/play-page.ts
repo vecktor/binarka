@@ -71,9 +71,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     levelButtons.push(option);
     levelControl.appendChild(option);
   });
+  const setupStart = el('button', { type: 'button', class: 'setup-start', 'data-action': 'setup-start' }, SETUP.start);
   const setupClose = el('button', { type: 'button', class: 'setup-close', 'data-action': 'setup-close', popovertarget: sheetId, popovertargetaction: 'hide' }, SETUP.close);
   const sheet = el('div', { popover: 'auto', id: sheetId, class: 'setup-sheet', 'data-section': 'setup', role: 'dialog', 'aria-label': SETUP.sheetLabel });
-  sheet.append(sizeControl, levelControl, setupClose);
+  sheet.append(sizeControl, levelControl, setupStart, setupClose);
   const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, BUTTONS.reset);
   const buttons = el('div', { class: 'buttons' });
   buttons.append(hintButton, resetButton, newButton);
@@ -117,6 +118,8 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
 
   let size = 6;
   let level = 1;
+  let markedSize = 6; // the choice marked in the sheet; the board shown is `size` and `level` (FR-100)
+  let markedLevel = 1;
   let givens: Grid = [];
   let board: Grid = [];
   let cellEls: HTMLElement[][] = [];
@@ -128,14 +131,21 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   /** Rewrite everything derived from `size` and `level` (summary, aria-checked, aria-disabled, reason). */
   function syncControls(): void {
     summaryLabel.textContent = summaryText(size, level);
-    for (const [m, button] of sizeButtons) button.setAttribute('aria-checked', m === size ? 'true' : 'false');
+    for (const [m, button] of sizeButtons) button.setAttribute('aria-checked', m === markedSize ? 'true' : 'false');
     levelButtons.forEach((button, i) => {
-      button.setAttribute('aria-checked', i + 1 === level ? 'true' : 'false');
-      if (size === 4 && i > 0) button.setAttribute('aria-disabled', 'true');
+      button.setAttribute('aria-checked', i + 1 === markedLevel ? 'true' : 'false');
+      if (markedSize === 4 && i > 0) button.setAttribute('aria-disabled', 'true');
       else button.removeAttribute('aria-disabled');
     });
-    levelReason.textContent = size === 4 ? LEVEL_REASON_4X4 : '';
-    levelReason.hidden = size !== 4;
+    levelReason.textContent = markedSize === 4 ? LEVEL_REASON_4X4 : '';
+    levelReason.hidden = markedSize !== 4;
+  }
+
+  /** Drop the marked choice: the groups show the board shown again. */
+  function resetMarked(): void {
+    markedSize = size;
+    markedLevel = level;
+    syncControls();
   }
 
   function setHinted(next: [number, number] | null): void {
@@ -236,7 +246,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
         showPuzzle(makePuzzle(requestedSize, seedSource(), requestedLevel), requestedSize);
         size = requestedSize;
         level = requestedLevel;
-        syncControls();
+        resetMarked();
         return true;
       } catch (error) {
         if (!(error instanceof GenerationRunOutError)) return false; // keep the previous board (or no board at mount)
@@ -322,26 +332,29 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     }
   });
 
-  /** A press inside the sheet that is not unavailable: no-op, direct change or confirmation, always ending on the summary. */
-  function choose(isShown: boolean, action: () => void): void {
-    if (isShown && board.length > 0) {
-      sheet.hidePopover();
-      summaryButton.focus();
-      return;
-    }
-    if (hasEntries()) {
-      sheet.hidePopover();
-      returnToSummary = true;
-      requestAction(action);
-      return;
-    }
-    action();
+  /** The start button: one puzzle with the marked pair; the sheet closes first, then the confirmation when the board has entries (FR-101). */
+  function startMarked(): void {
+    const startSize = markedSize;
+    const startLevel = markedLevel;
     sheet.hidePopover();
-    summaryButton.focus();
+    resetMarked(); // the groups show the board shown again; the pair lives on in the pending action
+    if (hasEntries()) {
+      returnToSummary = true;
+      requestAction(() => { changeTo(startSize, startLevel); });
+    } else {
+      changeTo(startSize, startLevel);
+      summaryButton.focus();
+    }
   }
 
   sheet.addEventListener('toggle', (event) => {
-    if ((event as Event & { newState?: string }).newState !== 'closed') return;
+    const newState = (event as Event & { newState?: string }).newState;
+    if (newState === 'open') {
+      resetMarked();
+      return;
+    }
+    if (newState !== 'closed') return;
+    resetMarked();
     // Focus moves to the summary only from inside the sheet or from no element; a light dismiss by a click elsewhere keeps it.
     const active = document.activeElement;
     if (active !== null && active !== document.body && !sheet.contains(active)) return;
@@ -349,17 +362,21 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     summaryButton.focus();
   });
 
+  setupStart.addEventListener('click', startMarked);
   resetButton.addEventListener('click', () => { requestAction(resetBoard); });
   newButton.addEventListener('click', () => { requestAction(startNewPuzzle); });
   for (const [n, button] of sizeButtons) {
     button.addEventListener('click', () => {
-      choose(n === size, () => { changeTo(n, n === 4 ? 1 : level); });
+      markedSize = n;
+      if (n === 4) markedLevel = 1;
+      syncControls();
     });
   }
   levelButtons.forEach((button, i) => {
     button.addEventListener('click', () => {
       if (button.getAttribute('aria-disabled') === 'true') return; // unavailable at 4x4: nothing at all
-      choose(i + 1 === level, () => { changeTo(size, i + 1); });
+      markedLevel = i + 1;
+      syncControls();
     });
   });
 

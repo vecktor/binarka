@@ -50,6 +50,7 @@ export const SETUP = {
   separator: ' · ',
   sheetLabel: 'Поле і складність',
   close: 'Закрити',
+  start: 'Почати',
   cue: '▾',
 } as const;
 
