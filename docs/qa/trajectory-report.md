@@ -22,7 +22,7 @@ Result: PASS, 11 warning(s)
 | 2026-10-08-reconcile-ux-accessibility | **unclean** | 5 | yes | ui |
 | 2026-10-08-update-win-apostrophe | clean | 2 | yes | ui |
 | 2026-10-09-add-difficulty-engine | **unclean** | 3 | yes | engine |
-| 2026-10-09-add-level-selector | **unclean** | 2 | yes | ui |
+| 2026-10-09-add-level-selector | **unclean** | 3 | yes | ui |
 | 2026-10-09-add-logo | **unclean** | 3 | yes | ui |
 | 2026-10-09-add-rule-solvable-generator | **unclean** | 2 | yes | engine |
 
