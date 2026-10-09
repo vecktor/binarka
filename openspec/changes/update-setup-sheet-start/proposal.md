@@ -1,6 +1,6 @@
 # Change: update-setup-sheet-start
 
-> **Slice S of three, archived first.** Order: `update-setup-sheet-start` (this folder), then `add-theme-switch`, then `add-english-version`, then G2 (NFR-14). The later two write their MODIFIED blocks against the play-page spec as it will be after this folder is archived. Do not start section 2 of `tasks.md` (tests) or write `src/` code before task 1.1 to 1.3 pass (the design round: build against the new review set, `review-set-12`, once the design-reviewer's confirming run has no blocking finding, without declaring it the pixel reference, autonomy-log row 119).
+> **Slice S of three, archived first.** Order: `update-setup-sheet-start` (this folder), then `add-theme-switch`, then `add-english-version`, then G2 (NFR-14). The later two write their MODIFIED blocks against the play-page spec as it will be after this folder is archived. Do not start section 2 of `tasks.md` (tests) or write `src/` code before task 1.1 to 1.3 pass (the design round: build against the new review set, `review-set-13`, once the design-reviewer's confirming run has no blocking finding, without declaring it the pixel reference, autonomy-log row 119).
 
 ## Why
 
@@ -13,7 +13,7 @@ The user tested the page and found that a press on a size or level button starts
 - Marking 4×4 sets the marked level to «Розминка» and shows the 4×4 state; marking 6×6 or 8×8 keeps «Розминка» (FR-91, Q1).
 - Focus: «Почати» and «Закрити» return it to the summary button; a marking press moves none (FR-59, FR-97). `aria-checked` now means the marked choice while the sheet is open (A-47).
 - NFR-12 gains «Почати» (and the cleanup for the summary button and «Закрити»); NFR-13 gains the marked state; the label «Почати» is a `src/ui/strings.ts` entry (FR-94, NFR-5).
-- **Footer-1** (wireframe signed 2026-10-10, autonomy-log row 120, completing the placeholder of TD-Q15): «Почати» (primary) and «Закрити» (secondary) form one sticky footer row, both direct children of the sheet. The requirements pin the DOM order only; the drawing is built against `review-set-12` (being made) and stays held NFR-14. Still open and left to that set: whether FR-65 gains a primary colour token (the requirement allows one); see `design.md`.
+- **Footer-1** (wireframe signed 2026-10-10, autonomy-log row 120, completing the placeholder of TD-Q15): «Почати» (primary) and «Закрити» (secondary) form one sticky footer row, both direct children of the sheet. The requirements pin the DOM order only; the drawing is built against `review-set-13` and stays held NFR-14. Still open and left to that set: whether FR-65 gains a primary colour token (the requirement allows one); see `design.md`.
 
 Baseline `play-page` requirements touched (4 ADDED, 21 MODIFIED, 0 REMOVED):
 

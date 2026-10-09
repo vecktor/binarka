@@ -11,7 +11,7 @@ Slice 2 of the combined amendment signed on 2026-10-10 (autonomy-log rows 116 to
 ## Non-goals
 
 - The language switch, English texts and the language group of the panel (`add-english-version`). The full design palette (G2, A-51: the dark values are mapped onto the 13 tokens, not ported). The pixel reference (the user moves it). A `prefers-color-scheme` fallback (Q13), a meta description (Q12), a real-browser screen-reader test (A-28).
-- Visual specifics (where the gear sits in the header at 320 px, the panel as a bottom sheet on the phone and a panel under the header on the right from tablet up, the drawing of the gear) stay out of the specs: they are `review-set-12` and held NFR-14.
+- Visual specifics (where the gear sits in the header at 320 px, the panel as a bottom sheet on the phone and a panel under the header on the right from tablet up, the drawing of the gear) stay out of the specs: they are `review-set-13` and held NFR-14.
 - Authentication: none exists, so no redirect-to-login or forbidden case applies. No free value is typed, so no inline validation message and no raw 500 can occur; a failing storage is silent by FR-115.
 
 ## Key decisions
@@ -30,7 +30,7 @@ Slice 2 of the combined amendment signed on 2026-10-10 (autonomy-log rows 116 to
 ## Placeholders of TD-Q15
 
 - **COMPLETED by the signed wireframe (row 120, Topic 3 B):** the place of the controls (FR-68), the fifth id, the accessible name «Налаштування» of button and panel, the visible labels, the header order (title, gear, «Правила»).
-- **OPEN, to `review-set-12` (being built):** visual specifics only, kept out of the specs: the header at 320 px (the wireframe notes it needs a 28 px title or a narrower «Правила»), the dark values of any new primary token of `update-setup-sheet-start`, the exact dark mapping beyond the 13 tokens (G2). The hooks `[data-action="settings"]`, `[data-section="settings"]`, `[data-action="settings-close"]` and the classes `theme-control` are spec-made proxies, confirmed in task 1.4.
+- **OPEN, to `review-set-13` (built; confirming design review passed, row 123):** visual specifics only, kept out of the specs: the header at 320 px (the wireframe notes it needs a 28 px title or a narrower «Правила»), the dark values of any new primary token of `update-setup-sheet-start`, the exact dark mapping beyond the 13 tokens (G2). The hooks `[data-action="settings"]`, `[data-section="settings"]`, `[data-action="settings-close"]` and the classes `theme-control` are spec-made proxies, confirmed in task 1.4.
 
 ## Data model
 

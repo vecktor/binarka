@@ -11,7 +11,7 @@ Slice 3 of the combined amendment signed on 2026-10-10 (autonomy-log rows 116 to
 ## Non-goals
 
 - A third language, locale detection (A-49), a translated CLI (NFR-8, FR-28, FR-85 stay byte-identical), English pixel shots (TD-Q10), the pixel reference, a meta description (Q12).
-- Visual specifics (English labels at 320 px, the summary button width, the one-screen fit): TD-D5, the designer checks them in `review-set-12`; the specs pin the fit only as sampled e2e (NFR-10).
+- Visual specifics (English labels at 320 px, the summary button width, the one-screen fit): TD-D5, the designer checks them in `review-set-13`; the specs pin the fit only as sampled e2e (NFR-10).
 - Authentication: none exists, so no redirect-to-login or forbidden case applies. No free value is typed, so no inline validation message and no raw 500 can occur.
 
 ## Key decisions
@@ -29,7 +29,7 @@ Slice 3 of the combined amendment signed on 2026-10-10 (autonomy-log rows 116 to
 
 ## Placeholders of TD-Q15
 
-None open for this folder: the place of the language group is signed (row 120: the settings panel, «Мова» below «Тема»). Visual specifics only, kept out of the specs and built against `review-set-12`: English label wrapping at 320 px, the summary button width, the header at 320 px (TD-D5). The hooks `[data-control="language"]`, `[data-language-option]` and the class `language-control` are spec-made proxies confirmed in task 1.4.
+None open for this folder: the place of the language group is signed (row 120: the settings panel, «Мова» below «Тема»). Visual specifics only, kept out of the specs and built against `review-set-13`: English label wrapping at 320 px, the summary button width, the header at 320 px (TD-D5). The hooks `[data-control="language"]`, `[data-language-option]` and the class `language-control` are spec-made proxies confirmed in task 1.4.
 
 ## Data model
 
