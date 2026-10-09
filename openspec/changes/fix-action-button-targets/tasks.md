@@ -49,11 +49,11 @@ Dependencies and database schema: none. No dependency (TC-10), no storage (TC-12
 
 Do not tick a sub-step until it has evidence (a file path).
 
-- [ ] 5.1 Run `npm run dev` (or `npm run build` and `npm run preview`) and open the printed URL in Chromium at 375×812.
-- [ ] 5.2 Save a screenshot of the default 6×6 page to `docs/qa/fix-action-button-targets/375-6x6-default.png`; with the inspector, read the height of the three action buttons (44 px or more) and the bottom of the content (compare with 622 px in `docs/qa/fix-action-button-targets/headroom-before.txt`), and note both in `docs/qa/fix-action-button-targets/README.md`.
-- [ ] 5.3 Press «Підказка» so a hint message shows, and save `docs/qa/fix-action-button-targets/375-6x6-hint.png`: the page still fits without vertical scroll and the buttons do not move.
-- [ ] 5.4 Look at 320×700 and at 1280×800: the buttons look right and are not clipped; save one screenshot each in the same folder. Record in the README the limit of the check: eyes on three widths, not a continuum (the e2e check samples eight).
-- [ ] 5.5 Stop the server. This check is a gate for section 6.
+- [x] 5.1 Run `npm run dev` (or `npm run build` and `npm run preview`) and open the printed URL in Chromium at 375×812.
+- [x] 5.2 Save a screenshot of the default 6×6 page to `docs/qa/fix-action-button-targets/375-6x6-default.png`; with the inspector, read the height of the three action buttons (44 px or more) and the bottom of the content (compare with 622 px in `docs/qa/fix-action-button-targets/headroom-before.txt`), and note both in `docs/qa/fix-action-button-targets/README.md`.
+- [x] 5.3 Press «Підказка» so a hint message shows, and save `docs/qa/fix-action-button-targets/375-6x6-hint.png`: the page still fits without vertical scroll and the buttons do not move.
+- [x] 5.4 Look at 320×700 and at 1280×800: the buttons look right and are not clipped; save one screenshot each in the same folder. Record in the README the limit of the check: eyes on three widths, not a continuum (the e2e check samples eight).
+- [x] 5.5 Stop the server. This check is a gate for section 6.
 
 ## 6. Archive and validation
 

@@ -20,6 +20,19 @@
 //    or pseudo-element are skipped, as jsdom never matches them). Each must sit at the top level (`context` is empty), because the
 //    spec forbids a floor that exists only inside an at-rule (@media, @supports, @layer).
 //  - Part (c): no `min-height` declaration anywhere in the file has the priority `important`.
+//  - Part (d), the pseudo-class blind spot: part (b) skips selectors with a pseudo-class, so `.buttons button:active { min-height: 2rem }`
+//    (or the same inside `@media (hover: hover)`) would pass parts (a) to (c) while shrinking the button on press. Part (d) therefore
+//    matches the action buttons against every `min-height` rule in the file, at the top level or in any at-rule, after STRIPPING the
+//    selector with `stripPseudos()`: pseudo-elements (`::before`, `:after`, `::part(x)`) and pseudo-classes without a selector
+//    argument or with a non-selector argument (`:hover`, `:active`, `:focus-visible`, `:disabled`, `:first-child`, `:nth-child(2)`)
+//    are removed, text inside attribute brackets is left alone, and what is left is matched with `button.matches()`. Stripping
+//    only WIDENS what a selector matches, so the check can only be stricter than the browser, never looser. A selector made only of
+//    pseudo-classes (`:hover`) strips to `*`. `:root` is kept (jsdom matches it, and it is never the button). The selector-taking
+//    functional pseudo-classes `:not()`, `:is()`, `:where()`, `:has()` are kept for jsdom to evaluate, after stripping the pseudo-classes
+//    inside them; an argument left empty (`:not(:hover)` -> `:not()`) is dropped, which is again the wider reading. A selector that
+//    still cannot be parsed after stripping (for example `:is(.a, :hover)` -> `:is(.a, )`) is KEPT OUT of the matching and is
+//    documented by the last test of part (d): it fails if such an unparsable selector mentions `button`, `data-action` or `.buttons`,
+//    so an unparsable selector can only hide in rules for other controls. Each matching value must read as at least 44 px (px or rem).
 // Helpers: tests/helpers/play-page.ts, tests/helpers/css.ts (unchanged).
 import { describe, expect, it } from 'vitest';
 import { BLANK, installPageLifecycle, mountFixture, q } from './helpers/play-page';
@@ -68,6 +81,50 @@ function minHeightRulesFor(button: Element, rules: StyleRuleInfo[]): StyleRuleIn
   });
 }
 
+/** Pseudo-classes whose argument is a selector list: kept for jsdom to evaluate (their insides are stripped too). */
+const SELECTOR_PSEUDOS = ['not', 'is', 'where', 'has', 'matches'];
+
+/**
+ * The selector with pseudo-elements and pseudo-classes removed (see part (d) of the file header). Attribute brackets are set aside
+ * first so a colon inside `[data-x="a:b"]` is not read as a pseudo-class. Only ever widens what the selector matches.
+ */
+function stripPseudos(selector: string): string {
+  const brackets: string[] = [];
+  let text = selector.replace(/\[[^\]]*\]/g, (m) => `@@${brackets.push(m) - 1}@@`);
+  const keep = SELECTOR_PSEUDOS.map((n) => `${n}\\(`).join('|');
+  // pseudo-elements (two colons, or the legacy one-colon four), then pseudo-classes other than :root and the selector-taking functions
+  text = text.replace(/::[\w-]+(?:\([^()]*\))?/g, '');
+  text = text.replace(/:(?:before|after|first-line|first-letter)(?![\w-])/g, '');
+  const pseudoClass = new RegExp(`:(?!root(?![\\w-])|(?:${keep}))[\\w-]+(?:\\([^()]*\\))?`, 'g');
+  let previous: string;
+  do {
+    previous = text;
+    text = text.replace(pseudoClass, ''); // repeated: removing an inner one can expose an outer empty function
+    text = text.replace(new RegExp(`:(?:${SELECTOR_PSEUDOS.join('|')})\\(\\s*\\)`, 'g'), '');
+  } while (text !== previous);
+  text = text.replace(/@@(\d+)@@/g, (_m, i: string) => brackets[Number(i)] ?? '');
+  return text.trim() === '' ? '*' : text.trim();
+}
+
+type StrippedMatch = 'match' | 'no match' | 'unparsable';
+
+function matchesStripped(button: Element, selector: string): StrippedMatch {
+  try {
+    return button.matches(stripPseudos(selector)) ? 'match' : 'no match';
+  } catch {
+    return 'unparsable'; // jsdom cannot parse it even after stripping: kept out, and guarded by the last test of part (d)
+  }
+}
+
+/** Every rule in the file (top level or inside any at-rule) that declares `min-height` and has a selector matching `button` once stripped. */
+function strippedMinHeightRulesFor(button: Element, rules: StyleRuleInfo[]): StyleRuleInfo[] {
+  return rules.filter(
+    (rule) =>
+      rule.declarations.some((d) => d.property === 'min-height') &&
+      rule.selectors.some((selector) => !selector.startsWith('@') && matchesStripped(button, selector) === 'match'),
+  );
+}
+
 describe('@trace NFR-12 the length reader tells a floor from a non-floor', () => {
   it('reads px and rem, and rejects empty, auto, 0, 2.5rem and anything it cannot size', () => {
     expect(lengthPx('2.75rem')).toBe(44);
@@ -81,7 +138,7 @@ describe('@trace NFR-12 the length reader tells a floor from a non-floor', () =>
     expect(lengthPx('0px')).toBe(0);
     expect(lengthPx('0')).toBe(0);
     expect(lengthPx('2.5rem')).toBe(40);
-    // the three that must fail the floor
+    // the five values that must fail the floor
     for (const below of ['', 'auto', '0px', '0', '2.5rem']) {
       expect(lengthPx(below) >= FLOOR_PX, `"${below}" is not a 44 px floor`).toBe(false);
     }
@@ -106,7 +163,7 @@ describe('@trace NFR-12 the stylesheet declares a 44 px minimum height for each 
       const root = mountFixture(BLANK);
       const button = q(root, selector);
       const rules = minHeightRulesFor(button, readStyles().rules);
-      expect(rules.length, `at least one top-level rule declares min-height for ${name} (${selector}); none matches the button`).toBeGreaterThan(0);
+      expect(rules.length, `at least one rule declares min-height for ${name} (${selector}); none matches the button`).toBeGreaterThan(0);
       for (const rule of rules) {
         expect(
           rule.context,
@@ -115,6 +172,54 @@ describe('@trace NFR-12 the stylesheet declares a 44 px minimum height for each 
       }
     });
   }
+});
+
+describe('@trace NFR-12 the stripping of pseudo-classes keeps the blind-spot check honest', () => {
+  it('strips state pseudo-classes and pseudo-elements, keeps attribute text, :root and selector functions', () => {
+    expect(stripPseudos('.buttons button:hover')).toBe('.buttons button');
+    expect(stripPseudos('.buttons button:active')).toBe('.buttons button');
+    expect(stripPseudos('.buttons button:focus-visible')).toBe('.buttons button');
+    expect(stripPseudos('button:nth-child(2n+1):disabled')).toBe('button');
+    expect(stripPseudos('button::before')).toBe('button');
+    expect(stripPseudos('button:after')).toBe('button');
+    expect(stripPseudos('[data-action="hint"]:hover')).toBe('[data-action="hint"]');
+    expect(stripPseudos('[data-x="a:b"]')).toBe('[data-x="a:b"]');
+    expect(stripPseudos(':hover')).toBe('*');
+    expect(stripPseudos(':root')).toBe(':root');
+    expect(stripPseudos('button:not(.x):hover')).toBe('button:not(.x)');
+    expect(stripPseudos('button:not(:hover)')).toBe('button');
+  });
+});
+
+describe('@trace NFR-12 no pseudo-class, media or other rule shrinks an action button below the floor', () => {
+  for (const [name, selector] of ACTION_BUTTONS) {
+    it(`Every min-height rule that matches ${name} (${selector}) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px`, () => {
+      const root = mountFixture(BLANK);
+      const button = q(root, selector);
+      const rules = strippedMinHeightRulesFor(button, readStyles().rules);
+      // premise: the check sees at least the rule that carries the floor, so an empty match cannot pass it
+      expect(rules.length, `at least one rule declares min-height for ${name} (${selector}) after stripping; none matches the button`).toBeGreaterThan(0);
+      const below = rules.flatMap((rule) =>
+        rule.declarations
+          .filter((d) => d.property === 'min-height' && !(lengthPx(d.value) >= FLOOR_PX))
+          .map((d) => `${rule.context.join(' ')} ${rule.selectors.join(', ')} { min-height: ${d.value} } reads as ${lengthPx(d.value)} px`.trim()),
+      );
+      expect(below, `${name}: every declared min-height must be a px or rem length of at least ${FLOOR_PX} px, in any state (:hover, :active, :focus-visible) and in any at-rule`).toEqual([]);
+    });
+  }
+
+  it('A min-height rule whose selector cannot be parsed even after stripping never mentions a button, data-action or .buttons', () => {
+    const buttons = ACTION_BUTTONS.map(([, selector]) => q(mountFixture(BLANK), selector));
+    expect(buttons.length).toBe(3);
+    const unparsable = readStyles()
+      .rules.filter((rule) => rule.declarations.some((d) => d.property === 'min-height'))
+      .flatMap((rule) => rule.selectors.map((selector) => ({ selector, context: rule.context.join(' ') })))
+      .filter(({ selector }) => !selector.startsWith('@') && buttons.every((b) => matchesStripped(b, selector) === 'unparsable'));
+    expect(
+      unparsable.filter(({ selector }) => /button|data-action|\.buttons/i.test(selector)).map((u) => `${u.context} ${u.selector}`.trim()),
+      'an unparsable selector that names a button is not judged by the matching test above; rewrite it so jsdom can parse it',
+    ).toEqual([]);
+  });
 });
 
 describe('@trace NFR-12 no min-height is forced with !important', () => {
