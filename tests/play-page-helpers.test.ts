@@ -15,10 +15,15 @@ import {
   HINT_BREAKS,
   HINT_BREAKS_4,
   HINT_BREAKS_8,
+  callOrder,
   closeCalls,
   dialogLog,
+  dispatchToggle,
   installPageLifecycle,
   onDialogClose,
+  popoverCalls,
+  popoverIsOpen,
+  popoverLog,
   showModalCalls,
   ISOLATED,
   NO_RULE_SENTENCE,
@@ -229,6 +234,8 @@ describe('play-page hint premises, computed with the real engine on the fixtures
 
   it('ISOLATED: no rule applies', () => {
     expect(hint(ISOLATED.givens)).toEqual({ kind: 'none', sentence: NO_RULE_SENTENCE });
+    // Slice DL2 DELIBERATE CHANGE (FR-77 page clause, autonomy-log row 88): the premise is re-asserted at the ceiling the page uses
+    expect(hint(ISOLATED.givens, 4), 'ISOLATED fills nothing at ceiling 4 too').toEqual({ kind: 'none', sentence: NO_RULE_SENTENCE });
   });
 
   it('TWO_PAIRS: the second hint (after the first fill) is the row 5 pair', () => {
@@ -244,6 +251,8 @@ describe('play-page hint premises, computed with the real engine on the fixtures
   it('HINT_BREAKS: rule-clean before, the fill (1,3) = 0 then breaks column 3', () => {
     expect(findViolations(HINT_BREAKS.givens)).toEqual([]);
     expect(hint(HINT_BREAKS.givens)).toMatchObject({ kind: 'fill', row: 0, col: 2, value: 0 });
+    // Slice DL2 DELIBERATE CHANGE (FR-77 page clause): the first hint is the same fill at the ceiling the page uses
+    expect(hint(HINT_BREAKS.givens, 4)).toMatchObject({ kind: 'fill', row: 0, col: 2, value: 0, rule: 'pair' });
     const after = HINT_BREAKS.givens.map((r) => [...r]);
     const line = after[0];
     if (line === undefined) throw new Error('row');
@@ -260,6 +269,7 @@ describe('play-page hint premises, computed with the real engine on the fixtures
       last[n - 1] = 1;
       expect(findViolations(board)).toEqual([]);
       expect(hint(board)).toMatchObject({ kind: 'fill', row: 0, col: 2, value: 0, rule: 'pair' });
+      expect(hint(board, 4), 'the same first hint at ceiling 4 (FR-77 page clause, DL2)').toMatchObject({ kind: 'fill', row: 0, col: 2, value: 0, rule: 'pair' });
       const after = board.map((r) => [...r]);
       const line = after[0];
       if (line === undefined) throw new Error('row');
@@ -757,5 +767,98 @@ describe('the dialog stubs of installPageLifecycle (jsdom has no showModal or cl
     dialog.showModal();
     dialog.close(); // the hook of the previous test is gone: nothing throws and nothing is recorded outside the log
     expect(dialogLog).toEqual(['showModal', 'close']);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// Slice DL2 (add-level-selector, A-44): self-checks of the popover stubs, the toggle event and the level argument of the
+// generator spies. They run on literal samples, never on the page, so they pass at the red stage (no @trace on purpose).
+// ---------------------------------------------------------------------------------------------------------
+
+describe('the popover stubs of installPageLifecycle (jsdom has no showPopover, hidePopover or togglePopover)', () => {
+  installPageLifecycle();
+  afterAll(() => {
+    // the afterEach of installPageLifecycle has removed them: no production code or later file sees a stub
+    for (const name of ['showPopover', 'hidePopover', 'togglePopover']) expect(name in HTMLElement.prototype, name).toBe(false);
+  });
+
+  it('showPopover and hidePopover keep an open state per element and record each call, in call order with the dialog stubs', () => {
+    const a = document.createElement('div');
+    const b = document.createElement('div');
+    const dialog = document.createElement('dialog');
+    expect(popoverIsOpen(a)).toBe(false);
+    a.showPopover();
+    expect(popoverIsOpen(a)).toBe(true);
+    expect(popoverIsOpen(b), 'the state is per element').toBe(false);
+    dialog.showModal();
+    a.hidePopover();
+    expect(popoverIsOpen(a)).toBe(false);
+    expect(popoverCalls('showPopover', a)).toBe(1);
+    expect(popoverCalls('hidePopover', a)).toBe(1);
+    expect(popoverCalls('hidePopover', b)).toBe(0);
+    expect(popoverCalls('hidePopover')).toBe(1);
+    expect(popoverLog.map((call) => call.method)).toEqual(['showPopover', 'hidePopover']);
+    expect(callOrder).toEqual(['showPopover', 'showModal', 'hidePopover']);
+  });
+
+  it('togglePopover flips the state and returns it; hidePopover dispatches no event', () => {
+    const el = document.createElement('div');
+    const events: string[] = [];
+    el.addEventListener('toggle', (event) => events.push(event.type));
+    expect(el.togglePopover()).toBe(true);
+    expect(popoverIsOpen(el)).toBe(true);
+    expect(el.togglePopover()).toBe(false);
+    el.showPopover();
+    el.hidePopover();
+    expect(events, 'the stubs dispatch nothing').toEqual([]);
+  });
+
+  it('dispatchToggle sends a non-bubbling toggle event with newState and oldState', () => {
+    const el = document.createElement('div');
+    document.body.append(el);
+    try {
+      const seen: { newState: unknown; oldState: unknown; bubbles: boolean }[] = [];
+      el.addEventListener('toggle', (event) => {
+        seen.push({ newState: Reflect.get(event, 'newState'), oldState: Reflect.get(event, 'oldState'), bubbles: event.bubbles });
+      });
+      let reachedBody = false;
+      document.body.addEventListener('toggle', () => { reachedBody = true; }, { once: true });
+      dispatchToggle(el, 'closed');
+      dispatchToggle(el, 'open');
+      expect(seen).toEqual([
+        { newState: 'closed', oldState: 'open', bubbles: false },
+        { newState: 'open', oldState: 'closed', bubbles: false },
+      ]);
+      expect(reachedBody).toBe(false);
+    } finally {
+      el.remove();
+    }
+  });
+
+  it('the log and the open states start fresh in every test', () => {
+    expect(popoverLog).toEqual([]);
+    expect(callOrder).toEqual([]);
+  });
+});
+
+describe('the generator spies record the level in a parallel array', () => {
+  it('generateSpy keeps calls as { size, seed } and records the third argument in levels (undefined when absent)', () => {
+    const spy = generateSpy(bySize({ 6: BLANK, 4: BLANK_4 }));
+    spy.generate(6, 1);
+    spy.generate(4, 2, 1);
+    spy.generate(6, 3, 4);
+    expect(spy.calls).toEqual([{ size: 6, seed: 1 }, { size: 4, seed: 2 }, { size: 6, seed: 3 }]);
+    expect(spy.levels).toEqual([undefined, 1, 4]);
+  });
+
+  it('rawGenerateSpy passes the level to pick and fixedGenerate ignores it', () => {
+    const seen: (number | undefined)[] = [];
+    const spy = rawGenerateSpy((_i, _size, _seed, level) => {
+      seen.push(level);
+      return BLANK;
+    });
+    spy.generate(6, 1, 3);
+    expect(seen).toEqual([3]);
+    expect(fixedGenerate(BLANK)(6, 1, 2)).toBe(BLANK);
   });
 });

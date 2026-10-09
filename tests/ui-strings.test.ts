@@ -10,10 +10,18 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  CLOSE_LABEL,
   IDLE_TEXT,
+  LEVEL_DESCRIPTIONS,
+  LEVEL_GROUP_LABEL,
+  LEVEL_NAMES,
+  REASON_4X4,
   RULES_CLOSE_LABEL,
   RULES_ITEMS,
   RULES_LABEL,
+  SHEET_LABEL,
+  TECHNIQUES_HEADING,
+  TECHNIQUES_ITEMS,
   TITLE_TEXT,
   WIN_PUZZLE,
   collectPageText,
@@ -143,5 +151,36 @@ describe('@trace NFR-5 no Cyrillic text outside the strings module', () => {
       idleForms.some((form) => source.includes(form)),
       'strings.ts contains the idle line (NBSP literal or escape)',
     ).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// Slice DL2 (add-level-selector), scenario «The strings live in the strings module» (FR-94, user decision of 2026-10-05)
+// ---------------------------------------------------------------------------------------------------------
+
+describe('@trace FR-94 the new texts live in the strings module', () => {
+  it('The strings live in the strings module: strings.ts holds the hidden prefix, the sheet label, the close label, the group name, the four names and descriptions, the 4x4 reason, the techniques heading and its three items', () => {
+    const source = existsSync(STRINGS_FILE) ? readFileSync(STRINGS_FILE, 'utf8') : '';
+    const wanted = [
+      'Поле і складність', // the visually hidden prefix and the label of the sheet (the prefix ends in ": ", the format may be split)
+      SHEET_LABEL,
+      CLOSE_LABEL,
+      LEVEL_GROUP_LABEL,
+      ...LEVEL_NAMES,
+      ...LEVEL_DESCRIPTIONS,
+      REASON_4X4,
+      TECHNIQUES_HEADING,
+      ...TECHNIQUES_ITEMS,
+    ];
+    for (const text of wanted) expect(source, `strings.ts contains «${text}»`).toContain(text);
+    // the separator of the summary « · » (U+00B7) is written as the character or as an escape
+    expect(/·|\\u00[Bb]7|\\u\{[Bb]7\}|\\xB7|\\xb7/.test(source), 'strings.ts contains the separator U+00B7 (character or escape)').toBe(true);
+  });
+
+  it('no file of src/ui/ other than strings.ts and no src/main.ts holds a Cyrillic character (a guard that holds before the change, and must keep holding)', () => {
+    const files = [...uiSources(UI_DIR).filter((f) => f !== STRINGS_FILE), MAIN_FILE];
+    expect(files.length, 'the scan covers files').toBeGreaterThan(3);
+    const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f, 'utf8'))).map((f) => f.slice(process.cwd().length + 1));
+    expect(offenders).toEqual([]);
   });
 });

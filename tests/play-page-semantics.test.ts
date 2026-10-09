@@ -18,6 +18,7 @@ import {
   cellEl,
   cellText,
   clickCell,
+  chooseLevel,
   clickUntil,
   expectActive,
   expectedCellLabel,
@@ -36,6 +37,7 @@ import {
   rulesPanel,
   seedQueue,
   selectSize,
+  sheetOf,
   setRow,
   sizeButtons,
   sizeControl,
@@ -78,15 +80,18 @@ function textNodesOf(root: HTMLElement): string[] {
   return out;
 }
 
-/** The three elements that may carry an id (FR-61): the rules panel, its heading and the element holding the confirmation text. */
+/**
+ * The four elements that may carry an id (FR-61, FR-96): the rules panel, its heading, the setup sheet and the element holding
+ * the confirmation text, in document order. Slice DL2 DELIBERATE CHANGE (A-41, FR-96): the sheet is the fourth id, was three.
+ */
 function expectedIdElements(root: HTMLElement): Element[] {
   const panel = rulesPanel(root);
-  const heading = panel.querySelector('h1, h2, h3, h4, h5, h6');
+  const heading = panel.querySelector('h1, h2, h3, h4, h5, h6'); // the h2 «Правила»: the h3 of the techniques section follows it
   expect.assert(heading !== null, 'the rules panel has a heading');
   const dialog = q(root, '[data-dialog="confirm"]');
   const text = dialog.querySelector('[id]');
   expect.assert(text !== null, 'the confirmation dialog has an element with an id (its text)');
-  return [panel, heading, text];
+  return [panel, heading, sheetOf(root), text];
 }
 
 describe('the board is a labelled group of cell buttons', () => {
@@ -130,7 +135,7 @@ describe('the board is a labelled group of cell buttons', () => {
     expect(Array.from(board.children)).toEqual(allCells(root));
   });
 
-  it('@trace FR-61 The cell contract is unchanged and exactly three elements have an id: the rules panel, its heading and the confirmation text', () => {
+  it('@trace FR-61 @trace FR-96 The cell contract is unchanged and exactly four elements have an id: the rules panel, its heading, the setup sheet and the confirmation text', () => {
     // a per-size generator, so the size change below really rebuilds the board (a fixed 6x6 fixture would make it fail)
     const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: WIN_PUZZLE, 4: BLANK_4 }) });
     const cells = allCells(root);
@@ -145,13 +150,15 @@ describe('the board is a labelled group of cell buttons', () => {
     }
     expect(cells.filter((c) => c.classList.contains('cell-given'))).toHaveLength(10);
     const three = expectedIdElements(root);
-    expect(idElements(root), 'exactly the rules panel, its heading and the confirmation text have an id').toEqual(three);
-    expect(three).toHaveLength(3);
+    expect(idElements(root), 'exactly the rules panel, its heading, the setup sheet and the confirmation text have an id').toEqual(three);
+    expect(three).toHaveLength(4);
     for (const el of three) expect(el.id, 'each id ends in the number of the mount').toMatch(/\d+$/);
     expect(root.querySelectorAll('[for]'), 'no for attribute').toHaveLength(0);
-    // after a click, a hint, a size change and a new puzzle the same three elements are the only ones with an id
+    // after a click, a hint, a level change, a size change and a new puzzle the same four elements are the only ones with an id
     clickCell(root, 1, 1);
     pressHint(root);
+    chooseLevel(root, 2);
+    expect(q(root, '[data-board]').getAttribute('data-size'), 'premise: the level change kept the 6x6 board').toBe('6');
     selectSize(root, 4);
     expect(q(root, '[data-board]').getAttribute('data-size'), 'the size change really rebuilt the board').toBe('4');
     pressNew(root);
@@ -159,15 +166,15 @@ describe('the board is a labelled group of cell buttons', () => {
     expect(root.querySelectorAll('[for]')).toHaveLength(0);
   });
 
-  it('@trace FR-61 Two mounts in one document share no id: three ids each, six different ones, and no other id in the document', () => {
+  it('@trace FR-61 @trace FR-96 Two mounts in one document share no id: four ids each, eight different ones, and no other id in the document', () => {
     const a = mountFixture(BLANK);
     const b = mountFixture(BLANK);
     const idsA = idElements(a).map((e) => e.id);
     const idsB = idElements(b).map((e) => e.id);
-    expect(idsA).toHaveLength(3);
-    expect(idsB).toHaveLength(3);
-    expect(new Set([...idsA, ...idsB]).size, 'the six ids are pairwise different').toBe(6);
-    expect(document.querySelectorAll('[id]'), 'the document holds exactly those six').toHaveLength(6);
+    expect(idsA).toHaveLength(4);
+    expect(idsB).toHaveLength(4);
+    expect(new Set([...idsA, ...idsB]).size, 'the eight ids are pairwise different').toBe(8);
+    expect(document.querySelectorAll('[id]'), 'the document holds exactly those eight').toHaveLength(8);
   });
 
   it('@trace FR-61 @trace FR-34 The digit stays the cell text (FR-34) and the name is a separate attribute', () => {

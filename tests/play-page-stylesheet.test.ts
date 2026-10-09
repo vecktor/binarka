@@ -226,15 +226,19 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
   });
 
   it('@trace FR-65 Every page button is a button element, so button:focus-visible (and .cell:focus-visible for the cells) applies to it', () => {
+    // Slice DL2 DELIBERATE CHANGE (FR-65 modified, FR-87, FR-95, FR-97): seven radio buttons (three sizes, four levels), the
+    // summary button and the close button of the setup sheet join the list (was three radios and 1 + 3 + 3 + 1 + 2 + 36 buttons)
     const root = mountFixture(BLANK);
     const panel = rulesPanel(root);
     const radios = Array.from(root.querySelectorAll('[role="radio"]'));
-    expect(radios, 'the three size buttons').toHaveLength(3);
+    expect(radios, 'the three size buttons and the four level buttons').toHaveLength(7);
     const panelButtons = Array.from(panel.querySelectorAll('button'));
     expect(panelButtons, 'premise: the rules panel holds one button, its close button').toHaveLength(1);
     const buttons: Element[] = [
       q(root, '[data-action="rules"]'),
+      q(root, '[data-action="setup"]'),
       ...radios,
+      q(root, '[data-action="setup-close"]'),
       q(root, '[data-action="hint"]'),
       q(root, '[data-action="reset"]'),
       q(root, '[data-action="new"]'),
@@ -243,7 +247,7 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
       q(root, '[data-confirm="no"]'),
       ...allCells(root),
     ];
-    expect(buttons).toHaveLength(1 + 3 + 3 + 1 + 2 + 36);
+    expect(buttons).toHaveLength(1 + 1 + 7 + 1 + 3 + 1 + 2 + 36);
     for (const button of buttons) {
       expect(button.tagName, `${button.getAttribute('data-action') ?? button.getAttribute('data-confirm') ?? button.getAttribute('role') ?? 'cell'} is a button element`).toBe('BUTTON');
     }

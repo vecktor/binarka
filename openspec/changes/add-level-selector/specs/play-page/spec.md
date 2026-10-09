@@ -71,7 +71,7 @@ Traces: FR-96, FR-95, FR-97, FR-94, NFR-5, NFR-9
 - **GIVEN** the page has just been mounted
 - **WHEN** the test reads `[data-action="setup-close"]`
 - **THEN** it is a `button` with `type="button"`, the text «Закрити», `popovertarget` equal to the sheet's `id` and `popovertargetaction="hide"`, and no `tabindex`
-- **AND** the sheet holds exactly nine buttons in all: the three size buttons, the four level buttons and the close button
+- **AND** the sheet holds exactly eight buttons in all: the three size buttons, the four level buttons and the close button
 
 #### Scenario: The sheet opens and closes with no script
 
@@ -542,14 +542,14 @@ Traces: NFR-5, NFR-4, FR-94, FR-95, FR-96, FR-87, FR-89, FR-91, FR-93
 
 ### Requirement: The summary and level buttons set their own colours
 
-The summary button SHALL carry the class `setup-summary`, the level control the class `level-control`, and the stylesheet `src/ui/style.css` SHALL set an explicit `color` and an explicit `background-color`, each a single `var(--color-...)` token, in the rule `.setup-summary`, in the rule `.level-control button`, in the rule `.level-control button[aria-checked='true']` and in the rule `.level-control button[aria-disabled='true']` (FR-65, NFR-9). For each of the four states, the declarations of the plain rule, with those of the state rule laid over them, SHALL give a text colour with at least 4.5:1 contrast against the background colour (the WCAG 2 formula on the resolved tokens), and the unavailable state SHALL NOT be drawn with `opacity`. The rule `.level-control button[aria-disabled='true']` SHALL also declare a cue that is not colour alone (FR-91): a `border-style` that differs from the plain rule's, or a `text-decoration` other than `none`; which cue is used follows the user's updated design (the wireframe has a dashed border and a struck-through name). No new `--color-*` token and no colour literal is added (the 13 tokens of «Borders, cues and focus rings have enough contrast» stay exactly 13). The summary button, the level buttons and the close button are `button` elements, so the existing `button:focus-visible` rule gives them the focus indicator of FR-65, and the rules of the sheet obey the existing stylesheet scans (no `!important`, no `:has(` besides the idle-line rule, no `display: contents`, no removed outline). The `.size-control` rules are not changed by this requirement. The look of the buttons (the ring, the sunken look of the unavailable state, the colours beyond the pairs above) is covered by the held NFR-14, see `docs/requirements-held.md`, and is not claimed here.
+The summary button SHALL carry the class `setup-button` (its text span carries `setup-summary` and its cue span `setup-cue`, as in the design reference `review-set-11`), the level control the class `level-control`, and the stylesheet `src/ui/style.css` SHALL set an explicit `color` and an explicit `background-color`, each a single `var(--color-...)` token, in the rule `.setup-button`, in the rule `.level-control button`, in the rule `.level-control button[aria-checked='true']` and in the rule `.level-control button[aria-disabled='true']` (FR-65, NFR-9). For each of the four states, the declarations of the plain rule, with those of the state rule laid over them, SHALL give a text colour with at least 4.5:1 contrast against the background colour (the WCAG 2 formula on the resolved tokens), and the unavailable state SHALL NOT be drawn with `opacity`. The rule `.level-control button[aria-disabled='true']` SHALL also declare a cue that is not colour alone (FR-91): a `border-style` that differs from the plain rule's, or a `text-decoration` other than `none`; which cue is used follows the user's updated design (the design reference `review-set-11` uses a dashed border and a dashed radio ring and no strike-through, autonomy-log row 93). No new `--color-*` token and no colour literal is added (the 13 tokens of «Borders, cues and focus rings have enough contrast» stay exactly 13). The summary button, the level buttons and the close button are `button` elements, so the existing `button:focus-visible` rule gives them the focus indicator of FR-65, and the rules of the sheet obey the existing stylesheet scans (no `!important`, no `:has(` besides the idle-line rule, no `display: contents`, no removed outline). The `.size-control` rules are not changed by this requirement. The look of the buttons (the ring, the sunken look of the unavailable state, the colours beyond the pairs above) is covered by the held NFR-14, see `docs/requirements-held.md`, and is not claimed here.
 
 Traces: FR-65, NFR-9, FR-87, FR-91, FR-95, FR-97
 
 #### Scenario: The summary and level buttons declare their colours
 
 - **GIVEN** the text of `src/ui/style.css`
-- **WHEN** the test reads the declarations of `.setup-summary`, `.level-control button`, `.level-control button[aria-checked='true']` and `.level-control button[aria-disabled='true']`
+- **WHEN** the test reads the declarations of `.setup-button`, `.level-control button`, `.level-control button[aria-checked='true']` and `.level-control button[aria-disabled='true']`
 - **THEN** each of the four rules exists and declares `color` and `background-color`, each a single `var(--color-...)` of a token declared in `:root`
 - **AND** none of the four declares `opacity`
 
@@ -569,7 +569,7 @@ Traces: FR-65, NFR-9, FR-87, FR-91, FR-95, FR-97
 
 - **GIVEN** the page has just been mounted
 - **WHEN** the test reads `[data-action="setup"]`, `[data-control="level"]`, its four radio buttons and `[data-action="setup-close"]`
-- **THEN** the summary has the class `setup-summary`, the control has the class `level-control`, and each of the six buttons is a `button` element, so `button:focus-visible` applies to it
+- **THEN** the summary has the class `setup-button`, the control has the class `level-control`, and each of the six buttons is a `button` element, so `button:focus-visible` applies to it
 
 #### Scenario: The existing stylesheet scans still pass
 

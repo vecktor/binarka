@@ -367,6 +367,8 @@
       "tests": [
         "tests/generator.test.ts",
         "tests/play-page-confirm.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-level-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
@@ -418,7 +420,8 @@
       "tests": [
         "tests/cli-level.test.ts",
         "tests/generator-run-out.test.ts",
-        "tests/generator-run-out.test.ts"
+        "tests/generator-run-out.test.ts",
+        "tests/play-page-retry.test.ts"
       ],
       "recordings": []
     },
@@ -587,7 +590,9 @@
         "tests/hint-order-ceiling.test.ts",
         "tests/hint-order-ceiling.test.ts",
         "tests/hint-order-ceiling.test.ts",
-        "tests/hint-order-ceiling.test.ts"
+        "tests/hint-order-ceiling.test.ts",
+        "tests/play-page-level-hint.test.ts",
+        "tests/play-page-level-hint.test.ts"
       ],
       "recordings": []
     },
@@ -835,7 +840,8 @@
       ],
       "planned": true,
       "tests": [
-        "tests/play-page-hint.test.ts"
+        "tests/play-page-hint.test.ts",
+        "tests/play-page-level-hint.test.ts"
       ],
       "recordings": []
     },
@@ -849,6 +855,9 @@
       "tests": [
         "tests/play-page-hint.test.ts",
         "tests/play-page-hint.test.ts",
+        "tests/play-page-level-hint.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-level-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
       "recordings": []
@@ -877,6 +886,8 @@
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
@@ -896,6 +907,9 @@
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-level-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
@@ -927,7 +941,9 @@
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
-        "tests/play-page-layout.test.ts"
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-techniques.test.ts",
+        "tests/play-page-techniques.test.ts"
       ],
       "recordings": []
     },
@@ -944,6 +960,8 @@
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts",
         "tests/play-page-reset-accessibility.test.ts",
         "tests/play-page-rules-and-reset.test.ts",
         "tests/play-page-rules-and-reset.test.ts"
@@ -966,7 +984,9 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-rendering.test.ts",
-        "tests/play-page-rendering.test.ts"
+        "tests/play-page-rendering.test.ts",
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-setup-sheet.test.ts"
       ],
       "recordings": []
     },
@@ -1073,6 +1093,9 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
@@ -1143,6 +1166,9 @@
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts",
         "tests/play-page-size-control.test.ts"
       ],
       "recordings": []
@@ -1155,6 +1181,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
@@ -1226,6 +1253,9 @@
       "planned": true,
       "tests": [
         "tests/play-page-confirm.test.ts",
+        "tests/play-page-level-4x4.test.ts",
+        "tests/play-page-level-4x4.test.ts",
+        "tests/play-page-level-interplay.test.ts",
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts"
@@ -1238,7 +1268,11 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-stylesheet.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1248,7 +1282,14 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-retry.test.ts",
+        "tests/play-page-retry.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1257,7 +1298,10 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-control.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1266,7 +1310,11 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1275,7 +1323,12 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-4x4.test.ts",
+        "tests/play-page-level-4x4.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-wcag.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1284,7 +1337,12 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-interplay.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1293,7 +1351,10 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-techniques.test.ts",
+        "tests/play-page-techniques.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1302,7 +1363,11 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-techniques.test.ts",
+        "tests/play-page-techniques.test.ts",
+        "tests/ui-strings.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1312,7 +1377,10 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-control.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1321,7 +1389,12 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-setup-sheet.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1330,7 +1403,13 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-setup-sheet.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1339,7 +1418,14 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-4x4.test.ts",
+        "tests/play-page-level-4x4.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-setup-sheet.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1348,7 +1434,10 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-setup-sheet.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1357,68 +1446,15 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-control.test.ts"
+      ],
       "recordings": []
     }
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-87 has no test annotated \"@trace FR-87\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-88 has no test annotated \"@trace FR-88\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-89 has no test annotated \"@trace FR-89\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-90 has no test annotated \"@trace FR-90\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-91 has no test annotated \"@trace FR-91\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-92 has no test annotated \"@trace FR-92\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-93 has no test annotated \"@trace FR-93\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-94 has no test annotated \"@trace FR-94\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-44 has no test annotated \"@trace FR-44\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-95 has no test annotated \"@trace FR-95\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-96 has no test annotated \"@trace FR-96\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-97 has no test annotated \"@trace FR-97\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-98 has no test annotated \"@trace FR-98\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-99 has no test annotated \"@trace FR-99\""
-    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"

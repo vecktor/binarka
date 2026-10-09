@@ -20,13 +20,16 @@ import {
   mountPage,
   mountPlayedBoard,
   pageState,
+  popoverCalls,
   pressSizeButton,
   q,
   seedQueue,
+  sheetOf,
   showModalCalls,
   sizeButton,
   sizeButtons,
   sizeControl,
+  summaryButton,
   violationCells,
 } from './helpers/play-page';
 
@@ -100,6 +103,7 @@ describe.each(CASES)('@trace FR-73 @trace FR-66 @trace FR-43 pressing the shown 
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
     const shownCalls = showModalCalls();
+    const hidden = popoverCalls('hidePopover', sheetOf(root)); // FR-97: the press closes the sheet (counted from here)
     expect(checkedSize(root), 'premise: the size shown is the size pressed').toBe(n);
     expect(hinted, 'premise: a hint-filled cell').toHaveLength(1);
     expect(violations.length, 'premise: cells carry cell-violation').toBeGreaterThan(0);
@@ -115,6 +119,9 @@ describe.each(CASES)('@trace FR-73 @trace FR-66 @trace FR-43 pressing the shown 
     expect(hintedCells(root)).toEqual(hinted);
     expect(violationCells(root)).toEqual(violations);
     expect(sizeButtons(root).filter((b) => b.getAttribute('aria-checked') === 'true')).toEqual([sizeButton(root, n)]);
+    // Slice DL2 DELIBERATE CHANGE (FR-73 modified, FR-97): the no-op press still closes the sheet and focuses the summary button
+    expect(popoverCalls('hidePopover', sheetOf(root)) - hidden, 'hidePopover was called once on the sheet').toBe(1);
+    expect(document.activeElement, 'DOM focus is on the summary button').toBe(summaryButton(root));
   });
 
   it(`on an untouched board: «Поле ${n}×${n}» takes no seed, calls no generator and shows no dialog`, () => {
@@ -127,6 +134,7 @@ describe.each(CASES)('@trace FR-73 @trace FR-66 @trace FR-43 pressing the shown 
     const before = pageState(root);
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
+    const hidden = popoverCalls('hidePopover', sheetOf(root));
 
     pressSizeButton(root, n);
 
@@ -137,6 +145,9 @@ describe.each(CASES)('@trace FR-73 @trace FR-66 @trace FR-43 pressing the shown 
     expect(pageState(root)).toEqual(before);
     expect(checkedSize(root)).toBe(n);
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
+    // Slice DL2 DELIBERATE CHANGE (FR-73 modified, FR-97): the no-op press closes the sheet and focuses the summary button
+    expect(popoverCalls('hidePopover', sheetOf(root)) - hidden, 'hidePopover was called once on the sheet').toBe(1);
+    expect(document.activeElement, 'DOM focus is on the summary button').toBe(summaryButton(root));
   });
 });
 

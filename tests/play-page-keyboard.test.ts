@@ -5,6 +5,7 @@
 // Every key event is a bubbling, CANCELABLE event (pressKey / pressKeyEvent): a non-cancelable event can never show
 // preventDefault(). jsdom does not turn Enter or Space into a click, so the activation of a cell is a click here.
 import { describe, expect, it } from 'vitest';
+import { hint } from '../src/engine/index';
 import {
   BLANK,
   BLANK_4,
@@ -27,16 +28,18 @@ import {
   mountFixture,
   mountPage,
   mountThenSelect,
+  openSheet,
   pressHint,
   pressKey,
   pressKeyEvent,
   pressNew,
   q,
   resetBoard,
+  readBoard,
   seedQueue,
   sizeButton,
-  sizeButtons,
   snapshot,
+  summaryButton,
   violationCells,
   winMessage,
 } from './helpers/play-page';
@@ -60,23 +63,24 @@ function playedBoard(): HTMLElement {
 }
 
 describe('every cell is its own Tab stop and the page handles no key on the board', () => {
-  it('@trace FR-59 T1 Every cell is a Tab stop in reading order: no tabindex anywhere, the cells sit between the size control and the hint button', () => {
+  // Slice DL2 DELIBERATE CHANGE (FR-59 modified, FR-68, FR-95): the cells follow the summary button, not the size control
+  it('@trace FR-59 T1 Every cell is a Tab stop in reading order: no tabindex anywhere, the cells sit between the summary button and the hint button', () => {
     const root = mountFixture(BLANK);
     expect(root.hasAttribute('tabindex'), 'the root has no tabindex').toBe(false);
     expect(root.querySelectorAll('[tabindex]'), 'no element of the root has a tabindex attribute').toHaveLength(0);
     const cells = allCells(root);
     expect(cells).toHaveLength(36);
-    const lastSize = sizeButtons(root).at(-1);
-    expect.assert(lastSize !== undefined, 'premise: the size control has buttons');
-    // the sequence of the scenario: the last size button, cell (1,1) ... cell (6,6) in reading order, the hint button
-    expectInDocumentOrder([lastSize, ...cells, q(root, '[data-action="hint"]')]);
+    // the sequence of the scenario: the summary button, cell (1,1) ... cell (6,6) in reading order, the hint button
+    expectInDocumentOrder([summaryButton(root), ...cells, q(root, '[data-action="hint"]')]);
     cells.forEach((cell, i) => {
       expect(cell.getAttribute('data-row'), `cell ${i + 1} row`).toBe(String(Math.floor(i / 6) + 1));
       expect(cell.getAttribute('data-col'), `cell ${i + 1} col`).toBe(String((i % 6) + 1));
     });
   });
 
-  it('@trace FR-59 T2 Showing a board does not move the focus: a new puzzle, a size change and a reset leave it on the pressed button', () => {
+  // Slice DL2 DELIBERATE CHANGE (FR-59 exception, FR-97): a press on a size button inside the sheet moves the focus to the summary
+  // button (the pressed option is in a sheet that closes); «Нова головоломка» and «Скинути» keep the focus on the pressed button.
+  it('@trace FR-59 T2 Showing a board does not move the focus: a new puzzle and a reset leave it on the pressed button, a size change in the sheet moves it to the summary button', () => {
     const spy = generateSpy(bySize({ 6: BLANK, 4: BLANK_4 }));
     const root = mountPage({ seedSource: seedQueue([1, 2, 3]).source, generate: spy.generate });
     expect(spy.calls, 'premise: the mount asked for one board').toHaveLength(1);
@@ -88,13 +92,14 @@ describe('every cell is its own Tab stop and the page handles no key on the boar
     expect(spy.calls, 'the new puzzle was performed at once (the board has no entries)').toHaveLength(2);
     expectActive(newButton, 'after a new puzzle the focus is on the button that was pressed');
 
+    openSheet(root);
     const four = sizeButton(root, 4);
     four.focus();
     expectActive(four, 'premise: «Поле 4×4» has the focus');
     four.click();
     expect(spy.calls, 'the size change was performed at once').toHaveLength(3);
     expect(q(root, '[data-board]').getAttribute('data-size'), 'the board is now 4x4').toBe('4');
-    expectActive(four, 'after a size change the focus is on the button that was pressed');
+    expectActive(summaryButton(root), 'after a size change in the sheet the focus is on the summary button, not on the pressed option');
 
     const reset = q(root, '[data-action="reset"]');
     reset.focus();
@@ -104,6 +109,8 @@ describe('every cell is its own Tab stop and the page handles no key on the boar
     expectActive(reset, 'after a reset the focus is on the button that was pressed');
   });
 
+  // Slice DL2 DELIBERATE CHANGE (autonomy-log row 88, FR-77): the "fills nothing" premise of ISOLATED is re-asserted with the
+  // ceiling the page uses, hint(board, 4); it holds, so the fixture stays.
   it('@trace FR-59 T3 A hint leaves the focus on the hint button, with a fill (PAIR_ROW) and without (ISOLATED)', () => {
     const filling = mountFixture(PAIR_ROW);
     const hintButton = q(filling, '[data-action="hint"]');
@@ -114,6 +121,7 @@ describe('every cell is its own Tab stop and the page handles no key on the boar
     expectActive(hintButton, 'after a hint that fills a cell');
 
     const empty = mountFixture(ISOLATED);
+    expect(hint(readBoard(empty), 4).kind, 'premise: at the ceiling the page asks with, ISOLATED still fills nothing').toBe('none');
     const emptyHintButton = q(empty, '[data-action="hint"]');
     emptyHintButton.focus();
     expectActive(emptyHintButton, 'premise: the hint button has the focus');

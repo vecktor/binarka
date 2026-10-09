@@ -22,11 +22,14 @@ import {
   RULES_CLOSE_LABEL,
   RULES_ITEMS,
   RULES_LABEL,
+  TECHNIQUES_HEADING,
+  TECHNIQUES_ITEMS,
   TITLE_TEXT,
   WIN_MESSAGE,
   WIN_PUZZLE,
   allCells,
   bySize,
+  chooseLevel,
   confirmYes,
   expectInDocumentOrder,
   fillFrom,
@@ -43,6 +46,7 @@ import {
   rulesPanel,
   seedQueue,
   selectSize,
+  sheetOf,
   snapshot,
   solutionGrid,
   textWithoutHidden,
@@ -57,20 +61,30 @@ const HEADINGS = 'h1, h2, h3, h4, h5, h6';
 
 const idleLine = (root: ParentNode): HTMLElement => q(root, '[data-message="idle"]');
 
-/** The rules panel as read now: texts without aria-hidden descendants (A-26), and the ids that tie it to its buttons. */
+/**
+ * The rules panel as read now: texts without aria-hidden descendants (A-26), and the ids that tie it to its buttons.
+ * Slice DL2 DELIBERATE CHANGE (FR-57 modified, FR-93): the panel holds two lists, so `items` is the rules list (the `ul` that is a
+ * direct child of the panel) and `techniques` the list of the techniques section; `headings` holds both headings.
+ */
 function readPanel(root: HTMLElement): {
   el: HTMLElement;
   id: string;
   headings: string[];
   items: string[];
+  techniques: string[];
   buttonId: string | null;
 } {
   const el = rulesPanel(root);
+  const rulesList = Array.from(el.children).find((child) => child.tagName === 'UL');
+  const techniquesList = el.querySelector('[data-section="techniques"] ul');
+  const textsOf = (list: Element | null | undefined): string[] =>
+    list === null || list === undefined ? [] : Array.from(list.querySelectorAll('li')).map((li) => textWithoutHidden(li).trim());
   return {
     el,
     id: el.getAttribute('id') ?? '',
     headings: Array.from(el.querySelectorAll(HEADINGS)).map((h) => textWithoutHidden(h).trim()),
-    items: Array.from(el.querySelectorAll('li')).map((li) => textWithoutHidden(li).trim()),
+    items: textsOf(rulesList),
+    techniques: textsOf(techniquesList),
     buttonId: q(root, RULES_BUTTON).getAttribute('popovertarget'),
   };
 }
@@ -141,7 +155,7 @@ describe('@trace FR-57 the rules button is in the header', () => {
 });
 
 describe('@trace FR-57 the rules panel at mount', () => {
-  it('Rules panel structure: popover attribute, heading «Правила», three li items in order, one close button «Зрозуміло»', () => {
+  it('Rules panel structure: popover attribute, headings «Правила» and «Складніші прийоми», 3 + 3 li items in order, one close button «Зрозуміло»', () => {
     const root = mountFixture(WIN_PUZZLE);
     const panel = rulesPanel(root);
 
@@ -155,9 +169,11 @@ describe('@trace FR-57 the rules panel at mount', () => {
     expect(root.contains(panel), 'the panel is inside the page root').toBe(true);
 
     const read = readPanel(root);
-    expect(read.headings).toEqual([RULES_LABEL]);
+    // Slice DL2 DELIBERATE CHANGE (FR-57 modified, FR-93): two headings, two lists, six li (was one heading and three li)
+    expect(read.headings).toEqual([RULES_LABEL, TECHNIQUES_HEADING]);
     expect(read.items).toEqual(RULES_ITEMS);
-    expect(panel.querySelectorAll('li')).toHaveLength(3);
+    expect(read.techniques).toEqual(TECHNIQUES_ITEMS);
+    expect(panel.querySelectorAll('li')).toHaveLength(6);
 
     const closeButtons = panel.querySelectorAll('button');
     expect(closeButtons, 'exactly one button in the panel').toHaveLength(1);
@@ -197,13 +213,13 @@ describe('@trace FR-57 the rules panel at mount', () => {
 });
 
 describe('@trace FR-57 no rules block under the board and no details element', () => {
-  // (characterisation guard) passes against the page before this change: it has no <details> and exactly three li, all in the
-  // [data-section="rules"] block. Must stay green.
-  it('No details element anywhere; exactly three li in the root, every one inside [data-section="rules"]', () => {
+  // Slice DL2 DELIBERATE CHANGE (FR-57 modified, FR-93): six li in the root (three rules, three techniques), was three. The
+  // `details` half is still a guard that passes before the change.
+  it('No details element anywhere; exactly six li in the root, every one inside [data-section="rules"]', () => {
     const root = mountFixture(WIN_PUZZLE);
     expect(root.querySelectorAll('details')).toHaveLength(0);
     const items = Array.from(root.querySelectorAll('li'));
-    expect(items).toHaveLength(3);
+    expect(items).toHaveLength(6);
     const panel = rulesPanel(root);
     for (const li of items) expect(panel.contains(li), 'li is inside [data-section="rules"]').toBe(true);
   });
@@ -299,15 +315,17 @@ describe('@trace FR-57 two mounts stay independent', () => {
 });
 
 describe('@trace FR-57 the panel survives every board change', () => {
-  const ACTIONS = ['new puzzle', 'size 4', 'size 8', 'win'] as const;
+  // Slice DL2 DELIBERATE CHANGE (FR-57 modified, FR-93 «The panel is unchanged after a level change»): the level row is added
+  const ACTIONS = ['new puzzle', 'size 4', 'size 8', 'level 2', 'win'] as const;
 
   it.each(ACTIONS)('after %s there is still exactly one panel, the same element, with the same texts and the button naming its id', (action) => {
     const seeds = seedQueue([1, 2, 3]);
     const spy = generateSpy(bySize({ 6: WIN_PUZZLE, 4: BLANK_4, 8: BLANK_8 }));
     const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
     const atMount = readPanel(root);
-    expect(atMount.headings).toEqual([RULES_LABEL]);
+    expect(atMount.headings).toEqual([RULES_LABEL, TECHNIQUES_HEADING]);
     expect(atMount.items).toEqual(RULES_ITEMS);
+    expect(atMount.techniques).toEqual(TECHNIQUES_ITEMS);
     expect(atMount.el.hasAttribute('popover')).toBe(true);
     expect(atMount.buttonId).toBe(atMount.id);
     const cellsAtMount = allCells(root).length;
@@ -321,6 +339,9 @@ describe('@trace FR-57 the panel survives every board change', () => {
     } else if (action === 'size 8') {
       selectSize(root, 8);
       expect(q(root, '[data-board]').getAttribute('data-size')).toBe('8');
+    } else if (action === 'level 2') {
+      chooseLevel(root, 2);
+      expect(spy.calls, 'premise: a level change was really generated').toHaveLength(2);
     } else {
       fillFrom(root, WIN_PUZZLE, solutionGrid(WIN_PUZZLE));
       expect(winMessage(root), 'premise: the win was reached').toBe(WIN_MESSAGE);
@@ -330,6 +351,7 @@ describe('@trace FR-57 the panel survives every board change', () => {
     expect(after.el, 'the panel is created once at mount, not rebuilt with the board').toBe(atMount.el);
     expect(after.headings).toEqual(atMount.headings);
     expect(after.items).toEqual(atMount.items);
+    expect(after.techniques).toEqual(atMount.techniques);
     expect(after.id).toBe(atMount.id);
     expect(after.buttonId, 'the rules button still names the panel id').toBe(atMount.id);
     if (action === 'size 4' || action === 'size 8') expect(allCells(root).length, 'premise: the board was replaced').not.toBe(cellsAtMount);
@@ -341,7 +363,8 @@ describe('@trace FR-57 the panel survives every board change', () => {
 // ---------------------------------------------------------------------------------------------------------
 
 describe('@trace FR-68 order at mount', () => {
-  it('header, size control, board, hint, reset, new buttons, idle, hint and win messages follow each other in this order', () => {
+  // Slice DL2 DELIBERATE CHANGE (FR-68 modified, FR-95): the summary button takes the place of the size control
+  it('header, summary button, board, hint, reset, new buttons, idle, hint and win messages follow each other in this order', () => {
     const root = mountFixture(WIN_PUZZLE);
     expectNineInOrder(root);
   });
@@ -386,8 +409,22 @@ describe('@trace FR-68 the panel is outside the sequence', () => {
   });
 });
 
+describe('@trace FR-68 @trace FR-96 the size and level controls are not in the sequence', () => {
+  it('The size and level controls are not in the sequence: both are inside [data-section="setup"], which is outside the header, the message area and the board, and follows the message area', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const sheet = sheetOf(root);
+    expect(sheet.contains(q(root, '[data-control="size"]')), 'the size control is inside the sheet').toBe(true);
+    expect(sheet.contains(q(root, '[data-control="level"]')), 'the level control is inside the sheet').toBe(true);
+    expect(q(root, 'header').contains(sheet)).toBe(false);
+    expect(messageArea(root).contains(sheet)).toBe(false);
+    expect(q(root, '[data-board]').contains(sheet)).toBe(false);
+    expectInDocumentOrder([messageArea(root), sheet]);
+  });
+});
+
 describe('@trace FR-68 the order and the message area survive every board change', () => {
-  const ACTIONS = ['new puzzle', 'size 4', 'size 8', 'reset', 'win'] as const;
+  // Slice DL2 DELIBERATE CHANGE (FR-68 modified): the level row is added
+  const ACTIONS = ['new puzzle', 'size 4', 'size 8', 'level 2', 'reset', 'win'] as const;
 
   it.each(ACTIONS)('after %s the nine elements still exist once, in the same order, and the messages are in the same message area', (action) => {
     const seeds = seedQueue([1, 2, 3]);
@@ -418,6 +455,9 @@ describe('@trace FR-68 the order and the message area survive every board change
       } else if (action === 'size 8') {
         selectSize(root, 8);
         expect(q(root, '[data-board]').getAttribute('data-size')).toBe('8');
+      } else if (action === 'level 2') {
+        chooseLevel(root, 2); // asks first (the hint filled a cell) and confirms
+        expect(spy.calls, 'premise: a level change was really generated').toHaveLength(2);
       } else {
         pressReset(root);
         confirmYes(root);

@@ -48,6 +48,7 @@ import {
   pageState,
   pressHint,
   pressNew,
+  popoverCalls,
   pressSizeButton,
   q,
   rawGenerateSpy,
@@ -57,8 +58,10 @@ import {
   showModalCalls,
   sizeButton,
   sizeButtons,
+  sheetOf,
   sizeControl,
   snapshot,
+  summaryButton,
   solutionGrid,
   trackErrors,
   violationCells,
@@ -153,6 +156,9 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
     expect(givenCount).toBeGreaterThan(0);
     expect(checkedSize(root)).toBe(4);
     expect(sizeButton(root, 6).getAttribute('aria-checked')).toBe('false');
+    // Slice DL2 DELIBERATE CHANGE (FR-43 modified, FR-97): a performed press closes the sheet and focuses the summary button
+    expect(popoverCalls('hidePopover', sheetOf(root)), 'the sheet was closed once').toBe(1);
+    expect(document.activeElement, 'DOM focus is on the summary button').toBe(summaryButton(root));
   });
 
   it('Choose 8x8 after play: asked first (board and aria-checked unchanged), then after «Так, почати» 64 cells, no entries, hint and marker gone, highlights only for the new givens', () => {
@@ -397,7 +403,7 @@ describe('@trace FR-43 hint and win work at the chosen size', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generateSpy(bySize({ 6: BLANK, 4: PAIR_4 })).generate });
     selectSize(root, 4);
     expectCellGrid(root, 4);
-    const h = hint(readBoard(root));
+    const h = hint(readBoard(root), 4); // FR-77 (DL2): the page asks with ceiling 4, the "expected hint" is hint(board, 4)
     expect(h).toMatchObject({ kind: 'fill', row: 1, col: 2, value: 1, rule: 'pair' });
     expect(cellText(root, 2, 3)).toBe('');
     const before = cellTexts(root);
@@ -416,7 +422,7 @@ describe('@trace FR-43 hint and win work at the chosen size', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generateSpy(bySize({ 6: BLANK, 8: PAIR_8 })).generate });
     selectSize(root, 8);
     expectCellGrid(root, 8);
-    const h = hint(readBoard(root));
+    const h = hint(readBoard(root), 4); // FR-77 (DL2): the page asks with ceiling 4, the "expected hint" is hint(board, 4)
     expect(h).toMatchObject({ kind: 'fill', row: 7, col: 5, value: 1, rule: 'pair' });
     expect(cellText(root, 8, 6)).toBe('');
     const before = cellTexts(root);

@@ -103,7 +103,7 @@
     {
       "slice": "2026-10-09-add-difficulty-engine",
       "reviewEvidence": "unclean",
-      "trailerCommits": 2,
+      "trailerCommits": 3,
       "libDomains": [
         "engine"
       ],

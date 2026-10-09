@@ -33,10 +33,14 @@ export const RULES_ITEMS = [
  * the «і» between them is the Cyrillic letter U+0456; the dash is U+2014.
  */
 export const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 0\u00A0і\u00A01. Правила — кнопка «Правила» вгорі.';
-/** FR-68 document order of the page, as selectors; the rules panel is outside this sequence. */
+/**
+ * FR-68 document order of the page, as selectors; the rules panel, the setup sheet and the dialog are outside this sequence.
+ * Slice DL2 (add-level-selector), DELIBERATE CHANGE (FR-68, FR-95): the size control left the page body for the setup sheet,
+ * the summary button `[data-action="setup"]` took its place; still nine elements.
+ */
 export const PAGE_ORDER = [
   'header',
-  '[data-control="size"]',
+  '[data-action="setup"]',
   '[data-board]',
   '[data-action="hint"]',
   '[data-action="reset"]',
@@ -59,6 +63,11 @@ const roots: HTMLElement[] = [];
 
 /** Every call of the stubs and every mark a test adds with `markDialogLog`, in order: 'showModal', 'close', ... */
 export const dialogLog: string[] = [];
+/**
+ * Slice DL2 (A-44): every dialog and popover stub call in ONE list, in call order ('showModal', 'close', 'showPopover',
+ * 'hidePopover', 'togglePopover'), so a test can compare `hidePopover` with `showModal`. `dialogLog` keeps only the dialog calls.
+ */
+export const callOrder: string[] = [];
 let showModalCount = 0;
 let closeCount = 0;
 let closeHook: (() => void) | null = null;
@@ -74,6 +83,7 @@ export function onDialogClose(hook: (() => void) | null): void {
 
 function installDialogStubs(): void {
   dialogLog.length = 0;
+  callOrder.length = 0;
   showModalCount = 0;
   closeCount = 0;
   closeHook = null;
@@ -84,6 +94,7 @@ function installDialogStubs(): void {
       if (this.hasAttribute('open')) throw new DOMException('showModal on an open dialog', 'InvalidStateError');
       showModalCount += 1;
       dialogLog.push('showModal');
+      callOrder.push('showModal');
       this.setAttribute('open', '');
     },
   });
@@ -93,6 +104,7 @@ function installDialogStubs(): void {
     value(this: HTMLDialogElement): void {
       closeCount += 1;
       dialogLog.push('close');
+      callOrder.push('close');
       closeHook?.();
       this.removeAttribute('open');
     },
@@ -105,11 +117,71 @@ function removeDialogStubs(): void {
   closeHook = null;
 }
 
+// ---- the popover stubs (slice DL2, A-44). jsdom has no popover support: no `showPopover`, `hidePopover`, `togglePopover`.
+// The stubs record every call (which method, on which element) and keep an open or closed state per element. `hidePopover`
+// closes the state and dispatches NO event; a test dispatches the `toggle` event itself with `dispatchToggle`. Installed before
+// each test and removed after it, like the dialog stubs; the page has no production fallback. The sheet is opened in a test by
+// calling the stubbed `showPopover()` on it (`openSheet`); the native opening by the summary button is not tested in jsdom.
+
+export type PopoverMethod = 'showPopover' | 'hidePopover' | 'togglePopover';
+export interface PopoverCall {
+  method: PopoverMethod;
+  el: Element;
+}
+/** Every popover stub call since the test began, in order. */
+export const popoverLog: PopoverCall[] = [];
+let openPopovers = new WeakSet<Element>();
+
+/** How many times `method` was called (on `el` when given, on any element otherwise) since the test began. */
+export const popoverCalls = (method: PopoverMethod, el?: Element): number =>
+  popoverLog.filter((call) => call.method === method && (el === undefined || call.el === el)).length;
+/** True while the stub state of `el` is open (`showPopover` or a toggle to open was called, no `hidePopover` since). */
+export const popoverIsOpen = (el: Element): boolean => openPopovers.has(el);
+
+function installPopoverStubs(): void {
+  popoverLog.length = 0;
+  openPopovers = new WeakSet<Element>();
+  const define = (name: PopoverMethod, value: (this: HTMLElement) => unknown): void => {
+    Object.defineProperty(HTMLElement.prototype, name, { configurable: true, writable: true, value });
+  };
+  define('showPopover', function (this: HTMLElement): void {
+    popoverLog.push({ method: 'showPopover', el: this });
+    callOrder.push('showPopover');
+    openPopovers.add(this);
+  });
+  define('hidePopover', function (this: HTMLElement): void {
+    popoverLog.push({ method: 'hidePopover', el: this });
+    callOrder.push('hidePopover');
+    openPopovers.delete(this); // no event: the test dispatches `toggle` itself
+  });
+  define('togglePopover', function (this: HTMLElement): boolean {
+    popoverLog.push({ method: 'togglePopover', el: this });
+    callOrder.push('togglePopover');
+    if (openPopovers.has(this)) openPopovers.delete(this);
+    else openPopovers.add(this);
+    return openPopovers.has(this);
+  });
+}
+
+function removePopoverStubs(): void {
+  for (const name of ['showPopover', 'hidePopover', 'togglePopover']) Reflect.deleteProperty(HTMLElement.prototype, name);
+}
+
+/**
+ * What a browser dispatches asynchronously when a popover opens or closes: a `toggle` event with `newState`. jsdom has no
+ * ToggleEvent, so this is a plain `Event` with `newState` and `oldState` added (it does not bubble, as the native one).
+ */
+export function dispatchToggle(el: Element, newState: 'open' | 'closed'): void {
+  const event = Object.assign(new Event('toggle'), { newState, oldState: newState === 'open' ? 'closed' : 'open' });
+  el.dispatchEvent(event);
+}
+
 /** Call once at the top of a test file. */
 export function installPageLifecycle(): void {
   beforeEach(() => {
     document.title = '';
     installDialogStubs();
+    installPopoverStubs();
   });
   afterEach(() => {
     for (const root of roots.splice(0)) root.remove();
@@ -117,6 +189,7 @@ export function installPageLifecycle(): void {
     document.title = '';
     removeInjectedStyles(); // stylesheets a test injected to read the cascade (tests/helpers/css.ts)
     removeDialogStubs();
+    removePopoverStubs();
   });
 }
 
@@ -148,18 +221,26 @@ function fixtureOfSize(puzzle: Puzzle, size: number): Puzzle {
   return puzzle;
 }
 
-export function fixedGenerate(puzzle: Puzzle): (size: number, seed: number) => Puzzle {
+/**
+ * Slice DL2 (FR-88, A-44): a generator takes a third argument, the level. It is typed OPTIONAL here, so these helpers compile
+ * against the page of today (`generate(size, seed)`) and against the widened `generate(size, seed, level)`.
+ */
+export type TestGenerate = (size: number, seed: number, level?: number) => Puzzle;
+
+export function fixedGenerate(puzzle: Puzzle): TestGenerate {
   return (size) => fixtureOfSize(puzzle, size);
 }
 
 /** A generator that returns the fixture registered for the requested size (else throws). */
-export function generatorBySize(fixtures: Partial<Record<number, Puzzle>>): (size: number, seed: number) => Puzzle {
+export function generatorBySize(fixtures: Partial<Record<number, Puzzle>>): TestGenerate {
   const pick = bySize(fixtures);
-  return (size, seed) => pick(0, size, seed);
+  return (size, seed, level) => pick(0, size, seed, level);
 }
 
 /** A pick function for `generateSpy` / a generator that returns the fixture registered for the requested size (else throws). */
-export function bySize(fixtures: Partial<Record<number, Puzzle>>): (callIndex: number, size: number, seed: number) => Puzzle {
+export function bySize(
+  fixtures: Partial<Record<number, Puzzle>>,
+): (callIndex: number, size: number, seed: number, level?: number) => Puzzle {
   return (_i, size) => {
     const puzzle = fixtures[size];
     if (puzzle === undefined) throw new Error(`no fixture registered for size ${size}`);
@@ -168,27 +249,33 @@ export function bySize(fixtures: Partial<Record<number, Puzzle>>): (callIndex: n
 }
 
 export interface GenerateSpy {
-  generate: (size: number, seed: number) => Puzzle;
+  generate: TestGenerate;
+  /** every call as `{ size, seed }` (the level is in `levels`, so earlier assertions on `calls` keep their shape) */
   calls: { size: number; seed: number }[];
+  /** the third argument of every call, parallel to `calls`; `undefined` when the page passed none */
+  levels: (number | undefined)[];
 }
 
 /**
- * A generator that records every (size, seed) and returns `pick(callIndex, size, seed)`. The result must be of the
+ * A generator that records every (size, seed) and returns `pick(callIndex, size, seed, level)`. The result must be of the
  * requested size, otherwise the spy THROWS (a fixture of another size is a test-writing error; slice 3). A scenario that
  * needs a generator error or a wrong-size result uses `rawGenerateSpy`.
  */
-export function generateSpy(pick: (callIndex: number, size: number, seed: number) => Puzzle): GenerateSpy {
-  return rawGenerateSpy((i, size, seed) => fixtureOfSize(pick(i, size, seed), size));
+export function generateSpy(pick: (callIndex: number, size: number, seed: number, level?: number) => Puzzle): GenerateSpy {
+  return rawGenerateSpy((i, size, seed, level) => fixtureOfSize(pick(i, size, seed, level), size));
 }
 
 /** Like `generateSpy` but returns whatever `pick` returns (or throws whatever it throws): for the generator-error scenarios. */
-export function rawGenerateSpy(pick: (callIndex: number, size: number, seed: number) => Puzzle): GenerateSpy {
+export function rawGenerateSpy(pick: (callIndex: number, size: number, seed: number, level?: number) => Puzzle): GenerateSpy {
   const calls: { size: number; seed: number }[] = [];
+  const levels: (number | undefined)[] = [];
   return {
     calls,
-    generate: (size, seed) => {
+    levels,
+    generate: (size, seed, level) => {
       calls.push({ size, seed });
-      return pick(calls.length - 1, size, seed);
+      levels.push(level);
+      return pick(calls.length - 1, size, seed, level);
     },
   };
 }
@@ -599,8 +686,15 @@ export function hasPlayerEntries(root: ParentNode): boolean {
   return allCells(root).some((c) => c.getAttribute('data-given') === 'false' && c.textContent !== '');
 }
 
-/** The raw press of the size button of `n`: no confirmation is given. */
-export const pressSizeButton = (root: ParentNode, n: number): void => { sizeButton(root, n).click(); };
+/**
+ * The raw press of the size button of `n`: no confirmation is given. Slice DL2 (A-44, reading rule of «Setup sheet»): the size
+ * button lives inside the setup sheet, so the player first opens the sheet; the test does it through the stubbed
+ * `showPopover()` and then clicks the option.
+ */
+export const pressSizeButton = (root: ParentNode, n: number): void => {
+  openSheet(root);
+  sizeButton(root, n).click();
+};
 export const pressReset = (root: ParentNode): void => { q(root, '[data-action="reset"]').click(); };
 
 // ---- the confirmation dialog (FR-67) ----
@@ -682,6 +776,155 @@ export function selectSize(root: ParentNode, size: number): void {
   if (asks) confirmYes(root);
 }
 
+// ---- slice DL2 (add-level-selector): the summary button, the setup sheet, the level control ----
+
+/** The level names of FR-87, in the order of the four buttons (levels 1 to 4). Exact literals: tests never import strings.ts. */
+export const LEVEL_NAMES = ['Розминка', 'Задачка', 'Головоломка', 'Мозколамка'];
+/** The four descriptions of FR-89 (final wording of the user, autonomy-log rows 89 and 90). */
+export const LEVEL_DESCRIPTIONS = [
+  'Вистачає трьох простих правил: пара, між двома однаковими і підрахунок цифр.',
+  'Додатково треба рахувати, де в рядку помістяться решта нулів чи одиниць.',
+  'Додатково треба порівнювати рядки і стовпці: двох однакових не буває.',
+  'Додатково треба пробувати хід наперед: якщо правило порушиться, тут інша цифра.',
+];
+/** The 4x4 reason of FR-91 (confirmed by the user, task 1.5): guillemets and the final full stop are part of the text. */
+export const REASON_4X4 = 'Для поля 4×4 є лише рівень «Розминка».';
+export const SHEET_LABEL = 'Поле і складність';
+export const CLOSE_LABEL = 'Закрити';
+export const LEVEL_GROUP_LABEL = 'Складність';
+export const SIZE_GROUP_LABEL = 'Розмір поля';
+/** The visually hidden prefix of the summary button: ends in ONE ordinary space. */
+export const SUMMARY_PREFIX = 'Поле і складність: ';
+export const TECHNIQUES_HEADING = 'Складніші прийоми';
+/** The three techniques items of FR-93 (confirmed by the user, task 1.5), in order. */
+export const TECHNIQUES_ITEMS = [
+  'Баланс рядка: якщо в рядку є місце лише для одного нуля або однієї одиниці, а в клітинці вона дала б три однакові цифри поспіль, там стоїть інша цифра.',
+  'Однакові рядки: якщо рядок збігається з повним рядком усюди, крім двох клітинок, ці дві клітинки протилежні до нього.',
+  'Хід наперед: уявно поставте цифру; якщо за кілька кроків порушиться правило, у клітинці стоїть інша.',
+];
+
+/** `N×N · Name` with ordinary spaces around U+00B7 (FR-95, ambiguity H). */
+export const summaryLabel = (n: number, level: number): string => `${n}×${n} · ${LEVEL_NAMES[level - 1] ?? '?'}`;
+
+/** The setup sheet `[data-section="setup"]` (FR-96): asserts that there is exactly one in `root`. */
+export function sheetOf(root: ParentNode): HTMLElement {
+  const found = root.querySelectorAll<HTMLElement>('[data-section="setup"]');
+  expect(found, 'exactly one [data-section="setup"] in the root').toHaveLength(1);
+  const sheet = found[0];
+  expect.assert(sheet !== undefined, 'premise: exactly one setup sheet was found');
+  return sheet;
+}
+
+/** The summary button `[data-action="setup"]` (FR-95): asserts that there is exactly one in `root`. */
+export function summaryButton(root: ParentNode): HTMLElement {
+  const found = root.querySelectorAll<HTMLElement>('[data-action="setup"]');
+  expect(found, 'exactly one [data-action="setup"] in the root').toHaveLength(1);
+  const button = found[0];
+  expect.assert(button !== undefined, 'premise: exactly one summary button was found');
+  return button;
+}
+
+/** The close button `[data-action="setup-close"]` of the sheet. */
+export const sheetCloseButton = (root: ParentNode): HTMLElement => q(sheetOf(root), '[data-action="setup-close"]');
+
+/** The player opens the sheet: the test calls the stubbed `showPopover()` on it (the native opening is not tested in jsdom). */
+export function openSheet(root: ParentNode): HTMLElement {
+  const sheet = sheetOf(root);
+  sheet.showPopover();
+  return sheet;
+}
+
+/** The visible text of the summary button: its SECOND child, the text span (FR-95: prefix span, text span, cue span). */
+export function summaryText(root: ParentNode): string {
+  const span = summaryButton(root).children[1];
+  expect.assert(span !== undefined, 'premise: the summary button has a text span (its second child)');
+  return span.textContent;
+}
+
+/** The accessible name of a button: its `aria-label` when it has one, else its text content without `aria-hidden` descendants. */
+export function accessibleName(el: Element): string {
+  return (el.getAttribute('aria-label') ?? textWithoutHidden(el)).trim();
+}
+
+/** The level control `[data-control="level"]`, asserted to be a radiogroup that holds exactly four `button[role=radio]`. */
+export function levelControl(root: ParentNode): HTMLElement {
+  const el = q(root, '[data-control="level"]');
+  expect(el.getAttribute('role'), 'the level control is a radiogroup').toBe('radiogroup');
+  expect(el.querySelectorAll('button[role="radio"]'), 'the level control holds four button[role=radio]').toHaveLength(4);
+  return el;
+}
+
+/** The four level buttons in document order. */
+export function levelButtons(root: ParentNode): HTMLElement[] {
+  return Array.from(levelControl(root).querySelectorAll<HTMLElement>('button[role="radio"]'));
+}
+
+/** The name of a level button: the text of its first span (FR-99). */
+export const levelButtonName = (button: Element): string => button.children[0]?.textContent ?? '';
+
+/** The button of level `level` (1 to 4), found by its position AND the text of its first span. */
+export function levelButton(root: ParentNode, level: number): HTMLElement {
+  const name = LEVEL_NAMES[level - 1];
+  expect(name, `${level} is one of the levels 1 to 4`).toBeDefined();
+  const button = levelButtons(root)[level - 1];
+  expect.assert(button !== undefined, `premise: the level control has a button ${level}`);
+  expect(levelButtonName(button), `button ${level} of the level control is «${name ?? ''}»`).toBe(name);
+  return button;
+}
+
+/** The level whose button has aria-checked="true"; asserts that every button says "true" or "false" and exactly one says "true". */
+export function checkedLevel(root: ParentNode): number {
+  const states = levelButtons(root).map((b) => b.getAttribute('aria-checked'));
+  for (const state of states) expect(['true', 'false'], 'aria-checked is "true" or "false" on every level button').toContain(state);
+  const checked = [1, 2, 3, 4].filter((_, i) => states[i] === 'true');
+  expect(checked, `exactly one level button is checked (states ${states.join(',')})`).toHaveLength(1);
+  const only = checked[0];
+  expect.assert(only !== undefined, 'premise: one level button is checked');
+  return only;
+}
+
+/** `aria-checked` of the four level buttons as a list, for "unchanged" comparisons. */
+export const levelStates = (root: ParentNode): (string | null)[] => levelButtons(root).map((b) => b.getAttribute('aria-checked'));
+
+/** `aria-disabled` of the four level buttons as a list (`null` when the attribute is absent). */
+export const levelDisabled = (root: ParentNode): (string | null)[] => levelButtons(root).map((b) => b.getAttribute('aria-disabled'));
+
+/** The reason line `[data-level-reason]` (FR-91): always in the DOM, the first child of the level group. */
+export const levelReason = (root: ParentNode): HTMLElement => q(root, '[data-level-reason]');
+
+/** The raw press of the level button of `level`: the sheet is opened first, no confirmation is given. */
+export const pressLevelButton = (root: ParentNode, level: number): void => {
+  openSheet(root);
+  levelButton(root, level).click();
+};
+
+/**
+ * The player chooses a level: open the sheet, press its button and, when the dialog opened, press «Так, почати». The dialog
+ * must open exactly when the board has entries and the level differs from the one shown (FR-67, FR-73, FR-90). No uncaught
+ * error is allowed.
+ */
+export function chooseLevel(root: ParentNode, level: number): void {
+  const asks = hasPlayerEntries(root) && checkedLevel(root) !== level;
+  const tracker = trackErrors();
+  try {
+    pressLevelButton(root, level);
+  } finally {
+    tracker.stop();
+  }
+  expect(tracker.errors, 'no uncaught error during the level button press').toEqual([]);
+  expect(dialogIsOpen(root), 'the dialog opens exactly when the board has entries and the level is another one').toBe(asks);
+  if (asks) confirmYes(root);
+}
+
+/** Everything a cancelled or no-op action must leave alone, with the level control and the summary added (slice DL2). */
+export interface FullState extends PageState {
+  level: number;
+  summary: string;
+}
+export function fullState(root: ParentNode): FullState {
+  return { ...pageState(root), level: checkedLevel(root), summary: summaryText(root) };
+}
+
 /** `aria-label` of the cell at the 1-based (row, col), asserted present. */
 export function cellLabel(root: ParentNode, row: number, col: number): string {
   const label = cellEl(root, row, col).getAttribute('aria-label');
@@ -715,8 +958,12 @@ export function mountThenSelect(puzzle: Puzzle, start: Puzzle = BLANK): HTMLElem
   return root;
 }
 
-/** The engine hint for the board as it is shown right now (the spec: "the engine hint applied to the DOM board"). */
-export const expectedHint = (root: ParentNode): Hint => hint(readBoard(root));
+/**
+ * The engine hint for the board as it is shown right now (the spec: "the engine hint applied to the DOM board").
+ * Slice DL2 (FR-77, autonomy-log row 88), DELIBERATE CHANGE: the page asks the engine with the technique ceiling 4, so the
+ * "expected hint" is `hint(board, 4)`, not the engine's default ceiling 1.
+ */
+export const expectedHint = (root: ParentNode): Hint => hint(readBoard(root), 4);
 
 /** Next text in the player cycle: empty -> 0 -> 1 -> empty. */
 export function nextInCycle(text: string): string {
@@ -942,15 +1189,22 @@ export interface PlayedPage {
  * (n, n) to 1, pressed «Підказка» so that a hint filled (1,3) with 0 (`cell-hinted`, a hint sentence shown), and that fill makes
  * 0 0 0 in column 3 (at 4x4 also the count rule of column 3), so cells carry `cell-violation`. The page is mounted at 6 on HINT_BREAKS; for n != 6 the player first
  * presses the size button (the generator returns the n-fixture). Every call of the generator after that board was reached
- * returns `later(size)` (default: PAIR_ROW / BLANK_4 / BLANK_8, never the played fixture) and may throw. The seeds are 1, 2, 3, ...
+ * returns `later(size, level)` (default: PAIR_ROW / BLANK_4 / BLANK_8, never the played fixture) and may throw. The seeds are 1, 2, 3, ...
  * The premises are asserted here so that "unchanged" in a test is never about an empty board.
+ * Slice DL2 (FR-87, FR-92): `level` (1 to 4, default 1) is reached by a level choice on the untouched board, after the size
+ * choice, with the injected generator returning the n-fixture for it (level 1 is the only level at 4x4).
  */
-export function mountPlayedBoard(n = 6, later: (size: number) => Puzzle = (size) => fixtureFor(NEW_BOARD, size)): PlayedPage {
+export function mountPlayedBoard(
+  n = 6,
+  later: (size: number, level?: number) => Puzzle = (size) => fixtureFor(NEW_BOARD, size),
+  level = 1,
+): PlayedPage {
   const seeds = seedQueue([1, 2, 3, 4, 5, 6]);
-  const reaching = n === 6 ? 1 : 2; // the calls that belong to reaching the played board: the mount and, for n != 6, the size change
-  const spy = rawGenerateSpy((i, size) => (i < reaching ? (i === 0 ? HINT_BREAKS : fixtureFor(BREAKER, size)) : later(size)));
+  const reaching = 1 + (n === 6 ? 0 : 1) + (level === 1 ? 0 : 1); // the calls that belong to reaching the played board
+  const spy = rawGenerateSpy((i, size, _seed, lvl) => (i < reaching ? (i === 0 ? HINT_BREAKS : fixtureFor(BREAKER, size)) : later(size, lvl)));
   const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
   if (n !== 6) selectSize(root, n);
+  if (level !== 1) chooseLevel(root, level);
   expect(boardSize(root)).toBe(n);
   expect(hasPlayerEntries(root), 'premise: the board is untouched before the play').toBe(false);
   const entry: [number, number] = [n, n];

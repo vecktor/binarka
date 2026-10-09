@@ -24,6 +24,7 @@ import {
   cellEl,
   cellText,
   clickCell,
+  confirmNo,
   confirmYes,
   dialogIsOpen,
   expectPageStructure,
@@ -36,14 +37,17 @@ import {
   isGivenCell,
   mountFixture,
   mountPage,
+  openSheet,
   pressHint,
   pressNew,
+  pressLevelButton,
   pressReset,
   pressSizeButton,
   q,
   rulesPanel,
   seedQueue,
   selectSize,
+  sheetCloseButton,
   snapshot,
   solutionGrid,
   targetCell,
@@ -65,6 +69,13 @@ function pageWithHint(puzzle: Puzzle = PAIR_ROW): { root: HTMLElement; x: [numbe
   expect(cellText(root, x[0], x[1])).not.toBe('');
   expect(hintedCells(root)).toEqual([x]);
   return { root, x };
+}
+
+/** Press the level «Задачка» on the page and cancel the confirmation: nothing may change. */
+function chooseLevelAndCancel(root: HTMLElement): void {
+  pressLevelButton(root, 2);
+  expect(dialogIsOpen(root), 'premise: the level change asks first').toBe(true);
+  confirmNo(root);
 }
 
 /** A page on the 6x6 PAIR_ROW (and the 4 and 8 fixtures for size changes) where a hint has filled a cell. */
@@ -193,6 +204,24 @@ describe('@trace FR-66 later board changes remove the marker', () => {
     });
   }
 
+  // Slice DL2 (FR-66 modified, FR-88): the level-change row of the table «Later board changes remove the marker»
+  it('A level change to «Задачка» removes the marker, once it is performed (asked first, the marker stays until «Так, почати»)', () => {
+    const { root, x } = pageWithHintAndSizes();
+
+    pressLevelButton(root, 2);
+    expect(dialogIsOpen(root), 'a hint-filled cell is an entry: asked first').toBe(true);
+    expect(hintedCells(root), 'the marker stays until the change is performed').toEqual([x]);
+    confirmYes(root);
+
+    expect(boardSize(root)).toBe(6);
+    expect(hintedCells(root)).toEqual([]);
+    expect(allCells(root).filter((c) => c.classList.contains(HINTED))).toEqual([]);
+    // the new board is usable: its own hint marks exactly its own cell
+    const next = targetCell(expectedHint(root));
+    pressHint(root);
+    expect(hintedCells(root)).toEqual([next]);
+  });
+
   it('«Скинути» removes the marker and empties the hint-filled cell', () => {
     const { root, x } = pageWithHint();
 
@@ -223,13 +252,20 @@ describe('@trace FR-66 actions that change no cell keep the marker', () => {
     expect(cellEl(root, 3, 1).classList.contains(HINTED)).toBe(false);
   });
 
-  it('A hint with no rule applying keeps the marker (kind none, after PAIR_ROW was hinted)', () => {
-    // ISOLATED has no first hint, so it cannot reach "a hint filled X, then a hint with no target": PAIR_ROW does
-    // (after (3,3) = 1 no pair, sandwich or count applies, asserted below).
-    const { root, x } = pageWithHint(PAIR_ROW);
+  // Slice DL2 DELIBERATE CHANGE (FR-77 page clause, autonomy-log row 88): the page asks with the ceiling 4, so after the pair fill
+  // on the 6x6 PAIR_ROW the second hint is a balance fill, and the premise { kind: 'none' } fails there. The test is rebuilt on
+  // the 8x8 PAIR_8, reached through the size control: after its pair fill (8,6) = 1 the second hint at ceiling 4 is still none
+  // (asserted below with hint(board, 4)). The FR-66 assertions are unchanged.
+  it('A hint with no rule applying keeps the marker (kind none at ceiling 4, after PAIR_8 was hinted)', () => {
+    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: PAIR_ROW, 8: PAIR_8 }) });
+    selectSize(root, 8);
+    expect(boardSize(root), 'premise: the 8x8 board is shown').toBe(8);
+    const x = targetCell(expectedHint(root));
+    pressHint(root);
+    expect(hintedCells(root)).toEqual([x]);
     const digit = cellText(root, x[0], x[1]);
     const before = snapshot(root);
-    const h = expectedHint(root);
+    const h = expectedHint(root); // hint(board, 4): the call the page makes
     expect(h).toEqual({ kind: 'none', sentence: NO_RULE_SENTENCE });
 
     pressHint(root);
@@ -258,6 +294,31 @@ describe('@trace FR-66 actions that change no cell keep the marker', () => {
     expect(snapshot(root)).toEqual(before);
     // the marker is independent of the violation highlight: the hinted cell is also a violating cell
     expect(cellEl(root, x[0], x[1]).classList.contains('cell-violation')).toBe(true);
+  });
+
+  // Slice DL2 (FR-66 modified, FR-96): the sheet row of the table «Actions that change no cell keep the marker»
+  it('Opening the setup sheet through the stubbed showPopover() and clicking [data-action="setup-close"] keeps the marker', () => {
+    const { root, x } = pageWithHint();
+    const digit = cellText(root, x[0], x[1]);
+    const before = snapshot(root);
+
+    openSheet(root);
+    expect(hintedCells(root)).toEqual([x]);
+    sheetCloseButton(root).click();
+
+    expect(hintedCells(root)).toEqual([x]);
+    expect(cellText(root, x[0], x[1])).toBe(digit);
+    expect(snapshot(root), 'nothing else changed').toEqual(before);
+  });
+
+  it('A level change that needs the confirmation, then «Скасувати», keeps the marker (a cancelled confirmation, FR-67)', () => {
+    const { root, x } = pageWithHintAndSizes();
+    const before = snapshot(root);
+
+    chooseLevelAndCancel(root);
+
+    expect(hintedCells(root)).toEqual([x]);
+    expect(snapshot(root)).toEqual(before);
   });
 
   it('Opening and closing the rules panel keeps the marker (the page code does not touch it)', () => {

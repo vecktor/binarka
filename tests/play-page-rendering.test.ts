@@ -119,9 +119,9 @@ describe('@trace FR-31 the page renders a 6x6 board from the generator', () => {
 });
 
 // A test next to the two-mounts test above (that one and "mounting replaces the previous content of the root" are unchanged
-// and must stay green). reconcile-ux-accessibility: no element has a tabindex (FR-59) and each mount has three ids (FR-61).
+// and must stay green). reconcile-ux-accessibility: no element has a tabindex (FR-59) and each mount has three ids (FR-61; four since slice DL2, FR-96).
 describe('@trace FR-59 @trace FR-61 two mounts have no tabindex and no duplicate ids', () => {
-  it('@trace FR-59 @trace FR-61 two mounts on two roots have no tabindex, stay independent and have three different ids each', () => {
+  it('@trace FR-59 @trace FR-61 two mounts on two roots have no tabindex, stay independent and have four different ids each', () => {
     const a = mountPage({ seedSource: () => 1, generate: () => BLANK });
     const b = mountPage({ seedSource: () => 1, generate: () => BLANK });
     expect(a.querySelectorAll('[tabindex]')).toHaveLength(0);
@@ -132,10 +132,11 @@ describe('@trace FR-59 @trace FR-61 two mounts have no tabindex and no duplicate
     expect(b.querySelectorAll('[tabindex]')).toHaveLength(0);
     const idsA = Array.from(a.querySelectorAll('[id]'), (e) => e.id);
     const idsB = Array.from(b.querySelectorAll('[id]'), (e) => e.id);
-    expect(idsA).toHaveLength(3);
-    expect(idsB).toHaveLength(3);
-    expect(new Set([...idsA, ...idsB]).size, 'the six ids are pairwise different').toBe(6);
-    expect(document.querySelectorAll('[id]')).toHaveLength(6);
+    // Slice DL2 DELIBERATE CHANGE (A-41, FR-96): the setup sheet is the fourth id of a mount (was three), so eight in all (was six)
+    expect(idsA).toHaveLength(4);
+    expect(idsB).toHaveLength(4);
+    expect(new Set([...idsA, ...idsB]).size, 'the eight ids are pairwise different').toBe(8);
+    expect(document.querySelectorAll('[id]')).toHaveLength(8);
   });
 });
 
