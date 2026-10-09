@@ -25,7 +25,7 @@ Result: PASS, 12 warning(s)
 | 2026-10-09-add-level-selector | **unclean** | 3 | yes | ui |
 | 2026-10-09-add-logo | **unclean** | 3 | yes | ui |
 | 2026-10-09-add-rule-solvable-generator | **unclean** | 2 | yes | engine |
-| 2026-10-09-fix-action-button-targets | **unclean** | 4 | yes | ui |
+| 2026-10-09-fix-action-button-targets | **unclean** | 5 | yes | ui |
 
 ## Cross-slice module overlap
 
