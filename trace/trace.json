@@ -273,8 +273,8 @@
     {
       "id": "FR-13",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -360,8 +360,7 @@
       "id": "FR-51",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -377,8 +376,8 @@
     {
       "id": "FR-81",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -413,8 +412,8 @@
     {
       "id": "FR-84",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -499,8 +498,7 @@
       "id": "FR-25",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -513,8 +511,7 @@
       "id": "FR-26",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -542,8 +539,8 @@
     {
       "id": "FR-74",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -565,8 +562,8 @@
     {
       "id": "FR-76",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -579,8 +576,8 @@
     {
       "id": "FR-77",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -625,8 +622,8 @@
     {
       "id": "FR-80",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -721,8 +718,8 @@
     {
       "id": "FR-86",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -735,8 +732,7 @@
       "id": "FR-31",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -759,8 +755,7 @@
     {
       "id": "FR-33",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -822,8 +817,7 @@
     {
       "id": "FR-38",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -835,8 +829,7 @@
     {
       "id": "FR-39",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -848,8 +841,7 @@
     {
       "id": "FR-40",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -876,8 +868,7 @@
     {
       "id": "FR-42",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -896,8 +887,7 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -931,8 +921,7 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -950,8 +939,7 @@
     {
       "id": "FR-58",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -971,8 +959,7 @@
     {
       "id": "FR-59",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -993,8 +980,7 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1009,8 +995,7 @@
     {
       "id": "FR-61",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1042,8 +1027,7 @@
     {
       "id": "FR-62",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1056,8 +1040,7 @@
     {
       "id": "FR-63",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1073,8 +1056,7 @@
     {
       "id": "FR-64",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1088,8 +1070,7 @@
     {
       "id": "FR-65",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1126,8 +1107,7 @@
     {
       "id": "FR-66",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1150,8 +1130,7 @@
     {
       "id": "FR-67",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1176,8 +1155,7 @@
     {
       "id": "FR-68",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1192,8 +1170,7 @@
     {
       "id": "FR-69",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1206,8 +1183,7 @@
     {
       "id": "FR-70",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1221,8 +1197,7 @@
     {
       "id": "FR-71",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1247,8 +1222,7 @@
     {
       "id": "FR-73",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1265,7 +1239,7 @@
     {
       "id": "FR-87",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1279,8 +1253,8 @@
     {
       "id": "FR-88",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1296,7 +1270,7 @@
     {
       "id": "FR-89",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1308,7 +1282,7 @@
     {
       "id": "FR-90",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1321,7 +1295,7 @@
     {
       "id": "FR-91",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1335,7 +1309,7 @@
     {
       "id": "FR-92",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1349,7 +1323,7 @@
     {
       "id": "FR-93",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1361,7 +1335,7 @@
     {
       "id": "FR-94",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1374,8 +1348,7 @@
     {
       "id": "FR-44",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1387,7 +1360,7 @@
     {
       "id": "FR-95",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1401,7 +1374,7 @@
     {
       "id": "FR-96",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1416,7 +1389,7 @@
     {
       "id": "FR-97",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1432,7 +1405,7 @@
     {
       "id": "FR-98",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1444,7 +1417,7 @@
     {
       "id": "FR-99",
       "specs": [
-        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1823,10 +1796,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-99 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-level-selector\" is not archived"
     }
   ]
 }

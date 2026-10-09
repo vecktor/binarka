@@ -4,6 +4,8 @@ Status: **SIGNED OFF by the user on 2026-10-04** (P1 scope sign-off, `docs/auton
 
 Amendment summary: the page and the hint sentences are Ukrainian; the CLI prints English errors; a bilingual page (Ukrainian and English) is Future. The size selector was cut tonight (cut 0, applied 18:40), so the page stays 6×6. Grid sizes are capped at 16.
 
+**Later amendments (2026-10-09; `docs/requirements.md` is canonical):** the size selector came back (FR-43) and the page now has four difficulty levels, «Розминка», «Задачка», «Головоломка», «Мозколамка» (FR-44 moved to MVP; FR-74 to FR-99; autonomy-log rows 86 to 92). The engine and CLI take a level (slice DL1). The page offers size and level in a setup sheet opened by a summary button such as «6×6 · Задачка ▾»; at 4×4 only «Розминка» exists; the hint may use all four techniques; the rules panel has a second section «Складніші прийоми» (slice DL2). The sections below keep their tonight wording as history.
+
 ## What it is
 
 Бінарка is a logic puzzle on an N×N grid (6×6 by default). The player fills every empty cell with 0 or 1 so that:
@@ -39,7 +41,7 @@ Nothing is reused from the user's older puzzle project or from the playable prev
 
 **Win.** When the grid is full and breaks no rule, the page shows a win message.
 
-**New puzzle.** The "new puzzle" button replaces the board with a freshly generated puzzle. There are no levels.
+**New puzzle.** The "new puzzle" button replaces the board with a freshly generated puzzle. There are no levels. (Amended 2026-10-09: four levels, chosen in the setup sheet; see the note at the top.)
 
 **CLI.** The developer runs the CLI with a size and a seed and gets the puzzle printed as text, one line per row, with a dot for each empty cell. CLI errors (bad size, seed or option) are one English sentence each.
 
