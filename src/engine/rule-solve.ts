@@ -11,9 +11,9 @@ import type { Grid } from './types';
 export function solveByRules(board: Grid, ceiling = 1): { solved: boolean; steps: number } {
   const f = toFlat(board);
   let steps = 0;
-  let broken = f.empties > 0 && findViolations(board).length > 0;
+  let broken = findViolations(board).length > 0;
   for (;;) {
-    if (f.empties === 0) return { solved: true, steps };
+    if (f.empties === 0) return { solved: !broken, steps };
     if (broken) return { solved: false, steps };
     const fill = selectFill(f, ceiling);
     if (fill === null) return { solved: false, steps };

@@ -15,10 +15,10 @@ Keyboard: Tab reaches the «Правила» button, the three size buttons (a r
 ## Print a puzzle from the command line
 
 ```bash
-npm run --silent cli -- --size 6 --seed 42
+npm run --silent cli -- --size 6 --seed 42 --level 3
 ```
 
-Prints N lines of N space-separated tokens: `0` or `1` for givens, `.` for an empty cell. `--size` defaults to 6 and `--seed` to 1; a seed from 0 to 2147483647 always gives the same puzzle. Every puzzle has exactly one solution and, for sizes 4, 6 and 8, can be finished with the pair, sandwich and count rules alone, so «Підказка» always has a next move while your entries are correct (FR-27). Since this change (2026-10-09) the printed givens for a seed differ from earlier versions; the solution for a seed does not. Errors go to stderr as one English sentence with exit code 1.
+Prints N lines of N space-separated tokens: `0` or `1` for givens, `.` for an empty cell. `--size` defaults to 6, `--seed` to 1 and `--level` to 1; a seed from 0 to 2147483647 always gives the same puzzle for a size and level, and the solution of a seed is the same at every level. Every puzzle has exactly one solution. The four levels need these techniques: 1 (the default, unchanged output) the pair, sandwich and count rules; 2 adds line balance; 3 adds unique lines (no two equal rows or columns); 4 adds a look-ahead of at most four forced steps. A level-L puzzle can be finished with the techniques up to L but not with those up to L−1 (FR-27, FR-82). Levels 2 to 4 exist for sizes 6 and 8 only; `--size 4 --level 2` is an error. Generation makes at most 100 attempts per puzzle; if they run out the CLI reports it as an error (FR-84, FR-86); none runs out over the tested seeds. Since this change (2026-10-09) the printed givens for a seed differ from earlier versions; the solution for a seed does not. Errors (a bad size, seed or level, an unknown option, a run-out) go to stderr as one English sentence with exit code 1. The engine's hint function takes a ceiling (`hint(board, ceiling = 1)`); the page still uses the three basic rules until the level selector ships (slice DL2), and the no-rule sentence now reads «Жодне з правил зараз не підказує наступного ходу.».
 
 ## Develop
 

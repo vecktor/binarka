@@ -19,3 +19,5 @@ hint(board,4) board B worst of 20: 0.39 ms, kind none
 
 Gate 2.10 (A-36): worst share of the 50% target is 10.8% (6x6 level 4, seed 15); no run-out; worst hint 0.39 ms (<< 100 ms).
 Result: PASSED, gate did not fire. The timing tests tests/generator-timing-levels.test.ts and tests/hint-budget.test.ts are green.
+
+CLI wall clock (task 3.8 (e)), 16:43 UTC+5:30, load average about 12: --size 8 --seed 20 --level 4 real 0.67 s; --size 6 --seed 4 --level 4 real 0.56 s (tsx start-up included; in-process generation 15 ms at (8, 4)).

@@ -12,7 +12,8 @@ import { InvalidArgumentTypeError, InvalidSeedError, InvalidSizeError } from '..
 import type { Puzzle } from '../src/engine/index';
 import { isOneSentence } from './helpers/board';
 import * as indexModuleNs from '../src/engine/index';
-import { GenerationRunOutError, InvalidLevelError, generate, hint } from '../src/engine/index';
+import { GenerationRunOutError, InvalidLevelError, generate } from '../src/engine/index';
+import { hint as engineHint } from '../src/engine/hint';
 import { MAX_ATTEMPTS, buildPuzzle } from '../src/engine/generator';
 import { solveByRules } from '../src/engine/rule-solve';
 
@@ -127,6 +128,6 @@ describe('@trace FR-81 @trace FR-84 @trace FR-77 the public engine interface exp
   });
 
   it('hint of the index is the hint of the engine (the same function)', () => {
-    expect(indexModule.hint).toBe(hint);
+    expect(indexModule.hint).toBe(engineHint);
   });
 });

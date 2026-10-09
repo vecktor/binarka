@@ -59,7 +59,7 @@ export class InvalidLevelError extends RangeError {
   constructor(aboveOneAtFour = false) {
     super(
       aboveOneAtFour
-        ? 'Levels 2 to 4 need a size of 6 or 8.'
+        ? 'Levels 2 to 4 need a size of 6 or more.'
         : 'The level must be a whole number from 1 to 4.',
     );
     this.name = 'InvalidLevelError';

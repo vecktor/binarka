@@ -1,0 +1,70 @@
+# Smoke test: add-difficulty-engine (task 3.8), CLI part, at 5038c70, 2026-10-09 16:27 UTC+5:30
+## (a) determinism (two runs each)
+size 6 seed 42 level 1: identical, 6 rows
+size 6 seed 42 level 2: identical, 6 rows
+size 6 seed 42 level 3: identical, 6 rows
+size 6 seed 42 level 4: identical, 6 rows
+size 8 seed 7 level 1: identical, 8 rows
+size 8 seed 7 level 2: identical, 8 rows
+size 8 seed 7 level 3: identical, 8 rows
+size 8 seed 7 level 4: identical, 8 rows
+## (b) default = --level 1 = golden text
+size 6 seed 1: default = --level 1 = golden
+size 4 seed 3: default = --level 1 = golden
+size 8 seed 20: default = --level 1 = golden
+size 6 seed 17: default = --level 1 = golden
+## (c) givens for --size 6 --seed 1
+level 1: 10 givens, 6 rows
+. . 1 . . .
+1 . . . 0 .
+. 0 1 . . .
+0 . . . . .
+. . 1 . . 1
+0 . . 0 . .
+level 2: 9 givens, 6 rows
+. . 1 . . .
+1 . . . 0 .
+. 0 . . . .
+0 . . . . .
+. . 1 . . 1
+0 . . 0 . .
+level 3: 8 givens, 6 rows
+. . 1 . . .
+. . . . 0 .
+. . 1 . . .
+0 . . . . .
+. . 1 . . 1
+0 . . 0 . .
+level 4: 8 givens, 6 rows
+. . . 1 . 0
+1 1 . 1 . .
+. . . . . .
+. . . . . 0
+. . 1 0 . .
+. . . . . .
+## (d) errors
+[--size 6 --level 0] exit 1, stdout 0 bytes, stderr: The level must be a whole number from 1 to 4.
+[--size 6 --level 5] exit 1, stdout 0 bytes, stderr: The level must be a whole number from 1 to 4.
+[--size 6 --level 1.5] exit 1, stdout 0 bytes, stderr: The level must be written as whole decimal digits only.
+[--size 6 --level ""] exit 1, stdout 0 bytes, stderr: The level must be written as whole decimal digits only.
+[--size 6 --level] exit 1, stdout 0 bytes, stderr: The --level option needs a value.
+[--size 4 --level 2] exit 1, stdout 0 bytes, stderr: Levels 2 to 4 need a size of 6 or 8.
+[--depth 1] exit 1, stdout 0 bytes, stderr: Unknown option: only --size, --seed and --level are supported.
+## (e) timing (wall clock, CLI start-up included)
+size 8 seed 20 level 4: 4.365 s, 8 rows printed
+size 6 seed 4 level 4: 4.583 s, 6 rows printed
+
+### (e) note, 16:29: the wall times above were taken under a load average of about 40 to 53 (the review-gate workflow's agents). Separated: `/usr/bin/time -p` for --size 8 --seed 20: level 1 real 1.83 s, user 0.29 s; level 4 real 1.41 s, user 0.34 s. In-process `generate(8, 20, L)`: level 1 11.7 ms, level 4 15.1 ms. So generation is milliseconds and the CLI's CPU time is about 0.3 s; the rest is CPU contention and tsx start-up. NOT YET VERIFIED: the wall-clock bound of (e) on a quiet machine; to be re-run before archive (task 3.9 gate).
+
+## (f) page, hints alone (16:30, `npx vite --port 5218` in the built-in browser, driven by script with element.click(); the script output is the evidence)
+- 6×6 three boards (26, 27, 26 empty cells), 4×4 one board (12), 8×8 one board (50): each press of «Підказка» filled one cell (presses = empty cells), the no-rule sentence appeared 0 times, every board ended with «Вітаємо, головоломку розвʼязано!». Sentence kinds seen: pair, sandwich, count (the page still uses hint(board), ceiling 1, as planned for DL1).
+## (g) page, entries and a violation
+- A fresh 4×4 row 1 set to 0 0 0 0: 4 cells aria-invalid, «Підказка» answered «Спершу виправте порушення правил, підсвічене на полі.» (FR-26). Screenshot: docs/qa/add-difficulty-engine/page-4x4-violation-broken-hint.jpg.
+- The no-rule state was NOT reached on the page: 30 scripted tries (fresh 6×6 boards with up to 6 rule-consistent entries, then repeated hints) ended either in more fills or in the broken-board sentence. Instead the served module was read in the browser: /src/engine/hint.ts contains «Жодне з правил зараз не підказує наступного ходу.» and no «Жодне з трьох правил»; /src/ui/play-page.ts calls hint(board) (ceiling 1, unchanged in DL1). The sentence on a real no-rule board is covered by the unit tests (tests/hint-order-ceiling.test.ts, tests/hint.test.ts), not by this page check.
+- Server stopped after the check.
+
+### (e) re-run at 16:43 (load average about 12), `/usr/bin/time -p npm run --silent cli -- …`, CLI start-up included:
+- --size 8 --seed 20 --level 4: real 0.67 s, user 0.35 s (target: well under 3 s) — PASS
+- --size 6 --seed 4 --level 4: real 0.56 s, user 0.32 s (target: well under 500 ms of generation; generation itself is about 15 ms in-process, the rest is tsx start-up) — PASS for generation; the CLI wall time includes about 0.5 s of start-up that NFR-2 does not cover (NFR-2 bounds generation, measured in Vitest).
+- --size 8 --seed 20 --level 1: real 0.52 s, user 0.29 s (reference).
+The earlier 4.4 s figures were CPU contention under a load average of 40 to 53.
