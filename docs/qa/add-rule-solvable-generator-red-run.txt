@@ -1,0 +1,408 @@
+# Red run: add-rule-solvable-generator (phase F, FR-27)
+
+Run by the orchestrator at 2026-10-09 11:53 (UTC+5:30) in a scratch copy of branch claude/suspicious-lamarr-be0fd0 (fast-forwarded to claude/ux-phases-d-h d4b83d3): `git archive HEAD` (d4b83d3) plus the new file tests/generator-rule-solvable.test.ts; src/ byte-identical to HEAD (`diff -r src` clean).
+Full suite, `npx vitest run`: 4 failed, 711 passed, 5 skipped, 720 total (1 of 35 files failed); 1 suite error. The 683 existing tests all pass.
+At red, `npx tsc --noEmit` exits 0 and `npx eslint tests/generator-rule-solvable.test.ts` exits 0 (the solveByRules module is loaded through a runtime-built specifier, so neither the type check nor Vite's import analysis sees the missing file).
+
+## Why each test is red (task 1.4)
+- 1.1(a), three tests (one per N): a hint call returns `none` while empty cells remain, so the board never reaches its solution. Rule-solvable puzzles on today's generator:
+  - N = 4: 11 of 20 rule-solvable, 9 not (seeds 1, 3, 4, 6, 11, 14, 17, 18, 19)
+  - N = 6: 3 of 20 rule-solvable, 17 not (seeds 1, 2, 3, 5, 6, 7, 8, 10 to 19)
+  - N = 8: 0 of 20 rule-solvable, 20 not (seeds 1 to 20)
+  - In all, 46 of the 60 puzzles are not rule-solvable (design decision 7 expected 46). Every failure is kind "none", never "broken" and never a wrong value.
+- 1.1(b), one test: "seed 1: generate(4, seed).givens differs from the fixture" fails because today's generate(4, 1).givens IS the fixture. The other three fixture tests pass (solver result 1; first hint a pair fill; 7 fills then `none` with the FR-25 sentence and 4 cells empty). Seeds 2 to 20 pass.
+- 1.2, suite error: `Cannot find module '/src/engine/rule-solve'` in the solveByRules beforeAll; its 5 tests are reported as skipped. This is the only reason they do not run (task 2.1 creates the module).
+- 1.1(c), 6 tests, GREEN at red: the sampled partial-board check (E and O boards) already passes on today's generator. It is a standing guard, not red evidence; the spec does not require it to fail first.
+
+## Full output of the new file (npx vitest run tests/generator-rule-solvable.test.ts)
+
+ RUN  v5.0.3 /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-suspicious-lamarr-be0fd0/c755e704-2c59-4317-98f1-3285e46c4280/scratchpad/red
+
+ ❯ tests/generator-rule-solvable.test.ts (37 tests | 4 failed | 5 skipped) 319ms
+   ❯ @trace FR-27 repeated fill reaches the solution at N = 4 over seeds 1 to 20 (1)
+     × every seed: each hint is a fill on an empty cell with the solution digit, calls equal empty cells, final board is the solution 15ms
+   ❯ @trace FR-27 repeated fill reaches the solution at N = 6 over seeds 1 to 20 (1)
+     × every seed: each hint is a fill on an empty cell with the solution digit, calls equal empty cells, final board is the solution 21ms
+   ❯ @trace FR-27 repeated fill reaches the solution at N = 8 over seeds 1 to 20 (1)
+     × every seed: each hint is a fill on an empty cell with the solution digit, calls equal empty cells, final board is the solution 85ms
+   ❯ @trace FR-27 a board with a unique solution that the rules cannot finish is not a generator output (23)
+     × seed 1: generate(4, seed).givens differs from the fixture 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/generator-rule-solvable.test.ts > @trace FR-27 solveByRules
+Error: Cannot find module '/src/engine/rule-solve' imported from /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-suspicious-lamarr-be0fd0/c755e704-2c59-4317-98f1-3285e46c4280/scratchpad/red/tests/generator-rule-solvable.test.ts
+ ❯ tests/generator-rule-solvable.test.ts:195:18
+    193|     // while the module is missing, hiding the groups above. The path …
+    194|     const specifier = ['..', 'src', 'engine', 'rule-solve'].join('/');
+    195|     const mod = (await import(/* @vite-ignore */ specifier)) as { solv…
+       |                  ^
+    196|     solveByRules = mod.solveByRules;
+    197|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/generator-rule-solvable.test.ts > @trace FR-27 repeated fill reaches the solution at N = 4 over seeds 1 to 20 > every seed: each hint is a fill on an empty cell with the solution digit, calls equal empty cells, final board is the solution
+AssertionError: N = 4: seeds whose givens the three rules cannot finish: expected [ { seed: 1, …(3) }, …(8) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 1,
++     "step": "step 8: kind \"none\", not a fill (4 cells still empty)",
++   },
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 3,
++     "step": "step 7: kind \"none\", not a fill (4 cells still empty)",
++   },
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 4,
++     "step": "step 8: kind \"none\", not a fill (4 cells still empty)",
++   },
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 6,
++     "step": "step 8: kind \"none\", not a fill (4 cells still empty)",
++   },
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 11,
++     "step": "step 8: kind \"none\", not a fill (4 cells still empty)",
++   },
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 14,
++     "step": "step 8: kind \"none\", not a fill (4 cells still empty)",
++   },
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 17,
++     "step": "step 8: kind \"none\", not a fill (4 cells still empty)",
++   },
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 18,
++     "step": "step 8: kind \"none\", not a fill (4 cells still empty)",
++   },
++   {
++     "emptiesLeft": 4,
++     "kind": "none",
++     "seed": 19,
++     "step": "step 8: kind \"none\", not a fill (4 cells still empty)",
++   },
++ ]
+
+ ❯ tests/generator-rule-solvable.test.ts:95:79
+     93|       }
+     94|     }
+     95|     expect(bad, `N = ${n}: seeds whose givens the three rules cannot f…
+       |                                                                               ^
+     96|   }, LONG);
+     97| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/generator-rule-solvable.test.ts > @trace FR-27 repeated fill reaches the solution at N = 6 over seeds 1 to 20 > every seed: each hint is a fill on an empty cell with the solution digit, calls equal empty cells, final board is the solution
+AssertionError: N = 6: seeds whose givens the three rules cannot finish: expected [ { seed: 1, …(3) }, …(16) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "emptiesLeft": 8,
++     "kind": "none",
++     "seed": 1,
++     "step": "step 21: kind \"none\", not a fill (8 cells still empty)",
++   },
++   {
++     "emptiesLeft": 23,
++     "kind": "none",
++     "seed": 2,
++     "step": "step 4: kind \"none\", not a fill (23 cells still empty)",
++   },
++   {
++     "emptiesLeft": 11,
++     "kind": "none",
++     "seed": 3,
++     "step": "step 18: kind \"none\", not a fill (11 cells still empty)",
++   },
++   {
++     "emptiesLeft": 8,
++     "kind": "none",
++     "seed": 5,
++     "step": "step 21: kind \"none\", not a fill (8 cells still empty)",
++   },
++   {
++     "emptiesLeft": 17,
++     "kind": "none",
++     "seed": 6,
++     "step": "step 12: kind \"none\", not a fill (17 cells still empty)",
++   },
++   {
++     "emptiesLeft": 22,
++     "kind": "none",
++     "seed": 7,
++     "step": "step 8: kind \"none\", not a fill (22 cells still empty)",
++   },
++   {
++     "emptiesLeft": 10,
++     "kind": "none",
++     "seed": 8,
++     "step": "step 19: kind \"none\", not a fill (10 cells still empty)",
++   },
++   {
++     "emptiesLeft": 27,
++     "kind": "none",
++     "seed": 10,
++     "step": "step 1: kind \"none\", not a fill (27 cells still empty)",
++   },
++   {
++     "emptiesLeft": 13,
++     "kind": "none",
++     "seed": 11,
++     "step": "step 18: kind \"none\", not a fill (13 cells still empty)",
++   },
++   {
++     "emptiesLeft": 19,
++     "kind": "none",
++     "seed": 12,
++     "step": "step 8: kind \"none\", not a fill (19 cells still empty)",
++   },
++   {
++     "emptiesLeft": 17,
++     "kind": "none",
++     "seed": 13,
++     "step": "step 12: kind \"none\", not a fill (17 cells still empty)",
++   },
++   {
++     "emptiesLeft": 8,
++     "kind": "none",
++     "seed": 14,
++     "step": "step 21: kind \"none\", not a fill (8 cells still empty)",
++   },
++   {
++     "emptiesLeft": 15,
++     "kind": "none",
++     "seed": 15,
++     "step": "step 13: kind \"none\", not a fill (15 cells still empty)",
++   },
++   {
++     "emptiesLeft": 26,
++     "kind": "none",
++     "seed": 16,
++     "step": "step 4: kind \"none\", not a fill (26 cells still empty)",
++   },
++   {
++     "emptiesLeft": 17,
++     "kind": "none",
++     "seed": 17,
++     "step": "step 11: kind \"none\", not a fill (17 cells still empty)",
++   },
++   {
++     "emptiesLeft": 17,
++     "kind": "none",
++     "seed": 18,
++     "step": "step 10: kind \"none\", not a fill (17 cells still empty)",
++   },
++   {
++     "emptiesLeft": 23,
++     "kind": "none",
++     "seed": 19,
++     "step": "step 6: kind \"none\", not a fill (23 cells still empty)",
++   },
++ ]
+
+ ❯ tests/generator-rule-solvable.test.ts:95:79
+     93|       }
+     94|     }
+     95|     expect(bad, `N = ${n}: seeds whose givens the three rules cannot f…
+       |                                                                               ^
+     96|   }, LONG);
+     97| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/generator-rule-solvable.test.ts > @trace FR-27 repeated fill reaches the solution at N = 8 over seeds 1 to 20 > every seed: each hint is a fill on an empty cell with the solution digit, calls equal empty cells, final board is the solution
+AssertionError: N = 8: seeds whose givens the three rules cannot finish: expected [ { seed: 1, …(3) }, …(19) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "emptiesLeft": 34,
++     "kind": "none",
++     "seed": 1,
++     "step": "step 15: kind \"none\", not a fill (34 cells still empty)",
++   },
++   {
++     "emptiesLeft": 48,
++     "kind": "none",
++     "seed": 2,
++     "step": "step 4: kind \"none\", not a fill (48 cells still empty)",
++   },
++   {
++     "emptiesLeft": 47,
++     "kind": "none",
++     "seed": 3,
++     "step": "step 6: kind \"none\", not a fill (47 cells still empty)",
++   },
++   {
++     "emptiesLeft": 43,
++     "kind": "none",
++     "seed": 4,
++     "step": "step 7: kind \"none\", not a fill (43 cells still empty)",
++   },
++   {
++     "emptiesLeft": 41,
++     "kind": "none",
++     "seed": 5,
++     "step": "step 11: kind \"none\", not a fill (41 cells still empty)",
++   },
++   {
++     "emptiesLeft": 42,
++     "kind": "none",
++     "seed": 6,
++     "step": "step 10: kind \"none\", not a fill (42 cells still empty)",
++   },
++   {
++     "emptiesLeft": 49,
++     "kind": "none",
++     "seed": 7,
++     "step": "step 5: kind \"none\", not a fill (49 cells still empty)",
++   },
++   {
++     "emptiesLeft": 37,
++     "kind": "none",
++     "seed": 8,
++     "step": "step 14: kind \"none\", not a fill (37 cells still empty)",
++   },
++   {
++     "emptiesLeft": 15,
++     "kind": "none",
++     "seed": 9,
++     "step": "step 37: kind \"none\", not a fill (15 cells still empty)",
++   },
++   {
++     "emptiesLeft": 43,
++     "kind": "none",
++     "seed": 10,
++     "step": "step 10: kind \"none\", not a fill (43 cells still empty)",
++   },
++   {
++     "emptiesLeft": 33,
++     "kind": "none",
++     "seed": 11,
++     "step": "step 17: kind \"none\", not a fill (33 cells still empty)",
++   },
++   {
++     "emptiesLeft": 34,
++     "kind": "none",
++     "seed": 12,
++     "step": "step 19: kind \"none\", not a fill (34 cells still empty)",
++   },
++   {
++     "emptiesLeft": 38,
++     "kind": "none",
++     "seed": 13,
++     "step": "step 14: kind \"none\", not a fill (38 cells still empty)",
++   },
++   {
++     "emptiesLeft": 36,
++     "kind": "none",
++     "seed": 14,
++     "step": "step 16: kind \"none\", not a fill (36 cells still empty)",
++   },
++   {
++     "emptiesLeft": 31,
++     "kind": "none",
++     "seed": 15,
++     "step": "step 21: kind \"none\", not a fill (31 cells still empty)",
++   },
++   {
++     "emptiesLeft": 41,
++     "kind": "none",
++     "seed": 16,
++     "step": "step 10: kind \"none\", not a fill (41 cells still empty)",
++   },
++   {
++     "emptiesLeft": 33,
++     "kind": "none",
++     "seed": 17,
++     "step": "step 19: kind \"none\", not a fill (33 cells still empty)",
++   },
++   {
++     "emptiesLeft": 35,
++     "kind": "none",
++     "seed": 18,
++     "step": "step 16: kind \"none\", not a fill (35 cells still empty)",
++   },
++   {
++     "emptiesLeft": 45,
++     "kind": "none",
++     "seed": 19,
++     "step": "step 7: kind \"none\", not a fill (45 cells still empty)",
++   },
++   {
++     "emptiesLeft": 49,
++     "kind": "none",
++     "seed": 20,
++     "step": "step 4: kind \"none\", not a fill (49 cells still empty)",
++   },
++ ]
+
+ ❯ tests/generator-rule-solvable.test.ts:95:79
+     93|       }
+     94|     }
+     95|     expect(bad, `N = ${n}: seeds whose givens the three rules cannot f…
+       |                                                                               ^
+     96|   }, LONG);
+     97| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/generator-rule-solvable.test.ts > @trace FR-27 a board with a unique solution that the rules cannot finish is not a generator output > seed 1: generate(4, seed).givens differs from the fixture
+AssertionError: seed 1: expected [ [ null, +0, null, +0 ], …(3) ] to not deeply equal [ [ null, +0, null, +0 ], …(3) ]
+
+Compared values have no visual difference.
+
+ ❯ tests/generator-rule-solvable.test.ts:134:58
+    132|
+    133|   it.each(SEEDS)('seed %i: generate(4, seed).givens differs from the f…
+    134|     expect(generate(4, seed).givens, `seed ${seed}`).not.toEqual(parse…
+       |                                                          ^
+    135|   });
+    136| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 28 passed | 5 skipped (37)
+   Start at  11:53:49
+   Duration  1.22s (environment 64%, tests 28%, transform 6%, import 1%)
+
+
+## Summary lines of the full-suite run
+ Test Files  1 failed | 34 passed (35)
+      Tests  4 failed | 711 passed | 5 skipped (720)

@@ -21,7 +21,7 @@ Result: PASS, 8 warning(s)
 | 2026-10-08-add-page-accessibility | clean | 7 | yes | ui |
 | 2026-10-08-reconcile-ux-accessibility | **unclean** | 5 | yes | ui |
 | 2026-10-08-update-win-apostrophe | clean | 2 | yes | ui |
-| 2026-10-09-add-logo | **unclean** | 2 | yes | ui |
+| 2026-10-09-add-logo | **unclean** | 3 | yes | ui |
 
 ## Cross-slice module overlap
 

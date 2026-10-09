@@ -437,7 +437,13 @@
         "openspec/changes/add-rule-solvable-generator/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator-rule-solvable.test.ts",
+        "tests/generator-rule-solvable.test.ts",
+        "tests/generator-rule-solvable.test.ts",
+        "tests/generator-rule-solvable.test.ts",
+        "tests/generator-rule-solvable.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -992,10 +998,6 @@
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-27 has no test annotated \"@trace FR-27\""
-    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"

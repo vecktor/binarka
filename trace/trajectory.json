@@ -103,7 +103,7 @@
     {
       "slice": "2026-10-09-add-logo",
       "reviewEvidence": "unclean",
-      "trailerCommits": 2,
+      "trailerCommits": 3,
       "libDomains": [
         "ui"
       ],
