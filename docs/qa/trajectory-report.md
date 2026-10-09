@@ -5,8 +5,8 @@ archived slice took: review evidence, `Slice:` trailers, and module scope.
 It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
-Scope: 12 archived slice(s).
-Result: PASS, 8 warning(s)
+Scope: 13 archived slice(s).
+Result: PASS, 9 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
 |---|---|---|---|---|
@@ -22,10 +22,11 @@ Result: PASS, 8 warning(s)
 | 2026-10-08-reconcile-ux-accessibility | **unclean** | 5 | yes | ui |
 | 2026-10-08-update-win-apostrophe | clean | 2 | yes | ui |
 | 2026-10-09-add-logo | **unclean** | 3 | yes | ui |
+| 2026-10-09-add-rule-solvable-generator | **unclean** | 2 | yes | engine |
 
 ## Cross-slice module overlap
 
-- `src/engine/` touched by: 2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences
+- `src/engine/` touched by: 2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-rule-solvable-generator
 
 ## Failures
 
@@ -40,4 +41,5 @@ None.
 - **review-evidence**: 2026-10-06-update-page-layout: review-findings.json is unclean (review must have run clean before archive)
 - **review-evidence**: 2026-10-08-reconcile-ux-accessibility: review-findings.json is unclean (review must have run clean before archive)
 - **review-evidence**: 2026-10-09-add-logo: review-findings.json is unclean (review must have run clean before archive)
-- **in-scope**: src/engine/ modified by 2 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences) — review for scope drift
+- **review-evidence**: 2026-10-09-add-rule-solvable-generator: review-findings.json is unclean (review must have run clean before archive)
+- **in-scope**: src/engine/ modified by 3 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-rule-solvable-generator) — review for scope drift

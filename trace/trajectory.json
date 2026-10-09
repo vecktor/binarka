@@ -108,6 +108,15 @@
         "ui"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-09-add-rule-solvable-generator",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 2,
+      "libDomains": [
+        "engine"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [
@@ -115,7 +124,8 @@
       "domain": "engine",
       "slices": [
         "2026-10-04-add-puzzle-engine",
-        "2026-10-04-update-hint-sentences"
+        "2026-10-04-update-hint-sentences",
+        "2026-10-09-add-rule-solvable-generator"
       ]
     }
   ],
@@ -150,8 +160,12 @@
       "msg": "2026-10-09-add-logo: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
+      "check": "review-evidence",
+      "msg": "2026-10-09-add-rule-solvable-generator: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
       "check": "in-scope",
-      "msg": "src/engine/ modified by 2 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences) — review for scope drift"
+      "msg": "src/engine/ modified by 3 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-rule-solvable-generator) — review for scope drift"
     }
   ]
 }

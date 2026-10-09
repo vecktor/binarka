@@ -1,0 +1,33 @@
+# Battery: add-rule-solvable-generator at 760c3e5 plus the archive-prep doc edits (src/ and tests/ as in 760c3e5)
+Run by the orchestrator at 2026-10-09 12:09 (UTC+5:30), worktree suspicious-lamarr-be0fd0.
+
+## npm run lint
+> eslint .
+
+exit 0
+
+## npm run test:run
+ Test Files  35 passed (35)
+      Tests  720 passed (720)
+
+## npm run build
+
+✓ built in 46ms
+
+## npx openspec validate add-rule-solvable-generator --strict
+Change 'add-rule-solvable-generator' is valid
+
+## npx openspec validate --all --strict
+✓ change/add-rule-solvable-generator
+✓ spec/play-page
+✓ spec/puzzle-engine
+Totals: 3 passed, 0 failed (3 items)
+
+## node scripts/check-traceability.mjs (summary)
+WARN  [recording-evidence] FR-27 is not referenced by any recording manifest under docs/qa/
+traceability: 65 MVP FRs checked — 0 failure(s), 66 warning(s)
+
+## node scripts/check-eval-ratchet.mjs
+Scope: 3 eval case(s)
+OK    hint-clarity 94 (baseline 94)
+Result: PASS

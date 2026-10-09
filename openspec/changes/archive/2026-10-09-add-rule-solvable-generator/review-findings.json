@@ -1,0 +1,122 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "confirming run, change add-rule-solvable-generator (FR-27, phase F, engine only): fix round 760c3e5 after review-gate wf_4a06e27d-331 (no product defect; static import in the solveByRules tests, scenario-2 assertion, generator comment, red-run addendum, 2.7 evidence, smoke check, README)",
+  "change": "add-rule-solvable-generator",
+  "baseRef": "d4b83d3",
+  "headRef": "760c3e5",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 2,
+      "contested": 2,
+      "rejected": 1
+    },
+    "spec-compliance": {
+      "confirmed": 1,
+      "contested": 2,
+      "rejected": 2
+    }
+  },
+  "confirmedTitles": [
+    "docs/current-state.md was not updated for the green, review-gate and fix-round milestones",
+    "tasks.md: 3.6 and 3.7 are done in this commit but not ticked, and 3.1 to 3.5 have no ticks although the commit message claims the battery passed",
+    "Green-run header still says the tests are unchanged after the fix round edited the test file"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-09T06:39:03Z",
+  "runId": "wf_c3a1873a-a60",
+  "dispositions": {
+    "current-state.md not updated for green, review and fix round (confirmed, minor, docs)": "fixed after the run in the archive commit: current-state.md lists f077dd4, 760c3e5, both run ids, the evidence paths and the new average givens. Not re-reviewed (one fix round, one confirming run; report rather than loop).",
+    "tasks.md 3.1 to 3.7 unticked; battery claim without a saved report (confirmed, minor, docs)": "fixed after the run: battery output saved to docs/qa/add-rule-solvable-generator-battery.txt (lint, test:run, build, validate change and --all strict, check-traceability, eval ratchet); 3.1 to 3.9 ticked against their evidence paths. Not re-reviewed.",
+    "green-run header says tests unchanged (confirmed, minor, docs)": "fixed after the run: a re-run line for 760c3e5 appended to docs/qa/add-rule-solvable-generator-green-run.txt. Not re-reviewed.",
+    "first run findings not stored in the repo (contested, minor)": "fixed: this file stores both runs (rounds) with the first run's dispositions.",
+    "red-run header describes the removed dynamic import (contested, minor)": "fixed: a note under the header says the top section describes 6247183 and the addendum the current test file.",
+    "smoke check used npx vite and scripted clicks, not npm run dev (contested, minor)": "accepted as equivalent (npm run dev runs vite with the same config) and stated in docs/qa/add-rule-solvable-generator/README.md; the scripted clicks follow the accepted practice of autonomy-log row 80.",
+    "3.6/3.7 done but current-state not updated (contested, minor)": "same fix as the first confirmed finding."
+  },
+  "persistedBy": "Written by the orchestrator from both runs' results: the workflow's persist step returned reviewEvidence null for both runs (as noted in docs/handoff/next-session.md).",
+  "rounds": [
+    {
+      "runId": "wf_4a06e27d-331",
+      "baseRef": "d4b83d3",
+      "headRef": "f077dd4",
+      "clean": false,
+      "dimensions": {
+        "correctness": {
+          "confirmed": 2,
+          "contested": 0,
+          "rejected": 2
+        },
+        "security": {
+          "confirmed": 2,
+          "contested": 1,
+          "rejected": 2
+        },
+        "spec-compliance": {
+          "confirmed": 2,
+          "contested": 2,
+          "rejected": 0
+        }
+      },
+      "confirmedTitles": [
+        "Test scaffold left in place: solveByRules is loaded through a runtime-built dynamic import with a hand-declared type",
+        "Design decision 3 (dropping countSolutionsBudgeted from carving) is sound: confirmed, no defect",
+        "Determinism, NFR timing bounds and engine purity verified unchanged",
+        "Security checklist: no applicable surface (client-only vanilla TS engine)",
+        "solveByRules unit tests still use the red-phase runtime-built dynamic import after green",
+        "Scenario 2: the claim 'its unique solution is 1010/1001/0101/0110' is not fully asserted"
+      ],
+      "contestedTitles": [
+        "Design decision 3 confirmed: rule-solvable implies unique solution, FR-15 not weakened",
+        "Design decision 3 CONFIRMED: every pair/sandwich/count fill is forced, so a rule-solvable board has exactly one solution",
+        "Task 2.7 (error paths confirmed by reading) is ticked but has no recorded evidence"
+      ],
+      "rejectedTitles": [
+        "solveByRules reports solved:true for any full board, including one that breaks the rules",
+        "Determinism/uniqueness/timing scenario has no new FR-27-tagged test; it relies on untagged existing tests",
+        "Uniqueness is no longer checked by the solver inside the generator; coverage depends on the existing FR-15 tests only for seeds 1-20 and N=4,6,8",
+        "Test file covers every delta scenario; the runtime-built dynamic import is sound but has a weak failure mode"
+      ],
+      "dispositions": {
+        "dynamic import scaffold in solveByRules tests (confirmed x2, minor)": "fixed in 760c3e5: static import from ../src/engine/rule-solve (source: design.md Data model); red-run addendum re-run.",
+        "scenario 2 unique solution not fully asserted (confirmed, minor)": "fixed in 760c3e5: findViolations empty and isSolved on the pinned grid (source: the scenario GIVEN).",
+        "design decision 3 soundness (confirmed and contested x2, no defect)": "accepted: two verifiers confirmed the forced-fill argument; generator.ts comment now states the dependency on forced fills (hint.ts not edited, design.md).",
+        "determinism, timing, purity; security (confirmed, no defect)": "no change.",
+        "task 2.7 ticked without evidence (contested, minor)": "fixed in 760c3e5: 2.7 lines in docs/qa/add-rule-solvable-generator-green-run.txt."
+      }
+    },
+    {
+      "runId": "wf_c3a1873a-a60",
+      "baseRef": "d4b83d3",
+      "headRef": "760c3e5",
+      "clean": false,
+      "dimensions": {
+        "correctness": {
+          "confirmed": 2,
+          "contested": 2,
+          "rejected": 1
+        },
+        "spec-compliance": {
+          "confirmed": 1,
+          "contested": 2,
+          "rejected": 2
+        }
+      },
+      "confirmedTitles": [
+        "docs/current-state.md was not updated for the green, review-gate and fix-round milestones",
+        "tasks.md: 3.6 and 3.7 are done in this commit but not ticked, and 3.1 to 3.5 have no ticks although the commit message claims the battery passed",
+        "Green-run header still says the tests are unchanged after the fix round edited the test file"
+      ],
+      "contestedTitles": [
+        "Findings and dispositions of review-gate wf_4a06e27d-331 are not stored anywhere in the repo, so the fix round cannot be checked against them",
+        "The red-run file header still describes the removed dynamic-import mechanism, and only the addendum corrects it",
+        "Smoke check (3.7) and README (3.6) work is done, but current-state.md is not updated and tasks 3.6/3.7 are unticked",
+        "Smoke check used `npx vite --port 5217` and scripted element.click() rather than the `npm run dev` the task names"
+      ],
+      "rejectedTitles": [
+        "solveByRules returns solved:true for any full board, including an invalid one",
+        "Coverage summary: 4 scenarios: 4 implemented, 0 partial, 0 missing, 0 contradicted; the fix round resolved its findings and added no regression",
+        "Red-run addendum reproduces exactly, but the original header lines it supersedes are not marked as stale"
+      ]
+    }
+  ]
+}

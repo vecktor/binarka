@@ -1,5 +1,7 @@
 # Red run: add-rule-solvable-generator (phase F, FR-27)
 
+Note (2026-10-09 12:09): the sections down to the full output describe the red commit 6247183 (dynamic import of solveByRules). The Addendum at the end describes the current test file (static import, after the review fix round 760c3e5).
+
 Run by the orchestrator at 2026-10-09 11:53 (UTC+5:30) in a scratch copy of branch claude/suspicious-lamarr-be0fd0 (fast-forwarded to claude/ux-phases-d-h d4b83d3): `git archive HEAD` (d4b83d3) plus the new file tests/generator-rule-solvable.test.ts; src/ byte-identical to HEAD (`diff -r src` clean).
 Full suite, `npx vitest run`: 4 failed, 711 passed, 5 skipped, 720 total (1 of 35 files failed); 1 suite error. The 683 existing tests all pass.
 At red, `npx tsc --noEmit` exits 0 and `npx eslint tests/generator-rule-solvable.test.ts` exits 0 (the solveByRules module is loaded through a runtime-built specifier, so neither the type check nor Vite's import analysis sees the missing file).

@@ -2,14 +2,14 @@
 
 ## Purpose
 
-The puzzle engine is the pure TypeScript core of Бінарка (a Takuzu 0/1 puzzle): a rule checker, a solution counter, a seeded puzzle generator and a hint engine, all in `src/engine/`, plus the command-line printer `src/cli.ts` run through `tsx`. Grid size N is always a parameter (even, minimum 4; tested at 4, 6 and 8) and every puzzle is reproducible from a seed. The page (`src/main.ts`, `src/ui/`) uses this same engine but its behaviour belongs to the separate play-page capability.
+The puzzle engine is the pure TypeScript core of Бінарка (a Takuzu 0/1 puzzle): a rule checker, a solution counter, a seeded puzzle generator and a hint engine, all in `src/engine/`, plus the command-line printer `src/cli.ts` run through `tsx`. Grid size N is always a parameter (even, minimum 4; tested at 4, 6 and 8) and every puzzle is reproducible from a seed. The page (`src/main.ts`, `src/ui/`) uses this same engine but its behaviour belongs to the separate play-page capability. Every generated puzzle for N = 4, 6 and 8 can be finished with the pair, sandwich and count rules alone.
 
 Conventions: a "line" is a row or a column; rows and columns are numbered from 1 in all user-facing text and in the scenarios below; a cell is empty, 0 or 1; "givens" are the cells filled by the generator. Boards in scenarios are written one row per line, cells separated by spaces, `.` for an empty cell. Unless a scenario states a size, the board is 6×6 and every cell not listed is empty.
 
 Pinned test conventions:
 
 - **Solver result.** The solver returns a number that is 0, 1 or 2, where 2 stands for "2 or more"; a value above 2 is never returned. Scenarios write the value 2 as "2 or more".
-- **Fixed seed set.** The "fixed seed set" used by FR-15 and NFR-1 to NFR-3 is the integer seeds 1 to 20 inclusive, used for each of N = 4, 6 and 8 (20 seeds per size).
+- **Fixed seed set.** The "fixed seed set" used by FR-15, FR-27 and NFR-1 to NFR-3 is the integer seeds 1 to 20 inclusive, used for each of N = 4, 6 and 8 (20 seeds per size).
 - **Engine interface (spec-made contract).** `generate(size: number, seed: number): Puzzle`, where `Puzzle` has `size`, `givens` (an N×N grid of 0, 1 or null) and `solution` (an N×N grid of 0 and 1). `hint(board)` takes a board shaped like `givens` and returns either `{ kind: 'fill', row, col, value, rule, sentence }` or `{ kind: 'none' | 'broken', sentence }`; `rule` is 'pair', 'sandwich' or 'count'. `row` and `col` are 0-based indices, while sentences number lines from 1; rule-checker violations also use 0-based indices. Scenarios below write 1-based numbers, so scenario row 3 column 3 is `row` 2, `col` 2 in the interface. The play-page capability refers to this contract; the change design may rename these names only together with this spec.
 - **CLI invocation.** Tests call the CLI as `npm run --silent cli -- <arguments>` (npm's own banner lines are suppressed; this runs the same `tsx src/cli.ts <arguments>`), and "no arguments" means `npm run --silent cli`. "Prints" means stdout unless a scenario says stderr. On success the CLI writes the puzzle to stdout and nothing to stderr; on an error it writes the error sentence to stderr and nothing to stdout.
 ## Requirements
@@ -779,6 +779,41 @@ Traces: NFR-6
 - **WHEN** the status of this requirement is reported
 - **THEN** it is reported NOT-EARNED
 
+### Requirement: Every generated puzzle is solvable by the three rules alone
+
+The generator SHALL return, for N = 4, 6 and 8, only puzzles that can be solved from their givens using nothing but the pair, sandwich and count rules: starting from the givens and applying the hint engine's fill (FR-19 to FR-21, in the selection order of FR-23 and A-7) repeatedly, every call returns a fill, every fill agrees with the puzzle's solution, and when no empty cell remains the board equals the puzzle's solution (FR-27, A-5, A-31). Stopping happens because the board is full, not because a call returned the no-rule result (FR-25): a hint call on a full board returns that result by definition (every rule needs an empty cell) and is not part of the check. The guarantee SHALL be obtained by construction of the generator: a candidate puzzle is accepted only if this check passes on it (A-31). A consequence, which the requirement also pins, is that a hint is always available on a board whose entries all agree with the solution and that still has an empty cell. The requirement is verified over the fixed seed set (seeds 1 to 20 for each N = 4, 6, 8, see the test conventions); for any other seed it holds by construction and is not checked exhaustively (A-31), and it makes no claim for N = 10 to 16. This requirement SHALL NOT change FR-14, FR-15 or the timing bounds NFR-1 to NFR-3: the generator stays deterministic from the seed (no `Math.random`, no clock), every puzzle keeps exactly one solution, and the bounds are never relaxed.
+
+Traces: FR-27
+
+#### Scenario: Repeated fill reaches the solution over the fixed seed set
+
+- **GIVEN** each N in 4, 6 and 8 and each seed from 1 to 20, and the puzzle `generate(N, seed)`
+- **WHEN** the test copies the givens as a board and repeats: ask the hint engine for a hint on the board, and write the hint's value into the hint's cell, until the board has no empty cell
+- **THEN** for each of the 60 puzzles every hint call returned `kind: 'fill'`, never `'none'` and never `'broken'`
+- **AND** every filled cell was empty before the call and receives the value that the puzzle's `solution` holds for that cell
+- **AND** the number of calls equals the number of empty cells of the givens, and the final board equals the puzzle's `solution`
+
+#### Scenario: A board with a unique solution that the rules cannot finish is not a generator output
+
+- **GIVEN** the 4×4 board with rows `. 0 . 0`, `1 0 . .`, `. . 0 .` and `. . . .` (its solver result is 1, and its unique solution is `1 0 1 0`, `1 0 0 1`, `0 1 0 1`, `0 1 1 0`)
+- **WHEN** the test repeats: ask the hint engine for a hint on the board, and write the hint's value into the hint's cell, until a call does not return `kind: 'fill'` or no cell is empty
+- **THEN** the repetition ends on a call that returns `kind: 'none'` with the no-rule sentence of FR-25 while at least one cell is still empty (on the current engine: 7 fills, then `none` with 4 empty cells left), so the board never reaches its solution and is not solvable by the three rules alone (its first hint is a fill; the stop comes later)
+- **AND** its givens are not equal to the givens of `generate(4, seed)` for any seed from 1 to 20
+
+#### Scenario: A hint is always available on a correct partial board
+
+- **GIVEN** each N in 4, 6 and 8, each seed from 1 to 20, and the puzzle `generate(N, seed)` (a sampled check: two boards per puzzle, not every correct board)
+- **WHEN** two boards are built from the givens by writing the solution digit into the empty cells taken in row-major order: board E receives the cells with an even position (0, 2, 4, ...) among the empty cells, board O those with an odd position (1, 3, 5, ...)
+- **THEN** each of the two boards that still has an empty cell yields a hint of `kind: 'fill'` whose cell is empty and whose value equals the solution digit of that cell
+- **AND** at least one of the 120 boards still has an empty cell (the check is not vacuous)
+
+#### Scenario: Determinism, uniqueness and timing still hold
+
+- **GIVEN** the requirements «Same seed and size give the identical puzzle», «Every generated puzzle has exactly one solution» and the three requirements «Generating a 4×4 puzzle is fast», «Generating a 6×6 puzzle is fast» and «Generating an 8×8 puzzle is fast», with their tests unchanged
+- **WHEN** the test suite runs against the rule-solvable generator
+- **THEN** all of those tests pass with their bounds unchanged: the same puzzle for the same seed and size, a solver result of 1 (and one solution found by the independent oracle) for each of the 60 puzzles, the slowest generation under 200 ms at N = 4, under 500 ms at N = 6 and under 3 seconds at N = 8
+- **AND** no source file under `src/engine/` contains `Math.random`
+
 ## Exclusions
 
 These are intentional and are not defects:
@@ -786,7 +821,7 @@ These are intentional and are not defects:
 - There is no server, no authentication, no accounts, no persistence and no network. The engine and CLI have no unauthorized, forbidden or permission paths, so no such scenarios exist. The specified error paths are: odd N, N below 4 (including 0 and negative N), N above 16, a size that is not an integer, a seed outside 0 to 2147483647, an invalid CLI size or seed (odd, below 4, above 16, above the seed domain, or a value outside the number grammar), a CLI option without a value, an unknown CLI option, a hint on a board that already breaks a rule, a hint when no rule applies, and a solver result of 0 on a board with no completion. All other malformed input is excluded below.
 - FR-18 (grid sizes 10 to 16 tested and offered on the page) is Future. The engine accepts an even N from 10 to 16 (FR-49), but such sizes are untested, carry no time bound and are not offered anywhere; an N above 16 is rejected (FR-49).
 - FR-56 (English hint sentences) is Future; hint sentences are Ukrainian only.
-- FR-27 (a guarantee that every puzzle is solvable from its givens by the pair, sandwich and count rules alone, so that a hint is always available on a correct board) is Future. Until then the no-rule hint (FR-25) is the defined outcome when no rule applies.
+- FR-27 is verified over the fixed seed set (seeds 1 to 20, N = 4, 6, 8) only; for any other seed it holds by construction (A-31), and no claim is made for N = 10 to 16. The no-rule hint (FR-25) remains the defined outcome on a board with player errors or entries that leave no rule applicable.
 - All play-page behaviour (FR-31 to FR-48: rendering, clicking, highlighting, the hint button, the win message, new puzzle, and the size selector, which is cut) belongs to the play-page capability. This capability supplies the engine results the page uses, not the page itself.
 - Difficulty grading, a timer, saved progress, undo and a daily puzzle (Future) are not part of this capability. The generator takes no difficulty parameter.
 - The CLI never prints the solution and has no options other than the size and the seed.
