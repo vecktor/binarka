@@ -211,6 +211,29 @@ describe('@trace FR-27 solveByRules', () => {
     expect(solveByRules(board)).toEqual({ solved: false, steps: 0 });
   });
 
+  // FR-27: «when no empty cell remains the board equals the puzzle's solution». A full board that breaks a rule is
+  // not a solution, so solved must be false. Regression: review-gate wf_151b7f7c-5bc (commit 261782b) — the earlier
+  // solveByRules returned solved true for any full board.
+  it.each([
+    ['three equal digits in a row (0 0 0 1)', '0 0 0 1\n1 1 0 0\n0 1 1 0\n1 0 1 1'],
+    ['an unbalanced row (three 0s, no triple)', '0 1 0 0\n1 0 1 1\n0 1 1 0\n1 0 0 1'],
+    ['two equal rows', '0 0 1 1\n1 1 0 0\n0 0 1 1\n1 1 0 0'],
+  ])('a full board that breaks a rule returns solved false with 0 steps: %s', (_name, text) => {
+    const board = parseBoard(text);
+    expect(emptyCount(board)).toBe(0);
+    expect(findViolations(board).length).toBeGreaterThan(0);
+    expect(solveByRules(board)).toEqual({ solved: false, steps: 0 });
+  });
+
+  // The last fill itself creates the violation: row 0 holds three 1s and two 0s, so the count rule forces a 1 at 0,0,
+  // and that 1 makes column 0 (1 0 1 0 1 0) equal to column 2. The start board has no violation (found by search, 6x6).
+  it('a board whose only empty cell is forced into a violation returns solved false after 1 step', () => {
+    const board = parseBoard('. 0 1 0 1 0\n0 1 0 1 0 1\n1 0 1 0 0 1\n0 1 0 1 1 0\n1 0 1 1 0 0\n0 1 0 0 1 1');
+    expect(emptyCount(board)).toBe(1);
+    expect(findViolations(board)).toEqual([]);
+    expect(solveByRules(board)).toEqual({ solved: false, steps: 1 });
+  });
+
   it('does not modify the input board', () => {
     const board = parseBoard('. 0 . 0\n1 0 . .\n. . 0 .\n. . . .');
     const snapshot = copyOf(board);

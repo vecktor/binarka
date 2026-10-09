@@ -138,8 +138,7 @@
     {
       "id": "FR-1",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -194,8 +193,7 @@
     {
       "id": "FR-6",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -276,7 +274,6 @@
       "id": "FR-13",
       "specs": [
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -289,8 +286,7 @@
     {
       "id": "FR-14",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -307,8 +303,7 @@
     {
       "id": "FR-15",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -320,8 +315,7 @@
     {
       "id": "FR-16",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -332,8 +326,7 @@
     {
       "id": "FR-17",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -344,8 +337,7 @@
     {
       "id": "FR-49",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -356,8 +348,7 @@
     {
       "id": "FR-50",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -370,7 +361,6 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -385,7 +375,7 @@
     {
       "id": "FR-81",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -398,7 +388,7 @@
     {
       "id": "FR-82",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -410,7 +400,7 @@
     {
       "id": "FR-83",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -421,7 +411,7 @@
     {
       "id": "FR-84",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -435,8 +425,7 @@
     {
       "id": "FR-19",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -458,8 +447,7 @@
     {
       "id": "FR-21",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -470,8 +458,7 @@
     {
       "id": "FR-22",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -483,8 +470,7 @@
     {
       "id": "FR-23",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -497,8 +483,7 @@
     {
       "id": "FR-24",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -512,7 +497,6 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -527,7 +511,6 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -540,8 +523,7 @@
     {
       "id": "FR-27",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -557,7 +539,7 @@
     {
       "id": "FR-74",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -569,7 +551,7 @@
     {
       "id": "FR-75",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -580,7 +562,7 @@
     {
       "id": "FR-76",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -594,7 +576,7 @@
     {
       "id": "FR-77",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -612,7 +594,7 @@
     {
       "id": "FR-78",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -625,7 +607,7 @@
     {
       "id": "FR-79",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -638,7 +620,7 @@
     {
       "id": "FR-80",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -652,8 +634,7 @@
     {
       "id": "FR-28",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -675,8 +656,7 @@
     {
       "id": "FR-30",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -687,8 +667,7 @@
     {
       "id": "FR-52",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -699,8 +678,7 @@
     {
       "id": "FR-53",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -711,8 +689,7 @@
     {
       "id": "FR-54",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -723,7 +700,7 @@
     {
       "id": "FR-85",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -739,7 +716,7 @@
     {
       "id": "FR-86",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1267,7 +1244,7 @@
     {
       "id": "FR-88",
       "specs": [
-        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1809,10 +1786,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-99 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-difficulty-engine\" is not archived"
     },
     {
       "check": "active-changes",

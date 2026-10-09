@@ -1,0 +1,140 @@
+{
+  "generatedBy": "review-gate",
+  "change": "add-difficulty-engine",
+  "scope": "confirming run, change add-difficulty-engine (DL1): fix round 261782b after review-gate wf_14ba91fd-ac6 (no correctness defect; fixes: tautological test made able to fail, InvalidLevelError text, solveByRules violation check, unique-lines guard, design/tasks bookkeeping, corrected green-run note, smoke check, README)",
+  "baseRef": "5038c70",
+  "headRef": "261782b",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 5,
+      "contested": 1,
+      "rejected": 1
+    },
+    "spec-compliance": {
+      "confirmed": 5,
+      "contested": 0,
+      "rejected": 2
+    },
+    "visual": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 2
+    }
+  },
+  "confirmedTitles": [
+    "Smoke step 3.8(e) fails its declared bound for 6x6, but smoke.txt marks it PASS by changing the criterion",
+    "smoke.txt error transcript shows the old InvalidLevelError text that the same commit changed",
+    "Task 2.1 and the README still describe the old size wording",
+    "solveByRules semantics changed without a red test; docstring and differential oracle now disagree with it",
+    "Smoke step 3.8(g) no-rule check and (h) final-board screenshot are not satisfied as specified",
+    "The two engine fixes have no regression tests: putting back the old rule-solve.ts and techniques.ts still passes all 1111 tests",
+    "README says levels 2 to 4 are only for sizes 6 and 8, but the engine and CLI accept sizes 10 to 16, and the new error text says 'a size of 6 or more'",
+    "smoke.txt (d) was captured at 5038c70 and still shows the old error text for --size 4 --level 2",
+    "Smoke step 3.8(e) misses its stated 500 ms bound, yet smoke.txt marks it PASS 'for generation'",
+    "Smoke step 3.8(h) asks for a screenshot of a board after the last hint; only a violation screenshot exists",
+    "Violation screenshot cited as FR-26 evidence leaves out the hint button and the FR-26 sentence"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-09T11:27:10Z",
+  "runId": "wf_151b7f7c-5bc",
+  "dispositions": {
+    "smoke 3.8(e) recorded PASS by changing its criterion (major)": "accepted and corrected: smoke.txt now records FAILED against 3.8(e) as written, with a labelled CORRECTION; task 3.8(e) amended deliberately by the user's decision (autonomy-log row 99): the 500 ms bound applies to in-process generation (NFR-2/NFR-3, Vitest timing tests and task 2.9: worst 26.9 ms at (6, 4)); the CLI wall time (tsx start-up about 0.5 s) is recorded, not gated.",
+    "the two hardening fixes have no regression tests (major)": "fixed in the second fix round: four tests in tests/generator-rule-solvable.test.ts (three full boards that break a rule, and a 6x6 board whose last forced fill creates a duplicate column) assert solved: false; shown failing on 5038c70's rule-solve.ts (4 failed) and passing now (test-engineer, Sonnet); the unique-lines guard removed as dead code (techniques.ts identical to 5038c70).",
+    "README / task 2.1 size wording; smoke (d) stale error text (minor)": "fixed: README says levels 2 to 4 need a size of 6 or more (tested at 6 and 8); task 2.1 shows the shipped text; smoke (d) re-run at 16:54 with the new text.",
+    "solveByRules docstring/differential oracle vs new semantics (minor)": "the regression tests pin the new semantics; the differential test compares {solved, steps} on boards that are subsets of a valid solution, where both agree.",
+    "smoke (g) no-rule sentence not reached live; (h) screenshot after the last hint missing; violation shot without the sentence (minor)": "(h) fixed: docs/qa/add-difficulty-engine/375-6x6-after-last-hint.jpg and a new page-4x4-violation-broken-hint.jpg with the FR-26 sentence visible; (g) stays open as recorded: the no-rule sentence is verified by unit tests and the served module, not reached live in 30 scripted tries.",
+    "unique-lines guard is dead code (contested)": "accepted: removed."
+  },
+  "persistedBy": "Written by the orchestrator from both runs' results (the workflow's persist step returned no evidence). Not re-reviewed after the second fix round, by the user's choice (autonomy-log row 99): one more small fix round, then archive.",
+  "rounds": [
+    {
+      "runId": "wf_14ba91fd-ac6",
+      "baseRef": "f8d305a",
+      "headRef": "5038c70",
+      "clean": false,
+      "dimensions": {
+        "correctness": {
+          "confirmed": 3,
+          "contested": 1,
+          "rejected": 1
+        },
+        "security": {
+          "confirmed": 1,
+          "contested": 1,
+          "rejected": 1
+        },
+        "spec-compliance": {
+          "confirmed": 4,
+          "contested": 0,
+          "rejected": 3
+        }
+      },
+      "confirmedTitles": [
+        "Green-run record falsely says the implementer added a test; it is a renamed red-phase test",
+        "The 'hint of the index is the hint of the engine' test can never fail",
+        "InvalidLevelError says levels 2-4 need size 6 or 8, but sizes 10-16 are accepted at every level",
+        "Implementer-added test 'hint of the index is the hint of the engine' is vacuous",
+        "Evidence misstates the implementer's test as 'ADDED': it was renamed from the red commit and is now a tautology",
+        "tasks.md section 1 (1.1 to 1.13) is still unticked although its artifacts exist",
+        "The differential test compares only {solved, steps}, while design decision 3 promises same cells, values and rules",
+        "Residual wide typing helper tests/helpers/hint-type.ts is not in the design"
+      ],
+      "contestedTitles": [
+        "solveByRules reports solved before checking whether the final fill caused a violation",
+        "Technique 'unique' picks the value 1 - o[p1] without checking that it is forced"
+      ],
+      "dispositions": {
+        "all confirmed findings": "fixed in 261782b: the tautological test now compares the index export with src/engine/hint; InvalidLevelError text 'need a size of 6 or more'; solveByRules violation check; design decision 3 and the hint-type.ts typing edit recorded; tasks 1.1-1.13 ticked; the orchestrator's green-run note corrected (no test was added)."
+      }
+    },
+    {
+      "runId": "wf_151b7f7c-5bc",
+      "baseRef": "5038c70",
+      "headRef": "261782b",
+      "clean": false,
+      "dimensions": {
+        "correctness": {
+          "confirmed": 5,
+          "contested": 1,
+          "rejected": 1
+        },
+        "spec-compliance": {
+          "confirmed": 5,
+          "contested": 0,
+          "rejected": 2
+        },
+        "visual": {
+          "confirmed": 1,
+          "contested": 0,
+          "rejected": 0
+        },
+        "security": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 2
+        }
+      },
+      "confirmedTitles": [
+        "Smoke step 3.8(e) fails its declared bound for 6x6, but smoke.txt marks it PASS by changing the criterion",
+        "smoke.txt error transcript shows the old InvalidLevelError text that the same commit changed",
+        "Task 2.1 and the README still describe the old size wording",
+        "solveByRules semantics changed without a red test; docstring and differential oracle now disagree with it",
+        "Smoke step 3.8(g) no-rule check and (h) final-board screenshot are not satisfied as specified",
+        "The two engine fixes have no regression tests: putting back the old rule-solve.ts and techniques.ts still passes all 1111 tests",
+        "README says levels 2 to 4 are only for sizes 6 and 8, but the engine and CLI accept sizes 10 to 16, and the new error text says 'a size of 6 or more'",
+        "smoke.txt (d) was captured at 5038c70 and still shows the old error text for --size 4 --level 2",
+        "Smoke step 3.8(e) misses its stated 500 ms bound, yet smoke.txt marks it PASS 'for generation'",
+        "Smoke step 3.8(h) asks for a screenshot of a board after the last hint; only a violation screenshot exists",
+        "Violation screenshot cited as FR-26 evidence leaves out the hint button and the FR-26 sentence"
+      ],
+      "contestedTitles": [
+        "New unique-lines equal-digits guard is dead code and its comment gives the wrong reason"
+      ]
+    }
+  ]
+}

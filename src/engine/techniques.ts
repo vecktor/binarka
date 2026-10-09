@@ -244,11 +244,6 @@ function unique(f: Flat): Fill | null {
           }
         }
         if (complete && agrees) {
-          // The complete line holds N/2 of each digit, so equal digits at the two empty positions would force the
-          // line to equal it: impossible on a board that has a completion, so no fill is offered then.
-          let p2 = -1;
-          for (let i = p1 + 1; i < n && p2 === -1; i++) if (at(f, axis, line, i) === EMPTY) p2 = i;
-          if (at(f, axis, o, p1) === at(f, axis, o, p2)) continue;
           const fill = mk(axis, line, p1, (1 - at(f, axis, o, p1)) as Digit, 'unique');
           fill.other = o;
           return fill;

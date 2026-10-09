@@ -65,6 +65,20 @@ size 6 seed 4 level 4: 4.583 s, 6 rows printed
 
 ### (e) re-run at 16:43 (load average about 12), `/usr/bin/time -p npm run --silent cli -- …`, CLI start-up included:
 - --size 8 --seed 20 --level 4: real 0.67 s, user 0.35 s (target: well under 3 s) — PASS
-- --size 6 --seed 4 --level 4: real 0.56 s, user 0.32 s (target: well under 500 ms of generation; generation itself is about 15 ms in-process, the rest is tsx start-up) — PASS for generation; the CLI wall time includes about 0.5 s of start-up that NFR-2 does not cover (NFR-2 bounds generation, measured in Vitest).
+- --size 6 --seed 4 --level 4: real 0.56 s, user 0.32 s — FAILED against task 3.8(e) as written («well under … 500 ms (CLI start-up included)»). CORRECTION (confirming review-gate wf_151b7f7c-5bc): this line first said «PASS for generation», which changed the criterion after the fact. Facts: in-process generation at (6, 4) is about 15 ms (NFR-2 bounds generation and is met); `tsx` start-up alone is about 0.5 s (level 1 takes 0.52 s), so the task's start-up-included bound cannot be met by any level. Open for the user: amend task 3.8(e) deliberately, or keep it as a recorded failure.
 - --size 8 --seed 20 --level 1: real 0.52 s, user 0.29 s (reference).
 The earlier 4.4 s figures were CPU contention under a load average of 40 to 53.
+
+## (d) re-run at 261782b + working tree, 16:54 (after the error text change of 261782b)
+[--size 6 --level 0] exit 1, stdout 0 bytes, stderr: The level must be a whole number from 1 to 4.
+[--size 6 --level 5] exit 1, stdout 0 bytes, stderr: The level must be a whole number from 1 to 4.
+[--size 6 --level 1.5] exit 1, stdout 0 bytes, stderr: The level must be written as whole decimal digits only.
+[--size 6 --level ""] exit 1, stdout 0 bytes, stderr: The level must be written as whole decimal digits only.
+[--size 6 --level] exit 1, stdout 0 bytes, stderr: The --level option needs a value.
+[--size 4 --level 2] exit 1, stdout 0 bytes, stderr: Levels 2 to 4 need a size of 6 or more.
+[--depth 1] exit 1, stdout 0 bytes, stderr: Unknown option: only --size, --seed and --level are supported.
+
+## (h) screenshots, re-taken 16:55 at 375×812 (`npx vite --port 5219`, built-in browser)
+- docs/qa/add-difficulty-engine/375-6x6-after-last-hint.jpg: a 6×6 board finished by 27 presses of «Підказка» (script output: 0 empty cells), the last hint sentence and the win message «Вітаємо, головоломку розвʼязано!» visible.
+- docs/qa/add-difficulty-engine/page-4x4-violation-broken-hint.jpg (replaces the earlier half-scale shot): row 1 «0 0 0 0», 4 cells aria-invalid, «Підказка» visible, and the FR-26 sentence «Спершу виправте порушення правил, підсвічене на полі.» visible. (The first screenshot of this state lagged the DOM; the second matches the script output.)
+- Still not reached live: the no-rule sentence (see (g)); covered by unit tests and the served module only.
