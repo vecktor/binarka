@@ -43,7 +43,6 @@ Notes on the held NFRs:
 
 | ID | Phase | Description |
 |---|---|---|
-| TC-13 | MVP | The page's DOM contract and the engine are tested in jsdom with Vitest. Layout, contrast, focus, touch-target size and pixel fidelity are checked in a real browser with Playwright (NFR-10 to NFR-14). Browser and device support: see A-14. (amended 2026-10-05: was «The page is tested in jsdom only; no real-browser testing tonight, so rendering defects jsdom cannot see are not caught. Browser and device support is not claimed (see A-14).»; the approval of @playwright/test, @axe-core/playwright, pixelmatch and pngjs under TC-10 was given on 2026-10-05) |
 
 Note: TC-13 describes the intended end state; until each Playwright check is built and seen failing, the NFRs it carries are held, not PASS.
 
