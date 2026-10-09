@@ -22,6 +22,10 @@
     "FR-49": "MVP",
     "FR-50": "MVP",
     "FR-51": "MVP",
+    "FR-81": "MVP",
+    "FR-82": "MVP",
+    "FR-83": "MVP",
+    "FR-84": "MVP",
     "FR-19": "MVP",
     "FR-20": "MVP",
     "FR-21": "MVP",
@@ -32,12 +36,21 @@
     "FR-26": "MVP",
     "FR-27": "MVP",
     "FR-56": "Future",
+    "FR-74": "MVP",
+    "FR-75": "MVP",
+    "FR-76": "MVP",
+    "FR-77": "MVP",
+    "FR-78": "MVP",
+    "FR-79": "MVP",
+    "FR-80": "MVP",
     "FR-28": "MVP",
     "FR-29": "MVP",
     "FR-30": "MVP",
     "FR-52": "MVP",
     "FR-53": "MVP",
     "FR-54": "MVP",
+    "FR-85": "MVP",
+    "FR-86": "MVP",
     "FR-31": "MVP",
     "FR-32": "MVP",
     "FR-33": "MVP",
@@ -68,7 +81,15 @@
     "FR-71": "MVP",
     "FR-72": "MVP",
     "FR-73": "MVP",
-    "FR-44": "Future",
+    "FR-87": "MVP",
+    "FR-88": "MVP",
+    "FR-89": "MVP",
+    "FR-90": "MVP",
+    "FR-91": "MVP",
+    "FR-92": "MVP",
+    "FR-93": "MVP",
+    "FR-94": "MVP",
+    "FR-44": "MVP",
     "FR-45": "Future",
     "FR-46": "Future",
     "FR-47": "Future",
@@ -83,6 +104,8 @@
     "NFR-7": "Future",
     "NFR-8": "MVP",
     "NFR-9": "MVP",
+    "NFR-16": "MVP",
+    "NFR-17": "MVP",
     "TC-1": "MVP",
     "TC-2": "MVP",
     "TC-3": "MVP",
@@ -110,7 +133,8 @@
     {
       "id": "FR-1",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -165,7 +189,8 @@
     {
       "id": "FR-6",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -245,7 +270,9 @@
     {
       "id": "FR-13",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -256,7 +283,8 @@
     {
       "id": "FR-14",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -267,7 +295,8 @@
     {
       "id": "FR-15",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -278,7 +307,8 @@
     {
       "id": "FR-16",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -289,7 +319,8 @@
     {
       "id": "FR-17",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -300,7 +331,8 @@
     {
       "id": "FR-49",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -311,7 +343,8 @@
     {
       "id": "FR-50",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -323,7 +356,9 @@
       "id": "FR-51",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -335,9 +370,48 @@
       "recordings": []
     },
     {
+      "id": "FR-81",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-82",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-83",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-84",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
       "id": "FR-19",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -359,7 +433,8 @@
     {
       "id": "FR-21",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -370,7 +445,8 @@
     {
       "id": "FR-22",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -381,7 +457,8 @@
     {
       "id": "FR-23",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -392,7 +469,8 @@
     {
       "id": "FR-24",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -404,7 +482,8 @@
       "id": "FR-25",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -416,7 +495,8 @@
       "id": "FR-26",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -427,7 +507,8 @@
     {
       "id": "FR-27",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -440,9 +521,77 @@
       "recordings": []
     },
     {
+      "id": "FR-74",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-75",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-76",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-77",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-78",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-79",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-80",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
       "id": "FR-28",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -464,7 +613,8 @@
     {
       "id": "FR-30",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -475,7 +625,8 @@
     {
       "id": "FR-52",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -486,7 +637,8 @@
     {
       "id": "FR-53",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -497,7 +649,8 @@
     {
       "id": "FR-54",
       "specs": [
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -506,10 +659,29 @@
       "recordings": []
     },
     {
+      "id": "FR-85",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-86",
+      "specs": [
+        "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
       "id": "FR-31",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -606,7 +778,8 @@
     {
       "id": "FR-39",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -617,7 +790,8 @@
     {
       "id": "FR-40",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -641,7 +815,8 @@
     {
       "id": "FR-42",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -658,7 +833,8 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -689,7 +865,8 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -705,7 +882,8 @@
     {
       "id": "FR-58",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -723,7 +901,8 @@
     {
       "id": "FR-59",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -742,7 +921,8 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -757,7 +937,8 @@
     {
       "id": "FR-61",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -789,7 +970,8 @@
     {
       "id": "FR-62",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -802,7 +984,8 @@
     {
       "id": "FR-63",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -818,7 +1001,8 @@
     {
       "id": "FR-64",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -832,7 +1016,8 @@
     {
       "id": "FR-65",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -866,7 +1051,8 @@
     {
       "id": "FR-66",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -889,7 +1075,8 @@
     {
       "id": "FR-67",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -911,7 +1098,8 @@
     {
       "id": "FR-68",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -925,7 +1113,8 @@
     {
       "id": "FR-69",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -938,7 +1127,8 @@
     {
       "id": "FR-70",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -952,7 +1142,8 @@
     {
       "id": "FR-71",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -977,7 +1168,8 @@
     {
       "id": "FR-73",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -987,10 +1179,180 @@
         "tests/play-page-size-control.test.ts"
       ],
       "recordings": []
+    },
+    {
+      "id": "FR-87",
+      "specs": [
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-88",
+      "specs": [
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-89",
+      "specs": [
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-90",
+      "specs": [
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-91",
+      "specs": [
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-92",
+      "specs": [
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-93",
+      "specs": [
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-94",
+      "specs": [
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
+      "id": "FR-44",
+      "specs": [
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-level-selector/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
     }
   ],
   "failures": [],
   "warnings": [
+    {
+      "check": "test-trace",
+      "msg": "FR-81 has no test annotated \"@trace FR-81\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-82 has no test annotated \"@trace FR-82\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-83 has no test annotated \"@trace FR-83\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-84 has no test annotated \"@trace FR-84\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-74 has no test annotated \"@trace FR-74\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-75 has no test annotated \"@trace FR-75\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-76 has no test annotated \"@trace FR-76\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-77 has no test annotated \"@trace FR-77\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-78 has no test annotated \"@trace FR-78\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-79 has no test annotated \"@trace FR-79\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-80 has no test annotated \"@trace FR-80\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-85 has no test annotated \"@trace FR-85\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-86 has no test annotated \"@trace FR-86\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-87 has no test annotated \"@trace FR-87\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-88 has no test annotated \"@trace FR-88\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-89 has no test annotated \"@trace FR-89\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-90 has no test annotated \"@trace FR-90\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-91 has no test annotated \"@trace FR-91\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-92 has no test annotated \"@trace FR-92\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-93 has no test annotated \"@trace FR-93\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-94 has no test annotated \"@trace FR-94\""
+    },
+    {
+      "check": "test-trace",
+      "msg": "FR-44 has no test annotated \"@trace FR-44\""
+    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"
@@ -1073,6 +1435,22 @@
     },
     {
       "check": "recording-evidence",
+      "msg": "FR-81 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-82 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-83 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-84 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
       "msg": "FR-19 is not referenced by any recording manifest under docs/qa/"
     },
     {
@@ -1109,6 +1487,34 @@
     },
     {
       "check": "recording-evidence",
+      "msg": "FR-74 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-75 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-76 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-77 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-78 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-79 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-80 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
       "msg": "FR-28 is not referenced by any recording manifest under docs/qa/"
     },
     {
@@ -1130,6 +1536,14 @@
     {
       "check": "recording-evidence",
       "msg": "FR-54 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-85 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-86 is not referenced by any recording manifest under docs/qa/"
     },
     {
       "check": "recording-evidence",
@@ -1250,6 +1664,50 @@
     {
       "check": "recording-evidence",
       "msg": "FR-73 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-87 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-88 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-89 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-90 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-91 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-92 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-93 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-94 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
+      "msg": "FR-44 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-difficulty-engine\" is not archived"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-level-selector\" is not archived"
     }
   ]
 }

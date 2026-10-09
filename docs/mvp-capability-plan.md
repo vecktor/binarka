@@ -1,6 +1,6 @@
 # MVP Capability Change Plan
 
-Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24); amendment of 2026-10-04 about 23:30, SIGNED OFF by the user in chat at about 23:35: slice 4 `add-rules-and-reset` added for FR-57 and FR-58 (autonomy-log row 27)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). AMENDED 2026-10-05 about 00:03 by the user's sign-off in chat: slice 5 `update-hint-sentences` (section 4.6) changes the hint sentences of FR-19 to FR-21 after the NFR-6 eval failed (autonomy-log row 38). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3. AMENDED 2026-10-05 about 23:31 by the user's signature in chat ("signed, defaults for all six", autonomy-log row 66): UX decisions 1-30 add slices A to H (section 4.8); the Playwright dependencies were approved at about 23:20 (effective after this signing, not yet installed), so the "no Playwright" decision above is superseded for slice G. **AMENDED on 2026-10-06 by the user's decision: slice `add-page-accessibility` added for NFR-9 and FR-59 to FR-65 (autonomy-log row 43; signed as FR-57 to FR-63 with A-26 and renumbered on 2026-10-08 to FR-59 to FR-65 and A-28 by the user's decision in chat, because `main` already uses FR-57, FR-58, A-26 and A-27). It was slice 4 on its own branch and is slice 6 since its merge into `main` on 2026-10-08 (section 4.7).** **Merged 2026-10-09:** the UX line and the accessibility line meet in `main`; the reconciliation change `reconcile-ux-accessibility` (section 4.9) rewrites FR-59 to FR-63 and FR-65 to the UX page model (autonomy-log rows 78 and 79).
+Status: **SIGNED OFF by the user on 2026-10-04 at 18:54 (UTC+5:30); AMENDED at about 21:00 by the user's decision: slice 3 `add-size-selector` added for FR-43 (autonomy-log rows 22 and 24); amendment of 2026-10-04 about 23:30, SIGNED OFF by the user in chat at about 23:35: slice 4 `add-rules-and-reset` added for FR-57 and FR-58 (autonomy-log row 27)** (P3 plan sign-off, `docs/autonomy-log.md` row 12). AMENDED 2026-10-05 about 00:03 by the user's sign-off in chat: slice 5 `update-hint-sentences` (section 4.6) changes the hint sentences of FR-19 to FR-21 after the NFR-6 eval failed (autonomy-log row 38). The user decided not to add Playwright: G7 is reported as FAIL with the reason in 4.3. AMENDED 2026-10-05 about 23:31 by the user's signature in chat ("signed, defaults for all six", autonomy-log row 66): UX decisions 1-30 add slices A to H (section 4.8); the Playwright dependencies were approved at about 23:20 (effective after this signing, not yet installed), so the "no Playwright" decision above is superseded for slice G. **AMENDED on 2026-10-06 by the user's decision: slice `add-page-accessibility` added for NFR-9 and FR-59 to FR-65 (autonomy-log row 43; signed as FR-57 to FR-63 with A-26 and renumbered on 2026-10-08 to FR-59 to FR-65 and A-28 by the user's decision in chat, because `main` already uses FR-57, FR-58, A-26 and A-27). It was slice 4 on its own branch and is slice 6 since its merge into `main` on 2026-10-08 (section 4.7).** **Merged 2026-10-09:** the UX line and the accessibility line meet in `main`; the reconciliation change `reconcile-ux-accessibility` (section 4.9) rewrites FR-59 to FR-63 and FR-65 to the UX page model (autonomy-log rows 78 and 79). **AMENDED 2026-10-09 about 12:27 (UTC+5:30) by the user's signature in chat, «signed, use defaults» (autonomy-log row 86): the difficulty amendment adds slices DL1 `add-difficulty-engine` and DL2 `add-level-selector` (section 4.10).**
 
 Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amendment re-signed 18:45), and the baseline specs `openspec/specs/puzzle-engine/spec.md` and `openspec/specs/play-page/spec.md`.
 
@@ -8,7 +8,7 @@ Inputs: `docs/product-brief.md`, `docs/requirements.md` (signed off 16:13, amend
 
 1. One slice per baseline capability: `puzzle-engine` → slice 1, `play-page` → slice 2.
 2. Foundations first: the page consumes the engine interface pinned in the puzzle-engine spec, so slice 2 starts after slice 1 is archived.
-3. Every MVP FR is owned by exactly one slice (section 5). Future rows (FR-18, FR-44 to FR-48, FR-55, FR-56) are not in this plan. (amended 2026-10-05: FR-27 is now MVP, slice F; NFR-7 moves with slice G, section 4.8)
+3. Every MVP FR is owned by exactly one slice (section 5). Future rows (FR-18, FR-45 to FR-48, FR-55, FR-56) are not in this plan. (amended 2026-10-05: FR-27 is now MVP, slice F; NFR-7 moves with slice G, section 4.8) (amended 2026-10-09: FR-44 is now MVP, slice DL2, and FR-74 to FR-94 are new MVP rows owned by slices DL1 and DL2, section 4.10; difficulty amendment, autonomy-log row 86)
 4. Change folders are `openspec/changes/add-<capability>/`; every commit touching `src/` carries `Slice: <change-name>` and `Refs: FR-x`.
 
 ## 2. The capability changes
@@ -131,6 +131,23 @@ Source: `docs/design/ux-decisions.md`; frozen reference `design/README.md` and `
 
 Runs on `claude/reconcile-ux-main` after the merge of the UX line into `main` (`603b631`) and before phases D to H, which then run on `main`. Owns the rewritten text of FR-59 to FR-63 and FR-65 and NFR-9 (the ids stay owned by slice 6, section 4.7; no new FR). Steps as for every slice: change folder by the spec-writer with an independent audit, tests first (each changed test derives from a changed requirement, spec sentence or rule, listed in its `tasks.md`), implementation, review-gate, a real-browser check at 375 and 1280 px, archive.
 
+### 4.10 Difficulty amendment, slices DL1 and DL2 (signed 2026-10-09, autonomy-log row 86)
+
+Source: `docs/handoff/difficulty-amendment-draft-2026-10-09.md` (signed with all defaults), `docs/requirements.md` (FR-44, FR-74 to FR-94, NFR-16, NFR-17, A-33 to A-39). The measurement `docs/qa/difficulty-measurement/README.md` is a scratch prototype, not acceptance evidence. (This section is numbered 4.10 because 4.9 is `reconcile-ux-accessibility`.)
+
+- **Order:** DL1 before G1 (the browser checks of phase G then cover the level control). DL2 after the user updates the frozen design reference (Q3: level control, description line, techniques section); DL1 does not wait for the design. DL2 depends on DL1. Every slice: tests first and seen red, a dedicated agent on Sonnet, per-slice review-gate (one fix round, one confirming run), `npx openspec validate --all --strict` before the next slice, archive with `Slice: <change-name>` and `Refs: FR-x` on commits touching `src/`. Each slice amends its spec (`puzzle-engine/spec.md` for DL1, `play-page/spec.md` for DL2) together with the change.
+- **Slice DL1, `add-difficulty-engine`.** Owns: FR-74 to FR-86 (FR-74 to FR-77 techniques, FR-78 to FR-80 hint sentences, FR-81 to FR-84 level and generator, FR-85 and FR-86 CLI). NFRs travelled: NFR-16, NFR-17; NFR-1 to NFR-5 extended. Amended rows it implements without owning a new copy: FR-13, FR-14, FR-15, FR-22, FR-27 (owner slice F), FR-30 unchanged.
+  - **Scope in:** the line-balance, unique-lines and look-ahead techniques in the hint engine with the order of FR-77; the level parameter and exact-level generator (levels 1 to 4 for N = 6 and 8, level 1 only for N = 4); bounded attempts and the distinct run-out error; CLI `--level`; the three new Ukrainian hint sentences (provisional draft wording, the user confirms the final strings in the page slice, Q6, and the pinned strings then change deliberately); measured numbers per (N, level) in `docs/qa/`.
+  - **Scope out:** all page behaviour (DL2); changing FR-25 (unchanged, Q6); N = 4 above level 1.
+  - **Starts with:** (1) the level 1 golden file (every (N, seed) of the fixed set, taken before any change, so level 1 output stays byte-identical, FR-14, FR-85); (2) the timing spike for a fast level-4 check (Q5), target at most 50% of NFR-2 and NFR-3 per (N, level).
+  - **Stop condition (A-36):** if level 4 cannot hold NFR-2 and NFR-3 with that margin, or the 30 attempts run out on the fixed seed set (A-35), the slice stops and raises an amendment; no bound is relaxed silently, no level test is loosened, "exactly one solution" is never weakened.
+  - **Definition of done:** tests first and seen red: one case per technique (positive and near-miss), the 5-step contradiction not found (cap 4), determinism and order, exact level (solvable with techniques 1..L, not with 1..L−1), uniqueness and the same solution across levels, 0 run-outs, golden file for level 1, CLI cases; every owned FR and NFR-16 and NFR-17 have a test tagged `@trace`; lint, test:run, build and strict validation pass; the measured numbers and the 50% check are reported in `docs/qa/`; per-slice review-gate; archived.
+- **Slice DL2, `add-level-selector`.** Owns: FR-44 and FR-87 to FR-94. NFRs travelled: NFR-4, NFR-5, NFR-9 extended to the new texts and the level radiogroup. Amended rows it implements without owning a new copy: FR-42 (slice 2), FR-57 (slice 4), FR-58 (slice 4), FR-67 (slice C), FR-68 (slice A), FR-73 (slice C).
+  - **Scope in:** the level radiogroup and description line, the 4×4 behaviour (control visible, levels 2 to 4 `aria-disabled` with the one-line reason, Q1), size and level interplay, confirmation on a level change, the second section of the rules panel, all new text in `src/ui/strings.ts`, the final Ukrainian strings confirmed by the user in chat (Q6), the page hint using all four techniques (Q2).
+  - **Scope out:** the held rows NFR-10, NFR-12, NFR-13, NFR-14 (they stay held and NOT-EARNED; G1 and G2 must cover the level control, the design reference update is the user's step, Q3); remembering the level (TC-12).
+  - **Starts after:** the user's design update (Q3) and DL1 archived.
+  - **Definition of done:** jsdom tests and stylesheet tests (focus and contrast of the new buttons) written first and seen red; every owned FR has a test tagged `@trace`; lint, test:run, build and strict validation pass; `src/ui/strings.ts` holds all new text; per-slice review-gate; a real-browser smoke at 375 and 1280 px; archived. Follow-ups in the slices' own changes: `docs/product-brief.md`, `openspec/specs/puzzle-engine/spec.md`, `openspec/specs/play-page/spec.md`.
+
 ## 5. FR coverage check
 
 | FR | Slice | FR | Slice | FR | Slice |
@@ -168,7 +185,22 @@ Added 2026-10-05 (UX amendment, section 4.8; the new and newly MVP IDs, each own
 
 FR-39, FR-41, FR-42, FR-43, FR-57 and FR-58 keep the owner in the table above (slices 2, 3, 4); slices A to E change them as amended rows and own no new copy of them.
 
-Total: **56 MVP FRs across 5 slices that own FRs** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4, 7 in slice 6; slice 5 adds none; no gaps, no duplicates), plus **9 MVP FRs across slices A, B, C, E, F** from the 2026-10-05 amendment (FR-27, FR-66 to FR-73), 65 in all. Slice D owns no new FR (it amends FR-41); slices G and H own no FR.
+Added 2026-10-09 (difficulty amendment, section 4.10; the new and newly MVP IDs, each owned exactly once):
+
+| FR | Slice | FR | Slice | FR | Slice |
+|---|---|---|---|---|---|
+| FR-74 | DL1 | FR-81 | DL1 | FR-87 | DL2 |
+| FR-75 | DL1 | FR-82 | DL1 | FR-88 | DL2 |
+| FR-76 | DL1 | FR-83 | DL1 | FR-89 | DL2 |
+| FR-77 | DL1 | FR-84 | DL1 | FR-90 | DL2 |
+| FR-78 | DL1 | FR-85 | DL1 | FR-91 | DL2 |
+| FR-79 | DL1 | FR-86 | DL1 | FR-92 | DL2 |
+| FR-80 | DL1 | FR-44 | DL2 | FR-93 | DL2 |
+| | | | | FR-94 | DL2 |
+
+FR-13, FR-14, FR-15, FR-22, FR-27, FR-42, FR-57, FR-58, FR-67, FR-68 and FR-73 keep the owner in the tables above; DL1 and DL2 change them as amended rows and own no new copy of them. FR-25, FR-26, FR-30 and FR-43 are unchanged. DL1 owns 13 new FRs (FR-74 to FR-86), DL2 owns 9 (FR-44, FR-87 to FR-94): 22 in all.
+
+Total: **56 MVP FRs across 5 slices that own FRs** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4, 7 in slice 6; slice 5 adds none; no gaps, no duplicates), plus **9 MVP FRs across slices A, B, C, E, F** from the 2026-10-05 amendment (FR-27, FR-66 to FR-73), 65 in all, plus **22 MVP FRs across slices DL1 and DL2** from the 2026-10-09 difficulty amendment, 87 in all. Slice D owns no new FR (it amends FR-41); slices G and H own no FR.
 
 ## 6. Sequencing and schedule
 

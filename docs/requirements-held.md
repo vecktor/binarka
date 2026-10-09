@@ -30,6 +30,11 @@ Notes on the held NFRs:
 - NFR-14: today `npm run check:visual` exits 1 (no config; Playwright, pixelmatch, pngjs not installed). Sampling declaration: 7 pages × 5 viewports × 2 themes + 3 extra viewports + the logo at 40, 56, 64 px; coverage is `sampled`. The escalation path (finer sweep) is named when the check is set up. It also carries the placement and visibility parts left out of FR-57, FR-68, FR-71 and FR-72.
 - NFR-15: fallback if the mini board fails at 40 px: the digits "01" as shapes (decision 10). Review set 5 has a 40 px logo capture.
 - NFR-7: until each mechanism exists, the NFRs it carries (NFR-10 to NFR-15) stay held (never silently dropped, BC-6).
+- **Note (2026-10-09, difficulty amendment signed in chat at about 12:27, autonomy-log row 86; no row text changed, no row moved):**
+  - NFR-10: the level control and its description line (FR-87, FR-89) add height; the 375×812 sampled check may no longer pass and must include the level control when it is built.
+  - NFR-12: the four level buttons and the disabled 4×4 ones (FR-91) must meet the 44×44 floor; four buttons with «Головоломка» and «Мозколамка» on a 320 px viewport may not fit on one row.
+  - NFR-13: the focus and axe check extends to the level radiogroup.
+  - NFR-14: OPEN CONFLICT with the frozen reference `design/v0-screenshots/review-set-5/` (no level control, no techniques section; every shot with the page body differs). Decision Q3: the user updates the design reference before the page slice (DL2) starts; the engine slice (DL1) does not wait. NFR-14 stays pending (not declared), so nothing fails today.
 
 ## Constraints (held)
 

@@ -1,6 +1,7 @@
 # Requirements amendment draft: difficulty levels (2026-10-09)
 
-Status: **DRAFT, not signed.** Nothing in `docs/requirements.md`, `docs/requirements-held.md` or any spec has been edited. No code is written before the user signs this in chat. Page text is Ukrainian; everything else is English. Wording marked **(to confirm)** is a proposal.
+Status: SIGNED by the user in chat on 2026-10-09 at about 12:27 (UTC+5:30), 'signed, use defaults' (autonomy-log row 86); applied to docs/requirements.md.
+
 
 Basis:
 
