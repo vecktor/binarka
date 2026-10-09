@@ -17,6 +17,8 @@ Recorded 2026-10-05 at 16:07 (UTC+5:30, as the clock printed it at commit time) 
 
 The user agreed with the page order in decision 2.
 
+**Note on decision 6 (2026-10-10, phase S amendment signed in chat at about 00:03 (UTC+5:30), autonomy-log row 118):** decision 6 ("one tap, current size marked") is **superseded in part** by the user's decision of 2026-10-09 at about 22:33 (autonomy-log row 114): in the setup sheet a size press now only marks the size, and the new puzzle starts with «Почати» (select, then «Почати»; FR-43, FR-73, FR-100, FR-101 in `docs/requirements.md`). The segmented control of three buttons stays. The decision text above is not rewritten.
+
 ## Decisions after the first v0 build (2026-10-05 about 19:55)
 
 | # | Problem found | Decision | Requirement impact |
@@ -50,6 +52,8 @@ The user's answers to the five questions in [`review-1-design-reviewer.md`](revi
 | 15 | No 40 px logo capture exists. | **Add a 40 px logo capture** to the review set. | `design/tools/capture-review-set.sh`. |
 | 16 | May the board grow beyond 4rem cells? | **Yes:** about 5rem on tablet, height-aware (about 4.5rem) on desktop, as the review proposes. | Design CSS; the fit-on-one-screen NFR must still hold. |
 | 17 | Warm dark theme? | **Yes:** the warm brown-black palette from the review (§3). | Design CSS; contrast to be verified by `check-a11y`. |
+
+**Note on decision 17 (2026-10-10, phase S amendment signed in chat at about 00:03 (UTC+5:30), autonomy-log row 118):** the warm dark palette of decision 17 stays. A manual theme choice (light, dark, or as the system) now sits on top of it (the user's decision of 2026-10-09 at about 23:15, autonomy-log row 116; FR-102 to FR-106 in `docs/requirements.md`), so dark is no longer reached only through the system theme. Decision 17 is not superseded and its text is not rewritten.
 
 **Which findings to apply:** all 15, plus the review's motion (the user's choice, 2026-10-05 about 21:00; iteration 4 in `design/README.md`). Review 2 ([`review-2-design-reviewer.md`](review-2-design-reviewer.md)) asked four more questions.
 

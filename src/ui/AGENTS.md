@@ -2,5 +2,5 @@
 
 Guidance for work inside `src/ui/`; the same applies to `index.html` and `src/main.ts`. Keep this file small: the rules live in `docs/frontend-conventions.md`, so read it before editing (ADR-0004).
 
-- Page text, including `aria-label` and `title`, is Ukrainian (NFR-5).
+- Page text, including `aria-label` and `title`, is in the page language: Ukrainian by default, or English (NFR-5, per mode).
 - The `data-*` attributes are the test contract in `openspec/specs/play-page/spec.md`. Keep them when markup changes.

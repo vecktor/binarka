@@ -1,0 +1,85 @@
+# Design: add-english-version
+
+Slice 3 of the combined amendment signed on 2026-10-10 (autonomy-log rows 116 to 120). Draft and dispositions: `docs/handoff/theme-language-amendment-draft-2026-10-09.md` (TD-Q2 to TD-Q10, A-49, A-52 to A-55). It copies the result of `add-theme-switch` (merge rule: earlier text first, this folder's sentences appended) and has the last word on the shared requirements.
+
+## Goals
+
+- An English version of every page text and every hint sentence, chosen by the player, remembered, applied before the first paint (FR-55, FR-56, FR-107 to FR-112, FR-113 to FR-116).
+- A switch that re-renders in place: the board, entries, marked choice and focus stay; a hint on screen is the same hint in the other language (FR-108, FR-110).
+- Text rules that a test can decide per mode, with exactly one named exception (NFR-5, A-52).
+
+## Non-goals
+
+- A third language, locale detection (A-49), a translated CLI (NFR-8, FR-28, FR-85 stay byte-identical), English pixel shots (TD-Q10), the pixel reference, a meta description (Q12).
+- Visual specifics (English labels at 320 px, the summary button width, the one-screen fit): TD-D5, the designer checks them in `review-set-12`; the specs pin the fit only as sampled e2e (NFR-10).
+- Authentication: none exists, so no redirect-to-login or forbidden case applies. No free value is typed, so no inline validation message and no raw 500 can occur.
+
+## Key decisions
+
+1. **ADR-worthy: the engine takes the language and exposes the data of a hint (TD-Q8, FR-110, FR-112).** `hint(board, ceiling = 1, language = 'uk')`; fill results gain `axis`, `line`, `digit`, `empties`, `other` and `size` (`steps` exists); a pure `hintSentence(hint, language = 'uk')` is exported from `src/engine/index.ts`. The page keeps the hint result on screen and calls the function on a switch. Why: after a hint the cell is filled, so a new hint call would be a different hint. Cost: the engine's public contract changes (the spec's "Engine interface" bullet, the export list and four whole-object `toEqual` tests: `tests/hint-line-balance.test.ts` l. 27, 35, 39, 43; `tests/hint-unique-lines.test.ts` l. 21, 29, 45; `tests/hint-order-ceiling.test.ts` l. 203; `tests/hint-look-ahead.test.ts` l. 113). Alternative rejected: the page asks for both languages on the same board before the fill (no contract change, but two hint computations per press, and the second language is computed for nothing). The Ukrainian output stays byte-identical for every existing caller (precedent: row 88, option B).
+2. **Where the signature carries the language.** The draft says "the language is an engine input with the default Ukrainian" without naming the position; the delta pins the third parameter, `language`, after `ceiling`, so no existing call changes. A named-options object was rejected: it would change every call site.
+3. **Two string tables, same keys (FR-94).** `src/ui/strings.ts` holds a Ukrainian and an English table; a test compares the key sets. The engine keeps its own sentences (A-54: the engine owns them), so the English hint wording lives in `src/engine/`, not in the strings module. The English wording is the appendix (row 119); the patterns for variants the appendix does not show (columns, ones, the other count endings, balance for a one) are derived by the same rule and listed in the engine scenarios; the eval judge and the reviewers may refine them, and a refinement edits the delta, the code and the tests together.
+4. **Re-render in place (FR-108).** One `render()` pass re-sets texts and `aria-label`s on the existing elements; nothing is remounted, so focus, the sheet's marked choice, the board DOM and the hint-filled cell survive. Trade-off: every string has a render site; a test lists them (the table in «English page text»). A remount would lose focus and state.
+5. **Per-mode scans with one exception (NFR-5, Q5, A-52).** Each language option is named in its own language and carries `lang`; the scan skips an element whose own `lang` differs from `<html lang>`, nothing else. "Binarka" is used for the title and `document.title` in English (Q3), so no second exception exists.
+6. **Names kept, bodies per mode.** The «Ukrainian …» requirements keep their names so the archive matches; their bodies now start "In Ukrainian mode …" and an English scenario is added (precedent: `add-level-selector`). A reading rule in «English page text» says that every quoted Ukrainian text in an unmodified scenario describes Ukrainian mode.
+7. **The shared requirements of the theme folder are extended, not duplicated.** «Stored preferences», «Invalid or missing…», «Failing storage…», «Preferences are applied before the first paint», «No flash…», «Common rules…», «The option controls are not part of the marked choice», «Settings button and panel», «Texts of the settings…», «The theme options set their own colours» get their language sentences here (the earlier-folder, later-extends rule). The panel gets «Мова» and the language group between the theme group and «Закрити».
+8. **The head step becomes bilingual (FR-116).** It also sets `lang` and `document.title` and holds the second key name and both titles; the tests compare them with the module. A `MutationObserver` mount test asserts no Cyrillic is rendered and then replaced during an English mount (TD finding 5).
+9. **Eval `hint-clarity-en` (TD-Q9, NFR-6).** Three cases (pair, sandwich, count), bar 80, graded by a fresh `eval-judge` in the `eval-suite` workflow; the baseline is minted only after a passing run (AGENTS.md, evals); `node scripts/check-eval-ratchet.mjs` guards it. Departs from row 9's "Ukrainian only".
+10. **The pixel gate stays Ukrainian (Q10).** English is covered by the per-mode scans, e2e (NFR-10 fit, NFR-12 targets in English) and a11y (NFR-13 English states); the escalation for labels at 320 px is a 1 px-step width sweep from 320 to 400 px in English with the settings panel open, run before G2.
+
+## Placeholders of TD-Q15
+
+None open for this folder: the place of the language group is signed (row 120: the settings panel, «Мова» below «Тема»). Visual specifics only, kept out of the specs and built against `review-set-12`: English label wrapping at 320 px, the summary button width, the header at 320 px (TD-D5). The hooks `[data-control="language"]`, `[data-language-option]` and the class `language-control` are spec-made proxies confirmed in task 1.4.
+
+## Data model
+
+Stored: `localStorage['binarka.language']` = `uk` | `en` beside the theme key, nothing else. Page state: `language` (default `uk`), the hint result on screen (or none), the win flag. Engine: the fill result gains the optional fields of «A hint exposes the data of its sentence». New DOM: the label «Мова», the language radiogroup of two options with `lang`. New data: the English table in `src/ui/strings.ts`, the English sentences in `src/engine/`.
+
+## Error handling strategy
+
+- Bad stored language, missing key, empty value: Ukrainian, not rewritten (FR-114). Storage that throws: defaults, the press still applies for the session, no retry, no message (FR-115).
+- A language other than `'uk'` or `'en'` passed to the engine is a malformed call and unspecified; the page only passes the two. The CLI never passes a language.
+- A press during a pending action cannot happen (modal dialog, A-55); a press with the settings panel over the sheet leaves the marked choice to the panel-open rule of the theme folder.
+- A hint region that is empty stays empty; the win region follows the same re-render.
+
+## Tests that change deliberately (by FR)
+
+From the draft's grep; the implementer re-greps (task 1.2). No test is weakened; the Ukrainian assertions stay byte-identical, English cases are added.
+
+| File | What pins the old behaviour | Source |
+|---|---|---|
+| `tests/play-page-page-text.test.ts`, `tests/play-page-controls-text.test.ts`, `tests/ui-strings.test.ts` | Ukrainian-only scans and lists: the source scan stays, the per-mode scans and the key-parity test are added | NFR-5, FR-94, FR-111 |
+| `tests/play-page-win.test.ts`, `-cells`, `-techniques`, `-setup-sheet`, `-wcag`, `-semantics` | Ukrainian texts read as the only texts; English scenarios added; button count 58 to 60, radiogroups 3 to 4 | FR-41, FR-70, FR-93, FR-96, NFR-9 |
+| `tests/hint-sentences.test.ts`, `tests/hint-sentences-techniques.test.ts`, `tests/hint.test.ts` | Ukrainian-only sentence checks; English cases added | FR-112, NFR-4, NFR-5 |
+| `tests/hint-line-balance.test.ts`, `tests/hint-unique-lines.test.ts`, `tests/hint-order-ceiling.test.ts`, `tests/hint-look-ahead.test.ts` | whole-object `toEqual` on a fill result (new fields) | FR-110, FR-112 |
+| `tests/engine-purity.test.ts` | no change expected (the language is a plain value); re-run | TC-7 |
+| `tests/main-entry.test.ts`, `tests/index-html.test.ts` | the head step gains `lang`, the title and the second key | FR-116, FR-109 |
+| `tests/helpers/play-page.ts` | the mount helper can start in English (stores `binarka.language` before the mount) | FR-113 |
+| `e2e/nfr-10-fit.spec.ts`, `e2e/nfr-12-targets.spec.ts`, `e2e/nfr-13-a11y.spec.ts`, `e2e/nfr-18-*.spec.ts`, `e2e/helpers.ts` | Ukrainian only; gain English samples and the `lang` assertions | NFR-10, NFR-12, NFR-13, NFR-18 |
+| `evals/cases/` | a new case file in the dimension `hint-clarity-en` | NFR-6 |
+
+## Risks and mitigations
+
+- **The contract change breaks callers:** the default keeps every Ukrainian output byte-identical; the four `toEqual` files are listed and the purity test re-run.
+- **A string without a render site:** the key-parity test and the "English page at mount" scenario catch a missing counterpart; the in-place render test (a switch and a switch back restores every text byte for byte) catches a missed site.
+- **English wording drift:** the appendix is the wording; a refinement edits the delta, the code and the tests in one step.
+- **Screen readers announce a changed live region again** (A-53): accepted, not tested (A-28).
+- **English labels at 320 px:** observed in the browser check; the design owns the fix (TD-D5).
+
+## Ambiguities in the draft and the reading chosen
+
+- The signature position of `language` (above, decision 2) and the exact field names of Q8 (the draft lists "axis, line, digit, empties, other, steps, and the board size"): `size` for the board size; `line` and `other` are 0-based like `row` and `col`, the sentences number from 1.
+- "The language half of FR-116 is completed in the English slice" and "built for both keys" (draft section 8): read as the theme folder specified the machinery for the theme key and this folder MODIFIES the same requirements for the language key.
+- The draft lists NFR-8 as "note only": no delta; the CLI stays English and byte-identical, checked by the existing CLI scenarios.
+- English sentence patterns not in the appendix (see decision 3): derived by the same rule; "one more one" in the balance sentence for d = 1 is awkward but exact, and the eval judge may refine it.
+- A-1, A-20 and A-28 are assumption rows ("labels in the page language"); they change in `docs/requirements.md` at application, not in a spec.
+
+## Baseline text edits at archive
+
+Archive normally and in the SAME commit edit the non-requirement text:
+
+1. **`openspec/specs/play-page/spec.md`:** Purpose (the page offers Ukrainian and English); Ownership (FR-55, FR-56 MVP, FR-107 to FR-112, FR-113 to FR-116 language parts, NFR-5 per mode, NFR-18 held); DOM contract: the mount reads the stored language, the board label (l. 24) per language, `document.title` (l. 36) per language, the «Ids» bullet unchanged (five), new bullets «Language control» and the settings panel contents; the generator/hint bullet (l. 20: "an expected hint … is `hint(board, 4)`") gains the language argument (`hint(board, 4, language)`, default `'uk'`); Exclusions: remove "FR-55 … is Future" and "FR-56 … is Future" (l. 2302 to 2303).
+2. **`openspec/specs/puzzle-engine/spec.md`:** the "Engine interface" bullet (l. 13): `hint(board, ceiling = 1, language = 'uk')`, the fill result's added fields, the `hintSentence` export; the Purpose line on Ukrainian sentences; the Exclusions line "FR-56 (English hint sentences) is Future" removed; the prose of «Hint order and ceiling» (`hint(board, ceiling = 1)`).
+3. **Harness files (row 117):** the `AGENTS.md` line and the three harness lines change in the commit that applies the amendment; confirm in task 1.1.
+
+Before archive confirm that no baseline requirement already carries one of the ADDED names, and rebase the MODIFIED blocks on the baseline as it is then. Afterwards run `npx openspec validate --all --strict` and `node scripts/check-traceability.mjs`.

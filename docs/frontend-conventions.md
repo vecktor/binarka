@@ -5,7 +5,7 @@ Status: **ACCEPTED** by the user on 2026-10-06, with Vercel's guidelines vendore
 Applies to `index.html`, `src/main.ts` and `src/ui/**` (TypeScript and CSS). TypeScript, tooling and test rules stay in `docs/coding-conventions.md`. Vite's own handling of HTML, CSS and assets is in §7 of that file.
 
 **Precedence:**
-1. The signed requirements and specs. For example, NFR-5 makes all page text Ukrainian, and that includes `aria-label` and `title`: the page tests read them.
+1. The signed requirements and specs. For example, NFR-5 makes all page text the page language (Ukrainian or English, per mode), and that includes `aria-label` and `title`: the page tests read them.
 2. WCAG 2.2 AA, as the measurable bar.
 3. WAI-ARIA APG, for widget behaviour.
 4. Vercel's Web Interface Guidelines, as the practice checklist.
@@ -15,8 +15,8 @@ MDN is the reference for the APIs themselves.
 
 ## 1. HTML and semantics
 
-1. Use native elements before ARIA: `<button type="button">` for actions. The size choice is a `role="radiogroup"` of buttons (`role="radio"`, `aria-checked`) with a Ukrainian `aria-label` «Розмір поля». The page has no `<select>`, no `<label for>` and no ids except those of the rules popover and the dialog, so mounting more than once keeps no duplicate ids. Use ARIA roles only where no native element fits (the board group, §2). Sources: Vercel "Prefer native semantics … before ARIA"; WCAG 4.1.2.
-2. One `<h1>`, `lang="uk"`, an accurate `<title>`. Never disable zoom: no `user-scalable=no`, no `maximum-scale` (Vercel NEVER rule).
+1. Use native elements before ARIA: `<button type="button">` for actions. The size choice is a `role="radiogroup"` of buttons (`role="radio"`, `aria-checked`) with an `aria-label` in the page language «Розмір поля». The page has no `<select>`, no `<label for>` and no ids except those of the rules popover and the dialog, so mounting more than once keeps no duplicate ids. Use ARIA roles only where no native element fits (the board group, §2). Sources: Vercel "Prefer native semantics … before ARIA"; WCAG 4.1.2.
+2. One `<h1>`, `lang` matching the page language (FR-109), an accurate `<title>`. Never disable zoom: no `user-scalable=no`, no `maximum-scale` (Vercel NEVER rule).
 3. Classes are for styling. `data-*` attributes are the scripting and test contract (the play-page spec's DOM contract): keep them when markup changes. Do not use ID selectors or `!important` in CSS (Google HTML/CSS guide).
 4. Build the DOM with `createElement` and `textContent`, never `innerHTML` (as in `docs/coding-conventions.md` §7).
 
@@ -24,7 +24,7 @@ MDN is the reference for the APIs themselves.
 
 Source: WCAG 4.1.2 and 2.1.1; the play-page spec (FR-59 to FR-61). Each cell is a native `<button>`, so Tab, Enter and Space come from the browser.
 
-5. The board is `role="group"` with a Ukrainian `aria-label` that names the size (for example «Поле 6×6»). There is no `grid`, `row` or `gridcell` role; the cells are direct children of the group.
+5. The board is `role="group"` with an `aria-label` in the page language that names the size (for example «Поле 6×6»). There is no `grid`, `row` or `gridcell` role; the cells are direct children of the group.
 6. Every cell is in the normal tab order: no `tabindex`, no roving tabindex. Tab and Shift+Tab move between cells in reading order. The page has no arrow, Home or End handling and does not prevent any key default.
 7. Enter and Space (the native button click) cycle the focused cell exactly like a click, through the same code path. The focus stays on the cell.
 8. Given cells are `aria-disabled="true"` and ignore toggles. The page never sets `aria-readonly`.
@@ -32,7 +32,7 @@ Source: WCAG 4.1.2 and 2.1.1; the play-page spec (FR-59 to FR-61). Each cell is 
 
 ## 3. Names, states and announcements
 
-10. Every interactive element has an accessible name, in Ukrainian (NFR-5). A visible label beats an `aria-label` alone (WCAG 3.3.2 notes that `aria-label` can pass 4.1.2 and still fail 3.3.2). The exception (FR-62): the size radiogroup is named by `aria-label` «Розмір поля», because each radio shows its own visible text («Поле N×N»).
+10. Every interactive element has an accessible name, in the page language (NFR-5). A visible label beats an `aria-label` alone (WCAG 3.3.2 notes that `aria-label` can pass 4.1.2 and still fail 3.3.2). The exception (FR-62): the size radiogroup is named by `aria-label` «Розмір поля», because each radio shows its own visible text («Поле N×N»).
 11. Status text (the hint sentence and the win message) lives in `role="status"` elements. They are in the page, empty, from the first render. Only their text changes, and focus never moves to them (WCAG 4.1.3; MDN live regions; Vercel "polite `aria-live`").
 
 ## 4. Focus

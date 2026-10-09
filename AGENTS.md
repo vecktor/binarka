@@ -54,7 +54,7 @@ the token budget, and what to demote when this file grows past it.
 - `src/cli.ts` prints a puzzle as text; `src/main.ts` and `src/ui/` are the page. Both use the same engine.
 - Tests live in `tests/`, named `*.test.ts`, each tagged `@trace FR-x` (plain IDs, no suffixes).
 - Puzzles are deterministic from a seed; never use `Math.random` in the engine.
-- Page text is Ukrainian; CLI output and errors are English; each hint explains itself in one sentence.
+- Page text is Ukrainian by default, with English as the second language (the player's choice, remembered); the page shows hint sentences in its language (the engine defaults to Ukrainian); CLI output and errors are English; each hint explains itself in one sentence.
 
 ## Correctness rules
 
