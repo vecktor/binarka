@@ -530,8 +530,25 @@ button:focus-visible {
    the closed sheet keeps the browser's hiding. */
 .setup-sheet:popover-open {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(2.75rem, 1fr);
   column-gap: 8px;
+  align-content: start;
+}
+
+/* One opaque strip behind the footer row (as in the design): scrolled content never shows between or under the two
+   buttons. It spans every row, sits at the end and sticks with them; it takes no pointer events. */
+.setup-sheet:popover-open::before {
+  content: '';
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  align-self: end;
+  position: sticky;
+  bottom: 0;
+  height: calc(2.75rem + 16px);
+  background-color: var(--color-control-bg);
+  box-shadow: 0 16px 0 16px var(--color-control-bg);
+  pointer-events: none;
 }
 
 .setup-sheet > * {
@@ -541,6 +558,8 @@ button:focus-visible {
 .setup-sheet > .setup-start,
 .setup-sheet > .setup-close {
   grid-column: auto;
+  grid-row: 3;
+  align-self: end;
   position: sticky;
   bottom: 0;
 }

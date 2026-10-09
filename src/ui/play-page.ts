@@ -128,7 +128,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   let pending: (() => void) | null = null;
   let returnToSummary = false; // the pending confirmation came from the sheet: focus goes to the summary when it ends
 
-  /** Rewrite everything derived from `size` and `level` (summary, aria-checked, aria-disabled, reason). */
+  /** The summary from the board shown (`size`, `level`); aria-checked, aria-disabled and the reason from the marked choice (FR-100). */
   function syncControls(): void {
     summaryLabel.textContent = summaryText(size, level);
     for (const [m, button] of sizeButtons) button.setAttribute('aria-checked', m === markedSize ? 'true' : 'false');
@@ -350,6 +350,8 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   sheet.addEventListener('toggle', (event) => {
     const newState = (event as Event & { newState?: string }).newState;
     if (newState === 'open') {
+      // Each opening shows the board shown (FR-100). Browsers coalesce a quick close and reopen into one 'open' event,
+      // so the closing reset alone could leave an old mark (design.md decision 1).
       resetMarked();
       return;
     }

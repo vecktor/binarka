@@ -155,6 +155,24 @@ describe('@trace FR-100 the marked choice', () => {
     expect(summaryText(root), 'the summary still reads 6×6 · Розминка').toBe('6×6 · Розминка');
   });
 
+  it('An opening toggle alone shows the board shown (a coalesced close and reopen)', () => {
+    // FR-100: each opening shows the board shown. Browsers coalesce a quick close and reopen into one toggle with
+    // newState 'open', so no 'closed' event arrives (review-gate fix round, design.md decision 1 (d)).
+    const { root } = mountPlayedBoard(6);
+    const sheet = openSheet(root);
+    markSize(root, 8);
+    markLevel(root, 4);
+    expect(checkedSize(root), 'premise: «Поле 8×8» is marked').toBe(8);
+    expect(checkedLevel(root), 'premise: «Мозколамка» is marked').toBe(4);
+
+    dispatchToggle(sheet, 'open');
+
+    expect(sizeButtons(root).map((b) => b.getAttribute('aria-checked')), 'aria-checked is on «Поле 6×6» only').toEqual(SIZE_STATES(6));
+    expect(levelStates(root), 'and on «Розминка» only').toEqual(['true', 'false', 'false', 'false']);
+    expect(boardSize(root), 'the board is unchanged').toBe(6);
+    expect(summaryText(root), 'the summary still reads 6×6 · Розминка').toBe('6×6 · Розминка');
+  });
+
   it('Closing without «Почати» discards the marked choice by every route', () => {
     const ROUTES: { route: string; close: (root: HTMLElement) => void }[] = [
       { route: 'the close button «Закрити»', close: (root) => { sheetCloseButton(root).click(); } },
