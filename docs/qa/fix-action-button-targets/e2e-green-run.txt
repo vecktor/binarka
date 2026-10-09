@@ -1,0 +1,52 @@
+Green e2e run (task 3.6), 2026-10-09 22:40 UTC+5:30, tree ef513a1 + the CSS fix (.buttons button { min-height: 2.75rem }).
+
+> binarka@0.1.0 test:e2e
+> playwright test
+
+
+Running 41 tests using 5 workers
+
+  ✓   1 [layout] › e2e/nfr-10-fit.spec.ts:39:1 › NFR-10 sampled 375x812 at 6x6: board, buttons and messages fit without vertical scroll; buttons hold still (1.5s)
+  ✓   2 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 768x1024: cells and controls meet their size floors (2.0s)
+  ✓   3 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 320x700: cells and controls meet their size floors (2.0s)
+  ✓   5 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1024x768: cells and controls meet their size floors (2.0s)
+  ✓   4 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 375x812: cells and controls meet their size floors (2.0s)
+  ✓   6 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1366x650: cells and controls meet their size floors (1.4s)
+  ✓  10 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the default state (596ms)
+  ✓   8 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1280x420: cells and controls meet their size floors (1.4s)
+  ✓   9 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 844x390: cells and controls meet their size floors (1.4s)
+  ✓   7 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1440x900: cells and controls meet their size floors (1.4s)
+  ✓  12 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the hint state (662ms)
+  ✓  14 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the confirmation state (634ms)
+  ✓  13 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the rules state (795ms)
+  ✓  15 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet state (811ms)
+  ✓  16 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (640ms)
+  ✓  11 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the win state (1.6s)
+  ✓  18 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the default state (508ms)
+  ✓  19 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the hint state (579ms)
+  ✓  21 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the rules state (621ms)
+  ✓  17 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (978ms)
+  ✓  22 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the confirmation state (463ms)
+  ✓  23 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet state (593ms)
+  ✓  24 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (604ms)
+  ✓  26 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the default state (507ms)
+  ✓  20 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the win state (1.5s)
+  ✓  25 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (948ms)
+  ✓  27 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the hint state (594ms)
+  ✓  30 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the confirmation state (475ms)
+  ✓  29 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the rules state (620ms)
+  ✓  31 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet state (633ms)
+  ✓  32 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (632ms)
+  ✓  34 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the default state (504ms)
+  ✓  28 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the win state (1.5s)
+  ✓  35 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the hint state (565ms)
+  ✓  33 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (948ms)
+  ✓  37 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the rules state (579ms)
+  ✓  38 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the confirmation state (456ms)
+  ✓  39 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet state (592ms)
+  ✓  40 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (611ms)
+  ✓  36 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the win state (1.4s)
+  ✓  41 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (701ms)
+
+  41 passed (12.9s)
+exit 0

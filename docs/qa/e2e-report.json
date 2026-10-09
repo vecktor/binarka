@@ -2,11 +2,11 @@
   "config": {
     "argv": [
       "/Users/vecktor/.nvm/versions/node/v22.21.1/bin/node",
-      "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/node_modules/.bin/playwright",
+      "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/node_modules/.bin/playwright",
       "test"
     ],
-    "configFile": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/playwright.config.ts",
-    "rootDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+    "configFile": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/playwright.config.ts",
+    "rootDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
     "failOnFlakyTests": false,
     "forbidOnly": true,
     "fullyParallel": true,
@@ -22,7 +22,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -30,7 +30,7 @@
         },
         "id": "layout",
         "name": "layout",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
         "testIgnore": [],
         "testMatch": [
           "/nfr-1[02]-.*\\.spec\\.ts/"
@@ -38,7 +38,7 @@
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -46,7 +46,7 @@
         },
         "id": "a11y",
         "name": "a11y",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
         "testIgnore": [],
         "testMatch": [
           "/nfr-13-.*\\.spec\\.ts/"
@@ -58,15 +58,15 @@
       {
         "grep": {},
         "grepInvert": null,
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
           "actualWorkers": 5
         },
         "name": "layout",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
-        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
+        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
         "testIgnore": [],
         "testMatch": {},
         "timeout": 30000,
@@ -94,15 +94,15 @@
       {
         "grep": {},
         "grepInvert": null,
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
           "actualWorkers": 5
         },
         "name": "a11y",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
-        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
+        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
         "testIgnore": [],
         "testMatch": {},
         "timeout": 30000,
@@ -181,12 +181,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1399,
+                  "duration": 1482,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:01.424Z",
+                  "startTime": "2026-10-09T17:10:35.070Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -209,7 +209,7 @@
       "specs": [
         {
           "title": "NFR-12 sampled 320x700: cells and controls meet their size floors",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -222,48 +222,18 @@
                 {
                   "workerIndex": 1,
                   "parallelIndex": 1,
-                  "status": "failed",
-                  "duration": 1723,
-                  "error": {
-                    "message": "Error: 3 element(s) below the floor at 320x700:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
-                    "stack": "Error: 3 element(s) below the floor at 320x700:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
-                    "location": {
-                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                      "column": 112,
-                      "line": 70
-                    },
-                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                        "column": 112,
-                        "line": 70
-                      },
-                      "message": "Error: 3 element(s) below the floor at 320x700:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 1957,
+                  "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:01.410Z",
+                  "startTime": "2026-10-09T17:10:35.096Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-c7ec1-rols-meet-their-size-floors-layout/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                    "column": 112,
-                    "line": 70
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "d0d8483d2d074a8cbbc1-4853c42ba4024d54a003",
@@ -273,7 +243,7 @@
         },
         {
           "title": "NFR-12 sampled 375x812: cells and controls meet their size floors",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -286,48 +256,18 @@
                 {
                   "workerIndex": 2,
                   "parallelIndex": 2,
-                  "status": "failed",
-                  "duration": 1700,
-                  "error": {
-                    "message": "Error: 3 element(s) below the floor at 375x812:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
-                    "stack": "Error: 3 element(s) below the floor at 375x812:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
-                    "location": {
-                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                      "column": 112,
-                      "line": 70
-                    },
-                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                        "column": 112,
-                        "line": 70
-                      },
-                      "message": "Error: 3 element(s) below the floor at 375x812:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 1958,
+                  "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:01.398Z",
+                  "startTime": "2026-10-09T17:10:35.097Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-31b1c-rols-meet-their-size-floors-layout/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                    "column": 112,
-                    "line": 70
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "d0d8483d2d074a8cbbc1-e953b01be2f312575080",
@@ -337,7 +277,7 @@
         },
         {
           "title": "NFR-12 sampled 768x1024: cells and controls meet their size floors",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -350,48 +290,18 @@
                 {
                   "workerIndex": 3,
                   "parallelIndex": 3,
-                  "status": "failed",
-                  "duration": 1702,
-                  "error": {
-                    "message": "Error: 3 element(s) below the floor at 768x1024:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
-                    "stack": "Error: 3 element(s) below the floor at 768x1024:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
-                    "location": {
-                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                      "column": 112,
-                      "line": 70
-                    },
-                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                        "column": 112,
-                        "line": 70
-                      },
-                      "message": "Error: 3 element(s) below the floor at 768x1024:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 1958,
+                  "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:01.431Z",
+                  "startTime": "2026-10-09T17:10:35.076Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-a2dfb-rols-meet-their-size-floors-layout/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                    "column": 112,
-                    "line": 70
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "d0d8483d2d074a8cbbc1-f9a0fa4f884111ed0f05",
@@ -401,7 +311,7 @@
         },
         {
           "title": "NFR-12 sampled 1024x768: cells and controls meet their size floors",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -414,48 +324,18 @@
                 {
                   "workerIndex": 4,
                   "parallelIndex": 4,
-                  "status": "failed",
-                  "duration": 1703,
-                  "error": {
-                    "message": "Error: 3 element(s) below the floor at 1024x768:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
-                    "stack": "Error: 3 element(s) below the floor at 1024x768:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
-                    "location": {
-                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                      "column": 112,
-                      "line": 70
-                    },
-                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                        "column": 112,
-                        "line": 70
-                      },
-                      "message": "Error: 3 element(s) below the floor at 1024x768:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 1957,
+                  "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:01.410Z",
+                  "startTime": "2026-10-09T17:10:35.118Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-bc742-rols-meet-their-size-floors-layout/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                    "column": 112,
-                    "line": 70
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "d0d8483d2d074a8cbbc1-8c523a5f3eaf539225a3",
@@ -465,7 +345,7 @@
         },
         {
           "title": "NFR-12 sampled 1366x650: cells and controls meet their size floors",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -478,48 +358,18 @@
                 {
                   "workerIndex": 0,
                   "parallelIndex": 0,
-                  "status": "failed",
-                  "duration": 1217,
-                  "error": {
-                    "message": "Error: 3 element(s) below the floor at 1366x650:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
-                    "stack": "Error: 3 element(s) below the floor at 1366x650:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
-                    "location": {
-                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                      "column": 112,
-                      "line": 70
-                    },
-                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                        "column": 112,
-                        "line": 70
-                      },
-                      "message": "Error: 3 element(s) below the floor at 1366x650:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 1352,
+                  "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:03.204Z",
+                  "startTime": "2026-10-09T17:10:37.043Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-cc0d8-rols-meet-their-size-floors-layout/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                    "column": 112,
-                    "line": 70
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "d0d8483d2d074a8cbbc1-061dd901dee0bc862fd6",
@@ -529,7 +379,7 @@
         },
         {
           "title": "NFR-12 sampled 1440x900: cells and controls meet their size floors",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -540,50 +390,20 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 5,
-                  "parallelIndex": 2,
-                  "status": "failed",
-                  "duration": 1408,
-                  "error": {
-                    "message": "Error: 3 element(s) below the floor at 1440x900:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
-                    "stack": "Error: 3 element(s) below the floor at 1440x900:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
-                    "location": {
-                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                      "column": 112,
-                      "line": 70
-                    },
-                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                        "column": 112,
-                        "line": 70
-                      },
-                      "message": "Error: 3 element(s) below the floor at 1440x900:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
-                    }
-                  ],
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 1440,
+                  "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:03.972Z",
+                  "startTime": "2026-10-09T17:10:37.512Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-6ed21-rols-meet-their-size-floors-layout/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                    "column": 112,
-                    "line": 70
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "d0d8483d2d074a8cbbc1-a59ba77222228ae4f3b6",
@@ -593,7 +413,7 @@
         },
         {
           "title": "NFR-12 sampled 1280x420: cells and controls meet their size floors",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -604,50 +424,20 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 6,
-                  "parallelIndex": 3,
-                  "status": "failed",
-                  "duration": 1416,
-                  "error": {
-                    "message": "Error: 3 element(s) below the floor at 1280x420:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
-                    "stack": "Error: 3 element(s) below the floor at 1280x420:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
-                    "location": {
-                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                      "column": 112,
-                      "line": 70
-                    },
-                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                        "column": 112,
-                        "line": 70
-                      },
-                      "message": "Error: 3 element(s) below the floor at 1280x420:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
-                    }
-                  ],
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1407,
+                  "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:03.966Z",
+                  "startTime": "2026-10-09T17:10:37.512Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-54399-rols-meet-their-size-floors-layout/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                    "column": 112,
-                    "line": 70
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "d0d8483d2d074a8cbbc1-4ece8af28083353d472d",
@@ -657,7 +447,7 @@
         },
         {
           "title": "NFR-12 sampled 844x390: cells and controls meet their size floors",
-          "ok": false,
+          "ok": true,
           "tags": [],
           "tests": [
             {
@@ -668,50 +458,20 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 7,
+                  "workerIndex": 4,
                   "parallelIndex": 4,
-                  "status": "failed",
-                  "duration": 1411,
-                  "error": {
-                    "message": "Error: 3 element(s) below the floor at 844x390:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
-                    "stack": "Error: 3 element(s) below the floor at 844x390:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
-                    "location": {
-                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                      "column": 112,
-                      "line": 70
-                    },
-                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
-                  },
-                  "errors": [
-                    {
-                      "location": {
-                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                        "column": 112,
-                        "line": 70
-                      },
-                      "message": "Error: 3 element(s) below the floor at 844x390:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
-                    }
-                  ],
+                  "status": "passed",
+                  "duration": 1430,
+                  "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T16:41:03.953Z",
+                  "startTime": "2026-10-09T17:10:37.512Z",
                   "annotations": [],
-                  "attachments": [
-                    {
-                      "name": "error-context",
-                      "contentType": "text/markdown",
-                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-5f811-rols-meet-their-size-floors-layout/error-context.md"
-                    }
-                  ],
-                  "errorLocation": {
-                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
-                    "column": 112,
-                    "line": 70
-                  }
+                  "attachments": []
                 }
               ],
-              "status": "unexpected"
+              "status": "expected"
             }
           ],
           "id": "d0d8483d2d074a8cbbc1-4b8e39fb17a78c2650a6",
@@ -747,15 +507,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 580,
+                      "duration": 596,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:04.000Z",
+                      "startTime": "2026-10-09T17:10:38.166Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -781,15 +541,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 6,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 604,
+                      "duration": 662,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:04.937Z",
+                      "startTime": "2026-10-09T17:10:39.041Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -815,15 +575,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1382,
+                      "duration": 1564,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:04.736Z",
+                      "startTime": "2026-10-09T17:10:38.929Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -849,15 +609,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 4,
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 662,
+                      "duration": 795,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.020Z",
+                      "startTime": "2026-10-09T17:10:39.449Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -883,15 +643,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 525,
+                      "duration": 634,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.022Z",
+                      "startTime": "2026-10-09T17:10:39.456Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -917,15 +677,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 12,
+                      "workerIndex": 9,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 684,
+                      "duration": 811,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.021Z",
+                      "startTime": "2026-10-09T17:10:39.458Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -951,15 +711,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 6,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 562,
+                      "duration": 640,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:05.693Z",
+                      "startTime": "2026-10-09T17:10:39.843Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -986,14 +746,14 @@
                   "results": [
                     {
                       "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 856,
+                      "duration": 978,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.123Z",
+                      "startTime": "2026-10-09T17:10:40.288Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1027,15 +787,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 0,
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 498,
+                      "duration": 508,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.262Z",
+                      "startTime": "2026-10-09T17:10:40.447Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1061,15 +821,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 631,
+                      "duration": 579,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.748Z",
+                      "startTime": "2026-10-09T17:10:40.461Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1095,15 +855,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 6,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1542,
+                      "duration": 1506,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.766Z",
+                      "startTime": "2026-10-09T17:10:40.493Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1129,15 +889,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 12,
-                      "parallelIndex": 3,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 606,
+                      "duration": 621,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.880Z",
+                      "startTime": "2026-10-09T17:10:40.504Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1163,15 +923,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 4,
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 479,
+                      "duration": 463,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.887Z",
+                      "startTime": "2026-10-09T17:10:40.967Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1197,15 +957,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 605,
+                      "duration": 593,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:06.984Z",
+                      "startTime": "2026-10-09T17:10:41.050Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1231,15 +991,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 612,
+                      "duration": 604,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:07.377Z",
+                      "startTime": "2026-10-09T17:10:41.136Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1265,15 +1025,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 833,
+                      "duration": 948,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:07.391Z",
+                      "startTime": "2026-10-09T17:10:41.272Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1307,15 +1067,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 12,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 482,
+                      "duration": 507,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:07.516Z",
+                      "startTime": "2026-10-09T17:10:41.438Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1341,15 +1101,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 544,
+                      "duration": 594,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:07.595Z",
+                      "startTime": "2026-10-09T17:10:41.655Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1375,15 +1135,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1426,
+                      "duration": 1494,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:07.997Z",
+                      "startTime": "2026-10-09T17:10:41.746Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1409,15 +1169,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 12,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 556,
+                      "duration": 620,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:08.016Z",
+                      "startTime": "2026-10-09T17:10:41.953Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1443,15 +1203,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 417,
+                      "duration": 475,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:08.151Z",
+                      "startTime": "2026-10-09T17:10:42.009Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1477,15 +1237,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 562,
+                      "duration": 633,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:08.232Z",
+                      "startTime": "2026-10-09T17:10:42.227Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1512,14 +1272,14 @@
                   "results": [
                     {
                       "workerIndex": 9,
-                      "parallelIndex": 0,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 569,
+                      "duration": 632,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:08.315Z",
+                      "startTime": "2026-10-09T17:10:42.257Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1545,15 +1305,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 738,
+                      "duration": 948,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:08.576Z",
+                      "startTime": "2026-10-09T17:10:42.493Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1587,15 +1347,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 12,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 476,
+                      "duration": 504,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:08.579Z",
+                      "startTime": "2026-10-09T17:10:42.585Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1621,15 +1381,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 535,
+                      "duration": 565,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:08.800Z",
+                      "startTime": "2026-10-09T17:10:42.866Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1656,14 +1416,14 @@
                   "results": [
                     {
                       "workerIndex": 9,
-                      "parallelIndex": 0,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1377,
+                      "duration": 1438,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:08.891Z",
+                      "startTime": "2026-10-09T17:10:42.895Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1689,15 +1449,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 12,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 548,
+                      "duration": 579,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:09.063Z",
+                      "startTime": "2026-10-09T17:10:43.097Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1723,15 +1483,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 420,
+                      "duration": 456,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:09.322Z",
+                      "startTime": "2026-10-09T17:10:43.249Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1757,15 +1517,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 10,
-                      "parallelIndex": 2,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 559,
+                      "duration": 592,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:09.341Z",
+                      "startTime": "2026-10-09T17:10:43.438Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1791,15 +1551,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 11,
-                      "parallelIndex": 4,
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 540,
+                      "duration": 611,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:09.431Z",
+                      "startTime": "2026-10-09T17:10:43.449Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1825,15 +1585,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 12,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 595,
+                      "duration": 701,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T16:41:09.619Z",
+                      "startTime": "2026-10-09T17:10:43.686Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1853,11 +1613,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-09T16:40:57.949Z",
-    "duration": 12359.089,
-    "expected": 33,
+    "startTime": "2026-10-09T17:10:31.560Z",
+    "duration": 12874.842,
+    "expected": 41,
     "skipped": 0,
-    "unexpected": 8,
+    "unexpected": 0,
     "flaky": 0
   }
 }

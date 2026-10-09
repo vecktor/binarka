@@ -1,0 +1,43 @@
+a11y run (task 3.7), 2026-10-09 22:40 UTC+5:30, same tree.
+
+> binarka@0.1.0 check:a11y
+> PLAYWRIGHT_JSON_OUTPUT_FILE=docs/qa/a11y-report.json playwright test --project=a11y --reporter=list,json
+
+
+Running 32 tests using 5 workers
+
+  ✓   2 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the default state (634ms)
+  ✓   4 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the confirmation state (649ms)
+  ✓   3 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the hint state (762ms)
+  ✓   1 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the rules state (795ms)
+  ✓   7 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (687ms)
+  ✓   6 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet state (713ms)
+  ✓   9 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the default state (548ms)
+  ✓   5 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the win state (1.7s)
+  ✓   8 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (1.0s)
+  ✓  10 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the hint state (614ms)
+  ✓  12 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the rules state (628ms)
+  ✓  13 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the confirmation state (455ms)
+  ✓  14 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet state (624ms)
+  ✓  15 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (650ms)
+  ✓  17 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the default state (512ms)
+  ✓  11 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the win state (1.5s)
+  ✓  16 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (951ms)
+  ✓  18 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the hint state (564ms)
+  ✓  20 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the rules state (614ms)
+  ✓  21 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the confirmation state (514ms)
+  ✓  22 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet state (651ms)
+  ✓  23 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (645ms)
+  ✓  25 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the default state (501ms)
+  ✓  19 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the win state (1.5s)
+  ✓  26 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the hint state (566ms)
+  ✓  24 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (968ms)
+  ✓  28 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the rules state (577ms)
+  ✓  29 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the confirmation state (436ms)
+  ✓  30 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet state (673ms)
+  ✓  31 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (627ms)
+  ✓  27 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the win state (1.5s)
+  ✓  32 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (736ms)
+
+  32 passed (10.0s)
+exit 0

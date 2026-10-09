@@ -1,0 +1,39 @@
+Mutation check (task 2.3), 2026-10-09 22:38 UTC+5:30. Each mutation applied to src/ui/style.css in the worktree, the test file run, then the file restored (never committed).
+
+== (a) declaration deleted
+7
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 100ms
+     × Every rule that declares min-height for «Підказка» is at the top level of the stylesheet, and at least one exists 14ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 16ms
+     × Every rule that declares min-height for «Скинути» is at the top level of the stylesheet, and at least one exists 11ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 14ms
+     × Every rule that declares min-height for «Нова головоломка» is at the top level of the stylesheet, and at least one exists 10ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  6 failed | 2 passed (8)
+
+== (b) set to 2.5rem
+.buttons button {
+  min-height: 2.5rem;
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 101ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 16ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 16ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  3 failed | 5 passed (8)
+
+== (c) wrapped in @media (min-width: 1px)
+@media (min-width: 1px) {
+.buttons button {
+  min-height: 2.75rem;
+}
+}
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 101ms
+     × Every rule that declares min-height for «Підказка» is at the top level of the stylesheet, and at least one exists 19ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 17ms
+     × Every rule that declares min-height for «Скинути» is at the top level of the stylesheet, and at least one exists 11ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 14ms
+     × Every rule that declares min-height for «Нова головоломка» is at the top level of the stylesheet, and at least one exists 15ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  6 failed | 2 passed (8)
+
+== restored (the fix)
+      Tests  8 passed (8)

@@ -25,20 +25,20 @@ Commits (GPG-signed, no `--no-verify`, no squash; probe the GPG cache right befo
 
 Dependencies and database schema: none. No dependency (TC-10), no storage (TC-12), no network (TC-11); `src/engine/`, `src/ui/strings.ts`, markup and scripts untouched.
 
-- [ ] 2.1 In `src/ui/style.css`, after the `.buttons` rule or after the generic `button` rule, add a rule for the three action buttons (for example `.buttons button { min-height: 2.75rem; }`) with no `!important`, outside any at-rule, and no colour literal. Edit no other rule.
-- [ ] 2.2 Error paths: confirm by reading that nothing else changed: no input is validated, no mutation exists, no authentication exists (no redirect-to-login or forbidden case, play-page Exclusions). Run `npm run test:run` and confirm every test is green, including the new ones.
-- [ ] 2.3 Mutation check, in a scratch copy of the repository or with the file restored after each run (never committed): (a) delete the new declaration; (b) set it to `2.5rem`; (c) wrap it in `@media (min-width: 1px)`. For each, run the new test file and confirm it FAILS for the three buttons (for (c): fails the top-level check); restore the file and confirm green. Save the three outputs in `docs/qa/fix-action-button-targets/mutation-run.txt`.
+- [x] 2.1 In `src/ui/style.css`, after the `.buttons` rule or after the generic `button` rule, add a rule for the three action buttons (for example `.buttons button { min-height: 2.75rem; }`) with no `!important`, outside any at-rule, and no colour literal. Edit no other rule.
+- [x] 2.2 Error paths: confirm by reading that nothing else changed: no input is validated, no mutation exists, no authentication exists (no redirect-to-login or forbidden case, play-page Exclusions). Run `npm run test:run` and confirm every test is green, including the new ones.
+- [x] 2.3 Mutation check, in a scratch copy of the repository or with the file restored after each run (never committed): (a) delete the new declaration; (b) set it to `2.5rem`; (c) wrap it in `@media (min-width: 1px)`. For each, run the new test file and confirm it FAILS for the three buttons (for (c): fails the top-level check); restore the file and confirm green. Save the three outputs in `docs/qa/fix-action-button-targets/mutation-run.txt`.
 
 ## 3. Battery
 
-- [ ] 3.1 Run `npm run lint`.
-- [ ] 3.2 Run `npm run test:run`.
-- [ ] 3.3 Run `npm run build`.
-- [ ] 3.4 Run `npx openspec validate --all --strict`.
-- [ ] 3.5 Run `node scripts/check-eval-ratchet.mjs`.
-- [ ] 3.6 Run `npm run test:e2e` and confirm all green, including `e2e/nfr-12-targets.spec.ts` at the eight viewports and `e2e/nfr-10-fit.spec.ts` at 375×812. Save the output as `docs/qa/fix-action-button-targets/e2e-green-run.txt`. This run's `docs/qa/e2e-report.json` is the green copy: keep it for the green commit.
-- [ ] 3.7 Run `npm run check:a11y` and confirm it passes (the buttons got taller; focus rings and axe states must be unchanged). If it rewrites `docs/qa/a11y-report.json`, commit that copy with the green evidence.
-- [ ] 3.8 Make the green commit (commit 2 above): the CSS fix, `docs/qa/fix-action-button-targets/e2e-green-run.txt`, `mutation-run.txt`, the green `docs/qa/e2e-report.json`.
+- [x] 3.1 Run `npm run lint`.
+- [x] 3.2 Run `npm run test:run`.
+- [x] 3.3 Run `npm run build`.
+- [x] 3.4 Run `npx openspec validate --all --strict`.
+- [x] 3.5 Run `node scripts/check-eval-ratchet.mjs`.
+- [x] 3.6 Run `npm run test:e2e` and confirm all green, including `e2e/nfr-12-targets.spec.ts` at the eight viewports and `e2e/nfr-10-fit.spec.ts` at 375×812. Save the output as `docs/qa/fix-action-button-targets/e2e-green-run.txt`. This run's `docs/qa/e2e-report.json` is the green copy: keep it for the green commit.
+- [x] 3.7 Run `npm run check:a11y` and confirm it passes (the buttons got taller; focus rings and axe states must be unchanged). If it rewrites `docs/qa/a11y-report.json`, commit that copy with the green evidence.
+- [x] 3.8 Make the green commit (commit 2 above): the CSS fix, `docs/qa/fix-action-button-targets/e2e-green-run.txt`, `mutation-run.txt`, the green `docs/qa/e2e-report.json`.
 
 ## 4. Review gate
 

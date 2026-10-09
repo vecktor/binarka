@@ -159,6 +159,11 @@ h1 {
   margin: 16px 0 8px;
 }
 
+/* NFR-12: the three action buttons reach the 44 px touch-target floor. */
+.buttons button {
+  min-height: 2.75rem;
+}
+
 button {
   font: inherit;
   padding: 10px 16px;
