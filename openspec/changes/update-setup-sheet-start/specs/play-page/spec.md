@@ -2,7 +2,7 @@
 
 ### Requirement: Marked choice
 
-While the setup sheet is open the page SHALL hold a marked size and a marked level (FR-100). Each time the sheet opens they equal the size and the level of the board shown; with no board shown (the generation at the mount failed) they are 6×6 and «Розминка», the mount values. A press on an available size button or level button SHALL set the marked size or the marked level and move `aria-checked` in that group, and SHALL do nothing else (FR-73, see «Pressing the shown size changes nothing»). While the sheet is open `aria-checked="true"` is on the marked size and the marked level; while the sheet is closed it is on the size and the level of the board shown (A-47). Marking 4×4 SHALL set the marked level to «Розминка» (FR-91); marking 6×6 or 8×8 afterwards keeps «Розминка» as the marked level and does not restore an earlier marked level. Closing the sheet by the close button «Закрити», by Escape or by a click outside the sheet (the light dismiss of `popover="auto"`) SHALL discard the marked choice with no change to the board, the messages, the highlights, `cell-hinted`, the size, the level or the summary; the page learns of the close from the `toggle` event of the sheet, which the test dispatches in jsdom (A-44, A-46). A press of «Почати» SHALL use the marked choice (see «Start button»). In every case `aria-checked` is back on the board shown in both groups when the sheet closes, and the next opening shows the board shown. The marked choice is game state and is never stored: a reload or a new mount starts at 6×6 and «Розминка» (FR-43, FR-88, TC-12).
+While the setup sheet is open the page SHALL hold a marked size and a marked level (FR-100). Each time the sheet opens they equal the size and the level of the board shown; with no board shown (the generation at the mount failed) they are 6×6 and «Розминка», the mount values. A press on an available size button or level button SHALL set the marked size or the marked level and move `aria-checked` in that group, and SHALL do nothing else (FR-73, see «Pressing the shown size changes nothing»). While the sheet is open `aria-checked="true"` is on the marked size and the marked level; while the sheet is closed it is on the size and the level of the board shown (A-47). Marking 4×4 SHALL set the marked level to «Розминка» (FR-91); marking 6×6 or 8×8 afterwards keeps «Розминка» as the marked level and does not restore an earlier marked level. Closing the sheet by the close button «Закрити», by Escape or by a click outside the sheet (the light dismiss of `popover="auto"`) SHALL discard the marked choice with no change to the board, the messages, the highlights, `cell-hinted`, the size, the level or the summary. Test contract: jsdom has no popover, so the test dispatches the sheet's closing `toggle` event itself (A-44, A-46). A press of «Почати» SHALL use the marked choice (see «Start button»). In every case `aria-checked` is back on the board shown in both groups when the sheet closes, and the next opening shows the board shown. The marked choice is game state and is never stored: a reload or a new mount starts at 6×6 and «Розминка» (FR-43, FR-88, TC-12).
 
 Traces: FR-100, FR-73, FR-91, FR-43, FR-88
 
@@ -30,7 +30,7 @@ Traces: FR-100, FR-73, FR-91, FR-43, FR-88
 #### Scenario: Marking 4×4 sets the marked level to «Розминка»
 
 - **GIVEN** a mounted 6×6 board without entries, the sheet opened, and «Мозколамка» marked
-- **WHEN** the player presses «Поле 4×4», and then «Поле 8×8»
+- **WHEN** the player marks «Поле 4×4» and then «Поле 8×8» (two marking presses, no «Почати»)
 - **THEN** after «Поле 4×4» `aria-checked="true"` is on «Розминка» only, «Задачка», «Головоломка» and «Мозколамка» have `aria-disabled="true"`, `[data-level-reason]` shows its text, and the summary still reads `6×6 · Розминка`
 - **AND** after «Поле 8×8» `aria-checked="true"` is still on «Розминка» only (the earlier marked level is not restored), no level button has `aria-disabled`, and `[data-level-reason]` is hidden
 
@@ -49,7 +49,7 @@ Traces: FR-100, FR-73, FR-91, FR-43, FR-88
 
 ### Requirement: Start button
 
-The setup sheet SHALL hold a button `[data-action="setup-start"]` with `type="button"`, the visible text «Почати» and no `aria-label`, `aria-labelledby` or `tabindex` (FR-101, FR-94). It is a direct child of the sheet, placed after the level control and before the close button (FR-96), and it is always present and never disabled: also when the marked choice equals the board shown, and also when no board is shown (the generation at the mount failed). A press SHALL close the sheet with `hidePopover()` and then act in one of three ways. (a) On a board without player entries it starts ONE new puzzle of the marked size and the marked level at once: one seed taken from the seed source (more only after a run-out of the generator, FR-88), one call `generate(size, seed, level)`, the board rendered, the summary updated, and the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker cleared; DOM focus moves to the summary button (FR-97). (b) On a board with player entries it makes the marked size and level the pending action and asks for the confirmation (FR-67, FR-98): until «Так, почати» no seed is taken and the generator is not called. (c) With no board shown it generates at once, as in (a). If the generator fails (FR-88), the previous board, messages, highlights, `cell-hinted`, size, level and summary are kept, the sheet is closed, `aria-checked` is on the board shown, focus is on the summary button and no text is shown. «Почати» is never a no-op (Q2 of the signed amendment): a press with a marked choice equal to the board shown makes a new puzzle of that size and level, like «Нова головоломка». «Почати» and «Закрити» are drawn as one sticky footer row at the bottom of the sheet, «Почати» as the primary action and «Закрити» as the secondary one (Footer-1, signed in the wireframe on 2026-10-10, autonomy-log row 120); both stay direct children of the sheet, with no wrapper element. The drawing of that row, the fill of «Почати» and the 44 px height (NFR-12, see «The start button and the sheet buttons meet the touch-target floor») are layout and look, covered by the held NFR-14 and the signed review set; this requirement pins none of them beyond the DOM order.
+The setup sheet SHALL hold a button `[data-action="setup-start"]` with `type="button"`, the visible text «Почати» and no `aria-label`, `aria-labelledby` or `tabindex` (FR-101, FR-94). It is a direct child of the sheet, placed after the level control and before the close button (FR-96), and it is always present and never disabled: also when the marked choice equals the board shown, and also when no board is shown (the generation at the mount failed). A press SHALL close the sheet with `hidePopover()` and then act in one of three ways. (a) On a board without player entries it starts ONE new puzzle of the marked size and the marked level at once: one seed taken from the seed source (more only after a run-out of the generator, FR-88), one call `generate(size, seed, level)`, the board rendered, the summary updated, and the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker cleared; DOM focus moves to the summary button (FR-97). (b) On a board with player entries it makes the marked size and level the pending action and asks for the confirmation (FR-67, FR-98): until «Так, почати» no seed is taken and the generator is not called. (c) With no board shown it generates at once, as in (a). If the generator fails (FR-88), the previous board, messages, highlights, `cell-hinted`, size, level and summary are kept, the sheet is closed, `aria-checked` is on the board shown, focus is on the summary button and no text is shown. «Почати» is never a no-op (SD-Q2): a press with a marked choice equal to the board shown makes a new puzzle of that size and level, like «Нова головоломка». Both buttons stay direct children of the sheet, with no wrapper element (FR-96). How they are drawn (the signed wireframe, Footer-1) and the look of «Почати» are layout, covered by the held NFR-14; the 44 px height is NFR-12 (see «The start button and the sheet buttons meet the touch-target floor»). This requirement pins none of them beyond the DOM order.
 
 Traces: FR-101, FR-100, FR-67, FR-88, FR-94, FR-98
 
@@ -63,14 +63,14 @@ Traces: FR-101, FR-100, FR-67, FR-88, FR-94, FR-98
 #### Scenario: «Почати» makes one puzzle with both marked values
 
 - **GIVEN** a mounted 6×6 board at «Розминка» without player entries, a counting seed source returning 1, 2 and so on, a `generate` spy recording `(size, seed, level)`, the `showModal` spy, the sheet opened, and a hint sentence shown
-- **WHEN** the player presses «Мозколамка», then «Поле 8×8», and then «Почати»
+- **WHEN** the player marks «Мозколамка», then «Поле 8×8» (two marking presses), and then presses «Почати»
 - **THEN** exactly one more seed was taken and the spy recorded exactly one more call, `(8, 2, 4)`, and `showModal` was never called
 - **AND** `hidePopover` was called once on the sheet, `document.activeElement` is the summary button, the summary reads `8×8 · Мозколамка`, `[data-board]` has `data-size="8"`, and the hint message and the win message have empty text content
 
 #### Scenario: The order of the two marks does not matter
 
 - **GIVEN** the page of the previous scenario, mounted twice
-- **WHEN** on the first page the player presses «Поле 8×8» then «Мозколамка» then «Почати», and on the second page «Мозколамка» then «Поле 8×8» then «Почати»
+- **WHEN** on the first page the player marks «Поле 8×8» then «Мозколамка» and presses «Почати», and on the second page marks «Мозколамка» then «Поле 8×8» and presses «Почати»
 - **THEN** on both pages the generator was called once for the change with `(8, seed, 4)` and the summary reads `8×8 · Мозколамка`
 
 #### Scenario: «Почати» with the marked choice equal to the board shown still makes a puzzle
@@ -107,6 +107,13 @@ Traces: FR-101, FR-100, FR-67, FR-88, FR-94, FR-98
 - **WHEN** the player presses «Почати»
 - **THEN** no dialog opens, one seed is taken, the generator is called once with size 6 and level 2, a 6×6 board is shown, and the summary reads `6×6 · Задачка`
 
+#### Scenario: With no board shown a failed «Почати» leaves the mount values
+
+- **GIVEN** a page whose generation at the mount threw an ordinary error so no board is shown, an injected `generate` that throws on every call, a `window` `error` listener, and the sheet opened with «Поле 8×8» and «Мозколамка» marked
+- **WHEN** the player presses «Почати»
+- **THEN** the sheet's stub state is closed, `document.activeElement` is the summary button, no `[data-cell]` exists, no text was added to the page, and the `error` listener recorded nothing
+- **AND** when the sheet is opened again `aria-checked="true"` is on «Поле 6×6» only and on «Розминка» only (FR-100)
+
 #### Scenario: «Почати» is a Tab stop inside the sheet in document order
 
 - **GIVEN** the page has just been mounted
@@ -115,7 +122,7 @@ Traces: FR-101, FR-100, FR-67, FR-88, FR-94, FR-98
 
 ### Requirement: The start button and the sheet buttons meet the touch-target floor
 
-The start button `[data-action="setup-start"]` «Почати», the summary button `[data-action="setup"]` and the close button `[data-action="setup-close"]` «Закрити» SHALL each be at least 44×44 CSS px (NFR-12). The stylesheet `src/ui/style.css` SHALL give each of the three a `min-height` of at least `2.75rem` as an ordinary declaration, in one rule that matches the element: no `!important`, not inside a media query. The probe `e2e/nfr-12-targets.spec.ts` already opens the setup sheet at 6×6 and at 4×4 and measures the summary button and «Закрити»; its sheet measurement SHALL also measure «Почати». The sampled viewports are the eight of the probe, not continuum coverage. jsdom has no layout (TC-13), so the unit test decides the declaration and the real-browser run decides the measured size. The two buttons share one sticky footer row (Footer-1, autonomy-log row 120); that drawing is not claimed here (held NFR-14).
+The start button `[data-action="setup-start"]` «Почати», the summary button `[data-action="setup"]` and the close button `[data-action="setup-close"]` «Закрити» SHALL each be at least 44×44 CSS px (NFR-12). The stylesheet `src/ui/style.css` SHALL give each of the three a `min-height` of at least `2.75rem` as an ordinary declaration, in one rule that matches the element: no `!important`, not inside a media query. The probe `e2e/nfr-12-targets.spec.ts` already opens the setup sheet at 6×6 and at 4×4 and measures the summary button and «Закрити»; its sheet measurement SHALL also measure «Почати» with the sheet opened at 6×6 and at 4×4 (the probe measures the summary button among the page controls, «Закрити» with the sheet at 6×6 and the level options at 4×4; those stay as they are). The sampled viewports are the eight of the probe, not continuum coverage. jsdom has no layout (TC-13), so the unit test decides the declaration and the real-browser run decides the measured size. How the two buttons are drawn relative to each other (Footer-1, autonomy-log row 120) is not claimed here (held NFR-14).
 
 Traces: NFR-12, FR-101
 
@@ -129,8 +136,8 @@ Traces: NFR-12, FR-101
 #### Scenario: Measured in a real browser «Почати» is at least 44 px in both directions
 
 - **GIVEN** the built page is open in Chromium at each of the eight viewports of `e2e/nfr-12-targets.spec.ts` with the sheet opened at 6×6, and again at 4×4
-- **WHEN** the probe measures «Почати», the summary button and «Закрити»
-- **THEN** each is at least 44 px wide and at least 44 px tall, and the spec reports no line for a measured button below 44×44
+- **WHEN** the probe measures «Почати» in both sheets, and, as it already does, the summary button among the page controls and «Закрити» in the 6×6 sheet
+- **THEN** each measured control is at least 44 px wide and at least 44 px tall, and the spec reports no line for a measured control below 44×44
 
 ### Requirement: The accessibility sweep covers a marked choice that differs from the board
 
@@ -148,7 +155,7 @@ Traces: NFR-13, FR-100, FR-101
 
 - **GIVEN** the same state, and focus moved to «Почати» by Tab from the last level button
 - **WHEN** the sweep reads the computed outline of the focused element
-- **THEN** its outline style is not `none` and its outline width is at least 2px
+- **THEN** its outline style is not `none` (the width of at least 2px is pinned by the stylesheet test of FR-65)
 
 ## MODIFIED Requirements
 
@@ -181,7 +188,7 @@ Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101
 #### Scenario: Choose 4x4 on a board without entries
 
 - **GIVEN** the default 6x6 board with no player entries, a seed source returning 1 and then 2, and the real engine generator
-- **WHEN** the player presses the button «Поле 4×4»
+- **WHEN** the player chooses «Поле 4×4» (marks it, then presses «Почати»)
 - **THEN** `[data-board]` has `data-size="4"` and contains exactly 16 `[data-cell]` elements with `data-row` and `data-col` values 1 to 4, each pair appearing exactly once
 - **AND** for every cell, `data-given="true"` holds exactly where the generator returns a given for size 4 and seed 2, and each given cell shows the digit the generator returns for it
 - **AND** `aria-checked="true"` is on «Поле 4×4» only
@@ -189,8 +196,8 @@ Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101
 #### Scenario: Choose 8x8 after play
 
 - **GIVEN** a 6x6 fixture board with player entries, a hint sentence shown, a hint-filled cell with `cell-hinted` and some cells with `cell-violation`, and an injected `generate` that returns an 8x8 fixture puzzle for size 8
-- **WHEN** the player presses «Поле 8×8», and then presses `[data-confirm="yes"]`
-- **THEN** after the first press the dialog is open and the board is still 6x6 with `aria-checked="true"` on «Поле 6×6»
+- **WHEN** the player chooses «Поле 8×8» (marks it, then presses «Почати»), and then presses `[data-confirm="yes"]`
+- **THEN** after «Почати» the dialog is open and the board is still 6x6 with `aria-checked="true"` on «Поле 6×6»
 - **AND** after the confirmation `[data-board]` has `data-size="8"` and contains exactly 64 `[data-cell]` elements with no player entries (a non-given cell shows empty text), and `aria-checked="true"` is on «Поле 8×8» only
 - **AND** `[data-message="hint"]` has empty text content and no cell has `cell-hinted`
 - **AND** the cells of the new board carry `cell-violation` only where the rule checker reports a violation for the new puzzle's givens
@@ -198,13 +205,13 @@ Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101
 #### Scenario: Choose 8x8 after a win
 
 - **GIVEN** a 6x6 fixture board on which the win message is shown (the board is solved, so no cell has `cell-violation`), and an injected `generate` that returns an 8x8 fixture puzzle for size 8
-- **WHEN** the player presses «Поле 8×8» and then `[data-confirm="yes"]` (a solved board has entries, A-29)
+- **WHEN** the player chooses «Поле 8×8» (marks it, then presses «Почати») and then presses `[data-confirm="yes"]` (a solved board has entries, A-29)
 - **THEN** `[data-message="win"]` has empty text content and `[data-board]` has `data-size="8"` and 64 cells
 
 #### Scenario: Going back to 6x6
 
 - **GIVEN** the page shows an 8×8 board reached by pressing «Поле 8×8» on an untouched 6x6 board
-- **WHEN** the player presses «Поле 6×6»
+- **WHEN** the player chooses «Поле 6×6» (marks it, then presses «Почати»)
 - **THEN** `[data-board]` has `data-size="6"` and contains exactly 36 cells, and `aria-checked="true"` is on «Поле 6×6» only
 
 #### Scenario: aria-checked stays on the shown size until the confirmation
@@ -216,13 +223,13 @@ Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101
 #### Scenario: A change takes exactly one seed and passes the chosen size
 
 - **GIVEN** a seed source returning 1, 2, 3 and so on, counting its calls, and a `generate` spy recording `(size, seed)`
-- **WHEN** the page is mounted, then the player presses «Поле 4×4», then «Поле 8×8» (each board has no player entries)
+- **WHEN** the page is mounted, then the player chooses «Поле 4×4», then «Поле 8×8» (each board has no player entries)
 - **THEN** the spy recorded `(6, 1)`, `(4, 2)` and `(8, 3)` in this order and the seed source was called exactly three times
 
 #### Scenario: A generator error keeps the previous board
 
 - **GIVEN** a 6x6 fixture board with player entries, a hint sentence shown and a hint-filled cell, a counting seed source, a `window` `error` listener, and an injected `generate` that throws for size 8
-- **WHEN** the player presses «Поле 8×8» and then `[data-confirm="yes"]`
+- **WHEN** the player chooses «Поле 8×8» (marks it, then presses «Почати») and then presses `[data-confirm="yes"]`
 - **THEN** the `error` listener recorded nothing, `[data-board]` keeps `data-size="6"` with the same cell texts and highlights, both message regions keep their text, and the hint-filled cell keeps `cell-hinted`
 - **AND** `aria-checked="true"` is on «Поле 6×6» only and the dialog is closed
 - **AND** the seed source was called exactly once for the failed change (one seed per generation attempt)
@@ -230,7 +237,7 @@ Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101
 #### Scenario: A generator result of the wrong size keeps the previous board
 
 - **GIVEN** a 6x6 fixture board with player entries and a hint sentence shown, and an injected `generate` that returns a 6x6 fixture puzzle for size 8
-- **WHEN** the player presses «Поле 8×8» and then `[data-confirm="yes"]`
+- **WHEN** the player chooses «Поле 8×8» (marks it, then presses «Почати») and then presses `[data-confirm="yes"]`
 - **THEN** `[data-board]` keeps `data-size="6"` with 36 cells and the same cell texts, both message regions keep their text, and `aria-checked="true"` is on «Поле 6×6» only
 
 #### Scenario: Hint and win at the chosen size
@@ -255,7 +262,7 @@ Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101
 | `0` at `data-row` 8 with `data-col` 1, 2 and 3 (an inconsistent fixture) | exactly (8, 1), (8, 2), (8, 3) |
 | `1` at `data-col` 8 with `data-row` 1, 2, 4, 6 and 7 (five `1` in the column, no three side by side) | all eight cells with `data-col="8"` and no cell outside that column |
 
-- **WHEN** the player presses «Поле 8×8» and does nothing else
+- **WHEN** the player chooses «Поле 8×8» (marks it, then presses «Почати») and presses nothing else
 - **THEN** the cells with `cell-violation` are exactly those of the row
 
 #### Scenario: The choice is not remembered
@@ -267,7 +274,7 @@ Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101
 
 ### Requirement: Pressing the shown size changes nothing
 
-A press on a size button or a level button inside the open setup sheet, whether it is the button of the board shown, the marked one or another, SHALL change only the marked choice (FR-73, FR-100): it opens no dialog, starts no new puzzle, takes no seed, calls no generator, and leaves the board, both messages, the highlights, `cell-hinted` and the summary unchanged (FR-66). It does not close the sheet and does not move DOM focus away from the pressed button. This holds on a board with player entries and on a board without. A press on the button already marked changes nothing at all. A press on a level button that is unavailable at the marked size (levels 2 to 4 at 4×4, FR-91) does nothing at all: the sheet stays open and focus stays on that button. **The press of «Почати» is not covered by this requirement and is never a no-op** (FR-101, Q2 of the signed amendment): with the marked choice equal to the board shown it makes one new puzzle of that size and level, like «Нова головоломка», and asks for the confirmation when the board has player entries (see «Start button»). When no board is shown (the generation at mount failed), a press on a size or level button only marks as well, «Поле 6×6» keeps `aria-checked="true"` from the mount (see «Grid size selector»), and «Почати» generates a board of the marked size and the marked level at once, because there are no entries to confirm. The name of this requirement is kept from the earlier immediate-change model so that the archive matches; the behaviour above replaces it (A-47).
+A press on a size button or a level button inside the open setup sheet, whether it is the button of the board shown, the marked one or another, SHALL change only the marked choice (FR-73, FR-100): it opens no dialog, starts no new puzzle, takes no seed, calls no generator, and leaves the board, both messages, the highlights, `cell-hinted` and the summary unchanged (FR-66). It does not close the sheet and does not move DOM focus away from the pressed button. This holds on a board with player entries and on a board without. A press on the button already marked changes nothing at all. A press on a level button that is unavailable at the marked size (levels 2 to 4 at 4×4, FR-91) does nothing at all: the sheet stays open and focus stays on that button. **The press of «Почати» is not covered by this requirement and is never a no-op** (FR-101, SD-Q2): with the marked choice equal to the board shown it makes one new puzzle of that size and level, like «Нова головоломка», and asks for the confirmation when the board has player entries (see «Start button»). When no board is shown (the generation at mount failed), a press on a size or level button only marks as well, «Поле 6×6» keeps `aria-checked="true"` from the mount (see «Grid size selector»), and «Почати» generates a board of the marked size and the marked level at once, because there are no entries to confirm. The name of this requirement is kept from the earlier immediate-change model so that the archive matches; the behaviour above replaces it (A-47).
 
 Traces: FR-73, FR-66, FR-43, FR-88, FR-91, FR-97, FR-100, FR-101
 
@@ -288,7 +295,7 @@ Traces: FR-73, FR-66, FR-43, FR-88, FR-91, FR-97, FR-100, FR-101
 #### Scenario: A size marked and then another size marked
 
 - **GIVEN** a mounted 6×6 board with player entries and the sheet opened
-- **WHEN** the player presses «Поле 4×4» and then «Поле 8×8», and then presses «Поле 8×8» again
+- **WHEN** the player marks «Поле 4×4», then «Поле 8×8», and then «Поле 8×8» again (three marking presses)
 - **THEN** after each press `aria-checked="true"` is on the last pressed size only, the board, the messages and the summary are unchanged, and no seed was taken
 - **AND** the second press of «Поле 8×8» changed nothing at all (the same `aria-checked`, no call of any spy)
 
@@ -304,7 +311,7 @@ Traces: FR-73, FR-66, FR-43, FR-88, FR-91, FR-97, FR-100, FR-101
 | 8 | «Мозколамка» |
 | 4 | «Розминка» |
 
-- **WHEN** the player presses the level button of the row (the level already shown), and again on a freshly prepared page of the same size and level with no player entries
+- **WHEN** the player makes a marking press on the level button of the row (the level already shown), and again on a freshly prepared page of the same size and level with no player entries
 - **THEN** `showModal` and `hidePopover` were never called, the seed-source and generator call counts are unchanged, every cell keeps its text and class list (including `cell-violation` and `cell-hinted`), both messages keep their text, the summary keeps its text, and `aria-checked="true"` stays on that level button only and on the size button of the row only
 - **AND** the sheet's stub state is still open
 
@@ -317,7 +324,7 @@ Traces: FR-73, FR-66, FR-43, FR-88, FR-91, FR-97, FR-100, FR-101
 #### Scenario: With no board shown a press only marks and «Почати» generates
 
 - **GIVEN** a page whose generation at mount threw, so no board is shown, a counting seed source, a `generate` spy and a generator that succeeds afterwards, and the sheet opened
-- **WHEN** the player presses «Поле 6×6», then «Задачка», and then «Почати»
+- **WHEN** the player marks «Поле 6×6» and «Задачка» (two marking presses), and then presses «Почати»
 - **THEN** after the first two presses no seed was taken and the generator was not called, and `aria-checked="true"` is on «Поле 6×6» and on «Задачка»
 - **AND** after «Почати» no dialog opened, one seed was taken, the generator was called once with size 6 and level 2, and a 6×6 board is shown with the summary `6×6 · Задачка`
 
@@ -392,7 +399,7 @@ Traces: FR-40, FR-43, FR-88, FR-100, FR-101
 #### Scenario: A size change that shows a new puzzle clears it
 
 - **GIVEN** `[data-message="hint"]` shows a sentence and the player has clicked a cell since
-- **WHEN** the player selects 4×4
+- **WHEN** the player chooses «Поле 4×4» (marks it, then presses «Почати»)
 - **THEN** `[data-message="hint"]` has empty text content
 
 #### Scenario: A level change that shows a new puzzle clears it
@@ -404,7 +411,7 @@ Traces: FR-40, FR-43, FR-88, FR-100, FR-101
 #### Scenario: Marking a size or a level keeps it
 
 - **GIVEN** `[data-message="hint"]` shows a sentence and the sheet is opened
-- **WHEN** the player presses «Поле 4×4» and «Задачка» (marking presses, no «Почати») and then closes the sheet with «Закрити»
+- **WHEN** the player marks «Поле 4×4» and «Задачка» (two marking presses, no «Почати») and then closes the sheet with «Закрити»
 - **THEN** `[data-message="hint"]` keeps exactly the same text
 
 ### Requirement: Highlighting follows every board change
@@ -440,7 +447,7 @@ Traces: FR-38, FR-43, FR-60, FR-88, FR-101
 #### Scenario: A size change recomputes the highlights
 
 - **GIVEN** a 6x6 board with some `cell-violation` cells and an injected `generate` that returns a 4x4 fixture puzzle with no givens for size 4
-- **WHEN** the player selects 4×4
+- **WHEN** the player chooses «Поле 4×4» (marks it, then presses «Почати»)
 - **THEN** the 16 cells of the new board have no `cell-violation`, and no cell of the old board remains in the page
 
 ### Requirement: Hinted cell marker
@@ -498,7 +505,7 @@ Traces: FR-66, FR-39, FR-88, FR-96, FR-100, FR-101
 #### Scenario: A failed generation keeps the marker
 
 - **GIVEN** a 6x6 fixture board on which a hint filled cell X, and an injected `generate` that throws for size 8
-- **WHEN** the player changes the size to 8
+- **WHEN** the player chooses «Поле 8×8» (marks it, then presses «Почати»)
 - **THEN** `[data-board]` keeps `data-size="6"` and the same texts, and X still has the class `cell-hinted`
 
 #### Scenario: A hint that wins keeps the marker on the filled cell
@@ -544,8 +551,8 @@ Traces: FR-67, FR-42, FR-43, FR-58, FR-66, FR-90, FR-98, FR-100, FR-101
 | Action | Expected effect at once |
 |--------|-------------------------|
 | presses «Нова головоломка» | a new puzzle of size 6 from the next seed |
-| presses the button «Поле 4×4» | a 4x4 board from the next seed, `aria-checked="true"` on «Поле 4×4» |
-| presses the button «Задачка» | a 6x6 board of level 2 from the next seed, `aria-checked="true"` on «Задачка» |
+| chooses «Поле 4×4» | a 4x4 board from the next seed, `aria-checked="true"` on «Поле 4×4» |
+| chooses «Задачка» | a 6x6 board of level 2 from the next seed, `aria-checked="true"` on «Задачка» |
 | presses «Скинути» | no cell, class or message changes |
 
 - **THEN** the `showModal` spy was never called, the dialog has no `open` attribute, and the expected effect of the row happened
@@ -558,8 +565,8 @@ Traces: FR-67, FR-42, FR-43, FR-58, FR-66, FR-90, FR-98, FR-100, FR-101
 | Action |
 |--------|
 | presses «Нова головоломка» |
-| presses the button «Поле 8×8» (the injected generator returns an 8x8 fixture) |
-| presses the button «Задачка» (the injected generator returns a 6x6 fixture) |
+| chooses «Поле 8×8» (the injected generator returns an 8x8 fixture) |
+| chooses «Задачка» (the injected generator returns a 6x6 fixture) |
 | presses «Скинути» |
 
 - **THEN** `showModal` was called exactly once and the dialog has the `open` attribute
@@ -617,7 +624,7 @@ Traces: FR-67, FR-42, FR-43, FR-58, FR-66, FR-90, FR-98, FR-100, FR-101
 #### Scenario: «Почати» asks, marking does not
 
 - **GIVEN** a mounted 6x6 fixture board with player entries, the `showModal` spy, a counting seed source and a `generate` spy with the counts read now, and the sheet opened
-- **WHEN** the player presses «Поле 8×8» and «Задачка» (marking presses), and then «Почати»
+- **WHEN** the player marks «Поле 8×8» and «Задачка» (two marking presses), and then presses «Почати»
 - **THEN** after the two marking presses `showModal` was never called and the counts equal the counts read now
 - **AND** after «Почати» `showModal` was called once, the dialog has the `open` attribute and the board is still 6x6 with its cell texts
 - **AND** after `[data-confirm="yes"]` exactly one seed was taken and the generator was called once, with size 8 and level 2
@@ -840,7 +847,7 @@ Traces: FR-95, NFR-5, NFR-9, FR-100, FR-101
 #### Scenario: Marking leaves the summary alone
 
 - **GIVEN** a mounted 6×6 board at «Розминка» whose summary reads `6×6 · Розминка`, and the sheet opened
-- **WHEN** the player presses «Поле 8×8» and «Мозколамка» (marking presses), and then presses «Почати»
+- **WHEN** the player marks «Поле 8×8» and «Мозколамка» (two marking presses), and then presses «Почати»
 - **THEN** after the two marking presses the visible text of the summary is still `6×6 · Розминка`, and after «Почати» it is `8×8 · Мозколамка`
 
 #### Scenario: The summary button is in the page order and the tab order
@@ -851,9 +858,9 @@ Traces: FR-95, NFR-5, NFR-9, FR-100, FR-101
 
 ### Requirement: Setup sheet
 
-The page SHALL contain, created once at mount, a setup sheet `[data-section="setup"]` (FR-96, A-40): an element with the `popover` attribute and `role="dialog"`, with the Ukrainian `aria-label` «Поле і складність», with an `id` that is unique in the document (it ends in a number that belongs to the mount, like the other ids), and with no `aria-labelledby` and no heading element (A-41). It SHALL sit inside the page root and outside the element that holds the board, follow the rules panel in document order and precede the confirmation dialog, need no new dependency and hold, in this order: the size control `[data-control="size"]` (see «Grid size selector»), the level control `[data-control="level"]` (see «Level selector»; it contains the reason line `[data-level-reason]` first, see «Only the first level exists at 4x4»), the start button `[data-action="setup-start"]` «Почати» (see «Start button») and the close button `[data-action="setup-close"]` with the text «Закрити», `type="button"`, `popovertarget` equal to the sheet's `id` and `popovertargetaction="hide"`. The sheet SHALL be the same element, with the same children, after a hint, a win, a reset, «Нова головоломка» and a press of «Почати» (only the attributes and texts that those requirements define change). Where the sheet is drawn (a bottom sheet on phones, a centred panel from 48rem), the sticky footer row that «Почати» and «Закрити» share (Footer-1), the 44 px targets and its look are layout and are covered by the held NFR-10, NFR-12 and NFR-14, see `docs/requirements-held.md`; nothing here claims them.
+The page SHALL contain, created once at mount, a setup sheet `[data-section="setup"]` (FR-96, A-40): an element with the `popover` attribute and `role="dialog"`, with the Ukrainian `aria-label` «Поле і складність», with an `id` that is unique in the document (it ends in a number that belongs to the mount, like the other ids), and with no `aria-labelledby` and no heading element (A-41). It SHALL sit inside the page root and outside the element that holds the board, follow the rules panel in document order and precede the confirmation dialog, need no new dependency and hold, in this order: the size control `[data-control="size"]` (see «Grid size selector»), the level control `[data-control="level"]` (see «Level selector»; it contains the reason line `[data-level-reason]` first, see «Only the first level exists at 4x4»), the start button `[data-action="setup-start"]` «Почати» (see «Start button») and the close button `[data-action="setup-close"]` with the text «Закрити», `type="button"`, `popovertarget` equal to the sheet's `id` and `popovertargetaction="hide"`. The sheet SHALL be the same element, with the same children, after a hint, a win, a reset, «Нова головоломка» and a press of «Почати» (only the attributes and texts that those requirements define change). Where the sheet is drawn (a bottom sheet on phones, a centred panel from 48rem), the footer drawing and the 44 px targets and its look are layout and are covered by the held NFR-10, NFR-12 and NFR-14, see `docs/requirements-held.md`; nothing here claims them.
 
-Reading rule and test contract (A-44). jsdom has no `popover` support: tests install stubs for `showPopover`, `hidePopover` and `togglePopover` on `HTMLElement.prototype` that record each call and keep an open or closed state per element, and remove them after each test; the stub of `hidePopover` closes the state and dispatches no event, and a `toggle` event is dispatched by the test itself (an `Event` of type `toggle` with a `newState` property set to `closed` or `open`). The opening of the sheet by the summary button is native and not tested in jsdom: a test opens the sheet by calling the stubbed `showPopover()` on it. **Reading rule for choices (A-44, A-47).** Wherever another requirement of this capability says that the player presses, selects or chooses a size button or a level button, or changes the size or the level, and then speaks of an effect on the board, the seed source, the generator, the dialog, the messages or the summary, the words mean a **choice**: the test first opens the sheet this way, presses the option (which only marks, FR-100), presses «Почати», and, where the scenario confirms, `[data-confirm="yes"]`. «A size change» and «a level change» mean a board shown by such a choice. A choice of the size and level already shown is therefore not a no-op: it makes one new puzzle like «Нова головоломка». The words «marks», «a marking press» and «does nothing» in a scenario, and the scenarios of «Marked choice», «Pressing the shown size changes nothing» and «Only the first level exists at 4x4» that say so, are read literally: one press on the option, no «Почати». `aria-checked` read after a choice is read with the sheet closed, that is on the board shown (A-47). A generator that "throws" in a scenario throws an ordinary `Error`, not the run-out error of the engine, unless the scenario says run-out.
+Reading rule and test contract (A-44). jsdom has no `popover` support: tests install stubs for `showPopover`, `hidePopover` and `togglePopover` on `HTMLElement.prototype` that record each call and keep an open or closed state per element, and remove them after each test; the stub of `hidePopover` closes the state and dispatches no event, and a `toggle` event is dispatched by the test itself (an `Event` of type `toggle` with a `newState` property set to `closed` or `open`). The opening of the sheet by the summary button is native and not tested in jsdom: a test opens the sheet by calling the stubbed `showPopover()` on it. **Reading rule for choices (A-44, A-47).** The verb **«chooses»** (in a requirement this change does not modify also «presses», «selects», «changes the size to N» or «changes the level to X» followed by an effect on the board, the seed source, the generator, the dialog, the messages or the summary; the list is in `design.md`) means a **choice**: the test first opens the sheet this way, presses the option (which only marks, FR-100), presses «Почати», and, where the scenario confirms, `[data-confirm="yes"]`. «A size change» and «a level change» mean a board shown by such a choice. A choice of the size and level already shown is therefore not a no-op: it makes one new puzzle like «Нова головоломка». The verbs «marks» and «makes a marking press», and every use of «presses» that carries the note «(a marking press)» or «(marking presses)», mean one press on the option and no «Почати»; so do the scenarios that say a press «does nothing». `aria-checked` read after a choice is read with the sheet closed, that is on the board shown (A-47). A generator that "throws" in a scenario throws an ordinary `Error`, not the run-out error of the engine, unless the scenario says run-out.
 
 Traces: FR-96, FR-95, FR-97, FR-94, NFR-5, NFR-9, FR-100, FR-101
 
@@ -906,13 +913,13 @@ Traces: FR-97, FR-91, NFR-9, FR-100, FR-101, FR-59
 #### Scenario: Marking a size keeps the sheet open and the focus on the button
 
 - **GIVEN** a mounted 6×6 board without player entries, the sheet opened through the stubbed `showPopover()`, and the test has given DOM focus to the button «Поле 8×8»
-- **WHEN** the player presses «Поле 8×8»
+- **WHEN** the player presses «Поле 8×8» (a marking press)
 - **THEN** `hidePopover` was never called, the sheet's stub state is open, `document.activeElement` is the button «Поле 8×8», the summary reads `6×6 · Розминка` and the board is still 6×6
 
 #### Scenario: Marking a level keeps the sheet open and the focus on the button
 
 - **GIVEN** a mounted 6×6 board without player entries and the sheet opened as above, with DOM focus on «Задачка»
-- **WHEN** the player presses «Задачка»
+- **WHEN** the player presses «Задачка» (a marking press)
 - **THEN** `hidePopover` was never called, the sheet's stub state is open, `document.activeElement` is the button «Задачка», and the summary reads `6×6 · Розминка`
 
 #### Scenario: «Почати» closes the sheet and returns the focus
@@ -924,7 +931,7 @@ Traces: FR-97, FR-91, NFR-9, FR-100, FR-101, FR-59
 #### Scenario: The shown size and the shown level only mark
 
 - **GIVEN** a mounted board with player entries, a hint sentence and a hinted cell, the sheet opened, and a counting seed source and a `generate` spy
-- **WHEN** the player presses the size button of the size shown, and the level button of the level shown
+- **WHEN** the player makes a marking press on the size button of the size shown, and on the level button of the level shown
 - **THEN** after each press `hidePopover` was never called, the sheet's stub state is open, the focus is on the pressed button when the test had focused it, and the board, the messages, the highlights, `cell-hinted`, `aria-checked` of both groups and the summary are unchanged
 - **AND** `showModal` was never called and the seed-source and generator call counts are unchanged
 
@@ -937,7 +944,7 @@ Traces: FR-97, FR-91, NFR-9, FR-100, FR-101, FR-59
 #### Scenario: An unavailable level leaves the sheet open
 
 - **GIVEN** the sheet is opened with a marked size of 4×4 (or the page shows a 4×4 board), with the test focus on «Задачка»
-- **WHEN** the player presses «Задачка»
+- **WHEN** the player presses «Задачка» (a marking press on an unavailable level)
 - **THEN** `hidePopover` was never called, the sheet's stub state is open, `document.activeElement` is still that button, and `aria-checked="true"` is on «Розминка» only
 
 #### Scenario: Escape, the close button and a closing toggle event change nothing
@@ -1043,7 +1050,7 @@ Traces: FR-44, FR-87, FR-88, FR-97, NFR-9, NFR-5, FR-73, FR-100, FR-101
 #### Scenario: Choose a level on a board without entries
 
 - **GIVEN** the default 6×6 board with no player entries, a counting seed source returning 1, 2 and so on, a `generate` spy recording `(size, seed, level)`, and the sheet opened
-- **WHEN** the player presses the button «Задачка»
+- **WHEN** the player chooses «Задачка» (marks it, then presses «Почати»)
 - **THEN** `showModal` was never called, one more seed was taken (the second) and the spy's last call is `(6, 2, 2)`
 - **AND** `aria-checked="true"` is on «Задачка» only, `aria-checked="true"` in the size control is still on «Поле 6×6» only, and `[data-board]` has `data-size="6"` and 36 cells
 
@@ -1101,7 +1108,7 @@ Traces: FR-44, FR-87, FR-88, FR-97, NFR-9, NFR-5, FR-73, FR-100, FR-101
 
 ### Requirement: Only the first level exists at 4x4
 
-The page SHALL, while the **marked size** is 4×4 (while the sheet is closed, the size of the board shown), keep the level control visible inside the sheet with «Розминка» marked and SHALL give the buttons «Задачка», «Головоломка» and «Мозколамка» `aria-checked="false"` and `aria-disabled="true"` (FR-91, FR-44, A-34, FR-100): they are focusable and readable like the given cells (FR-69), so they have no `disabled` attribute and no `tabindex`. «Розминка» has no `aria-disabled` attribute. Pressing an unavailable level button SHALL do nothing at all (FR-73, FR-97): no dialog, no new puzzle, no seed taken, no generator call, the sheet stays open, focus stays on the button, and the board, both messages, the highlights, `aria-checked` of both groups, the summary and `cell-hinted` are unchanged. The level control SHALL hold a reason line `[data-level-reason]` as its first child, before the four buttons (FR-91 "in the level group"; the designer's iteration 10 puts it there): a `p` of plain text with no `role` and no `id`, present at every size, which while the marked size is 4×4 has no `hidden` attribute and the text `Для поля 4×4 є лише рівень «Розминка».` (the guillemets inside the code span are part of the text; wording to confirm with the user in chat during the slice, Q6; one sentence, NFR-4), and which at 6×6 and 8×8 has the `hidden` attribute and empty text content (the `hidden` mechanism is spec-made). The reason is not on the page body. The radiogroup thus holds one non-radio child; the four radio buttons are still exactly four, and the arrangement is confirmed against the design in task 1.4. Marking 4×4 sets the marked level to «Розминка». As soon as the marked size is 6×6 or 8×8 (a 6×6 or 8×8 board is shown, or the sheet marks one of them), the three buttons lose `aria-disabled` and the reason is hidden, and «Розминка» stays the marked level: the page does not restore an earlier marked level. `aria-disabled` is set only on the buttons of levels the shown size does not offer. After a «Почати» whose generation fails the previous board stays, the sheet is closed, and the state of the buttons is that of the board shown. An unavailable level is marked by a cue that is not colour alone (FR-91; the stylesheet requirement «The summary and level buttons set their own colours» pins a non-colour declaration).
+The page SHALL, while the **marked size** is 4×4 (while the sheet is closed, the size of the board shown), keep the level control visible inside the sheet with «Розминка» marked and SHALL give the buttons «Задачка», «Головоломка» and «Мозколамка» `aria-checked="false"` and `aria-disabled="true"` (FR-91, FR-44, A-34, FR-100): they are focusable and readable like the given cells (FR-69), so they have no `disabled` attribute and no `tabindex`. «Розминка» has no `aria-disabled` attribute. Pressing an unavailable level button SHALL do nothing at all (FR-73, FR-97): no dialog, no new puzzle, no seed taken, no generator call, the sheet stays open, focus stays on the button, and the board, both messages, the highlights, `aria-checked` of both groups, the summary and `cell-hinted` are unchanged. The level control SHALL hold a reason line `[data-level-reason]` as its first child, before the four buttons (FR-91 "in the level group"; the designer's iteration 10 puts it there): a `p` of plain text with no `role` and no `id`, present at every size, which while the marked size is 4×4 has no `hidden` attribute and the text `Для поля 4×4 є лише рівень «Розминка».` (the guillemets inside the code span are part of the text; signed wording, autonomy-log row 101; one sentence, NFR-4), and which at 6×6 and 8×8 has the `hidden` attribute and empty text content (the `hidden` mechanism is spec-made). The reason is not on the page body. The radiogroup thus holds one non-radio child; the four radio buttons are still exactly four, and the arrangement is confirmed against the signed review set in task 1.4 of this change. Marking 4×4 sets the marked level to «Розминка». As soon as the marked size is 6×6 or 8×8 (a 6×6 or 8×8 board is shown, or the sheet marks one of them), the three buttons lose `aria-disabled` and the reason is hidden, and «Розминка» stays the marked level: the page does not restore an earlier marked level. `aria-disabled` is set only on the buttons of levels the shown size does not offer. After a «Почати» whose generation fails the previous board stays, the sheet is closed, and the state of the buttons is that of the board shown. An unavailable level is marked by a cue that is not colour alone (FR-91; the stylesheet requirement «The summary and level buttons set their own colours» pins a non-colour declaration).
 
 Traces: FR-91, FR-44, FR-97, FR-99, NFR-9, NFR-5, FR-100
 
@@ -1134,7 +1141,7 @@ Traces: FR-91, FR-44, FR-97, FR-99, NFR-9, NFR-5, FR-100
 #### Scenario: Pressing an unavailable level changes nothing
 
 - **GIVEN** a page showing a 4×4 board with player entries, a hint sentence shown, a hint-filled cell and some cells with `cell-violation`, the sheet opened, with a counting seed source, a `generate` spy and the `showModal` spy, the counts read now
-- **WHEN** the player presses «Задачка», then «Головоломка», then «Мозколамка»
+- **WHEN** the player presses «Задачка», then «Головоломка», then «Мозколамка» (three marking presses on unavailable levels)
 - **THEN** `showModal` and `hidePopover` were never called, the seed-source and generator call counts equal the counts read now, every cell keeps its text and class list, both messages keep their text, and `aria-checked="true"` is on «Поле 4×4» only in the size control and on «Розминка» only in the level control
 - **AND** the sheet's stub state is still open and the summary still reads `4×4 · Розминка`
 
@@ -1203,7 +1210,7 @@ Traces: FR-92, FR-44, FR-100, FR-101
 #### Scenario: A size and a level marked together make one puzzle
 
 - **GIVEN** a 6×6 board at «Розминка» without player entries, a counting seed source and a `generate` spy recording `(size, seed, level)`, the counts read now, and the sheet opened
-- **WHEN** the player presses «Мозколамка», then «Поле 8×8», then «Поле 6×6», then «Поле 8×8» again, and then «Почати»
+- **WHEN** the player marks «Мозколамка», then «Поле 8×8», then «Поле 6×6», then «Поле 8×8» again (four marking presses), and then presses «Почати»
 - **THEN** the seed source was called once more and the spy recorded exactly one more call, `(8, seed, 4)`, and the summary reads `8×8 · Мозколамка`
 
 #### Scenario: One confirmation covers a size and a level marked together
@@ -1216,7 +1223,7 @@ Traces: FR-92, FR-44, FR-100, FR-101
 #### Scenario: Marking 4×4 and then 6×6 keeps «Розминка» and marks no board
 
 - **GIVEN** a 6×6 board at «Мозколамка» without entries, a counting seed source and the sheet opened
-- **WHEN** the player presses «Поле 4×4» and then «Поле 6×6»
+- **WHEN** the player marks «Поле 4×4» and then «Поле 6×6» (two marking presses)
 - **THEN** `aria-checked="true"` is on «Поле 6×6» only and on «Розминка» only, and no seed was taken
 
 ### Requirement: A level change follows the confirmation rule

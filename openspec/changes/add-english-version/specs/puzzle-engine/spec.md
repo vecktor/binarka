@@ -2,7 +2,7 @@
 
 ### Requirement: Hint language is an engine input
 
-The hint engine SHALL take the language of its sentences as an input: `hint(board, ceiling = 1, language = 'uk')`, where `language` is `'uk'` or `'en'` (FR-112, FR-56). With `'uk'`, and with no third argument, every result is byte-identical to the result before the language existed, so every existing caller (the generator, the CLI, the eval cases and the engine tests) gets the same Ukrainian sentences. With `'en'` the result has the same kind, cell, value and rule and an English sentence. The language changes only the `sentence`: the choice of the hint (FR-23, FR-77) never depends on it. A `language` other than `'uk'` or `'en'` is a malformed call and is unspecified. The engine stays pure TypeScript with no DOM import or browser global (TC-7), never reads storage, and never reads a locale: the language is a plain value passed by the caller.
+The hint engine SHALL take the language of its sentences as an input: `hint(board, ceiling = 1, language = 'uk')`, where `language` is `'uk'` or `'en'` (FR-112, FR-56). With `'uk'`, and with no third argument, the `sentence`, `kind`, `row`, `col`, `value`, `rule` and `steps` of every result are unchanged from before the language existed, so every existing caller of `hint` (the page, the eval cases and the engine tests; the generator and the CLI do not call it) gets the same Ukrainian sentences; the only new members of a fill are the data fields of «A hint exposes the data of its sentence». With `'en'` the result has the same kind, cell, value, rule and data fields and an English sentence. The language changes only the `sentence`: the choice of the hint (FR-23, FR-77) never depends on it. A `language` other than `'uk'` or `'en'` is a malformed call and is unspecified. The engine stays pure TypeScript with no DOM import or browser global (TC-7), never reads storage, and never reads a locale: the language is a plain value passed by the caller.
 
 Traces: FR-112, FR-56, FR-23, NFR-5
 
@@ -10,13 +10,19 @@ Traces: FR-112, FR-56, FR-23, NFR-5
 
 - **GIVEN** the boards of «Pair hint», «Sandwich hint», «Count hint», «Line balance hint», «Unique lines hint», «Look-ahead hint», «No-rule hint» and «Broken-board hint»
 - **WHEN** a hint is requested on each without a third argument, with `'uk'`, and (for the old two-argument form) with the ceiling only
-- **THEN** the three results are identical, and each sentence equals the Ukrainian sentence pinned in the named requirement
+- **THEN** the three results are identical, each sentence equals the Ukrainian sentence pinned in the named requirement, and `kind`, `row`, `col`, `value`, `rule` and `steps` are those pinned there
 
 #### Scenario: English changes only the sentence
 
 - **GIVEN** the same boards
 - **WHEN** a hint is requested with `'uk'` and with `'en'` at the same ceiling
-- **THEN** `kind`, `row`, `col`, `value`, `rule` and `steps` are equal in the two results and only `sentence` differs
+- **THEN** `kind`, `row`, `col`, `value`, `rule`, `steps` and the data fields (`axis`, `line`, `digit`, `empties`, `other`, `size`, where present) are equal in the two results and only `sentence` differs
+
+#### Scenario: The CLI does not use the hint or a language
+
+- **GIVEN** the source `src/cli.ts` and the CLI tests
+- **WHEN** the test searches the source for the hint function, `hintSentence` and a language option
+- **THEN** there is no match, and the CLI output and errors are those of the CLI requirements, byte for byte (NFR-8)
 
 #### Scenario: The engine stays pure
 
@@ -26,16 +32,16 @@ Traces: FR-112, FR-56, FR-23, NFR-5
 
 ### Requirement: A hint exposes the data of its sentence
 
-A hint of `kind` `'fill'` SHALL carry, besides `row`, `col`, `value`, `rule` and `sentence`, the data its sentence is built from (FR-110, Q8): `axis` (`'row'` or `'col'`, the type of the line the sentence names), `line` (the 0-based index of that line), `digit` (the digit the sentence names: the pair, the sandwiching digit, the counted digit or the digit that has room for one more), `empties` (the number of empty cells of the line when the hint is requested), `other` (the 0-based index of the complete line named), `steps` (as before) and `size` (the side of the board), as the table below says. The fields present for each rule are exactly these, and every other field is absent (not `undefined`-valued, not null):
+A hint of `kind` `'fill'` SHALL carry, besides `row`, `col`, `value`, `rule` and `sentence`, the data its sentence is built from (FR-110, Q8): `axis` (`'row'` or `'col'`, the type of the line the sentence names), `line` (the 0-based index of that line), `digit` (the digit the sentence names: the pair, the sandwiching digit, the counted digit or the digit that has room for one more), `empties` (the number of empty cells of the line when the hint is requested), `other` (the 0-based index of the complete line named), `steps` (as before) and `size` (the side of the board, only where the count sentence needs it: it gives the number word N/2), as the table below says. The English number words for N/2 = 5 to 8 (N = 10 to 16) follow the same pattern ("five" to "eight") and, like the Ukrainian side, are not tested (FR-18 is Future). The fields present for each rule are exactly these, and every other field is absent (not `undefined`-valued, not null):
 
 | `rule` | `axis` | `line` | `digit` | `empties` | `other` | `steps` | `size` |
 |---|---|---|---|---|---|---|---|
-| `pair` | yes | yes | yes | no | no | no | yes |
-| `sandwich` | yes | yes | yes | no | no | no | yes |
+| `pair` | yes | yes | yes | no | no | no | no |
+| `sandwich` | yes | yes | yes | no | no | no | no |
 | `count` | yes | yes | yes | yes | no | no | yes |
-| `balance` | yes | yes | yes | no | no | no | yes |
-| `unique` | yes | yes | no | no | yes | no | yes |
-| `lookahead` | no | no | no | no | no | yes | yes |
+| `balance` | yes | yes | yes | no | no | no | no |
+| `unique` | yes | yes | no | no | yes | no | no |
+| `lookahead` | no | no | no | no | no | yes | no |
 
 `row`, `col`, `value`, `rule` and `sentence` are present for every fill, as before. The module `src/engine/index.ts` SHALL export a pure function `hintSentence(hint, language = 'uk')` that returns the sentence of a hint already made, in the given language, from that data (and from `kind` alone for `'none'` and `'broken'`). For every board, ceiling and language, `hint(board, ceiling, language).sentence` equals `hintSentence(hint(board, ceiling, 'uk'), language)`. The function reads no board, no DOM and no storage. The page keeps the result of the hint on screen and calls the function when the language changes (FR-110).
 
@@ -45,8 +51,8 @@ Traces: FR-110, FR-112
 
 - **GIVEN** the boards of the scenarios «Pair of zeros in a row», «Zeros around a gap in a column», «Three zeros in a 6-wide row, one empty cell», «Two empty cells in the line use the plural ending», «Line balance in a row», «Unique lines in a column» and «Look-ahead of two steps beats an earlier cell of four»
 - **WHEN** a hint is requested with ceiling 4
-- **THEN** the results carry, in this order, `axis` `'row'`, `line` 2, `digit` 0; `axis` `'col'`, `line` 1, `digit` 0; `axis` `'row'`, `line` 4, `digit` 0, `empties` 1, `size` 6; `axis` `'row'`, `line` 1, `digit` 0, `empties` 2; `axis` `'row'`, `line` 2, `digit` 0; `axis` `'col'`, `line` 1, `other` 4; and for the look-ahead `steps` 2 with no `axis`
-- **AND** every result carries `size` equal to the side of its board, and no result carries a field that the table marks absent for its rule (`Object.keys` of each result equals the keys of the table row plus `kind`, `row`, `col`, `value`, `rule` and `sentence`)
+- **THEN** the results carry, in this order, `axis` `'row'`, `line` 2, `digit` 0; `axis` `'col'`, `line` 1, `digit` 0; `axis` `'row'`, `line` 4, `digit` 0, `empties` 1, `size` 6; `axis` `'row'`, `line` 1, `digit` 0, `empties` 2, `size` 6; `axis` `'row'`, `line` 2, `digit` 0; `axis` `'col'`, `line` 1, `other` 4; and for the look-ahead `steps` 2 with no `axis`
+- **AND** the `count` results carry `size` equal to the side of their board
 
 #### Scenario: hintSentence rebuilds every sentence in both languages
 
@@ -281,7 +287,7 @@ Traces: FR-26, FR-77, FR-112
 
 ### Requirement: Line balance hint
 
-The hint engine SHALL, at a ceiling of 2 or more, apply technique 2, line balance (FR-74): when a line holds exactly N/2 − 1 of a digit d and has at least two empty cells, then for an empty cell e of that line suppose e takes d and every other empty cell of the line takes the other digit; if that assignment puts three equal digits side by side anywhere in the line, e cannot be d, and the hint targets e with the other digit. Scan order: rows before columns, lower line first, then lower cell position e, then d = 0 before d = 1 (A-7, FR-77). The sentence (FR-78, provisional wording, to be confirmed in the page slice, Q6) is «У <рядку|стовпці> K є місце лише для <одного нуля|однієї одиниці>, і якщо поставити <його|її> сюди, решта клітинок дасть три однакові цифри поспіль, тож тут <одиниця|нуль>.» with K the 1-based line number, the first alternative of each pair for d = 0 and the second for d = 1. In English mode (FR-112) the sentence is "<Row|Column> K has room for only one more <zero|one>, and putting it here would leave three equal digits side by side in the other cells, so this is <a one|a zero>." The rule name of the hint is `balance`.
+The hint engine SHALL, at a ceiling of 2 or more, apply technique 2, line balance (FR-74): when a line holds exactly N/2 − 1 of a digit d and has at least two empty cells, then for an empty cell e of that line suppose e takes d and every other empty cell of the line takes the other digit; if that assignment puts three equal digits side by side anywhere in the line, e cannot be d, and the hint targets e with the other digit. Scan order: rows before columns, lower line first, then lower cell position e, then d = 0 before d = 1 (A-7, FR-77). The sentence (FR-78, provisional wording, to be confirmed in the page slice, Q6) is «У <рядку|стовпці> K є місце лише для <одного нуля|однієї одиниці>, і якщо поставити <його|її> сюди, решта клітинок дасть три однакові цифри поспіль, тож тут <одиниця|нуль>.» with K the 1-based line number, the first alternative of each pair for d = 0 and the second for d = 1. In English mode (FR-112) the sentence is "<Row|Column> K has room for only one more <0|1>, and putting it here would leave three equal digits side by side in the other cells, so this must be <a 1|a 0>." The rule name of the hint is `balance`.
 
 Traces: FR-74, FR-78, NFR-4, NFR-5, FR-112
 
@@ -300,7 +306,7 @@ Traces: FR-74, FR-78, NFR-4, NFR-5, FR-112
 
 - **GIVEN** the boards of «Line balance in a row» and «Line balance in a column»
 - **WHEN** a hint is requested with ceiling 2 and the language `'en'`
-- **THEN** the sentences are "Row 3 has room for only one more zero, and putting it here would leave three equal digits side by side in the other cells, so this is a one." and "Column 2 has room for only one more one, and putting it here would leave three equal digits side by side in the other cells, so this is a zero."
+- **THEN** the sentences are "Row 3 has room for only one more 0, and putting it here would leave three equal digits side by side in the other cells, so this must be a 1." and "Column 2 has room for only one more 1, and putting it here would leave three equal digits side by side in the other cells, so this must be a 0."
 
 #### Scenario: Two cells qualify, the lower position first
 - **GIVEN** a 6×6 board whose only filled cells are row 3 `0 . . . . 0`, and separately one whose only filled cells are row 3 `1 . . . . 1` (both cells at column 2 and column 5 qualify: a zero at either forces three ones in a row)
@@ -368,7 +374,7 @@ Traces: FR-75, FR-79, NFR-4, NFR-5, FR-112
 
 ### Requirement: Look-ahead hint
 
-The hint engine SHALL, at a ceiling of 4, apply technique 4, look-ahead (FR-76): for an empty cell and a value v, place v on a copy of the board and apply techniques 1 to 3 repeatedly in the order of FR-77, each application filling one forced cell (a step), for **at most 4 steps**; if after 0 to 4 steps `findViolations` reports at least one violation (FR-1 to FR-6), the cell cannot hold v and the hint targets it with the other value. A contradiction that needs 5 or more steps is not a technique-4 deduction, and a line that merely can no longer be completed, without a reported violation, is not a contradiction (A-37). Among all such cells and values the hint uses the one with the fewest steps, then the lower row, then the lower column, then v = 0 before v = 1. The hint also carries `steps`, the number of steps of the contradiction. The sentence (FR-80, provisional wording, to be confirmed in the page slice, Q6) is «Якщо поставити W у рядку R, стовпці C, за кілька кроків порушиться правило, тож тут V.» with R and C the 1-based row and column of the target, W the refuted value and V the hint's value. In English mode (FR-112) the sentence is "If you put W in row R, column C, a rule breaks within a few steps, so this is V." The rule name of the hint is `lookahead`.
+The hint engine SHALL, at a ceiling of 4, apply technique 4, look-ahead (FR-76): for an empty cell and a value v, place v on a copy of the board and apply techniques 1 to 3 repeatedly in the order of FR-77, each application filling one forced cell (a step), for **at most 4 steps**; if after 0 to 4 steps `findViolations` reports at least one violation (FR-1 to FR-6), the cell cannot hold v and the hint targets it with the other value. A contradiction that needs 5 or more steps is not a technique-4 deduction, and a line that merely can no longer be completed, without a reported violation, is not a contradiction (A-37). Among all such cells and values the hint uses the one with the fewest steps, then the lower row, then the lower column, then v = 0 before v = 1. The hint also carries `steps`, the number of steps of the contradiction. The sentence (FR-80, provisional wording, to be confirmed in the page slice, Q6) is «Якщо поставити W у рядку R, стовпці C, за кілька кроків порушиться правило, тож тут V.» with R and C the 1-based row and column of the target, W the refuted value and V the hint's value. In English mode (FR-112) the sentence is "If you put W in row R, column C, a rule would break within a few steps, so this cell must be V." The rule name of the hint is `lookahead`.
 
 Traces: FR-76, FR-80, NFR-4, NFR-5, FR-112
 
@@ -383,7 +389,7 @@ Traces: FR-76, FR-80, NFR-4, NFR-5, FR-112
 
 - **GIVEN** the board of «Look-ahead of two steps beats an earlier cell of four»
 - **WHEN** a hint is requested with ceiling 4 and the language `'en'`
-- **THEN** the hint targets row 6 column 5 with value 0, its `steps` is 2 and the sentence is "If you put 1 in row 6, column 5, a rule breaks within a few steps, so this is 0."
+- **THEN** the hint targets row 6 column 5 with value 0, its `steps` is 2 and the sentence is "If you put 1 in row 6, column 5, a rule would break within a few steps, so this cell must be 0."
 
 #### Scenario: A contradiction at exactly 4 steps is found
 - **GIVEN** the 6×6 board with rows `. . . . 1 .`, `. 0 1 1 0 .`, `. 1 . . . .`, `0 1 . . 1 .`, `. 0 . 1 0 .` and `. . . . . 1` (techniques 1 to 3 find nothing)
@@ -455,11 +461,12 @@ Traces: NFR-5, FR-78, FR-79, FR-80, FR-112, FR-56
 
 - **GIVEN** the pair, sandwich, count, line-balance, unique-lines, look-ahead, no-rule and broken-rule sentences requested with the language `'en'`
 - **WHEN** each is inspected
-- **THEN** each contains Latin letters and no Cyrillic letters (digits for line numbers, cell coordinates and the digits 0 and 1 are allowed), each names "row" or "column" with a 1-based number or the look-ahead pair "row R, column C", and "zero"/"one" agree with the count ("two zeros", "three ones")
+- **THEN** each contains Latin letters and no Cyrillic letters (digits for line numbers, cell coordinates and the digits 0 and 1 are allowed)
+- **AND** the pair, sandwich, count, line-balance and unique-lines sentences name "row" or "column" with a 1-based number, the look-ahead sentence names "row R, column C", and "zero"/"one" agree with the count ("two zeros", "three ones") in the pair, sandwich and count sentences; the no-rule and broken-rule sentences name no line
 
 ### Requirement: Hint explanations are clear and correct for a player
 
-The hint engine SHALL give explanations that a player finds clear and correct: the sentence states the rule that applies, names the right line, and agrees with the board and the target cell and value. This quality is graded by an eval-judge on a 0 to 100 scale against a rubric on 2 to 3 Ukrainian hint sentences (pair, sandwich and count), each case must score at least 80 out of 100, and the same rubric grades three English hint sentences (pair, sandwich and count) in a separate dimension `hint-clarity-en` (Q9), each case at least 80 out of 100 (the Ukrainian dimension `hint-clarity` is unchanged; a baseline for the new dimension is minted only after a passing run), and the grading is optional (cut line 2 of the cut order); if it is cut, this requirement is reported NOT-EARNED, not passed.
+The hint engine SHALL give explanations that a player finds clear and correct: the sentence states the rule that applies, names the right line, and agrees with the board and the target cell and value. This quality is graded by an eval-judge on a 0 to 100 scale against a rubric on 2 to 3 Ukrainian hint sentences (pair, sandwich and count), each case must score at least 80 out of 100, and a rubric adapted to English (the sentence names the rule, names "row" or "column" and the right number, names the right digit, is understandable to a player without game knowledge, and is English with no Cyrillic letter) grades three English hint sentences (pair, sandwich and count) in a separate dimension `hint-clarity-en` (Q9), each case at least 80 out of 100 (the Ukrainian dimension `hint-clarity` is unchanged; a baseline for the new dimension is minted only after a passing run), and the grading is optional (cut line 2 of the cut order); if it is cut, this requirement is reported NOT-EARNED, not passed.
 
 Traces: NFR-6
 
@@ -474,7 +481,7 @@ Traces: NFR-6
 - **GIVEN** one English hint case each for the pair, sandwich and count rules (`evals/cases/`, dimension `hint-clarity-en`), with the board, the target and the sentence
 - **WHEN** the eval-judge scores each case against the rubric
 - **THEN** a score from 0 to 100 is recorded for each case, and each recorded score is at least 80 out of 100
-- **AND** `node scripts/check-eval-ratchet.mjs` guards the committed score of the new dimension once its baseline is minted
+- **AND** `node scripts/check-eval-ratchet.mjs` guards the committed average of the new dimension once its baseline is minted, and a vitest test reads `evals/results` for the dimension `hint-clarity-en` and fails on any case with `pass: false` or a score below 80 (the ratchet compares averages and would pass a new dimension as an improvement)
 
 #### Scenario: Grading is not run
 - **GIVEN** the eval is dropped under the cut order

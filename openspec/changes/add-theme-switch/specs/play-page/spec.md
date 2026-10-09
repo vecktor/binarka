@@ -103,7 +103,7 @@ Traces: FR-103, FR-118, FR-100
 
 ### Requirement: Effective theme on the document
 
-The document element `<html>` SHALL always carry the attribute `data-theme` with the effective theme, `light` or `dark`: the manual choice when it is `light` or `dark`, and the system theme while the choice is `auto` (FR-104, see «Auto follows the system»). The CSS property `color-scheme` of the root SHALL equal the effective theme (`light` or `dark`), so that native parts of the page (the dialog backdrop, scrollbars, form controls) match it. The palette of each theme is the stylesheet's (see «Borders, cues and focus rings have enough contrast», A-51). A press on a theme option, a change of the system theme while the choice is `auto`, and the head step before the first paint (see «Preferences are applied before the first paint») are the only things that change `data-theme`.
+The document element `<html>` SHALL always carry the attribute `data-theme` with the effective theme, `light` or `dark`: the manual choice when it is `light` or `dark`, and the system theme while the choice is `auto` (FR-104, see «Auto follows the system»). The CSS property `color-scheme` of the root SHALL equal the effective theme (`light` or `dark`), so that native parts of the page (the dialog backdrop, scrollbars, form controls) match it; the stylesheet owns it (`:root { color-scheme: light }` and `:root[data-theme="dark"] { color-scheme: dark }`) and no script writes `color-scheme`. The palette of each theme is the stylesheet's (see «Borders, cues and focus rings have enough contrast», A-51). A press on a theme option, a change of the system theme while the choice is `auto`, and the head step before the first paint (see «Preferences are applied before the first paint») are the only things that change `data-theme`.
 
 Traces: FR-104, FR-65, A-51
 
@@ -118,17 +118,16 @@ Traces: FR-104, FR-65, A-51
 - **GIVEN** the text of `src/ui/style.css`
 - **WHEN** the test reads the `color-scheme` declarations of `:root` and of `:root[data-theme="dark"]`
 - **THEN** the top-level `:root` declares `color-scheme: light` and `:root[data-theme="dark"]` declares `color-scheme: dark`
-- **AND** where jsdom resolves it, `getComputedStyle(document.documentElement).colorScheme` equals the effective theme after a theme press
 
 #### Scenario: The rendered colours follow the effective theme
 
-- **GIVEN** the built page open in Chromium on a light system scheme, with `binarka.theme` = `dark` stored
+- **GIVEN** the built page open in Chromium on a light system scheme, with `binarka.theme` = `dark` stored (the check lives in `e2e/nfr-13-a11y.spec.ts`, project `a11y`; this scenario is the binding check of `color-scheme`)
 - **WHEN** the check reads the computed `background-color` of `body` and the computed `color-scheme` of `<html>`
 - **THEN** the background equals the dark `--color-page` and `color-scheme` is `dark`
 
 ### Requirement: Auto follows the system theme live
 
-While the chosen theme is `auto`, the effective theme SHALL be `dark` when `window.matchMedia('(prefers-color-scheme: dark)').matches` is true and `light` otherwise, and the page SHALL follow a `change` event of that query at once, with no reload: `data-theme`, `color-scheme` and the browser colour (see «Browser colour follows the theme») update (FR-105). While the chosen theme is `light` or `dark`, a change of the system theme changes nothing. If `window.matchMedia` is missing, `auto` resolves to `light` (A-50). jsdom has no `matchMedia`: tests install a stub on `window` that returns `{ matches, media, addEventListener, removeEventListener }`, records the `change` listeners and lets the test fire them, and remove it after each test, like the popover stubs (A-44).
+While the chosen theme is `auto`, the effective theme SHALL be `dark` when `window.matchMedia('(prefers-color-scheme: dark)').matches` is true and `light` otherwise, and the page SHALL follow a `change` event of that query at once, with no reload: `data-theme` and the browser colour (see «Browser colour follows the theme») update, and `color-scheme` follows from the stylesheet (FR-105). While the chosen theme is `light` or `dark`, a change of the system theme changes nothing. If `window.matchMedia` is missing, `auto` resolves to `light` (A-50). jsdom has no `matchMedia`: tests install a stub on `window` that returns `{ matches, media, addEventListener, removeEventListener }`, records the `change` listeners and lets the test fire them, and remove it after each test, like the popover stubs (A-44).
 
 Traces: FR-105, FR-104, A-50
 
@@ -150,11 +149,23 @@ Traces: FR-105, FR-104, A-50
 - **WHEN** the test sets the stub to match and fires the recorded `change` listener
 - **THEN** `data-theme` is still `light`; the same holds for `dark` pressed and a stub that stops matching
 
+#### Scenario: Auto follows a live change in a real browser
+
+- **GIVEN** the built page open in Chromium with nothing stored (auto) and the system scheme emulated light (`page.emulateMedia({ colorScheme: 'light' })`), in `e2e/nfr-13-a11y.spec.ts`
+- **WHEN** the check calls `page.emulateMedia({ colorScheme: 'dark' })` without a reload
+- **THEN** `<html data-theme>` is `dark`, the computed `background-color` of `body` equals the dark `--color-page`, and the `content` of `meta[name="theme-color"]` equals it too
+
 #### Scenario: A system change writes nothing
 
 - **GIVEN** a page mounted with the choice `auto` and a `setItem` spy on `localStorage`
 - **WHEN** the test fires a `change` listener
 - **THEN** `setItem` was not called
+
+#### Scenario: A broken matchMedia does not stop the page
+
+- **GIVEN** `window.matchMedia` that throws when called, and another run with a stub that returns an object without `addEventListener`
+- **WHEN** the page is mounted
+- **THEN** the mount raises no error, `data-theme` is `light` (the first run) or follows `matches` (the second run), and the board is shown
 
 #### Scenario: Without matchMedia auto is light
 
@@ -174,6 +185,12 @@ Traces: FR-106, FR-116
 - **WHEN** the test counts `meta[name="theme-color"]` and `meta[name="description"]` in the head of `index.html`
 - **THEN** there is exactly one theme-color meta and no description meta
 
+#### Scenario: A document without the meta does not stop the page
+
+- **GIVEN** a jsdom document that has no `meta[name="theme-color"]`
+- **WHEN** the page is mounted and the player presses «Темна»
+- **THEN** the page raises no error and `data-theme` is `dark`
+
 #### Scenario: The meta follows every change of the effective theme
 
 - **GIVEN** a jsdom document with the head of `index.html` and a mounted page on a light system stub, with the choice `auto`
@@ -192,6 +209,12 @@ Traces: FR-113, FR-100, TC-12
 - **WHEN** the player presses «Темна», and then «Як у системі»
 - **THEN** `setItem` was called twice, with `binarka.theme` and `dark`, then with `binarka.theme` and `auto` (the default value is written too, A-48), and `localStorage` holds no other key
 
+#### Scenario: Pressing the default option on a fresh page writes nothing
+
+- **GIVEN** `localStorage` empty and a `setItem` spy (the option «Як у системі» is checked by default)
+- **WHEN** the player presses «Як у системі»
+- **THEN** `setItem` was not called: the option is already chosen, and the default is written only when the player presses it while another option is chosen (A-48), as in the scenario above
+
 #### Scenario: Nothing else writes
 
 - **GIVEN** a page mounted with `localStorage` empty, a `setItem` spy and a system `change` listener
@@ -200,7 +223,7 @@ Traces: FR-113, FR-100, TC-12
 
 #### Scenario: The page source names no other store
 
-- **GIVEN** the source files under `src/`
+- **GIVEN** the source files under `src/` and the text of `index.html` (the head step included)
 - **WHEN** the test searches them for `sessionStorage`, `document.cookie` and `indexedDB`
 - **THEN** none of them matches in any file
 
@@ -259,7 +282,7 @@ Traces: FR-115, FR-113
 
 ### Requirement: Preferences are applied before the first paint
 
-The stored theme (or the default) SHALL be applied to `<html>` (`data-theme`, `color-scheme`) and to the theme-color meta by a classic inline script in the document head of `index.html` that runs before the body is parsed, not by the page module (FR-116). The page then mounts with `aria-checked` already on the stored option. The step follows «Invalid or missing stored values fall back» and «Failing storage does not stop the page». It is the one deliberate duplicate outside `src/ui/strings.ts` and the storage module: it holds the key name `binarka.theme` and the two theme-color values; a test asserts that the name equals the module's value and that the two theme-color values equal `--color-page` of the light and of the dark token set. The inline script lives in `index.html`, so lint and `tsc` do not see it; its tests are its only check. The built file `dist/index.html` SHALL keep the inline classic script ahead of the module script and the stylesheet link that Vite injects into `<head>`.
+The stored theme (or the default) SHALL be applied to `<html>` (`data-theme`; `color-scheme` follows from the stylesheet) and to the theme-color meta by a classic inline script in the document head of `index.html` that runs before the body is parsed, not by the page module (FR-116). The page then mounts with `aria-checked` already on the stored option. The step follows «Invalid or missing stored values fall back» and «Failing storage does not stop the page». It is the one deliberate duplicate outside `src/ui/strings.ts` and the storage module: it holds the key name `binarka.theme` and the two theme-color values; a test asserts that the name equals the module's value and that the two theme-color values equal `--color-page` of the light and of the dark token set. The inline script lives in `index.html`, so lint and `tsc` do not see it; its tests are its only check. The built file SHALL keep the inline classic script ahead of the module script and the stylesheet link that Vite injects into `<head>`; the test makes the build itself (`vite build` into a temporary output directory) so a stale `dist/` can never give a green result.
 
 Traces: FR-116, FR-114, FR-115, FR-104, FR-106
 
@@ -273,7 +296,7 @@ Traces: FR-116, FR-114, FR-115, FR-104, FR-106
 
 - **GIVEN** a jsdom document built from `index.html` and a storage stub with `binarka.theme` = `dark`, then `light`, then `auto` with a dark system stub, in separate runs
 - **WHEN** the test runs the inline script
-- **THEN** `data-theme` is `dark`, then `light`, then `dark`, `color-scheme` follows, and the theme-color `content` equals the `--color-page` of the matching token set
+- **THEN** `data-theme` is `dark`, then `light`, then `dark`, and the theme-color `content` equals the `--color-page` of the matching token set
 
 #### Scenario: The head step survives bad and throwing storage
 
@@ -289,13 +312,13 @@ Traces: FR-116, FR-114, FR-115, FR-104, FR-106
 
 #### Scenario: The built file keeps the order
 
-- **GIVEN** the file `dist/index.html` after `npm run build`
+- **GIVEN** the `index.html` of a build that the test makes itself (`vite build --outDir <a temporary directory>`; the test fails with a clear message if the build fails or the file is absent, and never skips)
 - **WHEN** the test reads the order of its head children
 - **THEN** the inline classic script precedes the `script type="module"` and the stylesheet `link` that Vite injected
 
 ### Requirement: No flash of the wrong theme on reload
 
-With `dark` stored on a light system and with `light` stored on a dark system, the head step alone SHALL put the page in the stored theme before the page bundle runs (NFR-18, held until its e2e spec is seen failing against the page). **Variant 1:** the test aborts the page bundle (`page.route('**/assets/*.js', r => r.abort())`; the stylesheet stays a `<link>` and loads) and asserts that `<html>` has the stored `data-theme` and that the computed `background-color` of `body` equals the `--color-page` of the stored theme. **Variant 2** (bundle loaded): an `addInitScript` `MutationObserver` records the changes of the `<html>` attributes and the first child added to `<body>`; every change of `data-theme` comes before that first child and none follows during the mount. The paint itself is not measured. Sampled: 375×812 and 1280×800; the coverage is `sampled`, never continuum. Storage is set by `addInitScript` per test in a fresh browser context (no `storageState`). The spec file is `e2e/nfr-18-*.spec.ts` and `playwright.config.ts` gains one `testMatch` pattern for it (approved, autonomy-log row 117). At application the row NFR-18 is written to `docs/requirements-held.md` with a pending tag (A-32) and moves into `docs/requirements.md` on the pattern of row 68 (1) once the spec is seen failing against the page.
+With `dark` stored on a light system and with `light` stored on a dark system, the head step alone SHALL put the page in the stored theme before the page bundle runs (NFR-18, held until its e2e spec is seen failing against the page). **Variant 1:** the test aborts the page bundle (`page.route('**/assets/*.js', r => r.abort())`; the stylesheet stays a `<link>` and loads) and asserts that `<html>` has the stored `data-theme` and that the computed `background-color` of `body` equals the `--color-page` of the stored theme. **Variant 2** (bundle loaded): an `addInitScript` `MutationObserver` with `attributes`, `attributeFilter: ['data-theme']` and `attributeOldValue: true` records the changes of `<html>` and the first child added to `<body>`; only records whose `oldValue` differs from the new value count, so a mount that rewrites an equal value is not a change. There is at least one counted record, the last value is the stored one, every counted record comes before that first child, and none follows during the mount; a run with no counted record fails (it must not pass vacuously). The paint itself is not measured. Sampled: 375×812 and 1280×800; the coverage is `sampled`, never continuum. Storage is set by `addInitScript` per test in a fresh browser context (no `storageState`). The spec file is `e2e/nfr-18-*.spec.ts` and `playwright.config.ts` gains one `testMatch` pattern for it (approved, autonomy-log row 117). NFR-18 is held (autonomy-log row 118) and moves into `docs/requirements.md` on the pattern of row 68 (1) once the spec is seen failing against the page without the head step (the red run is a task, not a scenario).
 
 Traces: NFR-18, FR-116
 
@@ -309,17 +332,11 @@ Traces: NFR-18, FR-116
 
 - **GIVEN** the built page with the bundle loaded and an `addInitScript` observer that records `<html>` attribute changes and the first child added to `<body>`
 - **WHEN** the page loads with `dark` stored on a light system scheme
-- **THEN** every recorded `data-theme` change precedes the first child of `<body>` and no `data-theme` change follows
-
-#### Scenario: The spec fails against a page without the head step
-
-- **GIVEN** the page before this change (no head step)
-- **WHEN** the spec of Variant 1 runs
-- **THEN** it fails, because `<html>` has no `data-theme` (this is the red run that moves NFR-18 out of `docs/requirements-held.md`)
+- **THEN** there is at least one counted `data-theme` record, the last value is `dark`, every counted record precedes the first child of `<body>`, and no counted record follows; without a head step this scenario fails too (no record before the first child)
 
 ### Requirement: The theme options set their own colours
 
-The stylesheet `src/ui/style.css` SHALL set an explicit `color` and an explicit `background-color`, each a single `var(--color-...)` token, in the rule that styles the theme options (`.theme-control button`) and in the rule of the chosen option (`.theme-control button[aria-checked='true']`), so that the colours do not depend on the browser, the operating system or the effective theme (FR-65, FR-117). For each state and for each token set (light and dark) the text colour against the background colour SHALL have at least 4.5:1 contrast (the WCAG 2 formula on the resolved tokens). The three options are `button` elements, so the existing `button:focus-visible` rule gives them the focus indicator. The element `[data-control="theme"]` carries the class `theme-control`. A chosen option differs from an unchosen one by more than colour (a ring or a mark drawn by the stylesheet, WCAG 1.4.1), as for the level buttons. How the control is laid out is the signed design's (held NFR-14).
+The stylesheet `src/ui/style.css` SHALL set an explicit `color` and an explicit `background-color`, each a single `var(--color-...)` token, in the rule that styles the theme options (`.theme-control button`) and in the rule of the chosen option (`.theme-control button[aria-checked='true']`), so that the colours do not depend on the browser, the operating system or the effective theme (FR-65, FR-117). For each state and for each token set (light and dark) the text colour against the background colour SHALL have at least 4.5:1 contrast (the WCAG 2 formula on the resolved tokens). The three options are `button` elements, so the existing `button:focus-visible` rule gives them the focus indicator. The element `[data-control="theme"]` carries the class `theme-control` (a spec-made proxy, to confirm against the signed review set). A chosen option differs from an unchosen one by more than colour (a ring or a mark drawn by the stylesheet, WCAG 1.4.1), as for the level buttons. How the control is laid out is the signed design's (held NFR-14).
 
 Traces: FR-65, FR-117, NFR-9
 
@@ -424,18 +441,18 @@ Traces: NFR-13, FR-102, FR-105
 #### Scenario: Manual themes pass the sweep
 
 - **GIVEN** the built page in Chromium with `binarka.theme` = `dark` set by `addInitScript` on a light system scheme, and again with `light` on a dark system scheme
-- **WHEN** the sweep runs axe-core
+- **WHEN** the sweep runs axe-core, with the settings panel closed and with it open
 - **THEN** axe reports no violation in either state
 
 #### Scenario: A manual theme resolves the same tokens as auto on that system
 
-- **GIVEN** the page with `dark` stored on a light system scheme, and the page with `auto` on a dark system scheme
+- **GIVEN** (in `e2e/nfr-13-a11y.spec.ts`, project `a11y`) the page with `dark` stored on a light system scheme, and the page with `auto` on a dark system scheme
 - **WHEN** the check reads the computed colours of `body`, a cell and a button in both
 - **THEN** the two pages compute the same colours
 
 #### Scenario: The focused theme option shows an indicator
 
-- **GIVEN** the page with focus moved to a theme option by Tab
+- **GIVEN** (in the keyboard focus sweep of `e2e/nfr-13-a11y.spec.ts`) the page with focus moved to a theme option by Tab
 - **WHEN** the sweep reads the computed outline of the focused option
 - **THEN** its outline style is not `none` and its outline width is at least 2px
 
@@ -496,7 +513,7 @@ Traces: FR-68, FR-95, FR-96, FR-117, FR-102
 
 ### Requirement: Logo
 
-The page header SHALL show exactly one inline `<svg>` logo inside its heading, drawn as shapes in the page source: a 2×2 mini board with the digits «1 0 / 0 1» in a circle with 0/1 rays, and no text (FR-72). The mini board SHALL be four cell shapes `.logo-cell` (`rect`) in a 2×2 arrangement, each holding one digit shape: a bar for 1 (a `rect` with the class `logo-digit`) and a ring for 0 (an `ellipse` with the class `logo-digit-ring`), so that in reading order (top-left, top-right, bottom-left, bottom-right) the four digits are 1, 0, 0, 1. The circle SHALL be a `circle` element and the rays SHALL be shapes around it: bars (`rect`) for 1 and rings (`ellipse`) for 0, at least one of each. The SVG SHALL hold no `<text>` element, no `<title>`, no `<desc>`, no `<foreignObject>`, no text node of any kind (not even whitespace) and no word; its text content is empty. It SHALL be decorative: `aria-hidden="true"`; the title in the header remains the page's text heading, with the text «Бінарка». It SHALL NOT use an image file: no `<img>`, no `<image>`, no `<use>` and no `href` or `xlink:href` on any element of the SVG, no `src` attribute anywhere on the page (TC-14). The logo SHALL be created once at mount with the header, so a new puzzle, a size change and a win leave exactly one logo, the same element. The logo adds no page text, so NFR-5 is unaffected. The header holds one more inline `svg`, the drawn gear inside the settings button `[data-action="settings"]` (see «Settings button and panel»): it has `aria-hidden="true"`, no `<text>`, `<title>`, `<desc>`, `<foreignObject>`, `<use>`, `href` or `xlink:href` and no text node, and it is not the logo; these two are the only `svg` elements of the root. In the rest of this requirement «the svg» means the logo. Legibility of the four digits at 40 px and the look of the mark are covered by the held NFR-15 (and NFR-14), see `docs/requirements-held.md`; the classes, the tag choices and "the same element after a board change" above are spec-made proxies for FR-72 and TC-14, taken from the frozen design (`design/v0/components/binarka-page.tsx`, the source of A-30) and the mount-once structure of the page so that the shapes are checkable in jsdom; they are not requirements of FR-72 itself.
+The page header SHALL show exactly one inline `<svg>` logo inside its heading, drawn as shapes in the page source: a 2×2 mini board with the digits «1 0 / 0 1» in a circle with 0/1 rays, and no text (FR-72). The mini board SHALL be four cell shapes `.logo-cell` (`rect`) in a 2×2 arrangement, each holding one digit shape: a bar for 1 (a `rect` with the class `logo-digit`) and a ring for 0 (an `ellipse` with the class `logo-digit-ring`), so that in reading order (top-left, top-right, bottom-left, bottom-right) the four digits are 1, 0, 0, 1. The circle SHALL be a `circle` element and the rays SHALL be shapes around it: bars (`rect`) for 1 and rings (`ellipse`) for 0, at least one of each. The SVG SHALL hold no `<text>` element, no `<title>`, no `<desc>`, no `<foreignObject>`, no text node of any kind (not even whitespace) and no word; its text content is empty. It SHALL be decorative: `aria-hidden="true"`; the title in the header remains the page's text heading, with the text «Бінарка». It SHALL NOT use an image file: no `<img>`, no `<image>`, no `<use>` and no `href` or `xlink:href` on any element of the SVG, no `src` attribute anywhere on the page (TC-14). The logo SHALL be created once at mount with the header, so a new puzzle, a size change and a win leave exactly one logo, the same element. The logo adds no page text, so NFR-5 is unaffected. The header holds one more inline `svg`, the drawn gear inside the settings button `[data-action="settings"]` (see «Settings button and panel»): it has `aria-hidden="true"`, no `<text>`, `<title>`, `<desc>`, `<foreignObject>`, `<use>`, `href` or `xlink:href` and no text node, and it is not the logo; these two are the only `svg` elements of the root (TC-14 and FR-72, amended 2026-10-10, autonomy-log rows 120 and 121: the logo and the gear are the two inline graphics allowed, and FR-72 describes the logo only). In the rest of this requirement «the svg» means the logo. Legibility of the four digits at 40 px and the look of the mark are covered by the held NFR-15 (and NFR-14), see `docs/requirements-held.md`; the classes, the tag choices and "the same element after a board change" above are spec-made proxies for FR-72 and TC-14, taken from the frozen design (`design/v0/components/binarka-page.tsx`, the source of A-30) and the mount-once structure of the page so that the shapes are checkable in jsdom; they are not requirements of FR-72 itself.
 
 Traces: FR-72, TC-14, FR-117
 
@@ -672,7 +689,7 @@ Traces: FR-66, FR-39, FR-88, FR-96, FR-100, FR-101, FR-103
 #### Scenario: A failed generation keeps the marker
 
 - **GIVEN** a 6x6 fixture board on which a hint filled cell X, and an injected `generate` that throws for size 8
-- **WHEN** the player changes the size to 8
+- **WHEN** the player chooses «Поле 8×8» (marks it, then presses «Почати»)
 - **THEN** `[data-board]` keeps `data-size="6"` and the same texts, and X still has the class `cell-hinted`
 
 #### Scenario: A hint that wins keeps the marker on the filled cell
@@ -791,7 +808,7 @@ Traces: FR-65, FR-87, FR-95, FR-97, FR-101, FR-102, FR-117
 
 ### Requirement: Borders, cues and focus rings have enough contrast
 
-The stylesheet SHALL define its colours once, as custom properties in the top-level `:root` rule with literal `#rrggbb` values, and every colour a rule uses SHALL be a `var(--color-...)` reference to one of them (FR-65). The tokens are `--color-page`, `--color-text`, `--color-cell-bg`, `--color-cell-border`, `--color-given-bg`, `--color-given-border`, `--color-violation-bg`, `--color-violation-border`, `--color-violation-text`, `--color-focus`, `--color-control-bg`, `--color-control-border` and `--color-win-text`. The colour scan applies to every declaration outside a `:root` rule, wherever it is in the file (top level, nested rules, `@media`, `@supports`, `@layer`): its value SHALL NOT match `/#[0-9a-f]{3,8}\b|\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/i` and SHALL NOT contain a CSS named colour (the full CSS Color 4 list); the keywords `transparent`, `currentcolor`, `inherit`, `initial`, `unset` and `revert` are allowed because they introduce no colour; the colour-bearing shorthands `background`, `border`, `border-top`, `border-right`, `border-bottom`, `border-left`, `outline`, `box-shadow`, `text-decoration` and `column-rule` are allowed only when their colour is a `var(--color-...)` token (or the value is `none` or `0`); and no `--color-*` property is declared outside a `:root` rule. Selectors such as `#app` are not declaration values and are not affected. The rules `body`, `.cell`, `.cell-given`, `.cell-violation`, `button`, `.message-win` and the `:focus-visible` rules SHALL take their `color`, `background-color`, `border-color` and `outline-color` from these tokens, declared with those longhand properties. The dark palette is one more `:root` rule in the same file, `:root[data-theme="dark"]`, which redefines every one of the tokens with a `#rrggbb` value (A-51): each token therefore has exactly two value sets, light in the top-level `:root` and dark in that block. The page always sets `data-theme` on `<html>` (FR-104, FR-116), so the stylesheet has no `prefers-color-scheme` block (Q13). The colour scan counts `:root[data-theme="dark"]` as a `:root` rule: `--color-*` properties and `#rrggbb` literals are allowed in it and nowhere else. The 13 tokens above are those of the baseline; a token that the signed design adds for «Почати» (S, FR-101) joins the list and is declared in both value sets. A `:root` rule inside `@media`, `@supports` or `@layer` may redefine tokens too, and then every resulting token set (the top-level set, the top-level set with the overrides of `:root[data-theme="dark"]` applied, and the top-level set with each conditional block's overrides applied) SHALL satisfy every pair below: **every contrast pair holds for each token set, light and dark** (FR-65). The WCAG 2 contrast ratio, computed from relative luminance, SHALL be at least 3:1 for these pairs: the cell border `--color-cell-border` against `--color-page`, `--color-cell-bg` and `--color-given-bg`; the violation cue `--color-violation-border` against `--color-page`, `--color-cell-bg` and `--color-violation-bg`; the given cue against `--color-page`, `--color-cell-bg` and `--color-given-bg`; the focus ring `--color-focus` against `--color-page`, `--color-cell-bg`, `--color-given-bg` and `--color-violation-bg`; and the control border `--color-control-border` against `--color-page`. The given cue is the border of a given cell: 2px wide, in `--color-given-border` (the colour of `.cell-given`'s `border-color`), together with the bold digits (`font-weight: 700`); the fill `--color-given-bg` is a redundant decoration and is not the cue, because a pale fill cannot reach 3:1 against the page and the cell colour and keep the digit readable. The text SHALL have at least 4.5:1: `--color-text` against `--color-page`, `--color-cell-bg`, `--color-given-bg` and `--color-control-bg`, `--color-violation-text` against `--color-violation-bg`, and `--color-win-text` against `--color-page`.
+The stylesheet SHALL define its colours once, as custom properties in the top-level `:root` rule with literal `#rrggbb` values, and every colour a rule uses SHALL be a `var(--color-...)` reference to one of them (FR-65). The tokens are `--color-page`, `--color-text`, `--color-cell-bg`, `--color-cell-border`, `--color-given-bg`, `--color-given-border`, `--color-violation-bg`, `--color-violation-border`, `--color-violation-text`, `--color-focus`, `--color-control-bg`, `--color-control-border` and `--color-win-text`. The colour scan applies to every declaration outside a `:root` rule, wherever it is in the file (top level, nested rules, `@media`, `@supports`, `@layer`): its value SHALL NOT match `/#[0-9a-f]{3,8}\b|\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/i` and SHALL NOT contain a CSS named colour (the full CSS Color 4 list); the keywords `transparent`, `currentcolor`, `inherit`, `initial`, `unset` and `revert` are allowed because they introduce no colour; the colour-bearing shorthands `background`, `border`, `border-top`, `border-right`, `border-bottom`, `border-left`, `outline`, `box-shadow`, `text-decoration` and `column-rule` are allowed only when their colour is a `var(--color-...)` token (or the value is `none` or `0`); and no `--color-*` property is declared outside a `:root` rule. Selectors such as `#app` are not declaration values and are not affected. The rules `body`, `.cell`, `.cell-given`, `.cell-violation`, `button`, `.message-win` and the `:focus-visible` rules SHALL take their `color`, `background-color`, `border-color` and `outline-color` from these tokens, declared with those longhand properties. The dark palette is one more `:root` rule in the same file, `:root[data-theme="dark"]`, which redefines every one of the tokens with a `#rrggbb` value (A-51): each token therefore has exactly two value sets, light in the top-level `:root` and dark in that block. The page always sets `data-theme` on `<html>` (FR-104, FR-116), so the stylesheet has no `prefers-color-scheme` block (Q13). The colour scan counts `:root[data-theme="dark"]` as a `:root` rule: `--color-*` properties and `#rrggbb` literals are allowed in it and nowhere else. The 13 tokens above are those of the baseline; a token that the signed design adds for «Почати» (S, FR-101) joins the list and is declared in both value sets. A `:root` rule inside `@media`, `@supports` or `@layer` may redefine tokens too, and then every resulting token set (the top-level set, the top-level set with the overrides of `:root[data-theme="dark"]` applied, and the top-level set with each conditional block's overrides applied) SHALL satisfy every pair below: **every contrast pair holds for each token set, light and dark** (FR-65). The shipped stylesheet has exactly the two value sets and no conditional `:root` block; the clause about conditional blocks is the generality of the test helper, not a feature of the stylesheet. The WCAG 2 contrast ratio, computed from relative luminance, SHALL be at least 3:1 for these pairs: the cell border `--color-cell-border` against `--color-page`, `--color-cell-bg` and `--color-given-bg`; the violation cue `--color-violation-border` against `--color-page`, `--color-cell-bg` and `--color-violation-bg`; the given cue against `--color-page`, `--color-cell-bg` and `--color-given-bg`; the focus ring `--color-focus` against `--color-page`, `--color-cell-bg`, `--color-given-bg` and `--color-violation-bg`; and the control border `--color-control-border` against `--color-page`. The given cue is the border of a given cell: 2px wide, in `--color-given-border` (the colour of `.cell-given`'s `border-color`), together with the bold digits (`font-weight: 700`); the fill `--color-given-bg` is a redundant decoration and is not the cue, because a pale fill cannot reach 3:1 against the page and the cell colour and keep the digit readable. The text SHALL have at least 4.5:1: `--color-text` against `--color-page`, `--color-cell-bg`, `--color-given-bg` and `--color-control-bg`, `--color-violation-text` against `--color-violation-bg`, and `--color-win-text` against `--color-page`.
 
 Traces: FR-65, FR-64, NFR-9, FR-104
 
@@ -865,6 +882,76 @@ Traces: FR-65, FR-64, NFR-9, FR-104
 - **GIVEN** the contrast function of the test helpers
 - **WHEN** it is called for `#ffffff` against `#000000`, for `#ffffff` against `#ffffff` and for the pair `#d1d5db` and `#f9fafb`
 - **THEN** it returns 21, 1 and a value below 3 respectively
+
+### Requirement: The size buttons set their own colours and the board disables double-tap zoom
+
+The stylesheet SHALL set an explicit `color` and an explicit `background-color`, each a single `var(--color-...)` token, in the rule that styles the size buttons (`.size-control button`) and in the rule of the checked button (`.size-control button[aria-checked='true']`), so that the colours of the size buttons do not depend on the browser or the operating system (FR-65). For each state, the declarations of the rule for the unchecked button, with those of the rule for the checked button laid over them for the checked state, SHALL give a text colour with at least 4.5:1 contrast against the background colour (the WCAG 2 formula on the resolved tokens), for each token set, light and dark (A-51, FR-65). The stylesheet SHALL set `touch-action: manipulation` in the rule of the class `board`. The element `[data-board]` SHALL carry the class `board`.
+
+Traces: FR-65, NFR-9
+
+#### Scenario: The size buttons declare their colours
+
+- **GIVEN** the text of `src/ui/style.css`
+- **WHEN** the test reads the declarations of `.size-control button` and of `.size-control button[aria-checked='true']`
+- **THEN** `.size-control button` declares `color` and `background-color`, each a single `var(--color-...)` of a token declared in `:root`
+- **AND** the checked state, with its own declarations laid over the unchecked ones, has a `color` and a `background-color` that are such tokens
+- **AND** the ratio of the text colour to the background colour is at least 4.5 in each of the two states in the light token set and in the dark token set
+
+#### Scenario: The board sets touch-action
+
+- **GIVEN** the text of `src/ui/style.css` and a mounted page
+- **WHEN** the test reads the declarations of the `.board` rule and the classes of `[data-board]`
+- **THEN** `touch-action` is `manipulation` and `[data-board]` has the class `board`
+
+### Requirement: The summary and level buttons set their own colours
+
+The summary button SHALL carry the class `setup-button` (its text span carries `setup-summary` and its cue span `setup-cue`, as in the design reference `review-set-11`), the level control the class `level-control`, and the stylesheet `src/ui/style.css` SHALL set an explicit `color` and an explicit `background-color`, each a single `var(--color-...)` token, in the rule `.setup-button`, in the rule `.level-control button`, in the rule `.level-control button[aria-checked='true']` and in the rule `.level-control button[aria-disabled='true']` (FR-65, NFR-9). For each of the four states, the declarations of the plain rule, with those of the state rule laid over them, SHALL give a text colour with at least 4.5:1 contrast against the background colour (the WCAG 2 formula on the resolved tokens) in each token set, light and dark (A-51, FR-65), and the unavailable state SHALL NOT be drawn with `opacity`. The rule `.level-control button[aria-disabled='true']` SHALL also declare a cue that is not colour alone (FR-91): a `border-style` that differs from the plain rule's, or a `text-decoration` other than `none`; which cue is used follows the user's updated design (the design reference `review-set-11` uses a dashed border and a dashed radio ring and no strike-through, autonomy-log row 93). No colour literal is added, and no `--color-*` token is added unless the signed design adds one for «Почати» (the 13 tokens of «Borders, cues and focus rings have enough contrast» stay declared). The summary button, the level buttons and the close button are `button` elements, so the existing `button:focus-visible` rule gives them the focus indicator of FR-65, and the rules of the sheet obey the existing stylesheet scans (no `!important`, no `:has(` besides the idle-line rule, no `display: contents`, no removed outline). The start button `[data-action="setup-start"]` SHALL set its own explicit `color` and `background-color`, each a single `var(--color-...)` token, in one rule that matches it (found by matching the mounted element against the selectors of the stylesheet), with at least 4.5:1 contrast between the two on the resolved tokens of each token set, in the plain state and in the hover and focus-visible states if the rule has them, and without `opacity` (FR-65, FR-101). Whether the tokens of the baseline suffice for «Почати» or the signed design adds one token for it (for example a primary fill) is the design's call; a token that the design adds is declared once in `:root` with a `#rrggbb` value and satisfies the pairs of «Borders, cues and focus rings have enough contrast». The `.size-control` rules are not changed by this requirement. The look of the buttons (the ring, the sunken look of the unavailable state, the colours beyond the pairs above) is covered by the held NFR-14, see `docs/requirements-held.md`, and is not claimed here.
+
+Traces: FR-65, NFR-9, FR-87, FR-91, FR-95, FR-97, FR-101
+
+#### Scenario: The summary and level buttons declare their colours
+
+- **GIVEN** the text of `src/ui/style.css`
+- **WHEN** the test reads the declarations of `.setup-button`, `.level-control button`, `.level-control button[aria-checked='true']` and `.level-control button[aria-disabled='true']`
+- **THEN** each of the four rules exists and declares `color` and `background-color`, each a single `var(--color-...)` of a token declared in `:root`
+- **AND** none of the four declares `opacity`
+
+#### Scenario: Each state has 4.5:1 text
+
+- **GIVEN** the resolved colours of the tokens of each token set (light, then dark) and the four rules above
+- **WHEN** the test lays the checked rule and the aria-disabled rule over the plain level rule, and computes the ratio of the text colour to the background colour for the summary, plain, checked and unavailable states
+- **THEN** each of the four ratios is at least 4.5 in each token set
+
+#### Scenario: The unavailable level has a cue besides colour
+
+- **GIVEN** the rules `.level-control button` and `.level-control button[aria-disabled='true']`
+- **WHEN** the test compares their `border-style` and `text-decoration` declarations
+- **THEN** the aria-disabled rule declares a `border-style` different from the plain rule's, or a `text-decoration` value other than `none`
+
+#### Scenario: The checked level has a cue besides colour
+
+- **GIVEN** the text of `src/ui/style.css` and a mounted page
+- **WHEN** the test reads the name span of each level button and the rules `.level-control button .level-name::before` and `.level-control button[aria-checked='true'] .level-name::before`
+- **THEN** each name span has the class `level-name`, the first rule declares `content` and a `border-radius` (the radio ring), and the second declares a `box-shadow` whose value contains `inset` (the dot inside the ring), so the checked level differs from the others in shape and not by colour alone (WCAG 1.4.1; review-gate fix round, 2026-10-09)
+
+#### Scenario: The classes are on the elements and the buttons are buttons
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads `[data-action="setup"]`, `[data-control="level"]`, its four radio buttons and `[data-action="setup-close"]`
+- **THEN** the summary has the class `setup-button`, the control has the class `level-control`, and each of the six buttons is a `button` element, so `button:focus-visible` applies to it
+
+#### Scenario: The start button declares its colours
+
+- **GIVEN** the text of `src/ui/style.css` and a mounted page
+- **WHEN** the test finds the rule that matches `[data-action="setup-start"]` and reads its declarations
+- **THEN** the rule exists and declares `color` and `background-color`, each a single `var(--color-...)` of a token declared in `:root`, and no `opacity`
+- **AND** the ratio of the text colour to the background colour is at least 4.5 in each token set
+
+#### Scenario: The existing stylesheet scans still pass
+
+- **GIVEN** the stylesheet with the sheet, summary and level rules
+- **WHEN** the existing scans of «Rules use the tokens and no colour literal is left», «Nothing removes the outline» and «The stylesheet stays inside the build target, with one `:has(` exception» run
+- **THEN** each passes unchanged, and each of the 13 token names of the baseline is still declared in `:root`
 
 ### Requirement: The page meets the WCAG 2.2 AA criteria of the accessibility requirements
 
