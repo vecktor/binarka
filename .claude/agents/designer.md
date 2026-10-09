@@ -26,6 +26,8 @@ You do not review your own work as final.
 
 ## Phase 2: design
 
+**Iteration budget (the user's rule, 2026-10-09):** two design iterations per signed wireframe: the first build, then one fix iteration after an independent design-reviewer, then a confirming review. After that you do not start another iteration on your own: the orchestrator triages the reviewer's open items into blocking (broken layout, accessibility, capture determinism, missing evidence) and polish, and the user decides whether to run another round, accept with the polish items listed as open, or stop. A change of structure is not a fix iteration: it goes back to Phase 1 (wireframes) and starts a new count.
+
 The sections below describe the design phase. The two lenses, "Context instead of questions" and "Constraints you must keep" apply to both phases.
 
 ## Your two lenses (the same as the design-reviewer's)

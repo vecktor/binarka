@@ -178,7 +178,7 @@ describe('@trace FR-54 CLI rejects a missing option value and an unknown option'
   it.each([
     ['size without a value', ['--size']],
     ['seed without a value after another option', ['--size', '6', '--seed']],
-    ['unknown option', ['--level', '3']],
+    ['unknown option', ['--depth', '3']],
     ['unknown option next to valid ones', ['--size', '6', '--seed', '1', '--verbose']],
   ])('%s: one English sentence on stderr, non-zero exit, empty stdout', (_name, args) => {
     expectCliError(cli(args));
@@ -207,7 +207,7 @@ describe('@trace NFR-8 CLI errors are English', () => {
     ['non-numeric seed', ['--seed', 'abc']],
     ['seed above 2147483647', ['--seed', '2147483648']],
     ['--size without a value', ['--size']],
-    ['unknown option', ['--level', '3']],
+    ['unknown option', ['--depth', '3']],
   ])('%s: Latin letters, no Cyrillic, one line, one terminal mark', (_name, args) => {
     expectCliError(cli(args));
   }, TIMEOUT);

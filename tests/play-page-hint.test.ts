@@ -265,7 +265,7 @@ describe('@trace FR-40 the hint button shows the engine sentence', () => {
     pressHint(root);
 
     expect(hintMessage(root)).toBe(h.sentence);
-    expect(hintMessage(root)).toBe('Жодне з трьох правил зараз не підказує наступного ходу.');
+    expect(hintMessage(root)).toBe('Жодне з правил зараз не підказує наступного ходу.');
     expect(texts(root)).toEqual(before);
   });
 

@@ -1,0 +1,155 @@
+Red run of add-difficulty-engine, section 1 (tasks 1.1 to 1.12)
+================================================================
+
+Date: 2026-10-09. Base commit: f8d305ad0c1bdfe40330801e7e453dc29ae4251f (src/ untouched: `git status --short src` is empty).
+Written by the test-engineer role before any implementation; nothing under src/ was changed or run against a scratch
+implementation (a scratch implementation of the engine was attempted to cross-check the spec boards and was blocked by
+the permission system, so it was not built; see "Gaps").
+
+Commands and exit codes
+-----------------------
+  npm run test:run     1111 tests in 46 files: 941 passed, 170 failed (15 files failed, 31 passed)
+  npx tsc --noEmit     exit 0
+  npm run lint         exit 0   (npx eslint tests: exit 0)
+
+Result per file (red = failing, green = passing)
+-------------------------------------------------
+New test files (11):
+  tests/hint-line-balance.test.ts          12 red /   0 green  FR-74 FR-78 FR-77
+  tests/hint-unique-lines.test.ts           8 red /   0 green  FR-75 FR-79
+  tests/hint-look-ahead.test.ts            13 red /   7 green  FR-76 FR-80
+  tests/hint-order-ceiling.test.ts         26 red /  20 green  FR-77 FR-23 FR-24 FR-25 FR-26
+  tests/hint-sentences-techniques.test.ts  28 red /   5 green  NFR-4 NFR-5 FR-22 FR-78 FR-79 FR-80
+  tests/generator-level.test.ts            27 red /  50 green  FR-81 FR-13 FR-14 FR-83 FR-15 FR-27 FR-82 FR-76
+  tests/generator-run-out.test.ts          11 red /   7 green  FR-84 FR-81 FR-77
+  tests/cli-level.test.ts                  30 red /   2 green  FR-85 FR-86 FR-53 FR-54 NFR-8 NFR-4 FR-84 FR-14
+  tests/generator-level1-golden.test.ts     0 red / 122 green  FR-14 FR-85   (green by design: byte-identity guard)
+  tests/generator-timing-levels.test.ts     6 red /  12 green  NFR-16 NFR-1 NFR-2 NFR-3
+  tests/hint-budget.test.ts                 1 red /   4 green  NFR-17 FR-76 FR-77
+  new total                               162 red / 229 green (391 tests)
+
+Existing tests edited deliberately (task 1.11):
+  tests/hint.test.ts                        4 red /  43 green  (old no-rule sentence returned by the engine)
+  tests/play-page-hint.test.ts              1 red /  21 green  (same)
+  tests/play-page-helpers.test.ts           1 red /  85 green  (not edited; uses NO_RULE_SENTENCE from the edited helper)
+  tests/play-page-hinted-cell.test.ts       1 red /  15 green  (not edited; same helper)
+  tests/generator-rule-solvable.test.ts     1 red /  36 green  (same sentence)
+  tests/cli.test.ts                         0 red /  45 green  (--level -> --depth, green by design)
+  existing total                            8 red
+No other existing test is red.
+
+Reason of each red group
+------------------------
+hint-line-balance (12), hint-unique-lines (8): technique 2 and 3 do not exist. The 3 positive-fill tests per board
+  receive `none` where a fill is expected; the ceiling-1, ceiling-2 and near-miss tests are red only because the
+  expected no-rule sentence is the new one (FR-25 as amended, autonomy-log row 87).
+hint-look-ahead (13 red, 7 green): technique 4 does not exist (fill expected, `none` received; the reference-model
+  and the 4-step chain tests need balance or look-ahead). GREEN by design: the three preconditions «hint(board, 3) is
+  none», and the replays of the 2-step, equal-steps and 5-step chains and the solver check on the 5-step board
+  (they use only techniques 1 to 3 and confirm the spec's chains on today's engine).
+  Reason split inside this file: the 4-step chain replay and the «putting 1 at row 6 column 3 ends after 3 steps» tie check
+  are red because they need balance (technique 2) at ceiling 3, not because technique 4 is missing; the 2-step,
+  equal-steps (row 5 column 3) and 5-step chains need only technique 1 and are green; the fill, steps, sentence and
+  reference-model tests need technique 4 and are red.
+hint-order-ceiling (26 red, 20 green): every scenario needing a ceiling above 1 (fill expected, `none` received) and
+  every scenario whose expected result is the new no-rule sentence. GREEN by design: default ceiling = ceiling 1, repeated
+  calls, pair/count boards at all ceilings, every broken-board scenario, the 4x4 legal-entry scenario, the unchanged
+  board for the pair board.
+hint-sentences-techniques (28 red, 5 green): the new sentence kinds are not produced (`none` received). GREEN by design:
+  the three spec sentences counted as one sentence (tests the helper on the spec text) and the no-rule and broken sentences'
+  shape.
+generator-level (27 red, 50 green):
+  - 13: no InvalidLevelError (generate ignores the level: «must throw»), or «not implemented: InvalidLevelError» /
+    «not implemented: GenerationRunOutError» (the shim's deliberate message) where the class is read first;
+  - 6: exactness (the walk with ceiling L - 1 reaches the solution, because the unchanged generator returns level-1
+    puzzles for every level);
+  - 6: «not implemented: hasLocalViolation» (the seam does not exist);
+  - 1: the differential test's non-vacuity (solveByRules at ceiling 2 makes no step more than at ceiling 1);
+  - 1: the retry-premise search («not implemented»).
+  GREEN by design: all four levels accepted at 6 and 8 (shape), level 1 at size 4, the InvalidSizeError and
+  InvalidSeedError halves of «size and seed errors come first», FR-13 shapes and defaults, determinism per level, one
+  solution for all levels, uniqueness by solver and oracle (180 puzzles), the walk at ceiling L (the unchanged generator
+  makes level-1 puzzles, solvable at every ceiling), E/O boards, the differential of solveByRules against a hint loop
+  (both ignore the ceiling today).
+generator-run-out (11 red, 7 green): «not implemented: GenerationRunOutError / MAX_ATTEMPTS» (deliberate shim message,
+  6 tests), `generate(4,1,2)` and `generate(6,1,5)` do not throw (2), and the index exports InvalidLevelError and
+  GenerationRunOutError as `undefined` plus the third-argument check (3, by assertion). GREEN by design: no run-out over 180 combinations (nothing
+  runs out today), and buildPuzzle / MAX_ATTEMPTS / solveByRules are not properties of src/engine/index.ts (true today,
+  a guard), generate and hint are exported.
+cli-level (30 red, 2 green): `--level` is an unknown option: «Unknown option: only --size and --seed are supported.»
+  (29, including the 9 `--level 1` runs against the golden text and all error scenarios, whose precondition
+  «--level is a known option» fails), plus the run-out scenario («not implemented: GenerationRunOutError» is read before
+  the mock is built). GREEN: the golden-sample fixture shape check and `--depth 3` still rejected.
+generator-timing-levels (6 red, 12 green): the exactness part for L of 2 or more (6 combinations): the unchanged
+  generator returns puzzles the walk with ceiling L - 1 already solves. GREEN by design: the 9 timing assertions alone
+  (the unchanged engine is fast) and the 3 exactness checks at level 1.
+hint-budget (1 red, 4 green): the look-ahead fills on the scenario boards (`none` received). GREEN by design: the board
+  set size (549), the timing assertion alone (the unchanged hint is fast), `none` on the 5-step board and on boards A and B.
+hint.test.ts, play-page-hint.test.ts, play-page-helpers.test.ts, play-page-hinted-cell.test.ts,
+  generator-rule-solvable.test.ts (8 red): the expected no-rule sentence is «Жодне з правил зараз не підказує наступного
+  ходу.» and the engine still returns «Жодне з трьох правил …». Nothing else changes.
+
+Green by design, in short (guards of unchanged behaviour, not red evidence)
+-------------------------------------------------------------------------
+tests/generator-level1-golden.test.ts (122: 60 golden pairs x generate(N,S) and generate(N,S,1), 540 hashes x 2 calls in
+one test, 60 real-process CLI runs, 1 shape test); the timing assertions alone of generator-timing-levels (9) and
+hint-budget (1); `--depth` cases of cli.test.ts (2) and cli-level (1); the scenarios that describe unchanged behaviour
+(level 1 at size 4 accepted, default ceiling equal to ceiling 1, broken-board outcomes).
+
+Edited existing tests, each with its source (task 1.11)
+-------------------------------------------------------
+1. tests/hint.test.ts line 15, constant NO_RULE
+2. tests/play-page-hint.test.ts line 268, literal
+3. tests/helpers/play-page.ts line 17, NO_RULE_SENTENCE (used by many page tests)
+4. tests/generator-rule-solvable.test.ts, NO_RULE_SENTENCE
+   Change 1-4: «Жодне з трьох правил зараз не підказує наступного ходу.» -> «Жодне з правил зараз не підказує наступного ходу.»
+   Source: FR-25 as amended 2026-10-09 (autonomy-log row 87). No assertion changes.
+5. tests/cli.test.ts lines 181 and 210: ['--level', '3'] -> ['--depth', '3'] (unknown option, FR-54 and NFR-8).
+   Source: FR-85 (--level is now a known option). Green at red.
+Not changed (row 88, default ceiling 1): the FR-24, FR-27 and FR-66 tests.
+
+New helpers (not test files)
+----------------------------
+  tests/helpers/engine-shim.ts       the typed red-phase shim (task 1.11); deleted in 2.8a
+  tests/helpers/technique-boards.ts  the spec's boards and exact sentences, transcribed from the spec text
+  tests/helpers/levels.ts            seeds, valid (N, level) combinations, memoised puzzles, hint walk, retry-case search
+The shim: `hint`, `generate`, `solveByRules` are widened by a cast through `unknown`; `buildPuzzle`, `MAX_ATTEMPTS`
+(read from src/engine/generator), `InvalidLevelError`, `GenerationRunOutError` (read from src/engine/index) and the
+local violation seam are read through a runtime-built specifier. A missing export throws «not implemented: <name>» on
+first use (a wrapper call or a getter read) and never yields `undefined`. Nothing throws while the shim is evaluated.
+
+Contract decided by the tests (to relay to section 2)
+------------------------------------------------------
+  - Local violation seam (task 2.2): `hasLocalViolation(board: Grid, row: number, col: number): boolean` exported from
+    src/engine/techniques.ts (0-based cell). On a board that had no violation before the cell (row, col) changed, it
+    returns true exactly when findViolations(board).length > 0. (The name and the Grid signature are the test's choice;
+    design.md 8c/2.2 only says «exported as an internal seam». If the implementation prefers another shape, change the
+    one wrapper in engine-shim.ts and the call sites in tests/generator-level.test.ts deliberately.)
+  - `buildPuzzle(size, seed, level, maxAttempts)` and `MAX_ATTEMPTS` are read from src/engine/generator.
+  - `solveByRules(board, ceiling)` returns { solved, steps } only; the differential test therefore compares solved and
+    steps, not the individual cells, values and rules.
+
+Gaps consciously left
+---------------------
+  - Look-ahead sentences at N = 8 (task 1.5): the spec pins no 8x8 look-ahead board and none can be derived without
+    running an implementation. Line balance is covered at N = 6 and 8, unique lines at N = 6 (spec boards) and N = 8
+    (a board derived by hand from FR-75 in the test).
+  - Plainly: no positive technique board was cross-checked against any implementation; the expected values are spec
+    transcription only, and the first confirmation is the green run of section 2 or the orchestrator's 1.13.
+  - The positive spec boards (line balance, unique lines, look-ahead) were NOT cross-checked against any implementation
+    here: their expected values are transcribed from the spec. The chains of the 2-step, equal-steps and 5-step
+    look-ahead boards ARE confirmed by the unchanged engine (techniques 1 to 3 are the existing rules; those replays are
+    green at red); the 4-step chain (uses line balance) and all balance, unique-lines and look-ahead selections will be
+    checked for the first time when section 2 makes them green, or by the orchestrator's independent confirmation (1.13).
+    A red that stays red after the implementation on one of these boards is a question for the spec, not a reason to edit the test.
+  - 1.13 (the orchestrator's independent confirmation on a fresh copy) is not done here.
+  - tests/engine-purity.test.ts needs no edit: it scans src/engine/ recursively, so techniques.ts will be covered.
+
+## Task 1.13: independent red confirmation by the orchestrator (2026-10-09 16:09 UTC+5:30)
+Scratch copy: `git archive HEAD` (f8d305a) plus the working-tree tests/ (new and edited files); src/ byte-identical to HEAD (`diff -r src` clean).
+- `npx vitest run`: 170 failed, 941 passed, 1111 total; 15 of 46 files failed. Same counts as the test-engineer's run.
+- Failing files (tests): cli-level 30, generator-level 27, generator-run-out 11, generator-timing-levels 6, hint-budget 1, hint-line-balance 12, hint-look-ahead 13, hint-order-ceiling 26, hint-sentences-techniques 28, hint-unique-lines 8, hint.test 4, generator-rule-solvable 1, play-page-helpers 1, play-page-hint 1, play-page-hinted-cell 1 (the last five through the old FR-25 sentence only).
+- Failure kinds: AssertionError, or the shim's deliberate "Error: not implemented: <name>" (11); 0 SyntaxError, module-resolution, ReferenceError or TypeError.
+- `npx tsc --noEmit` exit 0; `npx eslint tests` exit 0 (task 1.12).
+- Green by design: generator-level1-golden (all 122), the --depth CLI cases, default ceiling = 1, broken-board outcomes, level 1 at size 4, non-export guards.
+Verdict: red for the right reasons. Not verified at red (by design): the positive technique boards against an implementation (spec transcription; the green run of section 2 confirms them).

@@ -14,7 +14,7 @@ import { parseBoard } from './helpers/board';
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
 const LONG = 120_000;
 /** The no-rule sentence of FR-25 (the literal, as tests/hint.test.ts does; the play-page helper pulls in the DOM page). */
-const NO_RULE_SENTENCE = 'Жодне з трьох правил зараз не підказує наступного ходу.';
+const NO_RULE_SENTENCE = 'Жодне з правил зараз не підказує наступного ходу.';
 
 function copyOf(board: Grid): Grid {
   return board.map((row) => [...row]);

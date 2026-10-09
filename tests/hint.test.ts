@@ -12,7 +12,7 @@ function fill(row1: number, col1: number, value: 0 | 1, rule: Rule, sentence: st
   return { kind: 'fill', row: row1 - 1, col: col1 - 1, value, rule, sentence };
 }
 
-const NO_RULE = 'Жодне з трьох правил зараз не підказує наступного ходу.';
+const NO_RULE = 'Жодне з правил зараз не підказує наступного ходу.';
 const BROKEN = 'Спершу виправте порушення правил, підсвічене на полі.';
 const NONE: Hint = { kind: 'none', sentence: NO_RULE };
 const BROKEN_HINT: Hint = { kind: 'broken', sentence: BROKEN };

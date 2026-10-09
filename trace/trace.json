@@ -281,6 +281,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/generator-level.test.ts",
         "tests/generator.test.ts"
       ],
       "recordings": []
@@ -293,6 +294,12 @@
       ],
       "planned": true,
       "tests": [
+        "tests/cli-level.test.ts",
+        "tests/generator-level.test.ts",
+        "tests/generator-level1-golden.test.ts",
+        "tests/generator-level1-golden.test.ts",
+        "tests/generator-level1-golden.test.ts",
+        "tests/generator-level1-golden.test.ts",
         "tests/generator.test.ts"
       ],
       "recordings": []
@@ -305,6 +312,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/generator-level.test.ts",
         "tests/generator-unique.test.ts"
       ],
       "recordings": []
@@ -381,7 +389,10 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator-level.test.ts",
+        "tests/generator-run-out.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -390,7 +401,10 @@
         "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator-level.test.ts",
+        "tests/generator-level.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -399,7 +413,9 @@
         "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator-level.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -409,7 +425,11 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli-level.test.ts",
+        "tests/generator-run-out.test.ts",
+        "tests/generator-run-out.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -455,6 +475,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/hint-sentences-techniques.test.ts",
         "tests/hint.test.ts"
       ],
       "recordings": []
@@ -467,6 +488,8 @@
       ],
       "planned": true,
       "tests": [
+        "tests/hint-order-ceiling.test.ts",
+        "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
       ],
       "recordings": []
@@ -479,6 +502,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
       ],
       "recordings": []
@@ -493,6 +517,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
       ],
       "recordings": []
@@ -507,6 +532,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
       ],
       "recordings": []
@@ -519,6 +545,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/generator-level.test.ts",
         "tests/generator-rule-solvable.test.ts",
         "tests/generator-rule-solvable.test.ts",
         "tests/generator-rule-solvable.test.ts",
@@ -534,7 +561,9 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint-line-balance.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -543,7 +572,9 @@
         "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint-unique-lines.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -553,7 +584,11 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator-level.test.ts",
+        "tests/hint-budget.test.ts",
+        "tests/hint-look-ahead.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -563,7 +598,15 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/generator-run-out.test.ts",
+        "tests/hint-budget.test.ts",
+        "tests/hint-line-balance.test.ts",
+        "tests/hint-order-ceiling.test.ts",
+        "tests/hint-order-ceiling.test.ts",
+        "tests/hint-order-ceiling.test.ts",
+        "tests/hint-order-ceiling.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -572,7 +615,11 @@
         "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint-line-balance.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -581,7 +628,11 @@
         "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-unique-lines.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -591,7 +642,11 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint-look-ahead.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -671,7 +726,14 @@
         "openspec/changes/add-difficulty-engine/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli-level.test.ts",
+        "tests/cli-level.test.ts",
+        "tests/generator-level1-golden.test.ts",
+        "tests/generator-level1-golden.test.ts",
+        "tests/generator-level1-golden.test.ts",
+        "tests/generator-level1-golden.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -681,7 +743,10 @@
         "openspec/changes/add-level-selector/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/cli-level.test.ts",
+        "tests/cli-level.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1321,58 +1386,6 @@
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-81 has no test annotated \"@trace FR-81\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-82 has no test annotated \"@trace FR-82\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-83 has no test annotated \"@trace FR-83\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-84 has no test annotated \"@trace FR-84\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-74 has no test annotated \"@trace FR-74\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-75 has no test annotated \"@trace FR-75\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-76 has no test annotated \"@trace FR-76\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-77 has no test annotated \"@trace FR-77\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-78 has no test annotated \"@trace FR-78\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-79 has no test annotated \"@trace FR-79\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-80 has no test annotated \"@trace FR-80\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-85 has no test annotated \"@trace FR-85\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-86 has no test annotated \"@trace FR-86\""
-    },
     {
       "check": "test-trace",
       "msg": "FR-87 has no test annotated \"@trace FR-87\""
