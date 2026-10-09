@@ -135,6 +135,15 @@
         "engine"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-09-fix-action-button-targets",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 4,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [
@@ -189,6 +198,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-09-add-rule-solvable-generator: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-09-fix-action-button-targets: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "in-scope",

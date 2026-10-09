@@ -2251,6 +2251,38 @@ Traces: FR-65, NFR-9, FR-87, FR-91, FR-95, FR-97
 - **WHEN** the existing scans of «Rules use the tokens and no colour literal is left», «Nothing removes the outline» and «The stylesheet stays inside the build target, with one `:has(` exception» run
 - **THEN** each passes unchanged, and the 13 token names are still exactly the 13 of the baseline
 
+### Requirement: Action buttons meet the touch-target floor
+
+The three action buttons «Підказка» (`[data-action="hint"]`), «Скинути» (`[data-action="reset"]`) and «Нова головоломка» (`[data-action="new"]`) SHALL each be at least 44×44 CSS px at every viewport (NFR-12). The stylesheet `src/ui/style.css` SHALL give each of them a `min-height` of at least `2.75rem` (44 px at the 16 px root, the value the other controls already use) as an ordinary declaration: no `!important`, not inside a media query, and without changing the `min-height`, padding, size or markup of any other control. The widths of the three buttons are already 97 px or more and SHALL NOT be reduced below 44 px. The buttons keep their markup, order, `type="button"` and behaviour (see «Hint button fills one cell», «Reset button» and «New puzzle button»). jsdom has no layout (TC-13), so the unit test decides the declaration, and the real-browser check `e2e/nfr-12-targets.spec.ts` (`npm run test:e2e`, project `layout`, eight sampled viewports) decides the measured size; the sampled viewports are not continuum coverage. Making the buttons taller SHALL NOT break NFR-10 (the 375×812 fit at 6×6): `e2e/nfr-10-fit.spec.ts` stays green. The wording of NFR-12 for the other controls and for the cells is unchanged and is not restated here. Cells and controls other than the three action buttons already meet their floors; this requirement adds nothing to them (that no other rule is edited is a review-gate item, not a test).
+
+Traces: NFR-12
+
+#### Scenario: The stylesheet declares a 44 px minimum height for each action button
+
+- **GIVEN** the page is mounted in jsdom and the text of `src/ui/style.css` is applied to the document
+- **WHEN** the test reads the computed `min-height` of `[data-action="hint"]`, `[data-action="reset"]` and `[data-action="new"]`
+- **THEN** each value is a length of at least 44 px (`2.75rem` or more at the 16 px root, `44px` or more)
+- **AND** every rule that declares that `min-height` for an action button is at the top level of the stylesheet, not inside an at-rule such as `@media`
+- **AND** no `min-height` declaration in the stylesheet has the priority `important`
+
+#### Scenario: A declared minimum height below the floor fails the stylesheet test
+
+- **GIVEN** the `min-height` declaration of the action buttons is deleted from `src/ui/style.css`, or set to `2.5rem` (40 px)
+- **WHEN** the stylesheet test runs
+- **THEN** it fails for each of the three buttons, because the computed `min-height` is empty, `0` or below 44 px
+
+#### Scenario: Measured in a real browser the buttons are at least 44 px tall at every sampled viewport
+
+- **GIVEN** the built page is open in Chromium at each of the eight viewports of `e2e/nfr-12-targets.spec.ts` (320×700, 375×812, 768×1024, 1024×768, 1366×650, 1440×900, 1280×420, 844×390)
+- **WHEN** the check measures «Підказка», «Скинути» and «Нова головоломка»
+- **THEN** each is at least 44 px wide and at least 44 px tall, and the spec reports no line `page: button «…» is …x40, floor 44x44`
+
+#### Scenario: The taller buttons keep the phone page fitting on one screen
+
+- **GIVEN** the built page is open in Chromium at 375×812 at 6×6 in the default, hint and win states
+- **WHEN** `e2e/nfr-10-fit.spec.ts` measures the page
+- **THEN** it still passes: the board, the buttons and the messages fit without vertical scroll, and the buttons hold still when a message appears
+
 ## Exclusions
 
 The following are intentionally unsupported in MVP; testers must not report them as defects.
@@ -2261,7 +2293,7 @@ The following are intentionally unsupported in MVP; testers must not report them
 - Real-browser tests (NFR-7) are Future; the page is tested in jsdom only (TC-13). Rendering defects that jsdom cannot see are not caught.
 - Image files and bitmap or other graphics assets are intentionally unsupported (TC-14); the only graphic is the inline SVG logo of FR-72. Legibility of the logo at 40 px and its look are not specified (held NFR-15, NFR-14).
 - Keyboard play and the roles, names and states screen readers use are MVP requirements (NFR-9, FR-59 to FR-65; A-20 reconciled 2026-10-09). Real screen-reader output and real-browser rendering are not tested (A-28, TC-13).
-- Two accessibility items the user declined (autonomy-log rows 43 and 66) are not provided: 44 px phone touch targets and the puzzle state in the URL.
+- The puzzle state in the URL, declined by the user (autonomy-log rows 43 and 66), is not provided. The 44 px touch targets declined in those rows are required since the 2026-10-05 amendment by NFR-12 (see «Action buttons meet the touch-target floor»; change fix-action-button-targets, 2026-10-09).
 - Arrow, Home, End, PageUp and PageDown are not handled. A repeated identical hint sentence is not announced again.
 - Mobile layout and visual polish are not specified (A-14). Arrow-key navigation of the size control is not required (A-24).
 - The seed is not shown on the page (A-4).
