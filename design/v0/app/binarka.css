@@ -300,9 +300,11 @@ body {
   cursor: pointer;
 }
 
+/* Iteration 15: 1.375rem (was 1.5rem): the solid gear read heavier than the 15 px
+   «Правила» label beside it. */
 .settings-button .gear {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.375rem;
+  height: 1.375rem;
 }
 
 .settings-button .gear-hole {
@@ -417,6 +419,16 @@ body {
 .language-control button:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
+}
+
+/* Iteration 15 (review of set 12): inside a segmented card a 2px offset ring ran over the
+   card's border and into the neighbouring option (3px padding, 3px gap), seen on «Темна».
+   A 1px offset still sat on the card border and touched the neighbour (probe); -1px keeps
+   the 3px ring 1px clear of both. The size options share the geometry but are left as they
+   were (no shot shows a focused size option; a question for the user). */
+.theme-control button:focus-visible,
+.language-control button:focus-visible {
+  outline-offset: -1px;
 }
 
 /* ---------- Level picker (FR-87 to FR-91, FR-99, inside the sheet) ----------
@@ -556,8 +568,10 @@ body {
    two buttons span every row, aligned to its end, so they stick to the bottom of a scrolling
    sheet (a sticky item stays inside its grid area). The last row is at least the button
    height and takes any spare height, so spare room sits above the footer, never below.
-   Mask: one rectangular sticky strip (the sheet's ::before, a grid item behind both
-   buttons) hides the text that scrolls under the footer, its gap and the bottom padding.
+   Mask: one sticky strip (the sheet's ::before, a grid item behind both buttons) hides the
+   text that scrolls under the footer, its gap and the bottom padding. Iteration 15: its top
+   1rem is a fade from transparent, so scrolled text dissolves into the footer instead of
+   being cut by a hard edge; the offset shadow still covers the bottom padding.
    Per-button spread shadows were tried first: they follow the button radius, so the cards
    peeked through two rounded notches above the gap (seen at 320×700 and 1366×650, 4×4). */
 .setup:popover-open {
@@ -624,11 +638,9 @@ body {
   align-self: end;
   position: sticky;
   bottom: 0;
-  height: 2.75rem;
-  background: var(--surface-raised);
-  box-shadow:
-    0 0 0 1rem var(--surface-raised),
-    0 1rem 0 1rem var(--surface-raised);
+  height: calc(2.75rem + 1rem);
+  background: linear-gradient(to bottom, transparent, var(--surface-raised) 1rem);
+  box-shadow: 0 1rem 0 1rem var(--surface-raised);
   pointer-events: none;
 }
 
@@ -1064,6 +1076,15 @@ body {
   }
 }
 
+/* Iteration 15: on desktop the content-height rules panel ends over the page (the board or
+   the button row), so the backdrop is the dialog's stronger one there; the settings panel
+   keeps the soft backdrop on purpose (a small dropdown). */
+@media (min-width: 64rem) {
+  .rules:popover-open::backdrop {
+    background: var(--backdrop-strong);
+  }
+}
+
 /* ---------- Desktop rules panel (iteration 14, R3, autonomy-log row 120) ----------
    From 64rem «Правила» is one column 40rem wide, no longer the board column, and its height
    is its content: no minimum, so no empty space above «Зрозуміло». The spacing is tighter
@@ -1359,8 +1380,9 @@ body {
     font-size: 1.5rem;
   }
 
+  /* Iteration 15: 0.625rem (was 0.5rem), so the label does not crowd the border. */
   .rules-button {
-    padding: 0 var(--space-2);
+    padding: 0 0.625rem;
   }
 }
 

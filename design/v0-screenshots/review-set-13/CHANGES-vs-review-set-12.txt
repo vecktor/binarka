@@ -1,0 +1,172 @@
+# review-set-13 against review-set-12, by SHA-1 (SHA1SUMS of each set)
+# IDENTICAL: byte-identical. HEADER-ONLY: differs, but the area below the header (y >= 64 CSS px on phones, 92 on wider) is pixel-identical (magick compare AE = 0): the header row only (the 1.375rem gear everywhere; at 320 also the 0.625rem «Правила» padding). BELOW-HEADER: differs below the header too (AE = differing device pixels). NEW: not in set 12.
+IDENTICAL logo-dark.png
+IDENTICAL logo-light.png
+BELOW-HEADER 1024-dark-rules.png AE=1.42074e+06
+BELOW-HEADER 1024-dark-setup-four.png AE=88
+BELOW-HEADER 1024-dark-setup-marked-four.png AE=88
+BELOW-HEADER 1024-dark-setup-marked.png AE=88
+BELOW-HEADER 1024-dark-setup.png AE=88
+BELOW-HEADER 1024-light-rules.png AE=1.42078e+06
+BELOW-HEADER 1024-light-setup-four.png AE=82
+BELOW-HEADER 1024-light-setup-marked-four.png AE=82
+BELOW-HEADER 1024-light-setup-marked.png AE=82
+BELOW-HEADER 1024-light-setup.png AE=82
+BELOW-HEADER 1366-dark-rules-techniques.png AE=1.70076e+06
+BELOW-HEADER 1366-dark-rules.png AE=1.70076e+06
+BELOW-HEADER 1366-dark-setup-four.png AE=20353
+BELOW-HEADER 1366-dark-setup-marked-four.png AE=20353
+BELOW-HEADER 1366-dark-setup-marked.png AE=88
+BELOW-HEADER 1366-dark-setup.png AE=88
+BELOW-HEADER 1366-light-rules-techniques.png AE=1.7008e+06
+BELOW-HEADER 1366-light-rules.png AE=1.7008e+06
+BELOW-HEADER 1366-light-setup-four.png AE=17538
+BELOW-HEADER 1366-light-setup-marked-four.png AE=17538
+BELOW-HEADER 1366-light-setup-marked.png AE=82
+BELOW-HEADER 1366-light-setup.png AE=82
+BELOW-HEADER 1440-dark-rules-techniques.png AE=3.30593e+06
+BELOW-HEADER 1440-dark-rules.png AE=3.30593e+06
+BELOW-HEADER 1440-dark-setup-four.png AE=88
+BELOW-HEADER 1440-dark-setup-marked-four.png AE=88
+BELOW-HEADER 1440-dark-setup-marked.png AE=88
+BELOW-HEADER 1440-dark-setup.png AE=88
+BELOW-HEADER 1440-light-rules-techniques.png AE=3.30596e+06
+BELOW-HEADER 1440-light-rules.png AE=3.30596e+06
+BELOW-HEADER 1440-light-setup-four.png AE=82
+BELOW-HEADER 1440-light-setup-marked-four.png AE=82
+BELOW-HEADER 1440-light-setup-marked.png AE=82
+BELOW-HEADER 1440-light-setup.png AE=82
+BELOW-HEADER 320-dark-setup-four.png AE=18284
+BELOW-HEADER 320-dark-setup-marked-four.png AE=18284
+BELOW-HEADER 320-light-setup-four.png AE=17758
+BELOW-HEADER 320-light-setup-marked-four.png AE=17758
+BELOW-HEADER 768-dark-setup-four.png AE=88
+BELOW-HEADER 768-dark-setup-marked-four.png AE=88
+BELOW-HEADER 768-dark-setup-marked.png AE=88
+BELOW-HEADER 768-dark-setup.png AE=88
+BELOW-HEADER 768-light-setup-four.png AE=82
+BELOW-HEADER 768-light-setup-marked-four.png AE=82
+BELOW-HEADER 768-light-setup-marked.png AE=82
+BELOW-HEADER 768-light-setup.png AE=82
+HEADER-ONLY 1024-dark-confirm.png 
+HEADER-ONLY 1024-dark-default.png 
+HEADER-ONLY 1024-dark-eight.png 
+HEADER-ONLY 1024-dark-four.png 
+HEADER-ONLY 1024-dark-hint.png 
+HEADER-ONLY 1024-dark-level.png 
+HEADER-ONLY 1024-dark-settings-light.png 
+HEADER-ONLY 1024-dark-settings.png 
+HEADER-ONLY 1024-dark-win.png 
+HEADER-ONLY 1024-light-confirm.png 
+HEADER-ONLY 1024-light-default.png 
+HEADER-ONLY 1024-light-eight.png 
+HEADER-ONLY 1024-light-four.png 
+HEADER-ONLY 1024-light-hint.png 
+HEADER-ONLY 1024-light-level.png 
+HEADER-ONLY 1024-light-settings-dark.png 
+HEADER-ONLY 1024-light-settings.png 
+HEADER-ONLY 1024-light-win.png 
+HEADER-ONLY 1366-dark-default.png 
+HEADER-ONLY 1366-dark-eight.png 
+HEADER-ONLY 1366-dark-settings.png 
+HEADER-ONLY 1366-light-default.png 
+HEADER-ONLY 1366-light-eight.png 
+HEADER-ONLY 1366-light-settings.png 
+HEADER-ONLY 1440-dark-confirm.png 
+HEADER-ONLY 1440-dark-default.png 
+HEADER-ONLY 1440-dark-eight.png 
+HEADER-ONLY 1440-dark-four.png 
+HEADER-ONLY 1440-dark-hint.png 
+HEADER-ONLY 1440-dark-level.png 
+HEADER-ONLY 1440-dark-settings-light.png 
+HEADER-ONLY 1440-dark-settings.png 
+HEADER-ONLY 1440-dark-win.png 
+HEADER-ONLY 1440-light-confirm.png 
+HEADER-ONLY 1440-light-default.png 
+HEADER-ONLY 1440-light-eight.png 
+HEADER-ONLY 1440-light-four.png 
+HEADER-ONLY 1440-light-hint.png 
+HEADER-ONLY 1440-light-level.png 
+HEADER-ONLY 1440-light-settings-dark.png 
+HEADER-ONLY 1440-light-settings.png 
+HEADER-ONLY 1440-light-win.png 
+HEADER-ONLY 320-dark-confirm.png 
+HEADER-ONLY 320-dark-default.png 
+HEADER-ONLY 320-dark-eight.png 
+HEADER-ONLY 320-dark-four.png 
+HEADER-ONLY 320-dark-hint.png 
+HEADER-ONLY 320-dark-level.png 
+HEADER-ONLY 320-dark-rules-techniques.png 
+HEADER-ONLY 320-dark-rules.png 
+HEADER-ONLY 320-dark-settings-light.png 
+HEADER-ONLY 320-dark-settings.png 
+HEADER-ONLY 320-dark-setup-marked.png 
+HEADER-ONLY 320-dark-setup.png 
+HEADER-ONLY 320-dark-win.png 
+HEADER-ONLY 320-light-confirm.png 
+HEADER-ONLY 320-light-default.png 
+HEADER-ONLY 320-light-eight.png 
+HEADER-ONLY 320-light-four.png 
+HEADER-ONLY 320-light-hint.png 
+HEADER-ONLY 320-light-level.png 
+HEADER-ONLY 320-light-rules-techniques.png 
+HEADER-ONLY 320-light-rules.png 
+HEADER-ONLY 320-light-settings-dark.png 
+HEADER-ONLY 320-light-settings.png 
+HEADER-ONLY 320-light-setup-marked.png 
+HEADER-ONLY 320-light-setup.png 
+HEADER-ONLY 320-light-win.png 
+HEADER-ONLY 375-dark-confirm.png 
+HEADER-ONLY 375-dark-default.png 
+HEADER-ONLY 375-dark-eight.png 
+HEADER-ONLY 375-dark-four.png 
+HEADER-ONLY 375-dark-hint.png 
+HEADER-ONLY 375-dark-level.png 
+HEADER-ONLY 375-dark-rules-techniques.png 
+HEADER-ONLY 375-dark-rules.png 
+HEADER-ONLY 375-dark-settings-light.png 
+HEADER-ONLY 375-dark-settings.png 
+HEADER-ONLY 375-dark-setup-four.png 
+HEADER-ONLY 375-dark-setup-marked-four.png 
+HEADER-ONLY 375-dark-setup-marked.png 
+HEADER-ONLY 375-dark-setup.png 
+HEADER-ONLY 375-dark-win.png 
+HEADER-ONLY 375-light-confirm.png 
+HEADER-ONLY 375-light-default.png 
+HEADER-ONLY 375-light-eight.png 
+HEADER-ONLY 375-light-four.png 
+HEADER-ONLY 375-light-hint.png 
+HEADER-ONLY 375-light-level.png 
+HEADER-ONLY 375-light-rules-techniques.png 
+HEADER-ONLY 375-light-rules.png 
+HEADER-ONLY 375-light-settings-dark.png 
+HEADER-ONLY 375-light-settings.png 
+HEADER-ONLY 375-light-setup-four.png 
+HEADER-ONLY 375-light-setup-marked-four.png 
+HEADER-ONLY 375-light-setup-marked.png 
+HEADER-ONLY 375-light-setup.png 
+HEADER-ONLY 375-light-win.png 
+HEADER-ONLY 768-dark-confirm.png 
+HEADER-ONLY 768-dark-default.png 
+HEADER-ONLY 768-dark-eight.png 
+HEADER-ONLY 768-dark-four.png 
+HEADER-ONLY 768-dark-hint.png 
+HEADER-ONLY 768-dark-level.png 
+HEADER-ONLY 768-dark-rules.png 
+HEADER-ONLY 768-dark-settings-light.png 
+HEADER-ONLY 768-dark-settings.png 
+HEADER-ONLY 768-dark-win.png 
+HEADER-ONLY 768-light-confirm.png 
+HEADER-ONLY 768-light-default.png 
+HEADER-ONLY 768-light-eight.png 
+HEADER-ONLY 768-light-four.png 
+HEADER-ONLY 768-light-hint.png 
+HEADER-ONLY 768-light-level.png 
+HEADER-ONLY 768-light-rules.png 
+HEADER-ONLY 768-light-settings-dark.png 
+HEADER-ONLY 768-light-settings.png 
+HEADER-ONLY 768-light-win.png 
+NEW 320-light-settings-focus.png
+NEW 320-dark-settings-focus.png
+NEW 1366-light-settings-focus.png
+NEW 1366-dark-settings-focus.png

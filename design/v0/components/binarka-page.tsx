@@ -34,6 +34,8 @@ type BinarkaPageProps = {
   settingsOpen?: boolean
   /** The checked theme option (FR-102); the design stores nothing, so «Як у системі» by default. */
   themeChoice?: ThemeChoice
+  /** Iteration 15: puts the focus on this theme option once the panel is open (review capture only). */
+  focusThemeOption?: ThemeChoice
 }
 
 export type ThemeChoice = 'light' | 'dark' | 'auto'
@@ -192,6 +194,7 @@ export function BinarkaPage({
   focusStart = false,
   settingsOpen = false,
   themeChoice = 'auto',
+  focusThemeOption,
 }: BinarkaPageProps) {
   const shownLevel: Level = board.size === 4 ? 1 : level
   // FR-100: the marked choice; FR-91 follows the marked size (marking 4×4 marks «Розминка»).
@@ -472,7 +475,7 @@ export function BinarkaPage({
       {confirmOpen && <OpenConfirmDialog />}
       {rulesOpen && <OpenRulesPopover scrollToEnd={rulesScrolledToTechniques} />}
       {setupOpen && <OpenSetupSheet focusStart={focusStart} />}
-      {settingsOpen && <OpenSettingsPanel />}
+      {settingsOpen && <OpenSettingsPanel focusOption={focusThemeOption} />}
     </div>
   )
 }

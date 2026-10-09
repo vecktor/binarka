@@ -93,4 +93,11 @@ done
 shot "1440-light-rules-techniques" "http://127.0.0.1:4173/rules-techniques/" 1440 900 1 &
 shot "1440-dark-rules-techniques" "http://127.0.0.1:4173/rules-techniques/" 1440 900 0 &
 wait
+# Iteration 15: the focus ring on a theme option («Темна») in the settings panel (FR-65, FR-117).
+for wh in 320:700 1366:650; do
+  W=${wh%%:*}; H=${wh#*:}
+  shot "$W-light-settings-focus" "http://127.0.0.1:4173/settings-focus/" $W $H 1 &
+  shot "$W-dark-settings-focus" "http://127.0.0.1:4173/settings-focus/" $W $H 0 &
+  wait
+done
 ls "$OUT" | wc -l

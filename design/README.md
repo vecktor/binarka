@@ -494,3 +494,31 @@ Signed wireframe `design/wireframes/sheet-start-theme-language-2026-10-10/` (aut
   | Checked border on `--primary-soft` | 4.4 | 6.1 |
   | Radiogroup border | 3.7 | 3.8 |
   | Focus ring on the panel | 15.9 | 12.8 |
+
+### Iteration 15: review of set 12 applied, by the designer agent (2026-10-10)
+
+Iteration 2 of 2 for the wireframe signed in row 120 (the last in the user's budget). The fixes are from the independent design-reviewer of `review-set-12/`, passed on by the orchestrator. The structure is unchanged; `review-set-12/` is untouched.
+
+- **Desktop «Правила» backdrop:** from 64rem `.rules:popover-open::backdrop` uses `--backdrop-strong`, the existing token. R3's content-height panel ends over the board or the button row, so the page behind it now reads clearly as dimmed. The settings panel keeps the soft backdrop on purpose. Phones and tablets are unchanged.
+- **Setup footer mask is a fade:**
+  - The sheet's sticky `::before` strip is `calc(2.75rem + 1rem)` tall, with `linear-gradient(to bottom, transparent, var(--surface-raised) 1rem)`.
+  - The upward `0 0 0 1rem` shadow is gone. `0 1rem 0 1rem` still covers the bottom padding.
+  - Text that scrolls under the footer now dissolves instead of ending at a hard edge. Seen in `320-dark-setup-marked-four` and `1366-*-setup-four`.
+  - At `320-*-setup` (6×6) the fade lies over the empty gap above the footer. Below the header that shot is pixel-identical to set 12.
+- **Focus ring on segmented theme and language options:**
+  - **Collision:** `/settings-focus/` (new; focus on «Темна», re-applied on window focus) showed the 2px-offset ring running over the card border and into the next option. The card has 3px padding and options sit 3px apart.
+  - **1px offset (suggested) probed:** the ring still sat exactly on the card border and touched the neighbour.
+  - **Chosen:** `outline-offset: -1px` for `.theme-control` and `.language-control` options only. The 3px ring then stays 1px clear of both.
+  - **Size options:** they have the same geometry but are **not** changed, so no existing shot changes. No shot shows a focused size option; this is left as a question. The level cards are not segmented and are unchanged.
+- **320 header:** «Правила» side padding is 0.625rem (was 0.5rem). Measured: title 12–153.8, gear 168.9–212.9, «Правила» 220.9–308.0 (the column edge). `scrollWidth` is 320 on all 17 routes at 320×700.
+- **Gear 1.375rem** (was 1.5rem), the designer's call: the solid gear read heavier than the 15 px «Правила» label. The button stays 44×44.
+- **Capture:** adds `settings-focus` at 320×700 and 1366×650, light and dark, at the end of the script: 170 shots.
+- **The set:** `v0-screenshots/review-set-13/` (`SHA1SUMS`, `run-2.SHA1SUMS`, `run-3-four.SHA1SUMS`, `CHANGES-vs-review-set-12.txt`, and contact sheets for 17 states in `contact/`). Diff results:
+  - `run-2.SHA1SUMS` against `SHA1SUMS`: 0 differing lines of 170 (a second full run, byte-identical).
+  - `run-3-four.SHA1SUMS` against `SHA1SUMS`: 4 of 4 match (`1024-dark-confirm`, `1024-dark-four`, `1024-dark-setup-four`, `1440-dark-win`; all render dark, mean grey 0.07 to 0.12).
+  - Against set 12: 2 byte-identical (`logo-*`), 4 new (`*-settings-focus`), 164 changed.
+  - Of the 164: 118 change only in the header row (the gear everywhere; at 320 also «Правила»).
+  - 46 change below the header:
+    - 10 desktop rules shots (`{1024,1366,1440}-*-rules`, `{1366,1440}-*-rules-techniques`; the backdrop).
+    - 8 scrolled sheets where the fade shows (`1366-*-setup-four`, `1366-*-setup-marked-four`, `320-*-setup-four`, `320-*-setup-marked-four`).
+    - 28 tablet and desktop setup shots whose only difference is 82 to 88 anti-aliased pixels along the panel's inner bottom corners. These are `{768,1024,1440}-*-{setup,setup-four,setup-marked,setup-marked-four}` and `1366-*-{setup,setup-marked}`. One mask shadow now paints there instead of two; this is not visible.
