@@ -1,0 +1,57 @@
+{
+  "generatedBy": "review-gate",
+  "persistedBy": "orchestrator by hand: both runs returned reviewEvidence null and wrote no file; counts and titles copied from the run results",
+  "change": "update-setup-sheet-start",
+  "clean": false,
+  "verdict": "NOT CLEAN: the confirming run has a confirmed code defect (focus obscured by the sticky footer at short viewports, reproduced: docs/qa/update-setup-sheet-start/focus-obscured-repro.txt). The session stopped by the user's rule (autonomy-log row 119); the slice is not archived.",
+  "runs": [
+    {
+      "runId": "wf_910d6e21-34b",
+      "kind": "first run",
+      "baseRef": "6fcd8d5",
+      "headRef": "e9e8df0",
+      "confirmed": 7,
+      "contested": 2,
+      "rejected": 4,
+      "confirmedTitles": [
+        "Footer-1 sticky row has no opaque strip: scrolled sheet content shows through the column gap and around the buttons (minor)",
+        "syncControls doc comment is stale: aria-checked, aria-disabled and the reason now come from the marked choice, not size and level (minor)",
+        "Undocumented toggle 'open' branch resets the marked choice; it goes against design decision 1 and no test covers it (minor)",
+        "tasks.md checkboxes do not match reality: completed steps are unticked, and 3.6's signed-commit step is not met (minor)",
+        "Green-run evidence is a summary of a working-tree run and has no traceability check output (task 4.5) (minor)",
+        "Pending action is a closure, not the {size, level} pair of the data model; the syncControls doc comment is stale (minor)",
+        "No rendered screenshot of the changed setup sheet, so the visual lens is NOT-EARNED for this slice (minor)"
+      ],
+      "contestedTitles": [
+        "startMarked repeats the hasEntries branch that requestAction already makes (minor)",
+        "«Почати» is drawn with the secondary control colours while the primary-token question (task 1.3) is still open, yet task 3.5 is ticked (minor)"
+      ]
+    },
+    {
+      "runId": "wf_d2edbb2b-4db",
+      "kind": "confirming run",
+      "baseRef": "6fcd8d5",
+      "headRef": "0c9da1f",
+      "confirmed": 14,
+      "contested": 0,
+      "rejected": 1,
+      "confirmedTitles": [
+        "Sticky footer strip can hide the focused level option and its ring in a scrolling sheet (focus obscured) (major)",
+        "Footer buttons placed in grid-row 3, while the design spans them over every row so the sticky footer works (minor)",
+        "Opaque strip band takes no pointer events, so taps on it reach the hidden level option underneath (minor)",
+        "Task 2.5 ticked although its 'one signed commit' clause is not met, while 3.6 is left open for the same reason (minor)",
+        "Another slice's artifact committed under this slice's trailer (minor)",
+        "«Почати» drawn as an outlined button, not the design's primary fill (minor)",
+        "Sticky Footer-1 can hide a keyboard-focused level option when the sheet scrolls (no scroll-padding) (minor)",
+        "The click-through strip lets clicks reach options hidden behind the opaque footer (minor)",
+        "«Почати» focus-indicator scenario is checked only in the unmarked sheet, not in the marked state the scenario names (major)",
+        "Task 6.1 is ticked, but two of its sub-steps were not exercised (minor)",
+        "An unrelated slice's evidence file was committed in this slice's evidence commit (minor)",
+        "Resting «Почати» looks like a checked option, not the primary action (minor)",
+        "Hard-edged footer strip cuts scrolled text mid-line; review-set-13 uses a fade (minor)",
+        "Centred sheet covers the summary and header at desktop heights (minor)"
+      ],
+      "contestedTitles": []
+    }
+  ]
+}

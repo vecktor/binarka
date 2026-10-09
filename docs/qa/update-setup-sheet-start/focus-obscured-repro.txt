@@ -1,0 +1,21 @@
+# Focus obscured by the sticky footer (review-gate confirming run wf_d2edbb2b-4db, finding 1), reproduced by the orchestrator
+2026-10-10, tree 0c9da1f, npm run build + vite preview, Chromium (Playwright 1.64.0), headless.
+Method: open the sheet, mark «Поле 4×4», focus «Поле 4×4», press Tab and read each focused option's bottom edge + 5 px
+(3 px ring at 2 px offset) against the top of the footer strip («Почати» top - 16 px). No scrolling by hand.
+
+320x700 Поле 6×6: ring bottom 214 vs strip top 624 (scrollTop 0) clear
+320x700 Поле 8×8: ring bottom 214 vs strip top 624 (scrollTop 0) clear
+320x700 Розминка: ring bottom 379 vs strip top 624 (scrollTop 0) clear
+320x700 Задачка: ring bottom 483 vs strip top 624 (scrollTop 0) clear
+320x700 Головоломка: ring bottom 587 vs strip top 624 (scrollTop 0) clear
+320x700 Мозколамка: ring bottom 691 vs strip top 624 (scrollTop 0) OBSCURED
+1366x650 Поле 6×6 .. Головоломка: clear
+1366x650 Мозколамка: ring bottom 525 vs strip top 500 (scrollTop 0) OBSCURED
+320x568 Поле 6×6 .. Задачка: clear
+320x568 Головоломка: ring bottom 560 vs strip top 492 (scrollTop 0) OBSCURED
+320x568 Мозколамка: ring bottom 573 vs strip top 492 (scrollTop 91) OBSCURED
+
+Verdict: a real defect (WCAG 2.4.11, docs/frontend-conventions.md rule 12). Introduced by the fix-round footer strip
+(3e4fd71, f9ddf47); the green commit e9e8df0 had no sticky footer. Likely fix (NOT applied, the user's stop rule, row 119):
+scroll-padding-bottom on the open sheet equal to the strip height, plus a focus-not-obscured e2e check at 320x700 and
+1366x650 with 4x4 marked.
