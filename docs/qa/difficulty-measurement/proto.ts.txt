@@ -1,0 +1,126 @@
+import { hint } from './engine/hint';
+import { findViolations } from './engine/rules';
+import { fillGrid } from './engine/generator';
+import { mulberry32, shuffle } from './engine/rng';
+import type { Cell, Grid } from './engine/types';
+
+type Fill = { r: number; c: number; v: 0 | 1; level: number; depth?: number };
+const empty = (b: Grid) => b.some((row) => row.some((x) => x === null));
+const copy = (b: Grid): Grid => b.map((r) => [...r]);
+function lineCells(b: Grid, axis: 'row' | 'col', i: number): Cell[] {
+  const n = b.length; const out: Cell[] = [];
+  for (let k = 0; k < n; k++) out.push(axis === 'row' ? b[i]![k]! : b[k]![i]!);
+  return out;
+}
+const at = (axis: 'row' | 'col', i: number, k: number): [number, number] => (axis === 'row' ? [i, k] : [k, i]);
+const hasTriple = (cells: Cell[]) => cells.some((x, k) => x !== null && cells[k + 1] === x && cells[k + 2] === x);
+
+function t1(b: Grid): Fill | null | 'broken' {
+  const h = hint(b);
+  if (h.kind === 'broken') return 'broken';
+  return h.kind === 'fill' ? { r: h.row, c: h.col, v: h.value, level: 1 } : null;
+}
+function t2(b: Grid): Fill | null {
+  const n = b.length, half = n / 2;
+  for (const axis of ['row', 'col'] as const) for (let i = 0; i < n; i++) {
+    const cells = lineCells(b, axis, i);
+    const empties = cells.flatMap((x, k) => (x === null ? [k] : []));
+    if (empties.length < 2) continue;
+    for (const d of [0, 1] as const) {
+      if (cells.filter((x) => x === d).length !== half - 1) continue;
+      for (const e of empties) {
+        const hyp = cells.map((x, k) => (x !== null ? x : k === e ? d : (1 - d) as 0 | 1));
+        if (hasTriple(hyp)) { const [r, c] = at(axis, i, e); return { r, c, v: (1 - d) as 0 | 1, level: 2 }; }
+      }
+    }
+  }
+  return null;
+}
+function t3(b: Grid): Fill | null {
+  const n = b.length;
+  for (const axis of ['row', 'col'] as const) for (let i = 0; i < n; i++) {
+    const cells = lineCells(b, axis, i);
+    const empties = cells.flatMap((x, k) => (x === null ? [k] : []));
+    if (empties.length !== 2) continue;
+    for (let j = 0; j < n; j++) {
+      if (j === i) continue;
+      const other = lineCells(b, axis, j);
+      if (other.some((x) => x === null)) continue;
+      if (!cells.every((x, k) => x === null || x === other[k])) continue;
+      const e = empties[0]!; const [r, c] = at(axis, i, e);
+      return { r, c, v: (1 - (other[e] as number)) as 0 | 1, level: 3 };
+    }
+  }
+  return null;
+}
+/** propagate with levels 1..3; returns steps until contradiction, or -1 if none */
+function contradicts(b: Grid, maxSteps: number): number {
+  const w = copy(b);
+  for (let s = 0; s <= maxSteps; s++) {
+    if (findViolations(w).length > 0) return s;
+    if (!empty(w)) return -1;
+    const f = step(w, 3);
+    if (f === 'broken') return s;
+    if (f === null) return -1;
+    w[f.r]![f.c] = f.v;
+  }
+  return -1;
+}
+const LOOKAHEAD = Number(process.env.LOOKAHEAD ?? 1000);
+function t4(b: Grid): Fill | null {
+  const n = b.length;
+  let best: Fill | null = null;
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    if (b[r]![c] !== null) continue;
+    for (const v of [0, 1] as const) {
+      const w = copy(b); w[r]![c] = v;
+      const d = contradicts(w, LOOKAHEAD);
+      if (d >= 0 && (best === null || d < best.depth!)) best = { r, c, v: (1 - v) as 0 | 1, level: 4, depth: d };
+    }
+  }
+  return best;
+}
+function step(b: Grid, L: number): Fill | null | 'broken' {
+  const a = t1(b); if (a !== null) return a;
+  if (L >= 2) { const x = t2(b); if (x) return x; }
+  if (L >= 3) { const x = t3(b); if (x) return x; }
+  if (L >= 4) { const x = t4(b); if (x) return x; }
+  return null;
+}
+export const stats = { maxDepth: 0 };
+function solve(b: Grid, L: number): { solved: boolean; max: number; uses: number[] } {
+  const w = copy(b); let max = 0; const uses = [0, 0, 0, 0, 0];
+  for (;;) {
+    if (!empty(w)) return { solved: true, max, uses };
+    const f = step(w, L);
+    if (f === null || f === 'broken') return { solved: false, max, uses };
+    w[f.r]![f.c] = f.v; max = Math.max(max, f.level); uses[f.level]!++;
+    if (f.depth !== undefined) stats.maxDepth = Math.max(stats.maxDepth, f.depth);
+  }
+}
+function gen(n: number, seed: number, L: number, maxAttempts: number) {
+  const rng = mulberry32(seed);
+  let sol = fillGrid(n, rng); while (sol === null) sol = fillGrid(n, rng);
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const g: Grid = sol.map((r) => r.map((v): Cell => v));
+    const pos: [number, number][] = [];
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) pos.push([r, c]);
+    shuffle(pos, rng);
+    for (const [r, c] of pos) { const k = g[r]![c]!; g[r]![c] = null; if (!solve(g, L).solved) g[r]![c] = k; }
+    const res = solve(g, L);
+    const needs = L === 1 || !solve(g, L - 1).solved;
+    if (needs) return { ok: true, attempt, givens: g.flat().filter((x) => x !== null).length, uses: res.uses };
+  }
+  return { ok: false, attempt: maxAttempts, givens: 0, uses: [] };
+}
+const sizes = (process.env.SIZES ?? '4,6,8').split(',').map(Number);
+for (const n of sizes) for (const L of [1, 2, 3, 4]) {
+  stats.maxDepth = 0;
+  let worst = 0, ok = 0, attempts = 0, maxAtt = 0, givens = 0; const use = [0, 0, 0, 0, 0];
+  for (let seed = 1; seed <= 20; seed++) {
+    const t0 = performance.now(); const g = gen(n, seed, L, 30); const dt = performance.now() - t0;
+    worst = Math.max(worst, dt);
+    if (g.ok) { ok++; attempts += g.attempt; maxAtt = Math.max(maxAtt, g.attempt); givens += g.givens; g.uses.forEach((u, i) => (use[i]! += u)); }
+  }
+  console.log(`N=${n} L=${L}: ok ${ok}/20, avg attempts ${(attempts / Math.max(ok, 1)).toFixed(1)}, max ${maxAtt}, avg givens ${(givens / Math.max(ok, 1)).toFixed(1)}/${n * n}, worst ${worst.toFixed(0)} ms, fills by level ${use.slice(1).join('/')}, max look-ahead depth ${stats.maxDepth}`);
+}
