@@ -34,7 +34,6 @@ import {
   mountPage,
   pressHint,
   pressNew,
-  pressSizeButton,
   q,
   readBoard,
   readGivenFlags,
@@ -46,6 +45,8 @@ import {
   solutionGrid,
   violationCells,
   winMessage,
+  markSize,
+  pressClose,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -187,13 +188,14 @@ describe('@trace FR-42 the seed calls follow the puzzles generated', () => {
 
     pressNew(root);
     expect(seeds.calls()).toBe(2);
-    pressSizeButton(root, 4);
+    selectSize(root, 4); // chooses «Поле 4×4»: marks it, then «Почати»
     expect(seeds.calls()).toBe(3);
-    // a press of the size already shown takes no seed and calls no generator (FR-73)
-    pressSizeButton(root, 4);
+    // opens the sheet and presses «Поле 4×4» again (a marking press of the size already marked, then «Закрити») (FR-73, FR-100)
+    markSize(root, 4);
+    pressClose(root);
     expect(seeds.calls()).toBe(3);
     expect(spy.calls).toHaveLength(3);
-    pressSizeButton(root, 8);
+    selectSize(root, 8); // chooses «Поле 8×8»
     expect(showModalCalls(), 'every board has no entries: no dialog').toBe(0);
 
     expect(seeds.calls()).toBe(4);

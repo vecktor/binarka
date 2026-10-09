@@ -7,9 +7,13 @@
 // @trace FR-88
 // @trace FR-99
 // @trace FR-89
+// @trace FR-100
+// @trace FR-101
+//
+// update-setup-sheet-start: a level press only MARKS; the choice tests go through «Почати» (markLevel + pressStart or chooseLevel).
 //
 // A level button is found by its position and the text of its first span, never by a data hook. The sheet is opened through the
-// stubbed showPopover() by the helpers (`pressLevelButton`, `chooseLevel`). Exact texts are literals; this file never imports
+// stubbed showPopover() by the helpers (`markLevel`, `chooseLevel`). Exact texts are literals; this file never imports
 // src/ui/strings.ts. A generator that "throws" throws an ordinary Error (the reading rule of «Setup sheet»).
 import { describe, expect, it } from 'vitest';
 import { generate } from '../src/engine/index';
@@ -45,7 +49,6 @@ import {
   mountPage,
   mountPlayedBoard,
   pageState,
-  pressLevelButton,
   q,
   readBoard,
   seedQueue,
@@ -61,6 +64,11 @@ import {
   violationCells,
   winMessage,
   WIN_MESSAGE,
+  markLevel,
+  pressStart,
+  openSheet,
+  popoverCalls,
+  popoverIsOpen,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -115,13 +123,37 @@ describe('@trace FR-87 @trace FR-44 the level control is a radiogroup of four bu
     expect(root.querySelectorAll('[for]'), 'no for attribute').toHaveLength(0);
   });
 
+  // update-setup-sheet-start, scenario «A level press only marks» of «Level selector» (FR-87, FR-100).
+  it('A level press only marks', () => {
+    const { root, seeds, spy } = mountPlayedBoard(6);
+    const sheet = openSheet(root);
+    const cells = snapshot(root);
+    const seedCalls = seeds.calls();
+    const generatorCalls = spy.calls.length;
+    const modals = showModalCalls();
+    const hides = popoverCalls('hidePopover', sheet);
+
+    levelButtons(root)[2]?.click(); // «Головоломка», a marking press
+
+    expect(levelStates(root), 'aria-checked is on «Головоломка» only in the level control').toEqual(['false', 'false', 'true', 'false']);
+    expect(q(root, '[data-board]').getAttribute('data-size'), 'the board keeps data-size 6').toBe('6');
+    expect(snapshot(root), 'and its cell texts').toEqual(cells);
+    expect(summaryText(root), 'the summary still reads 6×6 · Розминка').toBe('6×6 · Розминка');
+    expect(popoverIsOpen(sheet), 'the sheet stays open').toBe(true);
+    expect(showModalCalls(), 'showModal was never called').toBe(modals);
+    expect(popoverCalls('hidePopover', sheet), 'hidePopover was never called').toBe(hides);
+    expect(seeds.calls(), 'the seed-source count equals the count read before').toBe(seedCalls);
+    expect(spy.calls, 'the generator count equals the count read before').toHaveLength(generatorCalls);
+  });
+
   it('Choose a level on a board without entries', () => {
     const seeds = seedQueue([1, 2, 3]);
     const spy = generateSpy(bySize({ 6: PAIR_ROW }));
     const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
     expect(seeds.calls(), 'premise: the mount took one seed').toBe(1);
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
 
     expect(showModalCalls(), 'showModal was never called').toBe(0);
     expect(seeds.calls(), 'one more seed was taken').toBe(2);
@@ -175,7 +207,8 @@ describe('@trace FR-87 @trace FR-44 the level control is a radiogroup of four bu
     expect(before.hint, 'premise: a hint sentence is shown').not.toBe('');
     expect(violationCells(root).length, 'premise: cells carry cell-violation').toBeGreaterThan(0);
 
-    pressLevelButton(root, 3);
+    markLevel(root, 3);
+    pressStart(root);
 
     expect(dialogIsOpen(root), 'the dialog is open').toBe(true);
     expect(pageState(root), 'the board and the messages are unchanged').toEqual(before);
@@ -234,7 +267,8 @@ describe('@trace FR-87 @trace FR-44 the level control is a radiogroup of four bu
     const generatorCalls = spy.calls.length;
     const tracker = trackErrors();
     try {
-      pressLevelButton(root, 3);
+      markLevel(root, 3);
+      pressStart(root);
       expect(dialogIsOpen(root), 'premise: the level change asks first').toBe(true);
       confirmYes(root);
     } finally {
@@ -258,7 +292,8 @@ describe('@trace FR-87 @trace FR-44 the level control is a radiogroup of four bu
     const before = snapshot(root);
     const messages = [hintMessage(root), winMessage(root)];
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
     confirmYes(root);
 
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe('6');
@@ -349,7 +384,8 @@ describe('@trace FR-99 @trace FR-89 the content of a level option', () => {
     const { root } = mountPlayedBoard(6);
     const texts = levelButtons(root).map((b) => b.textContent);
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
     expect(dialogIsOpen(root), 'premise: the dialog opened').toBe(true);
     expect(levelStates(root), 'while the dialog is open').toEqual(['true', 'false', 'false', 'false']);
 

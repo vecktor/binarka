@@ -48,6 +48,7 @@ for (const [width, height] of VIEWPORTS) {
     const sheetControls = [
       ...(await measure(page.locator(sel.sizeOption), 'size option')),
       ...(await measure(page.locator(sel.levelOption), 'level option')),
+      ...(await measure(page.locator(sel.setupStart), 'sheet start')),
       ...(await measure(page.locator(sel.setupClose), 'sheet close')),
     ];
     misses.push(...below(sheetControls, CONTROL_FLOOR, 'setup sheet'));
@@ -64,7 +65,11 @@ for (const [width, height] of VIEWPORTS) {
     await chooseSize(page, 4);
     misses.push(...below(await measure(page.locator(sel.cell), '4x4 cell'), CONTROL_FLOOR, '4x4'));
     await openSheet(page);
-    misses.push(...below(await measure(page.locator(sel.levelOption), 'level option at 4x4'), CONTROL_FLOOR, 'setup sheet at 4x4'));
+    const sheetControlsAt4 = [
+      ...(await measure(page.locator(sel.levelOption), 'level option at 4x4')),
+      ...(await measure(page.locator(sel.setupStart), 'sheet start at 4x4')),
+    ];
+    misses.push(...below(sheetControlsAt4, CONTROL_FLOOR, 'setup sheet at 4x4'));
     await closeSheet(page);
 
     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);

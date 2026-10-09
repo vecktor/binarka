@@ -28,7 +28,6 @@ import {
   mountPage,
   mountPlayedBoard,
   popoverIsOpen,
-  pressLevelButton,
   pressNew,
   rawGenerateSpy,
   readBoard,
@@ -38,6 +37,8 @@ import {
   showModalCalls,
   summaryText,
   trackErrors,
+  markLevel,
+  pressStart,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -103,7 +104,8 @@ describe('@trace FR-88 the page retries on a run-out', () => {
     const generatorCalls = spy.calls.length;
     const tracker = trackErrors();
     try {
-      pressLevelButton(root, 3);
+      markLevel(root, 3);
+      pressStart(root);
       expect(dialogIsOpen(root), 'premise: the level change asks first').toBe(true);
       confirmYes(root);
     } finally {
@@ -132,7 +134,8 @@ describe('@trace FR-88 the page retries on a run-out', () => {
     const seedCalls = seeds.calls();
     const shown = showModalCalls();
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
     confirmYes(root);
 
     expect(showModalCalls() - shown, 'showModal was called once in all').toBe(1);

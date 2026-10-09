@@ -172,6 +172,10 @@ function removePopoverStubs(): void {
  * ToggleEvent, so this is a plain `Event` with `newState` and `oldState` added (it does not bubble, as the native one).
  */
 export function dispatchToggle(el: Element, newState: 'open' | 'closed'): void {
+  // update-setup-sheet-start (A-44, A-46): a closing `toggle` is what a browser sends after the popover closed, so the stub's
+  // open state follows the event; a later mark helper then reopens the sheet through `showPopover()` like a player would.
+  if (newState === 'closed') openPopovers.delete(el);
+  else openPopovers.add(el);
   const event = Object.assign(new Event('toggle'), { newState, oldState: newState === 'open' ? 'closed' : 'open' });
   el.dispatchEvent(event);
 }
@@ -687,14 +691,15 @@ export function hasPlayerEntries(root: ParentNode): boolean {
 }
 
 /**
- * The raw press of the size button of `n`: no confirmation is given. Slice DL2 (A-44, reading rule of «Setup sheet»): the size
- * button lives inside the setup sheet, so the player first opens the sheet; the test does it through the stubbed
- * `showPopover()` and then clicks the option.
+ * update-setup-sheet-start (FR-43, FR-73, FR-100): a MARKING press of the size button of `n`. It marks the size and does
+ * nothing else on the page. The sheet is opened through the stubbed `showPopover()` only while the stub's state is closed, so
+ * a sheet that the page closed (or the test closed) is reopened, and an open sheet is not opened twice. It never presses
+ * «Почати». Replaces the raw `pressSizeButton`, which pressed once and expected a puzzle (the old model, autonomy-log row 114).
  */
-export const pressSizeButton = (root: ParentNode, n: number): void => {
-  openSheet(root);
+export function markSize(root: ParentNode, n: number): void {
+  openSheetIfClosed(root);
   sizeButton(root, n).click();
-};
+}
 export const pressReset = (root: ParentNode): void => { q(root, '[data-action="reset"]').click(); };
 
 // ---- the confirmation dialog (FR-67) ----
@@ -760,19 +765,21 @@ export function resetBoard(root: ParentNode): void {
 }
 
 /**
- * The player chooses a size: press its button and, when the dialog opened, press «Так, почати». The dialog must open exactly
- * when the board has entries and the size differs from the one shown (FR-67, FR-73). No uncaught error is allowed.
+ * The player CHOOSES a size (the reading rule of «Setup sheet», FR-101): open the sheet when it is closed, mark the size, press
+ * «Почати» and, when the dialog opened, press «Так, почати». The dialog must open exactly when the board has player entries
+ * (FR-67): «Почати» is never a no-op, so also a choice of the size already shown asks (SD-Q2). No uncaught error is allowed.
  */
 export function selectSize(root: ParentNode, size: number): void {
-  const asks = hasPlayerEntries(root) && checkedSize(root) !== size;
+  const asks = hasPlayerEntries(root);
   const tracker = trackErrors();
   try {
-    pressSizeButton(root, size);
+    markSize(root, size);
+    pressStart(root);
   } finally {
     tracker.stop();
   }
-  expect(tracker.errors, 'no uncaught error during the size button press').toEqual([]);
-  expect(dialogIsOpen(root), 'the dialog opens exactly when the board has entries and the size is another one').toBe(asks);
+  expect(tracker.errors, 'no uncaught error during the size choice').toEqual([]);
+  expect(dialogIsOpen(root), 'the dialog opens exactly when the board has entries').toBe(asks);
   if (asks) confirmYes(root);
 }
 
@@ -791,6 +798,8 @@ export const LEVEL_DESCRIPTIONS = [
 export const REASON_4X4 = 'Для поля 4×4 є лише рівень «Розминка».';
 export const SHEET_LABEL = 'Поле і складність';
 export const CLOSE_LABEL = 'Закрити';
+/** The label of the start button of the setup sheet (FR-101). */
+export const START_LABEL = 'Почати';
 export const LEVEL_GROUP_LABEL = 'Складність';
 export const SIZE_GROUP_LABEL = 'Розмір поля';
 /** The visually hidden prefix of the summary button: ends in ONE ordinary space. */
@@ -827,11 +836,38 @@ export function summaryButton(root: ParentNode): HTMLElement {
 /** The close button `[data-action="setup-close"]` of the sheet. */
 export const sheetCloseButton = (root: ParentNode): HTMLElement => q(sheetOf(root), '[data-action="setup-close"]');
 
+/** The start button `[data-action="setup-start"]` «Почати» of the sheet (FR-101). */
+export const sheetStartButton = (root: ParentNode): HTMLElement => q(sheetOf(root), '[data-action="setup-start"]');
+
 /** The player opens the sheet: the test calls the stubbed `showPopover()` on it (the native opening is not tested in jsdom). */
 export function openSheet(root: ParentNode): HTMLElement {
   const sheet = sheetOf(root);
   sheet.showPopover();
   return sheet;
+}
+
+/**
+ * Open the sheet only while the stub's state is closed (update-setup-sheet-start). A marking press happens inside an open
+ * sheet; a sheet that «Почати», «Скасувати» or a test closed has to be opened again first, and an open one must not get a
+ * second `showPopover()` (the logs count the calls).
+ */
+export function openSheetIfClosed(root: ParentNode): HTMLElement {
+  const sheet = sheetOf(root);
+  if (!popoverIsOpen(sheet)) sheet.showPopover();
+  return sheet;
+}
+
+/** The player presses «Почати» (FR-101). No confirmation is given and nothing is asserted about the outcome. */
+export const pressStart = (root: ParentNode): void => { sheetStartButton(root).click(); };
+
+/**
+ * The player presses «Закрити»: the click, then the closing `toggle` that a browser dispatches after the native close (jsdom does
+ * not act on `popovertarget`, so the test sends the event itself, as `play-page-setup-sheet.test.ts` always did; the toggle also
+ * clears the stub's open state). The page then drops the marked choice (FR-100, A-46).
+ */
+export function pressClose(root: ParentNode): void {
+  sheetCloseButton(root).click();
+  dispatchToggle(sheetOf(root), 'closed');
 }
 
 /** The visible text of the summary button: its SECOND child, the text span (FR-95: prefix span, text span, cue span). */
@@ -892,27 +928,28 @@ export const levelDisabled = (root: ParentNode): (string | null)[] => levelButto
 /** The reason line `[data-level-reason]` (FR-91): always in the DOM, the first child of the level group. */
 export const levelReason = (root: ParentNode): HTMLElement => q(root, '[data-level-reason]');
 
-/** The raw press of the level button of `level`: the sheet is opened first, no confirmation is given. */
-export const pressLevelButton = (root: ParentNode, level: number): void => {
-  openSheet(root);
+/** A MARKING press of the level button of `level` (FR-87, FR-100): opens the sheet only while it is closed, never presses «Почати». */
+export function markLevel(root: ParentNode, level: number): void {
+  openSheetIfClosed(root);
   levelButton(root, level).click();
-};
+}
 
 /**
- * The player chooses a level: open the sheet, press its button and, when the dialog opened, press «Так, почати». The dialog
- * must open exactly when the board has entries and the level differs from the one shown (FR-67, FR-73, FR-90). No uncaught
- * error is allowed.
+ * The player CHOOSES a level: open the sheet when closed, mark the level, press «Почати» and, when the dialog opened, press
+ * «Так, почати». The dialog must open exactly when the board has player entries (FR-67, FR-90, FR-101); a choice of the level
+ * already shown is not a no-op. No uncaught error is allowed.
  */
 export function chooseLevel(root: ParentNode, level: number): void {
-  const asks = hasPlayerEntries(root) && checkedLevel(root) !== level;
+  const asks = hasPlayerEntries(root);
   const tracker = trackErrors();
   try {
-    pressLevelButton(root, level);
+    markLevel(root, level);
+    pressStart(root);
   } finally {
     tracker.stop();
   }
-  expect(tracker.errors, 'no uncaught error during the level button press').toEqual([]);
-  expect(dialogIsOpen(root), 'the dialog opens exactly when the board has entries and the level is another one').toBe(asks);
+  expect(tracker.errors, 'no uncaught error during the level choice').toEqual([]);
+  expect(dialogIsOpen(root), 'the dialog opens exactly when the board has entries').toBe(asks);
   if (asks) confirmYes(root);
 }
 

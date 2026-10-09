@@ -2,10 +2,11 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import type { ElementHandle, Page } from '@playwright/test';
-import { chooseSize, openConfirm, openPage, openRules, openSheet, sel, showHint, solveByHints } from './helpers';
+import { chooseSize, markLevel, markSize, openConfirm, openPage, openRules, openSheet, sel, showHint, solveByHints } from './helpers';
 
 // NFR-13 (sampled): two viewports x two colour schemes. axe runs in the default, hint, win, rules and confirmation
-// states at 6x6, plus the setup sheet open at 6x6 and at 4x4; any violation of any impact fails. The focus sweep
+// states at 6x6, plus the setup sheet open at 6x6 and at 4x4 and open with a marked choice that differs from the board shown
+// (update-setup-sheet-start, FR-100); any violation of any impact fails. The focus sweep
 // reaches every control by the keyboard and asks for a visible indicator that differs from the unfocused look.
 // This spec replaces the route-only reference script scripts/check-a11y.mjs (integrity-locked, kept unchanged).
 const VIEWPORTS = [
@@ -23,6 +24,8 @@ const STATES: readonly [string, (page: Page) => Promise<void>][] = [
   ['confirmation', openConfirm],
   ['setup sheet', openSheet],
   ['setup sheet at 4x4', async (page) => { await chooseSize(page, 4); await openSheet(page); }],
+  // «Поле 8×8» and «Мозколамка» marked by clicks, «Почати» not pressed: the sheet stays open on a 6×6 · «Розминка» board
+  ['setup sheet with a marked choice that differs from the board', async (page) => { await markSize(page, 8); await markLevel(page, 4); }],
 ];
 
 for (const [width, height] of VIEWPORTS) {
@@ -66,7 +69,7 @@ for (const [width, height] of VIEWPORTS) {
         await expect(page.locator(`${sel.dialog}[open]`)).toBeVisible();
         await sweep(page, seen);
 
-        const expected = ['cell', 'hint', 'reset', 'new', 'rules', 'setup', 'size option', 'level option', 'setup-close', 'rules-close', 'confirm yes', 'confirm no'];
+        const expected = ['cell', 'hint', 'reset', 'new', 'rules', 'setup', 'size option', 'level option', 'setup-start', 'setup-close', 'rules-close', 'confirm yes', 'confirm no'];
         const misses = [
           ...expected.filter((k) => !seen.has(k)).map((k) => `${k}: never reached by the keyboard`),
           ...[...seen.values()].filter((v) => v !== ''),

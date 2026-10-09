@@ -20,6 +20,7 @@ import {
   RULES_ITEMS,
   RULES_LABEL,
   SHEET_LABEL,
+  START_LABEL,
   TECHNIQUES_HEADING,
   TECHNIQUES_ITEMS,
   TITLE_TEXT,
@@ -158,8 +159,10 @@ describe('@trace NFR-5 no Cyrillic text outside the strings module', () => {
 // Slice DL2 (add-level-selector), scenario «The strings live in the strings module» (FR-94, user decision of 2026-10-05)
 // ---------------------------------------------------------------------------------------------------------
 
-describe('@trace FR-94 the new texts live in the strings module', () => {
-  it('The strings live in the strings module: strings.ts holds the hidden prefix, the sheet label, the close label, the group name, the four names and descriptions, the 4x4 reason, the techniques heading and its three items', () => {
+// update-setup-sheet-start (FR-94, NFR-5, FR-101): the start label «Почати» is a strings.ts entry (decision of the orchestrator: this test,
+// not play-page-controls-text.test.ts).
+describe('@trace FR-94 @trace NFR-5 @trace FR-101 the new texts live in the strings module', () => {
+  it('The strings live in the strings module: strings.ts holds the hidden prefix, the sheet label, the start label, the close label, the group name, the four names and descriptions, the 4x4 reason, the techniques heading and its three items', () => {
     const source = existsSync(STRINGS_FILE) ? readFileSync(STRINGS_FILE, 'utf8') : '';
     const wanted = [
       'Поле і складність', // the visually hidden prefix and the label of the sheet (the prefix ends in ": ", the format may be split)
@@ -173,6 +176,9 @@ describe('@trace FR-94 the new texts live in the strings module', () => {
       ...TECHNIQUES_ITEMS,
     ];
     for (const text of wanted) expect(source, `strings.ts contains «${text}»`).toContain(text);
+    // the start label as a string of its own: «Почати» alone, between quotes. A plain `contains` would pass on the confirmation text
+    // «Почати заново? ...» that strings.ts already holds, so it proves nothing about the new label (FR-101).
+    expect(source, 'strings.ts holds «Почати» as a string literal of its own').toMatch(new RegExp(`(['"\`])${START_LABEL}\\1`));
     // the separator of the summary « · » (U+00B7) is written as the character or as an escape
     expect(/·|\\u00[Bb]7|\\u\{[Bb]7\}|\\xB7|\\xb7/.test(source), 'strings.ts contains the separator U+00B7 (character or escape)').toBe(true);
   });

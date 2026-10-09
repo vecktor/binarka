@@ -8,6 +8,7 @@
 // @trace FR-97
 // @trace FR-91
 // @trace FR-87
+// @trace FR-101
 //
 // The rules are read from src/ui/style.css as declarations (jsdom never matches :focus-visible and applies no nested rule to
 // computed style, A-28, TC-13). The selectors are the spec-made ones of design.md ambiguity E, written with single-quoted attribute
@@ -104,6 +105,62 @@ describe('@trace FR-65 @trace NFR-9 the summary and level buttons declare their 
 
 // Review-gate fix round (2026-10-09): the checked level differed from the others by colour only (WCAG 1.4.1). Source: the delta
 // spec, «Level option content» (the radio ring is a pseudo-element) and the scenario «The checked level has a cue besides colour».
+// update-setup-sheet-start, scenario «The start button declares its colours» (FR-65, FR-101): the rule that matches the mounted
+// «Почати» (found by matching the element against the selectors of the stylesheet, not by a selector the test invents) declares
+// its own `color` and `background-color`, each a single `var(--color-...)` of a token declared in :root, no opacity, 4.5:1.
+// "Its own" means a rule that matches «Почати» and does not match «Закрити» (a generic `button` rule is not its own). The tokens are the
+// 13 of the baseline (no 14th is added by this slice, orchestrator note of task 1.3); the check does not depend on which two.
+// States: a selector with a pseudo-class is read as a state of the button (`:hover`, `:focus-visible`, `:active`): when such a rule
+// for «Почати» sets a colour pair, that pair must also reach 4.5:1 (the scenario names "the hover and focus-visible states if the rule has them").
+describe('@trace FR-65 @trace FR-101 the start button declares its colours', () => {
+  /** The pseudo-class-free base of a selector: states stripped, so `[data-action='setup-start']:hover` reads as the plain selector. */
+  const stateBase = (selector: string): string => selector.replace(/:(hover|focus-visible|focus|active)\b/g, '');
+
+  it('The start button declares its colours', () => {
+    const root = mountFixture(BLANK);
+    const start = q(root, '[data-action="setup-start"]');
+    const close = sheetCloseButton(root);
+    const parsed = readStyles();
+    const matches = (element: Element, selector: string): boolean => {
+      try {
+        return element.matches(selector);
+      } catch {
+        return false;
+      }
+    };
+    const own = parsed.rules.filter(
+      (rule) =>
+        rule.context.length === 0 &&
+        rule.selectors.some((selector) => !selector.startsWith('@') && !selector.includes(':') && matches(start, selector) && !matches(close, selector)),
+    );
+    expect(own.length, 'a plain rule that matches «Почати» and not «Закрити»').toBeGreaterThan(0);
+    const declarations = new Map<string, string>();
+    for (const rule of own) for (const d of rule.declarations) declarations.set(d.property, d.value);
+    for (const property of ['color', 'background-color']) {
+      const value = declarations.get(property);
+      expect(tokenOf(parsed, value), `«Почати» { ${property} } is a single var(--color-...) of a declared token (is ${value ?? 'missing'})`).toBeDefined();
+    }
+    expect(declarations.has('opacity'), '«Почати» does not declare opacity').toBe(false);
+    const fg = tokenOf(parsed, declarations.get('color'));
+    const bg = tokenOf(parsed, declarations.get('background-color'));
+    expect.assert(fg !== undefined && bg !== undefined, 'premise: both colours are tokens');
+    expect(contrastRatio(hexOf(parsed, fg), hexOf(parsed, bg)), `«Почати»: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+
+    // the hover, active and focus-visible rules of «Почати», when there are any, keep 4.5:1 over the plain pair
+    const stateRules = parsed.rules.filter((rule) =>
+      rule.selectors.some((selector) => selector.includes(':') && matches(start, stateBase(selector)) && !matches(close, stateBase(selector))),
+    );
+    for (const rule of stateRules) {
+      const merged = new Map([...declarations, ...rule.declarations.map((d): [string, string] => [d.property, d.value])]);
+      expect(merged.has('opacity'), `${rule.selectors.join(', ')} does not declare opacity`).toBe(false);
+      const stateFg = tokenOf(parsed, merged.get('color'));
+      const stateBg = tokenOf(parsed, merged.get('background-color'));
+      if (stateFg === undefined || stateBg === undefined) continue; // a state rule that sets only an outline has no colour pair to judge
+      expect(contrastRatio(hexOf(parsed, stateFg), hexOf(parsed, stateBg)), `${rule.selectors.join(', ')}: ${stateFg} on ${stateBg}`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
+
 describe('@trace FR-87 @trace NFR-9 the checked level has a cue besides colour', () => {
   it('The checked level has a cue besides colour', () => {
     const root = mountFixture(BLANK);
@@ -130,6 +187,7 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     const six = [summary, ...levelButtons(root), sheetCloseButton(root)];
     expect(six, 'the summary, four level buttons and the close button').toHaveLength(6);
     for (const button of six) expect(button.tagName, 'a button element, so button:focus-visible applies').toBe('BUTTON');
+    expect(q(root, '[data-action="setup-start"]').tagName, 'and «Почати» is a button element too (FR-101)').toBe('BUTTON');
   });
 
   it('The existing stylesheet scans still pass', () => {

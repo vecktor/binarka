@@ -38,11 +38,15 @@ import {
   mountPage,
   mountPlayedBoard,
   onDialogClose,
+  openSheet,
   pageState,
   pressHint,
   pressNew,
   pressReset,
-  pressSizeButton,
+  markLevel,
+  markSize,
+  pressClose,
+  pressStart,
   q,
   readBoard,
   rulesPanel,
@@ -62,7 +66,7 @@ const CONFIRM_TEXT = 'Почати заново? Ваші ходи на цьом
 /** The three actions of the spec's tables, as the player presses them (no confirmation given). */
 const ACTIONS: { name: string; press: (root: HTMLElement) => void }[] = [
   { name: '«Нова головоломка»', press: pressNew },
-  { name: '«Поле 8×8»', press: (root) => { pressSizeButton(root, 8); } },
+  { name: '«Поле 8×8»', press: (root) => { markSize(root, 8); pressStart(root); } },
   { name: '«Скинути»', press: pressReset },
 ];
 
@@ -137,7 +141,8 @@ describe('@trace FR-67 @trace FR-42 @trace FR-43 @trace FR-58 no player entries 
       const spy = generateSpy(bySize({ 6: PAIR_ROW, 4: BLANK_4 }));
       const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
 
-      pressSizeButton(root, 4);
+      markSize(root, 4);
+      pressStart(root);
 
       expect(showModalCalls(), 'size: showModal never called').toBe(0);
       expect(dialogIsOpen(root)).toBe(false);
@@ -310,7 +315,8 @@ describe('@trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 «С�
   it('a cancelled action is dropped: it is not performed later, and a later request performs only itself', () => {
     const { root, seeds, spy } = mountPlayedBoard();
     const seedCalls = seeds.calls();
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
     confirmNo(root);
 
     pressNew(root); // another action on the same board
@@ -323,7 +329,9 @@ describe('@trace FR-67 @trace FR-66 @trace FR-42 @trace FR-43 @trace FR-58 «С�
   });
 });
 
-describe('@trace FR-67 @trace FR-43 @trace FR-51 @trace FR-73 a cancelled or no-op action takes no seed', () => {
+// update-setup-sheet-start: the choices go through «Почати» and the shown-size press is a marking press (FR-67, FR-73, FR-100). The
+// level choice of the scenario text lives in the copy of this test in play-page-level-seed.test.ts; this copy never had it.
+describe('@trace FR-67 @trace FR-43 @trace FR-51 @trace FR-73 @trace FR-100 a cancelled or no-op action takes no seed', () => {
   it('A cancelled or no-op action takes no seed: new + «Скасувати», «Поле 8×8» + «Скасувати», «Скинути» + «Так, почати» and the shown size leave both counts as they were', () => {
     const { root, seeds, spy } = mountPlayedBoard();
     const seedCalls = seeds.calls();
@@ -331,18 +339,24 @@ describe('@trace FR-67 @trace FR-43 @trace FR-51 @trace FR-73 a cancelled or no-
 
     pressNew(root);
     confirmNo(root);
-    pressSizeButton(root, 8);
+    markSize(root, 8); // chooses «Поле 8×8» (the confirmation is asked) and presses «Скасувати»
+    pressStart(root);
     confirmNo(root);
     pressReset(root);
     confirmYes(root);
-    pressSizeButton(root, 6); // the size shown
+    // with the sheet open: marking presses (no «Почати») on the size shown, the level shown, «Поле 8×8» and «Задачка», then «Закрити»
+    markSize(root, 6);
+    markLevel(root, 1);
+    markSize(root, 8);
+    markLevel(root, 2);
+    pressClose(root);
 
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
-    expect(showModalCalls(), 'asked three times: the shown-size press asked nothing').toBe(3);
+    expect(showModalCalls(), 'asked three times: the marking presses and «Закрити» asked nothing').toBe(3);
     expect(closeCalls()).toBe(3);
     expect(boardSize(root)).toBe(6);
-    expect(checkedSize(root)).toBe(6);
+    expect(checkedSize(root), 'after «Закрити» aria-checked is back on the size shown').toBe(6);
   });
 });
 
@@ -440,5 +454,34 @@ describe('@trace FR-67 entries that were cleared again do not count', () => {
     expect(dialogIsOpen(root)).toBe(false);
     expect(seeds.calls()).toBe(2);
     expect(readBoard(root)).toEqual(TWO_PAIRS.givens);
+  });
+});
+
+// update-setup-sheet-start, scenario «Почати» asks, marking does not (FR-67, FR-101, FR-100).
+describe('@trace FR-67 @trace FR-101 @trace FR-100 «Почати» asks, marking does not', () => {
+  it('«Почати» asks, marking does not', () => {
+    const { root, seeds, spy } = mountPlayedBoard();
+    const seedCalls = seeds.calls();
+    const generatorCalls = spy.calls.length;
+    const cells = snapshot(root);
+    openSheet(root);
+
+    markSize(root, 8);
+    markLevel(root, 2);
+    expect(showModalCalls(), 'after the two marking presses showModal was never called').toBe(0);
+    expect(seeds.calls(), 'no seed was taken').toBe(seedCalls);
+    expect(spy.calls, 'no generator call was made').toHaveLength(generatorCalls);
+
+    pressStart(root);
+    expect(showModalCalls(), 'after «Почати» showModal was called once').toBe(1);
+    expect(dialogIsOpen(root), 'the dialog has the open attribute').toBe(true);
+    expect(boardSize(root), 'the board is still 6x6').toBe(6);
+    expect(snapshot(root), 'with its cell texts').toEqual(cells);
+
+    confirmYes(root);
+    expect(seeds.calls() - seedCalls, 'exactly one seed was taken').toBe(1);
+    expect(spy.calls.length - generatorCalls, 'the generator was called once').toBe(1);
+    expect(spy.calls[spy.calls.length - 1]?.size, 'with size 8').toBe(8);
+    expect(spy.levels[spy.levels.length - 1], 'and level 2').toBe(2);
   });
 });

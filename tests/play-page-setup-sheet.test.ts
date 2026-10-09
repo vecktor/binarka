@@ -9,6 +9,12 @@
 // @trace FR-98
 // @trace FR-59
 // @trace NFR-9
+// @trace FR-100
+// @trace FR-101
+//
+// update-setup-sheet-start (tasks 2.2, 2.3): a size or level press only MARKS (FR-100); «Почати» is the one way the sheet makes a
+// puzzle (FR-101). Source of each changed test: the delta scenario of openspec/changes/update-setup-sheet-start/specs/play-page/spec.md
+// named in the test title, plus docs/qa/update-setup-sheet-start/changed-tests.md section 5.1 and autonomy-log rows 114 and 118.
 //
 // jsdom has no popover: tests/helpers/play-page.ts installs showPopover/hidePopover/togglePopover stubs (A-44) that record
 // calls and keep an open state per element; hidePopover dispatches no event, a test dispatches `toggle` itself
@@ -30,6 +36,8 @@ import {
   bySize,
   callOrder,
   cellEl,
+  checkedLevel,
+  checkedSize,
   chooseLevel,
   clickCell,
   confirmNo,
@@ -48,6 +56,8 @@ import {
   installPageLifecycle,
   levelButton,
   levelButtons,
+  markLevel,
+  markSize,
   mountFixture,
   mountPage,
   mountPlayedBoard,
@@ -56,10 +66,9 @@ import {
   popoverIsOpen,
   popoverLog,
   pressHint,
-  pressLevelButton,
   pressNew,
   pressReset,
-  pressSizeButton,
+  pressStart,
   pressKey,
   q,
   rulesPanel,
@@ -67,6 +76,7 @@ import {
   selectSize,
   sheetCloseButton,
   sheetOf,
+  sheetStartButton,
   showModalCalls,
   sizeButton,
   sizeButtons,
@@ -159,7 +169,8 @@ describe('@trace FR-95 the summary button', () => {
     // (1) a cancelled confirmation
     const first = mountPlayedBoard(6);
     expect(summaryText(first.root)).toBe('6×6 · Розминка');
-    pressLevelButton(first.root, 2);
+    markLevel(first.root, 2);
+    pressStart(first.root);
     expect(dialogIsOpen(first.root), 'premise: the level change asks first').toBe(true);
     confirmNo(first.root);
     expect(summaryText(first.root), 'after a cancelled confirmation').toBe('6×6 · Розминка');
@@ -170,7 +181,8 @@ describe('@trace FR-95 the summary button', () => {
       return PAIR_ROW;
     });
     expect(summaryText(second.root)).toBe('6×6 · Розминка');
-    pressSizeButton(second.root, 8);
+    markSize(second.root, 8);
+    pressStart(second.root);
     confirmYes(second.root);
     expect(boardSize(second.root), 'premise: the board is still 6x6').toBe(6);
     expect(summaryText(second.root), 'after a failed generation').toBe('6×6 · Розминка');
@@ -179,8 +191,22 @@ describe('@trace FR-95 the summary button', () => {
     const third = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
     selectSize(third, 4);
     expect(summaryText(third)).toBe('4×4 · Розминка');
-    pressLevelButton(third, 2);
+    markLevel(third, 2); // a marking press on an unavailable level
     expect(summaryText(third), 'after the press of an unavailable level').toBe('4×4 · Розминка');
+  });
+
+  // update-setup-sheet-start, scenario «Marking leaves the summary alone» (FR-95, FR-100, FR-101).
+  it('Marking leaves the summary alone', () => {
+    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 8: BLANK_8 }) });
+    expect(summaryText(root), 'premise: the mount shows 6×6 · Розминка').toBe('6×6 · Розминка');
+    openSheet(root);
+
+    markSize(root, 8);
+    markLevel(root, 4);
+    expect(summaryText(root), 'after two marking presses').toBe('6×6 · Розминка');
+
+    pressStart(root);
+    expect(summaryText(root), 'after «Почати»').toBe('8×8 · Мозколамка');
   });
 
   it('The summary button is in the page order and the tab order', () => {
@@ -216,6 +242,7 @@ describe('@trace FR-96 the setup sheet', () => {
     expect(Array.from(sheet.children).map((c) => c.getAttribute('data-control') ?? c.getAttribute('data-action'))).toEqual([
       'size',
       'level',
+      'setup-start',
       'setup-close',
     ]);
   });
@@ -236,10 +263,10 @@ describe('@trace FR-96 the setup sheet', () => {
     expect(close.getAttribute('popovertarget')).toBe(sheetOf(root).getAttribute('id'));
     expect(close.getAttribute('popovertargetaction')).toBe('hide');
     expect(close.hasAttribute('tabindex')).toBe(false);
-    // The spec says "exactly eight buttons in all" (corrected from "nine" after the red run, 2026-10-09): three size buttons, four
-    // level buttons and the close button.
+    // update-setup-sheet-start: "exactly nine buttons in all" (was eight): three size buttons, four level buttons, «Почати» and the
+    // close button, «Почати» before the close button (FR-96, FR-101).
     const buttons = Array.from(sheetOf(root).querySelectorAll('button'));
-    expect(buttons.map((b) => b.getAttribute('role') ?? b.getAttribute('data-action')), 'three sizes, four levels and the close button').toEqual([
+    expect(buttons.map((b) => b.getAttribute('role') ?? b.getAttribute('data-action')), 'three sizes, four levels, «Почати» and the close button').toEqual([
       'radio',
       'radio',
       'radio',
@@ -247,6 +274,7 @@ describe('@trace FR-96 the setup sheet', () => {
       'radio',
       'radio',
       'radio',
+      'setup-start',
       'setup-close',
     ]);
   });
@@ -283,14 +311,14 @@ describe('@trace FR-96 the setup sheet', () => {
   });
 
   describe('Other actions leave the sheet alone', () => {
-    const ACTIONS = ['hint', 'win', 'reset', 'new puzzle', 'size', 'level'] as const;
+    const ACTIONS = ['hint', 'win', 'reset', 'new puzzle', 'mark', 'size', 'level'] as const;
 
-    it.each(ACTIONS)('after %s there is exactly one sheet, the same element with the same three children', (action) => {
+    it.each(ACTIONS)('after %s there is exactly one sheet, the same element with the same four children', (action) => {
       const fixtures = { 6: action === 'win' ? WIN_PUZZLE : PAIR_ROW, 4: BLANK_4, 8: BLANK_8 };
       const root = mountPage({ seedSource: seedQueue([1, 2, 3]).source, generate: generatorBySize(fixtures) });
       const sheet = sheetOf(root);
       const children = Array.from(sheet.children);
-      expect(children, 'premise: the sheet has three children').toHaveLength(3);
+      expect(children, 'premise: the sheet has four children').toHaveLength(4);
 
       if (action === 'hint') {
         pressHint(root);
@@ -302,6 +330,9 @@ describe('@trace FR-96 the setup sheet', () => {
         pressReset(root); // the board is untouched: at once
       } else if (action === 'new puzzle') {
         pressNew(root);
+      } else if (action === 'mark') {
+        markSize(root, 8); // marking presses: the sheet is untouched and nothing closes it
+        markLevel(root, 2);
       } else if (action === 'size') {
         selectSize(root, 8);
       } else {
@@ -310,9 +341,9 @@ describe('@trace FR-96 the setup sheet', () => {
 
       expect(root.querySelectorAll('[data-section="setup"]'), 'exactly one sheet').toHaveLength(1);
       expect(sheetOf(root), 'the same element as at mount').toBe(sheet);
-      expect(Array.from(sheet.children), 'the same three children').toEqual(children);
+      expect(Array.from(sheet.children), 'the same four children').toEqual(children);
       const expectedHides = action === 'size' || action === 'level' ? 1 : 0;
-      expect(popoverCalls('hidePopover', sheet), 'hidePopover was called only by the size and the level choice').toBe(expectedHides);
+      expect(popoverCalls('hidePopover', sheet), 'hidePopover was called only by the «Почати» of a choice, never by a marking press').toBe(expectedHides);
     });
   });
 });
@@ -322,14 +353,50 @@ describe('@trace FR-96 the setup sheet', () => {
 // ---------------------------------------------------------------------------------------------------------
 
 describe('@trace FR-97 choosing and closing the sheet', () => {
-  it('Choosing a size closes the sheet and returns the focus', () => {
+  // update-setup-sheet-start: «Marking a size keeps the sheet open and the focus on the button» (was «Choosing a size closes the sheet
+  // and returns the focus», FR-97(a), FR-59, FR-100).
+  it('Marking a size keeps the sheet open and the focus on the button', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 8: BLANK_8 }) });
     const sheet = openSheet(root);
     const eight = sizeButton(root, 8);
     eight.focus();
     expectActive(eight, 'premise: «Поле 8×8» has the focus');
 
-    eight.click();
+    eight.click(); // a marking press
+
+    expect(popoverCalls('hidePopover', sheet), 'hidePopover was never called').toBe(0);
+    expect(popoverIsOpen(sheet), 'the stub state of the sheet is open').toBe(true);
+    expectActive(eight, 'DOM focus is on the button «Поле 8×8»');
+    expect(summaryText(root), 'the summary still shows the board shown').toBe('6×6 · Розминка');
+    expect(boardSize(root), 'the board is still 6×6').toBe(6);
+  });
+
+  // «Marking a level keeps the sheet open and the focus on the button» (was «Choosing a level closes the sheet and returns the focus»).
+  it('Marking a level keeps the sheet open and the focus on the button', () => {
+    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK }) });
+    const sheet = openSheet(root);
+    const level = levelButton(root, 2);
+    level.focus();
+    expectActive(level, 'premise: «Задачка» has the focus');
+
+    level.click(); // a marking press
+
+    expect(popoverCalls('hidePopover', sheet), 'hidePopover was never called').toBe(0);
+    expect(popoverIsOpen(sheet), 'the stub state of the sheet is open').toBe(true);
+    expectActive(level, 'DOM focus is on the button «Задачка»');
+    expect(summaryText(root)).toBe('6×6 · Розминка');
+  });
+
+  // «Почати» closes the sheet and returns the focus (FR-97(c), FR-101).
+  it('«Почати» closes the sheet and returns the focus', () => {
+    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 8: BLANK_8 }) });
+    const sheet = openSheet(root);
+    sizeButton(root, 8).click(); // marked
+    const start = sheetStartButton(root);
+    start.focus();
+    expectActive(start, 'premise: «Почати» has the focus');
+
+    start.click();
 
     expect(popoverCalls('hidePopover', sheet), 'hidePopover was called once on the sheet').toBe(1);
     expect(popoverIsOpen(sheet), 'the stub state of the sheet is closed').toBe(false);
@@ -337,49 +404,39 @@ describe('@trace FR-97 choosing and closing the sheet', () => {
     expect(summaryText(root)).toBe('8×8 · Розминка');
   });
 
-  it('Choosing a level closes the sheet and returns the focus', () => {
-    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK }) });
-    const sheet = openSheet(root);
-    const level = levelButton(root, 2);
-    level.focus();
-    expectActive(level, 'premise: «Задачка» has the focus');
-
-    level.click();
-
-    expect(popoverCalls('hidePopover', sheet)).toBe(1);
-    expect(popoverIsOpen(sheet)).toBe(false);
-    expectActive(summaryButton(root), 'DOM focus is on the summary button');
-    expect(summaryText(root)).toBe('6×6 · Задачка');
-  });
-
-  it('The shown size and the shown level close the sheet and change nothing else', () => {
+  // «The shown size and the shown level only mark» (was «...close the sheet and change nothing else», FR-73, FR-97, FR-100).
+  it('The shown size and the shown level only mark', () => {
     const { root, seeds, spy } = mountPlayedBoard(6);
-    const sheet = sheetOf(root);
+    const sheet = openSheet(root);
     const before = fullState(root);
     const hinted = hintedCells(root);
     const violations = violationCells(root);
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
-    const hides = popoverCalls('hidePopover', sheet);
     expect(hinted, 'premise: a hint-filled cell').toHaveLength(1);
     expect(before.hint, 'premise: a hint sentence is shown').not.toBe('');
 
-    pressSizeButton(root, 6); // opens the sheet, presses the size shown
-    expect(popoverCalls('hidePopover', sheet) - hides, 'after the size press hidePopover was called once more').toBe(1);
-    expectActive(summaryButton(root), 'focus is on the summary button after the size press');
-    pressLevelButton(root, 1); // opens the sheet again, presses the level shown
-    expect(popoverCalls('hidePopover', sheet) - hides, 'after the level press hidePopover was called twice more').toBe(2);
-    expectActive(summaryButton(root), 'focus is on the summary button after the level press');
-
-    expect(fullState(root), 'cells, messages, aria-checked of both groups and the summary are unchanged').toEqual(before);
-    expect(hintedCells(root)).toEqual(hinted);
-    expect(violationCells(root)).toEqual(violations);
+    for (const [button, what] of [
+      [sizeButton(root, 6), 'the size shown'],
+      [levelButton(root, 1), 'the level shown'],
+    ] as const) {
+      button.focus();
+      button.click(); // a marking press
+      expect(popoverCalls('hidePopover', sheet), `after the press of ${what} hidePopover was never called`).toBe(0);
+      expect(popoverIsOpen(sheet), `after the press of ${what} the stub state of the sheet is open`).toBe(true);
+      expectActive(button, `focus is on the pressed button (${what})`);
+      // the marked choice equals the board shown here, so aria-checked of both groups and the summary stay as they were
+      expect(fullState(root), `cells, messages, aria-checked of both groups and the summary are unchanged (${what})`).toEqual(before);
+      expect(hintedCells(root)).toEqual(hinted);
+      expect(violationCells(root)).toEqual(violations);
+    }
     expect(showModalCalls(), 'showModal was never called').toBe(0);
     expect(seeds.calls(), 'no seed was taken').toBe(seedCalls);
     expect(spy.calls, 'no generator call was made').toHaveLength(generatorCalls);
   });
 
-  it('A press whose generation fails closes the sheet', () => {
+  // «A «Почати» whose generation fails closes the sheet» (was «A press whose generation fails closes the sheet», FR-97(c), FR-101, FR-88).
+  it('A «Почати» whose generation fails closes the sheet', () => {
     const root = mountPage({
       seedSource: seedQueue([1, 2]).source,
       generate: (size) => {
@@ -388,9 +445,10 @@ describe('@trace FR-97 choosing and closing the sheet', () => {
       },
     });
     const sheet = openSheet(root);
+    sizeButton(root, 8).click(); // marked
     const tracker = trackErrors();
     try {
-      sizeButton(root, 8).click();
+      sheetStartButton(root).click();
     } finally {
       tracker.stop();
     }
@@ -425,6 +483,8 @@ describe('@trace FR-97 choosing and closing the sheet', () => {
     const hinted = hintedCells(root);
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
+    markSize(root, 8); // the sheet is opened "with «Поле 8×8» marked" (FR-100, A-46); `before` was read with nothing marked
+    expect(checkedSize(root), 'premise: «Поле 8×8» is marked').toBe(8);
     const close = sheetCloseButton(root);
     close.focus(); // where the player's focus is when the close button is pressed
 
@@ -433,7 +493,9 @@ describe('@trace FR-97 choosing and closing the sheet', () => {
     expect(escape.defaultPrevented, 'the page does not handle Escape').toBe(false);
     dispatchToggle(sheet, 'closed');
 
-    expect(fullState(root), 'cells, messages, aria-checked of both groups and the summary are unchanged').toEqual(before);
+    expect(fullState(root), 'cells, messages, aria-checked of both groups (back on the board shown) and the summary are unchanged').toEqual(before);
+    expect(checkedSize(root), 'the marked size is discarded: aria-checked is back on the size shown').toBe(6);
+    expect(checkedLevel(root), 'and on the level shown').toBe(1);
     expect(hintedCells(root)).toEqual(hinted);
     expect(seeds.calls(), 'no seed was taken').toBe(seedCalls);
     expect(spy.calls, 'no generator call was made').toHaveLength(generatorCalls);
@@ -457,7 +519,8 @@ describe('@trace FR-97 choosing and closing the sheet', () => {
 
   it('A late toggle event does not steal the focus from the dialog', () => {
     const { root } = mountPlayedBoard(6);
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
     expect(dialogIsOpen(root), 'premise: the dialog is open').toBe(true);
     const no = q(root, '[data-confirm="no"]');
     expectActive(no, 'premise: «Скасувати» has the focus');
@@ -499,8 +562,8 @@ describe('@trace FR-97 choosing and closing the sheet', () => {
 
 describe('@trace FR-98 the sheet and the confirmation', () => {
   const RUNS = [
-    { name: '«Поле 8×8»', press: (root: HTMLElement): void => { pressSizeButton(root, 8); } },
-    { name: '«Задачка»', press: (root: HTMLElement): void => { pressLevelButton(root, 2); } },
+    { name: '«Поле 8×8»', press: (root: HTMLElement): void => { markSize(root, 8); pressStart(root); } },
+    { name: '«Задачка»', press: (root: HTMLElement): void => { markLevel(root, 2); pressStart(root); } },
   ];
 
   it.each(RUNS)('The sheet closes before the dialog opens ($name)', ({ press }) => {
@@ -518,7 +581,8 @@ describe('@trace FR-98 the sheet and the confirmation', () => {
     expectActive(q(root, '[data-confirm="no"]'), 'the focused element is «Скасувати»');
   });
 
-  it.each(RUNS)('«Скасувати» returns the focus to the summary button ($name)', ({ press }) => {
+  // «Скасувати» returns the focus to the summary button and drops the pending action (FR-98, FR-90, A-45).
+  it.each(RUNS)('«Скасувати» returns the focus to the summary button and drops the pending action ($name)', ({ press }) => {
     const { root, seeds, spy } = mountPlayedBoard(6);
     const sheet = sheetOf(root);
     const before = fullState(root);
@@ -538,6 +602,20 @@ describe('@trace FR-98 the sheet and the confirmation', () => {
     expect(hintedCells(root)).toEqual(hinted);
     expect(seeds.calls(), 'no seed was taken').toBe(seedCalls);
     expect(spy.calls, 'no generator call was made').toHaveLength(generatorCalls);
+
+    // the pending pair is dropped: opened again, aria-checked is on the board shown, and «Нова головоломка» later makes a puzzle of
+    // the board shown (6×6, level 1), never of the dropped pair (A-45)
+    openSheet(root);
+    expect(checkedSize(root), 'when the sheet is opened again the size shown is checked').toBe(6);
+    expect(checkedLevel(root), 'and the level shown').toBe(1);
+    const seedsBefore = seeds.calls();
+    const callsBefore = spy.calls.length;
+    pressNew(root);
+    confirmYes(root);
+    expect(seeds.calls() - seedsBefore, 'one seed for the new puzzle').toBe(1);
+    expect(spy.calls.length - callsBefore, 'one generator call for the new puzzle').toBe(1);
+    expect(spy.calls[spy.calls.length - 1]?.size, 'the new puzzle is of the board shown, not of the dropped size').toBe(6);
+    expect(spy.levels[spy.levels.length - 1], 'and of the level shown, not of the dropped level').toBe(1);
   });
 
   it.each(RUNS)('Escape returns the focus to the summary button ($name)', ({ press }) => {
@@ -565,7 +643,8 @@ describe('@trace FR-98 the sheet and the confirmation', () => {
       return PAIR_ROW;
     });
     const before = fullState(root);
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
     expect(dialogIsOpen(root), 'premise: the dialog is open').toBe(true);
 
     confirmYes(root);
@@ -576,9 +655,10 @@ describe('@trace FR-98 the sheet and the confirmation', () => {
     expectActive(summaryButton(root), 'focus is on the summary button');
   });
 
-  it('«Так, почати» performs the change and focuses the summary', () => {
+  it('«Так, почати» performs the marked pair and focuses the summary', () => {
     const { root } = mountPlayedBoard(6);
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
     expect(dialogIsOpen(root), 'premise: the dialog is open').toBe(true);
 
     confirmYes(root);
@@ -598,25 +678,47 @@ describe('@trace FR-98 the sheet and the confirmation', () => {
 // ---------------------------------------------------------------------------------------------------------
 
 describe('@trace FR-59 @trace NFR-9 the focus after a choice in the sheet', () => {
-  it('Choosing in the sheet returns the focus to the summary button', () => {
+  /** A button outside the page root holds the focus, a page is mounted on a 6×6 and a 4×4 fixture, the sheet is opened and «Поле 4×4» has the focus. */
+  function pageWithFocusOnFour(): { root: HTMLElement; four: HTMLElement; outside: HTMLElement } {
     const outside = document.createElement('button');
     outside.type = 'button';
     document.body.append(outside);
-    try {
-      outside.focus();
-      const spy = generateSpy(bySize({ 6: BLANK, 4: BLANK_4 }));
-      const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: spy.generate });
-      expectActive(outside, 'premise: the mount left the focus where it was');
-      openSheet(root);
-      const four = sizeButton(root, 4);
-      four.focus();
-      expectActive(four, 'premise: «Поле 4×4» has the focus');
+    outside.focus();
+    const spy = generateSpy(bySize({ 6: BLANK, 4: BLANK_4 }));
+    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: spy.generate });
+    expectActive(outside, 'premise: the mount left the focus where it was');
+    openSheet(root);
+    const four = sizeButton(root, 4);
+    four.focus();
+    expectActive(four, 'premise: «Поле 4×4» has the focus');
+    return { root, four, outside };
+  }
 
-      four.click(); // the board has no entries, so at once
+  // update-setup-sheet-start: «Почати» returns the focus to the summary button (was «Choosing in the sheet returns the focus to the
+  // summary button»; FR-59, FR-97, FR-101).
+  it('«Почати» returns the focus to the summary button', () => {
+    const { root, four, outside } = pageWithFocusOnFour();
+    try {
+      four.click(); // marked
+      pressStart(root); // the board has no entries, so at once
 
       expect(boardSize(root), 'a 4x4 board is shown').toBe(4);
-      expectActive(summaryButton(root), 'the focus is on the summary button, not on the pressed option');
+      expectActive(summaryButton(root), 'the focus is on the summary button, not on the pressed option or «Почати»');
       expect(document.activeElement).not.toBe(four);
+      expect(document.activeElement).not.toBe(sheetStartButton(root));
+    } finally {
+      outside.remove();
+    }
+  });
+
+  // «Marking leaves the focus on the pressed button» (FR-59, FR-97, FR-100).
+  it('Marking leaves the focus on the pressed button', () => {
+    const { root, four, outside } = pageWithFocusOnFour();
+    try {
+      four.click(); // a marking press
+
+      expectActive(four, 'DOM focus is still on the button «Поле 4×4»');
+      expect(boardSize(root), 'no board was shown').toBe(6);
     } finally {
       outside.remove();
     }

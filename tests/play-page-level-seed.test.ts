@@ -7,6 +7,11 @@
 // @trace FR-51
 // @trace FR-40
 // @trace FR-43
+// @trace FR-73
+// @trace FR-100
+// @trace FR-101
+//
+// update-setup-sheet-start: choices go through «Почати», a marking press takes no seed (FR-73, FR-100, FR-101).
 //
 // The sheet is opened through the stubbed showPopover() by the helpers (A-44). The generator spy records the level in the parallel
 // array `levels`. Exact texts are literals; this file never imports src/ui/strings.ts.
@@ -26,12 +31,16 @@ import {
   installPageLifecycle,
   mountPage,
   mountPlayedBoard,
+  openSheet,
+  pressClose,
   pressHint,
-  pressLevelButton,
   pressNew,
   pressReset,
-  pressSizeButton,
   selectSize,
+  markLevel,
+  markSize,
+  pressStart,
+  showModalCalls,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -62,14 +71,20 @@ describe('@trace FR-88 @trace FR-51 the seed of a level change', () => {
 
     pressNew(root);
     confirmNo(root);
-    pressSizeButton(root, 8);
+    markSize(root, 8); // chooses «Поле 8×8»: the confirmation is asked
+    pressStart(root);
     confirmNo(root);
-    pressLevelButton(root, 2);
+    markLevel(root, 2); // chooses «Задачка»: the confirmation is asked
+    pressStart(root);
     confirmNo(root);
     pressReset(root);
     confirmYes(root);
-    pressSizeButton(root, 6); // the size shown
-    pressLevelButton(root, 1); // the level shown
+    // with the sheet open: marking presses (no «Почати») on the size shown, the level shown, «Поле 8×8» and «Задачка», then «Закрити»
+    markSize(root, 6);
+    markLevel(root, 1);
+    markSize(root, 8);
+    markLevel(root, 2);
+    pressClose(root);
 
     expect(seeds.calls(), 'the seed-source call count equals the count read before').toBe(seedCalls);
     expect(spy.calls, 'the generator call count equals the count read before').toHaveLength(generatorCalls);
@@ -87,5 +102,26 @@ describe('@trace FR-40 @trace FR-43 @trace FR-88 the hint message and a level ch
     chooseLevel(root, 2); // asks first (the board has entries) and confirms
 
     expect(hintMessage(root)).toBe('');
+  });
+});
+
+// update-setup-sheet-start, scenario «Marking a size or a level keeps it» of «Hint message stays until the next hint or a new puzzle»
+// (FR-40, FR-100): the hint sentence survives two marking presses and «Закрити».
+describe('@trace FR-40 @trace FR-100 the hint message and marking', () => {
+  it('Marking a size or a level keeps it', () => {
+    const spy = generateSpy(bySize({ 6: TWO_PAIRS, 4: BLANK_4 }));
+    const root = mountPage({ seedSource: () => 1, generate: spy.generate });
+    pressHint(root);
+    const sentence = hintMessage(root);
+    expect(sentence, 'premise: a hint sentence is shown').not.toBe('');
+    openSheet(root);
+
+    markSize(root, 4);
+    markLevel(root, 2);
+    expect(showModalCalls(), 'a marking press opens no dialog (FR-100)').toBe(0);
+    pressClose(root);
+
+    expect(hintMessage(root)).toBe(sentence);
+    expect(showModalCalls(), 'and «Закрити» opens none').toBe(0);
   });
 });

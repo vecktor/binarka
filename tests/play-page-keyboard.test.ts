@@ -42,6 +42,7 @@ import {
   summaryButton,
   violationCells,
   winMessage,
+  pressStart,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -78,9 +79,11 @@ describe('every cell is its own Tab stop and the page handles no key on the boar
     });
   });
 
-  // Slice DL2 DELIBERATE CHANGE (FR-59 exception, FR-97): a press on a size button inside the sheet moves the focus to the summary
-  // button (the pressed option is in a sheet that closes); «Нова головоломка» and «Скинути» keep the focus on the pressed button.
-  it('@trace FR-59 T2 Showing a board does not move the focus: a new puzzle and a reset leave it on the pressed button, a size change in the sheet moves it to the summary button', () => {
+  // Slice DL2 DELIBERATE CHANGE (FR-59 exception, FR-97), re-made by update-setup-sheet-start (FR-59, FR-97, FR-100, FR-101): a press
+  // on a size button inside the sheet only MARKS and leaves the focus on the pressed button; «Почати» moves it to the summary button;
+  // «Нова головоломка» and «Скинути» keep the focus on the pressed button. (docs/qa/update-setup-sheet-start/changed-tests.md 5.12:
+  // not helper-only; the sheet part is split into the marking press and the press of «Почати».)
+  it('@trace FR-59 @trace FR-100 @trace FR-101 T2 Showing a board does not move the focus: a new puzzle and a reset leave it on the pressed button, a marking press in the sheet leaves it on the option, «Почати» moves it to the summary button', () => {
     const spy = generateSpy(bySize({ 6: BLANK, 4: BLANK_4 }));
     const root = mountPage({ seedSource: seedQueue([1, 2, 3]).source, generate: spy.generate });
     expect(spy.calls, 'premise: the mount asked for one board').toHaveLength(1);
@@ -96,10 +99,13 @@ describe('every cell is its own Tab stop and the page handles no key on the boar
     const four = sizeButton(root, 4);
     four.focus();
     expectActive(four, 'premise: «Поле 4×4» has the focus');
-    four.click();
-    expect(spy.calls, 'the size change was performed at once').toHaveLength(3);
+    four.click(); // a marking press
+    expect(spy.calls, 'a marking press calls no generator').toHaveLength(2);
+    expectActive(four, 'after a marking press the focus is still on the pressed option');
+    pressStart(root);
+    expect(spy.calls, 'the size change was performed at once («Почати» on a board without entries)').toHaveLength(3);
     expect(q(root, '[data-board]').getAttribute('data-size'), 'the board is now 4x4').toBe('4');
-    expectActive(summaryButton(root), 'after a size change in the sheet the focus is on the summary button, not on the pressed option');
+    expectActive(summaryButton(root), 'after «Почати» the focus is on the summary button, not on the option or «Почати»');
 
     const reset = q(root, '[data-action="reset"]');
     reset.focus();

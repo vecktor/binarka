@@ -40,9 +40,7 @@ import {
   openSheet,
   pressHint,
   pressNew,
-  pressLevelButton,
   pressReset,
-  pressSizeButton,
   q,
   rulesPanel,
   seedQueue,
@@ -53,6 +51,10 @@ import {
   targetCell,
   violationCells,
   winMessage,
+  markSize,
+  markLevel,
+  pressStart,
+  pressClose,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -73,7 +75,8 @@ function pageWithHint(puzzle: Puzzle = PAIR_ROW): { root: HTMLElement; x: [numbe
 
 /** Press the level «Задачка» on the page and cancel the confirmation: nothing may change. */
 function chooseLevelAndCancel(root: HTMLElement): void {
-  pressLevelButton(root, 2);
+  markLevel(root, 2);
+  pressStart(root);
   expect(dialogIsOpen(root), 'premise: the level change asks first').toBe(true);
   confirmNo(root);
 }
@@ -189,7 +192,8 @@ describe('@trace FR-66 later board changes remove the marker', () => {
     it(`A size change to ${size} removes the marker (the injected generator returns a ${size}x${size} fixture)`, () => {
       const { root, x } = pageWithHintAndSizes();
 
-      pressSizeButton(root, size);
+      markSize(root, size);
+      pressStart(root);
       expect(dialogIsOpen(root), 'a hint-filled cell is an entry: asked first').toBe(true);
       expect(hintedCells(root), 'the marker stays until the change is performed').toEqual([x]);
       confirmYes(root);
@@ -208,7 +212,8 @@ describe('@trace FR-66 later board changes remove the marker', () => {
   it('A level change to «Задачка» removes the marker, once it is performed (asked first, the marker stays until «Так, почати»)', () => {
     const { root, x } = pageWithHintAndSizes();
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
     expect(dialogIsOpen(root), 'a hint-filled cell is an entry: asked first').toBe(true);
     expect(hintedCells(root), 'the marker stays until the change is performed').toEqual([x]);
     confirmYes(root);
@@ -220,6 +225,22 @@ describe('@trace FR-66 later board changes remove the marker', () => {
     const next = targetCell(expectedHint(root));
     pressHint(root);
     expect(hintedCells(root)).toEqual([next]);
+  });
+
+  // update-setup-sheet-start (FR-66, FR-101): the new row of the table «Later board changes remove the marker»: «Почати» with the
+  // marked choice equal to the board shown is not a no-op, so it makes a puzzle (asked first) and the marker goes.
+  it('«Почати» with the marked choice equal to the board shown removes the marker (one run, asked first)', () => {
+    const { root, x } = pageWithHint();
+    openSheet(root);
+
+    pressStart(root);
+    expect(dialogIsOpen(root), 'a hint-filled cell is an entry: asked first').toBe(true);
+    expect(hintedCells(root), 'the marker stays until the action is performed').toEqual([x]);
+    confirmYes(root);
+
+    expect(boardSize(root)).toBe(6);
+    expect(hintedCells(root)).toEqual([]);
+    expect(allCells(root).filter((c) => c.classList.contains(HINTED))).toEqual([]);
   });
 
   it('«Скинути» removes the marker and empties the hint-filled cell', () => {
@@ -305,6 +326,25 @@ describe('@trace FR-66 actions that change no cell keep the marker', () => {
     openSheet(root);
     expect(hintedCells(root)).toEqual([x]);
     sheetCloseButton(root).click();
+
+    expect(hintedCells(root)).toEqual([x]);
+    expect(cellText(root, x[0], x[1])).toBe(digit);
+    expect(snapshot(root), 'nothing else changed').toEqual(before);
+  });
+
+  // update-setup-sheet-start (FR-66, FR-100): the new row of «Actions that change no cell keep the marker»
+  it('Marking «Поле 8×8» and «Задачка» and then clicking [data-action="setup-close"] keeps the marker', () => {
+    const { root, x } = pageWithHint();
+    const digit = cellText(root, x[0], x[1]);
+    const before = snapshot(root);
+
+    openSheet(root);
+    markSize(root, 8);
+    markLevel(root, 2);
+    expect(dialogIsOpen(root), 'a marking press asks nothing (FR-100)').toBe(false);
+    expect(hintedCells(root), 'after the marking presses').toEqual([x]);
+    pressClose(root);
+    expect(dialogIsOpen(root), 'and «Закрити» asks nothing either').toBe(false);
 
     expect(hintedCells(root)).toEqual([x]);
     expect(cellText(root, x[0], x[1])).toBe(digit);

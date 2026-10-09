@@ -41,6 +41,7 @@ import {
   sheetOf,
   summaryButton,
   textWithoutHidden,
+  START_LABEL,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -162,7 +163,8 @@ function collectNewTexts(root: HTMLElement): string[] {
   return out;
 }
 
-describe('@trace NFR-5 @trace FR-94 the new texts are Ukrainian', () => {
+// update-setup-sheet-start (NFR-5, FR-94, FR-101): «Почати» joins the required list of «The new texts are Ukrainian».
+describe('@trace NFR-5 @trace FR-94 @trace FR-101 the new texts are Ukrainian', () => {
   it('The new texts are Ukrainian', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
     const at6 = collectNewTexts(root);
@@ -173,6 +175,7 @@ describe('@trace NFR-5 @trace FR-94 the new texts are Ukrainian', () => {
       SUMMARY_PREFIX,
       '6×6 · Розминка',
       SHEET_LABEL,
+      START_LABEL,
       CLOSE_LABEL,
       LEVEL_GROUP_LABEL,
       ...LEVEL_NAMES,

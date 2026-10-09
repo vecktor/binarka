@@ -946,6 +946,7 @@
         "tests/play-page-level-hint.test.ts",
         "tests/play-page-level-seed.test.ts",
         "tests/play-page-level-seed.test.ts",
+        "tests/play-page-level-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
       "recordings": []
@@ -1002,12 +1003,11 @@
         "tests/play-page-level-interplay.test.ts",
         "tests/play-page-level-seed.test.ts",
         "tests/play-page-level-seed.test.ts",
+        "tests/play-page-marked-choice.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts",
-        "tests/play-page-size-control.test.ts",
-        "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
         "tests/play-page-size-control.test.ts",
@@ -1205,6 +1205,7 @@
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
@@ -1254,7 +1255,8 @@
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
-        "tests/play-page-size-control.test.ts"
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts"
       ],
       "recordings": []
     },
@@ -1279,10 +1281,14 @@
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
         "tests/play-page-level-interplay.test.ts",
         "tests/play-page-level-interplay.test.ts",
         "tests/play-page-level-interplay.test.ts",
-        "tests/play-page-size-control.test.ts"
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts"
       ],
       "recordings": []
     },
@@ -1378,10 +1384,14 @@
       "tests": [
         "tests/play-page-confirm.test.ts",
         "tests/play-page-level-4x4.test.ts",
-        "tests/play-page-level-4x4.test.ts",
         "tests/play-page-level-interplay.test.ts",
-        "tests/play-page-size-control.test.ts",
-        "tests/play-page-size-control.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
         "tests/play-page-size-control.test.ts"
       ],
       "recordings": []
@@ -1419,8 +1429,12 @@
         "tests/play-page-level-seed.test.ts",
         "tests/play-page-level-seed.test.ts",
         "tests/play-page-level-seed.test.ts",
+        "tests/play-page-marked-choice.test.ts",
         "tests/play-page-retry.test.ts",
-        "tests/play-page-retry.test.ts"
+        "tests/play-page-retry.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts"
       ],
       "recordings": []
     },
@@ -1466,6 +1480,9 @@
         "tests/play-page-level-4x4.test.ts",
         "tests/play-page-level-4x4.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
         "tests/play-page-wcag.test.ts"
       ],
       "recordings": []
@@ -1482,7 +1499,8 @@
         "tests/play-page-level-interplay.test.ts",
         "tests/play-page-level-interplay.test.ts",
         "tests/play-page-level-interplay.test.ts",
-        "tests/play-page-level-interplay.test.ts"
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-size-control.test.ts"
       ],
       "recordings": []
     },
@@ -1510,6 +1528,8 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
         "tests/play-page-techniques.test.ts",
         "tests/play-page-techniques.test.ts",
         "tests/ui-strings.test.ts"
@@ -1561,7 +1581,8 @@
         "tests/play-page-semantics.test.ts",
         "tests/play-page-semantics.test.ts",
         "tests/play-page-setup-sheet.test.ts",
-        "tests/play-page-setup-sheet.test.ts"
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-start-button.test.ts"
       ],
       "recordings": []
     },
@@ -1576,11 +1597,13 @@
       "planned": true,
       "tests": [
         "tests/play-page-level-4x4.test.ts",
-        "tests/play-page-level-4x4.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-marked-choice.test.ts",
         "tests/play-page-setup-sheet.test.ts",
-        "tests/play-page-setup-sheet.test.ts"
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts"
       ],
       "recordings": []
     },
@@ -1595,7 +1618,10 @@
       "planned": true,
       "tests": [
         "tests/play-page-setup-sheet.test.ts",
-        "tests/play-page-setup-sheet.test.ts"
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts"
       ],
       "recordings": []
     },
@@ -1622,7 +1648,28 @@
         "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-level-4x4.test.ts",
+        "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-wcag.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1633,7 +1680,31 @@
         "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-action-buttons-stylesheet.test.ts",
+        "tests/play-page-action-buttons-stylesheet.test.ts",
+        "tests/play-page-confirm.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-level-4x4.test.ts",
+        "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-interplay.test.ts",
+        "tests/play-page-level-seed.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-setup-sheet.test.ts",
+        "tests/play-page-size-control.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-start-button.test.ts",
+        "tests/play-page-techniques.test.ts",
+        "tests/ui-strings.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1811,14 +1882,6 @@
     {
       "check": "test-trace",
       "msg": "FR-112 has no test annotated \"@trace FR-112\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-100 has no test annotated \"@trace FR-100\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-101 has no test annotated \"@trace FR-101\""
     },
     {
       "check": "test-trace",

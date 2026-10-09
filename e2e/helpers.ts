@@ -32,6 +32,7 @@ export const sel = {
   sheet: '[data-section="setup"]',
   sizeOption: '[data-size-option]',
   levelOption: '[data-control="level"] [role="radio"]',
+  setupStart: '[data-action="setup-start"]',
   setupClose: '[data-action="setup-close"]',
   dialog: 'dialog[data-dialog="confirm"]',
   confirmYes: '[data-confirm="yes"]',
@@ -76,10 +77,37 @@ export async function openConfirm(page: Page): Promise<void> {
   await expect(page.locator(`${sel.dialog}[open]`)).toBeVisible();
 }
 
-/** Choose a board size in the setup sheet (confirming if the board has entries). */
+/** Open the setup sheet unless it is open: a click on the summary button of an open `popover="auto"` sheet closes it again. */
+export async function openSheetIfClosed(page: Page): Promise<void> {
+  if ((await page.locator(`${sel.sheet}:popover-open`).count()) === 0) await openSheet(page);
+}
+
+/**
+ * A MARKING press on a size option (update-setup-sheet-start, FR-100): the sheet opens if it is closed, the option is clicked, and the
+ * sheet MUST still be open with the option checked. Without «Почати» nothing else may happen; the open-sheet line is what makes a page
+ * that still starts a puzzle at the press (and closes the sheet) fail here, instead of passing a state check on a closed sheet.
+ */
+export async function markSize(page: Page, n: number): Promise<void> {
+  await openSheetIfClosed(page);
+  const option = page.locator(`${sel.sizeOption}[data-size-option="${n}"]`);
+  await option.click();
+  await expect(page.locator(`${sel.sheet}:popover-open`), 'a marking press keeps the sheet open').toBeVisible();
+  await expect(option).toHaveAttribute('aria-checked', 'true');
+}
+
+/** A MARKING press on a level option (level 1 to 4), with the same rule: the sheet stays open and the option is checked. */
+export async function markLevel(page: Page, level: number): Promise<void> {
+  await openSheetIfClosed(page);
+  const option = page.locator(sel.levelOption).nth(level - 1);
+  await option.click();
+  await expect(page.locator(`${sel.sheet}:popover-open`), 'a marking press keeps the sheet open').toBeVisible();
+  await expect(option).toHaveAttribute('aria-checked', 'true');
+}
+
+/** Choose a board size in the setup sheet: mark it, press «Почати» (confirming if the board has entries), wait for the board. */
 export async function chooseSize(page: Page, n: number): Promise<void> {
-  await openSheet(page);
-  await page.locator(`${sel.sizeOption}[data-size-option="${n}"]`).click();
+  await markSize(page, n);
+  await page.locator(sel.setupStart).click();
   const dialog = page.locator(`${sel.dialog}[open]`);
   if ((await dialog.count()) > 0) await page.locator(sel.confirmYes).click();
   await expect(page.locator(`${sel.board}[data-size="${n}"]`)).toBeVisible();

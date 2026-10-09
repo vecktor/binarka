@@ -14,11 +14,13 @@ import {
   NEW_LABEL,
   SHEET_LABEL,
   SIZE_GROUP_LABEL,
+  START_LABEL,
   SUMMARY_PREFIX,
   WIN_PUZZLE,
   accessibleName,
   allCells,
   clickCell,
+  dispatchToggle,
   expectedCellLabel,
   generatorBySize,
   installPageLifecycle,
@@ -27,9 +29,12 @@ import {
   levelStates,
   mountFixture,
   mountPage,
+  openSheet,
   pressHint,
   seedQueue,
   selectSize,
+  sizeButton,
+  sizeButtons,
   summaryLabel,
 } from './helpers/play-page';
 
@@ -64,13 +69,14 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
   it('@trace NFR-9 @trace NFR-5 Every button, the radiogroups, the setup sheet and the board have a non-empty Ukrainian accessible name', () => {
     const root = mountFixture(WIN_PUZZLE);
     const names = accessibleNames(root);
-    // 52 buttons (36 cells, the three size radios, the four level radios, «Правила», the summary button, «Закрити», «Підказка»,
-    // «Скинути», «Нова головоломка», «Зрозуміло», «Так, почати» and «Скасувати») and four groups (two radiogroups, the sheet and
-    // the board). Slice DL2 DELIBERATE CHANGE (NFR-9): was 46 buttons and two groups.
-    expect(root.querySelectorAll('button')).toHaveLength(52);
+    // 53 buttons (36 cells, the three size radios, the four level radios, «Правила», the summary button, «Почати», «Закрити»,
+    // «Підказка», «Скинути», «Нова головоломка», «Зрозуміло», «Так, почати» and «Скасувати») and four groups (two radiogroups, the
+    // sheet and the board). Slice DL2 DELIBERATE CHANGE (NFR-9): was 46 buttons and two groups; update-setup-sheet-start (NFR-9,
+    // FR-101, NFR-5): 53 buttons, «Почати» joins the names (was 52).
+    expect(root.querySelectorAll('button')).toHaveLength(53);
     expect(root.querySelectorAll('[role="radiogroup"]')).toHaveLength(2);
     expect(allCells(root)).toHaveLength(36);
-    expect(names).toHaveLength(52 + 4);
+    expect(names).toHaveLength(53 + 4);
     for (const { what, name } of names) {
       expect(name, `${what} has a name`).not.toBe('');
       expect(/\p{Script=Cyrillic}/u.test(name), `${what} "${name}" has Cyrillic letters`).toBe(true);
@@ -84,6 +90,7 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
     expect(all).toContain('Поле 6×6');
     expect(all).toContain(LEVEL_GROUP_LABEL);
     expect(all).toContain(SHEET_LABEL);
+    expect(all).toContain(START_LABEL);
     expect(all).toContain(CLOSE_LABEL);
     // the summary button: the hidden prefix and the visible text, without the aria-hidden cue
     expect(all).toContain(`${SUMMARY_PREFIX}${summaryLabel(6, 1)}`);
@@ -119,5 +126,25 @@ describe('the level radiogroup exposes its state (NFR-9)', () => {
 
     expect(levelStates(root).filter((state) => state === 'true'), 'at 4x4 exactly one button is checked').toHaveLength(1);
     expect(levelDisabled(root), 'at 4x4 levels 2 to 4 have aria-disabled="true"').toEqual([null, 'true', 'true', 'true']);
+  });
+});
+
+// update-setup-sheet-start, scenario «The radiogroups expose the marked state while the sheet is open» (NFR-9, FR-100, A-47).
+describe('the radiogroups expose the marked state while the sheet is open (NFR-9)', () => {
+  it('@trace NFR-9 @trace FR-100 The radiogroups expose the marked state while the sheet is open', () => {
+    const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
+    const sheet = openSheet(root);
+
+    sizeButton(root, 4).click(); // a marking press
+
+    const sizes = sizeButtons(root).map((b) => b.getAttribute('aria-checked'));
+    expect(sizes, 'aria-checked is on «Поле 4×4» only').toEqual(['true', 'false', 'false']);
+    expect(levelStates(root), 'and on «Розминка» only').toEqual(['true', 'false', 'false', 'false']);
+    expect(levelDisabled(root), '«Задачка», «Головоломка» and «Мозколамка» have aria-disabled="true"').toEqual([null, 'true', 'true', 'true']);
+
+    dispatchToggle(sheet, 'closed');
+
+    expect(sizeButtons(root).map((b) => b.getAttribute('aria-checked')), 'after the closing toggle «Поле 6×6» only').toEqual(['false', 'true', 'false']);
+    expect(levelDisabled(root), 'and no level button has aria-disabled').toEqual([null, null, null, null]);
   });
 });

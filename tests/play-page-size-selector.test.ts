@@ -45,11 +45,14 @@ import {
   installPageLifecycle,
   mountPage,
   mountPlayedBoard,
+  openSheet,
   pageState,
   pressHint,
   pressNew,
   popoverCalls,
-  pressSizeButton,
+  popoverIsOpen,
+  markSize,
+  pressStart,
   q,
   rawGenerateSpy,
   readBoard,
@@ -62,6 +65,7 @@ import {
   sizeControl,
   snapshot,
   summaryButton,
+  summaryText,
   solutionGrid,
   trackErrors,
   violationCells,
@@ -112,7 +116,9 @@ describe('@trace FR-43 the size control is offered and 6 is selected at mount', 
     expectPageStructure(root);
   });
 
-  it('Size buttons are native buttons in the tab order, and a click on each (what Enter and Space do) selects its size', () => {
+  // update-setup-sheet-start (FR-43, FR-73, FR-100): a click on each marks its size; the board does not change. The old assertion
+  // `boardSize === n` contradicts the delta («Size buttons are native buttons in the tab order»: "marks its size").
+  it('Size buttons are native buttons in the tab order, and a click on each (what Enter and Space do) marks its size', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2, 3, 4]).source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4, 8: BLANK_8 }) });
     for (const button of sizeButtons(root)) {
       expect(button.tagName).toBe('BUTTON');
@@ -120,11 +126,36 @@ describe('@trace FR-43 the size control is offered and 6 is selected at mount', 
       const tabindex = button.getAttribute('tabindex');
       expect(tabindex === null || Number(tabindex) >= 0, `no negative tabindex (${tabindex})`).toBe(true);
     }
+    openSheet(root);
     for (const n of [4, 8, 6]) {
       sizeButton(root, n).click();
       expect(checkedSize(root), `after a click on «Поле ${n}×${n}»`).toBe(n);
-      expect(boardSize(root)).toBe(n);
+      expect(boardSize(root), 'a marking press shows no board').toBe(6);
     }
+  });
+
+  // update-setup-sheet-start, scenario «A size press only marks» (FR-43, FR-73, FR-100).
+  it('A size press only marks', () => {
+    const { root, seeds, spy } = mountPlayedBoard();
+    const sheet = openSheet(root);
+    const cells = snapshot(root);
+    const summary = summaryText(root);
+    const seedCalls = seeds.calls();
+    const generatorCalls = spy.calls.length;
+    const modals = showModalCalls();
+    const hides = popoverCalls('hidePopover', sheet);
+
+    sizeButton(root, 8).click(); // a marking press, no «Почати»
+
+    expect(checkedSize(root), 'aria-checked is on «Поле 8×8» only').toBe(8);
+    expect(boardSize(root), 'the board keeps data-size 6').toBe(6);
+    expect(snapshot(root), 'and its cell texts').toEqual(cells);
+    expect(summaryText(root), 'the summary still reads 6×6 · Розминка').toBe(summary);
+    expect(popoverIsOpen(sheet), 'the sheet stays open').toBe(true);
+    expect(showModalCalls(), 'showModal was never called').toBe(modals);
+    expect(popoverCalls('hidePopover', sheet), 'hidePopover was never called').toBe(hides);
+    expect(seeds.calls(), 'the seed-source count equals the count read before').toBe(seedCalls);
+    expect(spy.calls, 'the generator count equals the count read before').toHaveLength(generatorCalls);
   });
 });
 
@@ -138,7 +169,8 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
     expect(generate(4, 1).givens).not.toEqual(expected.givens);
     expect(seeds.calls()).toBe(1);
 
-    pressSizeButton(root, 4);
+    markSize(root, 4);
+    pressStart(root);
 
     expect(showModalCalls(), 'no entries: no dialog').toBe(0);
     expect(seeds.calls()).toBe(2);
@@ -168,7 +200,8 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
 
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
 
     expect(dialogIsOpen(root), 'the dialog is open').toBe(true);
     expect(pageState(root), 'nothing changed before the confirmation').toEqual(before);
@@ -206,7 +239,8 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
     expect(winMessage(root)).toBe(WIN_MESSAGE);
     expect(violationCells(root)).toEqual([]);
 
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
     expect(dialogIsOpen(root), 'a solved board has entries (A-29)').toBe(true);
     expect(winMessage(root), 'unchanged until the confirmation').toBe(WIN_MESSAGE);
     expect(boardSize(root)).toBe(6);
@@ -224,12 +258,14 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
       generate: generateSpy(bySize({ 6: PAIR_ROW, 8: BLANK_8 })).generate,
     });
 
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
     expect(boardSize(root)).toBe(8);
     expect(allCells(root)).toHaveLength(64);
     expect(checkedSize(root)).toBe(8);
 
-    pressSizeButton(root, 6);
+    markSize(root, 6);
+    pressStart(root);
 
     expect(showModalCalls(), 'no entries on either board: no dialog').toBe(0);
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe('6');
@@ -242,7 +278,8 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
   it('aria-checked stays on the shown size until the confirmation, and after «Скасувати»', () => {
     const { root } = mountPlayedBoard();
 
-    pressSizeButton(root, 4);
+    markSize(root, 4);
+    pressStart(root);
     expect(dialogIsOpen(root)).toBe(true);
     expect(sizeButtons(root).map((b) => b.getAttribute('aria-checked')), 'while the dialog is open').toEqual(['false', 'true', 'false']);
     expect(boardSize(root)).toBe(6);
@@ -258,9 +295,11 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
     const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
     expect(spy.calls).toEqual([{ size: 6, seed: 1 }]);
 
-    pressSizeButton(root, 4);
+    markSize(root, 4);
+    pressStart(root);
     expect(boardSize(root)).toBe(4);
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
     expect(boardSize(root)).toBe(8);
 
     expect(spy.calls).toEqual([{ size: 6, seed: 1 }, { size: 4, seed: 2 }, { size: 8, seed: 3 }]);
@@ -273,7 +312,7 @@ describe('@trace FR-43 choosing a size starts a new puzzle of that size', () => 
     expect(localStorage.length).toBe(0);
     expect(sessionStorage.length).toBe(0);
     const first = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generateSpy(bySize({ 6: BLANK, 8: BLANK_8 })).generate });
-    pressSizeButton(first, 8);
+    selectSize(first, 8); // a choice (marks, then «Почати»): the board has no entries, so at once
     expect(boardSize(first)).toBe(8);
     expect(checkedSize(first)).toBe(8);
 
@@ -328,7 +367,8 @@ describe('@trace FR-43 a generator failure keeps the previous board', () => {
     const tracker = trackErrors();
 
     try {
-      pressSizeButton(root, 8);
+      markSize(root, 8);
+      pressStart(root);
       confirmYes(root);
     } finally {
       tracker.stop();
@@ -365,7 +405,8 @@ describe('@trace FR-43 a generator failure keeps the previous board', () => {
       const before = pageState(root);
       const seedCalls = seeds.calls();
 
-      pressSizeButton(root, 8);
+      markSize(root, 8);
+      pressStart(root);
       confirmYes(root);
 
       expect(spy.calls[spy.calls.length - 1]).toEqual({ size: 8, seed: seedCalls + 1 });
@@ -474,7 +515,8 @@ describe('@trace FR-43 violations in the givens of a new board show at once', ()
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generateSpy(bySize({ 6: BLANK, 8: DIRTY_8_ROW })).generate });
     expect(violationCells(root)).toEqual([]); // the 6x6 board is clean (premise)
 
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
 
     expect(boardSize(root)).toBe(8);
     expect(cellText(root, 8, 1) + cellText(root, 8, 2) + cellText(root, 8, 3)).toBe('000');
@@ -485,7 +527,8 @@ describe('@trace FR-43 violations in the givens of a new board show at once', ()
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generateSpy(bySize({ 6: BLANK, 8: DIRTY_8_COL })).generate });
     expect(violationCells(root)).toEqual([]);
 
-    pressSizeButton(root, 8);
+    markSize(root, 8);
+    pressStart(root);
 
     expect(boardSize(root)).toBe(8);
     expect([1, 2, 4, 6, 7].map((r) => cellText(root, r, 8)).join('')).toBe('11111');

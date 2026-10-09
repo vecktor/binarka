@@ -35,6 +35,7 @@ import {
   PAIR_ROW,
   PAIR_ROW_PLUS,
   SOLUTION_8_TEXT,
+  START_LABEL,
   TWO_PAIRS,
   WIN_4,
   WIN_8,
@@ -43,6 +44,15 @@ import {
   allSolutions,
   bySize,
   checkerCells,
+  chooseLevel,
+  dialogIsOpen,
+  markLevel,
+  markSize,
+  openSheetIfClosed,
+  pressStart,
+  selectSize,
+  sheetOf,
+  sheetStartButton,
   collectPageText,
   expectedCellLabel,
   fixedGenerate,
@@ -838,6 +848,153 @@ describe('the popover stubs of installPageLifecycle (jsdom has no showPopover, h
   it('the log and the open states start fresh in every test', () => {
     expect(popoverLog).toEqual([]);
     expect(callOrder).toEqual([]);
+  });
+
+  // update-setup-sheet-start (decision 3 of the orchestrator, A-44, A-46): a closing toggle clears the stub's open state, an
+  // opening toggle sets it, so a mark helper that opens "only while closed" reads the state a browser would have.
+  it('dispatchToggle(el, "closed") clears the stub open state and dispatchToggle(el, "open") sets it', () => {
+    const el = document.createElement('div');
+    el.showPopover();
+    expect(popoverIsOpen(el)).toBe(true);
+    dispatchToggle(el, 'closed');
+    expect(popoverIsOpen(el), 'a closing toggle clears the state').toBe(false);
+    dispatchToggle(el, 'open');
+    expect(popoverIsOpen(el), 'an opening toggle sets the state').toBe(true);
+    expect(popoverLog.map((call) => call.method), 'the toggle dispatch is not a popover method call').toEqual(['showPopover']);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// update-setup-sheet-start (tasks 2.1): self-checks of markSize, markLevel, pressStart, openSheetIfClosed and the new `asks` rule of
+// the choose helpers. They run on a hand-made fake of the page (no page code), so they pass at the red stage like the rest of
+// this file (no @trace on purpose). The fake models only what the helpers read: a sheet with the size control, the level
+// control, «Почати» and «Закрити»; a dialog; cells; a marking press moves `aria-checked` and nothing else; «Почати» counts a
+// start and asks (opens the dialog) when the fake board has an entry.
+// ---------------------------------------------------------------------------------------------------------
+
+interface FakePage {
+  root: HTMLElement;
+  starts: { size: string | null; level: string | null }[];
+}
+
+function fakePage(withEntry: boolean): FakePage {
+  const root = document.createElement('div');
+  const starts: FakePage['starts'] = [];
+  const el = (tag: string, attributes: Record<string, string> = {}, text = ''): HTMLElement => {
+    const node = document.createElement(tag);
+    for (const [name, value] of Object.entries(attributes)) node.setAttribute(name, value);
+    node.textContent = text;
+    return node;
+  };
+  const radioGroup = (attributes: Record<string, string>, buttons: HTMLElement[]): HTMLElement => {
+    const group = el('div', { role: 'radiogroup', ...attributes });
+    group.append(...buttons);
+    // a marking press only moves aria-checked inside its group
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        for (const other of buttons) other.setAttribute('aria-checked', String(other === button));
+      });
+    }
+    return group;
+  };
+  const sizeButtons = [4, 6, 8].map((n) => el('button', { type: 'button', role: 'radio', 'aria-checked': String(n === 6) }, `Поле ${n}×${n}`));
+  const levelNames = ['Розминка', 'Задачка', 'Головоломка', 'Мозколамка'];
+  const levelButtons = levelNames.map((name, i) => {
+    const button = el('button', { type: 'button', role: 'radio', 'aria-checked': String(i === 0) });
+    button.append(el('span', {}, name));
+    return button;
+  });
+  const sheet = el('div', { 'data-section': 'setup', popover: '' });
+  const start = el('button', { type: 'button', 'data-action': 'setup-start' }, START_LABEL);
+  const close = el('button', { type: 'button', 'data-action': 'setup-close' }, 'Закрити');
+  sheet.append(radioGroup({ 'data-control': 'size' }, sizeButtons), radioGroup({ 'data-control': 'level' }, levelButtons), start, close);
+  const dialog = el('dialog', { 'data-dialog': 'confirm' }) as HTMLDialogElement;
+  const yes = el('button', { type: 'button', 'data-confirm': 'yes' }, 'Так, почати');
+  const no = el('button', { type: 'button', 'data-confirm': 'no' }, 'Скасувати');
+  dialog.append(yes, no);
+  no.addEventListener('click', () => { dialog.close(); });
+  yes.addEventListener('click', () => {
+    dialog.close();
+    starts.push({ size: sizeButtons.find((b) => b.getAttribute('aria-checked') === 'true')?.textContent ?? null, level: null });
+  });
+  start.addEventListener('click', () => {
+    sheet.hidePopover();
+    if (withEntry) dialog.showModal();
+    else starts.push({ size: sizeButtons.find((b) => b.getAttribute('aria-checked') === 'true')?.textContent ?? null, level: null });
+  });
+  const cell = el('button', { 'data-cell': '', 'data-given': 'false' }, withEntry ? '1' : '');
+  const summary = el('button', { 'data-action': 'setup', type: 'button' });
+  root.append(summary, cell, sheet, dialog);
+  document.body.append(root);
+  return { root, starts };
+}
+
+describe('the mark and start helpers of the setup sheet (update-setup-sheet-start)', () => {
+  installPageLifecycle();
+  const created: HTMLElement[] = [];
+  afterAll(() => { for (const node of created) node.remove(); });
+  const page = (withEntry: boolean): FakePage => {
+    const fake = fakePage(withEntry);
+    created.push(fake.root);
+    return fake;
+  };
+
+  it('markSize and markLevel open the sheet only while the stub is closed, move aria-checked and never press «Почати»', () => {
+    const { root, starts } = page(false);
+    const sheet = openSheetIfClosed(root);
+    expect(popoverCalls('showPopover', sheet), 'a closed sheet is opened once').toBe(1);
+    markSize(root, 8);
+    markLevel(root, 4);
+    expect(popoverCalls('showPopover', sheet), 'an open sheet is not opened again').toBe(1);
+    expect(popoverCalls('hidePopover', sheet), 'a marking press closes nothing').toBe(0);
+    expect(starts, 'a marking press starts no puzzle').toEqual([]);
+    expect(Array.from(root.querySelectorAll('[data-control="size"] button')).map((b) => b.getAttribute('aria-checked'))).toEqual(['false', 'false', 'true']);
+    expect(Array.from(root.querySelectorAll('[data-control="level"] button')).map((b) => b.getAttribute('aria-checked'))).toEqual(['false', 'false', 'false', 'true']);
+  });
+
+  it('a mark helper reopens a sheet that was closed by hidePopover or by a closing toggle', () => {
+    const { root } = page(false);
+    const sheet = openSheetIfClosed(root);
+    sheet.hidePopover();
+    markSize(root, 4);
+    expect(popoverIsOpen(sheet), 'reopened after hidePopover').toBe(true);
+    expect(popoverCalls('showPopover', sheet)).toBe(2);
+    dispatchToggle(sheet, 'closed');
+    markLevel(root, 2);
+    expect(popoverIsOpen(sheet), 'reopened after a closing toggle').toBe(true);
+    expect(popoverCalls('showPopover', sheet)).toBe(3);
+  });
+
+  it('pressStart clicks [data-action="setup-start"] and nothing else', () => {
+    const { root, starts } = page(false);
+    const clicks: string[] = [];
+    root.addEventListener('click', (event) => clicks.push((event.target as HTMLElement).getAttribute('data-action') ?? '?'));
+    openSheetIfClosed(root);
+    pressStart(root);
+    expect(clicks).toEqual(['setup-start']);
+    expect(sheetStartButton(root).textContent).toBe(START_LABEL);
+    expect(starts).toHaveLength(1);
+  });
+
+  it('pressStart fails with a readable message when the sheet has no start button', () => {
+    const { root } = page(false);
+    sheetStartButton(root).remove();
+    expect(() => { pressStart(root); }).toThrow(/setup-start/);
+  });
+
+  it('selectSize and chooseLevel mark, press «Почати», and confirm exactly when the board has an entry (also for the size shown)', () => {
+    const untouched = page(false);
+    selectSize(untouched.root, 6); // the size already shown: «Почати» still starts (SD-Q2)
+    expect(untouched.starts, 'one start, no dialog').toHaveLength(1);
+    expect(dialogIsOpen(untouched.root)).toBe(false);
+    chooseLevel(untouched.root, 1);
+    expect(untouched.starts, 'a level already shown starts as well').toHaveLength(2);
+
+    const played = page(true);
+    selectSize(played.root, 6); // asks even for the size shown, then confirms
+    expect(dialogIsOpen(played.root), 'the helper closed the dialog it opened').toBe(false);
+    expect(played.starts).toHaveLength(1);
+    expect(popoverCalls('hidePopover', sheetOf(played.root)), '«Почати» closed the sheet').toBe(1);
   });
 });
 

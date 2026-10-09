@@ -5,32 +5,21 @@
 // Tab order is covered by attributes only (native button, no disabled, no negative tabindex); real focus is the held NFR-13.
 import { describe, expect, it } from 'vitest';
 import {
-  BLANK_4,
-  BLANK_8,
   PAIR_ROW,
-  allCells,
   boardSize,
-  bySize,
   checkedSize,
   confirmNo,
+  confirmYes,
   dialogIsOpen,
-  generateSpy,
-  hintedCells,
   installPageLifecycle,
+  markSize,
   mountPage,
   mountPlayedBoard,
-  pageState,
-  popoverCalls,
-  pressSizeButton,
-  q,
-  seedQueue,
-  sheetOf,
+  pressStart,
   showModalCalls,
   sizeButton,
   sizeButtons,
   sizeControl,
-  summaryButton,
-  violationCells,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -80,7 +69,8 @@ describe('@trace FR-43 @trace FR-67 aria-checked stays on the shown size until t
   it('a press on a board with entries leaves aria-checked on 6 while the dialog is open and after «Скасувати»', () => {
     const { root } = mountPlayedBoard();
 
-    pressSizeButton(root, 4);
+    markSize(root, 4);
+    pressStart(root);
     expect(dialogIsOpen(root)).toBe(true);
     expect(sizeButtons(root).map((b) => b.getAttribute('aria-checked'))).toEqual(['false', 'true', 'false']);
     expect(boardSize(root)).toBe(6);
@@ -92,99 +82,37 @@ describe('@trace FR-43 @trace FR-67 aria-checked stays on the shown size until t
   });
 });
 
-const CASES = [{ n: 4 }, { n: 6 }, { n: 8 }];
-
-describe.each(CASES)('@trace FR-73 @trace FR-66 @trace FR-43 pressing the shown size is a no-op at size $n', ({ n }) => {
-  it(`with entries, a hint sentence, cell-hinted and cell-violation: «Поле ${n}×${n}» changes nothing`, () => {
-    const { root, seeds, spy } = mountPlayedBoard(n);
-    const before = pageState(root);
-    const hinted = hintedCells(root);
-    const violations = violationCells(root);
+// update-setup-sheet-start (docs/qa/update-setup-sheet-start/changed-tests.md sections 5.3, 6, 8): the scenarios «The shown size is a
+// no-op at every size» and «With no board shown, a size button generates» are renamed in the delta («The shown size only marks at every
+// size», «With no board shown a press only marks and «Почати» generates»). Their tests moved, rewritten, to
+// tests/play-page-marked-choice.test.ts; nothing was dropped.
+describe('@trace FR-73 @trace FR-43 @trace FR-67 @trace FR-92 @trace FR-98 @trace FR-101 a marked size and another marked size ask once', () => {
+  // Replaces `after pressing the shown size, a press of another size on a board with entries still asks, then performs once`
+  // (decision 2 of the orchestrator): no delta scenario lets a bare second press raise a dialog; a press only marks, «Почати» asks.
+  it('two marks then «Почати» raise one confirmation: the shown size marked, then another size marked, then «Почати» on a board with entries asks once and performs once', () => {
+    const { root, seeds, spy } = mountPlayedBoard();
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
-    const shownCalls = showModalCalls();
-    const hidden = popoverCalls('hidePopover', sheetOf(root)); // FR-97: the press closes the sheet (counted from here)
-    expect(checkedSize(root), 'premise: the size shown is the size pressed').toBe(n);
-    expect(hinted, 'premise: a hint-filled cell').toHaveLength(1);
-    expect(violations.length, 'premise: cells carry cell-violation').toBeGreaterThan(0);
-    expect(before.hint, 'premise: a hint sentence is shown').not.toBe('');
 
-    pressSizeButton(root, n);
-
-    expect(showModalCalls(), 'no dialog').toBe(shownCalls);
-    expect(dialogIsOpen(root)).toBe(false);
-    expect(seeds.calls(), 'no seed').toBe(seedCalls);
-    expect(spy.calls, 'no generator call').toHaveLength(generatorCalls);
-    expect(pageState(root), 'cells (text and classes), size, aria-checked and both messages').toEqual(before);
-    expect(hintedCells(root)).toEqual(hinted);
-    expect(violationCells(root)).toEqual(violations);
-    expect(sizeButtons(root).filter((b) => b.getAttribute('aria-checked') === 'true')).toEqual([sizeButton(root, n)]);
-    // Slice DL2 DELIBERATE CHANGE (FR-73 modified, FR-97): the no-op press still closes the sheet and focuses the summary button
-    expect(popoverCalls('hidePopover', sheetOf(root)) - hidden, 'hidePopover was called once on the sheet').toBe(1);
-    expect(document.activeElement, 'DOM focus is on the summary button').toBe(summaryButton(root));
-  });
-
-  it(`on an untouched board: «Поле ${n}×${n}» takes no seed, calls no generator and shows no dialog`, () => {
-    const seeds = seedQueue([1, 2, 3]);
-    const spy = generateSpy(bySize({ 6: PAIR_ROW, 4: BLANK_4, 8: BLANK_8 }));
-    const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
-    if (n !== 6) pressSizeButton(root, n); // reach size n the way a player does
-    expect(boardSize(root)).toBe(n);
-    expect(allCells(root)).toHaveLength(n * n);
-    const before = pageState(root);
-    const seedCalls = seeds.calls();
-    const generatorCalls = spy.calls.length;
-    const hidden = popoverCalls('hidePopover', sheetOf(root));
-
-    pressSizeButton(root, n);
-
-    expect(showModalCalls()).toBe(0);
-    expect(dialogIsOpen(root)).toBe(false);
+    markSize(root, 6); // the shown size
+    markSize(root, 4); // another size
+    expect(showModalCalls(), 'two marking presses ask nothing').toBe(0);
     expect(seeds.calls()).toBe(seedCalls);
     expect(spy.calls).toHaveLength(generatorCalls);
-    expect(pageState(root)).toEqual(before);
-    expect(checkedSize(root)).toBe(n);
-    expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
-    // Slice DL2 DELIBERATE CHANGE (FR-73 modified, FR-97): the no-op press closes the sheet and focuses the summary button
-    expect(popoverCalls('hidePopover', sheetOf(root)) - hidden, 'hidePopover was called once on the sheet').toBe(1);
-    expect(document.activeElement, 'DOM focus is on the summary button').toBe(summaryButton(root));
-  });
-});
 
-describe('@trace FR-73 @trace FR-43 a press of the shown size does not disturb a later change', () => {
-  it('after pressing the shown size, a press of another size on a board with entries still asks, then performs once', () => {
-    const { root, seeds } = mountPlayedBoard();
-    const seedCalls = seeds.calls();
-    pressSizeButton(root, 6);
-    expect(showModalCalls()).toBe(0);
+    pressStart(root);
 
-    pressSizeButton(root, 4);
-
-    expect(showModalCalls(), 'the other size asks').toBe(1);
-    expect(seeds.calls()).toBe(seedCalls);
+    expect(showModalCalls(), 'one confirmation for the pair').toBe(1);
     expect(dialogIsOpen(root)).toBe(true);
-  });
-});
+    expect(seeds.calls(), 'nothing is performed before «Так, почати»').toBe(seedCalls);
+    expect(spy.calls).toHaveLength(generatorCalls);
 
-// Added in review fix round 1 (wf_c621c8e9-bc8, contested finding): the shown size is the size of the board shown.
-describe('@trace FR-73 @trace FR-43 with no board shown, a size button generates', () => {
-  it('after a failed generation at mount, «Поле 6×6» generates a 6x6 board at once', () => {
-    const seeds = seedQueue([1, 2]);
-    const spy = generateSpy((i) => {
-      if (i === 0) throw new Error('generator failed at mount');
-      return PAIR_ROW;
-    });
-    const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
-    expect(root.querySelectorAll('[data-cell]'), 'premise: no board is shown').toHaveLength(0);
-    expect(checkedSize(root), 'with no board, «Поле 6×6» keeps aria-checked from mount').toBe(6);
+    confirmYes(root);
 
-    pressSizeButton(root, 6);
-
-    expect(showModalCalls()).toBe(0);
-    expect(seeds.calls()).toBe(2);
-    expect(spy.calls.map((c) => c.size)).toEqual([6, 6]);
-    expect(boardSize(root)).toBe(6);
-    expect(allCells(root)).toHaveLength(36);
-    expect(checkedSize(root)).toBe(6);
+    expect(showModalCalls(), 'still one confirmation').toBe(1);
+    expect(seeds.calls() - seedCalls, 'exactly one seed').toBe(1);
+    expect(spy.calls.slice(generatorCalls), 'exactly one generator call, for size 4').toEqual([{ size: 4, seed: seedCalls + 1 }]);
+    expect(boardSize(root)).toBe(4);
+    expect(checkedSize(root)).toBe(4);
   });
 });

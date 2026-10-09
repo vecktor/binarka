@@ -9,6 +9,11 @@
 // @trace FR-43
 // @trace FR-67
 // @trace FR-73
+// @trace FR-100
+// @trace FR-101
+//
+// update-setup-sheet-start: the pair (size, level) is marked first and started once by «Почати» (FR-100, FR-101); the choose helpers and
+// markSize/markLevel + pressStart say so.
 //
 // The sheet is opened through the stubbed showPopover() by the helpers (A-44). The generator spies record the level in the
 // parallel array `levels`. Exact texts are literals; this file never imports src/ui/strings.ts.
@@ -37,15 +42,14 @@ import {
   hintMessage,
   hintedCells,
   installPageLifecycle,
+  openSheet,
   levelDisabled,
   levelStates,
   mountPage,
   mountPlayedBoard,
   pageState,
-  pressLevelButton,
   pressNew,
   pressReset,
-  pressSizeButton,
   q,
   readBoard,
   seedQueue,
@@ -57,6 +61,9 @@ import {
   summaryText,
   violationCells,
   winMessage,
+  markLevel,
+  markSize,
+  pressStart,
 } from './helpers/play-page';
 import type { PlayedPage } from './helpers/play-page';
 
@@ -131,7 +138,8 @@ describe('@trace FR-92 size and level interplay', () => {
     const shown = showModalCalls();
     expect(checkedLevel(root), 'premise: the level is «Задачка»').toBe(2);
 
-    pressSizeButton(root, 4);
+    markSize(root, 4);
+    pressStart(root);
 
     expect(showModalCalls() - shown, 'showModal was called once').toBe(1);
     expect(checkedSize(root), 'before the confirmation aria-checked is on «Поле 6×6»').toBe(6);
@@ -152,7 +160,8 @@ describe('@trace FR-92 size and level interplay', () => {
     const { root, seeds, spy } = mountPlayedBoard(6, undefined, 2);
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
-    pressSizeButton(root, 4);
+    markSize(root, 4);
+    pressStart(root);
     expect(dialogIsOpen(root), 'premise: the dialog is open').toBe(true);
 
     confirmNo(root);
@@ -188,6 +197,70 @@ describe('@trace FR-92 size and level interplay', () => {
     expect(sizeButtons(root).map((b) => b.getAttribute('aria-checked'))).toEqual(SIZE_STATES_6);
     expect(levelStates(root)).toEqual(['false', 'false', 'false', 'true']);
   });
+
+  // update-setup-sheet-start (FR-92, FR-100, FR-101): the new scenarios of «Size and level interplay»
+  it('A size and a level marked together make one puzzle', () => {
+    const { root, seeds, spy } = plainPage();
+    const seedCalls = seeds.calls();
+    const generatorCalls = spy.calls.length;
+    openSheet(root);
+
+    markLevel(root, 4);
+    markSize(root, 8);
+    markSize(root, 6);
+    markSize(root, 8); // four marking presses
+    expect(seeds.calls(), 'the marking presses took no seed').toBe(seedCalls);
+    expect(spy.calls, 'and made no generator call').toHaveLength(generatorCalls);
+    pressStart(root);
+
+    expect(seeds.calls() - seedCalls, 'the seed source was called once more').toBe(1);
+    expect(spy.calls.length - generatorCalls, 'the spy recorded exactly one more call').toBe(1);
+    expect(spy.calls.at(-1)).toEqual({ size: 8, seed: seedCalls + 1 });
+    expect(spy.levels.at(-1), 'with level 4').toBe(4);
+    expect(summaryText(root)).toBe('8×8 · Мозколамка');
+  });
+
+  it('One confirmation covers a size and a level marked together', () => {
+    const { root, seeds, spy } = mountPlayedBoard(6);
+    const seedCalls = seeds.calls();
+    const generatorCalls = spy.calls.length;
+    const shown = showModalCalls();
+    openSheet(root);
+    markSize(root, 8);
+    markLevel(root, 3);
+
+    pressStart(root);
+
+    expect(showModalCalls() - shown, 'showModal was called exactly once').toBe(1);
+    expect(checkedSize(root), 'before the confirmation aria-checked is on «Поле 6×6»').toBe(6);
+    expect(checkedLevel(root), 'and on «Розминка»').toBe(1);
+
+    confirmYes(root);
+
+    expect(showModalCalls() - shown, 'showModal was called exactly once in all').toBe(1);
+    expect(boardSize(root)).toBe(8);
+    openSheet(root);
+    expect(checkedSize(root), 'after the sheet is opened again «Поле 8×8» is checked').toBe(8);
+    expect(checkedLevel(root), 'and «Головоломка»').toBe(3);
+    expect(seeds.calls() - seedCalls, 'exactly one seed was taken').toBe(1);
+    expect(spy.calls.length - generatorCalls, 'and one generator call').toBe(1);
+    expect(spy.calls.at(-1)).toEqual({ size: 8, seed: seedCalls + 1 });
+    expect(spy.levels.at(-1), 'with level 3').toBe(3);
+  });
+
+  it('Marking 4×4 and then 6×6 keeps «Розминка» and marks no board', () => {
+    const { root, seeds } = plainPage();
+    chooseLevel(root, 4); // a 6×6 board at «Мозколамка» without entries
+    const seedCalls = seeds.calls();
+    openSheet(root);
+
+    markSize(root, 4);
+    markSize(root, 6);
+
+    expect(checkedSize(root), 'aria-checked is on «Поле 6×6» only').toBe(6);
+    expect(checkedLevel(root), 'and on «Розминка» only').toBe(1);
+    expect(seeds.calls(), 'no seed was taken').toBe(seedCalls);
+  });
 });
 
 // ---------------------------------------------------------------------------------------------------------
@@ -200,12 +273,25 @@ describe('@trace FR-90 @trace FR-67 a level change follows the confirmation rule
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
 
-    pressLevelButton(root, 4);
+    markLevel(root, 4);
+    pressStart(root);
 
     expect(showModalCalls(), 'showModal was never called').toBe(0);
     expect(seeds.calls() - seedCalls, 'one seed was taken').toBe(1);
     expect(spy.calls.length - generatorCalls, 'one generator call was made').toBe(1);
     expect(spy.levels.at(-1), 'with level 4').toBe(4);
+  });
+
+  // update-setup-sheet-start (FR-90, FR-100): a marking press asks nothing
+  it('A level press alone asks nothing', () => {
+    const { root } = mountPlayedBoard(6);
+    const shown = showModalCalls();
+    openSheet(root);
+
+    markLevel(root, 2); // a marking press
+
+    expect(showModalCalls(), 'showModal was never called').toBe(shown);
+    expect(checkedLevel(root), 'aria-checked is on «Задачка» until the sheet closes').toBe(2);
   });
 
   it('A level change on a board with entries asks and changes nothing yet', () => {
@@ -216,7 +302,8 @@ describe('@trace FR-90 @trace FR-67 a level change follows the confirmation rule
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
 
     expect(showModalCalls(), 'showModal was called once').toBe(1);
     expect(dialogIsOpen(root), 'the dialog has the open attribute').toBe(true);
@@ -238,7 +325,8 @@ describe('@trace FR-90 @trace FR-67 a level change follows the confirmation rule
     const hinted = hintedCells(root);
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
     expect(dialogIsOpen(root), 'premise: the dialog is open').toBe(true);
 
     end(root);
@@ -251,7 +339,8 @@ describe('@trace FR-90 @trace FR-67 a level change follows the confirmation rule
     expect(spy.calls, 'no generator call was made').toHaveLength(generatorCalls);
 
     // choosing «Задачка» again opens the dialog a second time and «Так, почати» performs exactly one level change
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
     expect(showModalCalls(), 'the dialog opened a second time').toBe(2);
     confirmYes(root);
     expect(seeds.calls() - seedCalls, 'exactly one level change (one seed)').toBe(1);
@@ -263,7 +352,8 @@ describe('@trace FR-90 @trace FR-67 a level change follows the confirmation rule
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
     const closes = closeCalls();
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
     expect(dialogIsOpen(root), 'premise: the dialog is open').toBe(true);
 
     confirmYes(root);
@@ -340,7 +430,8 @@ describe('@trace FR-67 @trace FR-90 the level row of the confirmation tables', (
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
 
     expect(showModalCalls(), 'the showModal spy was never called').toBe(0);
     expect(dialogIsOpen(root), 'the dialog has no open attribute').toBe(false);
@@ -359,7 +450,8 @@ describe('@trace FR-67 @trace FR-90 the level row of the confirmation tables', (
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
 
     expect(showModalCalls(), 'showModal was called exactly once').toBe(1);
     expect(dialogIsOpen(root), 'the dialog has the open attribute').toBe(true);
@@ -376,7 +468,8 @@ describe('@trace FR-67 @trace FR-90 the level row of the confirmation tables', (
     const { root, seeds, spy }: PlayedPage = mountPlayedBoard(6);
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
 
     confirmYes(root);
 
@@ -402,7 +495,8 @@ describe('@trace FR-67 @trace FR-90 the level row of the confirmation tables', (
     const cells = snapshot(root);
     const seedCalls = seeds.calls();
     const generatorCalls = spy.calls.length;
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
 
     confirmNo(root);
 
@@ -426,7 +520,8 @@ describe('@trace FR-67 @trace FR-90 the level row of the confirmation tables', (
     expect(winMessage(root), 'premise: solved').toBe(WIN_MESSAGE);
     const before = fullState(root);
 
-    pressLevelButton(root, 2);
+    markLevel(root, 2);
+    pressStart(root);
 
     expect(showModalCalls()).toBe(1);
     expect(dialogIsOpen(root)).toBe(true);

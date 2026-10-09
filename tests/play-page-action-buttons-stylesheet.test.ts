@@ -5,6 +5,10 @@
 // «Підказка», «Скинути» and «Нова головоломка» no `min-height`, so they measure 40 px tall.
 //
 // @trace NFR-12
+// @trace FR-101
+//
+// update-setup-sheet-start adds the section at the end: «Почати», the summary button and «Закрити» declare the same 44 px floor
+// (NFR-12, FR-101; delta scenario «The stylesheet declares a 44 px minimum height for the three buttons»). The seven tests above stay.
 //
 // WHAT THIS FILE CANNOT DECIDE: jsdom has no layout (TC-13), so no test here sees a rendered size. This file checks the
 // DECLARATION only; the measured size (at least 44x44 CSS px at the eight sampled viewports) is decided by the real-browser check
@@ -238,5 +242,48 @@ describe('@trace NFR-12 no min-height is forced with !important', () => {
       declarations.filter((d) => d.important).map((d) => `${d.where} { min-height: ${d.value} !important }`),
       'no min-height declaration is !important',
     ).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// update-setup-sheet-start: the start button, the summary button and the close button of the setup sheet (NFR-12, FR-101)
+// ---------------------------------------------------------------------------------------------------------
+
+/** The three buttons of the scenario «The stylesheet declares a 44 px minimum height for the three buttons». */
+const SHEET_BUTTONS: [string, string][] = [
+  ['«Почати»', '[data-action="setup-start"]'],
+  ['the summary button', '[data-action="setup"]'],
+  ['«Закрити»', '[data-action="setup-close"]'],
+];
+
+describe('@trace NFR-12 @trace FR-101 the stylesheet declares a 44 px minimum height for «Почати», the summary button and «Закрити»', () => {
+  it('The stylesheet declares a 44 px minimum height for the three buttons', () => {
+    const root = mountFixture(BLANK);
+    injectPageStyles();
+    const rules = readStyles().rules;
+    for (const [name, selector] of SHEET_BUTTONS) {
+      const button = q(root, selector); // «Почати» is missing on a page without the start button: this line fails first
+      expect(button.tagName, `${name} is a button element`).toBe('BUTTON');
+      const value = getComputedStyle(button).minHeight;
+      expect(
+        lengthPx(value) >= FLOOR_PX,
+        `${name} has min-height "${value}" (reads as ${lengthPx(value)} px); NFR-12 needs a length of at least ${FLOOR_PX} px, for example 2.75rem`,
+      ).toBe(true);
+      // one ordinary declaration in a rule that matches the element: at least one rule, none of them inside an at-rule
+      const declaring = minHeightRulesFor(button, rules);
+      expect(declaring.length, `at least one top-level rule declares min-height for ${name}`).toBeGreaterThan(0);
+      for (const rule of declaring) {
+        expect(rule.context, `the min-height rule "${rule.selectors.join(', ')}" for ${name} is not inside an at-rule`).toEqual([]);
+      }
+      // no state or at-rule rule shrinks it, and none is !important
+      const below = strippedMinHeightRulesFor(button, rules).flatMap((rule) =>
+        rule.declarations
+          .filter((d) => d.property === 'min-height' && !(lengthPx(d.value) >= FLOOR_PX))
+          .map((d) => `${rule.context.join(' ')} ${rule.selectors.join(', ')} { min-height: ${d.value} }`.trim()),
+      );
+      expect(below, `${name}: every declared min-height is at least ${FLOOR_PX} px in any state`).toEqual([]);
+      const important = strippedMinHeightRulesFor(button, rules).filter((rule) => rule.declarations.some((d) => d.property === 'min-height' && d.important));
+      expect(important.map((rule) => rule.selectors.join(', ')), `${name}: no min-height declaration is !important`).toEqual([]);
+    }
   });
 });

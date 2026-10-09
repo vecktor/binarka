@@ -5,6 +5,12 @@
 // @trace FR-91
 // @trace FR-73
 // @trace FR-97
+// @trace FR-100
+// @trace FR-101
+//
+// update-setup-sheet-start: the 4×4 state follows the MARKED size while the sheet is open (FR-91, FR-100); the scenarios «The shown
+// level is a no-op at every level» and «With no board shown, a level button generates» are renamed in the delta and their tests moved,
+// rewritten, to tests/play-page-marked-choice.test.ts (docs/qa/update-setup-sheet-start/changed-tests.md sections 5.5, 6, 8).
 //
 // The sheet is opened through the stubbed showPopover() (A-44). Unavailable levels carry aria-disabled="true" (not disabled, no
 // tabindex) and stay focusable. Exact texts are literals; this file never imports src/ui/strings.ts.
@@ -15,15 +21,11 @@ import {
   BLANK_8,
   PAIR_ROW,
   REASON_4X4,
-  allCells,
   boardSize,
-  bySize,
   checkedLevel,
-  chooseLevel,
   confirmYes,
   expectActive,
   fullState,
-  generateSpy,
   generatorBySize,
   hintMessage,
   hintedCells,
@@ -39,9 +41,6 @@ import {
   openSheet,
   popoverCalls,
   popoverIsOpen,
-  pressLevelButton,
-  pressSizeButton,
-  rawGenerateSpy,
   seedQueue,
   selectSize,
   sheetOf,
@@ -49,10 +48,11 @@ import {
   sizeButton,
   sizeButtons,
   snapshot,
-  summaryButton,
   summaryText,
   violationCells,
   winMessage,
+  markSize,
+  pressStart,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -70,10 +70,45 @@ function pageAt4x4(): HTMLElement {
 // ---------------------------------------------------------------------------------------------------------
 
 describe('@trace FR-91 only the first level exists at 4x4', () => {
-  it('The 4x4 state of the level control', () => {
+  // update-setup-sheet-start, scenario «The 4x4 state of the level control follows the marked size» (FR-91, FR-100): a marking press
+  // on «Поле 4×4» changes the level control at once, the summary and the board stay, no seed is taken.
+  it('The 4x4 state of the level control follows the marked size', () => {
+    const seeds = seedQueue([1, 2]);
+    const root = mountPage({ seedSource: seeds.source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
+    openSheet(root);
+
+    sizeButton(root, 4).click(); // a marking press, no «Почати»
+
+    const control = levelControl(root);
+    expect(control.hasAttribute('hidden'), 'the level control is visible').toBe(false);
+    expect(sheetOf(root).contains(control), 'and still in the sheet').toBe(true);
+    const buttons = levelButtons(root);
+    for (const button of buttons) {
+      expect(button.hasAttribute('hidden'), 'no level button is hidden').toBe(false);
+      expect(button.hasAttribute('disabled'), 'no level button has disabled').toBe(false);
+      expect(button.hasAttribute('tabindex'), 'no level button has tabindex').toBe(false);
+    }
+    expect(buttons[0]?.getAttribute('aria-checked')).toBe('true');
+    expect(buttons[0]?.hasAttribute('aria-disabled'), '«Розминка» has no aria-disabled').toBe(false);
+    for (const button of buttons.slice(1)) {
+      expect(button.getAttribute('aria-checked')).toBe('false');
+      expect(button.getAttribute('aria-disabled')).toBe('true');
+    }
+    const reason = levelReason(root);
+    expect(reason.hasAttribute('hidden'), 'the reason line is not hidden').toBe(false);
+    expect(reason.textContent).toBe(REASON_4X4);
+    expect(summaryText(root), 'the summary still reads the board shown').toBe('6×6 · Розминка');
+    expect(boardSize(root), 'the board is still 6×6').toBe(6);
+    expect(seeds.calls(), 'no seed was taken (the mount only)').toBe(1);
+  });
+
+  // update-setup-sheet-start, scenario «The 4x4 state after «Почати»» (was «The 4x4 state of the level control»): the player chooses
+  // «Поле 4×4» (marks it and presses «Почати») and opens the sheet again.
+  it('The 4x4 state after «Почати»', () => {
     const root = mountPage({ seedSource: seedQueue([1, 2]).source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4 }) });
 
     selectSize(root, 4);
+    openSheet(root);
 
     const control = levelControl(root);
     expect(control.hasAttribute('hidden'), 'the level control is visible').toBe(false);
@@ -158,15 +193,22 @@ describe('@trace FR-91 only the first level exists at 4x4', () => {
     expect(summaryText(root)).toBe('4×4 · Розминка');
   });
 
+  // update-setup-sheet-start: the sheet is opened with a marked size of 4×4 (a press on «Поле 4×4» on a 6×6 board without entries),
+  // then marking presses on «Поле 6×6» and later «Поле 8×8» (FR-91, FR-100).
   it('The buttons are available again at 6x6 and 8x8', () => {
-    const root = pageAt4x4();
+    const root = mountPage({ seedSource: seedQueue([1, 2, 3]).source, generate: generatorBySize({ 6: BLANK, 4: BLANK_4, 8: BLANK_8 }) });
+    markSize(root, 4);
+    expect(levelDisabled(root), 'premise: the marked size 4×4 disables levels 2 to 4').toEqual([null, 'true', 'true', 'true']);
+    expect(boardSize(root), 'premise: a marking press shows no board, the page still shows 6×6').toBe(6);
 
-    selectSize(root, 6);
+    markSize(root, 6);
+    expect(boardSize(root), 'a marking press on «Поле 6×6» shows no board either').toBe(6);
     expect(levelDisabled(root), 'at 6x6 no level button has aria-disabled').toEqual([null, null, null, null]);
     expect(checkedLevel(root)).toBe(1);
     expect(levelReason(root).hasAttribute('hidden')).toBe(true);
 
-    selectSize(root, 8);
+    markSize(root, 8);
+    expect(boardSize(root), 'and neither does «Поле 8×8»').toBe(6);
     expect(levelDisabled(root), 'at 8x8 no level button has aria-disabled').toEqual([null, null, null, null]);
     expect(checkedLevel(root)).toBe(1);
     expect(levelReason(root).hasAttribute('hidden')).toBe(true);
@@ -179,7 +221,8 @@ describe('@trace FR-91 only the first level exists at 4x4', () => {
     }, 3);
     expect(levelStates(root), 'premise: the level is «Головоломка»').toEqual(['false', 'false', 'true', 'false']);
 
-    pressSizeButton(root, 4);
+    markSize(root, 4);
+    pressStart(root);
     confirmYes(root);
 
     expect(boardSize(root), 'the board is still 6x6').toBe(6);
@@ -187,91 +230,5 @@ describe('@trace FR-91 only the first level exists at 4x4', () => {
     expect(levelDisabled(root), 'no level button has aria-disabled').toEqual([null, null, null, null]);
     expect(levelReason(root).hasAttribute('hidden'), 'the reason is hidden').toBe(true);
     expect(summaryText(root)).toBe('6×6 · Головоломка');
-  });
-});
-
-// ---------------------------------------------------------------------------------------------------------
-// Requirement: Pressing the shown size changes nothing (FR-73, FR-97): the level scenarios
-// ---------------------------------------------------------------------------------------------------------
-
-describe('@trace FR-73 @trace FR-97 pressing the shown level changes nothing', () => {
-  // the table of the scenario «The shown level is a no-op at every level»
-  const ROWS = [
-    { n: 6, level: 1 },
-    { n: 6, level: 2 },
-    { n: 6, level: 3 },
-    { n: 8, level: 4 },
-    { n: 4, level: 1 },
-  ];
-
-  it.each(ROWS)('The shown level is a no-op at every level (size $n, level $level), with entries and on an untouched board', ({ n, level }) => {
-    // (1) with entries, a hint sentence, cell-hinted and cell-violation
-    const { root, seeds, spy } = mountPlayedBoard(n, undefined, level);
-    const sheet = sheetOf(root);
-    const before = fullState(root);
-    const cells = snapshot(root);
-    const hinted = hintedCells(root);
-    const seedCalls = seeds.calls();
-    const generatorCalls = spy.calls.length;
-    const shown = showModalCalls();
-    const hides = popoverCalls('hidePopover', sheet);
-    expect(before.level, 'premise: the level shown is the level of the row').toBe(level);
-    expect(before.size).toBe(n);
-    expect(hinted, 'premise: a hint-filled cell').toHaveLength(1);
-    expect(violationCells(root).length, 'premise: cells carry cell-violation').toBeGreaterThan(0);
-
-    pressLevelButton(root, level);
-
-    expect(showModalCalls(), 'no dialog').toBe(shown);
-    expect(seeds.calls(), 'no seed').toBe(seedCalls);
-    expect(spy.calls, 'no generator call').toHaveLength(generatorCalls);
-    expect(snapshot(root), 'every cell keeps its text and class list').toEqual(cells);
-    expect(fullState(root), 'both messages, both groups and the summary are unchanged').toEqual(before);
-    expect(hintedCells(root)).toEqual(hinted);
-    expect(popoverCalls('hidePopover', sheet) - hides, 'hidePopover was called once').toBe(1);
-    expectActive(summaryButton(root), 'DOM focus is on the summary button');
-
-    // (2) a freshly prepared page of the same size and level with no player entries
-    const seedsB = seedQueue([1, 2, 3, 4, 5]);
-    const spyB = generateSpy(bySize({ 4: BLANK_4, 6: BLANK, 8: BLANK_8 }));
-    const page = mountPage({ seedSource: seedsB.source, generate: spyB.generate });
-    if (n !== 6) selectSize(page, n);
-    if (level !== 1) chooseLevel(page, level);
-    const stateB = fullState(page);
-    const cellsB = snapshot(page);
-    const seedCallsB = seedsB.calls();
-    const generatorCallsB = spyB.calls.length;
-    const hidesB = popoverCalls('hidePopover', sheetOf(page));
-
-    pressLevelButton(page, level);
-
-    expect(showModalCalls()).toBe(shown);
-    expect(seedsB.calls(), 'no seed on the untouched board').toBe(seedCallsB);
-    expect(spyB.calls, 'no generator call on the untouched board').toHaveLength(generatorCallsB);
-    expect(snapshot(page)).toEqual(cellsB);
-    expect(fullState(page)).toEqual(stateB);
-    expect(popoverCalls('hidePopover', sheetOf(page)) - hidesB, 'hidePopover was called once').toBe(1);
-    expectActive(summaryButton(page), 'DOM focus is on the summary button');
-    expect(sizeButton(page, n).getAttribute('aria-checked')).toBe('true');
-  });
-
-  it('With no board shown, a level button generates', () => {
-    const seeds = seedQueue([1, 2, 3]);
-    const spy = rawGenerateSpy((i) => {
-      if (i === 0) throw new Error('generator failed at mount');
-      return BLANK;
-    });
-    const root = mountPage({ seedSource: seeds.source, generate: spy.generate });
-    expect(allCells(root), 'premise: no board is shown').toHaveLength(0);
-
-    pressLevelButton(root, 2);
-
-    expect(showModalCalls(), 'no dialog opens').toBe(0);
-    expect(seeds.calls(), 'one seed is taken for the press (two in all)').toBe(2);
-    expect(spy.calls.at(-1), 'the generator is called with size 6').toEqual({ size: 6, seed: 2 });
-    expect(spy.levels.at(-1), 'and level 2').toBe(2);
-    expect(boardSize(root), 'a 6x6 board is shown').toBe(6);
-    expect(allCells(root)).toHaveLength(36);
-    expect(levelStates(root)).toEqual(['false', 'true', 'false', 'false']);
   });
 });
