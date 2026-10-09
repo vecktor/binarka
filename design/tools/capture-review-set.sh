@@ -62,4 +62,35 @@ for page in setup:setup/ setup-four:setup-four/; do
   shot "1366-dark-$n" "http://127.0.0.1:4173/$p" 1366 650 0 &
   wait
 done
+# Iteration 14: the setup sheet with a marked choice that differs from the board shown (6×6 · Розминка
+# shown; 8×8 · Головоломка marked, focus on «Почати»), and with 4×4 marked (FR-100, FR-101, FR-91).
+for page in setup-marked:setup-marked/ setup-marked-four:setup-marked-four/; do
+  n=${page%%:*}; p=${page#*:}
+  for wh in 320:700 375:812 768:1024 1024:768 1366:650 1440:900; do
+    W=${wh%%:*}; H=${wh#*:}
+    shot "$W-light-$n" "http://127.0.0.1:4173/$p" $W $H 1 &
+    shot "$W-dark-$n" "http://127.0.0.1:4173/$p" $W $H 0 &
+    wait
+  done
+done
+# Iteration 14: the settings panel open (theme «Як у системі», language «Українська»; FR-102, FR-107).
+for wh in 320:700 375:812 768:1024 1024:768 1366:650 1440:900; do
+  W=${wh%%:*}; H=${wh#*:}
+  shot "$W-light-settings" "http://127.0.0.1:4173/settings/" $W $H 1 &
+  shot "$W-dark-settings" "http://127.0.0.1:4173/settings/" $W $H 0 &
+  wait
+done
+# Iteration 14: a manual theme against the system (FR-103, FR-104). The name keeps the system scheme
+# second: "dark-settings-light" is «Світла» checked on a dark system, "light-settings-dark" the reverse.
+for wh in 320:700 375:812 768:1024 1024:768 1440:900; do
+  W=${wh%%:*}; H=${wh#*:}
+  shot "$W-dark-settings-light" "http://127.0.0.1:4173/settings-light/" $W $H 0 &
+  shot "$W-light-settings-dark" "http://127.0.0.1:4173/settings-dark/" $W $H 1 &
+  wait
+done
+# Iteration 14: the desktop rules panel (R3) at 1440×900 with the techniques; 1366×650 and the plain
+# rules shots at 1440×900 come from the lines above.
+shot "1440-light-rules-techniques" "http://127.0.0.1:4173/rules-techniques/" 1440 900 1 &
+shot "1440-dark-rules-techniques" "http://127.0.0.1:4173/rules-techniques/" 1440 900 0 &
+wait
 ls "$OUT" | wc -l

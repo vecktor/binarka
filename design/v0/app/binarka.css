@@ -2,7 +2,11 @@
 /* ---------- Tokens ---------- */
 
 :root {
-  color-scheme: light dark;
+  /* Iteration 14 (TD-Q13): the light set is the top-level :root, the dark set is
+     :root[data-theme="dark"]; there is no prefers-color-scheme block. The inline head
+     script in app/layout.tsx always sets data-theme (auto resolves the system theme
+     before the first paint), and color-scheme follows the effective theme. */
+  color-scheme: light;
 
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
@@ -54,35 +58,34 @@
   --cell-max: 4rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1a1714;
-    --surface: #24201b;
-    --surface-raised: #2c2620;
-    --overlay-border: var(--cell-border);
-    --hover-filter: brightness(1.12);
-    /* Review 2, N7: in dark, a brown backdrop lifts the page; these dim it. */
-    --backdrop-soft: rgba(8, 5, 2, 0.45);
-    --backdrop-strong: rgba(8, 5, 2, 0.6);
-    --ink: #f1ede4;
-    --ink-muted: #b8b0a4;
-    --line: #3a332b;
-    --cell-border: #8a7f71;
-    --given-bg: #4d4438;
-    --given-ink: #f7f3ea;
-    --entry-ink: #f7a46a;
-    --primary: #f39a5b;
-    --primary-ink: #1a1007;
-    --primary-soft: #3d2b1e;
-    --violation: #ff8a7d;
-    --violation-bg: #3f2320;
-    --violation-ink: #ffb4ab;
-    --violation-stripe: rgba(255, 138, 125, 0.16);
-    --success: #8fd19a;
-    --success-bg: #1f3324;
-    --sunken-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
-    --option-border: #5a5045;
-  }
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #1a1714;
+  --surface: #24201b;
+  --surface-raised: #2c2620;
+  --overlay-border: var(--cell-border);
+  --hover-filter: brightness(1.12);
+  /* Review 2, N7: in dark, a brown backdrop lifts the page; these dim it. */
+  --backdrop-soft: rgba(8, 5, 2, 0.45);
+  --backdrop-strong: rgba(8, 5, 2, 0.6);
+  --ink: #f1ede4;
+  --ink-muted: #b8b0a4;
+  --line: #3a332b;
+  --cell-border: #8a7f71;
+  --given-bg: #4d4438;
+  --given-ink: #f7f3ea;
+  --entry-ink: #f7a46a;
+  --primary: #f39a5b;
+  --primary-ink: #1a1007;
+  --primary-soft: #3d2b1e;
+  --violation: #ff8a7d;
+  --violation-bg: #3f2320;
+  --violation-ink: #ffb4ab;
+  --violation-stripe: rgba(255, 138, 125, 0.16);
+  --success: #8fd19a;
+  --success-bg: #1f3324;
+  --sunken-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
+  --option-border: #5a5045;
 }
 
 /* ---------- Base ---------- */
@@ -278,6 +281,39 @@ body {
   }
 }
 
+/* Iteration 14 (wireframe B, autonomy-log row 120): the settings button sits in the header
+   next to «Правила» (DOM: title, settings, «Правила»). Its auto left margin pushes it and
+   «Правила» to the right edge. A 44×44 square card like «Правила», with a drawn gear in the
+   ink colour; the gear's hole shows the button's surface. */
+.settings-button {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: auto;
+  padding: 0;
+  border: 2px solid var(--cell-border);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.settings-button .gear {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.settings-button .gear-hole {
+  fill: var(--surface);
+}
+
+.settings-button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
 /* ---------- Summary button and setup sheet (iteration 10, FR-95 to FR-99) ----------
    Wireframe A (autonomy-log rows 90 and 92): one summary button in the size control's
    place opens a sheet that holds the size and level pickers. The button is a full-column
@@ -336,7 +372,9 @@ body {
 
 /* ---------- Size picker (segmented control, inside the sheet) ---------- */
 
-.size-control {
+.size-control,
+.theme-control,
+.language-control {
   display: flex;
   width: 100%;
   padding: 0.1875rem;
@@ -346,7 +384,9 @@ body {
   background: var(--surface);
 }
 
-.size-control button {
+.size-control button,
+.theme-control button,
+.language-control button {
   flex: 1 1 0;
   min-width: 0;
   min-height: 2.75rem;
@@ -363,14 +403,18 @@ body {
   cursor: pointer;
 }
 
-.size-control button[aria-checked='true'] {
+.size-control button[aria-checked='true'],
+.theme-control button[aria-checked='true'],
+.language-control button[aria-checked='true'] {
   border-color: var(--primary);
   background: var(--primary-soft);
   color: var(--ink);
   font-weight: 700;
 }
 
-.size-control button:focus-visible {
+.size-control button:focus-visible,
+.theme-control button:focus-visible,
+.language-control button:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
@@ -478,7 +522,8 @@ body {
 /* «Закрити»: sticky at the bottom of a scrolling sheet like «Зрозуміло», but secondary
    (iteration 11): choosing a size or level is the main action and closes the sheet. The
    shadow masks the text scrolling under it. */
-.setup-close {
+.setup-close,
+.settings-close {
   position: sticky;
   bottom: 0;
   /* The second shadow also covers the panel's bottom padding (a glyph peeked in under
@@ -499,7 +544,95 @@ body {
   cursor: pointer;
 }
 
-.setup-close:focus-visible {
+.setup-close:focus-visible,
+.settings-close:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Iteration 14 (Footer-1, autonomy-log row 120): one sticky footer at the end of the sheet,
+   «Почати» (primary, about two thirds) on the left and «Закрити» (secondary) on the right.
+   No wrapper: the open sheet is a two-column grid, the pickers span both columns, and the
+   two buttons span every row, aligned to its end, so they stick to the bottom of a scrolling
+   sheet (a sticky item stays inside its grid area). The last row is at least the button
+   height and takes any spare height, so spare room sits above the footer, never below.
+   Mask: one rectangular sticky strip (the sheet's ::before, a grid item behind both
+   buttons) hides the text that scrolls under the footer, its gap and the bottom padding.
+   Per-button spread shadows were tried first: they follow the button radius, so the cards
+   peeked through two rounded notches above the gap (seen at 320×700 and 1366×650, 4×4). */
+.setup:popover-open {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(2.75rem, 1fr);
+  column-gap: var(--space-2);
+  align-content: start;
+}
+
+.setup > .size-control,
+.setup > .level-control {
+  grid-column: 1 / -1;
+}
+
+/* Explicit rows: the footer buttons span every row, so auto-placement would push the
+   pickers below them. */
+.setup > .size-control {
+  grid-row: 1;
+}
+
+.setup > .level-control {
+  grid-row: 2;
+}
+
+.setup .level-control {
+  margin-bottom: var(--space-5);
+}
+
+.setup-start,
+.setup > .setup-close {
+  grid-row: 1 / -1;
+  align-self: end;
+  margin-top: 0;
+}
+
+.setup-start {
+  grid-column: 1;
+  position: sticky;
+  bottom: 0;
+  box-shadow: none;
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-m);
+  background-color: var(--primary);
+  color: var(--primary-ink);
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.setup > .setup-close {
+  grid-column: 2;
+  padding: 0 var(--space-2);
+  box-shadow: none;
+}
+
+.setup:popover-open::before {
+  content: '';
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  align-self: end;
+  position: sticky;
+  bottom: 0;
+  height: 2.75rem;
+  background: var(--surface-raised);
+  box-shadow:
+    0 0 0 1rem var(--surface-raised),
+    0 1rem 0 1rem var(--surface-raised);
+  pointer-events: none;
+}
+
+.setup-start:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
@@ -622,7 +755,8 @@ body {
 /* ---------- Rules (popover: bottom sheet on phones, centred panel on wider screens) ---------- */
 
 .rules,
-.setup {
+.setup,
+.settings {
   position: fixed;
   inset: auto 0 0 0;
   width: 100%;
@@ -643,7 +777,8 @@ body {
 }
 
 .rules::backdrop,
-.setup::backdrop {
+.setup::backdrop,
+.settings::backdrop {
   background: var(--backdrop-soft);
 }
 
@@ -743,7 +878,8 @@ body {
 /* Small phones (320): the sheet fits in 55dvh with «Зрозуміло» clear of the edge (review 2, N3). */
 @media (max-width: 22.5rem) {
   .rules,
-  .setup {
+  .setup,
+  .settings {
     padding-top: var(--space-4);
   }
 
@@ -798,6 +934,11 @@ body {
   .setup-close {
     margin-top: 1rem;
   }
+
+  /* Iteration 14: the footer row starts 1rem under the levels (was «Закрити»'s margin). */
+  .setup .level-control {
+    margin-bottom: 1rem;
+  }
 }
 
 /* Iteration 11 (review of set 8): from 48rem, on a window at least 44rem tall, the sheet
@@ -823,8 +964,9 @@ body {
    block flow (no collapsing in flex): the techniques block loses its 0.5rem top margin
    (it collapsed into the list's 1rem), and the level group carries the 1.5rem gap. */
 @media (min-width: 48rem) {
-  .rules:popover-open,
-  .setup:popover-open {
+  /* Iteration 14: the setup sheet is a grid at every width (the footer), so only the rules
+     panel is a flex column here. */
+  .rules:popover-open {
     display: flex;
     flex-direction: column;
   }
@@ -873,6 +1015,78 @@ body {
     height: fit-content;
     max-height: calc(100dvh - 10.75rem);
     min-height: min(calc(100dvh - 10.75rem), calc(min(var(--board-width), var(--column)) + 4.75rem));
+  }
+}
+
+/* ---------- Settings panel (iteration 14, wireframe B, FR-102, FR-107) ----------
+   A bottom sheet on phones (the shared panel rules above). From 48rem a small panel that
+   hangs under the header at the column's right edge, under the settings button, about 22rem
+   wide. Visible plain-text labels «Тема» and «Мова» sit above the two radiogroups (they are
+   aria-hidden: each group is named by its own aria-label, so a screen reader hears the name
+   once). The radios copy the size picker. «Закрити» is secondary, like the setup sheet's. */
+
+.settings-label {
+  margin: 0 0 var(--space-1);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.settings-label + .theme-control,
+.settings-label + .language-control {
+  margin-bottom: var(--space-4);
+}
+
+/* «Як у системі» is longer than the other names: the theme options share the row by their
+   content, so it never truncates (296 px column at 320). */
+.theme-control button {
+  flex: 1 1 auto;
+}
+
+.settings-close {
+  margin-top: var(--space-2);
+}
+
+@media (min-width: 48rem) {
+  .settings {
+    inset: 0;
+    width: min(22rem, var(--column));
+    height: fit-content;
+    max-height: calc(100dvh - 7rem);
+    /* The header ends at 5.5rem; the panel starts 0.5rem below, its right edge on the
+       column's right edge (the column is centred: its right edge is 50% + column / 2). */
+    margin: 6rem 0 auto calc(50% + var(--column) / 2 - min(22rem, var(--column)));
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--overlay-border);
+    border-radius: var(--radius-l);
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* ---------- Desktop rules panel (iteration 14, R3, autonomy-log row 120) ----------
+   From 64rem «Правила» is one column 40rem wide, no longer the board column, and its height
+   is its content: no minimum, so no empty space above «Зрозуміло». The spacing is tighter
+   here only, so the rules and techniques fit a 1366×650 window with no inner scroll.
+   Phones and tablets keep the panel as it was. */
+@media (min-width: 64rem) {
+  .rules {
+    width: 40rem;
+    height: fit-content;
+    min-height: 0;
+    padding-top: var(--space-4);
+  }
+
+  .rules h2 {
+    margin-bottom: var(--space-1);
+  }
+
+  .rules ul {
+    margin-bottom: var(--space-2);
+  }
+
+  .rules li {
+    padding: 0.3125rem 0;
   }
 }
 
@@ -968,6 +1182,11 @@ body {
   .rules-close:hover,
   .setup-button:hover,
   .setup-close:hover,
+  .setup-start:hover,
+  .settings-button:hover,
+  .settings-close:hover,
+  .theme-control button:hover,
+  .language-control button:hover,
   .confirm-buttons button:hover {
     filter: var(--hover-filter);
   }
@@ -981,6 +1200,11 @@ body {
 .rules-close:active,
 .setup-button:active,
 .setup-close:active,
+.setup-start:active,
+.settings-button:active,
+.settings-close:active,
+.theme-control button:active,
+.language-control button:active,
 .confirm-buttons button:active {
   transform: translateY(1px);
 }
@@ -1122,6 +1346,24 @@ body {
   }
 }
 
+/* Iteration 14: at 320 the header holds the title, the settings button and «Правила» in a
+   296 px column: tighter gaps, a 1.5rem title and a narrower «Правила» (measured: it ran
+   12 px past the column with the iteration-13 header). */
+@media (max-width: 22.5rem) {
+  .page-header,
+  .page-header h1 {
+    gap: var(--space-2);
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .rules-button {
+    padding: 0 var(--space-2);
+  }
+}
+
 /* ---------- Wider screens ---------- */
 
 @media (min-width: 48rem) {
@@ -1209,6 +1451,11 @@ body {
   .rules-close,
   .setup-button,
   .setup-close,
+  .setup-start,
+  .settings-button,
+  .settings-close,
+  .theme-control button,
+  .language-control button,
   .confirm-buttons button {
     transition:
       background-color 120ms,
@@ -1217,7 +1464,8 @@ body {
   }
 
   .rules,
-  .setup {
+  .setup,
+  .settings {
     transition:
       transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
       overlay 220ms allow-discrete,
@@ -1226,7 +1474,8 @@ body {
 
   @starting-style {
     .rules:popover-open,
-    .setup:popover-open {
+    .setup:popover-open,
+    .settings:popover-open {
       transform: translateY(100%);
     }
   }
@@ -1234,7 +1483,8 @@ body {
   /* The closing state, so the sheet also slides out (review 2, N5). A closed popover is
      display: none, so no settled frame changes. */
   .rules:not(:popover-open),
-  .setup:not(:popover-open) {
+  .setup:not(:popover-open),
+  .settings:not(:popover-open) {
     transform: translateY(100%);
   }
 
@@ -1286,10 +1536,35 @@ body {
     }
   }
 
+  /* Iteration 14: from 48rem the settings panel drops out of the header, like the anchored
+     setup sheet. */
+  @media (min-width: 48rem) {
+    .settings {
+      transition:
+        opacity 200ms ease-out,
+        transform 200ms ease-out,
+        overlay 200ms allow-discrete,
+        display 200ms allow-discrete;
+    }
+
+    @starting-style {
+      .settings:popover-open {
+        opacity: 0;
+        transform: translateY(-0.5rem);
+      }
+    }
+
+    .settings:not(:popover-open) {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
+
   /* Review 3, R4: the backdrops fade with the sheet and the dialog, and the dialog
      fades and scales in and out. */
   .rules::backdrop,
   .setup::backdrop,
+  .settings::backdrop,
   .confirm::backdrop {
     transition:
       background-color 220ms ease-out,
@@ -1300,6 +1575,7 @@ body {
   @starting-style {
     .rules:popover-open::backdrop,
     .setup:popover-open::backdrop,
+    .settings:popover-open::backdrop,
     .confirm[open]::backdrop {
       background-color: transparent;
     }
@@ -1307,6 +1583,7 @@ body {
 
   .rules:not(:popover-open)::backdrop,
   .setup:not(:popover-open)::backdrop,
+  .settings:not(:popover-open)::backdrop,
   .confirm:not([open])::backdrop {
     background-color: transparent;
   }

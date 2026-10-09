@@ -1,6 +1,7 @@
 import { OpenConfirmDialog } from '@/components/open-confirm-dialog'
 import { OpenRulesPopover } from '@/components/open-rules-popover'
 import { OpenSetupSheet } from '@/components/open-setup-sheet'
+import { OpenSettingsPanel } from '@/components/open-settings-panel'
 
 export type CellSpec = '.' | 'g0' | 'g1' | 'p0' | 'p1' | 'h0' | 'h1'
 
@@ -23,7 +24,19 @@ type BinarkaPageProps = {
   setupOpen?: boolean
   /** The level shown, 1 to 4 (FR-87). At 4×4 only level 1 exists (FR-91). */
   level?: Level
+  /** Iteration 14 (FR-100): the marked size and level while the sheet is open; by default
+      the board shown. The summary always shows the board shown (FR-95). */
+  markedSize?: number
+  markedLevel?: Level
+  /** Iteration 14: puts the focus on «Почати» once the sheet is open (review capture only). */
+  focusStart?: boolean
+  /** Iteration 14 (FR-102, FR-107): opens the settings panel on load (review capture only). */
+  settingsOpen?: boolean
+  /** The checked theme option (FR-102); the design stores nothing, so «Як у системі» by default. */
+  themeChoice?: ThemeChoice
 }
+
+export type ThemeChoice = 'light' | 'dark' | 'auto'
 
 export type Level = 1 | 2 | 3 | 4
 
@@ -59,6 +72,17 @@ const TECHNIQUES = [
   'Баланс рядка: якщо в рядку є місце лише для одного нуля або однієї одиниці, а в клітинці вона дала б три однакові цифри поспіль, там стоїть інша цифра.',
   'Однакові рядки: якщо рядок збігається з повним рядком усюди, крім двох клітинок, ці дві клітинки протилежні до нього.',
   'Хід наперед: уявно поставте цифру; якщо за кілька кроків порушиться правило, у клітинці стоїть інша.',
+] as const
+// FR-102 and FR-107: the theme and language options, in this order. Each language is named in
+// its own language (TD-Q5), so "English" carries lang="en".
+const THEMES: ReadonlyArray<{ option: ThemeChoice; name: string }> = [
+  { option: 'light', name: 'Світла' },
+  { option: 'dark', name: 'Темна' },
+  { option: 'auto', name: 'Як у системі' },
+]
+const LANGUAGES = [
+  { option: 'uk', name: 'Українська' },
+  { option: 'en', name: 'English' },
 ] as const
 // Non-breaking spaces keep «0 і 1» on one line (finding 11).
 const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 0\u00a0і\u00a01. Правила — кнопка «Правила» вгорі.'
@@ -121,6 +145,29 @@ export function Logo({ size = 56 }: { size?: number }) {
   )
 }
 
+// Iteration 14: a drawn gear (eight rounded teeth around a ring), like the logo: no glyph, no
+// image file. It takes the button's text colour; the hole shows the button's own surface.
+function Gear() {
+  return (
+    <svg className="gear" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="24" height="24">
+      {Array.from({ length: 8 }, (_, index) => (
+        <rect
+          key={index}
+          x="10"
+          y="1.5"
+          width="4"
+          height="5"
+          rx="1.25"
+          fill="currentColor"
+          transform={`rotate(${index * 45} 12 12)`}
+        />
+      ))}
+      <circle cx="12" cy="12" r="7.25" fill="currentColor" />
+      <circle className="gear-hole" cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+
 function cellLabel(row: number, col: number, digit: string, given: boolean, hinted: boolean) {
   const value = digit === '' ? 'порожньо' : digit
   const suffix = given ? ', задано' : hinted ? ', підказка' : ''
@@ -140,10 +187,17 @@ export function BinarkaPage({
   confirmOpen = false,
   setupOpen = false,
   level = 1,
+  markedSize,
+  markedLevel,
+  focusStart = false,
+  settingsOpen = false,
+  themeChoice = 'auto',
 }: BinarkaPageProps) {
-  // FR-91: at 4×4 only «Розминка» exists; the other three stay focusable (aria-disabled).
-  const onlyFirstLevel = board.size === 4
-  const shownLevel: Level = onlyFirstLevel ? 1 : level
+  const shownLevel: Level = board.size === 4 ? 1 : level
+  // FR-100: the marked choice; FR-91 follows the marked size (marking 4×4 marks «Розминка»).
+  const marked = markedSize ?? board.size
+  const onlyFirstLevel = marked === 4
+  const markedLevelShown: Level = onlyFirstLevel ? 1 : (markedLevel ?? shownLevel)
   // FR-95: the summary text, for example «6×6 · Задачка».
   const summary = `${board.size}×${board.size} · ${LEVELS.find((entry) => entry.level === shownLevel)!.name}`
 
@@ -157,6 +211,10 @@ export function BinarkaPage({
           <Logo />
           Бінарка
         </h1>
+        <button type="button" className="settings-button" data-action="settings" popoverTarget="settings">
+          <span className="visually-hidden">Налаштування</span>
+          <Gear />
+        </button>
         <button type="button" className="rules-button" data-action="rules" popoverTarget="rules">
           Правила
         </button>
@@ -303,7 +361,7 @@ export function BinarkaPage({
               key={size}
               type="button"
               role="radio"
-              aria-checked={size === board.size ? 'true' : 'false'}
+              aria-checked={size === marked ? 'true' : 'false'}
               data-size-option={size}
             >
               {`Поле ${size}×${size}`}
@@ -322,7 +380,7 @@ export function BinarkaPage({
               key={entry.level}
               type="button"
               role="radio"
-              aria-checked={entry.level === shownLevel ? 'true' : 'false'}
+              aria-checked={entry.level === markedLevelShown ? 'true' : 'false'}
               aria-disabled={onlyFirstLevel && entry.level !== 1 ? 'true' : undefined}
               data-level-option={entry.level}
             >
@@ -332,11 +390,67 @@ export function BinarkaPage({
           ))}
         </div>
 
+        <button type="button" className="setup-start" data-action="setup-start">
+          Почати
+        </button>
+
         <button
           type="button"
           className="setup-close"
           data-action="setup-close"
           popoverTarget="setup"
+          popoverTargetAction="hide"
+        >
+          Закрити
+        </button>
+      </div>
+
+      <div
+        id="settings"
+        popover="auto"
+        className="settings"
+        data-section="settings"
+        role="dialog"
+        aria-label="Налаштування"
+      >
+        <p className="settings-label" aria-hidden="true">
+          Тема
+        </p>
+        <div className="theme-control" data-control="theme" role="radiogroup" aria-label="Тема">
+          {THEMES.map((entry) => (
+            <button
+              key={entry.option}
+              type="button"
+              role="radio"
+              aria-checked={entry.option === themeChoice ? 'true' : 'false'}
+              data-theme-option={entry.option}
+            >
+              {entry.name}
+            </button>
+          ))}
+        </div>
+        <p className="settings-label" aria-hidden="true">
+          Мова
+        </p>
+        <div className="language-control" data-control="language" role="radiogroup" aria-label="Мова">
+          {LANGUAGES.map((entry) => (
+            <button
+              key={entry.option}
+              type="button"
+              role="radio"
+              lang={entry.option}
+              aria-checked={entry.option === 'uk' ? 'true' : 'false'}
+              data-language-option={entry.option}
+            >
+              {entry.name}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          className="settings-close"
+          data-action="settings-close"
+          popoverTarget="settings"
           popoverTargetAction="hide"
         >
           Закрити
@@ -357,7 +471,8 @@ export function BinarkaPage({
 
       {confirmOpen && <OpenConfirmDialog />}
       {rulesOpen && <OpenRulesPopover scrollToEnd={rulesScrolledToTechniques} />}
-      {setupOpen && <OpenSetupSheet />}
+      {setupOpen && <OpenSetupSheet focusStart={focusStart} />}
+      {settingsOpen && <OpenSettingsPanel />}
     </div>
   )
 }

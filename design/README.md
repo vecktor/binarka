@@ -434,3 +434,63 @@ The user approved this in autonomy-log row 96. Only the setup sheet's height cha
 ## Pixel reference: moved to review-set-11 (2026-10-09 about 16:34 UTC+5:30, autonomy-log row 98)
 
 The user moved the NFR-14 pixel reference from `review-set-5/` to `review-set-11/` (structure A, iteration 13: the summary button and the setup sheet; 118 shots, two captures byte-identical; `SHA1SUMS` in the set), after a confirming design review (verdict ready, no blocking item). `review-set-5/` stays in the repository as history. Open, accepted with the move: P1 at 1024×768 (6×6) the first idle line sits about 10 px under the sheet edge and touches its shadow; P2 at 1366×650 (4×4) the scrolling sheet has no scroll cue; P3 the capture harness once lost the first pair of shots on a cold start (re-capture matched). The intermediate sets `review-set-6/` to `review-set-10/` are local working sets and are not committed.
+
+### Iteration 14: «Почати», the desktop rules panel, settings and the theme mechanism, by the designer agent (2026-10-10)
+
+Signed wireframe `design/wireframes/sheet-start-theme-language-2026-10-10/` (autonomy-log row 120: Footer-1, R3, B, drawn gear, visible labels); requirement rows of the phase S amendment (row 118: FR-65, FR-68, FR-96, FR-100 to FR-118, A-41 as amended by row 120, A-45 to A-55). Iteration 1 of 2 for this wireframe. Started from iteration 13 (`review-set-11/`, the frozen pixel reference, untouched). Not the reference: the user decides that.
+
+- **Theme mechanism (TD-Q13):**
+  - `app/binarka.css`: the light set is the top-level `:root` with `color-scheme: light`; the dark set is `:root[data-theme='dark']` with `color-scheme: dark`. There is no `prefers-color-scheme` block any more. The token values are unchanged and no token was added: «Почати» uses `--primary` and `--primary-ink`, so the product list of A-51 stays at 13.
+  - `app/layout.tsx`: a classic inline script in `<head>` (checked in the built `out/index.html`: a plain `<script>` after the CSS link, before the body) sets `data-theme` from `matchMedia('(prefers-color-scheme: dark)')`. It also sets the one `meta[name=theme-color]` (`#f7f3ea` / `#1a1714`). The media-keyed `themeColor` and `colorScheme` metadata are removed.
+  - While on auto, the script follows a `change` of the query (FR-105). **This listener is what made the capture stable.** A first version read the query once: in 4 of 59 dark shots (`1024-dark-confirm`, `1024-dark-four`, `1024-dark-setup-four`, `1440-dark-win`), headless Chrome applied `preferredColorScheme=dark` only after the script had run, so those pages painted light. This is a harness timing fact, and the page port (FR-116) should know it.
+  - **Design-only hook:** on `/settings-light/` and `/settings-dark/` the script forces that theme. The reference stores nothing; the product reads its stored choice instead.
+  - **Proof that the restructure alone changes no pixel:** before any other change, two full captures of the 118 existing lines were byte-identical with `review-set-11/` (118 of 118, twice). Their sums are in `review-set-12/theme-probe/`, with the one-shot script's 114 of 118 run.
+- **Setup sheet, Footer-1 (FR-96, FR-100, FR-101):**
+  - **DOM:** «Почати» `button.setup-start[data-action="setup-start"]` comes between the level group and «Закрити»; both are direct children of the sheet.
+  - **Grid:** the open sheet is a two-column grid at every width (`minmax(0,2fr) minmax(0,1fr)`, 0.5rem gap). The pickers span both columns, in rows 1 and 2.
+  - **Footer:** the two buttons span all rows, aligned to the end, and are sticky at the bottom. The last row is at least 2.75rem and takes any spare height, so spare room still sits above the footer.
+  - **«Почати»:** primary (`--primary` fill and border, `--primary-ink`, 700). It is about two thirds of the row: 185 px at 320, 222 at 375, 283 at 1440. «Закрити» is secondary, as in iteration 11. Both are 44 px tall.
+  - **Mask:** one rectangular sticky strip, the sheet's `::before`, sits behind both buttons. Per-button spread shadows were tried first: they follow the button radius, and the level cards peeked through two rounded notches above the gap (seen in my own 320×700 and 1366×650 4×4 shots).
+  - **Height unchanged:** the footer adds no height. The measured sheet sizes equal iteration 13 at every capture size, for example 1440×900 6×6 156–698 and 1366×650 6×6 96–613. Inner scroll is unchanged too: 4×4 at 1366×650 scrolls 14 px (P2) and 4×4 at 320×700 scrolls 49 px, both with the footer visible. There is no new scroll case.
+  - **Changed meaning:** iteration 11's "each choice closes the sheet" (l. 289) no longer holds. A press only marks the choice, and «Почати» starts the puzzle. `/setup/` and `/setup-four/` now show the sheet as it opens on that board (marked = shown).
+  - **New routes:** `/setup-marked/` shows the board 6×6 · Розминка (the summary still «6×6 · Розминка ▾») with 8×8 · Головоломка marked and the focus ring on «Почати». `/setup-marked-four/` shows the board 6×6 with 4×4 marked: the reason line, «Розминка» marked, levels 2 to 4 unavailable. New props: `markedSize`, `markedLevel` and `focusStart`. The focus is re-applied on window focus, like the confirm fix.
+- **Desktop «Правила», R3 (from 64rem only; phones and tablets unchanged):**
+  - **Size:** `width: 40rem`, `height: fit-content`, `min-height: 0`, so there is no empty space above «Зрозуміло».
+  - **Spacing:** padding-top 1rem, h2 margin 0.25rem, list margin 0.5rem, row padding 0.3125rem. Line height and type sizes are unchanged.
+  - **Measured:** 640×526.8 px at 1024×768, 1280×800, 1366×650 and 1440×900, with no inner scroll anywhere. At 1366×650 the cap is 538, so there are 11 px spare. With rows of 0.375rem it was 550.8, a 13 px scroll. With only the width change it was 538.8, a 1 px scroll.
+  - **Result:** `1366-*-rules-techniques` and `1440-*-rules-techniques` are byte-identical to the plain rules shots (`cmp`, light and dark).
+  - **Open item for the reviewer:** with no minimum height, the panel ends at 622.8 px. At 1024×768 that is across the button row (598–642), so the lower part of «Підказка», «Скинути» and «Нова головоломка» shows under its edge. At 1440×900 a sliver of the board shows below it. This is the cost of R3 as signed.
+- **Settings, B (FR-102, FR-107, FR-117, A-41: the fifth id `settings`):**
+  - **Header:** title, `button.settings-button[data-action="settings"][popovertarget="settings"]`, then «Правила». The button's auto left margin keeps both buttons on the right. It is a 44×44 card like «Правила», with a drawn SVG gear: 8 rounded teeth, a ring, and a hole in `--surface`, in `currentColor` (`--ink`), `aria-hidden`. Its accessible name «Налаштування» is a visually hidden span, the summary button's pattern (no `aria-label`).
+  - **Panel:** `div#settings.settings[popover=auto][data-section="settings"][role=dialog][aria-label="Налаштування"]`, after the setup sheet. It holds:
+    - the label «Тема» (`p.settings-label`, `aria-hidden`, because the group carries the same `aria-label`);
+    - `div.theme-control[data-control="theme"][role=radiogroup][aria-label="Тема"]` with «Світла», «Темна», «Як у системі» (`data-theme-option` light, dark, auto);
+    - the label «Мова»;
+    - `div.language-control[data-control="language"][role=radiogroup][aria-label="Мова"]` with «Українська» `lang="uk"` and «English» `lang="en"` (`data-language-option`);
+    - `button.settings-close[data-action="settings-close"]` «Закрити», secondary.
+  - **Radios:** they reuse the size picker's rules: segmented card, 44 px, checked = `--primary` border on `--primary-soft`, focus ring. Theme options size by content, so «Як у системі» never truncates (75 / 74 / 123 px at 320).
+  - **Placement:** a bottom sheet on phones (the shared panel rules; 430–700 at 320×700). From 48rem it is a `min(22rem, column)` panel at 6rem from the top (the header ends at 5.5rem), with its right edge on the column's right edge (`margin-left: calc(50% + column/2 − width)`). Measured: 352×270.5 px at 768, 1024, 1366 and 1440, right edges equal to the header's.
+  - **Motion:** under `no-preference` only. It slides up on phones and drops 0.5rem from 48rem. The soft backdrop is shared.
+- **320 header:** with the third item, the iteration-13 header ran 12 px past the 296 px column (`scrollWidth` 332). At ≤ 22.5rem the header and title gaps are 0.5rem, the title is 1.5rem and «Правила» has 0.5rem side padding. Measured: title 12–153.8, gear 172.9–216.9, «Правила» 224.9–308.0. That leaves 19 px between title and gear, and `scrollWidth` is 320 on all 16 routes at 320×700 (measured). At 375 the header is unchanged except for the gear (20 px spare).
+- **Capture:** new lines at the end of `tools/capture-review-set.sh`, existing lines untouched:
+  - `setup-marked` and `setup-marked-four` at the five sizes and 1366×650;
+  - `settings` at the same six;
+  - the forced theme at the five sizes: `W-dark-settings-light` is «Світла» on a dark system, `W-light-settings-dark` the reverse;
+  - `1440-*-rules-techniques`.
+  - That makes 166 shots. The rules panel at 1366×650 and 1440×900 in both themes comes from the existing lines.
+- **The set:** `v0-screenshots/review-set-12/` (166 shots, `SHA1SUMS`, contact sheets per state in `contact/`, and `CHANGES-vs-review-set-11.txt`).
+  - A second full run is byte-identical on **166 of 166**.
+  - **Against set 11:** 2 shots are byte-identical (`logo-*`) and 48 are new. Of the 116 that changed, 84 differ only in the header row: below it they are pixel-identical. The change is the gear everywhere, and at 320 also the tighter title and «Правила». The other 32 also differ below the header, all intended: 24 `setup` / `setup-four` shots (the footer) and 8 desktop rules shots (`{1024,1440,1366}-*-rules`, `1366-*-rules-techniques`; R3). The 768 rules shots differ only in the header (tablet unchanged).
+- **Contrast** (computed from the tokens), light / dark:
+
+  | Part | Light | Dark |
+  |---|---|---|
+  | «Почати» text | 5.4 | 8.5 |
+  | «Почати» fill on the panel | 5.4 | 6.8 |
+  | Gear and labels | 15.9 | 13.9 / 12.8 |
+  | Settings button border on `--bg` | 3.4 | 4.6 |
+  | Unchecked option | 7.2 | 7.5 |
+  | Checked option text | 13.0 | 11.5 |
+  | Checked border on `--primary-soft` | 4.4 | 6.1 |
+  | Radiogroup border | 3.7 | 3.8 |
+  | Focus ring on the panel | 15.9 | 12.8 |
