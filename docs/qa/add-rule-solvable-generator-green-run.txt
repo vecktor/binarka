@@ -1,0 +1,8 @@
+# Green run: add-rule-solvable-generator (phase F, FR-27)
+
+Run by the orchestrator at 2026-10-09 11:57 (UTC+5:30) in worktree suspicious-lamarr-be0fd0 on the implementation (src/engine/rule-solve.ts new, src/engine/generator.ts carving predicate), tests of 6247183 unchanged.
+npm run lint: exit 0. npm run build: ok. npx openspec validate --all --strict: 3 passed. node scripts/check-eval-ratchet.mjs: PASS.
+
+## npm run test:run (summary)
+ Test Files  35 passed (35)
+      Tests  720 passed (720)

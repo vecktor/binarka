@@ -1,12 +1,11 @@
 import { mulberry32, shuffle } from './rng';
-import { countSolutionsBudgeted } from './solver';
+import { solveByRules } from './rule-solve';
 import { InvalidArgumentTypeError, InvalidSeedError, InvalidSizeError } from './types';
 import type { Cell, Grid, Puzzle } from './types';
 
 const MAX_SEED = 2147483647;
 /** Work limits (search nodes), never wall-clock time, so the output depends only on the seed (FR-14). */
 const FILL_NODE_BUDGET = 20000;
-const CARVE_NODE_BUDGET = 2000;
 
 function validate(size: number, seed: number): void {
   if (typeof size !== 'number' || typeof seed !== 'number') throw new InvalidArgumentTypeError();
@@ -87,13 +86,14 @@ export function generate(size: number, seed: number): Puzzle {
   const positions: [number, number][] = [];
   for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) positions.push([r, c]);
   shuffle(positions, rng);
+  // Invariant (FR-27, FR-15): the board is rule-solvable before and after every accepted removal. Every rule fill is
+  // forced, so a rule-solvable puzzle has exactly one solution. A removal that breaks this is undone.
   for (const [r, c] of positions) {
     const row = givens[r];
     const keep = row?.[c];
     if (row === undefined || keep === undefined) throw new RangeError(`generate: cell ${r}, ${c} is out of range`);
     row[c] = null;
-    const result = countSolutionsBudgeted(givens, CARVE_NODE_BUDGET);
-    if (result.exhausted || result.count !== 1) row[c] = keep;
+    if (!solveByRules(givens).solved) row[c] = keep;
   }
   return { size, givens, solution: solution.map((row) => [...row]) };
 }
