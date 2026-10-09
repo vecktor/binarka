@@ -1,0 +1,103 @@
+Red run, slice fix-action-button-targets (NFR-12). 2026-10-09 22:36 UTC+5:30. Tree: d6d3891 + change folder + tests/play-page-action-buttons-stylesheet.test.ts; src/ untouched (git diff --stat src/ empty).
+The e2e red is the G1 evidence (docs/qa/g1/layout-first-run.txt) run again; the unit red is new.
+
+== 1. npx vitest run tests/play-page-action-buttons-stylesheet.test.ts
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 89ms
+     × Every rule that declares min-height for «Підказка» is at the top level of the stylesheet, and at least one exists 14ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 16ms
+     × Every rule that declares min-height for «Скинути» is at the top level of the stylesheet, and at least one exists 10ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 14ms
+     × Every rule that declares min-height for «Нова головоломка» is at the top level of the stylesheet, and at least one exists 10ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/play-page-action-buttons-stylesheet.test.ts > @trace NFR-12 the stylesheet declares a 44 px minimum height for each action button > The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px
+AssertionError: «Підказка» has min-height "auto" (reads as NaN px); NFR-12 needs a length of at least 44 px, for example 2.75rem: expected false to be true // Object.is equality
+    101|         `${name} has min-height "${value}" (reads as ${lengthPx(value)…
+ FAIL  tests/play-page-action-buttons-stylesheet.test.ts > @trace NFR-12 the stylesheet declares a 44 px minimum height for each action button > Every rule that declares min-height for «Підказка» is at the top level of the stylesheet, and at least one exists
+AssertionError: at least one top-level rule declares min-height for «Підказка» ([data-action="hint"]); none matches the button: expected 0 to be greater than 0
+ FAIL  tests/play-page-action-buttons-stylesheet.test.ts > @trace NFR-12 the stylesheet declares a 44 px minimum height for each action button > The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px
+AssertionError: «Скинути» has min-height "auto" (reads as NaN px); NFR-12 needs a length of at least 44 px, for example 2.75rem: expected false to be true // Object.is equality
+    101|         `${name} has min-height "${value}" (reads as ${lengthPx(value)…
+ FAIL  tests/play-page-action-buttons-stylesheet.test.ts > @trace NFR-12 the stylesheet declares a 44 px minimum height for each action button > Every rule that declares min-height for «Скинути» is at the top level of the stylesheet, and at least one exists
+AssertionError: at least one top-level rule declares min-height for «Скинути» ([data-action="reset"]); none matches the button: expected 0 to be greater than 0
+ FAIL  tests/play-page-action-buttons-stylesheet.test.ts > @trace NFR-12 the stylesheet declares a 44 px minimum height for each action button > The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px
+AssertionError: «Нова головоломка» has min-height "auto" (reads as NaN px); NFR-12 needs a length of at least 44 px, for example 2.75rem: expected false to be true // Object.is equality
+    101|         `${name} has min-height "${value}" (reads as ${lengthPx(value)…
+ FAIL  tests/play-page-action-buttons-stylesheet.test.ts > @trace NFR-12 the stylesheet declares a 44 px minimum height for each action button > Every rule that declares min-height for «Нова головоломка» is at the top level of the stylesheet, and at least one exists
+AssertionError: at least one top-level rule declares min-height for «Нова головоломка» ([data-action="new"]); none matches the button: expected 0 to be greater than 0
+ Test Files  1 failed (1)
+      Tests  6 failed | 2 passed (8)
+
+== 2. npx playwright test --project=layout e2e/nfr-12-targets.spec.ts
+  ✘  2 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1024x768: cells and controls meet their size floors (1.7s)
+  ✘  1 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 768x1024: cells and controls meet their size floors (1.7s)
+  ✘  4 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 320x700: cells and controls meet their size floors (1.7s)
+  ✘  3 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1366x650: cells and controls meet their size floors (1.7s)
+  ✘  5 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 375x812: cells and controls meet their size floors (1.7s)
+  ✘  8 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 844x390: cells and controls meet their size floors (1.2s)
+  ✘  7 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1280x420: cells and controls meet their size floors (1.2s)
+  ✘  6 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1440x900: cells and controls meet their size floors (1.2s)
+    Error: 3 element(s) below the floor at 320x700:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+    Error: 3 element(s) below the floor at 375x812:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+    Error: 3 element(s) below the floor at 768x1024:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+    Error: 3 element(s) below the floor at 1024x768:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+    Error: 3 element(s) below the floor at 1366x650:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+    Error: 3 element(s) below the floor at 1440x900:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+    Error: 3 element(s) below the floor at 1280x420:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+    Error: 3 element(s) below the floor at 844x390:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+  8 failed

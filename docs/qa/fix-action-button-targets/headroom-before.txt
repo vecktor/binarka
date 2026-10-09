@@ -1,0 +1,8 @@
+NFR-10 headroom before the NFR-12 fix (measured 2026-10-09 about 22:30 UTC+5:30, branch claude/friendly-bouman-8d7e45 at d6d3891)
+Build: npm run build; served by `npx vite preview --port 4174`. Chromium (Playwright 1.64.0), headless, viewport 375x812,
+reducedMotion reduce, unseeded page load, 6x6 default state, read by page.evaluate:
+  document.scrollingElement.scrollHeight = 812   (equals the viewport: no vertical scroll)
+  document.body.getBoundingClientRect().bottom = 622
+  messages container bottom = 622
+  [data-action="hint"] height = 40
+One sample, one state (default); not a sweep. The NFR-10 e2e check (e2e/nfr-10-fit.spec.ts) stays the gate.

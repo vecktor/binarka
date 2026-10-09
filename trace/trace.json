@@ -1799,6 +1799,10 @@
     {
       "check": "recording-evidence",
       "msg": "FR-99 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"fix-action-button-targets\" is not archived"
     }
   ]
 }
