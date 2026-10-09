@@ -4,7 +4,7 @@
 
 The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a segmented size control (4×4, 6×6, 8×8; 6×6 at start), a hint button, a reset button and a new-puzzle button, a «Правила» button in the header that opens a rules popover, an idle line that tells a new player what to do, asks in a confirmation dialog before a new puzzle, a size change or a reset discards the player's moves, makes every cell a button with a Ukrainian label for keyboard and screen-reader play, and shows a Ukrainian win message when the board is solved. The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
 
-Ownership: this capability owns FR-31 to FR-43 (FR-39, FR-42 and FR-43 amended), FR-57, FR-58 (amended), FR-66 to FR-71 and FR-73, and FR-59 to FR-65 and NFR-9 (the accessibility requirements of `main`, reconciled with the UX page model on 2026-10-09 by the change `reconcile-ux-accessibility`). It traces NFR-5 only for the text the page itself shows (labels, buttons including the reset label, the size control, the header, the rules panel, the idle line, the confirmation dialog, cell labels, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
+Ownership: this capability owns FR-31 to FR-43 (FR-39, FR-42 and FR-43 amended), FR-57, FR-58 (amended), FR-66 to FR-73, and FR-59 to FR-65 and NFR-9 (the accessibility requirements of `main`, reconciled with the UX page model on 2026-10-09 by the change `reconcile-ux-accessibility`). It traces NFR-5 only for the text the page itself shows (labels, buttons including the reset label, the size control, the header, the rules panel, the idle line, the confirmation dialog, cell labels, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
 
 ## DOM contract used by the scenarios
 
@@ -30,6 +30,7 @@ FR-31 to FR-43, FR-57, FR-58 and A-4 only require that the seed is injectable. T
 - Rules panel: `[data-section="rules"]`, a `popover` element opened by `[data-action="rules"]` in the header, with the heading «Правила», three `li` items and the close button «Зрозуміло»; it is the last child of the root, after the message area, outside the FR-68 sequence (see «Rules panel» and «Page document order»).
 - Message regions: `[data-message="idle"]`, `[data-message="hint"]` and `[data-message="win"]` in this order, always present; for hint and win, empty text content means no message is shown; the idle line always holds its text (see «Idle line»); `[data-message="hint"]` and `[data-message="win"]` carry `role="status"` and the idle line has no role; the two status regions stay rendered while empty (FR-63, FR-71).
 - Page root: the `root` passed to `mountPlayPage`. The header with the heading «Бінарка» is required (FR-68) and is inside the root; the document title is `document.title`.
+- Logo: one decorative inline `svg` with `aria-hidden="true"` inside the `h1` of the `header`, built once at mount, with no text, no `id` and no `href`/`src`; its shapes carry the classes `logo-cell`, `logo-digit`, `logo-digit-ring` (see «Logo»).
 - Ids: an `id` exists under the root only to wire the rules popover and the confirmation dialog (`popovertarget`, `aria-labelledby`): the rules panel, its heading «Правила» and the element that holds the confirmation text. Each of the three ends in a number that belongs to the mount, so two pages mounted on two roots of one document share no id. No other element has an `id`, and no `for` attribute is used (FR-61).
 - Key events: when a scenario says the test dispatches a key, the test fires a bubbling, cancelable `keydown` or `keyup` event (`new KeyboardEvent(type, { key, bubbles: true, cancelable: true })`, with `ctrlKey`, `altKey`, `shiftKey` or `repeat` set when the scenario names them) on the named element, and reads `event.defaultPrevented` after the dispatch. Keys are named by their `key` value (`Enter`, a single space for Space, `ArrowRight`, `Home`, and so on). The page handles no key on the board (FR-59, FR-60): jsdom does not turn Enter or Space into a click on a button, so where a scenario needs the activation of a cell, the test clicks it.
 ## Requirements
@@ -1493,6 +1494,76 @@ Traces: FR-65, NFR-9
 - **WHEN** the test reads the declarations of the `.board` rule and the classes of `[data-board]`
 - **THEN** `touch-action` is `manipulation` and `[data-board]` has the class `board`
 
+### Requirement: Logo
+
+The page header SHALL show exactly one inline `<svg>` logo, drawn as shapes in the page source: a 2×2 mini board with the digits «1 0 / 0 1» in a circle with 0/1 rays, and no text (FR-72). The mini board SHALL be four cell shapes `.logo-cell` (`rect`) in a 2×2 arrangement, each holding one digit shape: a bar for 1 (a `rect` with the class `logo-digit`) and a ring for 0 (an `ellipse` with the class `logo-digit-ring`), so that in reading order (top-left, top-right, bottom-left, bottom-right) the four digits are 1, 0, 0, 1. The circle SHALL be a `circle` element and the rays SHALL be shapes around it: bars (`rect`) for 1 and rings (`ellipse`) for 0, at least one of each. The SVG SHALL hold no `<text>` element, no `<title>`, no `<desc>`, no `<foreignObject>`, no text node of any kind (not even whitespace) and no word; its text content is empty. It SHALL be decorative: `aria-hidden="true"`; the title in the header remains the page's text heading, with the text «Бінарка». It SHALL NOT use an image file: no `<img>`, no `<image>`, no `<use>` and no `href` or `xlink:href` on any element of the SVG, no `src` attribute anywhere on the page (TC-14). The logo SHALL be created once at mount with the header, so a new puzzle, a size change and a win leave exactly one logo, the same element. The logo adds no page text, so NFR-5 is unaffected. Legibility of the four digits at 40 px and the look of the mark are covered by the held NFR-15 (and NFR-14), see `docs/requirements-held.md`; the classes, the tag choices and "the same element after a board change" above are spec-made proxies for FR-72 and TC-14, taken from the frozen design (`design/v0/components/binarka-page.tsx`, the source of A-30) and the mount-once structure of the page so that the shapes are checkable in jsdom; they are not requirements of FR-72 itself.
+
+Traces: FR-72, TC-14
+
+#### Scenario: One decorative inline logo in the header
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the `header` element of the root
+- **THEN** the header contains exactly one `svg` element, and the root contains no other `svg` element
+- **AND** that `svg` has `aria-hidden="true"`
+- **AND** the heading in the header has the exact text content «Бінарка» (the logo adds no text to it)
+
+#### Scenario: The logo holds no text
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test walks every node under the `svg`
+- **THEN** there is no `text`, `title`, `desc` or `foreignObject` element and no text node (a `TreeWalker` over `SHOW_TEXT` finds none)
+- **AND** the `svg`'s `textContent` is the empty string
+
+#### Scenario: The mini board shows 1 0 / 0 1
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the shapes of the `svg` with the classes `logo-cell`, `logo-digit` and `logo-digit-ring`
+- **THEN** there are exactly four `rect` elements with the class `logo-cell`, with two distinct `x` values and two distinct `y` values, each of the four (x, y) combinations occurring once
+- **AND** there are exactly four digit shapes, one in each cell, and in reading order of the cells they are: a `rect.logo-digit` (1), an `ellipse.logo-digit-ring` (0), an `ellipse.logo-digit-ring` (0), a `rect.logo-digit` (1)
+- **AND** reading order means the cells ordered by (`y`, then `x`) ascending, the values read with `getAttribute` and compared as numbers
+- **AND** each digit shape lies inside its cell: for a `rect.logo-digit` its `x` and `y` (and for an `ellipse.logo-digit-ring` its `cx` and `cy`) are within the cell's `x` to `x` + `width` and `y` to `y` + `height`, and exactly one digit shape lies in each cell
+
+#### Scenario: Circle and 0/1 rays
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the `svg`
+- **THEN** it contains exactly one `circle` element
+- **AND** it contains at least one `rect` and at least one `ellipse` that carry none of the classes `logo-cell`, `logo-digit` and `logo-digit-ring` (the rays: bars for 1, rings for 0)
+
+#### Scenario: No image file is used
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the whole root
+- **THEN** the root contains no `img`, `image`, `use`, `picture`, `object`, `embed` or `canvas` element
+- **AND** no element of the root has a `src` attribute, and no element of the `svg` has an `href` or `xlink:href` attribute
+
+#### Scenario: The repository holds no image asset
+
+- **GIVEN** the source tree
+- **WHEN** the test lists every file under `src/` (and under `public/` if that directory exists; it does not exist today), and reads `index.html` and `src/ui/style.css`
+- **THEN** no file under `src/` (or `public/`) has the extension `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.avif`, `.bmp`, `.ico` or `.svg`
+- **AND** `index.html` has no `<link>` element whose `rel` contains `icon` and no `<img>` element, and `src/ui/style.css` contains no `url(`
+
+#### Scenario: The logo survives every board change
+
+- **GIVEN** a mounted page with a fixture puzzle and the logo element read at mount
+- **WHEN** the player does each of the actions in this table, each from a freshly mounted page
+
+| Action |
+|--------|
+| presses «Нова головоломка» |
+| changes the size to 4 (one run) and to 8 (one run) |
+| reaches a win |
+
+- **THEN** after each action the header still holds exactly one `svg`, it is the same element as at mount, and it still holds no text node
+
+#### Scenario: The logo does not leak the seed
+
+- **GIVEN** the page is mounted with a seed source returning 987654 and the logo present
+- **WHEN** the test inspects every text node under the page root, `document.title` and every attribute value of every element in the root, including those of the `svg` and its shapes, each as a separate string
+- **THEN** none of those strings contains `987654` and none matches `/9\D?8\D?7\D?6\D?5\D?4/` (so no shape coordinate or `viewBox` accidentally spells the seed)
+
 ## Exclusions
 
 The following are intentionally unsupported in MVP; testers must not report them as defects.
@@ -1501,6 +1572,7 @@ The following are intentionally unsupported in MVP; testers must not report them
 - No persistence (TC-12): reloading the page starts a fresh puzzle; nothing is stored. No network calls: puzzles are generated in the browser.
 - Difficulty grading (FR-44), a timer (FR-45), saved progress (FR-46), undo (FR-47) and a daily puzzle (FR-48) are Future; reset (FR-58) returns to the givens only and is not undo.
 - Real-browser tests (NFR-7) are Future; the page is tested in jsdom only (TC-13). Rendering defects that jsdom cannot see are not caught.
+- Image files and bitmap or other graphics assets are intentionally unsupported (TC-14); the only graphic is the inline SVG logo of FR-72. Legibility of the logo at 40 px and its look are not specified (held NFR-15, NFR-14).
 - Keyboard play and the roles, names and states screen readers use are MVP requirements (NFR-9, FR-59 to FR-65; A-20 reconciled 2026-10-09). Real screen-reader output and real-browser rendering are not tested (A-28, TC-13).
 - Two accessibility items the user declined (autonomy-log rows 43 and 66) are not provided: 44 px phone touch targets and the puzzle state in the URL.
 - Arrow, Home, End, PageUp and PageDown are not handled. A repeated identical hint sentence is not announced again.

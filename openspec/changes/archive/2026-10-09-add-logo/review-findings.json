@@ -1,0 +1,128 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "confirming run, change add-logo (FR-72, TC-14). All files live in the worktree /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-phases-d-h (use absolute paths there; the session cwd is a different, older worktree). Spec delta: openspec/changes/add-logo/. First run wf_c61dbc19-566 was not clean (5 confirmed, test structure and traceability); 14a6398 is its fix round; its dispositions are in openspec/changes/add-logo/review-findings.json.",
+  "change": "add-logo",
+  "baseRef": "f05f676",
+  "headRef": "14a6398",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 2
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 1
+    },
+    "spec-compliance": {
+      "confirmed": 1,
+      "contested": 1,
+      "rejected": 0
+    },
+    "visual": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "Red-run evidence no longer matches the test set after the fix round (size case split in two, «No image file is used» no longer a vacuous guard)"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-09T06:09:45Z",
+  "runId": "wf_ddf2a2af-900",
+  "dispositions": {
+    "red-run evidence stale after the fix round (confirmed, minor, docs)": "fixed after the run: addendum in docs/qa/add-logo-red-run.txt with a red re-run (tests of 14a6398, src of f05f676): 10 failed of 683, all logo tests. Not re-reviewed (one fix round, one confirming run; report rather than loop).",
+    "global h1 inline-flex (contested, minor)": "accepted: tasks.md 2.3 prescribes it; the page has one h1; design-only layout, no requirement covers it."
+  },
+  "persistedBy": "Confirming run persisted by the workflow; the orchestrator added dispositions and keeps the first run (wf_c61dbc19-566, not clean, fixed in 14a6398) under \"rounds\" (2026-10-09).",
+  "rounds": [
+    {
+      "generatedBy": "review-gate",
+      "scope": "change add-logo (FR-72, TC-14). All files live in the worktree /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-phases-d-h (use absolute paths there; the session cwd is a different, older worktree). Spec delta: openspec/changes/add-logo/. Red commit 5ffa9ec, green 7e483fe.",
+      "change": "add-logo",
+      "baseRef": "f05f676",
+      "headRef": "7e483fe",
+      "dimensions": {
+        "correctness": {
+          "confirmed": 2,
+          "contested": 1,
+          "rejected": 0
+        },
+        "security": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        },
+        "spec-compliance": {
+          "confirmed": 3,
+          "contested": 2,
+          "rejected": 2
+        },
+        "visual": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        }
+      },
+      "confirmedTitles": [
+        "Size-change case runs 4 then 8 on one mount; the spec requires a fresh mount for each",
+        "The href/xlink:href checks in «No image file is used» pass with nothing to check when there is no svg",
+        "Size-change scenario requires a separate fresh run for 4 and for 8, but the test does both in one run",
+        "'No id' and 'mount-once' are enforced only indirectly; the requirement text has no 'no id' clause",
+        "Some href/xlink:href checks in 'No image file is used' would pass if the svg were absent"
+      ],
+      "clean": false,
+      "generatedAt": "2026-10-08T21:33:14Z",
+      "runId": "wf_c61dbc19-566",
+      "dispositions": {
+        "size change one mount (confirmed x2, minor and major)": "fixed: two runs via it.each([4, 8]), each from a fresh mount (scenario: \"each from a freshly mounted page\", \"(one run)\")",
+        "href checks vacuous without svg (confirmed x2)": "fixed: «No image file is used» calls logoOf(root) first",
+        "no id / mount-once only indirect (confirmed, minor)": "accepted, no change: FR-72 and the delta have no \"no id\" sentence; the baseline id rule (play-page spec, DOM contract) and tests/play-page-semantics.test.ts (6 ids in the document) cover it; mount-once is pinned by «The logo survives every board change». A new spec sentence would go beyond FR-72 (user rule).",
+        "as SVGSVGElement cast (contested x2)": "fixed: svgEl is generic over SVGElementTagNameMap, no cast",
+        "design-only attributes untested (contested)": "accepted as design-only (design.md decisions 1 and 3): focusable, viewBox and no width/height are not in FR-72; no test added (user rule)"
+      }
+    },
+    {
+      "generatedBy": "review-gate",
+      "scope": "confirming run, change add-logo (FR-72, TC-14). All files live in the worktree /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/ux-phases-d-h (use absolute paths there; the session cwd is a different, older worktree). Spec delta: openspec/changes/add-logo/. First run wf_c61dbc19-566 was not clean (5 confirmed, test structure and traceability); 14a6398 is its fix round; its dispositions are in openspec/changes/add-logo/review-findings.json.",
+      "change": "add-logo",
+      "baseRef": "f05f676",
+      "headRef": "14a6398",
+      "dimensions": {
+        "correctness": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 2
+        },
+        "security": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 1
+        },
+        "spec-compliance": {
+          "confirmed": 1,
+          "contested": 1,
+          "rejected": 0
+        },
+        "visual": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        }
+      },
+      "confirmedTitles": [
+        "Red-run evidence no longer matches the test set after the fix round (size case split in two, «No image file is used» no longer a vacuous guard)"
+      ],
+      "clean": false,
+      "generatedAt": "2026-10-09T06:09:45Z",
+      "runId": "wf_ddf2a2af-900",
+      "dispositions": {
+        "red-run evidence stale after the fix round (confirmed, minor, docs)": "fixed after the run: addendum in docs/qa/add-logo-red-run.txt with a red re-run (tests of 14a6398, src of f05f676): 10 failed of 683, all logo tests. Not re-reviewed (one fix round, one confirming run; report rather than loop).",
+        "global h1 inline-flex (contested, minor)": "accepted: tasks.md 2.3 prescribes it; the page has one h1; design-only layout, no requirement covers it."
+      },
+      "persistedBy": "Confirming run persisted by the workflow; the orchestrator added dispositions and keeps the first run (wf_c61dbc19-566, not clean, fixed in 14a6398) under \"rounds\" (2026-10-09)."
+    }
+  ]
+}

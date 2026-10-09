@@ -966,7 +966,7 @@
     {
       "id": "FR-72",
       "specs": [
-        "openspec/changes/add-logo/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1255,10 +1255,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-73 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-logo\" is not archived"
     },
     {
       "check": "active-changes",

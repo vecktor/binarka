@@ -99,6 +99,15 @@
         "ui"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-09-add-logo",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 2,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [
@@ -135,6 +144,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-08-reconcile-ux-accessibility: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-09-add-logo: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "in-scope",
