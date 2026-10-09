@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Бінарка sound prototype</title>
+    <style>
+      :root {
+        --bg: #faf5ee;
+        --card: #fffdf9;
+        --text: #3b2f25;
+        --muted: #7a6a5c;
+        --line: #d9cbbb;
+        --accent: #a0623a;
+        --bad: #f6d2c4;
+        --bad-line: #b4532a;
+        --given: #efe4d6;
+        --focus: #1d4ed8;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      h1 { font-size: 1.4rem; margin: 8px 0 4px; }
+      h2 { font-size: 1.05rem; margin: 0 0 8px; }
+      p { margin: 4px 0 8px; }
+      .note { color: var(--muted); font-size: 0.9rem; }
+      section {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin: 12px 0;
+      }
+      .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+      button {
+        font: inherit;
+        min-height: 2.75rem;
+        padding: 6px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--text);
+        cursor: pointer;
+      }
+      button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+      button.candidate { border-style: dashed; color: var(--muted); }
+      /* The proposed page toggle: pressed = sound on; off = struck through (a cue besides colour). */
+      .sound-toggle[aria-pressed='true'] { background: var(--given); border-color: var(--accent); border-width: 2px; }
+      .sound-toggle[aria-pressed='false'] { text-decoration: line-through; color: var(--muted); border-style: dashed; }
+      .board {
+        --n: 6;
+        display: grid;
+        grid-template-columns: repeat(var(--n), 44px);
+        gap: 2px;
+        margin: 8px 0;
+        touch-action: manipulation;
+      }
+      .cell { min-height: 0; width: 44px; height: 44px; padding: 0; border-radius: 4px; font-size: 20px; }
+      .cell.given { background: var(--given); font-weight: 700; }
+      .cell.bad { background: var(--bad); border: 3px solid var(--bad-line); }
+      ol#log { font-family: ui-monospace, Menlo, monospace; font-size: 0.85rem; margin: 0; padding-left: 1.5rem; }
+      table { border-collapse: collapse; font-size: 0.85rem; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); padding: 3px 6px; text-align: right; }
+      th:first-child, td:first-child { text-align: left; }
+      .scroll { overflow-x: auto; }
+      #measure-json { display: none; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Бінарка: sound prototype</h1>
+      <p class="note">Design tool, not the game. Nothing plays until you click. Use headphones and, if you can, a phone speaker too. Recipes and the cue rule: <code>design/audio/sound-design.md</code>.</p>
+      <p class="note" id="available"></p>
+
+      <section>
+        <h2>Level and the proposed toggle</h2>
+        <div class="row">
+          <label for="volume">Master volume</label>
+          <input id="volume" type="range" min="0" max="100" step="1" />
+          <output id="volume-out" for="volume"></output>
+          <!-- The proposed page control, exactly: Ukrainian visible text, aria-pressed, no aria-label. -->
+          <button id="sound" class="sound-toggle" type="button" aria-pressed="true" lang="uk">Звук</button>
+        </div>
+        <p class="note">Default 70 is the design's master gain. Turning «Звук» on plays <code>soundOn</code>; turning it off cuts any sound within 12 ms.</p>
+      </section>
+
+      <section>
+        <h2>Cues</h2>
+        <div class="row" id="cue-buttons"></div>
+        <p class="note">The dashed button is a candidate the design keeps silent, here only so you can decide.</p>
+      </section>
+
+      <section>
+        <h2>Stacking (fast input)</h2>
+        <div class="row">
+          <button id="rapid" type="button">Rapid fire: place0 ×10, 60 ms apart</button>
+          <button id="rapid-alt" type="button">Rapid 0/1 ×10, 60 ms</button>
+          <button id="rapid-cycle" type="button">Cycle 0 → 1 → empty ×7, 35 ms</button>
+        </div>
+        <p class="note">Each new input cue cuts the previous one (12 ms fade), so taps should stay separate taps and never pile up into a buzz.</p>
+      </section>
+
+      <section>
+        <h2>Scene</h2>
+        <div class="row"><button id="scene" type="button">Play a 7-second scene</button></div>
+        <p class="note">place0, place1, place0, conflict, place1, clear, place1, hint, place0, win, with gaps like a calm player.</p>
+      </section>
+
+      <section>
+        <h2>Play in context</h2>
+        <p class="note">The real engine with the proposed cue rule: one action, at most one cue; win &gt; conflict &gt; the action's own cue. Seeds 1, 2, 3, … in order.</p>
+        <div class="row">
+          <button id="size4" type="button">4×4</button>
+          <button id="size6" type="button">6×6</button>
+          <button id="size8" type="button">8×8</button>
+          <button id="hint" type="button">Hint</button>
+          <button id="new" type="button">New puzzle</button>
+          <button id="almost" type="button">Shortcut: fill all but one</button>
+        </div>
+        <div id="board" class="board"></div>
+        <p id="hint-text" lang="uk"></p>
+        <p id="win-text"></p>
+        <h2>Requested cues (newest first)</h2>
+        <ol id="log" reversed></ol>
+      </section>
+
+      <section>
+        <h2>Measure (offline render, 48 kHz)</h2>
+        <div class="row"><button id="measure" type="button">Measure all cues</button></div>
+        <p class="note">Renders each recipe with an OfflineAudioContext at the default master gain and reads the samples. It checks numbers, not taste.</p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>cue</th><th>channel</th><th>budget ms</th><th>declared ms</th><th>audible ms (&gt; −80 dBFS)</th><th>peak</th><th>peak dBFS</th><th>peak at ms</th><th>max jump first 3 ms</th><th>last sample</th><th>in budget</th>
+              </tr>
+            </thead>
+            <tbody id="measure-body"></tbody>
+          </table>
+        </div>
+        <pre id="measure-json"></pre>
+      </section>
+    </main>
+    <script type="module" src="./prototype.ts"></script>
+  </body>
+</html>

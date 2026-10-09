@@ -1,0 +1,20 @@
+{
+  "what": "Offline renders of the cue recipes in design/audio/synth.ts, 48 kHz mono, master gain 0.7; read from the prototype's 'Measure all cues' button and a console script in the Claude desktop built-in browser (Chromium) on 2026-10-09. Numbers only: nobody has listened.",
+  "cues": [
+    {"name":"place0","channel":"input","budgetMs":120,"declaredMs":106,"audibleMs":96.2,"peak":0.254,"peakDbfs":-11.9,"peakAtMs":6.2,"maxJumpFirst3ms":0.0094,"lastSample":0},
+    {"name":"place1","channel":"input","budgetMs":120,"declaredMs":106,"audibleMs":96.8,"peak":0.246,"peakDbfs":-12.2,"peakAtMs":5.7,"maxJumpFirst3ms":0.0126,"lastSample":0},
+    {"name":"clear","channel":"input","budgetMs":120,"declaredMs":70,"audibleMs":61.1,"peak":0.092,"peakDbfs":-20.7,"peakAtMs":5.5,"maxJumpFirst3ms":0.0017,"lastSample":0},
+    {"name":"conflict","channel":"feedback","budgetMs":300,"declaredMs":260,"audibleMs":254.9,"peak":0.139,"peakDbfs":-17.1,"peakAtMs":111.7,"maxJumpFirst3ms":0.00035,"lastSample":0},
+    {"name":"hint","channel":"feedback","budgetMs":300,"declaredMs":281,"audibleMs":267.9,"peak":0.169,"peakDbfs":-15.4,"peakAtMs":7.2,"maxJumpFirst3ms":0.0079,"lastSample":0},
+    {"name":"win","channel":"win","budgetMs":1500,"declaredMs":1221,"audibleMs":1217.1,"peak":0.216,"peakDbfs":-13.3,"peakAtMs":337.5,"maxJumpFirst3ms":0.0056,"lastSample":0},
+    {"name":"soundOn","channel":"input","budgetMs":120,"declaredMs":106,"audibleMs":96.8,"peak":0.246,"peakDbfs":-12.2,"peakAtMs":5.7,"maxJumpFirst3ms":0.0126,"lastSample":0},
+    {"name":"resolve (candidate, silent in the design)","channel":"feedback","budgetMs":300,"declaredMs":213,"audibleMs":198.1,"peak":0.092,"peakDbfs":-20.7,"peakAtMs":8.6,"maxJumpFirst3ms":0.0025,"lastSample":0}
+  ],
+  "cutAndStacking": {
+    "winCutAt100ms": {"maxSampleFrom114msOn": 0, "maxJumpDuringCut": 0.0021},
+    "rapidFire10x60ms_place0place1_alternating": {"peak": 0.263, "peakDbfs": -11.6},
+    "rapidFire10x35ms_place0place1_alternating": {"peak": 0.259, "peakDbfs": -11.7},
+    "note": "rapid fire peaks stay within 0.3 dB of a single place cue (0.254): the cut-previous-voice rule keeps taps from stacking"
+  },
+  "liveContext": "a live AudioContext was created, a place0 voice scheduled and cut with no exception; state 'running'"
+}
