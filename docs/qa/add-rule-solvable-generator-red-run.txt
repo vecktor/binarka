@@ -406,3 +406,13 @@ Compared values have no visual difference.
 ## Summary lines of the full-suite run
  Test Files  1 failed | 34 passed (35)
       Tests  4 failed | 711 passed | 5 skipped (720)
+
+## Addendum, 2026-10-09 12:02 (UTC+5:30): red re-run after the review fix round
+
+The counts above belong to the red commit 6247183. The fix round of review-gate wf_4a06e27d-331 changed the test file in two ways:
+- solveByRules is now a static import from ../src/engine/rule-solve, as design.md "Data model" names it. The runtime-built dynamic import was a red-phase device only.
+- Scenario 2 now also asserts that the pinned unique solution is a complete valid grid (findViolations empty, isSolved).
+
+Both runs below use a scratch copy whose src/ equals 6247183, with the fixed test file:
+1. As is (no src/engine/rule-solve.ts): the whole file fails to load with `Failed to resolve import "../src/engine/rule-solve"`. 1 of 35 files failed; the other 683 tests pass. With a static import this is the expected red state for a missing module, but it hides the reason the generator tests fail, so run 2 shows that reason.
+2. With only the new src/engine/rule-solve.ts added and the OLD generator.ts: 4 failed, 716 passed of 720. The failing tests are the same four as in the original run: 1.1(a) at N = 4, 6 and 8, plus «seed 1: generate(4, seed).givens differs from the fixture». The five solveByRules unit tests and the strengthened scenario-2 test pass. So the generator tests are red because of the old generator, for the same reason as before.

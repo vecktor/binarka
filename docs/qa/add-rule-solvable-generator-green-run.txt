@@ -6,3 +6,10 @@ npm run lint: exit 0. npm run build: ok. npx openspec validate --all --strict: 3
 ## npm run test:run (summary)
  Test Files  35 passed (35)
       Tests  720 passed (720)
+
+## Task 2.7, error paths (confirmed by reading, 2026-10-09 12:02)
+- `validate(size, seed)` is still the first statement of `generate` and is unchanged (git diff d4b83d3 -- src/engine/generator.ts touches only the import, the removed CARVE_NODE_BUDGET, the comment and the keep test).
+- No new `throw` was added.
+- The carving loop is one pass over the N^2 shuffled positions.
+- `solveByRules` ends: each pass fills one empty cell or returns, so it makes at most N^2 passes.
+- The rejected-input tests of tests/generator.test.ts (FR-16, FR-17, FR-49, FR-50, FR-51) pass unchanged in the 720 of 720 run.

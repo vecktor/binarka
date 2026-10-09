@@ -5,9 +5,10 @@
 // Scenario «Determinism, uniqueness and timing still hold» is covered by the existing, unchanged tests:
 // tests/generator.test.ts (FR-14), tests/generator-unique.test.ts (FR-15), tests/generator-timing.test.ts (NFR-1 to NFR-3)
 // and tests/engine-purity.test.ts (TC-8). They are not duplicated here.
-import { beforeAll, describe, expect, it } from 'vitest';
-import { countSolutions, generate, hint } from '../src/engine/index';
+import { describe, expect, it } from 'vitest';
+import { countSolutions, findViolations, generate, hint, isSolved } from '../src/engine/index';
 import type { Grid, Hint, Puzzle } from '../src/engine/index';
+import { solveByRules } from '../src/engine/rule-solve';
 import { parseBoard } from './helpers/board';
 
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
@@ -106,6 +107,9 @@ describe('@trace FR-27 a board with a unique solution that the rules cannot fini
     // Every given of the fixture agrees with the pinned unique solution, and so does every fill the rules make
     // before they run out: the walk stops on a "none", never on a wrong value.
     const solution = parseBoard(UNIQUE_SOLUTION) as (0 | 1)[][];
+    // The pinned grid is a complete valid grid; with the solver result 1 and every given agreeing, it is THE unique solution.
+    expect(findViolations(solution)).toEqual([]);
+    expect(isSolved(solution)).toBe(true);
     parseBoard(FIXTURE).forEach((row, r) => {
       row.forEach((cell, c) => {
         if (cell !== null) expect(solution[r]?.[c], `given ${r},${c}`).toBe(cell);
@@ -182,20 +186,8 @@ describe.each([4, 6, 8])('@trace FR-27 a hint is available on a correct partial 
   }, LONG);
 });
 
-// 1.2 unit tests of solveByRules. The module does not exist before the implementation (task 2.1); it is loaded
-// dynamically here so that the groups above still run, and fail for their own reason.
+// 1.2 unit tests of solveByRules (internal module, imported directly; not part of src/engine/index.ts).
 describe('@trace FR-27 solveByRules', () => {
-  type SolveByRules = (board: Grid) => { solved: boolean; steps: number };
-  let solveByRules: SolveByRules;
-
-  beforeAll(async () => {
-    // A non-literal specifier: Vite's import analysis would otherwise fail the WHOLE file at transform time
-    // while the module is missing, hiding the groups above. The path is the one named by task 2.1.
-    const specifier = ['..', 'src', 'engine', 'rule-solve'].join('/');
-    const mod = (await import(/* @vite-ignore */ specifier)) as { solveByRules: SolveByRules };
-    solveByRules = mod.solveByRules;
-  });
-
   const SOLVED_4 = '1 0 1 0\n1 0 0 1\n0 1 0 1\n0 1 1 0';
 
   it('a full valid grid returns solved with 0 steps', () => {

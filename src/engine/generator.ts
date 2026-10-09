@@ -88,6 +88,8 @@ export function generate(size: number, seed: number): Puzzle {
   shuffle(positions, rng);
   // Invariant (FR-27, FR-15): the board is rule-solvable before and after every accepted removal. Every rule fill is
   // forced, so a rule-solvable puzzle has exactly one solution. A removal that breaks this is undone.
+  // This relies on hint() making forced fills only (pair, sandwich, count; never a guess, never the duplicate-line rule):
+  // a hint that guessed would break FR-15 here, which tests/generator-unique.test.ts would catch.
   for (const [r, c] of positions) {
     const row = givens[r];
     const keep = row?.[c];

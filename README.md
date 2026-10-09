@@ -18,7 +18,7 @@ Keyboard: Tab reaches the «Правила» button, the three size buttons (a r
 npm run --silent cli -- --size 6 --seed 42
 ```
 
-Prints N lines of N space-separated tokens: `0` or `1` for givens, `.` for an empty cell. `--size` defaults to 6 and `--seed` to 1; a seed from 0 to 2147483647 always gives the same puzzle. Errors go to stderr as one English sentence with exit code 1.
+Prints N lines of N space-separated tokens: `0` or `1` for givens, `.` for an empty cell. `--size` defaults to 6 and `--seed` to 1; a seed from 0 to 2147483647 always gives the same puzzle. Every puzzle has exactly one solution and, for sizes 4, 6 and 8, can be finished with the pair, sandwich and count rules alone, so «Підказка» always has a next move while your entries are correct (FR-27). Since this change (2026-10-09) the printed givens for a seed differ from earlier versions; the solution for a seed does not. Errors go to stderr as one English sentence with exit code 1.
 
 ## Develop
 
