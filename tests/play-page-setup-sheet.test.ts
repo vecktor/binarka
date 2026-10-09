@@ -236,9 +236,8 @@ describe('@trace FR-96 the setup sheet', () => {
     expect(close.getAttribute('popovertarget')).toBe(sheetOf(root).getAttribute('id'));
     expect(close.getAttribute('popovertargetaction')).toBe('hide');
     expect(close.hasAttribute('tabindex')).toBe(false);
-    // AMBIGUITY (spec line 74 says "exactly nine buttons in all", but the list it gives, the three size buttons, the four level
-    // buttons and the close button, is EIGHT; the 52-button count of the WCAG scenario also needs eight in the sheet). Pinned as the
-    // enumerated list, eight.
+    // The spec says "exactly eight buttons in all" (corrected from "nine" after the red run, 2026-10-09): three size buttons, four
+    // level buttons and the close button.
     const buttons = Array.from(sheetOf(root).querySelectorAll('button'));
     expect(buttons.map((b) => b.getAttribute('role') ?? b.getAttribute('data-action')), 'three sizes, four levels and the close button').toEqual([
       'radio',
@@ -466,6 +465,31 @@ describe('@trace FR-97 choosing and closing the sheet', () => {
     dispatchToggle(sheetOf(root), 'closed');
 
     expectActive(no, 'the focus is still on «Скасувати»');
+  });
+
+  // Review-gate fix round (2026-10-09): a light dismiss by a click on another control left the focus on the summary button
+  // in Chromium. Source: the delta spec, «Choosing and closing the sheet», the sentence and the two scenarios added then.
+  it('A light dismiss by a click on a cell leaves the focus on that cell', () => {
+    const root = mountFixture(BLANK);
+    openSheet(root);
+    const cell = cellEl(root, 1, 2);
+    cell.focus();
+    expectActive(cell, 'premise: the cell has the focus, as a click on it does');
+
+    dispatchToggle(sheetOf(root), 'closed');
+
+    expectActive(cell, 'the focus is still on the cell');
+  });
+
+  it('A closing toggle with the focus on no element moves it to the summary button', () => {
+    const root = mountFixture(BLANK);
+    openSheet(root);
+    (document.activeElement as HTMLElement | null)?.blur();
+    expect(document.activeElement, 'premise: no element has the focus').toBe(document.body);
+
+    dispatchToggle(sheetOf(root), 'closed');
+
+    expectActive(summaryButton(root), 'the focus moved to the summary button');
   });
 });
 

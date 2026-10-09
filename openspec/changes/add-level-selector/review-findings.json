@@ -1,0 +1,136 @@
+{
+  "change": "add-level-selector",
+  "clean": false,
+  "summary": "Two review-gate runs, both NOT clean. Run 1: 4 confirmed (1 correctness: colour-only checked level; 3 evidence/spec), 4 contested. One fix round. Run 2 (confirming): 4 confirmed + 1 contested, all minor spec-compliance/documentation, no correctness or security finding. Per the rule (one fix round, one confirming run, then report), run 2's items were fixed as documentation-only edits and not re-reviewed.",
+  "persistedBy": "orchestrator, merging the two persisted files (the confirming run overwrote run 1's file; run 1 was copied aside before it ran)",
+  "runs": [
+    {
+      "generatedBy": "review-gate",
+      "scope": "change add-level-selector (openspec/changes/add-level-selector): uncommitted working tree on HEAD 3d64c9d — src/ui/play-page.ts, src/ui/strings.ts, src/ui/style.css, tests/** (new and changed), the change folder",
+      "change": "add-level-selector",
+      "baseRef": "3d64c9d",
+      "headRef": "HEAD",
+      "dimensions": {
+        "correctness": {
+          "confirmed": 1,
+          "contested": 2,
+          "rejected": 2
+        },
+        "security": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        },
+        "spec-compliance": {
+          "confirmed": 3,
+          "contested": 2,
+          "rejected": 4
+        },
+        "visual": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        }
+      },
+      "confirmedTitles": [
+        "Selected level is marked by colour alone (no ring, no weight/shape change), unlike the size control",
+        "Task 2.3 is ticked, but its artifact (the per-test source list in the red-run file and the red commit message) does not exist",
+        "The task 2.4 guards list and the '18 mutants killed' claim have no evidence on disk",
+        "The spec says a stylesheet pseudo-element draws the level radio ring, but style.css has no ring; the checked state is shown by colour only"
+      ],
+      "clean": false,
+      "generatedAt": "2026-10-09T12:38:29Z",
+      "runId": "wf_72c2ffbc-d44",
+      "dispositions": [
+        {
+          "finding": "Selected level is marked by colour alone / no pseudo-element radio ring (2 findings)",
+          "disposition": "fixed in the fix round: regression test «The checked level has a cue besides colour» first, seen red (docs/qa/add-level-selector-green-run.txt), then the ::before ring with an inset-box-shadow dot in src/ui/style.css; seen in Chromium (docs/qa/add-level-selector/375-sheet-open.jpg)"
+        },
+        {
+          "finding": "Task 2.3 done-note points at a non-existent red commit and list",
+          "disposition": "fixed: list written to docs/qa/add-level-selector/red-evidence.md section 1; note reworded; the list goes into the red commit message when the held commits are made"
+        },
+        {
+          "finding": "Guards list and 18-mutant claim without evidence",
+          "disposition": "fixed: red-evidence.md sections 2 and 3; after run 2 also the script and raw output under docs/qa/add-level-selector/mutation/"
+        },
+        {
+          "finding": "(contested) light-dismiss toggle steals focus",
+          "disposition": "confirmed in Chromium at 375 px (click on cell (1,2) with the sheet open: focus on the summary); fixed with a spec sentence and two scenarios, tests first and seen red, toggle listener second guard; re-checked in Chromium (focus stays on the cell)"
+        },
+        {
+          "finding": "(contested) reset does not rewrite the summary",
+          "disposition": "spec aligned to the code and to «Reset button»: a reset leaves the summary text as it is (no observable difference)"
+        },
+        {
+          "finding": "(contested) hidePopover() unguarded",
+          "disposition": "not changed: the page already relies on the Popover API for the rules panel (FR-57); no supported browser lacks it"
+        },
+        {
+          "finding": "(contested) spec edited after red",
+          "disposition": "documented; both edits (nine->eight buttons, setup-summary->setup-button) are named in the commit message"
+        }
+      ]
+    },
+    {
+      "generatedBy": "review-gate",
+      "scope": "CONFIRMING RUN after one fix round — change add-level-selector: uncommitted working tree on HEAD 3d64c9d (src/ui/play-page.ts, src/ui/strings.ts, src/ui/style.css, tests/**, the change folder, docs/qa/add-level-selector*)",
+      "change": "add-level-selector",
+      "baseRef": "3d64c9d",
+      "headRef": "HEAD",
+      "dimensions": {
+        "correctness": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 3
+        },
+        "security": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        },
+        "spec-compliance": {
+          "confirmed": 4,
+          "contested": 1,
+          "rejected": 0
+        },
+        "visual": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 0
+        }
+      },
+      "confirmedTitles": [
+        "design.md decision 3 and task 3.4 still describe the toggle listener as it was before the fix",
+        "Stale AMBIGUITY comment in the setup-sheet test after the spec was fixed from nine to eight buttons",
+        "Mutation-run evidence points at an ephemeral scratchpad outside the repository",
+        "Requirement text says 'in every case but one' and then lists two exceptions"
+      ],
+      "clean": false,
+      "generatedAt": "2026-10-09T12:49:52Z",
+      "runId": "wf_007c5ad4-adc",
+      "dispositions": [
+        {
+          "finding": "design.md decision 3 and task 3.4 stale",
+          "disposition": "fixed (doc only) after the confirming run, not re-reviewed"
+        },
+        {
+          "finding": "Stale AMBIGUITY comment in tests/play-page-setup-sheet.test.ts",
+          "disposition": "fixed (comment only; assertion unchanged), not re-reviewed"
+        },
+        {
+          "finding": "Mutation evidence in an ephemeral scratchpad",
+          "disposition": "fixed: mutate.py, mut.json and the prototype copied to docs/qa/add-level-selector/mutation/, red-evidence.md cites them; not re-reviewed"
+        },
+        {
+          "finding": "'in every case but one' lists two exceptions",
+          "disposition": "fixed: 'but two'; not re-reviewed"
+        },
+        {
+          "finding": "(contested) toggle listener no longer checks the rules panel",
+          "disposition": "spec wording aligned to the code: the focus rule covers the rules panel because «Зрозуміло» has autofocus; no code change; not re-reviewed"
+        }
+      ]
+    }
+  ]
+}

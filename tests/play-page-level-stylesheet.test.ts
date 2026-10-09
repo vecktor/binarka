@@ -102,6 +102,23 @@ describe('@trace FR-65 @trace NFR-9 the summary and level buttons declare their 
   });
 });
 
+// Review-gate fix round (2026-10-09): the checked level differed from the others by colour only (WCAG 1.4.1). Source: the delta
+// spec, «Level option content» (the radio ring is a pseudo-element) and the scenario «The checked level has a cue besides colour».
+describe('@trace FR-87 @trace NFR-9 the checked level has a cue besides colour', () => {
+  it('The checked level has a cue besides colour', () => {
+    const root = mountFixture(BLANK);
+    for (const button of levelButtons(root)) {
+      expect(button.children[0]?.classList.contains('level-name'), 'the name span carries level-name').toBe(true);
+    }
+    const parsed = readStyles();
+    const ring = declarationsFor(parsed, '.level-control button .level-name::before');
+    const dot = declarationsFor(parsed, ".level-control button[aria-checked='true'] .level-name::before");
+    expect(ring.get('content'), 'the ring rule declares content').toBeDefined();
+    expect(ring.get('border-radius'), 'the ring rule declares a border-radius').toBeDefined();
+    expect(dot.get('box-shadow') ?? '', 'the checked rule draws a dot with an inset box-shadow').toContain('inset');
+  });
+});
+
 describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements and the buttons are buttons', () => {
   it('The classes are on the elements and the buttons are buttons', () => {
     const root = mountFixture(BLANK);

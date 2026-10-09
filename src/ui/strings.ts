@@ -43,3 +43,35 @@ export const IDLE = 'Натискайте клітинки, щоб ставит�
 
 // FR-41: the win text uses the modifier letter apostrophe U+02BC, not ASCII U+0027.
 export const WIN = "Вітаємо, головоломку розвʼязано!";
+
+// Summary button and setup sheet (FR-95, FR-96): `N×N · Name` with ordinary spaces around U+00B7.
+export const SETUP = {
+  prefix: 'Поле і складність: ',
+  separator: ' · ',
+  sheetLabel: 'Поле і складність',
+  close: 'Закрити',
+  cue: '▾',
+} as const;
+
+export const LEVEL_GROUP = 'Складність';
+
+export const LEVELS = [
+  { name: 'Розминка', description: 'Вистачає трьох простих правил: пара, між двома однаковими і підрахунок цифр.' },
+  { name: 'Задачка', description: 'Додатково треба рахувати, де в рядку помістяться решта нулів чи одиниць.' },
+  { name: 'Головоломка', description: 'Додатково треба порівнювати рядки і стовпці: двох однакових не буває.' },
+  { name: 'Мозколамка', description: 'Додатково треба пробувати хід наперед: якщо правило порушиться, тут інша цифра.' },
+] as const;
+
+export const LEVEL_REASON_4X4 = 'Для поля 4×4 є лише рівень «Розминка».';
+
+export const TECHNIQUES = {
+  heading: 'Складніші прийоми',
+  items: [
+    'Баланс рядка: якщо в рядку є місце лише для одного нуля або однієї одиниці, а в клітинці вона дала б три однакові цифри поспіль, там стоїть інша цифра.',
+    'Однакові рядки: якщо рядок збігається з повним рядком усюди, крім двох клітинок, ці дві клітинки протилежні до нього.',
+    'Хід наперед: уявно поставте цифру; якщо за кілька кроків порушиться правило, у клітинці стоїть інша.',
+  ],
+} as const;
+
+/** Visible text of the summary button: «6×6 · Розминка». */
+export const summaryText = (n: number, level: number): string => `${n}×${n}${SETUP.separator}${LEVELS[level - 1]?.name ?? ''}`;

@@ -1271,6 +1271,7 @@
       "tests": [
         "tests/play-page-level-control.test.ts",
         "tests/play-page-level-control.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts"
       ],
       "recordings": []

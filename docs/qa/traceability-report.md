@@ -86,7 +86,7 @@ Result: PASS, 93 warning(s)
 | FR-71 | yes | yes | 3 | - |
 | FR-72 | yes | yes | 2 | - |
 | FR-73 | yes | yes | 7 | - |
-| FR-87 | yes | yes | 3 | - |
+| FR-87 | yes | yes | 4 | - |
 | FR-88 | yes | yes | 6 | - |
 | FR-89 | yes | yes | 2 | - |
 | FR-90 | yes | yes | 3 | - |

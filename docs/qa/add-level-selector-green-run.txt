@@ -1,0 +1,19 @@
+# add-level-selector: green run, confirmed by the orchestrator
+Run: Fri Oct  9 17:57 +0530 2026, worktree sad-lichterman-eb72fb, uncommitted on HEAD 3d64c9d (GPG locked; commits held)
+Implementation: capability-implementer (Sonnet), src/ui/play-page.ts, src/ui/strings.ts, src/ui/style.css (+258 -20).
+Tests: diff -r tests <red snapshot> -> identical (no test changed after the red run).
+npm run lint: exit 0
+ Test Files  55 passed (55)
+      Tests  1236 passed (1236)
+npm run build: exit 0
+npx openspec validate --all --strict: 3 passed, 0 failed
+node scripts/check-eval-ratchet.mjs: PASS (hint-clarity 94, baseline 94)
+node scripts/check-traceability.mjs: 92 MVP FRs, 0 failures, 93 warnings (regenerated report and trace.json restored, task 4.5)
+jsdom 'Could not parse CSS stylesheet' lines: 10 in this run, 10 in the red run on the old src -> pre-existing, not caused by this change.
+
+## Review-gate fix round (run wf_72c2ffbc-d44), confirmed by the orchestrator
+Run: Fri Oct  9 18:13 +0530 2026
+Regression tests written first and seen red (18:11): 2 failed of 42 in play-page-setup-sheet + play-page-level-stylesheet ('the ring rule declares content: expected undefined to be defined'; 'the focus is still on the cell (DOM focus is on <button data-action="setup">)'). Third new test (focus on no element -> summary) passed before the fix: a guard.
+Fix (capability-implementer): toggle listener leaves focus on an element outside the sheet (panelIsOpen removed as dead code); radio ring ::before with inset-box-shadow dot for the checked level, dashed for unavailable.
+After: lint exit 0; Test Files 55 passed; Tests 1239 passed (1239); build exit 0; strict 3 of 3; eval ratchet PASS; traceability 0 failures.
+Light-dismiss focus defect was first seen in Chromium at 375 px (built-in browser, 17:59 to 18:05): click on cell (1,2) with the sheet open filled the cell and focus ended on the summary button.

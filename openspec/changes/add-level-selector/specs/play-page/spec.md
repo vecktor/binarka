@@ -2,7 +2,7 @@
 
 ### Requirement: Summary button
 
-The page SHALL show, in the place of the size control in the page order (FR-68), one button `[data-action="setup"]` with `type="button"` and a `popovertarget` attribute equal to the `id` of the setup sheet, so that it opens the sheet with no script (FR-95, A-40). The button SHALL hold three children in this order: a visually hidden prefix span with the text `Поле і складність: ` (ending in one ordinary space), a text span with the visible text `N×N · Name` for the size and the level of the board shown (the separator is « · », an ordinary space, U+00B7 and an ordinary space), for example `6×6 · Задачка`, and a decorative span `aria-hidden="true"` with the cue `▾`. At mount the visible text is `6×6 · Розминка`. The visible text SHALL be rewritten after every board that is shown (the mount, a performed size or level change, «Нова головоломка»; also a reset, which shows the same size and level) and after nothing else: a cancelled confirmation, a failed generation, the press of an unavailable level and the opening or closing of the sheet leave it as it was. The accessible name of the button is its text content without `aria-hidden` descendants, that is the prefix followed by the visible text, for example `Поле і складність: 6×6 · Задачка`; the button SHALL NOT carry `aria-label`, `aria-labelledby`, `aria-haspopup`, `aria-expanded` or `tabindex` (A-41, A-43: browsers expose the open state of a `popovertarget` button natively). The height of the button (44 CSS px) and the look of the cue are layout and are covered by the held NFR-12 and NFR-14, see `docs/requirements-held.md`. The names of the size and the level in the text come from `src/ui/strings.ts`.
+The page SHALL show, in the place of the size control in the page order (FR-68), one button `[data-action="setup"]` with `type="button"` and a `popovertarget` attribute equal to the `id` of the setup sheet, so that it opens the sheet with no script (FR-95, A-40). The button SHALL hold three children in this order: a visually hidden prefix span with the text `Поле і складність: ` (ending in one ordinary space), a text span with the visible text `N×N · Name` for the size and the level of the board shown (the separator is « · », an ordinary space, U+00B7 and an ordinary space), for example `6×6 · Задачка`, and a decorative span `aria-hidden="true"` with the cue `▾`. At mount the visible text is `6×6 · Розминка`. The visible text SHALL be rewritten after every board that is shown (the mount, a performed size or level change, «Нова головоломка»; a reset shows the same size and level and leaves the text as it is, as «Reset button» says) and after nothing else: a cancelled confirmation, a failed generation, the press of an unavailable level and the opening or closing of the sheet leave it as it was. The accessible name of the button is its text content without `aria-hidden` descendants, that is the prefix followed by the visible text, for example `Поле і складність: 6×6 · Задачка`; the button SHALL NOT carry `aria-label`, `aria-labelledby`, `aria-haspopup`, `aria-expanded` or `tabindex` (A-41, A-43: browsers expose the open state of a `popovertarget` button natively). The height of the button (44 CSS px) and the look of the cue are layout and are covered by the held NFR-12 and NFR-14, see `docs/requirements-held.md`. The names of the size and the level in the text come from `src/ui/strings.ts`.
 
 Traces: FR-95, NFR-5, NFR-9
 
@@ -94,7 +94,7 @@ Traces: FR-96, FR-95, FR-97, FR-94, NFR-5, NFR-9
 
 ### Requirement: Choosing and closing the sheet
 
-A press on a size button or a level button inside the sheet SHALL, in every case but one, close the sheet with `hidePopover()` and move DOM focus to the summary button (FR-97, FR-59): a press that starts a new puzzle (at once, or after the confirmation of «A level change follows the confirmation rule» and «Sheet and confirmation»), a press on the size or the level already shown (FR-73) and a press whose generation fails (FR-88). The exceptions are a press on an unavailable level at 4×4, which does nothing at all (the sheet stays open and focus stays on that button, FR-91, FR-73), and a press that needs the confirmation: there the sheet closes, the dialog opens with focus on «Скасувати» (FR-67), and focus goes to the summary button only when the dialog ends (FR-98, see «Sheet and confirmation»). The close button, Escape and a click outside the sheet (the light dismiss of `popover="auto"`) close the sheet natively with no change to the board, the size, the level, the messages, the highlights, `cell-hinted` or the summary; the page SHALL listen to the `toggle` event of the sheet and, when `newState` is `closed`, the confirmation dialog is not open and no other popover of the page (the rules panel) is open, move focus to the summary button. The page adds no key handler (FR-59): Escape is the browser's. A late `toggle` event that arrives while the confirmation dialog or the rules panel is open SHALL NOT move focus (the dialog's focus on «Скасувати» wins, FR-67, and so does the autofocus of «Зрозуміло» in the rules panel). A browser dispatches `toggle` asynchronously; the rule above is what makes the order irrelevant.
+A press on a size button or a level button inside the sheet SHALL, in every case but two, close the sheet with `hidePopover()` and move DOM focus to the summary button (FR-97, FR-59): a press that starts a new puzzle (at once, or after the confirmation of «A level change follows the confirmation rule» and «Sheet and confirmation»), a press on the size or the level already shown (FR-73) and a press whose generation fails (FR-88). The exceptions are a press on an unavailable level at 4×4, which does nothing at all (the sheet stays open and focus stays on that button, FR-91, FR-73), and a press that needs the confirmation: there the sheet closes, the dialog opens with focus on «Скасувати» (FR-67), and focus goes to the summary button only when the dialog ends (FR-98, see «Sheet and confirmation»). The close button, Escape and a click outside the sheet (the light dismiss of `popover="auto"`) close the sheet natively with no change to the board, the size, the level, the messages, the highlights, `cell-hinted` or the summary; the page SHALL listen to the `toggle` event of the sheet and, when `newState` is `closed` and the confirmation dialog is not open, move focus to the summary button, subject to the focus rule below (when the rules panel opens, its autofocus «Зрозуміло» holds the focus outside the sheet, so the rule leaves it there). The page adds no key handler (FR-59): Escape is the browser's. A late `toggle` event that arrives while the confirmation dialog or the rules panel is open SHALL NOT move focus (the dialog's focus on «Скасувати» wins, FR-67, and so does the autofocus of «Зрозуміло» in the rules panel). Nor SHALL a closing `toggle` event move focus when DOM focus is already on an element outside the sheet other than the document body: a light dismiss by a click on another control (a cell, «Підказка», «Правила») leaves the focus on that control (review-gate fix round, 2026-10-09, seen in Chromium). Focus moves to the summary button only when it is inside the sheet or on no element. A browser dispatches `toggle` asynchronously; the rule above is what makes the order irrelevant.
 
 Traces: FR-97, FR-91, NFR-9
 
@@ -148,6 +148,18 @@ Traces: FR-97, FR-91, NFR-9
 - **GIVEN** a board with player entries, the sheet opened, and the player has pressed «Задачка» so that the dialog is open and the test focus is on `[data-confirm="no"]`
 - **WHEN** the test dispatches a `toggle` event with `newState` `closed` on the sheet
 - **THEN** `document.activeElement` is still `[data-confirm="no"]`
+
+#### Scenario: A light dismiss by a click on a cell leaves the focus on that cell
+
+- **GIVEN** a mounted 6×6 board without player entries, the sheet opened through the stubbed `showPopover()`, and the test focus on a non-given cell (as a click on it outside the sheet does in a browser)
+- **WHEN** the test dispatches a `toggle` event with `newState` `closed` on the sheet
+- **THEN** `document.activeElement` is still that cell
+
+#### Scenario: A closing toggle with the focus on no element moves it to the summary button
+
+- **GIVEN** a mounted 6×6 board, the sheet opened through the stubbed `showPopover()`, and no element focused (`document.activeElement` is the body)
+- **WHEN** the test dispatches a `toggle` event with `newState` `closed` on the sheet
+- **THEN** `document.activeElement` is the summary button
 
 ### Requirement: Sheet and confirmation
 
@@ -564,6 +576,12 @@ Traces: FR-65, NFR-9, FR-87, FR-91, FR-95, FR-97
 - **GIVEN** the rules `.level-control button` and `.level-control button[aria-disabled='true']`
 - **WHEN** the test compares their `border-style` and `text-decoration` declarations
 - **THEN** the aria-disabled rule declares a `border-style` different from the plain rule's, or a `text-decoration` value other than `none`
+
+#### Scenario: The checked level has a cue besides colour
+
+- **GIVEN** the text of `src/ui/style.css` and a mounted page
+- **WHEN** the test reads the name span of each level button and the rules `.level-control button .level-name::before` and `.level-control button[aria-checked='true'] .level-name::before`
+- **THEN** each name span has the class `level-name`, the first rule declares `content` and a `border-radius` (the radio ring), and the second declares a `box-shadow` whose value contains `inset` (the dot inside the ring), so the checked level differs from the others in shape and not by colour alone (WCAG 1.4.1; review-gate fix round, 2026-10-09)
 
 #### Scenario: The classes are on the elements and the buttons are buttons
 

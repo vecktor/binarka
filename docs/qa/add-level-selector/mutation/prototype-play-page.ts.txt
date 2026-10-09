@@ -2,7 +2,7 @@ import { GenerationRunOutError, findViolations, generate, hint, isSolved } from 
 import type { Cell, Grid, Puzzle } from '../engine/index';
 import { createLogo } from './logo';
 import { defaultSeedSource } from './seed';
-import { BUTTONS, CONFIRM, IDLE, LEVELS, LEVEL_GROUP, LEVEL_REASON_4X4, RULES, SETUP, SIZE_GROUP, TECHNIQUES, TITLE, WIN, cellLabel, sizeLabel, summaryText } from './strings';
+import { BUTTONS, CONFIRM, IDLE, LEVELS, RULES, SETUP, SIZE_GROUP, TECHNIQUES, TITLE, WIN, cellLabel, sizeLabel } from './strings';
 
 export interface PlayPageOptions {
   seedSource?: () => number;
@@ -10,7 +10,6 @@ export interface PlayPageOptions {
 }
 
 const SIZES = [4, 6, 8];
-const MAX_ATTEMPTS = 3; // seeds taken for one change when the engine runs out of attempts (FR-88)
 // Decorative examples of the rules (digits and the not-equal sign only, aria-hidden). A trailing "?" marks the answer cell.
 // Typed as one entry per rule text, so adding or removing a rule in strings.ts fails the type check.
 type OnePerRule<T> = { readonly [K in keyof T]: readonly string[] };
@@ -50,10 +49,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const boardHost = el('div', { class: 'board-host' });
   const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, BUTTONS.hint);
   const newButton = el('button', { type: 'button', 'data-action': 'new' }, BUTTONS.newPuzzle);
-  const summaryButton = el('button', { type: 'button', class: 'setup-button', 'data-action': 'setup', popovertarget: sheetId });
+  const summary = el('button', { type: 'button', class: 'setup-button', 'data-action': 'setup', popovertarget: sheetId });
   const summaryPrefix = el('span', { class: 'visually-hidden' }, SETUP.prefix);
-  const summaryLabel = el('span', { class: 'setup-summary' });
-  summaryButton.append(summaryPrefix, summaryLabel, el('span', { class: 'setup-cue', 'aria-hidden': 'true' }, SETUP.cue));
+  const summaryText = el('span', { class: 'setup-summary' });
+  summary.append(summaryPrefix, summaryText, el('span', { class: 'setup-cue', 'aria-hidden': 'true' }, SETUP.cue));
   const sizeControl = el('div', { 'data-control': 'size', role: 'radiogroup', 'aria-label': SIZE_GROUP, class: 'size-control' });
   const sizeButtons = new Map<number, HTMLButtonElement>();
   for (const n of SIZES) {
@@ -61,17 +60,17 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     sizeButtons.set(n, option);
     sizeControl.appendChild(option);
   }
-  const levelControl = el('div', { 'data-control': 'level', role: 'radiogroup', 'aria-label': LEVEL_GROUP, class: 'level-control' });
+  const levelControl = el('div', { 'data-control': 'level', role: 'radiogroup', 'aria-label': SETUP.levelGroup, class: 'level-control' });
   const levelReason = el('p', { 'data-level-reason': '', hidden: '' });
   levelControl.appendChild(levelReason);
   const levelButtons: HTMLButtonElement[] = [];
-  LEVELS.forEach((entry, i) => {
+  LEVELS.forEach((l, i) => {
     const option = el('button', { type: 'button', role: 'radio', 'aria-checked': i === 0 ? 'true' : 'false' });
-    option.append(el('span', { class: 'level-name' }, entry.name), document.createTextNode(' '), el('span', { class: 'level-text' }, entry.description));
+    option.append(el('span', {}, l.name), document.createTextNode(' '), el('span', {}, l.description));
     levelButtons.push(option);
     levelControl.appendChild(option);
   });
-  const setupClose = el('button', { type: 'button', class: 'setup-close', 'data-action': 'setup-close', popovertarget: sheetId, popovertargetaction: 'hide' }, SETUP.close);
+  const setupClose = el('button', { type: 'button', 'data-action': 'setup-close', popovertarget: sheetId, popovertargetaction: 'hide' }, SETUP.close);
   const sheet = el('div', { popover: 'auto', id: sheetId, class: 'setup-sheet', 'data-section': 'setup', role: 'dialog', 'aria-label': SETUP.sheetLabel });
   sheet.append(sizeControl, levelControl, setupClose);
   const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, BUTTONS.reset);
@@ -113,7 +112,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   dialogButtons.append(yesButton, noButton);
   dialog.append(el('p', { id: dialogTextId }, CONFIRM.text), dialogButtons);
 
-  root.replaceChildren(header, summaryButton, boardHost, buttons, messages, rulesPanel, sheet, dialog);
+  root.replaceChildren(header, summary, boardHost, buttons, messages, rulesPanel, sheet, dialog);
 
   let size = 6;
   let level = 1;
@@ -123,19 +122,18 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   let hinted: [number, number] | null = null;
 
   let pending: (() => void) | null = null;
-  let returnToSummary = false; // the pending confirmation came from the sheet: focus goes to the summary when it ends
+  let pendingFromSheet = false;
 
-  /** Rewrite everything derived from `size` and `level` (summary, aria-checked, aria-disabled, reason). */
   function syncControls(): void {
-    summaryLabel.textContent = summaryText(size, level);
+    summaryText.textContent = `${size}×${size}${SETUP.sep}${LEVELS[level - 1]?.name ?? ''}`;
     for (const [m, button] of sizeButtons) button.setAttribute('aria-checked', m === size ? 'true' : 'false');
     levelButtons.forEach((button, i) => {
       button.setAttribute('aria-checked', i + 1 === level ? 'true' : 'false');
       if (size === 4 && i > 0) button.setAttribute('aria-disabled', 'true');
       else button.removeAttribute('aria-disabled');
     });
-    levelReason.textContent = size === 4 ? LEVEL_REASON_4X4 : '';
     levelReason.hidden = size !== 4;
+    levelReason.textContent = size === 4 ? SETUP.reason : '';
   }
 
   function setHinted(next: [number, number] | null): void {
@@ -229,18 +227,24 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     refreshHighlights();
   }
 
-  /** The one generation path: a seed per attempt, retried only on the engine's run-out error. Failure changes nothing. */
   function newPuzzle(requestedSize: number, requestedLevel: number): boolean {
-    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      let puzzle: Puzzle;
       try {
-        showPuzzle(makePuzzle(requestedSize, seedSource(), requestedLevel), requestedSize);
-        size = requestedSize;
-        level = requestedLevel;
-        syncControls();
-        return true;
+        puzzle = makePuzzle(requestedSize, seedSource(), requestedLevel);
       } catch (error) {
-        if (!(error instanceof GenerationRunOutError)) return false; // keep the previous board (or no board at mount)
+        if (error instanceof GenerationRunOutError) continue;
+        return false;
       }
+      try {
+        showPuzzle(puzzle, requestedSize);
+      } catch {
+        return false;
+      }
+      size = requestedSize;
+      level = requestedLevel;
+      syncControls();
+      return true;
     }
     return false;
   }
@@ -262,12 +266,15 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   }
 
   /** Run the action at once on a board without entries; otherwise keep it pending and ask. */
-  function requestAction(action: () => void): void {
+  function requestAction(action: () => void, fromSheet = false): void {
     if (!hasEntries()) {
       action();
+      if (fromSheet) closeSheet();
       return;
     }
     pending = action;
+    pendingFromSheet = fromSheet;
+    if (fromSheet) sheet.hidePopover();
     if (!dialog.hasAttribute('open')) {
       dialog.showModal();
       noButton.focus(); // the safe choice is the default (A-20)
@@ -284,6 +291,11 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     winMessage.textContent = '';
   }
 
+  function closeSheet(): void {
+    sheet.hidePopover();
+    summary.focus();
+  }
+
   function startNewPuzzle(): void {
     if (newPuzzle(size, level)) {
       hintMessage.textContent = '';
@@ -291,8 +303,15 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     }
   }
 
-  function changeTo(nextSize: number, nextLevel: number): void {
-    if (newPuzzle(nextSize, nextLevel)) {
+  function changeSize(n: number): void {
+    if (newPuzzle(n, n === 4 ? 1 : level)) {
+      hintMessage.textContent = '';
+      winMessage.textContent = '';
+    }
+  }
+
+  function changeLevel(l: number): void {
+    if (newPuzzle(size, l)) {
       hintMessage.textContent = '';
       winMessage.textContent = '';
     }
@@ -300,66 +319,59 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
 
   yesButton.addEventListener('click', () => {
     const action = pending; // captured first: the late `close` event must not drop it
-    const toSummary = returnToSummary;
+    const fromSheet = pendingFromSheet;
     pending = null;
-    returnToSummary = false;
     dialog.close();
     action?.();
-    if (toSummary) summaryButton.focus();
+    if (fromSheet) summary.focus();
   });
   noButton.addEventListener('click', () => {
-    const toSummary = returnToSummary;
+    const fromSheet = pendingFromSheet;
     pending = null;
-    returnToSummary = false;
     dialog.close();
-    if (toSummary) summaryButton.focus();
+    if (fromSheet) summary.focus();
   });
   dialog.addEventListener('close', () => {
+    const fromSheet = pendingFromSheet && pending !== null;
     pending = null;
-    if (returnToSummary) {
-      returnToSummary = false;
-      summaryButton.focus();
-    }
+    if (fromSheet) summary.focus();
   });
 
-  /** A press inside the sheet that is not unavailable: no-op, direct change or confirmation, always ending on the summary. */
-  function choose(isShown: boolean, action: () => void): void {
-    if (isShown && board.length > 0) {
-      sheet.hidePopover();
-      summaryButton.focus();
-      return;
+  function isPopoverOpen(panel: HTMLElement): boolean {
+    let open = false;
+    try {
+      open = panel.matches(':popover-open');
+    } catch {
+      open = false;
     }
-    if (hasEntries()) {
-      sheet.hidePopover();
-      returnToSummary = true;
-      requestAction(action);
-      return;
-    }
-    action();
-    sheet.hidePopover();
-    summaryButton.focus();
+    return open || panel.contains(document.activeElement);
   }
-
   sheet.addEventListener('toggle', (event) => {
     if ((event as Event & { newState?: string }).newState !== 'closed') return;
-    // Focus moves to the summary only from inside the sheet or from no element; a light dismiss by a click elsewhere keeps it.
-    const active = document.activeElement;
-    if (active !== null && active !== document.body && !sheet.contains(active)) return;
-    if (dialog.hasAttribute('open')) return;
-    summaryButton.focus();
+    if (dialog.hasAttribute('open') || isPopoverOpen(rulesPanel)) return;
+    summary.focus();
   });
 
   resetButton.addEventListener('click', () => { requestAction(resetBoard); });
   newButton.addEventListener('click', () => { requestAction(startNewPuzzle); });
   for (const [n, button] of sizeButtons) {
     button.addEventListener('click', () => {
-      choose(n === size, () => { changeTo(n, n === 4 ? 1 : level); });
+      if (n === size && board.length > 0) {
+        closeSheet(); // the shown size is a no-op; with no board shown, no size is shown
+        return;
+      }
+      requestAction(() => { changeSize(n); }, true);
     });
   }
   levelButtons.forEach((button, i) => {
     button.addEventListener('click', () => {
-      if (button.getAttribute('aria-disabled') === 'true') return; // unavailable at 4x4: nothing at all
-      choose(i + 1 === level, () => { changeTo(size, i + 1); });
+      if (button.getAttribute('aria-disabled') === 'true') return;
+      const l = i + 1;
+      if (l === level && board.length > 0) {
+        closeSheet();
+        return;
+      }
+      requestAction(() => { changeLevel(l); }, true);
     });
   });
 
