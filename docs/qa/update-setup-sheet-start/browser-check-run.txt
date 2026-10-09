@@ -1,0 +1,72 @@
+
+## 375x812
+PASS (b) summary reads 6×6 · Розминка: «Поле і складність: 6×6 · Розминка▾»
+PASS (b) no size buttons visible in the page body
+PASS (c) the summary opens the sheet
+PASS (c) «Почати» and «Закрити» visible
+PASS (d) 8×8 and Мозколамка marked, sheet open ([8,4,true])
+PASS (d) focus stays on the pressed option (radio:Мозколамка Д)
+PASS (d) board and summary unchanged
+OBSERVED (not verified) footer: start 17,752,222,44 close 247,752,111,44; sheet scrollHeight/clientHeight 534,534; one row: true
+PASS (e) «Закрити» discards the mark
+PASS (e) Escape closes the sheet
+PASS (e) Escape discards the mark
+PASS (e) a click outside closes the sheet (light dismiss)
+PASS (e) light dismiss discards the mark
+PASS (e) light dismiss by a cell click leaves focus on the cell (cell)
+PASS (f) «Почати» starts 8×8 · Мозколамка, focus on the summary (Поле і складність: 8×8 · Мозколамка▾, setup)
+PASS (g) sheet closed first, dialog open, «Скасувати» focused (no)
+PASS (g) «Скасувати»: nothing changed, focus on the summary, sheet not reopened
+PASS (g) the cancelled pair is dropped (reopen shows Мозколамка)
+PASS (g) «Так, почати»: new 8×8 · Задачка (Поле і складність: 8×8 · Задачка▾)
+PASS (k2) dialog open after «Почати» with entries
+PASS (k2) Escape in the dialog: focus on the summary, pair dropped, sheet not reopened (setup)
+NOTE (k2) «Підказка» is covered by the open sheet at this size: its light dismiss is not exercised here
+PASS (k2) a click on «Правила» closes the sheet and opens the rules panel; focus is in the panel («Зрозуміло» autofocus, row 71), not taken back by the sheet (BUTTON)
+PASS (h) 4×4 marks Розминка, levels 2-4 unavailable, reason shown (,true,true,true)
+PASS (h) a press on an unavailable level does nothing (forced click: Playwright treats aria-disabled as not enabled)
+PASS (h) 6×6: cue and reason gone, Розминка stays
+PASS (h) «Почати» with an unchanged choice makes a new board of the same size and level
+OBSERVED Tab order from «Поле 6×6»: Поле 6×6(no ring) > Поле 8×8 > Розминка В > Задачка До > Головоломк > Мозколамка > setup-start > setup-close > 
+PASS (i) Tab reaches «Почати» before «Закрити»
+PASS (i) each control reached by Tab shows a ring (the first was focused by script, so :focus-visible need not apply)
+PASS (k2) Enter on «Почати» starts the marked 8×8
+PASS (k2) Space on «Почати» starts the marked 6×6
+
+## 1280x800
+PASS (b) summary reads 6×6 · Розминка: «Поле і складність: 6×6 · Розминка▾»
+PASS (b) no size buttons visible in the page body
+PASS (c) the summary opens the sheet
+PASS (c) «Почати» and «Закрити» visible
+PASS (d) 8×8 and Мозколамка marked, sheet open ([8,4,true])
+PASS (d) focus stays on the pressed option (radio:Мозколамка Д)
+PASS (d) board and summary unchanged
+OBSERVED (not verified) footer: start 441,587,260,44 close 709,587,130,44; sheet scrollHeight/clientHeight 510,510; one row: true
+PASS (e) «Закрити» discards the mark
+PASS (e) Escape closes the sheet
+PASS (e) Escape discards the mark
+PASS (e) a click outside closes the sheet (light dismiss)
+PASS (e) light dismiss discards the mark
+NOTE (e) no empty cell outside the sheet at this size: cell light-dismiss not exercised
+PASS (f) «Почати» starts 8×8 · Мозколамка, focus on the summary (Поле і складність: 8×8 · Мозколамка▾, setup)
+PASS (g) sheet closed first, dialog open, «Скасувати» focused (no)
+PASS (g) «Скасувати»: nothing changed, focus on the summary, sheet not reopened
+PASS (g) the cancelled pair is dropped (reopen shows Мозколамка)
+PASS (g) «Так, почати»: new 8×8 · Задачка (Поле і складність: 8×8 · Задачка▾)
+PASS (k2) dialog open after «Почати» with entries
+PASS (k2) Escape in the dialog: focus on the summary, pair dropped, sheet not reopened (setup)
+NOTE (k2) «Підказка» is covered by the open sheet at this size: its light dismiss is not exercised here
+PASS (k2) a click on «Правила» closes the sheet and opens the rules panel; focus is in the panel («Зрозуміло» autofocus, row 71), not taken back by the sheet (BUTTON)
+PASS (h) 4×4 marks Розминка, levels 2-4 unavailable, reason shown (,true,true,true)
+PASS (h) a press on an unavailable level does nothing (forced click: Playwright treats aria-disabled as not enabled)
+PASS (h) 6×6: cue and reason gone, Розминка stays
+PASS (h) «Почати» with an unchanged choice makes a new board of the same size and level
+OBSERVED Tab order from «Поле 6×6»: Поле 6×6(no ring) > Поле 8×8 > Розминка В > Задачка До > Головоломк > Мозколамка > setup-start > setup-close > 
+PASS (i) Tab reaches «Почати» before «Закрити»
+PASS (i) each control reached by Tab shows a ring (the first was focused by script, so :focus-visible need not apply)
+PASS (k2) Enter on «Почати» starts the marked 8×8
+PASS (k2) Space on «Почати» starts the marked 6×6
+OBSERVED (not verified) 320x700 4×4 marked: sheet scrollHeight/clientHeight 621,559; footer one row true; «Почати» bottom 684 vs sheet bottom 700
+OBSERVED (not verified) 1366x650 4×4 marked: sheet scrollHeight/clientHeight 538,518; footer one row true; «Почати» bottom 560 vs sheet bottom 585
+
+RESULT: 0 failing step(s)

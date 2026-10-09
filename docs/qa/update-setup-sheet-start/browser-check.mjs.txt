@@ -1,0 +1,171 @@
+// Real-browser smoke test for update-setup-sheet-start, task 6.1. Chromium (Playwright), built page via vite preview.
+import { chromium } from 'playwright';
+const URL = 'http://localhost:4318/';
+const OUT = process.argv[2];
+const log = [];
+let fails = 0;
+const ok = (cond, msg) => { log.push(`${cond ? 'PASS' : 'FAIL'} ${msg}`); if (!cond) fails++; };
+const seedScript = (start) => {
+  let a = start >>> 0;
+  Math.random = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+};
+
+async function run(width, height, tag) {
+  log.push(`\n## ${width}x${height}`);
+  const browser = await chromium.launch();
+  const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+  const page = await ctx.newPage();
+  await page.addInitScript(seedScript, 1);
+  await page.goto(URL);
+  await page.locator('[data-board] [data-cell]').first().waitFor();
+  const S = {
+    summary: page.locator('[data-action="setup"]'), sheet: page.locator('[data-section="setup"]'),
+    start: page.locator('[data-action="setup-start"]'), close: page.locator('[data-action="setup-close"]'),
+    dialog: page.locator('dialog[data-dialog="confirm"]'), yes: page.locator('[data-confirm="yes"]'), no: page.locator('[data-confirm="no"]'),
+    size: (n) => page.locator('[data-control="size"] [role="radio"]').nth({ 4: 0, 6: 1, 8: 2 }[n]),
+    level: (i) => page.locator('[data-control="level"] [role="radio"]').nth(i - 1),
+  };
+  const st = () => page.evaluate(() => {
+    const s = document.querySelector('[data-section="setup"]');
+    const chk = (q) => [...document.querySelectorAll(q)].findIndex((b) => b.getAttribute('aria-checked') === 'true');
+    const a = document.activeElement;
+    return {
+      open: s.matches(':popover-open'), dialog: document.querySelector('dialog[data-dialog="confirm"]').open,
+      size: Number(document.querySelector('[data-board]')?.getAttribute('data-size')),
+      summary: document.querySelector('[data-action="setup"]').textContent.replace(/\s+/g, ' ').trim(),
+      checkedSize: [4, 6, 8][chk('[data-control="size"] [role="radio"]')], checkedLevel: chk('[data-control="level"] [role="radio"]') + 1,
+      focus: a?.getAttribute('data-action') || a?.getAttribute('data-confirm') || (a?.hasAttribute('data-cell') ? 'cell' : a?.getAttribute('role') === 'radio' ? 'radio:' + a.textContent.trim().slice(0, 12) : a?.tagName),
+      boardKey: [...document.querySelectorAll('[data-board] [data-cell]')].map((c) => c.textContent).join(''),
+    };
+  });
+  const shot = (name) => page.screenshot({ path: `${OUT}/${tag}-${name}.png` });
+  const openSheet = async () => { await S.summary.click(); await page.waitForTimeout(100); };
+
+  // (b)
+  let s0 = await st();
+  ok(/6×6 · Розминка/.test(s0.summary), `(b) summary reads 6×6 · Розминка: «${s0.summary}»`);
+  ok(await page.locator('body > * [data-control="size"]:visible').count() === 0, '(b) no size buttons visible in the page body');
+  await shot('mount');
+  // (c)
+  await openSheet();
+  ok((await st()).open, '(c) the summary opens the sheet');
+  ok(await S.start.isVisible() && await S.close.isVisible(), '(c) «Почати» and «Закрити» visible');
+  // (d)
+  await S.size(8).click(); await S.level(4).click();
+  let s1 = await st();
+  ok(s1.open && s1.checkedSize === 8 && s1.checkedLevel === 4, `(d) 8×8 and Мозколамка marked, sheet open (${JSON.stringify([s1.checkedSize, s1.checkedLevel, s1.open])})`);
+  ok(s1.focus.startsWith('radio:'), `(d) focus stays on the pressed option (${s1.focus})`);
+  ok(s1.size === 6 && s1.boardKey === s0.boardKey && s1.summary === s0.summary, '(d) board and summary unchanged');
+  await shot('sheet-marked');
+  // footer geometry
+  const g = await page.evaluate(() => { const r = (q) => document.querySelector(q).getBoundingClientRect(); const a = r('[data-action="setup-start"]'), b = r('[data-action="setup-close"]'); return { start: [Math.round(a.x), Math.round(a.y), Math.round(a.width), Math.round(a.height)], close: [Math.round(b.x), Math.round(b.y), Math.round(b.width), Math.round(b.height)], sheetScroll: (() => { const s = document.querySelector('[data-section="setup"]'); return [s.scrollHeight, s.clientHeight]; })() }; });
+  log.push(`OBSERVED (not verified) footer: start ${g.start} close ${g.close}; sheet scrollHeight/clientHeight ${g.sheetScroll}; one row: ${g.start[1] === g.close[1]}`);
+  // (e) three close routes
+  await S.close.click(); await page.waitForTimeout(100); await openSheet();
+  let s2 = await st(); ok(s2.checkedSize === 6 && s2.checkedLevel === 1, '(e) «Закрити» discards the mark');
+  await S.size(8).click(); await page.keyboard.press('Escape'); await page.waitForTimeout(100);
+  ok(!(await st()).open, '(e) Escape closes the sheet'); await openSheet();
+  s2 = await st(); ok(s2.checkedSize === 6, '(e) Escape discards the mark');
+  await S.size(8).click();
+  await page.mouse.click(5, 5); await page.waitForTimeout(100);
+  const sLd = await st();
+  ok(!sLd.open, '(e) a click outside closes the sheet (light dismiss)');
+  await openSheet(); ok((await st()).checkedSize === 6, '(e) light dismiss discards the mark');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(100);
+  // light dismiss by clicking a cell: focus stays on it (needs the cell outside the panel)
+  await openSheet(); await S.size(8).click();
+  const cellBox = await page.evaluate(() => { const s = document.querySelector('[data-section="setup"]').getBoundingClientRect(); for (const c of document.querySelectorAll('[data-board] [data-cell][data-given="false"]')) { const r = c.getBoundingClientRect(); const x = r.x + r.width / 2, y = r.y + r.height / 2; if (x < s.left || x > s.right || y < s.top || y > s.bottom) return [x, y]; } return null; });
+  if (cellBox) {
+    await page.mouse.click(cellBox[0], cellBox[1]); await page.waitForTimeout(100);
+    const sc = await st(); ok(!sc.open && sc.focus === 'cell', `(e) light dismiss by a cell click leaves focus on the cell (${sc.focus})`);
+    // undo the entry if the click entered one (the click may only dismiss)
+  } else log.push('NOTE (e) no empty cell outside the sheet at this size: cell light-dismiss not exercised');
+  // reload to a clean board
+  await page.goto(URL); await page.locator('[data-board] [data-cell]').first().waitFor();
+  // (f)
+  await openSheet(); await S.size(8).click(); await S.level(4).click(); await S.start.click(); await page.waitForTimeout(150);
+  let s3 = await st();
+  ok(!s3.open && s3.size === 8 && /8×8 · Мозколамка/.test(s3.summary) && s3.focus === 'setup', `(f) «Почати» starts 8×8 · Мозколамка, focus on the summary (${s3.summary}, ${s3.focus})`);
+  // (g) entries then «Почати» with confirmation
+  const empties = page.locator('[data-board] [data-cell][data-given="false"]');
+  await empties.nth(0).click(); await empties.nth(1).click();
+  const key1 = (await st()).boardKey;
+  await openSheet(); await S.level(2).click(); await S.start.click(); await page.waitForTimeout(150);
+  let s4 = await st();
+  ok(!s4.open && s4.dialog && s4.focus === 'no', `(g) sheet closed first, dialog open, «Скасувати» focused (${s4.focus})`);
+  await shot('confirm');
+  await S.no.click(); await page.waitForTimeout(100);
+  let s5 = await st();
+  ok(!s5.dialog && !s5.open && s5.boardKey === key1 && s5.focus === 'setup' && /Мозколамка/.test(s5.summary), `(g) «Скасувати»: nothing changed, focus on the summary, sheet not reopened`);
+  await openSheet(); ok((await st()).checkedLevel === 4, '(g) the cancelled pair is dropped (reopen shows Мозколамка)');
+  await S.level(2).click(); await S.start.click(); await page.waitForTimeout(150); await S.yes.click(); await page.waitForTimeout(150);
+  let s6 = await st();
+  ok(!s6.dialog && s6.size === 8 && /8×8 · Задачка/.test(s6.summary) && s6.focus === 'setup', `(g) «Так, почати»: new 8×8 · Задачка (${s6.summary})`);
+  // (k2) Escape in the dialog
+  await empties.nth(0).click();
+  await openSheet(); await S.level(1).click(); await S.start.click(); await page.waitForTimeout(150);
+  ok((await st()).dialog, '(k2) dialog open after «Почати» with entries');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(100);
+  let s7 = await st();
+  ok(!s7.dialog && !s7.open && s7.focus === 'setup' && /Задачка/.test(s7.summary), `(k2) Escape in the dialog: focus on the summary, pair dropped, sheet not reopened (${s7.focus})`);
+  // (k2) light dismiss by «Підказка» and «Правила»
+  for (const [action, name] of [['hint', '«Підказка»'], ['rules', '«Правила»']]) {
+    await openSheet();
+    const pt = await page.evaluate((a) => { const s = document.querySelector('[data-section="setup"]').getBoundingClientRect(); const r = document.querySelector(`[data-action="${a}"]`).getBoundingClientRect(); const x = r.x + r.width / 2, y = r.y + r.height / 2; return (x < s.left || x > s.right || y < s.top || y > s.bottom) ? [x, y] : null; }, action);
+    if (!pt) { log.push(`NOTE (k2) ${name} is covered by the open sheet at this size: its light dismiss is not exercised here`); await page.keyboard.press('Escape'); await page.waitForTimeout(100); continue; }
+    await page.mouse.click(pt[0], pt[1]); await page.waitForTimeout(100);
+    const sx = await st();
+    if (action === 'rules') {
+      const rf = await page.evaluate(() => ({ open: document.querySelector('[data-section="rules"]').matches(':popover-open'), inRules: !!document.activeElement.closest('[data-section="rules"]') }));
+      ok(!sx.open && rf.open && rf.inRules, `(k2) a click on «Правила» closes the sheet and opens the rules panel; focus is in the panel («Зрозуміло» autofocus, row 71), not taken back by the sheet (${sx.focus})`);
+    } else ok(!sx.open && sx.focus === action, `(k2) a click on ${name} closes the sheet, focus there (${sx.focus})`);
+    if (action === 'rules') { await page.keyboard.press('Escape'); await page.waitForTimeout(100); }
+  }
+  // reload for a clean board
+  await page.goto(URL); await page.locator('[data-board] [data-cell]').first().waitFor();
+  // (h) 4x4
+  await openSheet(); await S.level(3).click(); await S.size(4).click();
+  let h1 = await st();
+  const dis = await page.evaluate(() => [...document.querySelectorAll('[data-control="level"] [role="radio"]')].map((b) => b.getAttribute('aria-disabled')));
+  const reason = await page.locator('[data-level-reason]').isVisible();
+  ok(h1.checkedLevel === 1 && dis.slice(1).every((v) => v === 'true') && reason, `(h) 4×4 marks Розминка, levels 2-4 unavailable, reason shown (${dis})`);
+  await shot('sheet-4x4');
+  await S.level(3).click({ force: true }); ok((await st()).checkedLevel === 1 && (await st()).open, '(h) a press on an unavailable level does nothing (forced click: Playwright treats aria-disabled as not enabled)');
+  await S.size(6).click();
+  const dis2 = await page.evaluate(() => [...document.querySelectorAll('[data-control="level"] [role="radio"]')].map((b) => b.getAttribute('aria-disabled')));
+  ok(!dis2.slice(1).some((v) => v === 'true') && !(await page.locator('[data-level-reason]').isVisible()) && (await st()).checkedLevel === 1, '(h) 6×6: cue and reason gone, Розминка stays');
+  const kb = (await st()).boardKey;
+  await S.start.click(); await page.waitForTimeout(150);
+  let h2 = await st(); ok(h2.size === 6 && /6×6 · Розминка/.test(h2.summary) && h2.boardKey !== kb, '(h) «Почати» with an unchanged choice makes a new board of the same size and level');
+  // (i) Tab order inside the sheet
+  await openSheet(); await S.size(6).focus();
+  const order = [];
+  for (let k = 0; k < 9; k++) {
+    const f = await page.evaluate(() => { const a = document.activeElement; const ring = getComputedStyle(a).outlineStyle !== 'none' && parseFloat(getComputedStyle(a).outlineWidth) > 0; return (a.getAttribute('data-action') || a.textContent.trim().slice(0, 10)) + (ring ? '' : '(no ring)'); });
+    order.push(f); await page.keyboard.press('Tab');
+  }
+  log.push(`OBSERVED Tab order from «Поле 6×6»: ${order.join(' > ')}`);
+  ok(order.some((x) => x.startsWith('setup-start')) && order.indexOf(order.find((x) => x.startsWith('setup-start'))) < order.indexOf(order.find((x) => x.startsWith('setup-close'))), '(i) Tab reaches «Почати» before «Закрити»');
+  ok(!order.slice(1, 8).some((x) => x.includes('(no ring)')), '(i) each control reached by Tab shows a ring (the first was focused by script, so :focus-visible need not apply)');
+  // (k2) Enter and Space on «Почати»
+  await S.size(8).click(); await S.start.focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(150);
+  ok((await st()).size === 8, '(k2) Enter on «Почати» starts the marked 8×8');
+  await openSheet(); await S.size(6).click(); await S.start.focus(); await page.keyboard.press('Space'); await page.waitForTimeout(150);
+  ok((await st()).size === 6, '(k2) Space on «Почати» starts the marked 6×6');
+  await browser.close();
+}
+
+for (const [w, h, t] of [[375, 812, '375'], [1280, 800, '1280']]) { try { await run(w, h, t); } catch (e) { fails++; log.push(`FAIL ${w}x${h} aborted: ${String(e.message).split('\n')[0]}`); } }
+// (k) observation only: sheet inner scroll at 320x700 and 1366x650, 4x4 marked
+for (const [w, h] of [[320, 700], [1366, 650]]) {
+  const browser = await chromium.launch(); const page = await browser.newPage({ viewport: { width: w, height: h } });
+  await page.addInitScript(seedScript, 1); await page.goto(URL); await page.locator('[data-board] [data-cell]').first().waitFor();
+  await page.locator('[data-action="setup"]').click(); await page.locator('[data-control="size"] [role="radio"]').nth(0).click(); await page.waitForTimeout(100);
+  const m = await page.evaluate(() => { const s = document.querySelector('[data-section="setup"]'); const a = document.querySelector('[data-action="setup-start"]').getBoundingClientRect(); const b = document.querySelector('[data-action="setup-close"]').getBoundingClientRect(); const sr = s.getBoundingClientRect(); return { scroll: [s.scrollHeight, s.clientHeight], startBottom: Math.round(a.bottom), sheetBottom: Math.round(sr.bottom), oneRow: a.y === b.y }; });
+  log.push(`OBSERVED (not verified) ${w}x${h} 4×4 marked: sheet scrollHeight/clientHeight ${m.scroll}; footer one row ${m.oneRow}; «Почати» bottom ${m.startBottom} vs sheet bottom ${m.sheetBottom}`);
+  await page.screenshot({ path: `${OUT}/${w}x${h}-sheet-4x4.png` });
+  await browser.close();
+}
+log.push(`\nRESULT: ${fails} failing step(s)`);
+console.log(log.join('\n'));
+process.exit(fails ? 1 : 0);

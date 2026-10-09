@@ -1,20 +1,30 @@
-# update-setup-sheet-start green run (2026-10-10 02:19 +0530, orchestrator, worktree at 6fcd8d5 + working tree src/ changes)
-## lint
-> binarka@0.1.0 lint
+# update-setup-sheet-start green run at f9ddf47 (2026-10-10 02:36 +0530, orchestrator; src/ and tests/ clean at HEAD)
+Coverage of the Playwright runs: sampled (the viewports and states in e2e/), not continuum.
+History: a first fix-round run at the previous commit had 2 e2e failures (NFR-12 at 320 and 375: size options 38 px wide, a grid placement bug in the new footer strip), fixed at f9ddf47.
+
+## npm run lint
 > eslint .
 
-exit=0
-## test:run
+exit 0
+## npm run test:run
  Test Files  58 passed (58)
-      Tests  1293 passed (1293)
-## build
-
-✓ built in 46ms
-## openspec validate --all --strict
+      Tests  1294 passed (1294)
+## npm run build
+✓ built in 44ms
+## npx openspec validate update-setup-sheet-start --strict
+Change 'update-setup-sheet-start' is valid
+## npx openspec validate --all --strict
 Totals: 5 passed, 0 failed (5 items)
-## eval ratchet
+## node scripts/check-eval-ratchet.mjs
+OK    hint-clarity 94 (baseline 94)
 Result: PASS
-## test:e2e
-  45 passed (12.7s)
-## check:a11y
-  36 passed (8.8s)
+## node scripts/check-traceability.mjs
+traceability: 113 MVP FRs checked — 0 failure(s), 135 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+(FR-100/FR-101 warnings:)
+WARN  [recording-evidence] FR-100 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-101 is not referenced by any recording manifest under docs/qa/
+## npm run test:e2e
+  45 passed (13.0s)
+## npm run check:a11y
+  36 passed (9.0s)
