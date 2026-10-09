@@ -48,4 +48,3 @@ Note: TC-13 describes the intended end state; until each Playwright check is bui
 
 ## Assumptions (held)
 
-- **A-14:** target browsers are current evergreen Chromium (tested), Firefox and Safari (supported by design, untested; the page uses `popover`, `<dialog>` and `:has()`); phones from 320 px wide are supported (layout NFR-10, NFR-12, NFR-14). (amended 2026-10-05: was «target browsers are current desktop evergreen browsers; mobile layout and visual polish are not specified and not verified tonight (TC-13).») Until the Playwright checks run, the layout claims are design intent, reported NOT-EARNED.
