@@ -1,0 +1,52 @@
+{
+  "generatedBy": "review-gate",
+  "persistedBy": "orchestrator by hand: both runs returned reviewEvidence null and wrote no file; counts and titles are copied from the run results",
+  "change": "fix-action-button-targets",
+  "clean": false,
+  "runs": [
+    {
+      "runId": "wf_435b26a3-62a",
+      "kind": "first run",
+      "baseRef": "d6d3891",
+      "headRef": "057a57e",
+      "confirmed": 5,
+      "contested": 1,
+      "rejected": 5,
+      "confirmedTitles": [
+        "The user's desktop request (wider and taller, no vertical scroll) is not handled by this change (major, low confidence)",
+        "Rules with a pseudo-class are skipped, so a :hover/:active override that lowers min-height would go unnoticed (minor)",
+        "Comment says 'the three that must fail' but the loop lists five values (minor)",
+        "Review item 4.2: PASS. The style.css diff adds only the action-button rule, and the other controls keep min-height 2.75rem (informational)",
+        "Minor issues in the evidence file and the test messages (minor)"
+      ],
+      "contestedTitles": ["Security checklist: no applicable attack surface in this diff; areas clean"]
+    },
+    {
+      "runId": "wf_2da18d60-f88",
+      "kind": "confirming run",
+      "baseRef": "d6d3891",
+      "headRef": "0a8fbd2",
+      "confirmed": 5,
+      "contested": 1,
+      "rejected": 1,
+      "confirmedTitles": [
+        "stripPseudos narrows, not widens, inside :not()/:has(); the header's 'only ever widens' claim is false and part (d) misses negated-state rules (minor)",
+        "The pseudo-class probe of the fix round has no evidence file; mutation-run.txt still shows the old 8-test file (minor)",
+        "Header says pseudo stripping 'only WIDENS' matching; false inside :not(), so the part (d) blind-spot check can be bypassed (minor)",
+        "The fix-round tests (part d and the unparsable guard) have no red evidence; mutation-run.txt still reflects the 8-test file (minor)",
+        "README of the browser check gives two values for the 375x812 content bottom (629 and 630) (minor)"
+      ],
+      "contestedTitles": ["Spec compliance confirmed: CSS fix, top-level and no-!important clauses, e2e NFR-12/NFR-10 green, item 4.2 holds (informational)"]
+    }
+  ],
+  "dispositions": {
+    "run 1, desktop request not handled (major)": "out of scope, not a defect of this slice: the user's request (2026-10-09 about 22:40, a wider and taller rules panel on desktop with no inner scroll) goes to its own change with the sheet amendment and design round (autonomy-log row 114); the frozen design already caps the desktop panel at calc(100dvh - 7rem) (design/v0/app/binarka.css:761), which G2 ports",
+    "run 1, pseudo-class blind spot (minor)": "fixed in 0a8fbd2: part (d) of the test strips pseudo-classes and checks every matching min-height rule, in any at-rule",
+    "run 1, comment count and assertion message (minor)": "fixed in 0a8fbd2",
+    "run 1, stray count in mutation-run.txt (minor)": "annotated in 0a8fbd2",
+    "run 2, false 'only widens' claim (two findings, minor)": "fixed after the run, comments only (no logic change): the header and the JSDoc now state that stripping can narrow inside :not(); the double negation `.buttons :not(:not(:hover))` is recorded as a KNOWN BLIND SPOT, not fixed (contrived; the stylesheet has no such rule); the simpler `:not(...:hover)` form is caught by part (a), shown in mutation-run.txt (f)",
+    "run 2, fix-round probes without evidence (two findings, minor)": "fixed after the run: mutation-run.txt has a fix-round section against the 13-test file, mutations (a) to (g) with counts, including the blind spot (g) staying green",
+    "run 2, README 629 vs 630 (minor)": "fixed after the run: README says which instrument read which value",
+    "verdict": "not clean (the confirming run confirmed 5 minor findings); no defect in the product CSS in either run; closed after the confirming run without a third run, as docs/handoff/next-session.md says; the after-run fixes are comments and evidence only and were not re-reviewed"
+  }
+}

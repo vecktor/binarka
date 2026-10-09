@@ -42,8 +42,8 @@ Dependencies and database schema: none. No dependency (TC-10), no storage (TC-12
 
 ## 4. Review gate
 
-- [ ] 4.1 Run the review-gate with `change: fix-action-button-targets` (one run, one fix round for confirmed defects, one confirming run); record the report path in `docs/current-state.md`.
-- [ ] 4.2 Review item (no test checks it): the diff of `src/ui/style.css` adds the action-button `min-height` rule only; no rule of another control is edited, and the rules of `.rules-button`, `.setup-button`, `.size-control button`, `.level-control button` and `.confirm-buttons button` keep their `min-height: 2.75rem`. The reviewer states the result in the report.
+- [x] 4.1 Run the review-gate with `change: fix-action-button-targets` (one run, one fix round for confirmed defects, one confirming run); record the report path in `docs/current-state.md`.
+- [x] 4.2 Review item (no test checks it): the diff of `src/ui/style.css` adds the action-button `min-height` rule only; no rule of another control is edited, and the rules of `.rules-button`, `.setup-button`, `.size-control button`, `.level-control button` and `.confirm-buttons button` keep their `min-height: 2.75rem`. The reviewer states the result in the report.
 
 ## 5. Real-browser check at 375 px
 
@@ -57,7 +57,7 @@ Do not tick a sub-step until it has evidence (a file path).
 
 ## 6. Archive and validation
 
-- [ ] 6.1 Run `npx openspec validate fix-action-button-targets --strict`.
+- [x] 6.1 Run `npx openspec validate fix-action-button-targets --strict`.
 - [ ] 6.2 Do NOT edit `docs/requirements.md` (NFR-12 is signed). In the handoff (7.1) propose to the user that the verify column of NFR-12, which says «seen failing on 2026-10-09», gets the evidence path of the green run; the user decides. Update `README.md` only if it states the button size (it should not).
 - [ ] 6.3 Archive only after sections 1 to 5 passed and the real-browser check passed: run `npx openspec archive fix-action-button-targets --yes` (a normal merge, NOT `--skip-specs`). This is commit 3.
 - [ ] 6.4 In the archive commit, correct the Exclusions line of `openspec/specs/play-page/spec.md` that archive does not touch: «Two accessibility items the user declined (autonomy-log rows 43 and 66) are not provided: 44 px phone touch targets and the puzzle state in the URL.» becomes a line that says 44 px touch targets are required by NFR-12 (see «Action buttons meet the touch-target floor») and only the puzzle state in the URL is not provided. Do not edit the other stale lines listed in `proposal.md`.

@@ -1,6 +1,6 @@
 # fix-action-button-targets: real-browser check (NFR-12, NFR-10)
 
-2026-10-09, about 22:42 (UTC+5:30). Tree `057a57e` (the green commit). `npm run build`, served by `npx vite preview --port 4175`. Chromium (Playwright 1.64.0), headless, `reducedMotion: reduce`, the seeded `Math.random` of `e2e/helpers.ts` (seed 1), 6×6 «Розминка». Measured with `getBoundingClientRect` in the page; one look in the built-in browser pane at 375×812 as well (the same numbers, content bottom 629).
+2026-10-09, about 22:42 (UTC+5:30). Tree `057a57e` (the green commit). `npm run build`, served by `npx vite preview --port 4175`. Chromium (Playwright 1.64.0), headless, `reducedMotion: reduce`, the seeded `Math.random` of `e2e/helpers.ts` (seed 1), 6×6 «Розминка». Measured with `getBoundingClientRect` in the page; one look in the built-in browser pane at 375×812 as well: the same button sizes and tops; that instrument read the content bottom as 629 against 630 here (sub-pixel rounding of the same layout).
 
 | Viewport | State | «Підказка» | «Скинути» | «Нова головоломка» | Content bottom | Scroll height | Screenshot |
 |---|---|---|---|---|---|---|---|

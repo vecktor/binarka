@@ -37,3 +37,75 @@ Mutation check (task 2.3), 2026-10-09 22:38 UTC+5:30. Each mutation applied to s
 
 == restored (the fix)
       Tests  8 passed (8)
+
+---- Fix-round re-run against the 13-test file, 2026-10-09 22:52 UTC+5:30, tree 0a8fbd2 + the corrected test comments (uncommitted). Each mutation applied to src/ui/style.css, run, then restored with git checkout (HEAD holds the fix).
+
+== (a) declaration deleted
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 99ms
+     × Every rule that declares min-height for «Підказка» is at the top level of the stylesheet, and at least one exists 14ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 17ms
+     × Every rule that declares min-height for «Скинути» is at the top level of the stylesheet, and at least one exists 12ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 15ms
+     × Every rule that declares min-height for «Нова головоломка» is at the top level of the stylesheet, and at least one exists 10ms
+     × Every min-height rule that matches «Підказка» ([data-action="hint"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 8ms
+     × Every min-height rule that matches «Скинути» ([data-action="reset"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 8ms
+     × Every min-height rule that matches «Нова головоломка» ([data-action="new"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  9 failed | 4 passed (13)
+
+== (b) set to 2.5rem
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 98ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 17ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 15ms
+     × Every min-height rule that matches «Підказка» ([data-action="hint"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 9ms
+     × Every min-height rule that matches «Скинути» ([data-action="reset"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 9ms
+     × Every min-height rule that matches «Нова головоломка» ([data-action="new"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 8ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  6 failed | 7 passed (13)
+
+== (c) wrapped in @media (min-width: 1px)
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 95ms
+     × Every rule that declares min-height for «Підказка» is at the top level of the stylesheet, and at least one exists 14ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 16ms
+     × Every rule that declares min-height for «Скинути» is at the top level of the stylesheet, and at least one exists 11ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 14ms
+     × Every rule that declares min-height for «Нова головоломка» is at the top level of the stylesheet, and at least one exists 10ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  6 failed | 7 passed (13)
+
+== (d) appended .buttons button:active { min-height: 2rem; }
+     × Every min-height rule that matches «Підказка» ([data-action="hint"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 11ms
+     × Every min-height rule that matches «Скинути» ([data-action="reset"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 9ms
+     × Every min-height rule that matches «Нова головоломка» ([data-action="new"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  3 failed | 10 passed (13)
+
+== (d') appended @media (hover: hover) { .buttons button:hover { min-height: 40px; } }
+     × Every min-height rule that matches «Підказка» ([data-action="hint"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 12ms
+     × Every min-height rule that matches «Скинути» ([data-action="reset"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 9ms
+     × Every min-height rule that matches «Нова головоломка» ([data-action="new"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 9ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  3 failed | 10 passed (13)
+
+== (e) guard: appended .buttons :is(button, :hover) { min-height: 2rem; }
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 98ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 17ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 13ms
+     × A min-height rule whose selector cannot be parsed even after stripping never mentions a button, data-action or .buttons 15ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  4 failed | 9 passed (13)
+
+== (f) known limit, simple negation: appended .buttons button:not([data-action="hint"]:hover) { min-height: 2rem; } (expected: caught by part (a))
+     × The computed min-height of «Підказка» ([data-action="hint"]) is a length of at least 44 px 93ms
+     × The computed min-height of «Скинути» ([data-action="reset"]) is a length of at least 44 px 16ms
+     × The computed min-height of «Нова головоломка» ([data-action="new"]) is a length of at least 44 px 14ms
+     × Every min-height rule that matches «Скинути» ([data-action="reset"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 10ms
+     × Every min-height rule that matches «Нова головоломка» ([data-action="new"]) once pseudo-classes are stripped, in any at-rule too, declares at least 44 px 7ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  5 failed | 8 passed (13)
+
+== (g) KNOWN BLIND SPOT, double negation: appended .buttons :not(:not(:hover)) { min-height: 2rem; } (expected: NOT caught; recorded, not fixed)
+      Tests  13 passed (13)
+
+== restored
+      Tests  13 passed (13)

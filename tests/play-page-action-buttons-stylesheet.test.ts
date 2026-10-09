@@ -26,7 +26,10 @@
 //    selector with `stripPseudos()`: pseudo-elements (`::before`, `:after`, `::part(x)`) and pseudo-classes without a selector
 //    argument or with a non-selector argument (`:hover`, `:active`, `:focus-visible`, `:disabled`, `:first-child`, `:nth-child(2)`)
 //    are removed, text inside attribute brackets is left alone, and what is left is matched with `button.matches()`. Stripping
-//    only WIDENS what a selector matches, so the check can only be stricter than the browser, never looser. A selector made only of
+//    widens what a selector matches everywhere EXCEPT inside a negation: in `:not(...)` it can narrow it (`button:not(.x:hover)` ->
+//    `button:not(.x)`), so a negated-state rule such as `.buttons :not(:not(:hover)) { min-height: 2rem }` is a KNOWN BLIND SPOT of
+//    part (d) (review-gate confirming run wf_2da18d60-f88; the simpler form `button:not([data-action="hint"]:hover)` is still caught by
+//    part (a), because jsdom never matches `:hover` and so applies the rule). The real-browser check measures the resting state only. A selector made only of
 //    pseudo-classes (`:hover`) strips to `*`. `:root` is kept (jsdom matches it, and it is never the button). The selector-taking
 //    functional pseudo-classes `:not()`, `:is()`, `:where()`, `:has()` are kept for jsdom to evaluate, after stripping the pseudo-classes
 //    inside them; an argument left empty (`:not(:hover)` -> `:not()`) is dropped, which is again the wider reading. A selector that
@@ -86,7 +89,7 @@ const SELECTOR_PSEUDOS = ['not', 'is', 'where', 'has', 'matches'];
 
 /**
  * The selector with pseudo-elements and pseudo-classes removed (see part (d) of the file header). Attribute brackets are set aside
- * first so a colon inside `[data-x="a:b"]` is not read as a pseudo-class. Only ever widens what the selector matches.
+ * first so a colon inside `[data-x="a:b"]` is not read as a pseudo-class. Widens what the selector matches, except inside `:not()`, where it can narrow it (header, part (d)).
  */
 function stripPseudos(selector: string): string {
   const brackets: string[] = [];
