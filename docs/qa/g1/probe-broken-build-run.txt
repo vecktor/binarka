@@ -1,0 +1,341 @@
+
+Running 9 tests using 5 workers
+
+  ✘  1 [layout] › e2e/nfr-10-fit.spec.ts:39:1 › NFR-10 sampled 375x812 at 6x6: board, buttons and messages fit without vertical scroll; buttons hold still (448ms)
+  ✘  2 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the default state (892ms)
+  ✘  3 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the default state (887ms)
+  ✘  5 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (1.2s)
+  ✘  4 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (1.2s)
+  ✘  6 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the default state (536ms)
+  ✘  8 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the default state (531ms)
+  ✘  7 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (735ms)
+  ✘  9 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (635ms)
+
+
+  1) [layout] › e2e/nfr-10-fit.spec.ts:39:1 › NFR-10 sampled 375x812 at 6x6: board, buttons and messages fit without vertical scroll; buttons hold still 
+
+    Error: default: page scroll height 942 > viewport 812
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 812
+    Received:    942
+
+      31 |
+      32 | function expectFits(l: Layout, state: string): void {
+    > 33 |   expect(l.scrollHeight, `${state}: page scroll height ${l.scrollHeight} > viewport ${l.innerHeight}`).toBeLessThanOrEqual(l.innerHeight);
+         |                                                                                                        ^
+      34 |   for (const [part, b] of [['board', l.boardBottom], ['buttons', l.buttonsBottom], ['message area', l.messagesBottom]] as const) {
+      35 |     expect(b, `${state}: ${part} ends at ${b} px, below the 812 px screen`).toBeLessThanOrEqual(l.innerHeight);
+      36 |   }
+        at expectFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-10-fit.spec.ts:33:104)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-10-fit.spec.ts:44:3
+
+    Error Context: test-results/nfr-10-fit-NFR-10-sampled--286cd-l-scroll-buttons-hold-still-layout/error-context.md
+
+  2) [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the default state 
+
+    Error: 1 axe violation(s) in the default state:
+    color-contrast (serious, 1 node(s)): Elements must meet minimum color contrast ratio thresholds — .message-idle
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "color-contrast (serious, 1 node(s)): Elements must meet minimum color contrast ratio thresholds — .message-idle",
+    + ]
+
+      37 |           const { violations } = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
+      38 |           const lines = violations.map((v) => `${v.id} (${v.impact ?? 'n/a'}, ${v.nodes.length} node(s)): ${v.help} — ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join('; ')}`);
+    > 39 |           expect(lines, `${lines.length} axe violation(s) in the ${state} state:\n${lines.join('\n')}`).toEqual([]);
+         |                                                                                                         ^
+      40 |         });
+      41 |       }
+      42 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:39:105
+
+    Error Context: test-results/nfr-13-a11y-375x812-light--ceef8-lation-in-the-default-state-a11y/error-context.md
+
+  3) [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 12 focus problem(s):
+    rules «Правила»: no visible change on focus (outline «», shadow «none»)
+    setup «Поле і складність: 6×6 · Розминка▾»: no visible change on focus (outline «», shadow «none»)
+    cell «Рядок 1, стовпець 1, порожньо»: no visible change on focus (outline «», shadow «none»)
+    hint «Підказка»: no visible change on focus (outline «», shadow «none»)
+    reset «Скинути»: no visible change on focus (outline «», shadow «none»)
+    new «Нова головоломка»: no visible change on focus (outline «», shadow «none»)
+    rules-close «Зрозуміло»: no visible change on focus (outline «», shadow «none»)
+    size option «Поле 4×4»: no visible change on focus (outline «», shadow «none»)
+    level option «Розминка Вистачає трьох простих правил: »: no visible change on focus (outline «», shadow «none»)
+    setup-close «Закрити»: no visible change on focus (outline «», shadow «none»)
+    confirm no «Скасувати»: no visible change on focus (outline «», shadow «none»)
+    confirm yes «Так, почати»: no visible change on focus (outline «», shadow «none»)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 14
+
+    - Array []
+    + Array [
+    +   "rules «Правила»: no visible change on focus (outline «», shadow «none»)",
+    +   "setup «Поле і складність: 6×6 · Розминка▾»: no visible change on focus (outline «», shadow «none»)",
+    +   "cell «Рядок 1, стовпець 1, порожньо»: no visible change on focus (outline «», shadow «none»)",
+    +   "hint «Підказка»: no visible change on focus (outline «», shadow «none»)",
+    +   "reset «Скинути»: no visible change on focus (outline «», shadow «none»)",
+    +   "new «Нова головоломка»: no visible change on focus (outline «», shadow «none»)",
+    +   "rules-close «Зрозуміло»: no visible change on focus (outline «», shadow «none»)",
+    +   "size option «Поле 4×4»: no visible change on focus (outline «», shadow «none»)",
+    +   "level option «Розминка Вистачає трьох простих правил: »: no visible change on focus (outline «», shadow «none»)",
+    +   "setup-close «Закрити»: no visible change on focus (outline «», shadow «none»)",
+    +   "confirm no «Скасувати»: no visible change on focus (outline «», shadow «none»)",
+    +   "confirm yes «Так, почати»: no visible change on focus (outline «», shadow «none»)",
+    + ]
+
+      72 |           ...[...seen.values()].filter((v) => v !== ''),
+      73 |         ];
+    > 74 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                    ^
+      75 |       });
+      76 |     });
+      77 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:74:84
+
+    Error Context: test-results/nfr-13-a11y-375x812-light--ebabd-indicator-from-the-keyboard-a11y/error-context.md
+
+  4) [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the default state 
+
+    Error: 1 axe violation(s) in the default state:
+    color-contrast (serious, 1 node(s)): Elements must meet minimum color contrast ratio thresholds — .message-idle
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "color-contrast (serious, 1 node(s)): Elements must meet minimum color contrast ratio thresholds — .message-idle",
+    + ]
+
+      37 |           const { violations } = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
+      38 |           const lines = violations.map((v) => `${v.id} (${v.impact ?? 'n/a'}, ${v.nodes.length} node(s)): ${v.help} — ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join('; ')}`);
+    > 39 |           expect(lines, `${lines.length} axe violation(s) in the ${state} state:\n${lines.join('\n')}`).toEqual([]);
+         |                                                                                                         ^
+      40 |         });
+      41 |       }
+      42 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:39:105
+
+    Error Context: test-results/nfr-13-a11y-375x812-dark-N-b699f-lation-in-the-default-state-a11y/error-context.md
+
+  5) [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 12 focus problem(s):
+    rules «Правила»: no visible change on focus (outline «», shadow «none»)
+    setup «Поле і складність: 6×6 · Розминка▾»: no visible change on focus (outline «», shadow «none»)
+    cell «Рядок 1, стовпець 1, порожньо»: no visible change on focus (outline «», shadow «none»)
+    hint «Підказка»: no visible change on focus (outline «», shadow «none»)
+    reset «Скинути»: no visible change on focus (outline «», shadow «none»)
+    new «Нова головоломка»: no visible change on focus (outline «», shadow «none»)
+    rules-close «Зрозуміло»: no visible change on focus (outline «», shadow «none»)
+    size option «Поле 4×4»: no visible change on focus (outline «», shadow «none»)
+    level option «Розминка Вистачає трьох простих правил: »: no visible change on focus (outline «», shadow «none»)
+    setup-close «Закрити»: no visible change on focus (outline «», shadow «none»)
+    confirm no «Скасувати»: no visible change on focus (outline «», shadow «none»)
+    confirm yes «Так, почати»: no visible change on focus (outline «», shadow «none»)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 14
+
+    - Array []
+    + Array [
+    +   "rules «Правила»: no visible change on focus (outline «», shadow «none»)",
+    +   "setup «Поле і складність: 6×6 · Розминка▾»: no visible change on focus (outline «», shadow «none»)",
+    +   "cell «Рядок 1, стовпець 1, порожньо»: no visible change on focus (outline «», shadow «none»)",
+    +   "hint «Підказка»: no visible change on focus (outline «», shadow «none»)",
+    +   "reset «Скинути»: no visible change on focus (outline «», shadow «none»)",
+    +   "new «Нова головоломка»: no visible change on focus (outline «», shadow «none»)",
+    +   "rules-close «Зрозуміло»: no visible change on focus (outline «», shadow «none»)",
+    +   "size option «Поле 4×4»: no visible change on focus (outline «», shadow «none»)",
+    +   "level option «Розминка Вистачає трьох простих правил: »: no visible change on focus (outline «», shadow «none»)",
+    +   "setup-close «Закрити»: no visible change on focus (outline «», shadow «none»)",
+    +   "confirm no «Скасувати»: no visible change on focus (outline «», shadow «none»)",
+    +   "confirm yes «Так, почати»: no visible change on focus (outline «», shadow «none»)",
+    + ]
+
+      72 |           ...[...seen.values()].filter((v) => v !== ''),
+      73 |         ];
+    > 74 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                    ^
+      75 |       });
+      76 |     });
+      77 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:74:84
+
+    Error Context: test-results/nfr-13-a11y-375x812-dark-N-e90d7-indicator-from-the-keyboard-a11y/error-context.md
+
+  6) [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the default state 
+
+    Error: 1 axe violation(s) in the default state:
+    color-contrast (serious, 1 node(s)): Elements must meet minimum color contrast ratio thresholds — .message-idle
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "color-contrast (serious, 1 node(s)): Elements must meet minimum color contrast ratio thresholds — .message-idle",
+    + ]
+
+      37 |           const { violations } = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
+      38 |           const lines = violations.map((v) => `${v.id} (${v.impact ?? 'n/a'}, ${v.nodes.length} node(s)): ${v.help} — ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join('; ')}`);
+    > 39 |           expect(lines, `${lines.length} axe violation(s) in the ${state} state:\n${lines.join('\n')}`).toEqual([]);
+         |                                                                                                         ^
+      40 |         });
+      41 |       }
+      42 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:39:105
+
+    Error Context: test-results/nfr-13-a11y-1280x800-light-8b5b6-lation-in-the-default-state-a11y/error-context.md
+
+  7) [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 12 focus problem(s):
+    rules «Правила»: no visible change on focus (outline «», shadow «none»)
+    setup «Поле і складність: 6×6 · Розминка▾»: no visible change on focus (outline «», shadow «none»)
+    cell «Рядок 1, стовпець 1, порожньо»: no visible change on focus (outline «», shadow «none»)
+    hint «Підказка»: no visible change on focus (outline «», shadow «none»)
+    reset «Скинути»: no visible change on focus (outline «», shadow «none»)
+    new «Нова головоломка»: no visible change on focus (outline «», shadow «none»)
+    rules-close «Зрозуміло»: no visible change on focus (outline «», shadow «none»)
+    size option «Поле 4×4»: no visible change on focus (outline «», shadow «none»)
+    level option «Розминка Вистачає трьох простих правил: »: no visible change on focus (outline «», shadow «none»)
+    setup-close «Закрити»: no visible change on focus (outline «», shadow «none»)
+    confirm no «Скасувати»: no visible change on focus (outline «», shadow «none»)
+    confirm yes «Так, почати»: no visible change on focus (outline «», shadow «none»)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 14
+
+    - Array []
+    + Array [
+    +   "rules «Правила»: no visible change on focus (outline «», shadow «none»)",
+    +   "setup «Поле і складність: 6×6 · Розминка▾»: no visible change on focus (outline «», shadow «none»)",
+    +   "cell «Рядок 1, стовпець 1, порожньо»: no visible change on focus (outline «», shadow «none»)",
+    +   "hint «Підказка»: no visible change on focus (outline «», shadow «none»)",
+    +   "reset «Скинути»: no visible change on focus (outline «», shadow «none»)",
+    +   "new «Нова головоломка»: no visible change on focus (outline «», shadow «none»)",
+    +   "rules-close «Зрозуміло»: no visible change on focus (outline «», shadow «none»)",
+    +   "size option «Поле 4×4»: no visible change on focus (outline «», shadow «none»)",
+    +   "level option «Розминка Вистачає трьох простих правил: »: no visible change on focus (outline «», shadow «none»)",
+    +   "setup-close «Закрити»: no visible change on focus (outline «», shadow «none»)",
+    +   "confirm no «Скасувати»: no visible change on focus (outline «», shadow «none»)",
+    +   "confirm yes «Так, почати»: no visible change on focus (outline «», shadow «none»)",
+    + ]
+
+      72 |           ...[...seen.values()].filter((v) => v !== ''),
+      73 |         ];
+    > 74 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                    ^
+      75 |       });
+      76 |     });
+      77 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:74:84
+
+    Error Context: test-results/nfr-13-a11y-1280x800-light-8c33a-indicator-from-the-keyboard-a11y/error-context.md
+
+  8) [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the default state 
+
+    Error: 1 axe violation(s) in the default state:
+    color-contrast (serious, 1 node(s)): Elements must meet minimum color contrast ratio thresholds — .message-idle
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "color-contrast (serious, 1 node(s)): Elements must meet minimum color contrast ratio thresholds — .message-idle",
+    + ]
+
+      37 |           const { violations } = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
+      38 |           const lines = violations.map((v) => `${v.id} (${v.impact ?? 'n/a'}, ${v.nodes.length} node(s)): ${v.help} — ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join('; ')}`);
+    > 39 |           expect(lines, `${lines.length} axe violation(s) in the ${state} state:\n${lines.join('\n')}`).toEqual([]);
+         |                                                                                                         ^
+      40 |         });
+      41 |       }
+      42 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:39:105
+
+    Error Context: test-results/nfr-13-a11y-1280x800-dark--3a984-lation-in-the-default-state-a11y/error-context.md
+
+  9) [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 12 focus problem(s):
+    rules «Правила»: no visible change on focus (outline «», shadow «none»)
+    setup «Поле і складність: 6×6 · Розминка▾»: no visible change on focus (outline «», shadow «none»)
+    cell «Рядок 1, стовпець 1, порожньо»: no visible change on focus (outline «», shadow «none»)
+    hint «Підказка»: no visible change on focus (outline «», shadow «none»)
+    reset «Скинути»: no visible change on focus (outline «», shadow «none»)
+    new «Нова головоломка»: no visible change on focus (outline «», shadow «none»)
+    rules-close «Зрозуміло»: no visible change on focus (outline «», shadow «none»)
+    size option «Поле 4×4»: no visible change on focus (outline «», shadow «none»)
+    level option «Розминка Вистачає трьох простих правил: »: no visible change on focus (outline «», shadow «none»)
+    setup-close «Закрити»: no visible change on focus (outline «», shadow «none»)
+    confirm no «Скасувати»: no visible change on focus (outline «», shadow «none»)
+    confirm yes «Так, почати»: no visible change on focus (outline «», shadow «none»)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 14
+
+    - Array []
+    + Array [
+    +   "rules «Правила»: no visible change on focus (outline «», shadow «none»)",
+    +   "setup «Поле і складність: 6×6 · Розминка▾»: no visible change on focus (outline «», shadow «none»)",
+    +   "cell «Рядок 1, стовпець 1, порожньо»: no visible change on focus (outline «», shadow «none»)",
+    +   "hint «Підказка»: no visible change on focus (outline «», shadow «none»)",
+    +   "reset «Скинути»: no visible change on focus (outline «», shadow «none»)",
+    +   "new «Нова головоломка»: no visible change on focus (outline «», shadow «none»)",
+    +   "rules-close «Зрозуміло»: no visible change on focus (outline «», shadow «none»)",
+    +   "size option «Поле 4×4»: no visible change on focus (outline «», shadow «none»)",
+    +   "level option «Розминка Вистачає трьох простих правил: »: no visible change on focus (outline «», shadow «none»)",
+    +   "setup-close «Закрити»: no visible change on focus (outline «», shadow «none»)",
+    +   "confirm no «Скасувати»: no visible change on focus (outline «», shadow «none»)",
+    +   "confirm yes «Так, почати»: no visible change on focus (outline «», shadow «none»)",
+    + ]
+
+      72 |           ...[...seen.values()].filter((v) => v !== ''),
+      73 |         ];
+    > 74 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                    ^
+      75 |       });
+      76 |     });
+      77 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:74:84
+
+    Error Context: test-results/nfr-13-a11y-1280x800-dark--1e60f-indicator-from-the-keyboard-a11y/error-context.md
+
+  9 failed
+    [layout] › e2e/nfr-10-fit.spec.ts:39:1 › NFR-10 sampled 375x812 at 6x6: board, buttons and messages fit without vertical scroll; buttons hold still 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the default state 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the default state 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the default state 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the default state 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 

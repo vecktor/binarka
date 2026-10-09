@@ -1,0 +1,41 @@
+
+> binarka@0.1.0 check:a11y
+> PLAYWRIGHT_JSON_OUTPUT_FILE=docs/qa/a11y-report.json playwright test --project=a11y --reporter=list,json
+
+
+Running 32 tests using 5 workers
+
+  ✓   4 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the confirmation state (844ms)
+  ✓   3 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the default state (849ms)
+  ✓   5 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the rules state (953ms)
+  ✓   1 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the hint state (955ms)
+  ✓   9 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the default state (754ms)
+  ✓   6 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet state (892ms)
+  ✓   7 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (927ms)
+  ✓   2 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the win state (2.1s)
+  ✓  10 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the hint state (992ms)
+  ✓  12 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the rules state (959ms)
+  ✓   8 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (1.8s)
+  ✓  13 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the confirmation state (755ms)
+  ✓  14 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet state (702ms)
+  ✓  17 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the default state (575ms)
+  ✓  15 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (737ms)
+  ✓  11 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the win state (1.9s)
+  ✓  16 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (1.1s)
+  ✓  18 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the hint state (561ms)
+  ✓  21 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the confirmation state (438ms)
+  ✓  20 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the rules state (576ms)
+  ✓  22 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet state (585ms)
+  ✓  25 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the default state (484ms)
+  ✓  23 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (612ms)
+  ✓  24 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (816ms)
+  ✓  19 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the win state (1.5s)
+  ✓  26 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the hint state (525ms)
+  ✓  28 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the rules state (572ms)
+  ✓  29 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the confirmation state (412ms)
+  ✓  30 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet state (557ms)
+  ✓  31 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (547ms)
+  ✓  32 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (618ms)
+  ✓  27 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the win state (1.4s)
+
+  32 passed (11.1s)

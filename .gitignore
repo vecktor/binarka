@@ -7,3 +7,5 @@ coverage/
 .claude/worktrees/
 design/*.zip
 design/v0/next-env.d.ts
+test-results/
+playwright-report/

@@ -1,0 +1,1863 @@
+{
+  "config": {
+    "argv": [
+      "/Users/vecktor/.nvm/versions/node/v22.21.1/bin/node",
+      "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/playwright.config.ts",
+    "rootDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 5
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "layout",
+        "name": "layout",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/nfr-1[02]-.*\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "a11y",
+        "name": "a11y",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/nfr-13-.*\\.spec\\.ts/"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "name": "layout",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "testIgnore": [],
+        "testMatch": {},
+        "timeout": 30000,
+        "use": {
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium",
+          "baseURL": "http://localhost:4173",
+          "reducedMotion": "reduce"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "layout"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "name": "a11y",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e",
+        "testIgnore": [],
+        "testMatch": {},
+        "timeout": 30000,
+        "use": {
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium",
+          "baseURL": "http://localhost:4173",
+          "reducedMotion": "reduce"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "a11y"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/qa/e2e-report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 5,
+    "webServer": {
+      "command": "npm run build && npx vite preview --port 4173 --strictPort",
+      "url": "http://localhost:4173",
+      "reuseExistingServer": false,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "nfr-10-fit.spec.ts",
+      "file": "nfr-10-fit.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "NFR-10 sampled 375x812 at 6x6: board, buttons and messages fit without vertical scroll; buttons hold still",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1399,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:01.424Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "df472d0db591ceb50450-89672904f148c5ad05d1",
+          "file": "nfr-10-fit.spec.ts",
+          "line": 39,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "nfr-12-targets.spec.ts",
+      "file": "nfr-12-targets.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "NFR-12 sampled 320x700: cells and controls meet their size floors",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 1723,
+                  "error": {
+                    "message": "Error: 3 element(s) below the floor at 320x700:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: 3 element(s) below the floor at 320x700:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
+                    "location": {
+                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                      "column": 112,
+                      "line": 70
+                    },
+                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                        "column": 112,
+                        "line": 70
+                      },
+                      "message": "Error: 3 element(s) below the floor at 320x700:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:01.410Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-c7ec1-rols-meet-their-size-floors-layout/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                    "column": 112,
+                    "line": 70
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-4853c42ba4024d54a003",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 sampled 375x812: cells and controls meet their size floors",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "failed",
+                  "duration": 1700,
+                  "error": {
+                    "message": "Error: 3 element(s) below the floor at 375x812:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: 3 element(s) below the floor at 375x812:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
+                    "location": {
+                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                      "column": 112,
+                      "line": 70
+                    },
+                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                        "column": 112,
+                        "line": 70
+                      },
+                      "message": "Error: 3 element(s) below the floor at 375x812:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:01.398Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-31b1c-rols-meet-their-size-floors-layout/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                    "column": 112,
+                    "line": 70
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-e953b01be2f312575080",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 sampled 768x1024: cells and controls meet their size floors",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "failed",
+                  "duration": 1702,
+                  "error": {
+                    "message": "Error: 3 element(s) below the floor at 768x1024:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: 3 element(s) below the floor at 768x1024:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
+                    "location": {
+                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                      "column": 112,
+                      "line": 70
+                    },
+                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                        "column": 112,
+                        "line": 70
+                      },
+                      "message": "Error: 3 element(s) below the floor at 768x1024:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:01.431Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-a2dfb-rols-meet-their-size-floors-layout/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                    "column": 112,
+                    "line": 70
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-f9a0fa4f884111ed0f05",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 sampled 1024x768: cells and controls meet their size floors",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "failed",
+                  "duration": 1703,
+                  "error": {
+                    "message": "Error: 3 element(s) below the floor at 1024x768:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: 3 element(s) below the floor at 1024x768:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
+                    "location": {
+                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                      "column": 112,
+                      "line": 70
+                    },
+                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                        "column": 112,
+                        "line": 70
+                      },
+                      "message": "Error: 3 element(s) below the floor at 1024x768:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:01.410Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-bc742-rols-meet-their-size-floors-layout/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                    "column": 112,
+                    "line": 70
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-8c523a5f3eaf539225a3",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 sampled 1366x650: cells and controls meet their size floors",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1217,
+                  "error": {
+                    "message": "Error: 3 element(s) below the floor at 1366x650:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: 3 element(s) below the floor at 1366x650:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
+                    "location": {
+                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                      "column": 112,
+                      "line": 70
+                    },
+                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                        "column": 112,
+                        "line": 70
+                      },
+                      "message": "Error: 3 element(s) below the floor at 1366x650:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:03.204Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-cc0d8-rols-meet-their-size-floors-layout/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                    "column": 112,
+                    "line": 70
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-061dd901dee0bc862fd6",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 sampled 1440x900: cells and controls meet their size floors",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 2,
+                  "status": "failed",
+                  "duration": 1408,
+                  "error": {
+                    "message": "Error: 3 element(s) below the floor at 1440x900:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: 3 element(s) below the floor at 1440x900:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
+                    "location": {
+                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                      "column": 112,
+                      "line": 70
+                    },
+                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                        "column": 112,
+                        "line": 70
+                      },
+                      "message": "Error: 3 element(s) below the floor at 1440x900:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:03.972Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-6ed21-rols-meet-their-size-floors-layout/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                    "column": 112,
+                    "line": 70
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-a59ba77222228ae4f3b6",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 sampled 1280x420: cells and controls meet their size floors",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 3,
+                  "status": "failed",
+                  "duration": 1416,
+                  "error": {
+                    "message": "Error: 3 element(s) below the floor at 1280x420:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: 3 element(s) below the floor at 1280x420:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
+                    "location": {
+                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                      "column": 112,
+                      "line": 70
+                    },
+                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                        "column": 112,
+                        "line": 70
+                      },
+                      "message": "Error: 3 element(s) below the floor at 1280x420:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:03.966Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-54399-rols-meet-their-size-floors-layout/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                    "column": 112,
+                    "line": 70
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-4ece8af28083353d472d",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 27,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 sampled 844x390: cells and controls meet their size floors",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 4,
+                  "status": "failed",
+                  "duration": 1411,
+                  "error": {
+                    "message": "Error: 3 element(s) below the floor at 844x390:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: 3 element(s) below the floor at 844x390:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112",
+                    "location": {
+                      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                      "column": 112,
+                      "line": 70
+                    },
+                    "snippet": "  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                        "column": 112,
+                        "line": 70
+                      },
+                      "message": "Error: 3 element(s) below the floor at 844x390:\npage: button «Підказка» is 100.6x40, floor 44x44\npage: button «Скинути» is 97.6x40, floor 44x44\npage: button «Нова головоломка» is 175x40, floor 44x44\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 5\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"page: button «Підказка» is 100.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Скинути» is 97.6x40, floor 44x44\",\u001b[39m\n\u001b[31m+   \"page: button «Нова головоломка» is 175x40, floor 44x44\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  68 |     await closeSheet(page);\n  69 |\n> 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\\n${misses.join('\\n')}`).toEqual([]);\n     |                                                                                                                ^\n  71 |   });\n  72 | }\n  73 |\n    at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-09T16:41:03.953Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/test-results/nfr-12-targets-NFR-12-samp-5f811-rols-meet-their-size-floors-layout/error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts",
+                    "column": 112,
+                    "line": 70
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-4b8e39fb17a78c2650a6",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 27,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "nfr-13-a11y.spec.ts",
+      "file": "nfr-13-a11y.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "375x812 light",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 30,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation in the default state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 580,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:04.000Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-b839e2eca6718c484707",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the hint state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 604,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:04.937Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-fed1f857a213fca0595a",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the win state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1382,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:04.736Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-0df2aae9836ac9c823e9",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the rules state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 662,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.020Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-c6deff8240777b67a48c",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the confirmation state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 525,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.022Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-b0b2b26490f36a8c24d3",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 684,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.021Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-3aeef0a303382975a278",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet at 4x4 state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 562,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:05.693Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-bc1e548b27f827ca8d45",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 focus: every control shows a visible focus indicator from the keyboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 856,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.123Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-9f451c215ee2b942a69e",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 43,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "375x812 dark",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 30,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation in the default state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 498,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.262Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-101a5d61318e5f8c856e",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the hint state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 631,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.748Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-a1f7d926334e9801b2af",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the win state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1542,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.766Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-b25d285ec212a062ddfe",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the rules state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 606,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.880Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-919d055d65dfed4fc4d4",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the confirmation state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 479,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.887Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-1d5456ba1cf5bb6df3f3",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 605,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:06.984Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-cc3f504e210b5eb6d8df",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet at 4x4 state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 612,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:07.377Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-f3103e4373f3e083fbf7",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 focus: every control shows a visible focus indicator from the keyboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 833,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:07.391Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-289676f5fb89d30ee1e4",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 43,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "1280x800 light",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 30,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation in the default state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 482,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:07.516Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-cc2c78d60113a806c0f5",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the hint state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 544,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:07.595Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-481c886e231d15daaa88",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the win state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 1426,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:07.997Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-02e055324fa36f930b12",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the rules state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 556,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:08.016Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-73ef559cdae489509eac",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the confirmation state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 417,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:08.151Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-749ece849e5adbd0a6d9",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 562,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:08.232Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-5a44606f5d16387af3df",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet at 4x4 state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 569,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:08.315Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-a3239c7d3f11619095a4",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 focus: every control shows a visible focus indicator from the keyboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 738,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:08.576Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-8556d2ecd1f2742201d3",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 43,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "1280x800 dark",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 30,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation in the default state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 476,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:08.579Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-bbfb32fcca5d5da47195",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the hint state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 535,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:08.800Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-4a2432725d481962aaf2",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the win state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1377,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:08.891Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-dca75758a665f95d75f6",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the rules state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 548,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:09.063Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-52b2fd87ed390af386ca",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the confirmation state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 420,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:09.322Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-ada888532cdad010c0be",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 559,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:09.341Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-34b01101855bcc51f0c9",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet at 4x4 state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 540,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:09.431Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-619222480062560e36d0",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 34,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 focus: every control shows a visible focus indicator from the keyboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 595,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-09T16:41:09.619Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-da153b0094f2f3970908",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 43,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-09T16:40:57.949Z",
+    "duration": 12359.089,
+    "expected": 33,
+    "skipped": 0,
+    "unexpected": 8,
+    "flaky": 0
+  }
+}

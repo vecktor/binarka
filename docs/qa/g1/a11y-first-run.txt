@@ -1,0 +1,159 @@
+
+> binarka@0.1.0 check:a11y
+> PLAYWRIGHT_JSON_OUTPUT_FILE=docs/qa/a11y-report.json playwright test --project=a11y --reporter=list,json
+
+
+Running 32 tests using 5 workers
+
+  ✓   3 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the confirmation state (923ms)
+  ✓   1 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the default state (944ms)
+  ✓   2 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the hint state (1.0s)
+  ✓   4 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the rules state (1.1s)
+  ✓   6 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet state (636ms)
+  ✓   9 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the default state (530ms)
+  ✓   7 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (682ms)
+  ✓   5 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the win state (1.9s)
+  ✘   8 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (917ms)
+  ✓  10 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the hint state (549ms)
+  ✓  12 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the rules state (582ms)
+  ✓  13 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the confirmation state (441ms)
+  ✓  14 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (589ms)
+  ✓  16 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the default state (505ms)
+  ✓  11 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the win state (1.5s)
+  ✘  15 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (968ms)
+  ✓  18 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the hint state (564ms)
+  ✓  17 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet state (695ms)
+  ✓  20 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the rules state (562ms)
+  ✓  21 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet state (575ms)
+  ✓  22 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (586ms)
+  ✓  19 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the win state (1.5s)
+  ✓  25 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the default state (513ms)
+  ✓  24 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the confirmation state (556ms)
+  ✓  26 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the hint state (589ms)
+  ✘  23 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (940ms)
+  ✓  29 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the confirmation state (441ms)
+  ✓  28 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the rules state (580ms)
+  ✓  30 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet state (575ms)
+  ✘  31 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (672ms)
+  ✓  27 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the win state (1.4s)
+  ✓  32 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (622ms)
+
+
+  1) [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 2 focus problem(s):
+    confirm yes: never reached by the keyboard
+    confirm no: never reached by the keyboard
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 4
+
+    - Array []
+    + Array [
+    +   "confirm yes: never reached by the keyboard",
+    +   "confirm no: never reached by the keyboard",
+    + ]
+
+      72 |           ...[...seen.values()].filter((v) => v !== ''),
+      73 |         ];
+    > 74 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                    ^
+      75 |       });
+      76 |     });
+      77 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:74:84
+
+    Error Context: test-results/nfr-13-a11y-375x812-light--ebabd-indicator-from-the-keyboard-a11y/error-context.md
+
+  2) [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 2 focus problem(s):
+    confirm yes: never reached by the keyboard
+    confirm no: never reached by the keyboard
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 4
+
+    - Array []
+    + Array [
+    +   "confirm yes: never reached by the keyboard",
+    +   "confirm no: never reached by the keyboard",
+    + ]
+
+      72 |           ...[...seen.values()].filter((v) => v !== ''),
+      73 |         ];
+    > 74 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                    ^
+      75 |       });
+      76 |     });
+      77 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:74:84
+
+    Error Context: test-results/nfr-13-a11y-375x812-dark-N-e90d7-indicator-from-the-keyboard-a11y/error-context.md
+
+  3) [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 2 focus problem(s):
+    confirm yes: never reached by the keyboard
+    confirm no: never reached by the keyboard
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 4
+
+    - Array []
+    + Array [
+    +   "confirm yes: never reached by the keyboard",
+    +   "confirm no: never reached by the keyboard",
+    + ]
+
+      72 |           ...[...seen.values()].filter((v) => v !== ''),
+      73 |         ];
+    > 74 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                    ^
+      75 |       });
+      76 |     });
+      77 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:74:84
+
+    Error Context: test-results/nfr-13-a11y-1280x800-light-8c33a-indicator-from-the-keyboard-a11y/error-context.md
+
+  4) [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 2 focus problem(s):
+    confirm yes: never reached by the keyboard
+    confirm no: never reached by the keyboard
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 4
+
+    - Array []
+    + Array [
+    +   "confirm yes: never reached by the keyboard",
+    +   "confirm no: never reached by the keyboard",
+    + ]
+
+      72 |           ...[...seen.values()].filter((v) => v !== ''),
+      73 |         ];
+    > 74 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                    ^
+      75 |       });
+      76 |     });
+      77 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-13-a11y.spec.ts:74:84
+
+    Error Context: test-results/nfr-13-a11y-1280x800-dark--1e60f-indicator-from-the-keyboard-a11y/error-context.md
+
+  4 failed
+    [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+  28 passed (11.0s)

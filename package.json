@@ -18,7 +18,7 @@
     "check:eval": "node scripts/check-eval-ratchet.mjs",
     "check:trajectory": "node scripts/check-trajectory.mjs",
     "check:recordings": "node scripts/check-recordings.mjs",
-    "check:a11y": "node scripts/check-a11y.mjs",
+    "check:a11y": "PLAYWRIGHT_JSON_OUTPUT_FILE=docs/qa/a11y-report.json playwright test --project=a11y --reporter=list,json",
     "gate:status": "node scripts/gate-status.mjs",
     "correct": "node scripts/correct.mjs",
     "retro:digest": "node scripts/ledger-report.mjs",
@@ -28,7 +28,8 @@
     "check:integrity": "node scripts/check-factory-integrity.mjs",
     "check:visual": "node scripts/check-visual-fidelity.mjs",
     "docs:vendor": "node scripts/vendor-docs.mjs",
-    "check:docs": "node scripts/vendor-docs.mjs --check"
+    "check:docs": "node scripts/vendor-docs.mjs --check",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

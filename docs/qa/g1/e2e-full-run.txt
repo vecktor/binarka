@@ -1,0 +1,300 @@
+
+> binarka@0.1.0 test:e2e
+> playwright test
+
+
+Running 41 tests using 5 workers
+
+  ✓   4 [layout] › e2e/nfr-10-fit.spec.ts:39:1 › NFR-10 sampled 375x812 at 6x6: board, buttons and messages fit without vertical scroll; buttons hold still (1.4s)
+  ✘   1 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 375x812: cells and controls meet their size floors (1.7s)
+  ✘   5 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 768x1024: cells and controls meet their size floors (1.7s)
+  ✘   2 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1024x768: cells and controls meet their size floors (1.7s)
+  ✘   3 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 320x700: cells and controls meet their size floors (1.7s)
+  ✘   6 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1366x650: cells and controls meet their size floors (1.2s)
+  ✓  10 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the default state (580ms)
+  ✘   7 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 844x390: cells and controls meet their size floors (1.4s)
+  ✘   9 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1440x900: cells and controls meet their size floors (1.4s)
+  ✘   8 [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1280x420: cells and controls meet their size floors (1.4s)
+  ✓  12 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the hint state (604ms)
+  ✓  11 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the win state (1.4s)
+  ✓  13 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (562ms)
+  ✓  16 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the confirmation state (525ms)
+  ✓  18 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the default state (498ms)
+  ✓  15 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet state (684ms)
+  ✓  14 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 light › NFR-13 axe: no violation in the rules state (662ms)
+  ✓  17 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (856ms)
+  ✓  22 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the confirmation state (479ms)
+  ✓  19 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the hint state (631ms)
+  ✓  21 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the rules state (606ms)
+  ✓  23 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet state (605ms)
+  ✓  24 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (612ms)
+  ✓  26 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the default state (482ms)
+  ✓  27 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the hint state (544ms)
+  ✓  25 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (833ms)
+  ✓  20 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 375x812 dark › NFR-13 axe: no violation in the win state (1.5s)
+  ✓  30 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the confirmation state (417ms)
+  ✓  29 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the rules state (556ms)
+  ✓  31 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet state (562ms)
+  ✓  32 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (569ms)
+  ✓  34 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the default state (476ms)
+  ✓  33 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (738ms)
+  ✓  35 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the hint state (535ms)
+  ✓  28 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 light › NFR-13 axe: no violation in the win state (1.4s)
+  ✓  37 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the rules state (548ms)
+  ✓  38 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the confirmation state (420ms)
+  ✓  39 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet state (559ms)
+  ✓  40 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (540ms)
+  ✓  41 [a11y] › e2e/nfr-13-a11y.spec.ts:43:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (595ms)
+  ✓  36 [a11y] › e2e/nfr-13-a11y.spec.ts:34:9 › 1280x800 dark › NFR-13 axe: no violation in the win state (1.4s)
+
+
+  1) [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 320x700: cells and controls meet their size floors 
+
+    Error: 3 element(s) below the floor at 320x700:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    + ]
+
+      68 |     await closeSheet(page);
+      69 |
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                                                ^
+      71 |   });
+      72 | }
+      73 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-c7ec1-rols-meet-their-size-floors-layout/error-context.md
+
+  2) [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 375x812: cells and controls meet their size floors 
+
+    Error: 3 element(s) below the floor at 375x812:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    + ]
+
+      68 |     await closeSheet(page);
+      69 |
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                                                ^
+      71 |   });
+      72 | }
+      73 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-31b1c-rols-meet-their-size-floors-layout/error-context.md
+
+  3) [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 768x1024: cells and controls meet their size floors 
+
+    Error: 3 element(s) below the floor at 768x1024:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    + ]
+
+      68 |     await closeSheet(page);
+      69 |
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                                                ^
+      71 |   });
+      72 | }
+      73 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-a2dfb-rols-meet-their-size-floors-layout/error-context.md
+
+  4) [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1024x768: cells and controls meet their size floors 
+
+    Error: 3 element(s) below the floor at 1024x768:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    + ]
+
+      68 |     await closeSheet(page);
+      69 |
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                                                ^
+      71 |   });
+      72 | }
+      73 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-bc742-rols-meet-their-size-floors-layout/error-context.md
+
+  5) [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1366x650: cells and controls meet their size floors 
+
+    Error: 3 element(s) below the floor at 1366x650:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    + ]
+
+      68 |     await closeSheet(page);
+      69 |
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                                                ^
+      71 |   });
+      72 | }
+      73 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-cc0d8-rols-meet-their-size-floors-layout/error-context.md
+
+  6) [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1440x900: cells and controls meet their size floors 
+
+    Error: 3 element(s) below the floor at 1440x900:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    + ]
+
+      68 |     await closeSheet(page);
+      69 |
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                                                ^
+      71 |   });
+      72 | }
+      73 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-6ed21-rols-meet-their-size-floors-layout/error-context.md
+
+  7) [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1280x420: cells and controls meet their size floors 
+
+    Error: 3 element(s) below the floor at 1280x420:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    + ]
+
+      68 |     await closeSheet(page);
+      69 |
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                                                ^
+      71 |   });
+      72 | }
+      73 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-54399-rols-meet-their-size-floors-layout/error-context.md
+
+  8) [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 844x390: cells and controls meet their size floors 
+
+    Error: 3 element(s) below the floor at 844x390:
+    page: button «Підказка» is 100.6x40, floor 44x44
+    page: button «Скинути» is 97.6x40, floor 44x44
+    page: button «Нова головоломка» is 175x40, floor 44x44
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 5
+
+    - Array []
+    + Array [
+    +   "page: button «Підказка» is 100.6x40, floor 44x44",
+    +   "page: button «Скинути» is 97.6x40, floor 44x44",
+    +   "page: button «Нова головоломка» is 175x40, floor 44x44",
+    + ]
+
+      68 |     await closeSheet(page);
+      69 |
+    > 70 |     expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+         |                                                                                                                ^
+      71 |   });
+      72 | }
+      73 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/epic-hodgkin-3106f7/e2e/nfr-12-targets.spec.ts:70:112
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-5f811-rols-meet-their-size-floors-layout/error-context.md
+
+  8 failed
+    [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 320x700: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 375x812: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 768x1024: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1024x768: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1366x650: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1440x900: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 1280x420: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:27:3 › NFR-12 sampled 844x390: cells and controls meet their size floors 
+  33 passed (12.4s)
