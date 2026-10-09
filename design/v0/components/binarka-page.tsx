@@ -1,5 +1,6 @@
 import { OpenConfirmDialog } from '@/components/open-confirm-dialog'
 import { OpenRulesPopover } from '@/components/open-rules-popover'
+import { OpenSetupSheet } from '@/components/open-setup-sheet'
 
 export type CellSpec = '.' | 'g0' | 'g1' | 'p0' | 'p1' | 'h0' | 'h1'
 
@@ -15,11 +16,50 @@ type BinarkaPageProps = {
   hintMessage?: string
   winMessage?: string
   rulesOpen?: boolean
+  /** Scrolls the open rules panel to its end (review capture only). */
+  rulesScrolledToTechniques?: boolean
   confirmOpen?: boolean
+  /** Opens the setup sheet on load (review capture only, FR-96). */
+  setupOpen?: boolean
+  /** The level shown, 1 to 4 (FR-87). At 4×4 only level 1 exists (FR-91). */
+  level?: Level
 }
+
+export type Level = 1 | 2 | 3 | 4
 
 const RAY_COUNT = 12
 const SIZES = [4, 6, 8] as const
+// FR-87 (names) and FR-89 (descriptions, the user's final wording, each at most 80 characters).
+const LEVELS: ReadonlyArray<{ level: Level; name: string; description: string }> = [
+  {
+    level: 1,
+    name: 'Розминка',
+    description: 'Вистачає трьох простих правил: пара, між двома однаковими і підрахунок цифр.',
+  },
+  {
+    level: 2,
+    name: 'Задачка',
+    description: 'Додатково треба рахувати, де в рядку помістяться решта нулів чи одиниць.',
+  },
+  {
+    level: 3,
+    name: 'Головоломка',
+    description: 'Додатково треба порівнювати рядки і стовпці: двох однакових не буває.',
+  },
+  {
+    level: 4,
+    name: 'Мозколамка',
+    description: 'Додатково треба пробувати хід наперед: якщо правило порушиться, тут інша цифра.',
+  },
+]
+// FR-91: the reason shown in the sheet, above the levels, while the size is 4×4.
+const FOUR_REASON = 'Для поля 4×4 є лише рівень «Розминка».'
+// FR-93: the techniques section of the rules panel.
+const TECHNIQUES = [
+  'Баланс рядка: якщо в рядку є місце лише для одного нуля або однієї одиниці, а в клітинці вона дала б три однакові цифри поспіль, там стоїть інша цифра.',
+  'Однакові рядки: якщо рядок збігається з повним рядком усюди, крім двох клітинок, ці дві клітинки протилежні до нього.',
+  'Хід наперед: уявно поставте цифру; якщо за кілька кроків порушиться правило, у клітинці стоїть інша.',
+] as const
 // Non-breaking spaces keep «0 і 1» on one line (finding 11).
 const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 0\u00a0і\u00a01. Правила — кнопка «Правила» вгорі.'
 
@@ -96,8 +136,17 @@ export function BinarkaPage({
   hintMessage = '',
   winMessage = '',
   rulesOpen = false,
+  rulesScrolledToTechniques = false,
   confirmOpen = false,
+  setupOpen = false,
+  level = 1,
 }: BinarkaPageProps) {
+  // FR-91: at 4×4 only «Розминка» exists; the other three stay focusable (aria-disabled).
+  const onlyFirstLevel = board.size === 4
+  const shownLevel: Level = onlyFirstLevel ? 1 : level
+  // FR-95: the summary text, for example «6×6 · Задачка».
+  const summary = `${board.size}×${board.size} · ${LEVELS.find((entry) => entry.level === shownLevel)!.name}`
+
   const isViolation = (row: number, col: number) =>
     board.violations?.some(([r, c]) => r === row && c === col) ?? false
 
@@ -113,19 +162,18 @@ export function BinarkaPage({
         </button>
       </header>
 
-      <div className="size-picker" data-control="size" role="radiogroup" aria-label="Розмір поля">
-        {SIZES.map((size) => (
-          <button
-            key={size}
-            type="button"
-            role="radio"
-            aria-checked={size === board.size ? 'true' : 'false'}
-            data-size-option={size}
-          >
-            {`Поле ${size}×${size}`}
-          </button>
-        ))}
-      </div>
+      <button
+        type="button"
+        className="setup-button"
+        data-action="setup"
+        popoverTarget="setup"
+      >
+        <span className="visually-hidden">Поле і складність: </span>
+        <span className="setup-summary">{summary}</span>
+        <span className="setup-cue" aria-hidden="true">
+          ▾
+        </span>
+      </button>
 
       <div className="board-host">
         <div
@@ -228,8 +276,70 @@ export function BinarkaPage({
             </span>
           </li>
         </ul>
+        <div className="techniques" data-section="techniques">
+          <h3>Складніші прийоми</h3>
+          <ul>
+            {TECHNIQUES.map((text) => (
+              <li key={text}>{text}</li>
+            ))}
+          </ul>
+        </div>
         <button type="button" className="rules-close" popoverTarget="rules" popoverTargetAction="hide">
           Зрозуміло
+        </button>
+      </div>
+
+      <div
+        id="setup"
+        popover="auto"
+        className="setup"
+        data-section="setup"
+        role="dialog"
+        aria-label="Поле і складність"
+      >
+        <div className="size-control" data-control="size" role="radiogroup" aria-label="Розмір поля">
+          {SIZES.map((size) => (
+            <button
+              key={size}
+              type="button"
+              role="radio"
+              aria-checked={size === board.size ? 'true' : 'false'}
+              data-size-option={size}
+            >
+              {`Поле ${size}×${size}`}
+            </button>
+          ))}
+        </div>
+
+        <div className="level-control" data-control="level" role="radiogroup" aria-label="Складність">
+          {onlyFirstLevel && (
+            <p className="level-reason" data-level-reason="">
+              {FOUR_REASON}
+            </p>
+          )}
+          {LEVELS.map((entry) => (
+            <button
+              key={entry.level}
+              type="button"
+              role="radio"
+              aria-checked={entry.level === shownLevel ? 'true' : 'false'}
+              aria-disabled={onlyFirstLevel && entry.level !== 1 ? 'true' : undefined}
+              data-level-option={entry.level}
+            >
+              <span className="level-name">{entry.name}</span>
+              <span className="level-text">{entry.description}</span>
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className="setup-close"
+          data-action="setup-close"
+          popoverTarget="setup"
+          popoverTargetAction="hide"
+        >
+          Закрити
         </button>
       </div>
 
@@ -246,7 +356,8 @@ export function BinarkaPage({
       </dialog>
 
       {confirmOpen && <OpenConfirmDialog />}
-      {rulesOpen && <OpenRulesPopover />}
+      {rulesOpen && <OpenRulesPopover scrollToEnd={rulesScrolledToTechniques} />}
+      {setupOpen && <OpenSetupSheet />}
     </div>
   )
 }

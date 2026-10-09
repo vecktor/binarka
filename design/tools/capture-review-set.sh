@@ -31,4 +31,35 @@ done
 shot "logo-light" "http://127.0.0.1:4173/logo/" 375 160 1 &
 shot "logo-dark" "http://127.0.0.1:4173/logo/" 375 160 0 &
 wait
+# Iteration 8: another level selected («Мозколамка» at 8×8, FR-87, FR-89), at the five sizes.
+for wh in 320:700 375:812 768:1024 1024:768 1440:900; do
+  W=${wh%%:*}; H=${wh#*:}
+  shot "$W-light-level" "http://127.0.0.1:4173/level/" $W $H 1 &
+  shot "$W-dark-level" "http://127.0.0.1:4173/level/" $W $H 0 &
+  wait
+done
+# Iteration 8: the rules panel scrolled to «Складніші прийоми» (FR-93), where the panel scrolls.
+for wh in 320:700 375:812 1366:650; do
+  W=${wh%%:*}; H=${wh#*:}
+  shot "$W-light-rules-techniques" "http://127.0.0.1:4173/rules-techniques/" $W $H 1 &
+  shot "$W-dark-rules-techniques" "http://127.0.0.1:4173/rules-techniques/" $W $H 0 &
+  wait
+done
+# Iteration 10: the setup sheet open at 6×6 («Задачка» checked) and at 4×4 (FR-95 to FR-99, FR-91).
+for page in setup:setup/ setup-four:setup-four/; do
+  n=${page%%:*}; p=${page#*:}
+  for wh in 320:700 375:812 768:1024 1024:768 1440:900; do
+    W=${wh%%:*}; H=${wh#*:}
+    shot "$W-light-$n" "http://127.0.0.1:4173/$p" $W $H 1 &
+    shot "$W-dark-$n" "http://127.0.0.1:4173/$p" $W $H 0 &
+    wait
+  done
+done
+# Iteration 12: the setup sheet on the short desktop window (1366×650: the full-cover fallback).
+for page in setup:setup/ setup-four:setup-four/; do
+  n=${page%%:*}; p=${page#*:}
+  shot "1366-light-$n" "http://127.0.0.1:4173/$p" 1366 650 1 &
+  shot "1366-dark-$n" "http://127.0.0.1:4173/$p" 1366 650 0 &
+  wait
+done
 ls "$OUT" | wc -l

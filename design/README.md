@@ -182,3 +182,255 @@ Review 4 ([`docs/design/review-4-design-reviewer.md`](../docs/design/review-4-de
 ### Before the pixel check can use it
 
 Decision 25: the product's capture must match this one: reduced motion forced, the framed window focused, and the pointer kept off the page. See also the notes at the end of `docs/design/v0-prompt.md`: approve Playwright, `pixelmatch` and `pngjs`; serve this design locally; write `quality/visual-parity.config.json`; and see `npm run check:visual` fail against today's page **before** a design NFR is signed.
+
+### Iteration 8: the difficulty level picker, by the designer agent (2026-10-09)
+
+The signed difficulty amendment (autonomy-log row 86: FR-44, FR-87 to FR-93, amended FR-57, FR-67, FR-68, FR-73) needs a level control on the page. The user asked for this design on 2026-10-09. **`review-set-5/` stays the frozen reference and is untouched.** Whether `review-set-6/` replaces it is the user's decision.
+- **`components/binarka-page.tsx`:**
+  - A `level` prop (1 to 4, default 1).
+  - After the size picker: `div.level-picker.level-control[data-control="level"][role="radiogroup"][aria-label="Складність"]` with four `button[role="radio"]` («Розминка», «Задачка», «Головоломка», «Мозколамка», `data-level-option` 1 to 4), then `p.level-description[data-level-description]` (no role, no id).
+  - At 4×4 «Розминка» is checked, levels 2 to 4 get `aria-disabled="true"` (still focusable), and the line shows the FR-91 reason.
+  - In the rules popover, between the rules list and «Зрозуміло»: `div.techniques[data-section="techniques"]` with an `h3` «Складніші прийоми» and a `ul` of the three FR-93 items (text only, no examples, no ids).
+  - All strings are copied verbatim from `docs/requirements.md` (FR-87, FR-89, FR-91, FR-93); they are provisional there (Q6).
+- **`app/binarka.css`:**
+  - `.level-picker` uses the size picker's segmented look. Below 30rem it is two rows of two equal buttons, because the four names need about 405 px in one row and the column is 296 px at 320. From 30rem the four buttons share one row, each as wide as its name (0.375rem side padding). Every button is 44 px tall.
+  - Each state sets its own `color` and `background-color` from existing tokens (FR-65): plain `--ink-muted` on `--surface`; checked `--ink` on `--primary-soft` with the `--primary` border; unavailable `--ink-muted` on `--bg` with a 2 px dashed `--cell-border` outline (the non-colour cue). No opacity. No new token.
+  - `.level-description`: 0.875rem muted text, centred and balanced, 0.5rem under the picker, with at least two lines reserved. Below about 390 px the level 4 line takes three lines.
+  - The rules panel `h3` is 1rem bold; the techniques items reuse the rule rows.
+  - **The desktop reserve went from 28rem to 36rem.** That is the non-cell height, measured at 35.3rem; it was 27.3rem. Without the change the new rows would scroll every desktop page.
+- **`components/open-rules-popover.tsx`:** it can also scroll the open panel to «Складніші прийоми». The scroll is re-applied after load, focus and two frames, because a scroll set once was sometimes lost in the capture.
+- **New routes** (review capture only):
+  - `/level/`: «Мозколамка» on the `/eight/` board.
+  - `/rules-techniques/`: the rules panel scrolled to its end. The phone sheet (55dvh) and the 1366×650 panel do not show the techniques section without scrolling.
+- **Capture:** new lines before the final count: `level` at the five sizes, and `rules-techniques` at 320×700, 375×812 and 1366×650, light and dark. That makes 94 shots.
+- **Measured** (headless Chrome, scrollbars hidden, page height = `scrollHeight`):
+
+  | Window | 6×6 cell | 8×8 cell | 4×4 cell | Page height (default) | Notes |
+  |---|---|---|---|---|---|
+  | 320×700 | 45.2 | 35.3 | 64 | 889 | was 705 |
+  | 375×812 | 51.5 | 42.1 | 64 | 916 | was 812 (fit); the message area starts at y = 799 |
+  | 768×1024 | 74.7 (was 80) | 56.0 (was 60.4) | 80 | 1024 | |
+  | 1024×768 | 44.0 floor (was 53.3) | 24.0 floor (was 40.0) | 48 (was 72) | 828 | 6×6 scrolls by 60 px |
+  | 1440×900 | 54.0 (was 72) | 40.5 (was 54.4) | 72 | 900 | column 416 px (was 466) |
+  | 1366×650 | 44.0 | 24.0 | 44 | 828 | |
+
+  - Level buttons: 142.5×44 at 320 and 166×44 at 375 (two rows); 79 to 115 px × 44 at 1024 (one row).
+  - No horizontal scroll at any size.
+- **Open for the user:** NFR-10 (6×6 on one screen at 375×812) no longer holds: the page is 104 px taller than the screen. On desktop, the extra 8rem shrinks the cells, and 8×8 reaches the 24 px floor at 1024×768.
+
+### Iteration 9: review of set 6 applied, by the designer agent (2026-10-09)
+
+A design-reviewer reviewed `review-set-6/`. The user decided in chat (autonomy-log row 89, about 13:38). `review-set-5/` and `review-set-6/` are untouched.
+- **Phones (≤ 30rem), package A:**
+  - Page: padding-top 1rem, padding-bottom `max(1rem, safe-area)`, row gap 0.75rem.
+  - Header: 44 px tall, with a 2.75rem logo and a 1.75rem title.
+  - Description line-height 1.35.
+  - 4×4 and 6×6 cells are height-aware: `clamp(2.75rem, (100svh − 33.5rem) / n, 4rem)`, in svh, never below 44 px. 8×8 stays width-based.
+- **Desktop (≥ 48rem):**
+  - A `--reserve: 30rem` token in every clamp (it was 36rem).
+  - Earned by padding-top 1.5rem, a 1rem gap, padding-bottom 1rem and the fused card.
+- **Every width:** the messages sit 0.5rem under the buttons.
+- **One card for size and level, with no wrapper (FR-68 order unchanged):**
+  - The size control is the top half: no bottom border, top radii only.
+  - The level control is the bottom half: `margin-top: −gap`, a 1px `--line` top border, bottom radii.
+  - The size control's 22rem max-width is gone, so both rows share the column.
+- **Unavailable level:** sunken instead of dashed. It has a transparent border, `--bg` background and an inset shadow from a new token `--sunken-shadow` (light `rgba(60,35,10,.12)`, dark `rgba(0,0,0,.45)`). Text stays `--ink-muted` with no opacity: 6.3:1 light, 8.3:1 dark.
+- **Rules panel:** «Зрозуміло» is `position: sticky; bottom: 0`, with no DOM change. A `--surface-raised` 1rem shadow masks the text that scrolls under it, and a second shadow leaves a `--line` hairline above it. The sheet stays at 55dvh. `/rules-techniques/` now scrolls the panel to `scrollHeight` once, with no timer.
+- **Class names:** `.size-picker` is renamed to `.size-control` (as in the product and the spec). The level control has only `level-control`; `level-picker` is dropped as redundant.
+- **Level 4 line:** «Додатково треба пробувати хід наперед: якщо правило порушиться, тут інша цифра.» (79 characters). The other lengths are 84, 72 and 84 characters, and the 4×4 reason is 38. Lines 1 and 3 are over 80 and are left unchanged; a shorter wording is proposed to the user.
+- **Measured** (headless Chrome, scrollbars hidden; page = `scrollHeight`):
+
+  | Window | 6×6 cell | 6×6 page | 8×8 cell | 8×8 page |
+  |---|---|---|---|---|
+  | 320×700 | 44.0 | 805 (scrolls 105) | 35.3 | 820 |
+  | 375×812 | 46.0 | 812: content ends at 807, **fits** | 42.1 | 856 (scrolls 44) |
+  | 768×1024 | 80.0 | 1024, fits | 60.4 | 1024, fits |
+  | 1024×768 | 48.0 | 768, fits | 36.0 | 768, fits |
+  | 1366×650 | 44.0 floor | 739; «Підказка» at y 586–630, visible | 24.0 floor | 664 |
+  | 1440×900 | 70.0 | 900, fits | 52.5 | 900, fits |
+
+  - No horizontal scroll anywhere.
+  - Level buttons are 44 px tall at every size.
+- **Capture:** the set is `v0-screenshots/review-set-7/` (94 shots, `SHA1SUMS`).
+  - A second run is byte-identical on 94 of 94.
+  - A third run differed only in `1024-light-confirm` (the known dialog focus-ring race).
+  - Against set 6, only `logo-light` and `logo-dark` are byte-identical.
+
+### Iteration 10: the setup sheet (wireframe A), by the designer agent (2026-10-09)
+
+Signed structure: wireframe A everywhere (autonomy-log rows 90 and 92, `design/wireframes/setup-controls-2026-10-09/`). Requirement rows: the settings-sheet amendment (`docs/handoff/settings-sheet-amendment-draft-2026-10-09.md`), FR-95 to FR-99 and the amended FR-68, FR-87, FR-89, FR-91. Started from iteration 9; its tokens, the desktop `--reserve: 30rem`, the sticky close style, the sunken unavailable look and the confirm focus fix are kept.
+
+- **Summary button (FR-95):** in the size control's place, `button.setup-button[data-action="setup"][popovertarget="setup"]`, full column width, 44 px tall, `--surface` card with a `--cell-border` 2px border (as «Правила»). Text «6×6 · Розминка» built from the board size and level, bold; a visually hidden prefix «Поле і складність: » (new `.visually-hidden` class); a `--primary` «▾» at the end, `aria-hidden`. The level description line is gone from the page body.
+- **Setup sheet (FR-96):** `div#setup.setup[popover=auto][data-section="setup"][role="dialog"][aria-label="Поле і складність"]`, after the rules panel. It reuses the rules panel CSS by adding `.setup` to every `.rules` popover selector (bottom sheet on phones, centred 26rem panel from 48rem, the 64rem top offset, the same slide/fade motion and backdrop). Only its height differs: up to 88dvh on phones and 85vh from 48rem to 64rem; from 64rem the rules panel's cap applies (`min(80vh, 100dvh − top offset − 1rem)`). It scrolls inside itself. No visible title (the name is the `aria-label`, A-41).
+- **Inside the sheet:** the size radiogroup (unchanged structure, now a standalone rounded card); the level radiogroup as one column of four cards. Each `button[role=radio]` holds `span.level-name` and `span.level-text` (FR-89 final wording, FR-99). A drawn ring before the name is the radio cue (hollow, or a filled dot when checked), so the checked state is not colour alone. Checked: `--primary` border, `--primary-soft` fill, description in `--ink`.
+- **4×4 (FR-91):** `p.level-reason[data-level-reason]` «Для поля 4×4 є лише рівень «Розминка».» first in the level group, with a 3px `--primary` bar on the left. Levels 2 to 4 keep the sunken look (`--bg`, `--sunken-shadow`, `--ink-muted`, no opacity) and add two cues that are not colour: a dashed `--cell-border` border and a struck-through name (2px), plus a dashed ring.
+- **«Закрити»** (`[data-action="setup-close"]`, `popovertargetaction="hide"`) copies «Зрозуміло»: primary fill, sticky at the bottom with the masking shadow and hairline.
+- **Phone reserve:** the height-aware 4×4/6×6 cell formula drops from `100svh − 33.5rem` to `100svh − 28rem` (the summary is about 6rem shorter than the picker card plus line). Desktop `--reserve` unchanged.
+- **Routes:** `/` (6×6 Розминка, closed); `/level/` now shows «8×8 · Мозколамка», closed; new `/setup/` (open, 6×6, «Задачка» checked) and `/setup-four/` (open, 4×4). New helper `components/open-setup-sheet.tsx` opens the sheet on those two routes only. The capture script gains 20 shots at its end.
+- **Measured** (Chrome, iframe at the exact window size; content end = bottom of the last message):
+
+  | Window | 6×6 cell | 6×6 content end | 8×8 cell | 8×8 content end | sheet open 6×6 (top–bottom) | sheet open 4×4 |
+  |---|---|---|---|---|---|---|
+  | 320×700 | 44.0 | 596, fits | 35.3 | 611, fits | 116–700, no scroll | 84–700, scrolls |
+  | 375×812 | 51.5 | 650, **fits** | 42.1 | 666, fits | 277–812, no scroll | 242–812, no scroll |
+  | 768×1024 | 80.0 | 809, fits | 60.4 | 809, fits | 253–771 | 236–788 |
+  | 1024×768 | 48.0 | 617, fits | 36.0 | 614, fits | 104–621 | 104–656 |
+  | 1366×650 | 44.0 floor | 593, fits | 24.0 floor | 518, fits | 104–621 | 104–624, scrolls |
+  | 1440×900 | 70.0 | 749, fits | 52.5 | 746, fits | 108–625 | 108–660 |
+
+  - No horizontal scroll anywhere. The summary button is 44 px tall at every size; every button in the sheet is at least 44 px in both directions.
+- **Contrast** (computed from the tokens), light / dark: summary text 15.9 / 13.9; «▾» 5.4 / 7.4; level description 6.8 / 7.5; checked text on `--primary-soft` 13.0 / 11.5; unavailable text on `--bg` 6.3 / 8.3; reason text 15.9 / 12.8; reason bar 5.4 / 6.8; radio ring 3.7 / 4.1; checked ring on `--primary-soft` 4.4 / 6.1; dashed border 3.4 / 3.8 (on `--bg`); «Закрити» 5.4 / 8.6.
+- **Capture:** the set is `v0-screenshots/review-set-8/` (114 shots, `SHA1SUMS`).
+  - A second run is byte-identical on 113 of 114. The odd one is `375-light-rules-techniques` (an existing route): in the second run the rules panel was not scrolled to its end (the scroll ran before the panel had its height). Three more captures of that shot matched set 8. This is a capture harness defect in `/rules-techniques/`, not a design change; it is left open.
+  - Against set 7, only `logo-light` and `logo-dark` are byte-identical; 92 shots changed (the summary button replaces the picker card and line on every page), and 20 are new (`setup`, `setup-four`).
+
+### Iteration 11: review of set 8 applied, by the designer agent (2026-10-09)
+
+The user chose to apply every fix from the fresh design-reviewer's review of set 8 (autonomy-log row 93). Kept as signed: each choice closes the sheet, and there is no visible sheet title.
+
+- **Desktop reserve:** `--reserve` drops from 30rem to 23rem at 48rem and up, so 4×4 and 6×6 cells grow back (6×6 at 1024×768 goes from 48 to 66.7 px).
+- **Setup sheet placement from 48rem:**
+  - **Window at least 44rem tall:** the sheet hangs under the summary button like a dropdown: `inset: 0 0 auto 0; margin: 9.75rem auto 0; width: var(--column); max-height: calc(100dvh − 10.75rem)`.
+    - Measured geometry: header bottom 88 px (5.5rem); summary 104–148 px (6.5rem–9.25rem); the sheet starts at 156 px (9.75rem), 8 px under the summary, at exactly the summary's left and right edges.
+    - Opening motion, under `no-preference` only: fade, plus `translateY(−0.5rem)` → 0 in 200ms ease-out.
+  - **Shorter window:** the sheet falls back to full cover: `margin-block: 6rem auto; width: calc(var(--column) + 1rem)`. It starts at 96 px and is 8 px wider than the summary on each side, so no edge of the summary shows.
+- **Rules panel («Правила»):** the same full-cover geometry at every height from 48rem: 6rem from the top, `calc(var(--column) + 1rem)` wide, `max-height: calc(100dvh − 7rem)`. This replaces the 64rem `max(12vh, 6.5rem)` placement. It covers the summary at every measured desktop window.
+- **«Закрити» is secondary:** `--surface` fill, a 2px `--cell-border` border, `--ink` text, weight 600. «Зрозуміло» stays primary. Both lose the hairline shadow and keep the masking shadow.
+- **Level cards:**
+  - Available, unchecked cards get a 2px border in a new token `--option-border` (light `#c4b59c`, dark `#5a5045`).
+  - Unavailable cards lose the line-through and the inset shadow. They keep the dashed `--cell-border` border, the dashed ring and the `--bg` fill. `--sunken-shadow` is now unused and kept as a token.
+- **Polish:**
+  - `.setup-cue` is 1.125rem.
+  - Light `--ink-muted` is `#5f5549`, a warmer grey (dark is unchanged).
+  - At 22.5rem and below, the sheet is capped at `calc(100dvh − 9rem)`, so it starts under the summary (144 px vs 116 px at 320×700).
+- **Capture race fixed:** `components/open-rules-popover.tsx` scrolls the rules panel again after layout (two animation frames), on window `load` and on window `focus`, like the confirm focus fix. The capture conditions are unchanged. 12 probe captures of `375-light-rules-techniques` were byte-identical (12 of 12).
+- **Measured** (Chrome, an iframe at the exact window size). "Page end" is the bottom of `#app` with the idle line, the three longest hint sentences and the win line injected. The messages area keeps its height, so all three end at the same place.
+
+  | Window | 6×6 cell | 6×6 end | 8×8 cell | 8×8 end | 4×4 cell | 4×4 end |
+  |---|---|---|---|---|---|---|
+  | 320×700 | 44.0 | 656 (longest hint), fits | 35.3 | 671, fits | 63 | 645 |
+  | 375×812 | 51.5 | 688, fits | 42.1 | 704, fits | 64 | 627 |
+  | 768×1024 | 80.0 | 847, fits | 60.4 | 847, fits | 80 | 679 |
+  | 1024×768 | 66.7 | 767, fits (1 px spare) | 50.0 | 764, fits | 72 | 647 |
+  | 1366×650 | 47.0 | 649, fits | 35.3 | 646, fits | 70.5 | 641 |
+  | 1440×900 | 72.0 | 799, fits | 54.4 | 799, fits | 72 | 647 |
+
+- **Sampled height sweep:**
+  - Sampling: window height 600–1000 px in 10 px steps (41 samples) at widths 1024 and 1366, for 6×6 and 8×8, with the longest hint and the win line. Coverage is *sampled*, not continuum.
+  - Results:
+    - **6×6:** fits from 640 px up, with 1 px spare while the cells are height-aware (640–800) and 11–201 px spare above that. At 600–630 the cell is at its 44 px floor and the page scrolls by 31, 21, 11 and 1 px. That scroll is by design (decision 22).
+    - **8×8:** fits at every sample, with 4 px or more spare; the cell is 29 px at 600 (floor 24).
+  - Both widths gave identical results.
+  - Stricter instrument still to run: a 1 px-step sweep over 630–650 and 790–810 (the region where the 6×6 cell switches between height-aware and capped).
+- **Contrast** (computed), light / dark:
+
+  | Part | Light | Dark |
+  |---|---|---|
+  | Light `--ink-muted` on `--surface` | 7.2 | — |
+  | Light `--ink-muted` on `--bg` | 6.6 | — |
+  | Light `--ink-muted` on `--given-bg` | 4.9 | — |
+  | Light `--ink-muted` on `--primary-soft` | 5.9 | — |
+  | «Закрити» text | 15.9 | 13.9 |
+  | «Закрити» border | 3.7 | 3.8 |
+  | `--option-border` on `--surface` | 2.0 | 2.1 |
+
+  `--option-border` is below 3:1. It is a decorative card edge: the radio ring (3.7 / 4.1) and the text identify each option, so it is not the required non-text indicator.
+- **Mask fix (found during my own capture check):** at 1366×650, a glyph of the scrolled text peeked out in the strip between «Зрозуміло»'s 1rem mask and the panel's bottom border. Both sticky close buttons now carry a second mask shadow offset 1rem down (`0 1rem 0 1rem var(--surface-raised)`); this removed the glyph.
+- **Capture:** the set is `v0-screenshots/review-set-9/` (114 shots, `SHA1SUMS`).
+  - A second full run is byte-identical on **114 of 114**.
+  - 12 probe captures of `375-light-rules-techniques` after the race fix and the mask fix were all identical, and match the set.
+  - Against set 8, only `logo-dark` is byte-identical. The other 113 changed: the new light `--ink-muted` reaches `logo-light`, every page uses the new reserve, cue size and tokens, and every panel uses the new geometry and close style.
+- **At 320×700:** with the 9rem cap, the 6×6 sheet now scrolls a little (it starts at 144 px), with «Закрити» sticky.
+
+
+## Design iteration budget (the user's rule, 2026-10-09, autonomy-log row 95)
+
+Two design iterations per signed wireframe (build, then one fix iteration after an independent design-reviewer), then a confirming review. Further rounds only with the user's yes, after the open items are triaged into blocking (broken layout, accessibility, capture determinism, missing evidence) and polish. A structure change goes back to wireframes and starts a new count. Structure A (wireframe `design/wireframes/setup-controls-2026-10-09/`): iterations 10, 11 and 12; iteration 12 was approved by the user before the rule.
+
+### Iteration 12: review of set 9 applied, by the designer agent (2026-10-09)
+
+The user chose the reviewer's fixes (autonomy-log row 94); the optional top fade is skipped.
+
+- **Panels end in empty page space from 48rem (no DOM change).**
+  - Open panels become a flex column (`:popover-open` only, so the closed popover stays `display: none`), and their children do not shrink.
+  - `.rules-close` and `.setup-close` take `margin-top: auto`, so extra room sits above the close button, never below it.
+  - Fixed margins stay as they were in block flow: the techniques block drops its 0.5rem top margin (it used to collapse into the list's 1rem), and the level group carries the 1.5rem gap above «Закрити».
+  - **Setup sheet:** its height comes from the page geometry (B = `min(--board-width, --column)`).
+    - Anchored: `height: min(100dvh − 10.75rem, B + 4.75rem)`.
+    - Full-cover fallback below 44rem tall: `min(100dvh − 7rem, B + 8.5rem)`.
+    - Either way it ends 0.5rem under the button row and the messages stay visible.
+    - It is a **height, not a minimum**. As a minimum, the four cards' natural 517 px ran 23 px past that line at 1024×768 and reached the messages. Where the cards need more room, the sheet now scrolls inside itself, with «Закрити» sticky.
+  - **Rules panel:** `min-height: min(100dvh − 7rem, B + 13.875rem)`, so it covers through the messages.
+  - The reviewer's derivation was checked against measured positions: setup bottom = button-row bottom + 8.0 px, and rules bottom = messages bottom + 0.7 px, at 768×1024, 1024×768 and 1440×900, for 6×6 and 8×8.
+- **Desktop `--reserve`:** 24rem (was 23rem).
+- **«Закрити» background:** `--surface-raised`, the panel's own surface. It no longer reads as a dark hole in dark mode.
+- **At 22.5rem and below:** level card padding `0.375rem 0.625rem`, level gap `0.375rem`, «Закрити» `margin-top: 1rem`. Every sheet button stays at least 44 px.
+- **Capture script:** adds `1366-{light,dark}-setup` and `1366-{light,dark}-setup-four` at its end (the full-cover fallback), for 118 shots.
+- **Measured** (Chrome, an iframe at the exact window size, transitions off). "End" is the bottom of `#app`, worst case over the idle line, the three longest hint sentences and the win line.
+
+  | Window | 6×6 cell, end | 8×8 cell, end | 4×4 cell, end | Setup sheet 6×6 | Setup sheet 4×4 |
+  |---|---|---|---|---|---|
+  | 320×700 | 44, 656 | 35.3, 671 | 63, 645 | 146–700 | 144–700 |
+  | 375×812 | 51.5, 688 | 42.1, 704 | 64, 627 | 277–812 | 242–812 |
+  | 768×1024 | 80, 847 | 60.4, 847 | 80, 679 | 156–746, no scroll | 156–578, scrolls |
+  | 1024×768 | 64, 751 | 48, 748 | 72, 647 | 156–650, scrolls | 156–546, scrolls |
+  | 1366×650 | 44.3, 633 | 33.3, 630 | 66.5, 625 | full cover 96–532, scrolls | 96–524, scrolls |
+  | 1440×900 | 72, 799 | 54.4, 799 | 72, 647 | 156–698, no scroll | 156–546, scrolls |
+
+- **Sampled 1 px sweep:** window height 600–1000 px in 1 px steps (401 samples) at widths 1024 and 1366, for 6×6 and 8×8. Coverage is *sampled* (one px grid, two widths), not continuum. Both widths gave identical results.
+  - **Closed page:** 6×6 fits from 631 px; from 640 px up there are at least 8.7 px spare. At 600–630 the cell sits at its 44 px floor and the page scrolls by up to 31 px (decision 22). 8×8 fits at every sample, with at least 19.7 px spare; the cell is 27 px at 600.
+  - **Setup open:** at every sample, its bottom is the button-row bottom + 8 px and at least 12 px above the first line of message text (0 failures).
+    - The 6×6 sheet scrolls inside itself up to H = 789 (8×8: 792); above that it has spare room above «Закрити».
+  - **Rules open:** at every sample from 631 px it ends 0.7 to 19.7 px below the messages box (0 failures). At 600–630 the page itself scrolls, so the messages are below the fold and the panel ends 1rem above the window bottom.
+  - The panel scrolls inside itself up to H = 766.
+- **Contrast of the changed parts** (computed), light / dark: «Закрити» text on `--surface-raised` 15.9 / 12.8; its `--cell-border` border 3.7 / 3.8.
+- **Capture:** the set is `v0-screenshots/review-set-10/` (118 shots, `SHA1SUMS`).
+  - A second full run is byte-identical on **118 of 118**.
+  - Against set 9: 72 shots are byte-identical, 42 changed and 4 are new (`1366-*-setup`, `1366-*-setup-four`). The identical ones are phone pages, 768 and 1440 closed pages (their cells were already at the 5rem/4.5rem cap), and the 1366 rules panel (capped by the window).
+- **Open issue (for the reviewer and the user):** the "end 0.5rem under the button row" rule makes the sheet scroll whenever the page above the button row is shorter than the sheet's content.
+  - Most visible with 4×4: the board is small, so at 768×1024 the sheet is cut after «Головоломка», with a large empty area below the messages.
+  - It also happens with 6×6 at 1024×768: «Мозколамка» is cut and has to be scrolled to.
+  - The sheet cannot know its content height in CSS without a DOM or script change. Choices: accept the scroll; let the sheet run past the messages when its content needs more room (it would cover them); or use a different end line for 4×4.
+
+**Review speed (the user's rule, 2026-10-09, autonomy-log row 97):** (1) a confirming review gets only the changed shots (by `SHA1SUMS` against the previous set) and a checklist of the findings it must verify, plus a regression look at those shots; a full open review is only for the first look at a new structure or before a reference proposal. (2) Reviewers get contact sheets (one image per state: all widths, light and dark) instead of single shots. (4) Confirming reviews run on Sonnet; first and full reviews on Opus. (5) A full review may be split by form factor (phone, tablet, desktop) into three parallel reviewers, followed by a short cross-size consolidation by the orchestrator. (3) Difference images against the previous set come with G1, once `pixelmatch` is installed.
+
+### Iteration 13: the setup sheet grows with its content, by the designer agent (2026-10-09)
+
+The user approved this in autonomy-log row 96. Only the setup sheet's height changes, from 48rem; the rules panel stays as in iteration 12.
+
+- **Height rule:**
+  - **Minimum:** the iteration-12 end line, 0.5rem under the button row (anchored: `min(100dvh − 10.75rem, B + 4.75rem)`; full cover: `min(100dvh − 7rem, B + 8.5rem)`).
+  - **Maximum:** the window (anchored `calc(100dvh − 10.75rem)`, full cover `calc(100dvh − 7rem)`).
+  - **Height:** `fit-content`. The sheet grows with its four cards and covers the messages while it is open. Extra room still sits above «Закрити» (flex, `margin-top: auto`).
+- **Why `fit-content`, not `auto`:** a first build used `height: auto`. With the full-cover sheet's 0 insets, `auto` stretched the sheet to the window bottom (1366×650: 96–650). The popover's UA default is `fit-content`, which restores content height.
+- **Max-height restated:** the full-cover max-height is restated in the 48rem block. The unconditional `.setup { max-height: 88dvh }` rule comes later in the file and had overridden the shared panel cap.
+- **Measured** (transitions off). Sheet top–bottom in px, with the end line in brackets:
+
+  | Window | 4×4 | 6×6 | 8×8 |
+  |---|---|---|---|
+  | 768×1024 | 156–708 (578) | 156–746 (746) | 156–746 (746) |
+  | 1024×768 | 156–708 (546) | 156–673 (650) | 156–673 (647) |
+  | 1366×650 (full cover) | 96–634 (524), scrolls | 96–613 (532) | 96–613 (529) |
+  | 1440×900 | 156–708 (546) | 156–698 (698) | 156–698 (698) |
+
+  - No inner scroll in any of these except 4×4 at 1366×650.
+  - Phones are unchanged (the end line applies only from 48rem).
+  - Every sheet button is at least 44 px.
+- **Sampled 1 px sweep** of the open sheet: window height 600–1000 px (401 samples) at widths 1024 and 1366, for 4×4, 6×6 and 8×8. Coverage is *sampled*, not continuum. Both widths gave identical results.
+  - **Bottom above the end line:** never.
+  - **Bottom below the window:** never; the lowest it reaches is the window bottom − 16 px.
+  - **«Закрити» cut off:** never; it stays visible (sticky).
+  - **Inner scroll:**
+    - 4×4: at 600–662 (full cover) and 704–722 (anchored).
+    - 6×6 and 8×8: at 600–627 (full cover).
+    - Above those heights all four cards show without scrolling.
+- **Capture:** the set is `v0-screenshots/review-set-11/` (118 shots, `SHA1SUMS`).
+  - **First run:** it lost `320-light-default` and `320-dark-default`, the first pair in the script; most likely the 12 s alarm on a cold start.
+  - **Recapture:** I recaptured that pair alone with the same function and flags.
+  - **Result:** the set is then byte-identical with the second full run on 118 of 118, and the pair matches set 10. This is a harness flake on a cold first shot, not a design change; it is left open.
+  - **Against set 10:** exactly 12 shots changed, all setup shots: `{768,1440}-*-setup-four`, `1024-*-setup`, `1024-*-setup-four`, `1366-*-setup` and `1366-*-setup-four`. The other 106 are byte-identical.
+- **Seen in the shots:** at 1024×768 (6×6) the sheet ends at 673 px, 0.8 px above the first idle line (673.8 px), so the line shows just under the sheet's shadow. It is neither covered nor clear; this is for the reviewer.
+
+## Pixel reference: moved to review-set-11 (2026-10-09 about 16:34 UTC+5:30, autonomy-log row 98)
+
+The user moved the NFR-14 pixel reference from `review-set-5/` to `review-set-11/` (structure A, iteration 13: the summary button and the setup sheet; 118 shots, two captures byte-identical; `SHA1SUMS` in the set), after a confirming design review (verdict ready, no blocking item). `review-set-5/` stays in the repository as history. Open, accepted with the move: P1 at 1024×768 (6×6) the first idle line sits about 10 px under the sheet edge and touches its shadow; P2 at 1366×650 (4×4) the scrolling sheet has no scroll cue; P3 the capture harness once lost the first pair of shots on a cold start (re-capture matched). The intermediate sets `review-set-6/` to `review-set-10/` are local working sets and are not committed.
