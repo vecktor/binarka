@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --color-page: #f9fafb;
   --color-text: #1f2937;
   --color-cell-bg: #ffffff;
@@ -12,6 +13,25 @@
   --color-control-bg: #ffffff;
   --color-control-border: #6b7280;
   --color-win-text: #166534;
+}
+
+/* The dark token set (A-51): the same 13 names, mapped from design/v0/app/binarka.css. The page always sets data-theme on <html>
+   (the head step of index.html, then the page), so there is no media-query block for the system scheme. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-page: #1a1714;
+  --color-text: #f1ede4;
+  --color-cell-bg: #24201b;
+  --color-cell-border: #9a8f80;
+  --color-given-bg: #4d4438;
+  --color-given-border: #e0d6c4;
+  --color-violation-bg: #3f2320;
+  --color-violation-border: #ff8a7d;
+  --color-violation-text: #ffb4ab;
+  --color-focus: #f39a5b;
+  --color-control-bg: #24201b;
+  --color-control-border: #9a8f80;
+  --color-win-text: #8fd19a;
 }
 
 body {
@@ -597,5 +617,152 @@ button:focus-visible {
   border-color: var(--color-focus);
   color: var(--color-text);
   background-color: var(--color-control-bg);
+  font-weight: 700;
+}
+
+/* Settings button in the header, between the title and the rules button (FR-68; ported in part from design/v0 .settings-button). */
+.settings-button {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 2.75rem;
+  margin-left: auto;
+  padding: 0;
+  border-width: 2px;
+  border-radius: 10px;
+}
+
+.settings-button .gear {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.settings-button .gear-hole {
+  fill: var(--color-control-bg);
+}
+
+/* Small phones (320): title, gear and the rules button share a 296 px column. */
+@media (max-width: 22.5rem) {
+  .page-header,
+  .page-header h1 {
+    gap: 0.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .rules-button {
+    padding: 0 0.625rem;
+  }
+}
+
+/* Settings panel: a bottom sheet on phones, a panel under the header at the right from 48rem (design/v0 .settings). */
+.settings {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: 55dvh;
+  margin: 0;
+  padding: 24px 16px 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: var(--color-given-bg);
+  border-radius: 16px 16px 0 0;
+  background-color: var(--color-control-bg);
+  color: var(--color-text);
+  text-align: left;
+}
+
+.settings::backdrop {
+  background-color: var(--color-text);
+  opacity: 0.3;
+}
+/* In dark the text colour is light, so a backdrop of it would lighten the page; the dark page colour dims it instead (review-set-13). */
+:root[data-theme='dark'] .rules::backdrop,
+:root[data-theme='dark'] .setup-sheet::backdrop,
+:root[data-theme='dark'] .settings::backdrop {
+  background-color: var(--color-page);
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .confirm::backdrop {
+  background-color: var(--color-page);
+  opacity: 0.7;
+}
+
+@media (min-width: 48rem) {
+  .settings {
+    inset: 0;
+    width: 22rem;
+    max-width: calc(100% - 2rem);
+    height: fit-content;
+    max-height: calc(100dvh - 7rem);
+    /* Under the header, its right edge on the right edge of the 420 px column (#app is centred). */
+    margin: 6.5rem 0 auto calc(50% + 210px - 22rem);
+    padding: 16px;
+    border-width: 1px;
+    border-radius: 16px;
+  }
+}
+
+.settings-label {
+  margin: 0 0 4px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.theme-control {
+  display: flex;
+  width: 100%;
+  margin: 0 0 16px;
+  padding: 3px;
+  gap: 3px;
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-control-border);
+  border-radius: 10px;
+  background-color: var(--color-control-bg);
+}
+
+.theme-control button {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 8px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 7px;
+  color: var(--color-text);
+  background-color: var(--color-control-bg);
+  white-space: nowrap;
+}
+
+/* The chosen option: a filled background and a frame in the focus colour, bold text and an inner ring (cues besides colour). */
+.theme-control button[aria-checked='true'] {
+  color: var(--color-text);
+  background-color: var(--color-given-bg);
+  border-color: var(--color-focus);
+  box-shadow: inset 0 0 0 1px var(--color-focus);
+  font-weight: 700;
+}
+
+/* Inside the segmented card an outset ring would run into the neighbour: keep it inside. */
+.theme-control button:focus-visible {
+  outline-offset: -1px;
+}
+
+.settings-close {
+  width: 100%;
+  min-height: 2.75rem;
+  margin-top: 8px;
+  border-width: 2px;
   font-weight: 700;
 }

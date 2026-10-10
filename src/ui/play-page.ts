@@ -1,8 +1,11 @@
 import { GenerationRunOutError, findViolations, generate, hint, isSolved } from '../engine/index';
 import type { Cell, Grid, Puzzle } from '../engine/index';
+import { createGear } from './gear';
 import { createLogo } from './logo';
+import { THEME_COLOR_DARK, THEME_COLOR_LIGHT, readTheme, writeTheme } from './preferences';
+import type { ThemeChoice } from './preferences';
 import { defaultSeedSource } from './seed';
-import { BUTTONS, CONFIRM, IDLE, LEVELS, LEVEL_GROUP, LEVEL_REASON_4X4, RULES, SETUP, SIZE_GROUP, TECHNIQUES, TITLE, WIN, cellLabel, sizeLabel, summaryText } from './strings';
+import { BUTTONS, CONFIRM, IDLE, LEVELS, LEVEL_GROUP, LEVEL_REASON_4X4, RULES, SETTINGS, SETUP, SIZE_GROUP, TECHNIQUES, THEME_OPTIONS, TITLE, WIN, cellLabel, sizeLabel, summaryText } from './strings';
 
 export interface PlayPageOptions {
   seedSource?: () => number;
@@ -40,12 +43,15 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const panelId = `rules-panel-${panelCounter}`;
   const panelTitleId = `rules-title-${panelCounter}`;
   const sheetId = `setup-sheet-${panelCounter}`;
+  const settingsId = `settings-panel-${panelCounter}`;
 
   const rulesButton = el('button', { type: 'button', class: 'rules-button', 'data-action': 'rules', popovertarget: panelId }, BUTTONS.rules);
   const header = el('header', { class: 'page-header' });
   const title = el('h1', {}, TITLE);
   title.prepend(createLogo());
-  header.append(title, rulesButton);
+  const settingsButton = el('button', { type: 'button', class: 'settings-button', 'data-action': 'settings', popovertarget: settingsId, 'aria-label': SETTINGS.label });
+  settingsButton.append(createGear());
+  header.append(title, settingsButton, rulesButton);
 
   const boardHost = el('div', { class: 'board-host' });
   const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, BUTTONS.hint);
@@ -106,6 +112,17 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   techniques.append(el('h3', {}, TECHNIQUES.heading), techniquesList);
   rulesPanel.append(el('h2', { id: panelTitleId }, RULES.heading), rulesList, techniques, closeButton);
 
+  const themeControl = el('div', { 'data-control': 'theme', role: 'radiogroup', 'aria-label': SETTINGS.themeLabel, class: 'theme-control' });
+  const themeButtons = new Map<ThemeChoice, HTMLButtonElement>();
+  for (const entry of THEME_OPTIONS) {
+    const option = el('button', { type: 'button', role: 'radio', 'aria-checked': 'false', 'data-theme-option': entry.value }, entry.name);
+    themeButtons.set(entry.value, option);
+    themeControl.appendChild(option);
+  }
+  const settingsClose = el('button', { type: 'button', class: 'settings-close', 'data-action': 'settings-close', popovertarget: settingsId, popovertargetaction: 'hide' }, SETTINGS.close);
+  const settingsPanel = el('div', { popover: 'auto', id: settingsId, class: 'settings', 'data-section': 'settings', role: 'dialog', 'aria-label': SETTINGS.label });
+  settingsPanel.append(el('p', { class: 'settings-label' }, SETTINGS.themeLabel), themeControl, settingsClose);
+
   const dialogTextId = `confirm-text-${panelCounter}`;
   const dialog = el('dialog', { 'data-dialog': 'confirm', class: 'confirm', 'aria-labelledby': dialogTextId });
   const yesButton = el('button', { type: 'button', 'data-confirm': 'yes' }, CONFIRM.yes);
@@ -114,7 +131,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   dialogButtons.append(yesButton, noButton);
   dialog.append(el('p', { id: dialogTextId }, CONFIRM.text), dialogButtons);
 
-  root.replaceChildren(header, summaryButton, boardHost, buttons, messages, rulesPanel, sheet, dialog);
+  root.replaceChildren(header, summaryButton, boardHost, buttons, messages, rulesPanel, sheet, settingsPanel, dialog);
 
   let size = 6;
   let level = 1;
@@ -381,6 +398,47 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
       syncControls();
     });
   });
+
+  // Theme (FR-102 to FR-106, FR-113 to FR-118): the choice, the effective theme on <html> and the one theme-color meta.
+  let theme: ThemeChoice = readTheme();
+  let systemQuery: MediaQueryList | null = null;
+  try {
+    if (typeof window.matchMedia === 'function') systemQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  } catch {
+    systemQuery = null; // a broken matchMedia: auto is light (A-50)
+  }
+
+  function systemIsDark(): boolean {
+    try {
+      return systemQuery?.matches === true;
+    } catch {
+      return false;
+    }
+  }
+
+  function applyTheme(): void {
+    const effective = theme === 'auto' ? (systemIsDark() ? 'dark' : 'light') : theme;
+    document.documentElement.setAttribute('data-theme', effective);
+    document.head.querySelector('meta[name="theme-color"]')?.setAttribute('content', effective === 'dark' ? THEME_COLOR_DARK : THEME_COLOR_LIGHT);
+    for (const [value, button] of themeButtons) button.setAttribute('aria-checked', value === theme ? 'true' : 'false');
+  }
+
+  for (const [value, button] of themeButtons) {
+    button.addEventListener('click', () => {
+      if (value === theme) return; // already chosen: nothing is written (A-48)
+      theme = value;
+      writeTheme(value);
+      applyTheme();
+    });
+  }
+  try {
+    systemQuery?.addEventListener('change', () => {
+      if (theme === 'auto') applyTheme();
+    });
+  } catch {
+    // no listener support: the page follows the system at mount only
+  }
+  applyTheme();
 
   syncControls();
   newPuzzle(size, level);

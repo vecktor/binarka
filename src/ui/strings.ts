@@ -76,3 +76,16 @@ export const TECHNIQUES = {
 
 /** Visible text of the summary button: «6×6 · Розминка». */
 export const summaryText = (n: number, level: number): string => `${n}×${n}${SETUP.separator}${LEVELS[level - 1]?.name ?? ''}`;
+
+// Settings button, settings panel and theme control (FR-68, FR-102).
+export const SETTINGS = {
+  label: 'Налаштування',
+  themeLabel: 'Тема',
+  close: 'Закрити',
+} as const;
+
+export const THEME_OPTIONS = [
+  { value: 'light', name: 'Світла' },
+  { value: 'dark', name: 'Темна' },
+  { value: 'auto', name: 'Як у системі' },
+] as const;
