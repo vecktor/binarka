@@ -337,7 +337,7 @@ function resetPreferenceEnvironment(): void {
 }
 
 /** Add a `meta[name="theme-color"]` to the document head (jsdom's head has none); the lifecycle removes it after the test. */
-export function addThemeColorMeta(content = '#f9fafb'): HTMLMetaElement {
+export function addThemeColorMeta(content = '#f7f3ea'): HTMLMetaElement {
   const meta = document.createElement('meta');
   meta.setAttribute('name', 'theme-color');
   meta.setAttribute('content', content);

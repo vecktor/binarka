@@ -1,0 +1,7 @@
+# Fix round 1 (review run wf_42e6a5ef-152, contested finding: wanted() overrides without checking the design value)
+Sun Oct 11 04:39:42 +0530 2026
+Method: quality/design-paint.json was copied aside, one deviated slot corrupted in the working tree (1024-light-default, cell-ordinary, border-top-color -> rgb(1, 2, 3)), then restored byte-identical (git diff --quiet: no change).
+Before the fix (old wanted()): npx playwright test --project=layout e2e/nfr-14-palette.spec.ts -g "1024-light-default: the main"  ->  1 passed   (the gap: a wrong design value under a deviation is not seen)
+After the fix (wanted() checks d.design):  same command  ->  1 failed, message:
+  cell-ordinary border-top-color: page rgb(132, 123, 109), expected (light-cell-border; the design has rgb(1, 2, 3)) the design value rgb(140, 131, 116) that deviation light-cell-border documents (the fixture has rgb(1, 2, 3))
+Fixture restored, whole file:  npx playwright test --project=layout e2e/nfr-14-palette.spec.ts  ->  27 passed

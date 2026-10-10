@@ -172,12 +172,15 @@ async function readPagePaint(page: Page): Promise<Record<string, PaintEntry>> {
   );
 }
 
-/** The value the page must have: the expected product value where a recorded deviation covers the (case, element, property), else the design's. */
+/** The value the page must have: the expected product value where a recorded deviation covers the (case, element, property), else the design's.
+ *  A deviation replaces only the design value it documents: a covered slot whose frozen design value differs from the deviation's
+ *  `design` is a miss, so the override never hides a different design value (review run wf_42e6a5ef-152, contested finding). */
 function wanted(c: PaintCase, key: string, property: string, design: string): { want: string; deviation?: string } {
   for (const d of fixture.deviations) {
     if (d.sampled === false) continue;
     if (d.scheme !== 'both' && d.scheme !== c.scheme) continue;
     if (!d.cases.includes(c.shot) || !d.elements.includes(key) || !d.properties.includes(property)) continue;
+    if (design !== d.design) return { want: `the design value ${d.design} that deviation ${d.id} documents (the fixture has ${design})`, deviation: d.id };
     return { want: d.expected, deviation: d.id };
   }
   return { want: design };
