@@ -1,12 +1,12 @@
 {
   "breakpoint": "1440-light-setup",
-  "score": 0.9367,
+  "score": 0.9321,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 900,
   "localHeight": 900,
   "masked": 0,
   "pass": false,
-  "reason": "pixel score 0.9367 below threshold 0.98",
+  "reason": "pixel score 0.9321 below threshold 0.98",
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }

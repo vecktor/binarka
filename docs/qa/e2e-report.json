@@ -2,11 +2,11 @@
   "config": {
     "argv": [
       "/Users/vecktor/.nvm/versions/node/v22.21.1/bin/node",
-      "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/node_modules/.bin/playwright",
+      "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/node_modules/.bin/playwright",
       "test"
     ],
-    "configFile": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/playwright.config.ts",
-    "rootDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
+    "configFile": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/playwright.config.ts",
+    "rootDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e",
     "failOnFlakyTests": false,
     "forbidOnly": true,
     "fullyParallel": true,
@@ -22,7 +22,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -30,16 +30,17 @@
         },
         "id": "layout",
         "name": "layout",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e",
         "testIgnore": [],
         "testMatch": [
           "/nfr-1[02]-.*\\.spec\\.ts/",
-          "/nfr-18-.*\\.spec\\.ts/"
+          "/nfr-18-.*\\.spec\\.ts/",
+          "/nfr-14-.*\\.spec\\.ts/"
         ],
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -47,7 +48,7 @@
         },
         "id": "a11y",
         "name": "a11y",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e",
         "testIgnore": [],
         "testMatch": [
           "/nfr-13-.*\\.spec\\.ts/"
@@ -59,17 +60,18 @@
       {
         "grep": {},
         "grepInvert": null,
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
           "actualWorkers": 5
         },
         "name": "layout",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
-        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e",
+        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e",
         "testIgnore": [],
         "testMatch": [
+          {},
           {},
           {}
         ],
@@ -98,15 +100,15 @@
       {
         "grep": {},
         "grepInvert": null,
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
           "actualWorkers": 5
         },
         "name": "a11y",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
-        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e",
+        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e",
         "testIgnore": [],
         "testMatch": {},
         "timeout": 30000,
@@ -185,12 +187,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1135,
+                  "duration": 1103,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:15.898Z",
+                  "startTime": "2026-10-10T16:53:52.096Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -219,12 +221,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1191,
+                  "duration": 1117,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:15.890Z",
+                  "startTime": "2026-10-10T16:53:52.065Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -253,12 +255,12 @@
                   "workerIndex": 2,
                   "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 494,
+                  "duration": 455,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:15.889Z",
+                  "startTime": "2026-10-10T16:53:52.097Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -295,12 +297,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 199,
+                  "duration": 191,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:15.878Z",
+                  "startTime": "2026-10-10T16:53:52.070Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -329,12 +331,12 @@
                   "workerIndex": 4,
                   "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 204,
+                  "duration": 164,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:15.873Z",
+                  "startTime": "2026-10-10T16:53:52.067Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -363,12 +365,12 @@
                   "workerIndex": 4,
                   "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 97,
+                  "duration": 113,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.281Z",
+                  "startTime": "2026-10-10T16:53:52.479Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -397,12 +399,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 97,
+                  "duration": 109,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.281Z",
+                  "startTime": "2026-10-10T16:53:52.481Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -431,12 +433,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 90,
+                  "duration": 96,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.388Z",
+                  "startTime": "2026-10-10T16:53:52.602Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -465,12 +467,12 @@
                   "workerIndex": 4,
                   "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 93,
+                  "duration": 96,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.388Z",
+                  "startTime": "2026-10-10T16:53:52.603Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -499,12 +501,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 91,
+                  "duration": 100,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.485Z",
+                  "startTime": "2026-10-10T16:53:52.705Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -533,12 +535,12 @@
                   "workerIndex": 4,
                   "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 88,
+                  "duration": 98,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.487Z",
+                  "startTime": "2026-10-10T16:53:52.706Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -567,12 +569,12 @@
                   "workerIndex": 2,
                   "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 92,
+                  "duration": 112,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.581Z",
+                  "startTime": "2026-10-10T16:53:52.752Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -601,12 +603,12 @@
                   "workerIndex": 4,
                   "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 91,
+                  "duration": 96,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.581Z",
+                  "startTime": "2026-10-10T16:53:52.812Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -635,12 +637,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 91,
+                  "duration": 93,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.581Z",
+                  "startTime": "2026-10-10T16:53:52.814Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -666,15 +668,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 3,
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 91,
+                  "duration": 99,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.678Z",
+                  "startTime": "2026-10-10T16:53:52.876Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -703,12 +705,12 @@
                   "workerIndex": 4,
                   "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 89,
+                  "duration": 97,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.678Z",
+                  "startTime": "2026-10-10T16:53:52.913Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -734,15 +736,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 2,
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 94,
+                  "duration": 97,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.681Z",
+                  "startTime": "2026-10-10T16:53:52.913Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -768,15 +770,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 4,
-                  "parallelIndex": 4,
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 90,
+                  "duration": 99,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.774Z",
+                  "startTime": "2026-10-10T16:53:52.984Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -802,15 +804,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 3,
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 93,
+                  "duration": 101,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.775Z",
+                  "startTime": "2026-10-10T16:53:53.017Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -836,15 +838,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 2,
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 89,
+                  "duration": 101,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.785Z",
+                  "startTime": "2026-10-10T16:53:53.017Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -870,15 +872,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 4,
-                  "parallelIndex": 4,
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 87,
+                  "duration": 100,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.871Z",
+                  "startTime": "2026-10-10T16:53:53.088Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -915,12 +917,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 1495,
+                  "duration": 1515,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.880Z",
+                  "startTime": "2026-10-10T16:53:53.127Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -946,15 +948,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 2,
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 1478,
+                  "duration": 1498,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.882Z",
+                  "startTime": "2026-10-10T16:53:53.127Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -980,15 +982,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 4,
-                  "parallelIndex": 4,
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 1469,
+                  "duration": 1462,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:16.969Z",
+                  "startTime": "2026-10-10T16:53:53.198Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1017,12 +1019,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1490,
+                  "duration": 1501,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:17.225Z",
+                  "startTime": "2026-10-10T16:53:53.425Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1051,12 +1053,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1480,
+                  "duration": 1516,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:17.277Z",
+                  "startTime": "2026-10-10T16:53:53.426Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1082,15 +1084,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 2,
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 1491,
+                  "duration": 1501,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:18.367Z",
+                  "startTime": "2026-10-10T16:53:54.632Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1119,12 +1121,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 1459,
+                  "duration": 1486,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:18.380Z",
+                  "startTime": "2026-10-10T16:53:54.648Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1150,15 +1152,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 4,
-                  "parallelIndex": 4,
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 1422,
+                  "duration": 1522,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:18.446Z",
+                  "startTime": "2026-10-10T16:53:54.667Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1187,12 +1189,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1396,
+                  "duration": 1508,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:18.726Z",
+                  "startTime": "2026-10-10T16:53:54.934Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1221,12 +1223,12 @@
                   "workerIndex": 1,
                   "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1389,
+                  "duration": 1485,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:18.764Z",
+                  "startTime": "2026-10-10T16:53:54.949Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1252,15 +1254,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 3,
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 1409,
+                  "duration": 1430,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:19.847Z",
+                  "startTime": "2026-10-10T16:53:56.141Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1286,15 +1288,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 2,
-                  "parallelIndex": 2,
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 1436,
+                  "duration": 1397,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:19.864Z",
+                  "startTime": "2026-10-10T16:53:56.142Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1320,15 +1322,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 4,
-                  "parallelIndex": 4,
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 1414,
+                  "duration": 1418,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:19.877Z",
+                  "startTime": "2026-10-10T16:53:56.196Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1354,15 +1356,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1348,
+                  "duration": 1382,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:20.130Z",
+                  "startTime": "2026-10-10T16:53:56.442Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1388,15 +1390,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1353,
+                  "duration": 1365,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:20.160Z",
+                  "startTime": "2026-10-10T16:53:56.450Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1425,12 +1427,12 @@
                   "workerIndex": 3,
                   "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 1374,
+                  "duration": 1574,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-10T09:48:21.262Z",
+                  "startTime": "2026-10-10T16:53:57.545Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -1441,6 +1443,1166 @@
           "id": "d0d8483d2d074a8cbbc1-6da63b9b04cb510362af",
           "file": "nfr-12-targets.spec.ts",
           "line": 106,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "nfr-14-layout-geometry.spec.ts",
+      "file": "nfr-14-layout-geometry.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "@trace NFR-14 the fixture covers exactly the sampled layout cases of the spec",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 0,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.583Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-e6917671cc985f9e1405",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 45,
+          "column": 1
+        },
+        {
+          "title": "@trace NFR-14 1024-light-default: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 91,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.590Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-9195c78e0697390f7767",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1024-light-eight: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 114,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.628Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-e96368dae21aeef66322",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1024-light-four: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 101,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.690Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-a0f11785c392309615a5",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1024-light-level: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 101,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.752Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-df1a3d8590c364ad4060",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1024-light-win: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 98,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.798Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-8c18be8036b2ae895d82",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1366-light-default: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 111,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.828Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-0776ee0c4737c5924afd",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1366-light-eight: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 118,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.840Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-d3cd916af47eb00f674a",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1440-light-default: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 106,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.862Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-8e9233a1e5efbc658557",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1440-light-eight: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 119,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.904Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-b9f87118c935dc4a1e67",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1440-light-four: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 107,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.950Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-e4f71f4dfb5e37db0f17",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1440-light-level: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 113,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.967Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-e5657ff453ca633c102b",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1440-light-win: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 114,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:57.975Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-09c56bef118bbe5b4a0b",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 320-light-default: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 117,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.039Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-82994b46cd26421b0f79",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 320-light-eight: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 116,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.065Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-7adbb7720cd1d6b785e5",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 320-light-four: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 116,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.090Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-f0aafee024a7ece7abd1",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 320-light-level: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 116,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.097Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-590d48746233d029eccc",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 320-light-win: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 112,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.166Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-99c4638d5f81204a459d",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 375-light-default: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 105,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.190Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-51325968198d4e90f22d",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 375-light-eight: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 107,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.215Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-b0d3555db3eb51dc1cab",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 375-light-four: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 98,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.222Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-50076c9eea2bc714bc45",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 375-light-level: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 111,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.290Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-a6eac5d0167d17aa4977",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 375-light-win: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 108,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.306Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-1c34b289de3a03962cee",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 768-light-default: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 106,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.327Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-fdbb8d22dbc944f784ed",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 768-light-eight: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 109,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.330Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-c9c903f424757164d38b",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 768-light-four: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 116,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.408Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-def52b923bbff1917db3",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 768-light-level: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 111,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.424Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-86e3c20532786ff9805f",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 768-light-win: the main column's boxes match the design within 0.5px",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 111,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.438Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-68f52deb31423bcf8466",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 51,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 768x1024: the open settings panel sits under the header, its right edge on the column's right edge",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 170,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.445Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-9431eb0368833fbf742e",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 95,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1024x768: the open settings panel sits under the header, its right edge on the column's right edge",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 135,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.531Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-e39faf58397f11c748c9",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 95,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1366x650: the open settings panel sits under the header, its right edge on the column's right edge",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 134,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.541Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-922324ccc992dec200dc",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 95,
+          "column": 3
+        },
+        {
+          "title": "@trace NFR-14 1440x900: the open settings panel sits under the header, its right edge on the column's right edge",
+          "ok": true,
+          "tags": [
+            "trace"
+          ],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 138,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T16:53:58.557Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a6fc62c950073578c0ed-ca3607c1813e590aac77",
+          "file": "nfr-14-layout-geometry.spec.ts",
+          "line": 95,
           "column": 3
         }
       ]
@@ -1471,15 +2633,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 90,
+                      "duration": 77,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.308Z",
+                      "startTime": "2026-10-10T16:53:58.630Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1505,15 +2667,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 93,
+                      "duration": 106,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.312Z",
+                      "startTime": "2026-10-10T16:53:58.683Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1547,15 +2709,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 85,
+                      "duration": 89,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.405Z",
+                      "startTime": "2026-10-10T16:53:58.690Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1584,12 +2746,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 89,
+                      "duration": 113,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.414Z",
+                      "startTime": "2026-10-10T16:53:58.705Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1623,15 +2785,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 93,
+                      "duration": 98,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.491Z",
+                      "startTime": "2026-10-10T16:53:58.714Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1657,15 +2819,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 89,
+                      "duration": 108,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.497Z",
+                      "startTime": "2026-10-10T16:53:58.788Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1699,15 +2861,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 92,
+                      "duration": 93,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.510Z",
+                      "startTime": "2026-10-10T16:53:58.797Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1736,12 +2898,12 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 102,
+                      "duration": 108,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.527Z",
+                      "startTime": "2026-10-10T16:53:58.819Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1775,15 +2937,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 99,
+                      "duration": 90,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.594Z",
+                      "startTime": "2026-10-10T16:53:58.824Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1812,12 +2974,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 109,
+                      "duration": 106,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.594Z",
+                      "startTime": "2026-10-10T16:53:58.898Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1851,15 +3013,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 84,
+                      "duration": 91,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.609Z",
+                      "startTime": "2026-10-10T16:53:58.904Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1885,15 +3047,15 @@
                   "projectName": "layout",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 99,
+                      "duration": 112,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:21.637Z",
+                      "startTime": "2026-10-10T16:53:58.921Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1937,14 +3099,14 @@
                   "results": [
                     {
                       "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 540,
+                      "duration": 580,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:22.185Z",
+                      "startTime": "2026-10-10T16:53:59.432Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1970,15 +3132,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
+                      "workerIndex": 7,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 634,
+                      "duration": 671,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:22.173Z",
+                      "startTime": "2026-10-10T16:53:59.578Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2004,15 +3166,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 8,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1533,
+                      "duration": 1589,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:22.174Z",
+                      "startTime": "2026-10-10T16:53:59.580Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2038,15 +3200,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 640,
+                      "duration": 681,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:22.187Z",
+                      "startTime": "2026-10-10T16:53:59.522Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2075,12 +3237,12 @@
                       "workerIndex": 9,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 492,
+                      "duration": 532,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:23.163Z",
+                      "startTime": "2026-10-10T16:53:59.602Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2107,14 +3269,14 @@
                   "results": [
                     {
                       "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 571,
+                      "duration": 619,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:22.912Z",
+                      "startTime": "2026-10-10T16:54:00.139Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2140,15 +3302,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 624,
+                      "duration": 642,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:23.010Z",
+                      "startTime": "2026-10-10T16:54:00.288Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2174,15 +3336,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 649,
+                      "duration": 672,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:23.014Z",
+                      "startTime": "2026-10-10T16:54:00.379Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2208,15 +3370,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1321,
+                      "duration": 1503,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:23.493Z",
+                      "startTime": "2026-10-10T16:54:00.460Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2250,15 +3412,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 477,
+                      "duration": 497,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:23.641Z",
+                      "startTime": "2026-10-10T16:54:00.768Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2284,15 +3446,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 537,
+                      "duration": 561,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:23.670Z",
+                      "startTime": "2026-10-10T16:54:00.938Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2318,15 +3480,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1439,
+                      "duration": 1442,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:23.781Z",
+                      "startTime": "2026-10-10T16:54:01.058Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2352,15 +3514,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 551,
+                      "duration": 570,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:23.904Z",
+                      "startTime": "2026-10-10T16:54:01.273Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2386,15 +3548,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 412,
+                      "duration": 449,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:24.127Z",
+                      "startTime": "2026-10-10T16:54:01.374Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2420,15 +3582,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 569,
+                      "duration": 599,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:24.213Z",
+                      "startTime": "2026-10-10T16:54:01.507Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2454,15 +3616,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 8,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 614,
+                      "duration": 621,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:24.462Z",
+                      "startTime": "2026-10-10T16:54:01.829Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2488,15 +3650,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 648,
+                      "duration": 684,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:24.547Z",
+                      "startTime": "2026-10-10T16:54:01.851Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2522,15 +3684,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1290,
+                      "duration": 1397,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:24.789Z",
+                      "startTime": "2026-10-10T16:54:01.970Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2564,15 +3726,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 478,
+                      "duration": 501,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:24.821Z",
+                      "startTime": "2026-10-10T16:54:02.114Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2598,15 +3760,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 8,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 514,
+                      "duration": 550,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:25.082Z",
+                      "startTime": "2026-10-10T16:54:02.457Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2633,14 +3795,14 @@
                   "results": [
                     {
                       "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 1401,
+                      "duration": 1474,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:25.201Z",
+                      "startTime": "2026-10-10T16:54:02.506Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2666,15 +3828,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 554,
+                      "duration": 591,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:25.226Z",
+                      "startTime": "2026-10-10T16:54:02.541Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2700,15 +3862,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 414,
+                      "duration": 459,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:25.305Z",
+                      "startTime": "2026-10-10T16:54:02.621Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2734,15 +3896,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 8,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 562,
+                      "duration": 585,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:25.602Z",
+                      "startTime": "2026-10-10T16:54:03.013Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2768,15 +3930,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 586,
+                      "duration": 651,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:25.727Z",
+                      "startTime": "2026-10-10T16:54:03.088Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2802,15 +3964,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 630,
+                      "duration": 681,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:25.787Z",
+                      "startTime": "2026-10-10T16:54:03.139Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2836,15 +3998,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1250,
+                      "duration": 2707,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:26.086Z",
+                      "startTime": "2026-10-10T16:54:03.373Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2878,15 +4040,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 8,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 465,
+                      "duration": 788,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:26.172Z",
+                      "startTime": "2026-10-10T16:54:03.607Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2912,15 +4074,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 521,
+                      "duration": 878,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:26.320Z",
+                      "startTime": "2026-10-10T16:54:03.749Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2946,15 +4108,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1412,
+                      "duration": 2192,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:26.423Z",
+                      "startTime": "2026-10-10T16:54:03.828Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2981,14 +4143,14 @@
                   "results": [
                     {
                       "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 546,
+                      "duration": 941,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:26.609Z",
+                      "startTime": "2026-10-10T16:54:03.991Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3014,15 +4176,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 8,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 417,
+                      "duration": 798,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:26.644Z",
+                      "startTime": "2026-10-10T16:54:04.426Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3048,15 +4210,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 589,
+                      "duration": 796,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:26.850Z",
+                      "startTime": "2026-10-10T16:54:04.640Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3082,15 +4244,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 4,
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 612,
+                      "duration": 844,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:27.068Z",
+                      "startTime": "2026-10-10T16:54:04.945Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3116,15 +4278,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 638,
+                      "duration": 1015,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:27.163Z",
+                      "startTime": "2026-10-10T16:54:05.241Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3150,15 +4312,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1325,
+                      "duration": 3313,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:27.341Z",
+                      "startTime": "2026-10-10T16:54:05.450Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3192,15 +4354,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
+                      "workerIndex": 6,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 485,
+                      "duration": 931,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:27.447Z",
+                      "startTime": "2026-10-10T16:54:05.809Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3226,15 +4388,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 530,
+                      "duration": 932,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:27.687Z",
+                      "startTime": "2026-10-10T16:54:06.041Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3260,15 +4422,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
+                      "workerIndex": 7,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 552,
+                      "duration": 946,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:27.809Z",
+                      "startTime": "2026-10-10T16:54:06.088Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3302,15 +4464,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 475,
+                      "duration": 814,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:27.841Z",
+                      "startTime": "2026-10-10T16:54:06.268Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3336,15 +4498,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
+                      "workerIndex": 6,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 523,
+                      "duration": 686,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:27.942Z",
+                      "startTime": "2026-10-10T16:54:06.764Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3370,15 +4532,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 557,
+                      "duration": 718,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:28.223Z",
+                      "startTime": "2026-10-10T16:54:06.989Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3412,15 +4574,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 487,
+                      "duration": 614,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:28.323Z",
+                      "startTime": "2026-10-10T16:54:07.058Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3446,15 +4608,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 537,
+                      "duration": 662,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:28.371Z",
+                      "startTime": "2026-10-10T16:54:07.097Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3480,15 +4642,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
+                      "workerIndex": 6,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 561,
+                      "duration": 682,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:28.473Z",
+                      "startTime": "2026-10-10T16:54:07.468Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3522,15 +4684,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 471,
+                      "duration": 630,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:28.672Z",
+                      "startTime": "2026-10-10T16:54:07.686Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3556,15 +4718,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 531,
+                      "duration": 670,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:28.786Z",
+                      "startTime": "2026-10-10T16:54:07.715Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3590,15 +4752,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 600,
+                      "duration": 756,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:28.816Z",
+                      "startTime": "2026-10-10T16:54:07.779Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3633,14 +4795,14 @@
                   "results": [
                     {
                       "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 156,
+                      "duration": 247,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:28.917Z",
+                      "startTime": "2026-10-10T16:54:08.164Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3674,15 +4836,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 208,
+                      "duration": 273,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.041Z",
+                      "startTime": "2026-10-10T16:54:08.330Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3716,15 +4878,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 206,
+                      "duration": 256,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.079Z",
+                      "startTime": "2026-10-10T16:54:08.396Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3758,15 +4920,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 213,
+                      "duration": 305,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.152Z",
+                      "startTime": "2026-10-10T16:54:08.419Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3800,15 +4962,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 210,
+                      "duration": 322,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.255Z",
+                      "startTime": "2026-10-10T16:54:08.547Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3842,15 +5004,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
+                      "workerIndex": 7,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 478,
+                      "duration": 570,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.291Z",
+                      "startTime": "2026-10-10T16:54:08.612Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3876,15 +5038,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 564,
+                      "duration": 692,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.324Z",
+                      "startTime": "2026-10-10T16:54:08.664Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3918,15 +5080,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 489,
+                      "duration": 583,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.376Z",
+                      "startTime": "2026-10-10T16:54:08.734Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3955,12 +5117,12 @@
                       "workerIndex": 9,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 580,
+                      "duration": 888,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.424Z",
+                      "startTime": "2026-10-10T16:54:08.772Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3994,15 +5156,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 478,
+                      "duration": 814,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.472Z",
+                      "startTime": "2026-10-10T16:54:08.882Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4028,15 +5190,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
+                      "workerIndex": 7,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 591,
+                      "duration": 859,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.775Z",
+                      "startTime": "2026-10-10T16:54:09.193Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4070,15 +5232,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 1,
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 488,
+                      "duration": 798,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.872Z",
+                      "startTime": "2026-10-10T16:54:09.326Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4104,15 +5266,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 577,
+                      "duration": 894,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.893Z",
+                      "startTime": "2026-10-10T16:54:09.366Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4146,15 +5308,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 196,
+                      "duration": 264,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:29.963Z",
+                      "startTime": "2026-10-10T16:54:09.672Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4188,15 +5350,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 96,
+                      "duration": 136,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:30.014Z",
+                      "startTime": "2026-10-10T16:54:09.708Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4222,15 +5384,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 124,
+                      "duration": 161,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:30.118Z",
+                      "startTime": "2026-10-10T16:54:09.852Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4256,15 +5418,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 234,
+                      "duration": 326,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:30.165Z",
+                      "startTime": "2026-10-10T16:54:09.954Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4290,15 +5452,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 111,
+                      "duration": 185,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:30.248Z",
+                      "startTime": "2026-10-10T16:54:10.021Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4332,15 +5494,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 120,
+                      "duration": 170,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-10T09:48:30.368Z",
+                      "startTime": "2026-10-10T16:54:10.064Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -4360,9 +5522,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-10T09:48:12.508Z",
-    "duration": 18017.988,
-    "expected": 116,
+    "startTime": "2026-10-10T16:53:47.659Z",
+    "duration": 22663.805,
+    "expected": 148,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

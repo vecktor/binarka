@@ -1,12 +1,12 @@
 {
   "breakpoint": "768-light-setup-four",
-  "score": 0.7948,
+  "score": 0.791,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 1024,
   "localHeight": 1024,
   "masked": 0,
   "pass": false,
-  "reason": "pixel score 0.7948 below threshold 0.98",
+  "reason": "pixel score 0.791 below threshold 0.98",
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }

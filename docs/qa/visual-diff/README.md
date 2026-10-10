@@ -2,7 +2,7 @@
 
 Phase G2. Written by the session `keen-archimedes-c4cd63` on 2026-10-10; run 1 at 13:20 (UTC+5:30), against `main` `a2879b1` plus the uncommitted `fix-size-option-focus-ring` CSS line. That line changes no reference shot, because no shot has a focused size option.
 
-**Latest: run 5** (2026-10-10 21:15, after G2 block 1, the main column's layout geometry): **FAIL**, **1 of 170** at 0.98 (1440-dark-confirm 0.982, the first shot to pass); table below. Run 4 (16:49, PD-3 adapter): 0 of 170. Every board shot shows the design's fixture board (FR-119, PD-2), and the capture now reproduces the reference's rendering exactly (PD-3: the design build scores 1.0000 on all 170 shots, `docs/qa/g2/harness-calibration.txt`), so what remains is the port itself.
+**Latest: run 6** (2026-10-10 22:25, after fix round 1 of G2 block 1): **FAIL**, **1 of 170** at 0.98 (1440-dark-confirm 0.982); table below. Run 5 (21:15, block 1 as first committed): 1 of 170, with a setup-sheet regression that fix round 1 removed. Run 4 (16:49, PD-3 adapter): 0 of 170. Every board shot shows the design's fixture board (FR-119, PD-2), and the capture now reproduces the reference's rendering exactly (PD-3: the design build scores 1.0000 on all 170 shots, `docs/qa/g2/harness-calibration.txt`), so what remains is the port itself.
 
 **Verdict of run 1: FAIL.** 0 of 170 shots reach 0.98. 168 were captured and scored (lowest 0.1218, highest 0.9666). 2 failed with no state driver (`logo-*`). Full output: [`docs/qa/g2/check-visual-run-1.txt`](../g2/check-visual-run-1.txt) (exit 1, `Result: FAIL, 1 warning(s)`). Each shot's `report.json` is in its own folder. The `diff.png` files are not committed (about 19 MB per run; `.gitignore`), and `npm run check:visual` writes them again.
 
@@ -57,9 +57,35 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` shows the fixture at level 2 («Задачка») and opens the sheet. `setup-marked` marks 8×8 «Головоломка» on the fixture and puts keyboard focus on «Почати». `hint` shows the hint board without its hinted cell and presses «Підказка» once. `settings-light` and `settings-dark` store the manual theme before load.
 6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits. **Closed by PD-2:** it fails when something already answers on the port, and when its own preview exits before answering (`PD-2-proof.txt`, section 3: before, a stale copy on 4174 was scored 0.9125 without a word; after, "something already answers on http://localhost:4174/").
 
+## Run 6 (after block 1, fix round 1): by state
+
+Run 6, 2026-10-10 22:25 to 22:28, after fix round 1 of `update-page-layout-geometry` (review run `wf_1c7326da-0c4`): the setup sheet keeps the browser's normal line height until its own block, the hint's accent applies only to a shown hint, and the column formula reads named variables. **FAIL**, exit 1, **1 of 170 at 0.98** (1440-dark-confirm 0.982). 168 scored 0.1274 to 0.982 (mean 0.8499, telemetry; run 5 0.8458, run 4 0.8214). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-6.txt`](../g2/check-visual-run-6.txt). The per-shot `report.json` files now hold run 6.
+
+Only the setup sheet moves against run 5 (+0.014 on average for each of its four states); it is now above run 4 as well (375-light-setup 0.8087 → 0.7240 → 0.8254, 375-light-setup-marked 0.8039 → 0.7291 → 0.8214, 375-light-setup-four 0.8273 → 0.7846 → 0.8445, 375-light-setup-marked-four 0.8292 → 0.7849 → 0.8439; run 4 → run 5 → run 6). Every other shot is unchanged.
+
+| State | Shots | Lowest | Highest |
+|---|---|---|---|
+| confirm | 10 | 0.1274 | 0.9820 |
+| default | 12 | 0.7610 | 0.9634 |
+| eight | 12 | 0.7641 | 0.9673 |
+| four | 10 | 0.7436 | 0.9782 |
+| hint | 10 | 0.7297 | 0.9449 |
+| level | 10 | 0.7641 | 0.9669 |
+| rules | 12 | 0.1340 | 0.9534 |
+| rules-techniques | 8 | 0.1340 | 0.9534 |
+| settings | 12 | 0.8662 | 0.9778 |
+| settings-dark | 5 | 0.8774 | 0.9791 |
+| settings-focus | 4 | 0.8877 | 0.9753 |
+| settings-light | 5 | 0.8682 | 0.9758 |
+| setup | 12 | 0.7557 | 0.9422 |
+| setup-four | 12 | 0.7817 | 0.9462 |
+| setup-marked | 12 | 0.7555 | 0.9413 |
+| setup-marked-four | 12 | 0.7815 | 0.9452 |
+| win | 10 | 0.7843 | 0.9448 |
+
 ## Run 5 (after block 1, update-page-layout-geometry): by state
 
-Run 5, 2026-10-10 21:15 to 21:18, after the main column's layout geometry was ported (the change `update-page-layout-geometry`; its geometry test passes at all 27 sampled cases, and the per-block tool reads 0 boxes off in 54 shots at the gate's real scale): **FAIL**, exit 1, **1 of 170 at 0.98** (1440-dark-confirm 0.982). 168 scored 0.1274 to 0.982 (mean 0.8458, telemetry; run 4: 0.8214). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-5.txt`](../g2/check-visual-run-5.txt). The per-shot `report.json` files now hold run 5.
+Run 5, 2026-10-10 21:15 to 21:18, after the main column's layout geometry was ported (the change `update-page-layout-geometry`; its geometry test passes at all 27 sampled cases, and the per-block tool reads 0 boxes off in 54 shots at the gate's real scale): **FAIL**, exit 1, **1 of 170 at 0.98** (1440-dark-confirm 0.982). 168 scored 0.1274 to 0.982 (mean 0.8458, telemetry; run 4: 0.8214). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-5.txt`](../g2/check-visual-run-5.txt). 
 
 The last column is the mean change against run 4. Every state moves up except the setup sheet (its own block: the box model and line height also changed the sheet; 375-light-setup dropped most, 0.8087 → 0.7240). The palette still dominates the remaining residual.
 

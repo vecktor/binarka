@@ -1,12 +1,12 @@
 {
   "breakpoint": "1366-dark-setup-four",
-  "score": 0.9127,
+  "score": 0.9119,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 650,
   "localHeight": 650,
   "masked": 0,
   "pass": false,
-  "reason": "pixel score 0.9127 below threshold 0.98",
+  "reason": "pixel score 0.9119 below threshold 0.98",
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }
