@@ -6,6 +6,7 @@ import { findViolations, hint, isSolved } from '../../src/engine/index';
 import type { Cell, Grid, Hint, Puzzle } from '../../src/engine/index';
 import { mountPlayPage } from '../../src/ui/index';
 import type { PlayPageOptions } from '../../src/ui/index';
+import { forgetSessionPreferences } from '../../src/ui/preferences';
 import { VALID_4X4, boardOf, parseBoard, sortedCells } from './board';
 import { removeInjectedStyles } from './css';
 
@@ -309,6 +310,7 @@ function restoreLocalStorage(): void {
 
 /** The preferences leave nothing behind: the order matters (the storage getter comes back before the stores are cleared). */
 function resetPreferenceEnvironment(): void {
+  forgetSessionPreferences(); // the page's session-only values outlive a test, as no page reload happens between tests
   restoreLocalStorage();
   removeMatchMedia();
   localStorage.clear();

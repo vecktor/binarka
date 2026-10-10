@@ -406,15 +406,15 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   });
 
   // Theme (FR-102 to FR-106, FR-113 to FR-118): the choice, the effective theme on <html> and the one theme-color meta.
-  // The choice belongs to the document (one <html data-theme>), so every mount reads and writes the shared documentTheme. A mount whose
-  // control left the document is dropped. Storage is read only when no mount is left: otherwise the page keeps the session's choice,
-  // which lives only here when storing it failed (FR-115).
+  // The choice belongs to the document (one <html data-theme>), so every mount reads and writes the shared documentTheme. readTheme()
+  // gives the session-only choice when storing it failed (FR-115), else the stored one. A mount whose control left the document is
+  // dropped here, at the next mount (lazily), with its system listener.
   for (const mount of themeMounts) {
     if (mount.control.isConnected) continue;
     themeMounts.delete(mount);
     mount.stop();
   }
-  if (themeMounts.size === 0) documentTheme = readTheme();
+  documentTheme = readTheme();
   let systemQuery: MediaQueryList | null = null;
   try {
     if (typeof window.matchMedia === 'function') systemQuery = window.matchMedia('(prefers-color-scheme: dark)');

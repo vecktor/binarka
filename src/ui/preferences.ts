@@ -14,21 +14,32 @@ function isThemeChoice(value: unknown): value is ThemeChoice {
   return (THEME_CHOICES as readonly unknown[]).includes(value);
 }
 
-/** The stored choice; a missing, bad or unreadable value gives 'auto'. Nothing is rewritten or removed. */
+/** Values whose write failed, by key: they hold for the rest of the page session (FR-115) and win over the stored value. A later write
+ * that succeeds removes the entry. */
+const sessionValues = new Map<string, string>();
+
+/** Forget the session-only values, as a page reload does. jsdom cannot reload the page, so the test lifecycle calls this between tests. */
+export function forgetSessionPreferences(): void {
+  sessionValues.clear();
+}
+
+/** The current choice: a session-only value first, else the stored one; a missing, bad or unreadable value gives 'auto'. Nothing is
+ * rewritten or removed. */
 export function readTheme(): ThemeChoice {
   try {
-    const value = window.localStorage.getItem(THEME_KEY);
+    const value = sessionValues.get(THEME_KEY) ?? window.localStorage.getItem(THEME_KEY);
     return isThemeChoice(value) ? value : 'auto';
   } catch {
     return 'auto';
   }
 }
 
-/** Store the choice; a failing storage is ignored (the choice still applies for the session). */
+/** Store the choice; when the storage fails, the choice is kept for the session only (FR-115) and nothing is retried. */
 export function writeTheme(choice: ThemeChoice): void {
   try {
     window.localStorage.setItem(THEME_KEY, choice);
+    sessionValues.delete(THEME_KEY);
   } catch {
-    // FR-115: silent by design
+    sessionValues.set(THEME_KEY, choice); // FR-115: silent by design
   }
 }
