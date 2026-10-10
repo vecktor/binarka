@@ -312,7 +312,7 @@ Spec proxies confirmed as still needed with no design counterpart: the class `th
 - Existing tests that change (C/H), by file: `tests/helpers/css.ts` and `tests/helpers/play-page.ts` (helpers), `e2e/helpers.ts` (helper); `tests/play-page-stylesheet.test.ts` (the five contrast tests l.134 to 171, l.173, l.228, l.281, and the cascade `it` loop l.371 to 390), `tests/play-page-level-stylesheet.test.ts` (l.71 to 87, l.119 to 161), `tests/play-page-wcag.test.ts` (l.69 to 102 plus the in-file `accessibleNames`), `tests/play-page-semantics.test.ts` (l.138, l.169 plus `expectedIdElements`), `tests/play-page-rendering.test.ts` (l.124), `tests/play-page-logo.test.ts` (`logoOf`, l.66, `expectSameLogo`), `tests/play-page-layout.test.ts` (l.372), `e2e/nfr-12-targets.spec.ts` (page controls), `e2e/nfr-13-a11y.spec.ts` (`look`, `expected`, focus test). Everything else that matched the grep is a guard (G) or a false positive.
 - New test files: `tests/play-page-settings.test.ts`, `tests/play-page-theme.test.ts`, `tests/play-page-preferences.test.ts`, `tests/index-html.test.ts`, `tests/play-page-theme-stylesheet.test.ts` (an addition to `tasks.md` 2.2, which says "extend the stylesheet tests"; one new file keeps the theme CSS scenarios together, or they can be appended to `play-page-stylesheet.test.ts`), `e2e/nfr-18-flash.spec.ts`. Plus new `it`s in existing files listed in 7.6.
 
-## 11. Section 1 closed (2026-10-10 about 08:00 UTC+5:30, review-gate finding 4 of run `wf_dfa2a0c3-9a9`)
+## 12. Section 1 closed (2026-10-10 about 08:00 UTC+5:30, review-gate finding 4 of run `wf_dfa2a0c3-9a9`)
 
 Re-run by the orchestrator after the archive of `update-setup-sheet-start` (`c0ce96f`):
 

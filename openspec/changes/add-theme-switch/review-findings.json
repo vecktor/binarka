@@ -1,0 +1,53 @@
+{
+  "generatedBy": "review-gate",
+  "persistedBy": "orchestrator by hand from both run results (the workflow wrote only a per-run summary, overwritten by run 2)",
+  "change": "add-theme-switch",
+  "clean": false,
+  "verdict": "STOPPED, CONFIRMED CODE DEFECT IN THE CONFIRMING RUN: run 2 confirms that the fix of run-1 finding 3 (a module-level documentTheme shared by every mount) leaves a second mount's aria-checked stale and drops a press on that option, and a later mount resets a session-only choice when setItem throws (FR-103, FR-115). The verifiers rate the real-user reach low (src/main.ts mounts once), but it is a code defect, so the session stops by autonomy-log row 119. Not archived.",
+  "runs": [
+    {
+      "runId": "wf_dfa2a0c3-9a9",
+      "kind": "first run",
+      "baseRef": "c0812f2",
+      "headRef": "8add6de",
+      "confirmed": 4,
+      "contested": 0,
+      "rejected": 5,
+      "confirmedTitles": [
+        "THEME_CHOICES is never used in src/, and the list of three theme values is written out three times (minor)",
+        "Dark-theme backdrop rules for the rules panel, setup sheet, settings panel and confirm dialog have no requirement behind them (minor)",
+        "Two mounts share one <html data-theme>, and a stale mount's system listener can override the other mount's manual choice (minor)",
+        "Section 1 tasks (1.1 to 1.4) are unticked while sections 2 to 4 are ticked, and task 1.2's artifact exists (minor)"
+      ],
+      "contestedTitles": [],
+      "rejectedTitles": [
+        "Theme state is per mount but data-theme and the meta are document-wide, and the system-change listeners are never removed (minor)",
+        "At 320 px the three no-wrap theme options may not fit in the bottom sheet (minor)",
+        "Coverage summary: 127 scenarios: 127 implemented, 0 partial, 0 missing, 0 contradicted (minor)",
+        "Theme options override the button focus ring with a negative outline-offset, which the spec does not cover (minor)",
+        "New small-phone header media query changes existing header layout without a requirement (minor)"
+      ]
+    },
+    {
+      "runId": "wf_6e154572-16a",
+      "kind": "confirming run after one fix round (04443ed, 5c6281b)",
+      "baseRef": "c0812f2",
+      "headRef": "5c6281b",
+      "confirmed": 3,
+      "contested": 2,
+      "rejected": 1,
+      "confirmedTitles": [
+        "Section 1 evidence is under a duplicate '## 11.' heading in changed-tests.md (minor)",
+        "Fix for finding 3 shares the theme choice across mounts but not each mount's aria-checked: the other mount shows a stale radio and its press does nothing (regression) (major)",
+        "Battery tasks 4.1 to 4.6 are ticked on green-run evidence taken before the fix round changed src/ (minor)"
+      ],
+      "contestedTitles": [
+        "Shared documentTheme leaves other mounts' theme options showing a stale aria-checked, and a press on the shown option there does nothing (minor)",
+        "Theme value list is still duplicated; `satisfies` checks each value but not that all three are present (minor)"
+      ],
+      "rejectedTitles": [
+        "Finding 1 only partly fixed: the theme value list still exists three times, and nothing checks the lists are complete against each other (minor)"
+      ]
+    }
+  ]
+}

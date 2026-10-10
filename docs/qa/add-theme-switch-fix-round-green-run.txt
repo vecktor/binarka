@@ -1,0 +1,23 @@
+Battery of add-theme-switch at 5c6281b (src/ and index.html unchanged since), 2026-10-10 08:05 +0530
+
+== npm run lint
+exit 0
+== npx tsc --noEmit -p .
+exit 0
+== npm run test:run
+ Test Files  63 passed (63)
+      Tests  1376 passed (1376)
+== npm run build
+exit 0
+== npx openspec validate --all --strict
+Totals: 4 passed, 0 failed (4 items)
+== node scripts/check-eval-ratchet.mjs
+Result: PASS
+== node scripts/check-traceability.mjs
+traceability: 113 MVP FRs checked — 0 failure(s), 123 warning(s)
+== npm run test:e2e
+  71 passed (14.8s)
+== npm run check:a11y
+  54 passed (11.6s)
+
+Sampled coverage (fixed viewports), never continuum. The confirming review's code defect (stale aria-checked on a second mount) is NOT covered by any test here: see review-findings.json.

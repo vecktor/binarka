@@ -1,0 +1,211 @@
+// Real-browser smoke test for add-theme-switch, task 6.1. Chromium (Playwright), the built page via vite preview.
+import { chromium } from 'playwright';
+const URL = 'http://localhost:4319/';
+const OUT = process.argv[2];
+const log = [];
+let fails = 0;
+const ok = (cond, msg) => { log.push(`${cond ? 'PASS' : 'FAIL'} ${msg}`); if (!cond) fails++; };
+
+const T = {
+  gear: '[data-action="settings"]', panel: '[data-section="settings"]', close: '[data-action="settings-close"]',
+  opt: (v) => `[data-theme-option="${v}"]`, summary: '[data-action="setup"]', sheet: '[data-section="setup"]',
+  rules: '[data-action="rules"]', size: (i) => `[data-control="size"] [role="radio"] >> nth=${i}`,
+};
+
+async function state(page) {
+  return page.evaluate(() => {
+    const panel = document.querySelector('[data-section="settings"]');
+    const a = document.activeElement;
+    let stored = null;
+    try { stored = localStorage.getItem('binarka.theme'); } catch {}
+    return {
+      theme: document.documentElement.getAttribute('data-theme'),
+      scheme: getComputedStyle(document.documentElement).colorScheme,
+      bg: getComputedStyle(document.body).backgroundColor,
+      meta: document.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
+      open: panel.matches(':popover-open'),
+      sheetOpen: document.querySelector('[data-section="setup"]').matches(':popover-open'),
+      stored,
+      checked: [...document.querySelectorAll('[data-theme-option]')].find((b) => b.getAttribute('aria-checked') === 'true')?.getAttribute('data-theme-option'),
+      focus: a?.getAttribute('data-theme-option') ? 'option:' + a.getAttribute('data-theme-option') : a?.getAttribute('data-action') || (a?.hasAttribute('data-cell') ? 'cell' : a?.tagName),
+      board: [...document.querySelectorAll('[data-board] [data-cell]')].map((c) => c.textContent).join('|'),
+    };
+  });
+}
+
+async function ring(page) {
+  return page.evaluate(() => {
+    const cs = getComputedStyle(document.activeElement);
+    return { style: cs.outlineStyle, width: parseFloat(cs.outlineWidth) };
+  });
+}
+
+async function run(width, height, tag) {
+  log.push(`\n## ${width}x${height}`);
+  const browser = await chromium.launch();
+  const ctx = await browser.newContext({ viewport: { width, height }, colorScheme: 'light', reducedMotion: 'reduce' });
+  const page = await ctx.newPage();
+  const shot = (name) => page.screenshot({ path: `${OUT}/${tag}-${name}.png` });
+  const reload = async () => { await page.reload(); await page.locator('[data-board] [data-cell]').first().waitFor(); };
+  // (a) clear site storage
+  await page.goto(URL);
+  await page.evaluate(() => localStorage.clear());
+  await reload();
+  let s = await state(page);
+  ok(s.stored === null && s.theme === 'light', `(a) storage clear, light system: data-theme ${s.theme}`);
+  // (b) header order and the panel
+  const order = await page.evaluate(() => [...document.querySelector('header').children].map((c) => c.tagName === 'H1' ? 'h1' : c.getAttribute('data-action')));
+  ok(order.join(',') === 'h1,settings,rules', `(b) header order title, gear, «Правила»: ${order.join(',')}`);
+  await shot('mount-light');
+  await page.click(T.gear);
+  s = await state(page);
+  const texts = await page.evaluate(() => [...document.querySelector('[data-section="settings"]').querySelectorAll('p, button')].map((e) => e.textContent.trim()));
+  ok(s.open, '(b) the gear opens the panel');
+  ok(texts.join('|') === 'Тема|Світла|Темна|Як у системі|Закрити', `(b) panel content: ${texts.join('|')}`);
+  ok(s.checked === 'auto', `(b) «Як у системі» is checked: ${s.checked}`);
+  const box = await page.locator(T.panel).boundingBox();
+  if (width < 768) ok(Math.abs(box.y + box.height - height) <= 1 && box.width >= width - 1, `(b) bottom sheet on the phone: ${JSON.stringify(box)}`);
+  await shot('panel-light');
+  // (c) press «Темна»
+  const before = s.board;
+  await page.click(T.opt('dark'));
+  s = await state(page);
+  ok(s.theme === 'dark' && s.scheme === 'dark' && s.bg === 'rgb(26, 23, 20)', `(c) dark at once: ${s.theme}, ${s.scheme}, ${s.bg}`);
+  ok(s.focus === 'option:dark' && s.open, `(c) focus stays on «Темна», panel open: ${s.focus}`);
+  ok(s.board === before, '(c) the board is unchanged');
+  ok(s.stored === 'dark' && s.meta === '#1a1714', `(c) stored ${s.stored}, meta ${s.meta}`);
+  await shot('panel-dark');
+  // (d) reload: dark from the first paint, also with the bundle blocked
+  await reload();
+  s = await state(page);
+  ok(s.theme === 'dark' && s.checked === 'dark', `(d) reload: ${s.theme}, checked ${s.checked}`);
+  await page.route('**/assets/*.js', (r) => r.abort());
+  await page.reload();
+  await page.waitForLoadState('load');
+  s = await page.evaluate(() => ({ theme: document.documentElement.getAttribute('data-theme'), bg: getComputedStyle(document.body).backgroundColor, cells: document.querySelectorAll('[data-cell]').length }));
+  ok(s.cells === 0 && s.theme === 'dark' && s.bg === 'rgb(26, 23, 20)', `(d) bundle blocked: no board, data-theme ${s.theme}, background ${s.bg}`);
+  await shot('bundle-blocked-dark');
+  await page.unroute('**/assets/*.js');
+  await reload();
+  // (e) «Світла», reload
+  await page.click(T.gear); await page.click(T.opt('light')); await reload();
+  s = await state(page);
+  ok(s.theme === 'light' && s.stored === 'light', `(e) light after reload: ${s.theme}, stored ${s.stored}`);
+  // (f) auto follows the system live
+  await page.click(T.gear); await page.click(T.opt('auto'));
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.waitForTimeout(50);
+  s = await state(page);
+  ok(s.theme === 'dark' && s.meta === '#1a1714', `(f) system dark, no reload: ${s.theme}, meta ${s.meta}`);
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.waitForTimeout(50);
+  s = await state(page);
+  ok(s.theme === 'light', `(f) system back to light: ${s.theme}`);
+  // (g) a bad value is auto and not rewritten
+  await page.evaluate(() => localStorage.setItem('binarka.theme', 'Dark'));
+  await reload();
+  s = await state(page);
+  ok(s.theme === 'light' && s.stored === 'Dark', `(g) «Dark» stored: ${s.theme}, still stored ${s.stored}`);
+  await page.click(T.gear);
+  s = await state(page);
+  ok(s.checked === 'auto', `(g) auto checked: ${s.checked}`);
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => localStorage.clear());
+  await reload();
+  // (h) the gear closes the sheet and discards the marked choice
+  await page.click(T.summary);
+  const sizes = page.locator('[data-control="size"] [role="radio"]');
+  await sizes.nth(2).click();
+  const marked = await sizes.nth(2).getAttribute('aria-checked');
+  await page.click(T.gear);
+  s = await state(page);
+  ok(marked === 'true' && !s.sheetOpen && s.open, `(h) marked 8×8, gear pressed: sheet ${s.sheetOpen ? 'open' : 'closed'}, panel ${s.open ? 'open' : 'closed'}`);
+  await page.keyboard.press('Escape');
+  await page.click(T.summary);
+  const after = await sizes.nth(2).getAttribute('aria-checked');
+  ok(after === 'false', `(h) the marked choice is gone when the sheet reopens: 8×8 aria-checked ${after}`);
+  await page.keyboard.press('Escape');
+  // (i) Escape, a click outside, «Закрити»
+  await page.click(T.gear); await page.keyboard.press('Escape');
+  ok(!(await state(page)).open, '(i) Escape closes the panel');
+  await page.click(T.gear); await page.mouse.click(5, Math.round(height / 2));
+  ok(!(await state(page)).open, '(i) a click outside closes the panel');
+  await page.click(T.gear); await page.click(T.close);
+  ok(!(await state(page)).open, '(i) «Закрити» closes the panel');
+  // (j) Tab order and focus rings in both themes
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate((t) => localStorage.setItem('binarka.theme', t), theme);
+    await reload();
+    await page.locator('body').focus();
+    await page.keyboard.press('Tab');
+    const first = (await state(page)).focus; const r1 = await ring(page);
+    await page.keyboard.press('Tab');
+    const second = (await state(page)).focus; const r2 = await ring(page);
+    ok(first === 'settings' && second === 'rules', `(j) ${theme}: Tab stops gear then «Правила»: ${first}, ${second}`);
+    ok(r1.style === 'solid' && r1.width >= 2 && r2.style === 'solid' && r2.width >= 2, `(j) ${theme}: focus rings ${JSON.stringify([r1, r2])}`);
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Tab');
+    const inPanel = (await state(page)).focus; const r3 = await ring(page);
+    ok(inPanel.startsWith('option:') && r3.style === 'solid' && r3.width >= 2, `(j) ${theme}: Tab into the panel reaches a theme option with a ring: ${inPanel} ${JSON.stringify(r3)}`);
+    await shot(`focus-option-${theme}`);
+    await page.keyboard.press('Escape');
+  }
+  // (k) at desktop: the panel under the header at the right
+  if (width >= 768) {
+    await page.click(T.gear);
+    const p = await page.locator(T.panel).boundingBox();
+    const h = await page.locator('header').boundingBox();
+    ok(p.y >= h.y + h.height - 2 && Math.abs(p.x + p.width - (h.x + h.width)) <= 2, `(k) panel under the header at the right: panel ${JSON.stringify(p)}, header ${JSON.stringify(h)}`);
+    await shot('panel-dark-desktop');
+    await page.keyboard.press('Escape');
+  }
+  // (k2) light stored on a dark system; a theme press with the sheet open first; a cell click outside keeps the choice
+  await page.evaluate(() => localStorage.setItem('binarka.theme', 'light'));
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await reload();
+  s = await state(page);
+  ok(s.theme === 'light' && s.bg === 'rgb(249, 250, 251)', `(k2) light stored on a dark system: ${s.theme}, ${s.bg}`);
+  await page.click(T.summary);
+  await page.click(T.gear);
+  await page.click(T.opt('dark'));
+  s = await state(page);
+  ok(s.theme === 'dark' && s.open && !s.sheetOpen, `(k2) press with the sheet opened first: ${s.theme}, panel ${s.open}, sheet ${s.sheetOpen}`);
+  const cell = page.locator('[data-board] [data-cell]').last();
+  const cb = await cell.boundingBox();
+  await page.mouse.click(cb.x + cb.width / 2, cb.y + cb.height / 2);
+  s = await state(page);
+  ok(!s.open && s.theme === 'dark' && s.stored === 'dark', `(k2) a click outside closes the panel, the choice kept: open ${s.open}, ${s.theme}, stored ${s.stored}`);
+  await page.emulateMedia({ colorScheme: 'light' });
+  await browser.close();
+}
+
+async function observe320() {
+  log.push('\n## 320x640 (observe, not verified)');
+  const browser = await chromium.launch();
+  const ctx = await browser.newContext({ viewport: { width: 320, height: 640 }, colorScheme: 'light' });
+  const page = await ctx.newPage();
+  await page.goto(URL);
+  await page.locator('[data-board] [data-cell]').first().waitFor();
+  const header = await page.evaluate(() => {
+    const h = document.querySelector('header');
+    const r = (e) => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)]; };
+    return { header: r(h), scrollW: document.documentElement.scrollWidth, children: [...h.children].map(r) };
+  });
+  log.push(`OBSERVED header at 320 light: ${JSON.stringify(header)}`);
+  await page.screenshot({ path: `${OUT}/320-header-light.png` });
+  await page.evaluate(() => localStorage.setItem('binarka.theme', 'dark'));
+  await page.reload(); await page.locator('[data-board] [data-cell]').first().waitFor();
+  await page.screenshot({ path: `${OUT}/320-header-dark.png` });
+  await page.click(T.gear);
+  await page.screenshot({ path: `${OUT}/320-panel-dark.png` });
+  await browser.close();
+}
+
+await run(375, 812, '375');
+await run(1280, 800, '1280');
+await observe320();
+const pass = log.filter((l) => l.startsWith('PASS')).length;
+log.push(`\n${pass} PASS, ${fails} FAIL`);
+console.log(log.join('\n'));
+process.exit(fails ? 1 : 0);
