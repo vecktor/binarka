@@ -1,0 +1,33 @@
+# update-segmented-focus-ring-wording battery, 2026-10-10 14:03 +0530 (no CSS change, so no check:a11y)
+## npm run lint
+
+> binarka@0.1.0 lint
+> eslint .
+
+exit: 0
+## npm run test:run
+   Start at  14:04:26
+   Duration  78.77s (tests 71%, environment 19%, import 7%, transform 2%)
+
+    Isolate  67 workers spawned · ~1.40s startup each (spawn + environment, per file)
+             at least ~9.01s faster with isolate: false — reuses workers across files instead of one per file
+
+exit: 0
+## npm run build
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-Ci1IY2x_.css  12.28 kB │ gzip:  2.61 kB
+dist/assets/index-B5a7KqxK.js   31.77 kB │ gzip: 11.68 kB
+
+exit: 0
+## npx openspec validate --all --strict
+- Validating...
+Totals: 3 passed, 0 failed (3 items)
+exit: 0
+## node scripts/check-eval-ratchet.mjs
+Scope: 6 eval case(s)
+OK    hint-clarity 92.7 (baseline 92.7)
+OK    hint-clarity-en 90 (baseline 90)
+Result: PASS
+exit: 0

@@ -1,0 +1,51 @@
+{
+  "generatedBy": "review-gate",
+  "persistedBy": "orchestrator by hand: the run returned the results in its task output (reviewEvidence not written to the change folder); counts and titles copied from run wf_a93ad2d1-bf4",
+  "change": "fix-size-option-focus-ring",
+  "clean": false,
+  "runs": [
+    {
+      "runId": "wf_a93ad2d1-bf4",
+      "kind": "first run (requested by the user, autonomy-log row 140)",
+      "baseRef": "d3d3f07",
+      "headRef": "7ac61df",
+      "confirmed": 7,
+      "contested": 8,
+      "rejected": 2,
+      "confirmedTitles": [
+        "Inset ring still spills 2px outside the option; spec says \"inside the option\" but only offset is pinned (minor, security)",
+        "Spec says the ring is drawn 'inside the option' and 'does not run over the gap', but outline-offset -1px with a 3px outline puts 2px of the ring outside the option (major, spec-compliance)",
+        "The mutation run skips the !important clause and the theme selector (minor, spec-compliance)",
+        "The browser shots only show a focused checked size option, and on the size control the focus ring is the same colour as the checked frame (minor, spec-compliance)",
+        "Task 4.1 is ticked but docs/current-state.md does not change in the slice's commits (minor, spec-compliance)",
+        "Ring is not inside the option: 2 of its 3 CSS px sit outside the button, over the gap and the card padding, contrary to the ADDED requirement text (minor, visual)",
+        "On the checked option the ring merges with the same-colour selection frame and reads as a thicker border, not as a separate focus ring (minor, visual)"
+      ],
+      "contestedTitles": [
+        "Requirement says the ring is drawn inside the option and off the gap, but a 3px outline at offset -1px still sits 2px outside the option (minor, correctness)",
+        "Browser shots only show a focused option that is also checked, where the ring is the same colour as the checked border (minor, correctness)",
+        "Mutation run does not cover the theme rule or the `!important` assertion (minor, correctness)",
+        "Red and green commits are 6 seconds apart and post-date the logged runs, so test-first order is not evidenced (minor, security)",
+        "Security checklist areas: no findings in scope (minor, security)",
+        "The requirement says the ring keeps the style, width and colour of button:focus-visible, but no scenario or unit test checks the segmented rules do not override them (minor, spec-compliance)",
+        "Coverage summary: 2 scenarios: 2 implemented, 0 partial, 0 missing, 0 contradicted. The cascade is correct and test-first order is backed by evidence (minor, spec-compliance)",
+        "The stills cover only focus on the checked option; an unchecked option focused next to a checked neighbour, a reachable state, is not captured (minor, visual)"
+      ],
+      "rejectedTitles": [
+        "The same rule and comment are now repeated three times instead of using one grouped selector (minor, correctness)",
+        "Focus ring on the checked size option is the same colour as its selected border (minor, security)"
+      ]
+    }
+  ],
+  "codeDefects": 0,
+  "dispositions": {
+    "C1+C2+C6 (geometry vs wording: 2px of the ring outside the option)": "FIXED by change update-segmented-focus-ring-wording: the requirement now states the real geometry (1px inside to 2px outside the option, 1px clear of the neighbour and the frame); measured in docs/qa/fix-size-option-focus-ring/ring-geometry.txt (clearToNeighbour 1, clearToFrame 1 at 375 and 1366, light and dark). A -3px ring was not chosen: it would change the settings-focus shots of the pixel reference review-set-13.",
+    "C3 + contested (mutation run skips !important and the theme rule)": "FIXED: docs/qa/fix-size-option-focus-ring/mutation-run-2.txt kills important-size, delete-theme, colour-size and width-language.",
+    "C4 + contested x2 (shots only show a checked focused option)": "FIXED: size-focus-unchecked-{375,1366}-{light,dark}.png (4x4 focused, 6x6 checked) with ring-geometry.txt.",
+    "C7 (ring merges with the same-colour checked frame)": "DEFERRED to the user: this is the open design item of autonomy-log row 135 ('the checked option's frame shares the focus colour; maybe adjust the border colour later'); the slice did not change it.",
+    "C5 (task 4.1 ticked before current-state changed)": "ACKNOWLEDGED, process note: the current-state update landed in the following handoff commit ed03a83, in the same session.",
+    "contested (red and green commits 6 s apart)": "ACKNOWLEDGED: GPG was locked from about 13:12 to 13:56, so both commits were made after the work. Test-first order rests on the timed runs: red-run.txt 13:15 (before the fix), mutation-run.txt 13:16, green-run.txt after; the commits only record it.",
+    "contested (no check that the segmented rules keep style, width and colour)": "FIXED: new scenario «The segmented rules change only the offset» and its test; killed mutants colour-size and width-language.",
+    "contested (coverage summary; security: no findings)": "No action."
+  }
+}

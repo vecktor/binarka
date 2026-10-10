@@ -1,0 +1,16 @@
+# fix-size-option-focus-ring mutation run 2 (review-gate follow-up, update-segmented-focus-ring-wording), 2026-10-10 14:02 +0530; each mutation applied to src/ui/style.css, the test file run, the file restored
+## mutation important-size (diff lines: 2)
+AssertionError: .size-control button:focus-visible outline-offset is not !important: expected [ Array(1) ] to deeply equal []
+AssertionError: expected ':root {\n  color-scheme: light;\n  --…' not to match /!\s*important/i
+      Tests  2 failed | 32 passed (34)
+## mutation delete-theme (diff lines: 3)
+AssertionError: a rule for .theme-control button:focus-visible: expected 0 to be greater than 0
+      Tests  1 failed | 33 passed (34)
+## mutation colour-size (diff lines: 1)
+AssertionError: .size-control button:focus-visible declares no outline-color: expected [ 'outline-offset', 'outline-color' ] to not include 'outline-color'
+      Tests  1 failed | 33 passed (34)
+## mutation width-language (diff lines: 1)
+AssertionError: .language-control button:focus-visible declares no outline-width: expected [ 'outline-offset', 'outline-width' ] to not include 'outline-width'
+      Tests  1 failed | 33 passed (34)
+## restored
+      Tests  34 passed (34)

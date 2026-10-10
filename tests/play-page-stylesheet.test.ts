@@ -247,6 +247,19 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
     }
   });
 
+  // update-segmented-focus-ring-wording («The segmented rules change only the offset»): the ring keeps the style, width and colour of
+  // button:focus-visible, so the three segmented rules set nothing but the offset.
+  it('@trace FR-65 The segmented rules change only the offset: no outline, outline-style, outline-width or outline-color', () => {
+    const parsed = readStyles();
+    for (const control of ['.size-control', '.theme-control', '.language-control']) {
+      const selector = `${control} button:focus-visible`;
+      const declared = rulesWithSelector(parsed, selector).flatMap((r) => r.declarations.map((d) => d.property));
+      for (const property of ['outline', 'outline-style', 'outline-width', 'outline-color']) {
+        expect(declared, `${selector} declares no ${property}`).not.toContain(property);
+      }
+    }
+  });
+
   // update-setup-sheet-start, review-gate second fix round (finding 1, FR-65): the sticky footer strip hides a keyboard-focused
   // level option when the sheet scrolls, unless the scroll container reserves the strip in its scroll padding.
   it('@trace FR-65 The open sheet reserves the footer in its scroll padding: scroll-padding-bottom of at least calc(2.75rem + 48px) (92px)', () => {

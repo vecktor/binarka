@@ -28,7 +28,7 @@ Result: PASS, 17 warning(s)
 | 2026-10-09-fix-action-button-targets | **unclean** | 5 | yes | ui |
 | 2026-10-10-add-english-version | **unclean** | 9 | yes | engine, ui |
 | 2026-10-10-add-theme-switch | **unclean** | 18 | yes | ui |
-| 2026-10-10-fix-size-option-focus-ring | **missing** | 3 | **no** | ui |
+| 2026-10-10-fix-size-option-focus-ring | **unclean** | 3 | **no** | ui |
 | 2026-10-10-update-setup-sheet-start | **unclean** | 22 | yes | ui |
 
 ## Cross-slice module overlap
@@ -54,7 +54,7 @@ None.
 - **review-evidence**: 2026-10-09-fix-action-button-targets: review-findings.json is unclean (review must have run clean before archive)
 - **review-evidence**: 2026-10-10-add-english-version: review-findings.json is unclean (review must have run clean before archive)
 - **review-evidence**: 2026-10-10-add-theme-switch: review-findings.json is unclean (review must have run clean before archive)
-- **review-evidence**: 2026-10-10-fix-size-option-focus-ring: review-findings.json is missing (review must have run clean before archive)
+- **review-evidence**: 2026-10-10-fix-size-option-focus-ring: review-findings.json is unclean (review must have run clean before archive)
 - **process**: 2026-10-10-fix-size-option-focus-ring: archived change is missing design.md and/or tasks.md
 - **review-evidence**: 2026-10-10-update-setup-sheet-start: review-findings.json is unclean (review must have run clean before archive)
 - **in-scope**: src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift

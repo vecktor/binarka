@@ -166,7 +166,7 @@
     },
     {
       "slice": "2026-10-10-fix-size-option-focus-ring",
-      "reviewEvidence": "missing",
+      "reviewEvidence": "unclean",
       "trailerCommits": 3,
       "libDomains": [
         "ui"
@@ -251,7 +251,7 @@
     },
     {
       "check": "review-evidence",
-      "msg": "2026-10-10-fix-size-option-focus-ring: review-findings.json is missing (review must have run clean before archive)"
+      "msg": "2026-10-10-fix-size-option-focus-ring: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "process",

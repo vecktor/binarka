@@ -1,0 +1,5 @@
+# Ring geometry of a focused UNCHECKED size option (4x4) next to the checked one (6x6), 2026-10-10T08:33:01.955Z, dev server of this worktree, Chromium, device scale 2
+375x812 light {"fv":true,"checked4":"false","checked6":"true","offset":"-1px","width":"3px","color":"rgb(29, 78, 216)","ringOuterRight":132,"neighbourLeft":133,"clearToNeighbour":1,"ringOuterLeft":19,"cardInnerLeft":18,"clearToFrame":1}
+375x812 dark {"fv":true,"checked4":"false","checked6":"true","offset":"-1px","width":"3px","color":"rgb(243, 154, 91)","ringOuterRight":132,"neighbourLeft":133,"clearToNeighbour":1,"ringOuterLeft":19,"cardInnerLeft":18,"clearToFrame":1}
+1366x650 light {"fv":true,"checked4":"false","checked6":"true","offset":"-1px","width":"3px","color":"rgb(29, 78, 216)","ringOuterRight":625.65625,"neighbourLeft":626.65625,"clearToNeighbour":1,"ringOuterLeft":509,"cardInnerLeft":508,"clearToFrame":1}
+1366x650 dark {"fv":true,"checked4":"false","checked6":"true","offset":"-1px","width":"3px","color":"rgb(243, 154, 91)","ringOuterRight":625.65625,"neighbourLeft":626.65625,"clearToNeighbour":1,"ringOuterLeft":509,"cardInnerLeft":508,"clearToFrame":1}
