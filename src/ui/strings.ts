@@ -1,5 +1,7 @@
 // Every Ukrainian page text lives here (NFR-5). Other src/ui modules import these and keep no Cyrillic literal.
 
+import type { ThemeChoice } from './preferences';
+
 export const TITLE = 'Бінарка';
 
 export const BUTTONS = {
@@ -88,4 +90,4 @@ export const THEME_OPTIONS = [
   { value: 'light', name: 'Світла' },
   { value: 'dark', name: 'Темна' },
   { value: 'auto', name: 'Як у системі' },
-] as const;
+] as const satisfies readonly { value: ThemeChoice; name: string }[];

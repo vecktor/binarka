@@ -1,4 +1,4 @@
-Review-gate fix round of add-theme-switch (run wf_dfa2a0c3-9a9: 4 confirmed, all minor), red tests, 2026-10-10 about 08:00 UTC+5:30.
+Review-gate fix round of add-theme-switch (run wf_dfa2a0c3-9a9: 4 confirmed, all minor), red tests, 2026-10-10 about 07:58 UTC+5:30.
 
 Two tests added first:
  - tests/play-page-theme.test.ts «A manual choice ignores the system (two mounts share one document)» (finding 3).

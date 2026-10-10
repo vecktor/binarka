@@ -11,7 +11,7 @@ export const THEME_COLOR_DARK = '#1a1714';
 export const THEME_CHOICES: readonly ThemeChoice[] = ['light', 'dark', 'auto'];
 
 function isThemeChoice(value: unknown): value is ThemeChoice {
-  return value === 'light' || value === 'dark' || value === 'auto';
+  return (THEME_CHOICES as readonly unknown[]).includes(value);
 }
 
 /** The stored choice; a missing, bad or unreadable value gives 'auto'. Nothing is rewritten or removed. */

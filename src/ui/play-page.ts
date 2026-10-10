@@ -7,6 +7,9 @@ import type { ThemeChoice } from './preferences';
 import { defaultSeedSource } from './seed';
 import { BUTTONS, CONFIRM, IDLE, LEVELS, LEVEL_GROUP, LEVEL_REASON_4X4, RULES, SETTINGS, SETUP, SIZE_GROUP, TECHNIQUES, THEME_OPTIONS, TITLE, WIN, cellLabel, sizeLabel, summaryText } from './strings';
 
+/** The theme choice of the document: shared by every mount, because they all write the one <html data-theme> and meta. */
+let documentTheme: ThemeChoice = 'auto';
+
 export interface PlayPageOptions {
   seedSource?: () => number;
   generate?: (size: number, seed: number, level: number) => Puzzle;
@@ -400,7 +403,8 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   });
 
   // Theme (FR-102 to FR-106, FR-113 to FR-118): the choice, the effective theme on <html> and the one theme-color meta.
-  let theme: ThemeChoice = readTheme();
+  // The choice belongs to the document (one <html data-theme>), so every mount reads and writes the shared documentTheme.
+  documentTheme = readTheme();
   let systemQuery: MediaQueryList | null = null;
   try {
     if (typeof window.matchMedia === 'function') systemQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -417,23 +421,23 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   }
 
   function applyTheme(): void {
-    const effective = theme === 'auto' ? (systemIsDark() ? 'dark' : 'light') : theme;
+    const effective = documentTheme === 'auto' ? (systemIsDark() ? 'dark' : 'light') : documentTheme;
     document.documentElement.setAttribute('data-theme', effective);
     document.head.querySelector('meta[name="theme-color"]')?.setAttribute('content', effective === 'dark' ? THEME_COLOR_DARK : THEME_COLOR_LIGHT);
-    for (const [value, button] of themeButtons) button.setAttribute('aria-checked', value === theme ? 'true' : 'false');
+    for (const [value, button] of themeButtons) button.setAttribute('aria-checked', value === documentTheme ? 'true' : 'false');
   }
 
   for (const [value, button] of themeButtons) {
     button.addEventListener('click', () => {
-      if (value === theme) return; // already chosen: nothing is written (A-48)
-      theme = value;
+      if (value === documentTheme) return; // already chosen: nothing is written (A-48)
+      documentTheme = value;
       writeTheme(value);
       applyTheme();
     });
   }
   try {
     systemQuery?.addEventListener('change', () => {
-      if (theme === 'auto') applyTheme();
+      if (documentTheme === 'auto') applyTheme();
     });
   } catch {
     // no listener support: the page follows the system at mount only
