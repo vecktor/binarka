@@ -1,0 +1,50 @@
+# PD-3 red to green proof, 2026-10-10 16:49 +0530
+
+## 1. The defect, measured on the design build (docs/qa/g2/harness-calibration.txt, script docs/qa/g2/calibrate-harness.mjs)
+# The design build captured with the adapter's old method (emulated device scale) against its own frozen reference:
+emulated: 170 scored, min 0.9765, below 0.98: 5, exactly 1: 0
+# The same 170 shots with the PD-3 method (real device scale by launch flags, viewport emulation off):
+flag: 170 scored, min 1.0000, below 0.98: 0, exactly 1: 170
+# Shots the old method could not pass even with a perfect port (emulated < 0.98):
+320-dark-eight                   emulated 0.9798 flag 1.0000
+320-dark-level                   emulated 0.9797 flag 1.0000
+320-light-eight                  emulated 0.9784 flag 1.0000
+320-light-level                  emulated 0.9784 flag 1.0000
+375-light-rules-techniques       emulated 0.9765 flag 1.0000
+# The reference's own method (Chrome CLI through design/tools/frame.html) re-run on 320-light-eight, 375-light-default, 1440-light-eight: 1.0000 each (it reproduces itself).
+
+## 2. Sample of 12 product shots, adapter at b45141d (before) and PD-3 (after): every shot captured, no 'capture failed'
+FAIL  [1366-light-setup-four] pixel score 0.9098 below threshold 0.98	after: 0.908 below threshold 0.98
+FAIL  [1440-light-confirm] pixel score 0.1187 below threshold 0.98	after: 0.1188 below threshold 0.98
+FAIL  [1440-light-default] pixel score 0.9124 below threshold 0.98	after: 0.9124 below threshold 0.98
+FAIL  [1440-light-eight] pixel score 0.9222 below threshold 0.98	after: 0.9222 below threshold 0.98
+FAIL  [1440-light-four] pixel score 0.948 below threshold 0.98	after: 0.948 below threshold 0.98
+FAIL  [1440-light-hint] pixel score 0.9138 below threshold 0.98	after: 0.9137 below threshold 0.98
+FAIL  [1440-light-level] pixel score 0.9221 below threshold 0.98	after: 0.9221 below threshold 0.98
+FAIL  [1440-light-setup-marked] pixel score 0.9241 below threshold 0.98	after: 0.9241 below threshold 0.98
+FAIL  [1440-light-setup] pixel score 0.9259 below threshold 0.98	after: 0.9267 below threshold 0.98
+FAIL  [1440-light-win] pixel score 0.9309 below threshold 0.98	after: 0.9309 below threshold 0.98
+FAIL  [375-dark-hint] pixel score 0.7128 below threshold 0.98	after: 0.713 below threshold 0.98
+FAIL  [375-light-setup-marked-four] pixel score 0.8477 below threshold 0.98	after: 0.8292 below threshold 0.98
+# Most scores are unchanged while the page is far from the design. 375-light-setup-marked-four moves most (0.8477 to 0.8292): with a real scale the page's text lays out a few pixels taller, so the sheet sits higher; same state, same marks, same focus (checked by eye). The design under the same method matches its reference exactly (section 1), so this is the faithful measurement.
+
+## 3. Capture determinism with PD-3 (docs/qa/improvements/PD-3-determinism-probe.mjs): each shot captured twice through the adapter's capture()
+320-light-eight                04ca62832976 04ca62832976 identical
+375-dark-hint                  9e5a1aa663d8 9e5a1aa663d8 identical
+375-light-setup-marked-four    12a693e79d8a 12a693e79d8a identical
+768-light-rules                1454a31e04d4 1454a31e04d4 identical
+1024-dark-confirm              36794a0308ac 36794a0308ac identical
+1366-dark-settings-focus       99752a260b70 99752a260b70 identical
+1440-light-win                 9b2c548e73bf 9b2c548e73bf identical
+7 of 7 byte-identical
+
+## 4. factory integrity
+# before the re-seal (adapter edited, lock from PD-2):
+WARN  [scripts/check-visual-parity-adapters.mjs] gate-bearing drift (hash drift) is covered by an approved improvement commit (message contains "Refs: PD-<n>") — reseal with --init-lock inside that improvement.
+Result: PASS, 2 warning(s)
+# re-seal:
+Locked 26 gate-bearing file(s) into factory-lock.json (gitHead: b45141dde8e981b6697cbc644464a46b1db0aff4).
+Scope: 26 locked file(s)
+Result: PASS, 1 warning(s)
+# after the re-seal:
+Result: PASS, 1 warning(s)

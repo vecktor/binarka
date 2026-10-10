@@ -6,7 +6,10 @@
 //   reference capture -> reads <referenceDir>/<shot>.png (the frozen set; referenceUrl is not fetched).
 //   local capture     -> the built page (`vite preview`, started here on the config's localUrl port), driven into the
 //                        shot's state in Chromium, captured under the reference's conditions (design/README.md, decision 25):
-//                        device scale 2, the system scheme from the shot name, reduced motion, scrollbars hidden,
+//                        a REAL device scale 2 (PD-3: one browser per shot, launched with --force-device-scale-factor and
+//                        --window-size, Playwright's viewport emulation off; the emulated scale rasterises text and
+//                        fractional edges differently, so even the design build scored only 0.9765 to 0.9993 against its own
+//                        reference, while this method reproduces all 170 shots exactly: docs/qa/g2/harness-calibration.txt), the system scheme from the shot name, reduced motion, scrollbars hidden,
 //                        viewport-cropped (never full page), no pointer on the page (states are reached by element.click()
 //                        and keyboard focus, never by mouse moves), the page's window focused (Playwright's default).
 //   diff              -> the checker's default pixelmatch adapter (threshold 0.1 per pixel).
@@ -188,7 +191,6 @@ export function parseShot(name) {
   throw new Error(`shot name "${name}" is not <width>-<light|dark>-<state>`);
 }
 
-let browserPromise = null;
 let server = null;
 let serverReady = null;
 
@@ -238,7 +240,8 @@ async function expectBoardShown(page, board, name) {
   }
 }
 
-async function getBrowser() {
+/** A browser whose window is the shot's viewport at a real device scale (PD-3); the caller closes it. */
+async function launchForShot(width, height) {
   let pw;
   try {
     pw = await import('playwright');
@@ -248,8 +251,10 @@ async function getBrowser() {
     err.cause = cause;
     throw err;
   }
-  browserPromise ??= pw.chromium.launch({ headless: true, args: ['--hide-scrollbars'] });
-  return browserPromise;
+  return pw.chromium.launch({
+    headless: true,
+    args: ['--hide-scrollbars', `--force-device-scale-factor=${deviceScaleFactor}`, `--window-size=${width},${height}`],
+  });
 }
 
 async function captureReference({ name }) {
@@ -263,10 +268,14 @@ async function captureLocal({ url, name, width, height, settleMs }) {
   const driver = drivers[shot.state];
   if (!driver) throw new Error(`no state driver for "${shot.state}" (shot ${name}); the page has no such state yet`);
   await ensureServer(url);
-  const browser = await getBrowser();
-  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor, colorScheme: shot.scheme, reducedMotion: 'reduce' });
+  const browser = await launchForShot(width, height);
+  const context = await browser.newContext({ viewport: null, colorScheme: shot.scheme, reducedMotion: 'reduce' });
   const page = await context.newPage();
   try {
+    const window = await page.evaluate(() => [innerWidth, innerHeight, devicePixelRatio]);
+    if (window[0] !== width || window[1] !== height || window[2] !== deviceScaleFactor) {
+      throw new Error(`the capture window is ${window[0]}x${window[1]} at scale ${window[2]}, not ${width}x${height} at ${deviceScaleFactor}`);
+    }
     const manual = { 'settings-light': 'light', 'settings-dark': 'dark' }[shot.state];
     const board = captureBoardFor(shot.state);
     await page.addInitScript(
@@ -295,7 +304,7 @@ async function captureLocal({ url, name, width, height, settleMs }) {
     const png = await page.screenshot({ fullPage: false, animations: 'disabled', caret: 'hide' });
     return { png, pageHeight: height, maskRects: [] };
   } finally {
-    await context.close();
+    await browser.close();
   }
 }
 
@@ -304,6 +313,5 @@ export async function capture(args) {
 }
 
 export async function close() {
-  if (browserPromise) await (await browserPromise).close();
   if (server) server.kill();
 }
