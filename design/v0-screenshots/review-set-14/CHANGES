@@ -1,0 +1,172 @@
+# review-set-14 against review-set-13, by SHA-1 (SHA1SUMS of each set)
+# IDENTICAL: byte-identical. CHANGED: differs; AE = differing device pixels (magick compare -metric AE, fuzz 0). NEW: not in set 13.
+CHANGED 1024-dark-confirm.png AE=119815
+CHANGED 1024-dark-default.png AE=188675
+CHANGED 1024-dark-hint.png AE=189111
+CHANGED 1024-dark-settings-light.png AE=124600
+CHANGED 1024-dark-settings.png AE=124563
+CHANGED 1024-dark-win.png AE=167324
+CHANGED 1024-light-confirm.png AE=119846
+CHANGED 1024-light-default.png AE=188735
+CHANGED 1024-light-hint.png AE=189171
+CHANGED 1024-light-settings-dark.png AE=124563
+CHANGED 1024-light-settings.png AE=124600
+CHANGED 1024-light-win.png AE=167344
+CHANGED 1366-dark-default.png AE=88062
+CHANGED 1366-dark-settings-focus.png AE=28629
+CHANGED 1366-dark-settings.png AE=28629
+CHANGED 1366-light-default.png AE=88120
+CHANGED 1366-light-settings-focus.png AE=28646
+CHANGED 1366-light-settings.png AE=28646
+CHANGED 1440-dark-confirm.png AE=159548
+CHANGED 1440-dark-default.png AE=240380
+CHANGED 1440-dark-hint.png AE=240878
+CHANGED 1440-dark-settings-light.png AE=176404
+CHANGED 1440-dark-settings.png AE=176367
+CHANGED 1440-dark-win.png AE=212833
+CHANGED 1440-light-confirm.png AE=159576
+CHANGED 1440-light-default.png AE=240437
+CHANGED 1440-light-hint.png AE=240937
+CHANGED 1440-light-settings-dark.png AE=176367
+CHANGED 1440-light-settings.png AE=176404
+CHANGED 1440-light-win.png AE=212814
+CHANGED 320-dark-confirm.png AE=33355
+CHANGED 320-dark-default.png AE=86725
+CHANGED 320-dark-hint.png AE=87001
+CHANGED 320-dark-rules-techniques.png AE=57428
+CHANGED 320-dark-rules.png AE=57428
+CHANGED 320-dark-settings-focus.png AE=86722
+CHANGED 320-dark-settings-light.png AE=86776
+CHANGED 320-dark-settings.png AE=86722
+CHANGED 320-dark-setup-marked-four.png AE=3294
+CHANGED 320-dark-setup-marked.png AE=3966
+CHANGED 320-dark-setup.png AE=3966
+CHANGED 320-dark-win.png AE=77336
+CHANGED 320-light-confirm.png AE=33372
+CHANGED 320-light-default.png AE=86787
+CHANGED 320-light-hint.png AE=87063
+CHANGED 320-light-rules-techniques.png AE=57456
+CHANGED 320-light-rules.png AE=57456
+CHANGED 320-light-settings-dark.png AE=86722
+CHANGED 320-light-settings-focus.png AE=86776
+CHANGED 320-light-settings.png AE=86776
+CHANGED 320-light-setup-marked-four.png AE=3300
+CHANGED 320-light-setup-marked.png AE=3972
+CHANGED 320-light-setup.png AE=3972
+CHANGED 320-light-win.png AE=77358
+CHANGED 375-dark-confirm.png AE=68526
+CHANGED 375-dark-default.png AE=120470
+CHANGED 375-dark-hint.png AE=120806
+CHANGED 375-dark-rules-techniques.png AE=83462
+CHANGED 375-dark-rules.png AE=83462
+CHANGED 375-dark-settings-light.png AE=120515
+CHANGED 375-dark-settings.png AE=120467
+CHANGED 375-dark-setup-marked-four.png AE=39664
+CHANGED 375-dark-setup-marked.png AE=52344
+CHANGED 375-dark-setup.png AE=52344
+CHANGED 375-dark-win.png AE=107346
+CHANGED 375-light-confirm.png AE=68549
+CHANGED 375-light-default.png AE=120527
+CHANGED 375-light-hint.png AE=120863
+CHANGED 375-light-rules-techniques.png AE=83495
+CHANGED 375-light-rules.png AE=83495
+CHANGED 375-light-settings-dark.png AE=120467
+CHANGED 375-light-settings.png AE=120515
+CHANGED 375-light-setup-marked-four.png AE=39684
+CHANGED 375-light-setup-marked.png AE=52364
+CHANGED 375-light-setup.png AE=52364
+CHANGED 375-light-win.png AE=107351
+CHANGED 768-dark-confirm.png AE=202504
+CHANGED 768-dark-default.png AE=298327
+CHANGED 768-dark-hint.png AE=298891
+CHANGED 768-dark-settings-light.png AE=237027
+CHANGED 768-dark-settings.png AE=236992
+CHANGED 768-dark-win.png AE=263875
+CHANGED 768-light-confirm.png AE=202539
+CHANGED 768-light-default.png AE=298388
+CHANGED 768-light-hint.png AE=298952
+CHANGED 768-light-settings-dark.png AE=236992
+CHANGED 768-light-settings.png AE=237027
+CHANGED 768-light-win.png AE=263870
+IDENTICAL 1024-dark-eight.png
+IDENTICAL 1024-dark-four.png
+IDENTICAL 1024-dark-level.png
+IDENTICAL 1024-dark-rules.png
+IDENTICAL 1024-dark-setup-four.png
+IDENTICAL 1024-dark-setup-marked-four.png
+IDENTICAL 1024-dark-setup-marked.png
+IDENTICAL 1024-dark-setup.png
+IDENTICAL 1024-light-eight.png
+IDENTICAL 1024-light-four.png
+IDENTICAL 1024-light-level.png
+IDENTICAL 1024-light-rules.png
+IDENTICAL 1024-light-setup-four.png
+IDENTICAL 1024-light-setup-marked-four.png
+IDENTICAL 1024-light-setup-marked.png
+IDENTICAL 1024-light-setup.png
+IDENTICAL 1366-dark-eight.png
+IDENTICAL 1366-dark-rules-techniques.png
+IDENTICAL 1366-dark-rules.png
+IDENTICAL 1366-dark-setup-four.png
+IDENTICAL 1366-dark-setup-marked-four.png
+IDENTICAL 1366-dark-setup-marked.png
+IDENTICAL 1366-dark-setup.png
+IDENTICAL 1366-light-eight.png
+IDENTICAL 1366-light-rules-techniques.png
+IDENTICAL 1366-light-rules.png
+IDENTICAL 1366-light-setup-four.png
+IDENTICAL 1366-light-setup-marked-four.png
+IDENTICAL 1366-light-setup-marked.png
+IDENTICAL 1366-light-setup.png
+IDENTICAL 1440-dark-eight.png
+IDENTICAL 1440-dark-four.png
+IDENTICAL 1440-dark-level.png
+IDENTICAL 1440-dark-rules-techniques.png
+IDENTICAL 1440-dark-rules.png
+IDENTICAL 1440-dark-setup-four.png
+IDENTICAL 1440-dark-setup-marked-four.png
+IDENTICAL 1440-dark-setup-marked.png
+IDENTICAL 1440-dark-setup.png
+IDENTICAL 1440-light-eight.png
+IDENTICAL 1440-light-four.png
+IDENTICAL 1440-light-level.png
+IDENTICAL 1440-light-rules-techniques.png
+IDENTICAL 1440-light-rules.png
+IDENTICAL 1440-light-setup-four.png
+IDENTICAL 1440-light-setup-marked-four.png
+IDENTICAL 1440-light-setup-marked.png
+IDENTICAL 1440-light-setup.png
+IDENTICAL 320-dark-eight.png
+IDENTICAL 320-dark-four.png
+IDENTICAL 320-dark-level.png
+IDENTICAL 320-dark-setup-four.png
+IDENTICAL 320-light-eight.png
+IDENTICAL 320-light-four.png
+IDENTICAL 320-light-level.png
+IDENTICAL 320-light-setup-four.png
+IDENTICAL 375-dark-eight.png
+IDENTICAL 375-dark-four.png
+IDENTICAL 375-dark-level.png
+IDENTICAL 375-dark-setup-four.png
+IDENTICAL 375-light-eight.png
+IDENTICAL 375-light-four.png
+IDENTICAL 375-light-level.png
+IDENTICAL 375-light-setup-four.png
+IDENTICAL 768-dark-eight.png
+IDENTICAL 768-dark-four.png
+IDENTICAL 768-dark-level.png
+IDENTICAL 768-dark-rules.png
+IDENTICAL 768-dark-setup-four.png
+IDENTICAL 768-dark-setup-marked-four.png
+IDENTICAL 768-dark-setup-marked.png
+IDENTICAL 768-dark-setup.png
+IDENTICAL 768-light-eight.png
+IDENTICAL 768-light-four.png
+IDENTICAL 768-light-level.png
+IDENTICAL 768-light-rules.png
+IDENTICAL 768-light-setup-four.png
+IDENTICAL 768-light-setup-marked-four.png
+IDENTICAL 768-light-setup-marked.png
+IDENTICAL 768-light-setup.png
+IDENTICAL logo-dark.png
+IDENTICAL logo-light.png

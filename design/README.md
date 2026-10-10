@@ -535,3 +535,23 @@ Open polish, accepted with the move (rows 123 and 131), all questions for the us
 - The checked option's frame shares the focus colour.
 
 The pixel gate stays on Ukrainian shots only (TD-Q10). NFR-14 stays held and not declared until `npm run check:visual` exists and is seen failing (G2).
+
+### Iteration 16: the 6×6 fixture boards made valid puzzles, by the designer agent (2026-10-10)
+
+One design round beyond the budget, approved by the user in chat (about 13:45 UTC+5:30, autonomy-log row 140: "fix design fixtures"). The finding is `docs/qa/g2/fixture-boards-check.txt`: the givens shared by `fixtureBoard`, `hintBoard` and `solvedBoard` had at least two solutions (`countSolutions` = 2), which breaks the rule that a puzzle has exactly one. Not the reference: the user decides that.
+
+- **Only change:** the digits of the three 6×6 boards in `lib/boards.ts`. No CSS, layout, route or copy changed; `fourBoard` and `eightBoard` are untouched.
+- **Givens:** from our engine, `generate(6, 5)` (level 1), recorded in a comment in `boards.ts`. All three boards share them: 9 givens, one to three in every row (the old board had 7).
+- **Fixture (`/` and every route built on it):** six entries, as before. Five come from the solution. The sixth, the third 0 of row 3, is wrong (the solution has 1), so row 3 reads 0 0 0 at columns 1 to 3 (before: columns 2 to 4 of the same row). `violations` is `[3,1] [3,2] [3,3]` (1-based, as `binarka-page.tsx` compares); the engine reports exactly those cells (0-based `[2,0] [2,1] [2,2]`, one `three` violation).
+- **Hint board:** the fixture without the wrong 0, plus the hinted cell `h1` at row 3, column 3. That is the engine's first hint on that board (`hint(board, 1)`, pair rule; ceiling 4, which the product uses, gives the same result). The engine's sentence is byte-identical to the old `hintMessage` in `app/hint/page.tsx`, so that file is unchanged: «Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.»
+- **Solved board:** the unique solution with the same givens; `isSolved` is true.
+- **Engine check:** `v0-screenshots/review-set-14/ENGINE-CHECK.txt`. It was written by a scratch Vitest file that read `boards.ts` as text; the file was deleted after the run. Seed 5 was picked from a scratch search over seeds 1 to 400.
+- **Prediction before the capture:** `review-set-14/PREDICTION.txt`. The rule: a shot changes exactly when a cell of one of these three boards is visible, including under a translucent backdrop. That predicted 88 changed and 82 byte-identical shots. The changed ones:
+  - `default`, `hint`, `win`, `confirm` and `settings` at every size;
+  - `settings-light`, `settings-dark` and `settings-focus`;
+  - `rules`, `rules-techniques`, `setup`, `setup-marked` and `setup-marked-four` at 320 and 375 only. At 320 only a sliver of the first row's cell tops shows above the sheet, but given cells have a darker fill.
+  - At 768 and wider, the sheets and the rules panel hide the board completely. At 1440 the rules panel leaves only the board frame's bottom edge.
+- **Capture:** `v0-screenshots/review-set-14/` (170 shots, `SHA1SUMS`, `run-2.SHA1SUMS`, `CHANGES` with magick AE, contact sheets for the 13 changed states in `contact/`).
+  - The second full run, into a scratch directory outside the repository, is byte-identical on 170 of 170.
+  - Against set 13: 88 changed and 82 byte-identical, and the prediction matches on all 170. The smallest change is `320-*-setup-marked-four` (AE about 3,300, the sliver); the largest are the 768 board shots (about 299,000).
+  - Byte-identical as expected: `four`, `eight`, `level`, `setup-four` and `logo`, plus the covered shots.

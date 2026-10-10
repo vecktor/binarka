@@ -1,0 +1,53 @@
+# Engine check of the 6x6 fixtures of design/v0/lib/boards.ts (designer iteration 16, 2026-10-10).
+# Scratch vitest file (deleted after the run) reading boards.ts as text; engine from src/engine/index.ts.
+# Engine cells are 0-based [row, col]; boards.ts `violations` are 1-based (binarka-page.tsx compares rowIndex + 1, colIndex + 1).
+
+generate(6, 5, 1) givens:
+1 . . . 0 .
+. . 1 . . .
+. . . . . 1
+0 . 0 . 0 .
+. 1 . . . .
+. . . . 0 .
+generate(6, 5, 1) solution:
+1 1 0 1 0 0
+1 0 1 0 1 0
+0 0 1 0 1 1
+0 1 0 1 0 1
+1 1 0 0 1 0
+0 0 1 1 0 1
+
+givens of fixtureBoard equal generate(6, 5, 1).givens: true
+givens of hintBoard equal fixtureBoard givens: true
+givens of solvedBoard equal fixtureBoard givens: true
+countSolutions(givens): 1
+
+fixtureBoard findViolations: [{"rule":"three","axis":"row","index":2,"cells":[[2,0],[2,1],[2,2]]}]
+fixtureBoard violation cells, 1-based: [3, 1] [3, 2] [3, 3]
+fixtureBoard filled cells that differ from the solution (0-based): [2, 2] = 0
+
+hintBoard before the hint (h cell empty):
+1 . . . 0 .
+1 . 1 . . .
+0 0 . . . 1
+0 . 0 . 0 .
+. 1 . . . 0
+. . . 1 0 .
+findViolations(before): 0
+hint(before, 1): {"kind":"fill","row":2,"col":2,"value":1,"rule":"pair","axis":"row","line":2,"digit":0,"sentence":"Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені."}
+hint(before, 4): {"kind":"fill","row":2,"col":2,"value":1,"rule":"pair","axis":"row","line":2,"digit":0,"sentence":"Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені."}
+hint at ceiling 1 equals ceiling 4: true
+hinted cell in boards.ts (0-based): [2, 2] = 1
+hintMessage in design/v0/app/hint/page.tsx: Два нулі поспіль у рядку 3, тож поруч може стояти лише одиниця, бо три однакові цифри поспіль заборонені.
+hintMessage equals the engine sentence: true
+hintBoard entries (with the hinted cell) differ from the solution: false
+
+solvedBoard isSolved: true
+solvedBoard equals the solution: true
+solvedBoard countSolutions(all cells): 1
+
+# Seed choice: a scratch search over generate(6, s, 1), s = 1 to 400 (givens at most 10, countSolutions = 1), listed seeds where
+# a triple of player entries in one row gives exactly one findViolations entry and, with its wrong cell removed, the first hint
+# is the pair rule on that very cell. Seed 5 was picked: its triple is zeros in row 3 (columns 1 to 3; the old fixture had columns 2 to 4),
+# so the hint sentence on /hint/ stays byte-identical. The search file failed `npx tsc --noEmit` (TS6133, an unused parameter)
+# and was deleted on the orchestrator's request; this check file passed tsc and eslint before it ran and is deleted too.
