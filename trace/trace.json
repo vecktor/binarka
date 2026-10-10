@@ -299,8 +299,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -387,8 +386,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -407,8 +405,7 @@
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -445,8 +442,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -539,8 +535,7 @@
         "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -556,8 +551,7 @@
         "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -798,8 +792,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -813,8 +806,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -839,8 +831,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -907,8 +898,7 @@
       "id": "FR-38",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -922,8 +912,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -936,8 +925,7 @@
       "id": "FR-40",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -967,8 +955,7 @@
       "id": "FR-42",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -989,8 +976,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1025,8 +1011,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1045,8 +1030,7 @@
       "id": "FR-58",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1068,8 +1052,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1092,8 +1075,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1110,8 +1092,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1145,8 +1126,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1161,8 +1141,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1180,8 +1159,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1197,8 +1175,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1239,8 +1216,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1266,8 +1242,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1298,8 +1273,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1316,8 +1290,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1332,8 +1305,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1349,8 +1321,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1378,8 +1349,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1402,8 +1372,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1421,8 +1390,7 @@
         "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1443,8 +1411,7 @@
       "id": "FR-89",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1457,8 +1424,7 @@
       "id": "FR-90",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1473,8 +1439,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1492,8 +1457,7 @@
       "id": "FR-92",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1509,8 +1473,7 @@
       "id": "FR-93",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1524,8 +1487,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1541,8 +1503,7 @@
       "id": "FR-44",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1556,8 +1517,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1573,8 +1533,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1592,8 +1551,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1613,8 +1571,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1631,8 +1588,7 @@
       "specs": [
         "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1644,9 +1600,9 @@
     {
       "id": "FR-100",
       "specs": [
+        "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1676,9 +1632,9 @@
     {
       "id": "FR-101",
       "specs": [
+        "openspec/specs/play-page/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md",
-        "openspec/changes/update-setup-sheet-start/specs/play-page/spec.md"
+        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -2411,10 +2367,6 @@
     {
       "check": "active-changes",
       "msg": "active change \"add-theme-switch\" is not archived"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"update-setup-sheet-start\" is not archived"
     }
   ]
 }
