@@ -36,6 +36,13 @@ Traces: NFR-14, NFR-10, NFR-12, FR-68, FR-119
 - **THEN** `.board-host` carries `data-solved="true"` together with the win line
 - **AND** after «Нова головоломка», «Скинути» or a new size and level the attribute is gone together with the win line
 
+#### Scenario: The settings panel follows the column from 48rem
+
+- **GIVEN** the default page at 768×1024, 1024×768, 1366×650 or 1440×900
+- **WHEN** the settings panel is opened with the settings button
+- **THEN** the panel's right edge is within 0.5 px of the header's right edge (the column's right edge)
+- **AND** the panel's top is at or below the header's bottom, and its left edge is inside the column
+
 #### Scenario: Colours are unchanged
 
 - **GIVEN** the stylesheet after this change

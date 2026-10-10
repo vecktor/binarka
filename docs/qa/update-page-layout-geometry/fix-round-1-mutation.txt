@@ -1,0 +1,18 @@
+# Fix round 1 (review run wf_1c7326da-0c4): mutation check of the three new data-solved tests, 2026-10-10 22:10 +0530. The code already handled the paths, so the tests were green at once; each mutant below is a plausible regression of src/ui/play-page.ts, applied alone and restored from git (b883f36) after its run.
+# npx vitest run tests/play-page-layout-geometry.test.ts
+
+## M1: updateWin never removes data-solved (else branch deleted)
+     × a click that un-solves a solved board removes data-solved with the win line 13ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 8 passed (9)
+## M2: changeTo clears the win text directly, not through clearWin
+     × a new size and level after the win removes data-solved 14ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 8 passed (9)
+## M3: onBoardClick sets the win text inline instead of calling updateWin
+     × the last move by a click solves the board: data-solved="true" appears with the win line 17ms
+     × a click that un-solves a solved board removes data-solved with the win line 10ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 7 passed (9)
+
+Result: 3 of 3 mutants killed, each by a new test (M1 by the un-solve click, M2 by the new size and level, M3 by the click solve and the un-solve click).

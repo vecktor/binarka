@@ -31,9 +31,19 @@ interface Fixture {
 
 const fixture = JSON.parse(readFileSync('quality/design-geometry.json', 'utf8')) as Fixture;
 
-test('@trace NFR-14 the fixture covers the sampled layout cases', () => {
-  expect(fixture.cases.length, 'cases in quality/design-geometry.json').toBeGreaterThanOrEqual(27);
-  expect(new Set(fixture.cases.map((c) => c.state))).toEqual(new Set(['default', 'four', 'eight', 'level', 'win']));
+// The sampled cases of the spec, per state (review run 1, fix round 1: the matrix is pinned, not only the count).
+const ALL = ['320', '375', '768', '1024', '1366', '1440'];
+const NO_1366 = ['320', '375', '768', '1024', '1440'];
+const EXPECTED_SHOTS = [
+  ...ALL.map((w) => `${w}-light-default`),
+  ...ALL.map((w) => `${w}-light-eight`),
+  ...NO_1366.map((w) => `${w}-light-four`),
+  ...NO_1366.map((w) => `${w}-light-level`),
+  ...NO_1366.map((w) => `${w}-light-win`),
+].sort();
+
+test('@trace NFR-14 the fixture covers exactly the sampled layout cases of the spec', () => {
+  expect(fixture.cases.map((c) => c.shot).sort(), 'the shots of quality/design-geometry.json').toEqual(EXPECTED_SHOTS);
   expect(fixture.tolerancePx).toBe(0.5);
 });
 
@@ -70,5 +80,33 @@ for (const c of fixture.cases) {
       }
     });
     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+  });
+}
+
+// Review run 1 (wf_1c7326da-0c4), fix round 1: «The settings panel stays under the header, its right edge on the column's right edge from 48rem,
+// as the column changes.» The panel's own geometry (its height and contents) is outside this block; its placement is checked against the header,
+// whose box the cases above pin to the design. Sampled: the reference viewports from 48rem.
+for (const [width, height] of [
+  [768, 1024],
+  [1024, 768],
+  [1366, 650],
+  [1440, 900],
+] as const) {
+  test(`@trace NFR-14 ${width}x${height}: the open settings panel sits under the header, its right edge on the column's right edge`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await page.goto('/');
+    await expect(page.locator('[data-board] [data-cell]').first()).toBeVisible();
+    await page.locator('[data-action="settings"]').click();
+    await expect(page.locator('[data-section="settings"]')).toBeVisible();
+    const m = await page.evaluate(() => {
+      const panel = document.querySelector('[data-section="settings"]')?.getBoundingClientRect();
+      const header = document.querySelector('.page-header')?.getBoundingClientRect();
+      return panel && header ? { panel: { left: panel.left, right: panel.right, top: panel.top, width: panel.width }, header: { left: header.left, right: header.right, bottom: header.bottom, width: header.width } } : null;
+    });
+    expect.soft(m, 'the panel and the header exist').not.toBeNull();
+    if (m === null) return;
+    expect(Math.abs(m.panel.right - m.header.right), `panel right ${m.panel.right} vs column right ${m.header.right}`).toBeLessThanOrEqual(0.5);
+    expect(m.panel.top, `panel top ${m.panel.top} at or below the header bottom ${m.header.bottom}`).toBeGreaterThanOrEqual(m.header.bottom);
+    expect(m.panel.left, `panel left ${m.panel.left} inside the column (from ${m.header.left})`).toBeGreaterThanOrEqual(m.header.left - 0.5);
   });
 }

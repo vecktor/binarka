@@ -3,6 +3,8 @@
   "provenance": {
     "designCommit": "2aa39acb0497646759e492e788c50ec5302d997c",
     "designCssSha1": "2a41971f0e03b12d0ca090193a4298541457f5a8",
+    "designBuildSha1": "f4453dc3dd4c230f0cbc684bc8c48b2dafe7fc5b",
+    "designBuild": "design/v0/out from `pnpm build` in design/v0 (design/README.md), not committed; designBuildSha1 covers every file of it",
     "reference": "design/v0-screenshots/review-set-14",
     "referenceSha1sums": "e89badbf4bdbe29478563e9f2edef91fcc5c853f",
     "standIn": "docs/qa/g2/harness-calibration.txt (the design build reproduces all 170 reference shots at 1.0000)",
@@ -24,6 +26,7 @@
     "[data-action=\"new\"]",
     ".messages",
     "[data-message=\"idle\"]",
+    "[data-message=\"hint\"]",
     "[data-message=\"win\"]"
   ],
   "coverage": "sampled",
@@ -221,6 +224,12 @@
           "y": 672.328125,
           "w": 418,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -488,6 +497,12 @@
           "w": 418,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -641,6 +656,12 @@
           "y": 568.328125,
           "w": 418,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -908,6 +929,12 @@
           "w": 418,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -1105,6 +1132,12 @@
           "h": 85.25
         },
         "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
           "x": 0,
           "y": 0,
           "w": 0,
@@ -1311,6 +1344,12 @@
           "y": 554.328125,
           "w": 416,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -1578,6 +1617,12 @@
           "w": 416,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -1779,6 +1824,12 @@
           "y": 720.328125,
           "w": 466,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -2046,6 +2097,12 @@
           "w": 466,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -2199,6 +2256,12 @@
           "y": 568.328125,
           "w": 466,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -2466,6 +2529,12 @@
           "w": 466,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -2663,6 +2732,12 @@
           "h": 85.25
         },
         "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
           "x": 0,
           "y": 0,
           "w": 0,
@@ -2869,6 +2944,12 @@
           "y": 555.328125,
           "w": 296,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -3136,6 +3217,12 @@
           "w": 296,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -3289,6 +3376,12 @@
           "y": 544.328125,
           "w": 296,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -3556,6 +3649,12 @@
           "w": 296,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -3753,6 +3852,12 @@
           "h": 85.25
         },
         "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
           "x": 0,
           "y": 0,
           "w": 0,
@@ -3959,6 +4064,12 @@
           "y": 609.328125,
           "w": 343,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -4226,6 +4337,12 @@
           "w": 343,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -4379,6 +4496,12 @@
           "y": 548.328125,
           "w": 343,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -4646,6 +4769,12 @@
           "w": 343,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -4843,6 +4972,12 @@
           "h": 85.25
         },
         "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
           "x": 0,
           "y": 0,
           "w": 0,
@@ -5049,6 +5184,12 @@
           "y": 768.328125,
           "w": 514,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -5316,6 +5457,12 @@
           "w": 514,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -5469,6 +5616,12 @@
           "y": 600.328125,
           "w": 514,
           "h": 40.59375
+        },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -5736,6 +5889,12 @@
           "w": 514,
           "h": 40.59375
         },
+        "[data-message=\"hint\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
         "[data-message=\"win\"]": {
           "x": 0,
           "y": 0,
@@ -5933,6 +6092,12 @@
           "h": 85.25
         },
         "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
           "x": 0,
           "y": 0,
           "w": 0,

@@ -1,0 +1,21 @@
+# Fix round 1: the empty hint line red, 2026-10-10 22:13 +0530, at b342d87 plus the fix-round tests and the refrozen fixture (the hint line added as a 16th element), before the CSS fix.
+# npx playwright test e2e/nfr-14-layout-geometry.spec.ts --project=layout --reporter=list
+# Expected: every layout case fails on [data-message="hint"] only (page 4x0: the hint rule's 4px left border overrides .message:empty; design 0x0).
+
+    +   "[data-message=\"hint\"]: page 12.00,522.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 522.00px)",
+    +   "[data-message=\"hint\"]: page 12.00,533.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 533.00px)",
+    +   "[data-message=\"hint\"]: page 12.00,548.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 548.00px)",
+    +   "[data-message=\"hint\"]: page 127.00,578.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 578.00px)",
+    +   "[data-message=\"hint\"]: page 127.00,746.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 746.00px)",
+    +   "[data-message=\"hint\"]: page 16.00,526.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 526.00px)",
+    +   "[data-message=\"hint\"]: page 16.00,587.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 587.00px)",
+    +   "[data-message=\"hint\"]: page 16.00,603.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 603.00px)",
+    +   "[data-message=\"hint\"]: page 303.00,546.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 546.00px)",
+    +   "[data-message=\"hint\"]: page 303.00,647.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 647.00px)",
+    +   "[data-message=\"hint\"]: page 303.00,650.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 650.00px)",
+    +   "[data-message=\"hint\"]: page 475.00,529.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 529.00px)",
+    +   "[data-message=\"hint\"]: page 475.00,532.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 532.00px)",
+    +   "[data-message=\"hint\"]: page 487.00,546.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 546.00px)",
+    +   "[data-message=\"hint\"]: page 487.00,698.00 4.00x0.00, design 0.00,0.00 0.00x0.00 (off by 698.00px)",
+  27 failed
+  5 passed (10.6s)

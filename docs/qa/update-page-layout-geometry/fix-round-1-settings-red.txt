@@ -1,0 +1,11 @@
+# Fix round 1: the settings placement check (e2e/nfr-14-layout-geometry.spec.ts) red against the old placement, 2026-10-10 22:11 +0530. Mutant: .settings at 48rem back to width 22rem and margin 6.5rem 0 auto calc(50% + 210px - 22rem) (tied to the old 420 px column); restored from git (b883f36) after the run. With the ported placement the same 4 tests pass.
+
+    Error: panel right 594 vs column right 641
+    Error: panel right 722 vs column right 721
+    Error: panel right 893 vs column right 891
+    Error: panel right 930 vs column right 953
+  4 failed
+  ✘  1 [layout] › e2e/nfr-14-layout-geometry.spec.ts:85:3 › @trace NFR-14 768x1024: the open settings panel sits under the header, its right edge on the column's right edge (678ms)
+  ✘  2 [layout] › e2e/nfr-14-layout-geometry.spec.ts:85:3 › @trace NFR-14 1440x900: the open settings panel sits under the header, its right edge on the column's right edge (705ms)
+  ✘  3 [layout] › e2e/nfr-14-layout-geometry.spec.ts:85:3 › @trace NFR-14 1024x768: the open settings panel sits under the header, its right edge on the column's right edge (697ms)
+  ✘  4 [layout] › e2e/nfr-14-layout-geometry.spec.ts:85:3 › @trace NFR-14 1366x650: the open settings panel sits under the header, its right edge on the column's right edge (678ms)

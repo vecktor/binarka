@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { generate } from '../src/engine/index';
 import type { Cell, Grid } from '../src/engine/index';
 import { readStyles, themeTokenSets } from './helpers/css';
-import { PAIR_ROW, WIN_MESSAGE, bySize, generateSpy, installPageLifecycle, mountPage, pressHint, q, resetBoard, seedQueue, startNewPuzzle, winMessage } from './helpers/play-page';
+import { BLANK_4, PAIR_ROW, WIN_MESSAGE, bySize, clickCell, generateSpy, installPageLifecycle, mountPage, pressHint, q, resetBoard, seedQueue, selectSize, startNewPuzzle, winMessage } from './helpers/play-page';
 
 // update-page-layout-geometry (NFR-14, G2 block 1), scenario «Colours are unchanged»: the layout port changes geometry only. The 13 colour
 // tokens of A-51 keep their names and their values in both token sets; the palette is a later block. The geometry itself is checked in a real
@@ -81,7 +81,23 @@ const solvedFlag = (root: ParentNode): string | null => q(root, '.board-host').g
 
 function mountWith(value?: unknown): HTMLElement {
   if (value !== undefined) Reflect.set(window, KEY, value);
-  return mountPage({ seedSource: seedQueue([7, 8, 9]).source, generate: generateSpy(bySize({ 6: PAIR_ROW })).generate });
+  return mountPage({ seedSource: seedQueue([7, 8, 9]).source, generate: generateSpy(bySize({ 4: BLANK_4, 6: PAIR_ROW })).generate });
+}
+
+/** The first empty cell of solvedBoard(missing) and the digit the solution has there. */
+function firstGap(missing: number): { r: number; c: number; digit: 0 | 1 } {
+  const value = solvedBoard(missing);
+  const solution = generate(6, 5, 1).solution;
+  for (let r = 0; r < 6; r++) {
+    for (let c = 0; c < 6; c++) {
+      if (at(value.givens, r, c) === null && at(value.entries, r, c) === null) {
+        const digit = at(solution, r, c);
+        expect.assert(digit === 0 || digit === 1, 'premise: the solution has a digit there');
+        return { r, c, digit };
+      }
+    }
+  }
+  throw new Error('premise: the board has a gap');
 }
 
 describe('@trace NFR-14 @trace FR-38 the board host carries data-solved exactly while the board is solved', () => {
@@ -104,6 +120,33 @@ describe('@trace NFR-14 @trace FR-38 the board host carries data-solved exactly 
     pressHint(root);
     expect(winMessage(root)).toBe(WIN_MESSAGE);
     expect(solvedFlag(root)).toBe('true');
+  });
+
+  // Review run 1 (wf_1c7326da-0c4), fix round 1: the click path, the new size and level, and the click that un-solves.
+  it('the last move by a click solves the board: data-solved="true" appears with the win line', () => {
+    const gap = firstGap(1);
+    const root = mountWith(solvedBoard(1));
+    expect(solvedFlag(root), 'premise: one cell short of solved').toBeNull();
+    clickCell(root, gap.r + 1, gap.c + 1, gap.digit === 0 ? 1 : 2); // 1-based data-row/data-col; a click cycles empty -> 0 -> 1
+    expect(winMessage(root)).toBe(WIN_MESSAGE);
+    expect(solvedFlag(root)).toBe('true');
+  });
+
+  it('a click that un-solves a solved board removes data-solved with the win line', () => {
+    const gap = firstGap(1); // a non-given cell of the solved board
+    const root = mountWith(solvedBoard());
+    expect(solvedFlag(root), 'premise: set after the win').toBe('true');
+    clickCell(root, gap.r + 1, gap.c + 1); // 1-based; the entry cycles to its next value
+    expect(winMessage(root)).toBe('');
+    expect(solvedFlag(root)).toBeNull();
+  });
+
+  it('a new size and level after the win removes data-solved', () => {
+    const root = mountWith(solvedBoard());
+    expect(solvedFlag(root), 'premise: set after the win').toBe('true');
+    selectSize(root, 4);
+    expect(winMessage(root)).toBe('');
+    expect(solvedFlag(root)).toBeNull();
   });
 
   it('a new puzzle after the win removes data-solved', () => {
