@@ -36,12 +36,12 @@ Dependencies and database schema: none. No dependency (TC-10), no network (TC-11
 
 ## 4. Battery
 
-- [ ] 4.1 Run `npm run lint`.
-- [ ] 4.2 Run `npm run test:run` and save the output to `docs/qa/add-theme-switch-green-run.txt`.
-- [ ] 4.3 Run `npm run build`.
-- [ ] 4.4 Run `npx openspec validate add-theme-switch --strict` and then `npx openspec validate --all --strict`.
-- [ ] 4.5 Run `node scripts/check-eval-ratchet.mjs` and `node scripts/check-traceability.mjs` (FR-102 to FR-106, FR-113 to FR-118 cited and traced; restore regenerated report files unless intended).
-- [ ] 4.6 Run `npm run test:e2e` (NFR-10, NFR-12 with the gear and options, and the NFR-18 spec through its `testMatch` pattern) and `npm run check:a11y` (NFR-13 with the manual-theme states). Both must pass; restore `docs/qa/e2e-report.json` and `docs/qa/a11y-report.json` afterwards unless the update is intended. Coverage is `sampled`, never continuum; say so in the report.
+- [x] 4.1 Run `npm run lint`.
+- [x] 4.2 Run `npm run test:run` and save the output to `docs/qa/add-theme-switch-green-run.txt`.
+- [x] 4.3 Run `npm run build`.
+- [x] 4.4 Run `npx openspec validate add-theme-switch --strict` and then `npx openspec validate --all --strict`.
+- [x] 4.5 Run `node scripts/check-eval-ratchet.mjs` and `node scripts/check-traceability.mjs` (FR-102 to FR-106, FR-113 to FR-118 cited and traced; restore regenerated report files unless intended).
+- [x] 4.6 Run `npm run test:e2e` (NFR-10, NFR-12 with the gear and options, and the NFR-18 spec through its `testMatch` pattern) and `npm run check:a11y` (NFR-13 with the manual-theme states). Both must pass; restore `docs/qa/e2e-report.json` and `docs/qa/a11y-report.json` afterwards unless the update is intended. Coverage is `sampled`, never continuum; say so in the report.
 
 ## 5. Review-gate
 

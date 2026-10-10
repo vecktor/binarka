@@ -1,0 +1,51 @@
+Green run of add-theme-switch at 8add6de, 2026-10-10 07:47 +0530
+
+== npm run lint
+> binarka@0.1.0 lint
+> eslint .
+
+exit 0
+
+== npx tsc --noEmit -p .
+exit 0
+
+== npm run test:run
+ Test Files  63 passed (63)
+      Tests  1374 passed (1374)
+
+== npm run build
+dist/assets/index-EpwCpApZ.css  11.41 kB │ gzip: 2.57 kB
+dist/assets/index-0IUPKmau.js   24.84 kB │ gzip: 9.30 kB
+
+✓ built in 44ms
+
+== npx openspec validate add-theme-switch --strict
+Change 'add-theme-switch' is valid
+== npx openspec validate --all --strict
+Totals: 4 passed, 0 failed (4 items)
+
+== node scripts/check-eval-ratchet.mjs
+OK    hint-clarity 94 (baseline 94)
+Result: PASS
+
+== node scripts/check-traceability.mjs
+WARN  [recording-evidence] FR-102 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-103 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-104 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-105 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-106 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-113 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-114 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-115 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-116 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-117 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-118 is not referenced by any recording manifest under docs/qa/
+traceability: 113 MVP FRs checked — 0 failure(s), 123 warning(s)
+
+== npm run test:e2e
+  71 passed (15.0s)
+
+== npm run check:a11y
+  54 passed (11.4s)
+
+Coverage is sampled (375x812 and 1280x800 for the a11y and NFR-18 specs, the NFR-12 viewport list for targets), never continuum.
