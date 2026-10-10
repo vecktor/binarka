@@ -30,8 +30,9 @@ import {
   rgbOf,
   rulesWithSelector,
   scanColours,
+  themeTokenSets,
 } from './helpers/css';
-import type { ParsedStyles } from './helpers/css';
+import type { ParsedStyles, TokenSet } from './helpers/css';
 
 installPageLifecycle();
 
@@ -40,10 +41,14 @@ function expectDecl(parsed: ParsedStyles, selector: string, property: string, ex
   expect(declarationsFor(parsed, selector).get(property)?.toLowerCase(), `${selector} { ${property}: ${expected} }`).toBe(expected);
 }
 
-/** The `#rrggbb` value of a token, asserted to exist (a missing token fails on an assertion that names it). */
-function token(parsed: ParsedStyles, name: string): string {
-  const value = parsed.tokens[name];
-  expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), `${name} is declared in :root as #rrggbb`);
+/**
+ * add-theme-switch (FR-65, A-51): the `#rrggbb` value of a token in one token set (light or dark), asserted to exist. The set list
+ * comes from `themeTokenSets`, which fails on an assertion when the stylesheet has no `:root[data-theme="dark"]` block, so a loop
+ * over it can never pass on the light set alone.
+ */
+function tokenIn(set: TokenSet, name: string): string {
+  const value = set.tokens[name];
+  expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), `${name} is #rrggbb in the ${set.label} token set`);
   return value;
 }
 
@@ -130,50 +135,68 @@ describe('the colours are tokens (FR-65)', () => {
   });
 });
 
+// add-theme-switch DELIBERATE CHANGE (FR-65, A-51; autonomy-log rows 118 and 124, decision A1): the five scenarios «Cell borders have 3:1»,
+// «The given cue has 3:1 and is not the fill», «The violation cue has 3:1», «The focus ring has 3:1 against every cell background» and «The
+// control border has 3:1 and the text has 4.5:1» now say "the resolved colours of the tokens of each token set (light, then dark)": each
+// loops over `themeTokenSets(parsed)` (the dark set is asserted to exist). The declarations are asserted once; no threshold changed.
 describe('contrast (FR-65, NFR-9)', () => {
-  it('@trace FR-65 Cell borders have 3:1 against the page, the cell and the given fill', () => {
+  it('@trace FR-65 Cell borders have 3:1 against the page, the cell and the given fill, in the light and in the dark token set', () => {
     const parsed = readStyles();
-    token(parsed, '--color-cell-border');
-    expect(contrastProblems(parsed.tokens, ['cell-border'])).toEqual([]);
+    for (const set of themeTokenSets(parsed)) {
+      tokenIn(set, '--color-cell-border');
+      expect(contrastProblems(set.tokens, ['cell-border']), `${set.label} token set`).toEqual([]);
+    }
   });
 
-  it('@trace FR-65 @trace FR-64 The given cue has 3:1 and is not the fill: 2px border in its own colour, bold digits', () => {
+  it('@trace FR-65 @trace FR-64 The given cue has 3:1 and is not the fill: 2px border in its own colour, bold digits (light and dark)', () => {
     const parsed = readStyles();
-    token(parsed, '--color-given-border');
-    expect(contrastProblems(parsed.tokens, ['given-cue'])).toEqual([]);
     expectDecl(parsed, '.cell-given', 'border-width', '2px');
     expectDecl(parsed, '.cell-given', 'border-color', 'var(--color-given-border)');
     expectDecl(parsed, '.cell-given', 'font-weight', '700');
-    // the cue tells a given from an ordinary cell without the fill: another colour and a wider border
-    expect(parsed.tokens['--color-given-border']?.toLowerCase()).not.toBe(parsed.tokens['--color-cell-border']?.toLowerCase());
     expect(px(declarationsFor(parsed, '.cell-given').get('border-width'))).toBeGreaterThan(
       px(declarationsFor(parsed, '.cell').get('border-width')),
     );
+    for (const set of themeTokenSets(parsed)) {
+      tokenIn(set, '--color-given-border');
+      expect(contrastProblems(set.tokens, ['given-cue']), `${set.label} token set`).toEqual([]);
+      // the cue tells a given from an ordinary cell without the fill: another colour (and a wider border, above)
+      expect(tokenIn(set, '--color-given-border').toLowerCase(), `${set.label}: the given border differs from the cell border`).not.toBe(
+        tokenIn(set, '--color-cell-border').toLowerCase(),
+      );
+    }
   });
 
-  it('@trace FR-65 @trace FR-64 The violation cue has 3:1 against the page, the cell and the violation fill', () => {
+  it('@trace FR-65 @trace FR-64 The violation cue has 3:1 against the page, the cell and the violation fill (light and dark)', () => {
     const parsed = readStyles();
-    token(parsed, '--color-violation-border');
-    expect(contrastProblems(parsed.tokens, ['violation-cue'])).toEqual([]);
+    for (const set of themeTokenSets(parsed)) {
+      tokenIn(set, '--color-violation-border');
+      expect(contrastProblems(set.tokens, ['violation-cue']), `${set.label} token set`).toEqual([]);
+    }
   });
 
-  it('@trace FR-65 The focus ring has 3:1 against the page and every cell background', () => {
+  it('@trace FR-65 The focus ring has 3:1 against the page and every cell background (light and dark)', () => {
     const parsed = readStyles();
-    token(parsed, '--color-focus');
-    expect(contrastProblems(parsed.tokens, ['focus-ring'])).toEqual([]);
+    for (const set of themeTokenSets(parsed)) {
+      tokenIn(set, '--color-focus');
+      expect(contrastProblems(set.tokens, ['focus-ring']), `${set.label} token set`).toEqual([]);
+    }
   });
 
-  it('@trace FR-65 @trace NFR-9 The control border has 3:1 and the text pairs have 4.5:1', () => {
+  it('@trace FR-65 @trace NFR-9 The control border has 3:1 and the text pairs have 4.5:1 (light and dark)', () => {
     const parsed = readStyles();
-    token(parsed, '--color-control-border');
-    token(parsed, '--color-text');
-    expect(contrastProblems(parsed.tokens, ['control-border', 'text'])).toEqual([]);
+    for (const set of themeTokenSets(parsed)) {
+      tokenIn(set, '--color-control-border');
+      tokenIn(set, '--color-text');
+      expect(contrastProblems(set.tokens, ['control-border', 'text']), `${set.label} token set`).toEqual([]);
+    }
   });
 
-  it('@trace FR-65 @trace NFR-9 Every pair holds for the top-level token set and for every set a conditional :root block makes', () => {
+  it('@trace FR-65 @trace NFR-9 Every pair holds for the top-level token set, the dark set and every set a conditional :root block makes', () => {
     const parsed = readStyles();
     expect(parsed.tokenSets.length).toBeGreaterThanOrEqual(1);
     expect(parsed.tokenSets[0]?.label).toBe('top-level');
+    // add-theme-switch: the light and the dark set always exist (themeTokenSets asserts the dark one), a conditional block adds sets only if the file has one
+    expect(themeTokenSets(parsed).map((set) => set.label)).toEqual(['light', 'dark']);
     for (const set of parsed.tokenSets) {
       expect(contrastProblems(set.tokens), `token set "${set.label}"`).toEqual([]);
     }
@@ -250,16 +273,20 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
     // update-setup-sheet-start (FR-65, FR-101): the start button «Почати» joins it too (one more button)
     const root = mountFixture(BLANK);
     const panel = rulesPanel(root);
+    // add-theme-switch DELIBERATE CHANGE (FR-65, FR-102, FR-117; delta «Every page button is a button element»): the three theme options are
+    // radios inside the root too (7 becomes 10), and the settings button and the settings panel's close button join the list (53 becomes 58)
     const radios = Array.from(root.querySelectorAll('[role="radio"]'));
-    expect(radios, 'the three size buttons and the four level buttons').toHaveLength(7);
+    expect(radios, 'the three size buttons, the four level buttons and the three theme options').toHaveLength(10);
     const panelButtons = Array.from(panel.querySelectorAll('button'));
     expect(panelButtons, 'premise: the rules panel holds one button, its close button').toHaveLength(1);
     const buttons: Element[] = [
       q(root, '[data-action="rules"]'),
+      q(root, '[data-action="settings"]'),
       q(root, '[data-action="setup"]'),
       ...radios,
       q(root, '[data-action="setup-start"]'),
       q(root, '[data-action="setup-close"]'),
+      q(root, '[data-action="settings-close"]'),
       q(root, '[data-action="hint"]'),
       q(root, '[data-action="reset"]'),
       q(root, '[data-action="new"]'),
@@ -268,7 +295,7 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
       q(root, '[data-confirm="no"]'),
       ...allCells(root),
     ];
-    expect(buttons).toHaveLength(1 + 1 + 7 + 1 + 1 + 3 + 1 + 2 + 36);
+    expect(buttons).toHaveLength(1 + 1 + 1 + 10 + 1 + 1 + 1 + 3 + 1 + 2 + 36);
     for (const button of buttons) {
       expect(button.tagName, `${button.getAttribute('data-action') ?? button.getAttribute('data-confirm') ?? button.getAttribute('role') ?? 'cell'} is a button element`).toBe('BUTTON');
     }
@@ -297,19 +324,23 @@ describe('rows are kept in the accessibility tree and the label is not hidden', 
 });
 
 describe('the selector sets its own colours and the board disables double-tap zoom (FR-65)', () => {
-  it('@trace FR-65 The size buttons declare a color and a background-color token, unchecked and checked, with 4.5:1 between them', () => {
+  // add-theme-switch DELIBERATE CHANGE (FR-65, A-51; delta «The size buttons set their own colours...», decision A1): the 4.5:1 ratio of the
+  // text to the background is computed in the light AND in the dark token set; the declarations are asserted once.
+  it('@trace FR-65 The size buttons declare a color and a background-color token, unchecked and checked, with 4.5:1 between them (light and dark)', () => {
     const parsed = readStyles();
     const unchecked = declarationsFor(parsed, '.size-control button');
     const checkedOwn = declarationsFor(parsed, ".size-control button[aria-checked='true']");
     expect(rulesWithSelector(parsed, '.size-control button').length, 'a rule for the size buttons').toBeGreaterThan(0);
     expect(rulesWithSelector(parsed, ".size-control button[aria-checked='true']").length, 'a rule for the checked size button').toBeGreaterThan(0);
     const checked = new Map([...unchecked, ...checkedOwn]); // the declarations of the checked state: its own laid over the unchecked ones
-    for (const [state, declarations] of [['unchecked', unchecked], ['checked', checked]] as const) {
-      const fg = tokenOf(parsed, declarations.get('color'));
-      const bg = tokenOf(parsed, declarations.get('background-color'));
-      expect.assert(fg !== undefined, `${state}: color is a single var(--color-...) of a declared token (is ${declarations.get('color') ?? 'missing'})`);
-      expect.assert(bg !== undefined, `${state}: background-color is a single var(--color-...) of a declared token (is ${declarations.get('background-color') ?? 'missing'})`);
-      expect(contrastRatio(token(parsed, fg), token(parsed, bg)), `${state}: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+    for (const set of themeTokenSets(parsed)) {
+      for (const [state, declarations] of [['unchecked', unchecked], ['checked', checked]] as const) {
+        const fg = tokenOf(parsed, declarations.get('color'));
+        const bg = tokenOf(parsed, declarations.get('background-color'));
+        expect.assert(fg !== undefined, `${state}: color is a single var(--color-...) of a declared token (is ${declarations.get('color') ?? 'missing'})`);
+        expect.assert(bg !== undefined, `${state}: background-color is a single var(--color-...) of a declared token (is ${declarations.get('background-color') ?? 'missing'})`);
+        expect(contrastRatio(tokenIn(set, fg), tokenIn(set, bg)), `${set.label} set, ${state}: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+      }
     }
   });
 
@@ -387,24 +418,30 @@ describe('the cascade gives each cell state its border and the colours whose con
     });
   }
 
+  // add-theme-switch DELIBERATE CHANGE (FR-65, A-51; delta «The cascade gives each cell state the colours whose contrast is checked»): the test
+  // injects the stylesheet once with the light values and once with the dark values substituted (`injectPageStyles(set.tokens)`).
   for (const [n, puzzle] of sizes) {
-    it(`@trace FR-65 The cascade gives each cell kind the token colours at ${n}x${n}, and the page the page colour`, () => {
-      injectPageStyles();
+    it(`@trace FR-65 The cascade gives each cell kind the token colours at ${n}x${n}, and the page the page colour (light and dark values)`, () => {
       const parsed = readStyles();
-      const kinds = fourKinds(puzzle);
-      const expected: [HTMLElement, string, string, string, string][] = [
-        [kinds.ordinary, '--color-cell-border', '--color-cell-bg', '--color-text', 'ordinary cell'],
-        [kinds.given, '--color-given-border', '--color-given-bg', '--color-text', 'given cell'],
-        [kinds.violating, '--color-violation-border', '--color-violation-bg', '--color-violation-text', 'violating cell'],
-        [kinds.givenViolating, '--color-violation-border', '--color-violation-bg', '--color-violation-text', 'given in violation'],
-      ];
-      for (const [el, border, fill, text, what] of expected) {
-        const style = getComputedStyle(el);
-        expect(style.borderTopColor, `${what} border`).toBe(rgbOf(token(parsed, border)));
-        expect(style.backgroundColor, `${what} fill`).toBe(rgbOf(token(parsed, fill)));
-        expect(style.color, `${what} text`).toBe(rgbOf(token(parsed, text)));
+      for (const set of themeTokenSets(parsed)) {
+        const style = injectPageStyles(set.tokens);
+        const kinds = fourKinds(puzzle);
+        const expected: [HTMLElement, string, string, string, string][] = [
+          [kinds.ordinary, '--color-cell-border', '--color-cell-bg', '--color-text', 'ordinary cell'],
+          [kinds.given, '--color-given-border', '--color-given-bg', '--color-text', 'given cell'],
+          [kinds.violating, '--color-violation-border', '--color-violation-bg', '--color-violation-text', 'violating cell'],
+          [kinds.givenViolating, '--color-violation-border', '--color-violation-bg', '--color-violation-text', 'given in violation'],
+        ];
+        for (const [el, border, fill, text, what] of expected) {
+          const computed = getComputedStyle(el);
+          expect(computed.borderTopColor, `${set.label}: ${what} border`).toBe(rgbOf(tokenIn(set, border)));
+          expect(computed.backgroundColor, `${set.label}: ${what} fill`).toBe(rgbOf(tokenIn(set, fill)));
+          expect(computed.color, `${set.label}: ${what} text`).toBe(rgbOf(tokenIn(set, text)));
+        }
+        expect(getComputedStyle(document.body).backgroundColor, `${set.label}: the page colour`).toBe(rgbOf(tokenIn(set, '--color-page')));
+        style.remove();
+        document.body.replaceChildren();
       }
-      expect(getComputedStyle(document.body).backgroundColor).toBe(rgbOf(token(parsed, '--color-page')));
     });
   }
 });

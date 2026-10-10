@@ -148,7 +148,7 @@
     {
       "slice": "2026-10-10-update-setup-sheet-start",
       "reviewEvidence": "unclean",
-      "trailerCommits": 21,
+      "trailerCommits": 22,
       "libDomains": [
         "ui"
       ],

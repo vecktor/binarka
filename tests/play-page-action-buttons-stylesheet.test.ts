@@ -6,6 +6,7 @@
 //
 // @trace NFR-12
 // @trace FR-101
+// @trace FR-117
 //
 // update-setup-sheet-start adds the section at the end: «Почати», the summary button and «Закрити» declare the same 44 px floor
 // (NFR-12, FR-101; delta scenario «The stylesheet declares a 44 px minimum height for the three buttons»). The seven tests above stay.
@@ -276,6 +277,53 @@ describe('@trace NFR-12 @trace FR-101 the stylesheet declares a 44 px minimum he
         expect(rule.context, `the min-height rule "${rule.selectors.join(', ')}" for ${name} is not inside an at-rule`).toEqual([]);
       }
       // no state or at-rule rule shrinks it, and none is !important
+      const below = strippedMinHeightRulesFor(button, rules).flatMap((rule) =>
+        rule.declarations
+          .filter((d) => d.property === 'min-height' && !(lengthPx(d.value) >= FLOOR_PX))
+          .map((d) => `${rule.context.join(' ')} ${rule.selectors.join(', ')} { min-height: ${d.value} }`.trim()),
+      );
+      expect(below, `${name}: every declared min-height is at least ${FLOOR_PX} px in any state`).toEqual([]);
+      const important = strippedMinHeightRulesFor(button, rules).filter((rule) => rule.declarations.some((d) => d.property === 'min-height' && d.important));
+      expect(important.map((rule) => rule.selectors.join(', ')), `${name}: no min-height declaration is !important`).toEqual([]);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// add-theme-switch: the three theme options, the settings button and the settings panel's close button (NFR-12, FR-117)
+// ---------------------------------------------------------------------------------------------------------
+
+/**
+ * The five controls of the scenario «The stylesheet declares a 44 px minimum height for the settings controls» (delta spec
+ * openspec/changes/add-theme-switch/specs/play-page/spec.md, «The theme options meet the touch-target floor»): found by the hooks the
+ * spec pins, never by a class the implementation invents. The seven tests at the top and the section above stay.
+ */
+const SETTINGS_CONTROLS: [string, string][] = [
+  ['the settings button', '[data-action="settings"]'],
+  ['«Світла»', '[data-theme-option="light"]'],
+  ['«Темна»', '[data-theme-option="dark"]'],
+  ['«Як у системі»', '[data-theme-option="auto"]'],
+  ['the settings panel\'s «Закрити»', '[data-action="settings-close"]'],
+];
+
+describe('@trace NFR-12 @trace FR-117 the stylesheet declares a 44 px minimum height for the settings controls', () => {
+  it('The stylesheet declares a 44 px minimum height for the settings controls', () => {
+    const root = mountFixture(BLANK);
+    injectPageStyles();
+    const rules = readStyles().rules;
+    for (const [name, selector] of SETTINGS_CONTROLS) {
+      const button = q(root, selector); // the control is missing on a page without the settings panel: this line fails first
+      expect(button.tagName, `${name} is a button element`).toBe('BUTTON');
+      const value = getComputedStyle(button).minHeight;
+      expect(
+        lengthPx(value) >= FLOOR_PX,
+        `${name} has min-height "${value}" (reads as ${lengthPx(value)} px); NFR-12 needs a length of at least ${FLOOR_PX} px, for example 2.75rem`,
+      ).toBe(true);
+      const declaring = minHeightRulesFor(button, rules);
+      expect(declaring.length, `at least one top-level rule declares min-height for ${name}`).toBeGreaterThan(0);
+      for (const rule of declaring) {
+        expect(rule.context, `the min-height rule "${rule.selectors.join(', ')}" for ${name} is not inside an at-rule`).toEqual([]);
+      }
       const below = strippedMinHeightRulesFor(button, rules).flatMap((rule) =>
         rule.declarations
           .filter((d) => d.property === 'min-height' && !(lengthPx(d.value) >= FLOOR_PX))

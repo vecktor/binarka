@@ -1,9 +1,31 @@
 import { expect } from '@playwright/test';
 import type { Locator, Page } from '@playwright/test';
 
+export type ThemeChoice = 'light' | 'dark' | 'auto';
+export const THEME_KEY = 'binarka.theme';
+
+/**
+ * add-theme-switch (design.md "Risks", AGENTS.md lesson capture-determinism item 5): store the theme preference BEFORE the page runs.
+ * An `addInitScript` runs again on every navigation and reload, so it would overwrite a preference that a press stored before a reload;
+ * the script therefore writes the key ONCE per browser tab (a `sessionStorage` marker of the test, which the page never reads). A step
+ * that presses an option and reloads must not rely on this: it stores by `page.evaluate`, or presses the option in the UI.
+ */
+export async function seedTheme(page: Page, value: ThemeChoice): Promise<void> {
+  await page.addInitScript(
+    (seed: { key: string; theme: string }) => {
+      if (window.sessionStorage.getItem('e2e-theme-seeded') === null) {
+        window.sessionStorage.setItem('e2e-theme-seeded', '1');
+        window.localStorage.setItem(seed.key, seed.theme);
+      }
+    },
+    { key: THEME_KEY, theme: value },
+  );
+}
+
 // The page draws its seed from Math.random (src/ui/seed.ts). A seeded Math.random makes every run show the same
-// puzzles, so a re-run of a check measures the same page (capture determinism).
-export async function openPage(page: Page, seed = 1): Promise<void> {
+// puzzles, so a re-run of a check measures the same page (capture determinism). `options.theme` stores a theme preference first.
+export async function openPage(page: Page, seed = 1, options: { theme?: ThemeChoice } = {}): Promise<void> {
+  if (options.theme !== undefined) await seedTheme(page, options.theme);
   await page.addInitScript((start: number) => {
     let a = start >>> 0;
     Math.random = () => {
@@ -29,6 +51,11 @@ export const sel = {
   rules: '[data-action="rules"]',
   rulesPanel: '[data-section="rules"]',
   rulesClose: '.rules-close',
+  settings: '[data-action="settings"]',
+  settingsPanel: '[data-section="settings"]',
+  settingsClose: '[data-action="settings-close"]',
+  themeControl: '[data-control="theme"]',
+  themeOption: '[data-theme-option]',
   sheet: '[data-section="setup"]',
   sizeOption: '[data-size-option]',
   levelOption: '[data-control="level"] [role="radio"]',
@@ -58,6 +85,72 @@ export async function solveByHints(page: Page): Promise<void> {
 export async function openRules(page: Page): Promise<void> {
   await page.locator(sel.rules).click();
   await expect(page.locator(`${sel.rulesPanel}:popover-open`)).toBeVisible();
+}
+
+/**
+ * Open the settings panel with the settings button (add-theme-switch, FR-117). The first line asserts that the button exists, so a page
+ * without the feature fails on an assertion and not on a click timeout.
+ */
+export async function openSettings(page: Page): Promise<void> {
+  await expect(page.locator(sel.settings), 'the page has the settings button').toHaveCount(1);
+  await page.locator(sel.settings).click();
+  await expect(page.locator(`${sel.settingsPanel}:popover-open`)).toBeVisible();
+}
+
+export async function closeSettings(page: Page): Promise<void> {
+  await page.locator(sel.settingsClose).click();
+  await expect(page.locator(`${sel.settingsPanel}:popover-open`)).toHaveCount(0);
+}
+
+export async function pressTheme(page: Page, choice: ThemeChoice): Promise<void> {
+  await page.locator(`${sel.themeOption}[data-theme-option="${choice}"]`).click();
+  await expect(page.locator(`${sel.themeOption}[data-theme-option="${choice}"]`)).toHaveAttribute('aria-checked', 'true');
+}
+
+/** `#rgb` or `#rrggbb` (as the built stylesheet may minify it) to the `rgb(r, g, b)` string that getComputedStyle returns. */
+export function hexToRgb(hex: string): string {
+  const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex.trim());
+  if (m?.[1] === undefined) throw new Error(`not a #rgb or #rrggbb colour: "${hex}"`);
+  const full = m[1].length === 3 ? m[1].replace(/./g, '$&$&') : m[1];
+  return `rgb(${Number.parseInt(full.slice(0, 2), 16)}, ${Number.parseInt(full.slice(2, 4), 16)}, ${Number.parseInt(full.slice(4, 6), 16)})`;
+}
+
+/**
+ * The `--color-page` of the light and of the dark token set, read from the BUILT stylesheet's own rules (`:root` and
+ * `:root[data-theme="dark"]`) as `rgb(r, g, b)` strings, never from the computed style of the page being judged: a page that never turns
+ * dark would otherwise be compared with itself. Throws a clear error when a rule is missing.
+ */
+export async function readPageColours(page: Page): Promise<{ light: string; dark: string }> {
+  const raw = await page.evaluate(() => {
+    const find = (selector: RegExp): string => {
+      const walk = (list: CSSRuleList): string => {
+        for (const rule of Array.from(list)) {
+          if (rule instanceof CSSStyleRule && selector.test(rule.selectorText)) {
+            const value = rule.style.getPropertyValue('--color-page').trim();
+            if (value !== '') return value;
+          }
+          if ('cssRules' in rule) {
+            const inner = walk((rule as CSSGroupingRule).cssRules);
+            if (inner !== '') return inner;
+          }
+        }
+        return '';
+      };
+      for (const sheet of Array.from(document.styleSheets)) {
+        try {
+          const value = walk(sheet.cssRules);
+          if (value !== '') return value;
+        } catch {
+          /* a cross-origin sheet: none here */
+        }
+      }
+      return '';
+    };
+    return { light: find(/^:root$/), dark: find(/^:root\[data-theme=["']?dark["']?\]$/) };
+  });
+  if (raw.light === '') throw new Error('the stylesheet has no top-level :root rule with --color-page');
+  if (raw.dark === '') throw new Error('the stylesheet has no :root[data-theme="dark"] rule with --color-page');
+  return { light: hexToRgb(raw.light), dark: hexToRgb(raw.dark) };
 }
 
 export async function openSheet(page: Page): Promise<void> {

@@ -1,5 +1,13 @@
 // Play page: the header logo (FR-72, requirement «Logo» of openspec/changes/add-logo/specs/play-page/spec.md).
 // The shapes are checked in jsdom, which has no layout: sizes, colours and legibility at 40 px are not tested (held NFR-15, NFR-14).
+//
+// add-theme-switch DELIBERATE CHANGES (TC-14 and FR-72 as amended 2026-10-10, autonomy-log rows 120 and 121; delta requirement «Logo», MODIFIED):
+// the header holds one more inline svg, the gear inside the settings button, so "the logo" is now the svg inside the HEADING (`logoOf`), the
+// root holds exactly these two svg elements, and the scenario «The gear holds no text and no reference» is new. Every other test keeps its text.
+//
+// @trace FR-72
+// @trace TC-14
+// @trace FR-117
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,
@@ -33,10 +41,12 @@ function headerOf(root: HTMLElement): HTMLElement {
   return header;
 }
 
-/** The only svg of the header, asserted to be exactly one. */
+/** The logo: the only svg inside the heading of the header, asserted to be exactly one (the gear sits in the settings button, not in the heading). */
 function logoOf(root: HTMLElement): SVGSVGElement {
-  const svgs = headerOf(root).querySelectorAll('svg');
-  expect(svgs.length, 'the header holds exactly one svg').toBe(1);
+  const heading = headerOf(root).querySelector('h1, h2, h3, h4, h5, h6, [role="heading"]');
+  expect.assert(heading !== null, 'the header holds a heading');
+  const svgs = heading.querySelectorAll('svg');
+  expect(svgs.length, 'the heading holds exactly one svg').toBe(1);
   const svg = svgs[0];
   expect.assert(svg !== undefined, 'the header holds an svg');
   return svg;
@@ -66,13 +76,19 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
   it('One decorative inline logo in the header', () => {
     const root = mountFixture(WIN_PUZZLE);
     const header = headerOf(root);
-    expect(header.querySelectorAll('svg').length).toBe(1);
-    expect(root.querySelectorAll('svg').length).toBe(1);
-    const svg = logoOf(root);
-    expect(svg.getAttribute('aria-hidden')).toBe('true');
     const headings = header.querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]');
     expect(headings.length, 'the header holds one heading').toBe(1);
-    expect(headings[0]?.textContent).toBe(TITLE_TEXT);
+    expect(headings[0]?.querySelectorAll('svg').length, 'the heading holds exactly one svg (the logo)').toBe(1);
+    // the root holds exactly one other svg, the gear inside [data-action="settings"], and no third
+    const all = Array.from(root.querySelectorAll('svg'));
+    expect(all.length, 'the root holds exactly two svg elements').toBe(2);
+    const svg = logoOf(root);
+    const gears = all.filter((el) => el !== svg);
+    expect(gears.length).toBe(1);
+    expect(gears[0]?.closest('[data-action="settings"]'), 'the other svg is the gear inside the settings button').not.toBeNull();
+    expect(svg.getAttribute('aria-hidden')).toBe('true');
+    expect(gears[0]?.getAttribute('aria-hidden')).toBe('true');
+    expect(headings[0]?.textContent, 'the logo adds no text to the heading').toBe(TITLE_TEXT);
   });
 
   it('The logo holds no text', () => {
@@ -81,6 +97,21 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
     expect(svg.querySelectorAll('text, title, desc, foreignObject').length).toBe(0);
     expect(textNodesUnder(svg).map((t) => t.data)).toEqual([]);
     expect(svg.textContent).toBe('');
+  });
+
+  it('The gear holds no text and no reference', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const button = root.querySelector('[data-action="settings"]');
+    expect.assert(button !== null, 'the page has the settings button');
+    const gear = button.querySelector('svg');
+    expect.assert(gear !== null, 'the settings button holds the gear svg');
+    expect(gear.querySelectorAll('text, title, desc, foreignObject, use').length, 'no text, title, desc, foreignObject or use element').toBe(0);
+    expect(textNodesUnder(gear).map((t) => t.data), 'no text node').toEqual([]);
+    for (const el of [gear, ...Array.from(gear.querySelectorAll('*'))]) {
+      expect(el.hasAttribute('href'), `<${el.localName}> has no href`).toBe(false);
+      expect(el.hasAttribute('xlink:href'), `<${el.localName}> has no xlink:href`).toBe(false);
+      expect(el.hasAttributeNS('http://www.w3.org/1999/xlink', 'href'), `<${el.localName}> has no xlink href`).toBe(false);
+    }
   });
 
   it('The mini board shows 1 0 / 0 1', () => {
@@ -150,6 +181,7 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
       const now = logoOf(root);
       expect(now === atMount, 'the same svg element as at mount').toBe(true);
       expect(textNodesUnder(now).length, 'still no text node').toBe(0);
+      expect(root.querySelectorAll('svg').length, 'the root still holds exactly two svg elements (the logo and the gear)').toBe(2);
     };
 
     it('presses «Нова головоломка»', () => {

@@ -1,7 +1,7 @@
 // @trace NFR-12
 import { expect, test } from '@playwright/test';
 import type { Measured } from './helpers';
-import { chooseSize, closeSheet, measure, openConfirm, openPage, openRules, openSheet, sel } from './helpers';
+import { chooseSize, closeSheet, closeSettings, measure, openConfirm, openPage, openRules, openSettings, openSheet, sel } from './helpers';
 
 // NFR-12 (sampled): the eight viewports declared in docs/requirements-held.md. Not continuum coverage; the stricter
 // instrument is a fine-step width and height sweep of the same measurements.
@@ -31,8 +31,12 @@ for (const [width, height] of VIEWPORTS) {
 
     // 6x6 (the default board) and the page controls.
     misses.push(...below(await measure(page.locator(sel.cell), '6x6 cell'), CONTROL_FLOOR, '6x6'));
+    // add-theme-switch (NFR-12, FR-117): the settings button joins the page controls. The count line makes a page without it fail on an
+    // assertion, not on "no element matched".
+    await expect(page.locator(sel.settings), 'the page has the settings button').toHaveCount(1);
     const pageControls = [
       ...(await measure(page.locator(sel.summary), 'summary button')),
+      ...(await measure(page.locator(sel.settings), 'settings button')),
       ...(await measure(page.locator(sel.hint), 'button')),
       ...(await measure(page.locator(sel.reset), 'button')),
       ...(await measure(page.locator(sel.newPuzzle), 'button')),
@@ -43,6 +47,14 @@ for (const [width, height] of VIEWPORTS) {
     await openRules(page);
     misses.push(...below(await measure(page.locator(sel.rulesClose), 'rules close'), CONTROL_FLOOR, 'rules panel'));
     await page.keyboard.press('Escape');
+
+    // add-theme-switch (NFR-12, FR-117; delta «Measured in a real browser the settings controls are at least 44 px in both directions»):
+    // with the settings panel opened by the settings button, the three theme options and the panel's «Закрити» are measured.
+    await openSettings(page);
+    await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    const settingsControls = [...(await measure(page.locator(sel.themeOption), 'theme option')), ...(await measure(page.locator(sel.settingsClose), 'settings close'))];
+    misses.push(...below(settingsControls, CONTROL_FLOOR, 'settings panel'));
+    await closeSettings(page);
 
     await openSheet(page);
     const sheetControls = [

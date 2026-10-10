@@ -31,8 +31,9 @@ import {
   readStyles,
   rulesWithSelector,
   scanColours,
+  themeTokenSets,
 } from './helpers/css';
-import type { ParsedStyles } from './helpers/css';
+import type { ParsedStyles, TokenSet } from './helpers/css';
 
 installPageLifecycle();
 
@@ -47,10 +48,14 @@ function tokenOf(parsed: ParsedStyles, value: string | undefined): string | unde
   return name !== undefined && name in parsed.tokens ? name : undefined;
 }
 
-/** The `#rrggbb` value of a token, asserted to exist. */
-function hexOf(parsed: ParsedStyles, name: string): string {
-  const value = parsed.tokens[name];
-  expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), `${name} is declared in :root as #rrggbb`);
+/**
+ * The `#rrggbb` value of a token in one token set, asserted to exist. add-theme-switch DELIBERATE CHANGE (FR-65, A-51; autonomy-log row
+ * 124, decision A1): it took the top-level tokens only; it takes a token set now, and the colour-pair tests below run once per set
+ * (`themeTokenSets` asserts that the dark set exists, so a loop can never pass on the light set alone).
+ */
+function hexOf(set: TokenSet, name: string): string {
+  const value = set.tokens[name];
+  expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), `${name} is #rrggbb in the ${set.label} token set`);
   return value;
 }
 
@@ -77,12 +82,14 @@ describe('@trace FR-65 @trace NFR-9 the summary and level buttons declare their 
       ['checked', new Map([...plain, ...declarationsFor(parsed, CHECKED)])],
       ['unavailable', new Map([...plain, ...declarationsFor(parsed, UNAVAILABLE)])],
     ];
-    for (const [state, declarations] of states) {
-      const fg = tokenOf(parsed, declarations.get('color'));
-      const bg = tokenOf(parsed, declarations.get('background-color'));
-      expect.assert(fg !== undefined, `${state}: color is a single var(--color-...) of a declared token (is ${declarations.get('color') ?? 'missing'})`);
-      expect.assert(bg !== undefined, `${state}: background-color is a single var(--color-...) of a declared token (is ${declarations.get('background-color') ?? 'missing'})`);
-      expect(contrastRatio(hexOf(parsed, fg), hexOf(parsed, bg)), `${state}: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+    for (const set of themeTokenSets(parsed)) {
+      for (const [state, declarations] of states) {
+        const fg = tokenOf(parsed, declarations.get('color'));
+        const bg = tokenOf(parsed, declarations.get('background-color'));
+        expect.assert(fg !== undefined, `${state}: color is a single var(--color-...) of a declared token (is ${declarations.get('color') ?? 'missing'})`);
+        expect.assert(bg !== undefined, `${state}: background-color is a single var(--color-...) of a declared token (is ${declarations.get('background-color') ?? 'missing'})`);
+        expect(contrastRatio(hexOf(set, fg), hexOf(set, bg)), `${set.label} set, ${state}: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+      }
     }
   });
 
@@ -144,7 +151,11 @@ describe('@trace FR-65 @trace FR-101 the start button declares its colours', () 
     const fg = tokenOf(parsed, declarations.get('color'));
     const bg = tokenOf(parsed, declarations.get('background-color'));
     expect.assert(fg !== undefined && bg !== undefined, 'premise: both colours are tokens');
-    expect(contrastRatio(hexOf(parsed, fg), hexOf(parsed, bg)), `«Почати»: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+    // add-theme-switch DELIBERATE CHANGE (FR-65, A-51; delta «The start button declares its colours», last clause "in each token set"): once per set
+    const sets = themeTokenSets(parsed);
+    for (const set of sets) {
+      expect(contrastRatio(hexOf(set, fg), hexOf(set, bg)), `${set.label} set, «Почати»: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+    }
 
     // the hover, active and focus-visible rules of «Почати», when there are any, keep 4.5:1 over the plain pair
     const stateRules = parsed.rules.filter((rule) =>
@@ -156,7 +167,9 @@ describe('@trace FR-65 @trace FR-101 the start button declares its colours', () 
       const stateFg = tokenOf(parsed, merged.get('color'));
       const stateBg = tokenOf(parsed, merged.get('background-color'));
       if (stateFg === undefined || stateBg === undefined) continue; // a state rule that sets only an outline has no colour pair to judge
-      expect(contrastRatio(hexOf(parsed, stateFg), hexOf(parsed, stateBg)), `${rule.selectors.join(', ')}: ${stateFg} on ${stateBg}`).toBeGreaterThanOrEqual(4.5);
+      for (const set of sets) {
+        expect(contrastRatio(hexOf(set, stateFg), hexOf(set, stateBg)), `${set.label} set, ${rule.selectors.join(', ')}: ${stateFg} on ${stateBg}`).toBeGreaterThanOrEqual(4.5);
+      }
     }
   });
 });

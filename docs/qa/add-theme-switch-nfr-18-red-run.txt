@@ -1,0 +1,230 @@
+TEST-ENGINEER'S NFR-18 RED RUN of add-theme-switch, task 2.6 (second part). Written 2026-10-10 (UTC+5:30) by the test-engineer agent.
+Command: npx playwright test e2e/nfr-18-flash.spec.ts   (the page WITHOUT the head step: index.html has no inline script and no theme-color meta; src/ and index.html untouched)
+Result: 8 failed (0 passed), the spec being picked up by the `layout` project through the added testMatch pattern /nfr-18-.*\.spec\.ts/ (not "no tests found").
+Variant 1 (page bundle aborted, 4 runs: 375x812 and 1280x800, dark stored on a light system and light stored on a dark system): each fails on the assertion "<html> has data-theme=... before the bundle runs" (the attribute is absent: the premise "the board is not built" passed, so the result does not come from the bundle).
+Variant 2 (bundle loaded, MutationObserver, 4 runs): each fails on "at least one counted data-theme record" with events [{"kind":"body-child",...}] only, i.e. no counted record before the first child of <body> (the spec does not pass vacuously).
+Sanity of the spec itself (not evidence for the product): in a throwaway copy of the repository outside the worktree, with a minimal head script, a theme-color meta and a dark --color-page rule added, the same spec passed 8 of 8; the copy was deleted. The orchestrator confirms the red result independently (task 2.7); NFR-18 stays in docs/requirements-held.md until then.
+docs/qa/e2e-report.json and docs/qa/a11y-report.json were restored with git checkout -- afterwards.
+----------------------------------------------------------------------------------------------------
+
+Running 8 tests using 5 workers
+
+  ✘  2 [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 375x812 dark stored on a light system › NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after (219ms)
+  ✘  5 [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 375x812 light stored on a dark system › NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after (235ms)
+  ✘  6 [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 1280x800 dark stored on a light system › NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after (113ms)
+  ✘  8 [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 1280x800 light stored on a dark system › NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after (103ms)
+  ✘  3 [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 375x812 light stored on a dark system › NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted) (5.2s)
+  ✘  1 [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 1280x800 dark stored on a light system › NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted) (5.2s)
+  ✘  4 [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 375x812 dark stored on a light system › NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted) (5.2s)
+  ✘  7 [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 1280x800 light stored on a dark system › NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted) (5.1s)
+
+
+  1) [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 375x812 dark stored on a light system › NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted) 
+
+    Error: <html> has data-theme="dark" before the bundle runs
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "dark"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - <html> has data-theme="dark" before the bundle runs locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk">…</html>
+           - unexpected value "null"
+
+
+      78 |         await page.goto('/');
+      79 |         await expect(page.locator(sel.cell), 'premise: the page bundle did not run, so the board is not built').toHaveCount(0);
+    > 80 |         await expect(page.locator('html'), `<html> has data-theme="${stored}" before the bundle runs`).toHaveAttribute('data-theme', stored);
+         |                                                                                                        ^
+      81 |         const colours = await readPageColours(page);
+      82 |         const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+      83 |         expect(background, `the body background equals the ${stored} --color-page`).toBe(colours[stored]);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-18-flash.spec.ts:80:104
+
+    Error Context: test-results/nfr-18-flash-375x812-dark--b2469--background-bundle-aborted--layout/error-context.md
+
+  2) [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 375x812 dark stored on a light system › NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after 
+
+    Error: at least one counted data-theme record (events: [{"kind":"body-child","oldValue":null,"newValue":null,"counted":false}])
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      90 |         const events = await page.evaluate(() => (window as unknown as { __flashEvents: FlashEvent[] }).__flashEvents.slice());
+      91 |         const counted = events.filter((e) => e.kind === 'theme' && e.counted);
+    > 92 |         expect(counted.length, `at least one counted data-theme record (events: ${JSON.stringify(events)})`).toBeGreaterThanOrEqual(1);
+         |                                                                                                              ^
+      93 |         expect(counted[counted.length - 1]?.newValue, 'the last value is the stored one').toBe(stored);
+      94 |         const firstBodyChild = events.findIndex((e) => e.kind === 'body-child');
+      95 |         expect(firstBodyChild, 'the observer saw the first child added to <body>').toBeGreaterThanOrEqual(0);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-18-flash.spec.ts:92:110
+
+    Error Context: test-results/nfr-18-flash-375x812-dark--41b15-child-and-not-changed-after-layout/error-context.md
+
+  3) [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 375x812 light stored on a dark system › NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted) 
+
+    Error: <html> has data-theme="light" before the bundle runs
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "light"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - <html> has data-theme="light" before the bundle runs locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk">…</html>
+           - unexpected value "null"
+
+
+      78 |         await page.goto('/');
+      79 |         await expect(page.locator(sel.cell), 'premise: the page bundle did not run, so the board is not built').toHaveCount(0);
+    > 80 |         await expect(page.locator('html'), `<html> has data-theme="${stored}" before the bundle runs`).toHaveAttribute('data-theme', stored);
+         |                                                                                                        ^
+      81 |         const colours = await readPageColours(page);
+      82 |         const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+      83 |         expect(background, `the body background equals the ${stored} --color-page`).toBe(colours[stored]);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-18-flash.spec.ts:80:104
+
+    Error Context: test-results/nfr-18-flash-375x812-light-1bd6c--background-bundle-aborted--layout/error-context.md
+
+  4) [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 375x812 light stored on a dark system › NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after 
+
+    Error: at least one counted data-theme record (events: [{"kind":"body-child","oldValue":null,"newValue":null,"counted":false}])
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      90 |         const events = await page.evaluate(() => (window as unknown as { __flashEvents: FlashEvent[] }).__flashEvents.slice());
+      91 |         const counted = events.filter((e) => e.kind === 'theme' && e.counted);
+    > 92 |         expect(counted.length, `at least one counted data-theme record (events: ${JSON.stringify(events)})`).toBeGreaterThanOrEqual(1);
+         |                                                                                                              ^
+      93 |         expect(counted[counted.length - 1]?.newValue, 'the last value is the stored one').toBe(stored);
+      94 |         const firstBodyChild = events.findIndex((e) => e.kind === 'body-child');
+      95 |         expect(firstBodyChild, 'the observer saw the first child added to <body>').toBeGreaterThanOrEqual(0);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-18-flash.spec.ts:92:110
+
+    Error Context: test-results/nfr-18-flash-375x812-light-1de36-child-and-not-changed-after-layout/error-context.md
+
+  5) [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 1280x800 dark stored on a light system › NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted) 
+
+    Error: <html> has data-theme="dark" before the bundle runs
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "dark"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - <html> has data-theme="dark" before the bundle runs locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk">…</html>
+           - unexpected value "null"
+
+
+      78 |         await page.goto('/');
+      79 |         await expect(page.locator(sel.cell), 'premise: the page bundle did not run, so the board is not built').toHaveCount(0);
+    > 80 |         await expect(page.locator('html'), `<html> has data-theme="${stored}" before the bundle runs`).toHaveAttribute('data-theme', stored);
+         |                                                                                                        ^
+      81 |         const colours = await readPageColours(page);
+      82 |         const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+      83 |         expect(background, `the body background equals the ${stored} --color-page`).toBe(colours[stored]);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-18-flash.spec.ts:80:104
+
+    Error Context: test-results/nfr-18-flash-1280x800-dark-ff275--background-bundle-aborted--layout/error-context.md
+
+  6) [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 1280x800 dark stored on a light system › NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after 
+
+    Error: at least one counted data-theme record (events: [{"kind":"body-child","oldValue":null,"newValue":null,"counted":false}])
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      90 |         const events = await page.evaluate(() => (window as unknown as { __flashEvents: FlashEvent[] }).__flashEvents.slice());
+      91 |         const counted = events.filter((e) => e.kind === 'theme' && e.counted);
+    > 92 |         expect(counted.length, `at least one counted data-theme record (events: ${JSON.stringify(events)})`).toBeGreaterThanOrEqual(1);
+         |                                                                                                              ^
+      93 |         expect(counted[counted.length - 1]?.newValue, 'the last value is the stored one').toBe(stored);
+      94 |         const firstBodyChild = events.findIndex((e) => e.kind === 'body-child');
+      95 |         expect(firstBodyChild, 'the observer saw the first child added to <body>').toBeGreaterThanOrEqual(0);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-18-flash.spec.ts:92:110
+
+    Error Context: test-results/nfr-18-flash-1280x800-dark-db656-child-and-not-changed-after-layout/error-context.md
+
+  7) [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 1280x800 light stored on a dark system › NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted) 
+
+    Error: <html> has data-theme="light" before the bundle runs
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "light"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - <html> has data-theme="light" before the bundle runs locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk">…</html>
+           - unexpected value "null"
+
+
+      78 |         await page.goto('/');
+      79 |         await expect(page.locator(sel.cell), 'premise: the page bundle did not run, so the board is not built').toHaveCount(0);
+    > 80 |         await expect(page.locator('html'), `<html> has data-theme="${stored}" before the bundle runs`).toHaveAttribute('data-theme', stored);
+         |                                                                                                        ^
+      81 |         const colours = await readPageColours(page);
+      82 |         const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+      83 |         expect(background, `the body background equals the ${stored} --color-page`).toBe(colours[stored]);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-18-flash.spec.ts:80:104
+
+    Error Context: test-results/nfr-18-flash-1280x800-ligh-c385a--background-bundle-aborted--layout/error-context.md
+
+  8) [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 1280x800 light stored on a dark system › NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after 
+
+    Error: at least one counted data-theme record (events: [{"kind":"body-child","oldValue":null,"newValue":null,"counted":false}])
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 1
+    Received:    0
+
+      90 |         const events = await page.evaluate(() => (window as unknown as { __flashEvents: FlashEvent[] }).__flashEvents.slice());
+      91 |         const counted = events.filter((e) => e.kind === 'theme' && e.counted);
+    > 92 |         expect(counted.length, `at least one counted data-theme record (events: ${JSON.stringify(events)})`).toBeGreaterThanOrEqual(1);
+         |                                                                                                              ^
+      93 |         expect(counted[counted.length - 1]?.newValue, 'the last value is the stored one').toBe(stored);
+      94 |         const firstBodyChild = events.findIndex((e) => e.kind === 'body-child');
+      95 |         expect(firstBodyChild, 'the observer saw the first child added to <body>').toBeGreaterThanOrEqual(0);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-18-flash.spec.ts:92:110
+
+    Error Context: test-results/nfr-18-flash-1280x800-ligh-1cb59-child-and-not-changed-after-layout/error-context.md
+
+  8 failed
+    [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 375x812 dark stored on a light system › NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted) 
+    [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 375x812 dark stored on a light system › NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after 
+    [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 375x812 light stored on a dark system › NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted) 
+    [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 375x812 light stored on a dark system › NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after 
+    [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 1280x800 dark stored on a light system › NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted) 
+    [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 1280x800 dark stored on a light system › NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after 
+    [layout] › e2e/nfr-18-flash.spec.ts:75:7 › 1280x800 light stored on a dark system › NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted) 
+    [layout] › e2e/nfr-18-flash.spec.ts:86:7 › 1280x800 light stored on a dark system › NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after 
+
+----------------------------------------------------------------------------------------------------
+ORCHESTRATOR CONFIRMATION (2026-10-10 07:32 UTC+5:30): the same spec run in a scratch copy without the head step: 8 failed, the same two assertions (variant 1: data-theme missing before the bundle runs; variant 2: no counted data-theme record, a body-child event seen). Red in both variants.
+----------------------------------------------------------------------------------------------------

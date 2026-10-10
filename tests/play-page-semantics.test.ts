@@ -33,6 +33,8 @@ import {
   mountPage,
   pressHint,
   pressNew,
+  pressTheme,
+  settingsPanel,
   q,
   rulesPanel,
   seedQueue,
@@ -81,8 +83,11 @@ function textNodesOf(root: HTMLElement): string[] {
 }
 
 /**
- * The four elements that may carry an id (FR-61, FR-96): the rules panel, its heading, the setup sheet and the element holding
- * the confirmation text, in document order. Slice DL2 DELIBERATE CHANGE (A-41, FR-96): the sheet is the fourth id, was three.
+ * The five elements that may carry an id (FR-61, FR-96, FR-117): the rules panel, its heading, the setup sheet, the settings panel and
+ * the element holding the confirmation text. Slice DL2 DELIBERATE CHANGE (A-41, FR-96): the sheet is the fourth id, was three.
+ * add-theme-switch DELIBERATE CHANGE (A-41 amended, FR-117; autonomy-log row 120; delta «The cell contract is unchanged and only five
+ * elements have ids»): the settings panel is the fifth. The order of the list is NOT pinned (autonomy-log row 124, A2: the delta does not
+ * say where the settings panel sits among the other panels), so callers compare `inDocumentOrder` of both sides.
  */
 function expectedIdElements(root: HTMLElement): Element[] {
   const panel = rulesPanel(root);
@@ -91,8 +96,12 @@ function expectedIdElements(root: HTMLElement): Element[] {
   const dialog = q(root, '[data-dialog="confirm"]');
   const text = dialog.querySelector('[id]');
   expect.assert(text !== null, 'the confirmation dialog has an element with an id (its text)');
-  return [panel, heading, sheetOf(root), text];
+  return [panel, heading, sheetOf(root), settingsPanel(root), text];
 }
+
+/** The elements sorted by document order, so two lists are compared as sets. */
+const inDocumentOrder = (elements: Element[]): Element[] =>
+  [...elements].sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0 ? -1 : 1);
 
 describe('the board is a labelled group of cell buttons', () => {
   it('@trace FR-61 Role and name of the default board: group «Поле 6×6» whose children are exactly the 36 cells in reading order, no grid, row or gridcell role', () => {
@@ -135,7 +144,7 @@ describe('the board is a labelled group of cell buttons', () => {
     expect(Array.from(board.children)).toEqual(allCells(root));
   });
 
-  it('@trace FR-61 @trace FR-96 The cell contract is unchanged and exactly four elements have an id: the rules panel, its heading, the setup sheet and the confirmation text', () => {
+  it('@trace FR-61 @trace FR-96 @trace FR-117 The cell contract is unchanged and exactly five elements have an id: the rules panel, its heading, the setup sheet, the settings panel and the confirmation text', () => {
     // a per-size generator, so the size change below really rebuilds the board (a fixed 6x6 fixture would make it fail)
     const root = mountPage({ seedSource: () => 1, generate: generatorBySize({ 6: WIN_PUZZLE, 4: BLANK_4 }) });
     const cells = allCells(root);
@@ -149,32 +158,34 @@ describe('the board is a labelled group of cell buttons', () => {
       expect(cell.hasAttribute('role'), 'a cell carries no role attribute').toBe(false);
     }
     expect(cells.filter((c) => c.classList.contains('cell-given'))).toHaveLength(10);
-    const three = expectedIdElements(root);
-    expect(idElements(root), 'exactly the rules panel, its heading, the setup sheet and the confirmation text have an id').toEqual(three);
-    expect(three).toHaveLength(4);
-    for (const el of three) expect(el.id, 'each id ends in the number of the mount').toMatch(/\d+$/);
+    const five = inDocumentOrder(expectedIdElements(root));
+    expect(inDocumentOrder(idElements(root)), 'exactly the rules panel, its heading, the setup sheet, the settings panel and the confirmation text have an id').toEqual(five);
+    expect(five).toHaveLength(5);
+    for (const el of five) expect(el.id, 'each id ends in the number of the mount').toMatch(/\d+$/);
     expect(root.querySelectorAll('[for]'), 'no for attribute').toHaveLength(0);
-    // after a click, a hint, a level change, a size change and a new puzzle the same four elements are the only ones with an id
+    // after a click, a hint, a level change, a size change, a theme press and a new puzzle the same five elements are the only ones with an id
     clickCell(root, 1, 1);
     pressHint(root);
+    pressTheme(root, 'dark');
     chooseLevel(root, 2);
     expect(q(root, '[data-board]').getAttribute('data-size'), 'premise: the level change kept the 6x6 board').toBe('6');
     selectSize(root, 4);
     expect(q(root, '[data-board]').getAttribute('data-size'), 'the size change really rebuilt the board').toBe('4');
     pressNew(root);
-    expect(idElements(root)).toEqual(three);
+    expect(inDocumentOrder(idElements(root))).toEqual(five);
     expect(root.querySelectorAll('[for]')).toHaveLength(0);
   });
 
-  it('@trace FR-61 @trace FR-96 Two mounts in one document share no id: four ids each, eight different ones, and no other id in the document', () => {
+  it('@trace FR-61 @trace FR-96 @trace FR-117 Two mounts in one document share no id: five ids each, ten different ones, and no other id in the document', () => {
+    // add-theme-switch DELIBERATE CHANGE (A-41 amended, FR-117; delta «Two mounts share no id»): five ids each, ten in all (was four and eight)
     const a = mountFixture(BLANK);
     const b = mountFixture(BLANK);
     const idsA = idElements(a).map((e) => e.id);
     const idsB = idElements(b).map((e) => e.id);
-    expect(idsA).toHaveLength(4);
-    expect(idsB).toHaveLength(4);
-    expect(new Set([...idsA, ...idsB]).size, 'the eight ids are pairwise different').toBe(8);
-    expect(document.querySelectorAll('[id]'), 'the document holds exactly those eight').toHaveLength(8);
+    expect(idsA).toHaveLength(5);
+    expect(idsB).toHaveLength(5);
+    expect(new Set([...idsA, ...idsB]).size, 'the ten ids are pairwise different').toBe(10);
+    expect(document.querySelectorAll('[id]'), 'the document holds exactly those ten').toHaveLength(10);
   });
 
   it('@trace FR-61 @trace FR-34 The digit stays the cell text (FR-34) and the name is a separate attribute', () => {

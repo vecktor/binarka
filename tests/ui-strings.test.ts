@@ -19,8 +19,11 @@ import {
   RULES_CLOSE_LABEL,
   RULES_ITEMS,
   RULES_LABEL,
+  SETTINGS_LABEL,
   SHEET_LABEL,
   START_LABEL,
+  THEME_LABEL,
+  THEME_OPTION_LABELS,
   TECHNIQUES_HEADING,
   TECHNIQUES_ITEMS,
   TITLE_TEXT,
@@ -184,6 +187,23 @@ describe('@trace FR-94 @trace NFR-5 @trace FR-101 the new texts live in the stri
   });
 
   it('no file of src/ui/ other than strings.ts and no src/main.ts holds a Cyrillic character (a guard that holds before the change, and must keep holding)', () => {
+    const files = [...uiSources(UI_DIR).filter((f) => f !== STRINGS_FILE), MAIN_FILE];
+    expect(files.length, 'the scan covers files').toBeGreaterThan(3);
+    const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f, 'utf8'))).map((f) => f.slice(process.cwd().length + 1));
+    expect(offenders).toEqual([]);
+  });
+});
+
+// add-theme-switch (NFR-5, FR-94, FR-102, FR-68), scenario «The settings and theme texts live in the strings module» of the requirement
+// «Texts of the settings button, the settings panel and the theme control» (ADDED: no existing test here changes; the Cyrillic source scans
+// above already cover every new file of src/ui/ and are guards). Each text must be a string literal of its own: a plain `contains` could
+// pass on a longer text that holds the word.
+describe('@trace NFR-5 @trace FR-94 @trace FR-102 @trace FR-68 the settings and theme texts live in the strings module', () => {
+  it('The settings and theme texts live in the strings module: strings.ts holds the six texts, and no other file of src/ui/ nor src/main.ts has a Cyrillic character', () => {
+    const source = existsSync(STRINGS_FILE) ? readFileSync(STRINGS_FILE, 'utf8') : '';
+    for (const text of [SETTINGS_LABEL, THEME_LABEL, ...THEME_OPTION_LABELS, CLOSE_LABEL]) {
+      expect(source, `strings.ts holds «${text}» as a string literal of its own`).toMatch(new RegExp(`(['"\`])${text}\\1`));
+    }
     const files = [...uiSources(UI_DIR).filter((f) => f !== STRINGS_FILE), MAIN_FILE];
     expect(files.length, 'the scan covers files').toBeGreaterThan(3);
     const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f, 'utf8'))).map((f) => f.slice(process.cwd().length + 1));

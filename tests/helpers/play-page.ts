@@ -180,10 +180,162 @@ export function dispatchToggle(el: Element, newState: 'open' | 'closed'): void {
   el.dispatchEvent(event);
 }
 
+// ---- add-theme-switch (A-50, FR-113, FR-115; design.md "Risks": cross-test leakage). jsdom's `localStorage` survives between the tests of
+// a file, `<html data-theme>` and an injected `meta[name=theme-color]` too, and `matchMedia` is absent. The lifecycle below cleans
+// all of it before AND after each test, and `installMatchMedia` installs the stub of A-50 (a test that needs "no matchMedia" simply
+// does not install it; vitest's jsdom window carries an own accessor `matchMedia` whose value is `undefined`, which is the "absent" state).
+
+/** The localStorage key of the theme preference (FR-113). */
+export const THEME_KEY = 'binarka.theme';
+export const SETTINGS_LABEL = 'Налаштування';
+export const THEME_LABEL = 'Тема';
+/** The three theme option texts of FR-102, in order, and their `data-theme-option` values. */
+export const THEME_OPTION_LABELS = ['Світла', 'Темна', 'Як у системі'];
+export const THEME_CHOICES = ['light', 'dark', 'auto'] as const;
+export type ThemeChoice = (typeof THEME_CHOICES)[number];
+/** The system-theme query of FR-105. */
+export const DARK_QUERY = '(prefers-color-scheme: dark)';
+
+type ChangeListener = (event: { type: string; matches: boolean; media: string }) => void;
+
+export interface MatchMediaStub {
+  /** the current answer of the dark query */
+  readonly matches: boolean;
+  /** change the answer without firing anything */
+  setMatches: (matches: boolean) => void;
+  /** call every recorded `change` listener with the current answer (what the browser does when the system theme changes) */
+  fire: () => void;
+  /** the `change` listeners that are registered right now (add records, remove forgets) */
+  listeners: ChangeListener[];
+  /** every query string the page passed to `window.matchMedia` */
+  queries: string[];
+}
+
+let savedMatchMedia: PropertyDescriptor | undefined;
+let matchMediaTouched = false;
+
+function defineMatchMedia(value: unknown): void {
+  if (!matchMediaTouched) {
+    savedMatchMedia = Object.getOwnPropertyDescriptor(window, 'matchMedia');
+    matchMediaTouched = true;
+  }
+  Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value });
+}
+
+function removeMatchMedia(): void {
+  if (!matchMediaTouched) return;
+  matchMediaTouched = false;
+  if (savedMatchMedia === undefined) Reflect.deleteProperty(window, 'matchMedia');
+  else Object.defineProperty(window, 'matchMedia', savedMatchMedia);
+  savedMatchMedia = undefined;
+}
+
+/**
+ * A-50: `window.matchMedia` returning `{ matches, media, addEventListener, removeEventListener }` for the dark query; the stub
+ * records the `change` listeners and `fire()` calls them. Removed after each test by `installPageLifecycle`.
+ */
+export function installMatchMedia(matches = false): MatchMediaStub {
+  let current = matches;
+  const listeners: ChangeListener[] = [];
+  const queries: string[] = [];
+  const list = {
+    get matches(): boolean {
+      return current;
+    },
+    media: DARK_QUERY,
+    addEventListener(type: string, listener: ChangeListener): void {
+      if (type === 'change' && !listeners.includes(listener)) listeners.push(listener);
+    },
+    removeEventListener(type: string, listener: ChangeListener): void {
+      const at = listeners.indexOf(listener);
+      if (type === 'change' && at >= 0) listeners.splice(at, 1);
+    },
+  };
+  defineMatchMedia((query: string) => {
+    queries.push(query);
+    return list;
+  });
+  return {
+    get matches(): boolean {
+      return current;
+    },
+    setMatches: (value) => {
+      current = value;
+    },
+    fire: () => {
+      for (const listener of [...listeners]) listener({ type: 'change', matches: current, media: DARK_QUERY });
+    },
+    listeners,
+    queries,
+  };
+}
+
+/** FR-105 "A broken matchMedia": a `window.matchMedia` that throws when it is called. */
+export function installThrowingMatchMedia(): void {
+  defineMatchMedia(() => {
+    throw new Error('matchMedia is broken');
+  });
+}
+
+/** FR-105 "A broken matchMedia": a `window.matchMedia` that returns an object without `addEventListener` (only `matches`). */
+export function installMatchMediaWithoutListeners(matches: boolean): void {
+  defineMatchMedia((query: string) => ({ matches, media: query }));
+}
+
+let savedLocalStorage: PropertyDescriptor | undefined;
+let localStorageReplaced = false;
+
+/** FR-115: the ACCESS to `window.localStorage` throws (storage blocked). Restored first thing by the lifecycle. */
+export function makeLocalStorageAccessThrow(): void {
+  if (!localStorageReplaced) {
+    savedLocalStorage = Object.getOwnPropertyDescriptor(window, 'localStorage');
+    localStorageReplaced = true;
+  }
+  Object.defineProperty(window, 'localStorage', {
+    configurable: true,
+    get(): Storage {
+      throw new DOMException('The operation is insecure.', 'SecurityError');
+    },
+  });
+}
+
+function restoreLocalStorage(): void {
+  if (!localStorageReplaced) return;
+  localStorageReplaced = false;
+  if (savedLocalStorage === undefined) Reflect.deleteProperty(window, 'localStorage');
+  else Object.defineProperty(window, 'localStorage', savedLocalStorage);
+  savedLocalStorage = undefined;
+}
+
+/** The preferences leave nothing behind: the order matters (the storage getter comes back before the stores are cleared). */
+function resetPreferenceEnvironment(): void {
+  restoreLocalStorage();
+  removeMatchMedia();
+  localStorage.clear();
+  sessionStorage.clear();
+  for (const part of document.cookie.split(';')) {
+    const name = part.split('=')[0]?.trim() ?? '';
+    if (name !== '') document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+  }
+  document.documentElement.removeAttribute('data-theme');
+  document.documentElement.style.removeProperty('color-scheme');
+  for (const meta of Array.from(document.head.querySelectorAll('meta[name="theme-color"]'))) meta.remove();
+}
+
+/** Add a `meta[name="theme-color"]` to the document head (jsdom's head has none); the lifecycle removes it after the test. */
+export function addThemeColorMeta(content = '#f9fafb'): HTMLMetaElement {
+  const meta = document.createElement('meta');
+  meta.setAttribute('name', 'theme-color');
+  meta.setAttribute('content', content);
+  document.head.appendChild(meta);
+  return meta;
+}
+
 /** Call once at the top of a test file. */
 export function installPageLifecycle(): void {
   beforeEach(() => {
     document.title = '';
+    resetPreferenceEnvironment();
     installDialogStubs();
     installPopoverStubs();
   });
@@ -194,6 +346,7 @@ export function installPageLifecycle(): void {
     removeInjectedStyles(); // stylesheets a test injected to read the cascade (tests/helpers/css.ts)
     removeDialogStubs();
     removePopoverStubs();
+    resetPreferenceEnvironment();
   });
 }
 
@@ -868,6 +1021,57 @@ export const pressStart = (root: ParentNode): void => { sheetStartButton(root).c
 export function pressClose(root: ParentNode): void {
   sheetCloseButton(root).click();
   dispatchToggle(sheetOf(root), 'closed');
+}
+
+// ---- add-theme-switch (FR-68, FR-102, FR-117): the settings button, the settings panel and the theme control ----
+
+function exactlyOne(root: ParentNode, selector: string): HTMLElement {
+  const found = root.querySelectorAll<HTMLElement>(selector);
+  expect(found, `exactly one ${selector} in the root`).toHaveLength(1);
+  const only = found[0];
+  expect.assert(only !== undefined, `premise: exactly one ${selector} was found`);
+  return only;
+}
+
+/** The settings button `[data-action="settings"]` (FR-117): asserts that there is exactly one in `root`. */
+export const settingsButton = (root: ParentNode): HTMLElement => exactlyOne(root, '[data-action="settings"]');
+/** The settings panel `[data-section="settings"]` (FR-117): asserts that there is exactly one in `root`. */
+export const settingsPanel = (root: ParentNode): HTMLElement => exactlyOne(root, '[data-section="settings"]');
+/** The close button `[data-action="settings-close"]` of the settings panel. */
+export const settingsCloseButton = (root: ParentNode): HTMLElement => q(settingsPanel(root), '[data-action="settings-close"]');
+/** The theme control `[data-control="theme"]` (FR-102): asserts that there is exactly one in `root`. */
+export const themeControl = (root: ParentNode): HTMLElement => exactlyOne(root, '[data-control="theme"]');
+/** The three theme options in document order (asserts that the control holds exactly three buttons). */
+export function themeOptions(root: ParentNode): HTMLElement[] {
+  const options = Array.from(themeControl(root).querySelectorAll<HTMLElement>('button'));
+  expect(options, 'the theme control holds three buttons').toHaveLength(3);
+  return options;
+}
+/** The theme option `choice`, found by its `data-theme-option` value. */
+export function themeOption(root: ParentNode, choice: ThemeChoice): HTMLElement {
+  return q(themeControl(root), `button[data-theme-option="${choice}"]`);
+}
+/** The player presses the theme option `choice`. */
+export const pressTheme = (root: ParentNode, choice: ThemeChoice): void => { themeOption(root, choice).click(); };
+/** `aria-checked` of the three theme options as a list, for "unchanged" comparisons. */
+export const themeStates = (root: ParentNode): (string | null)[] => themeOptions(root).map((b) => b.getAttribute('aria-checked'));
+/** The theme whose option has aria-checked="true"; asserts that every option says "true" or "false" and exactly one says "true". */
+export function checkedTheme(root: ParentNode): ThemeChoice {
+  const states = themeStates(root);
+  for (const state of states) expect(['true', 'false'], 'aria-checked is "true" or "false" on every theme option').toContain(state);
+  const checked = THEME_CHOICES.filter((_, i) => states[i] === 'true');
+  expect(checked, `exactly one theme option is checked (states ${states.join(',')})`).toHaveLength(1);
+  const only = checked[0];
+  expect.assert(only !== undefined, 'premise: one theme option is checked');
+  return only;
+}
+/** The effective theme on the document: `<html data-theme>` (FR-104). */
+export const documentTheme = (): string | null => document.documentElement.getAttribute('data-theme');
+/** The player opens the settings panel: the test calls the stubbed `showPopover()` on it (A-44). */
+export function openSettings(root: ParentNode): HTMLElement {
+  const panel = settingsPanel(root);
+  panel.showPopover();
+  return panel;
 }
 
 /** The visible text of the summary button: its SECOND child, the text span (FR-95: prefix span, text span, cue span). */

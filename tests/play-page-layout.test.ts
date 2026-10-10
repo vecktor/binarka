@@ -369,13 +369,18 @@ describe('@trace FR-68 order at mount', () => {
     expectNineInOrder(root);
   });
 
-  it('the header holds the heading «Бінарка» followed by the rules button', () => {
+  // add-theme-switch DELIBERATE CHANGE (FR-68, FR-117; autonomy-log row 120; delta «Order at mount», AND clause): the header holds the
+  // heading, then the settings button, then «Правила», in this order (was: the heading followed by the rules button). The old
+  // assertion (heading before the rules button) is kept as the last line.
+  it('the header holds the heading «Бінарка», then the settings button, then the rules button', () => {
     const root = mountFixture(WIN_PUZZLE);
     const header = q(root, 'header');
     const heading = Array.from(header.querySelectorAll(HEADINGS)).find((h) => h.textContent.trim() === TITLE_TEXT);
     expect(heading, `a heading «${TITLE_TEXT}» in the header`).toBeDefined();
+    const settings = q(header, '[data-action="settings"]');
     const button = q(header, RULES_BUTTON);
     expect.assert(heading !== undefined, 'premise: the header has the title heading');
+    expectInDocumentOrder([heading, settings, button]);
     expectInDocumentOrder([heading, button]);
   });
 });
@@ -401,6 +406,19 @@ describe('@trace FR-68 the panel is outside the sequence', () => {
   it('the panel is not inside the header, the message area or [data-board], and it follows the message area', () => {
     const root = mountFixture(WIN_PUZZLE);
     const panel = rulesPanel(root);
+    const area = messageArea(root);
+    expect(q(root, 'header').contains(panel)).toBe(false);
+    expect(area.contains(panel)).toBe(false);
+    expect(q(root, '[data-board]').contains(panel)).toBe(false);
+    expectInDocumentOrder([area, panel]);
+  });
+});
+
+// add-theme-switch: scenario «The settings panel is outside the sequence» (FR-68, FR-117), the same shape as the rules panel above.
+describe('@trace FR-68 @trace FR-117 the settings panel is outside the sequence', () => {
+  it('The settings panel is outside the sequence: not inside the header, the message area or [data-board], and it follows the message area', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const panel = q(root, '[data-section="settings"]');
     const area = messageArea(root);
     expect(q(root, 'header').contains(panel)).toBe(false);
     expect(area.contains(panel)).toBe(false);

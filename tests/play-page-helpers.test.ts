@@ -5,6 +5,13 @@ import { countSolutions, findViolations, generate, hint, isSolved } from '../src
 import {
   BLANK,
   BLANK_4,
+  DARK_QUERY,
+  THEME_KEY,
+  addThemeColorMeta,
+  installMatchMedia,
+  installMatchMediaWithoutListeners,
+  installThrowingMatchMedia,
+  makeLocalStorageAccessThrow,
   BLANK_8,
   BROKEN_SENTENCE,
   COUNT_ROW,
@@ -74,16 +81,21 @@ import {
 import { VALID_4X4, boardOf, parseBoard } from './helpers/board';
 import {
   CONTRAST_PAIRS,
+  DARK_LABEL,
   TOKEN_NAMES,
   contrastProblems,
   contrastRatio,
+  darkRootRules,
   declarationsFor,
+  lightRootRules,
   namedColoursIn,
   parseStyles,
   px,
   rgbOf,
   rulesWithSelector,
+  injectPageStyles,
   scanColours,
+  themeTokenSets,
   withTokensInlined,
 } from './helpers/css';
 
@@ -1017,5 +1029,173 @@ describe('the generator spies record the level in a parallel array', () => {
     spy.generate(6, 1, 3);
     expect(seen).toEqual([3]);
     expect(fixedGenerate(BLANK)(6, 1, 2)).toBe(BLANK);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// add-theme-switch (FR-65, A-51, TD finding 8, task 2.1): self-checks of the dark token set in tests/helpers/css.ts and of the
+// preference cleanup and the matchMedia stub in tests/helpers/play-page.ts. They run on literal samples, never on the page or
+// on src/ui/style.css, so they are GUARDS (green before the implementation; no @trace on purpose, like the rest of this file).
+// ---------------------------------------------------------------------------------------------------------
+
+/** An arbitrary dark palette for the samples (the product values are the stylesheet's; here only the shape matters). */
+const DARK_SAMPLE: Record<string, string> = {
+  '--color-page': '#111827',
+  '--color-text': '#f3f4f6',
+  '--color-cell-bg': '#1f2937',
+  '--color-cell-border': '#9ca3af',
+  '--color-given-bg': '#374151',
+  '--color-given-border': '#e5e7eb',
+  '--color-violation-bg': '#7f1d1d',
+  '--color-violation-border': '#fca5a5',
+  '--color-violation-text': '#fee2e2',
+  '--color-focus': '#93c5fd',
+  '--color-control-bg': '#1f2937',
+  '--color-control-border': '#9ca3af',
+  '--color-win-text': '#86efac',
+};
+const darkBlock = (tokens: Record<string, string>, quote = '"'): string =>
+  `:root[data-theme=${quote}dark${quote}] { color-scheme: dark; ${Object.entries(tokens).map(([k, v]) => `${k}: ${v};`).join(' ')} }`;
+
+describe('css helper: the dark attribute block is a token set (add-theme-switch, TD finding 8)', () => {
+  it('the dark block is the SECOND token set, an override set over the top-level one; tokens and tokenDeclarations stay the light set', () => {
+    const parsed = parseStyles(`${tokenCss(DESIGN_TOKENS)} ${darkBlock({ '--color-page': '#000000', '--color-text': '#ffffff' })}`);
+    expect(parsed.tokenSets.map((set) => set.label)).toEqual(['top-level', DARK_LABEL]);
+    expect(parsed.tokenSets[1]?.tokens['--color-page']).toBe('#000000');
+    expect(parsed.tokenSets[1]?.tokens['--color-text']).toBe('#ffffff');
+    expect(parsed.tokenSets[1]?.tokens['--color-focus'], 'a token the block does not redefine keeps its top-level value').toBe('#1d4ed8');
+    expect(parsed.tokens).toEqual(DESIGN_TOKENS);
+    expect(parsed.tokenDeclarations).toHaveLength(13);
+    expect(parsed.darkTokenDeclarations.map((d) => d.property)).toEqual(['--color-page', '--color-text']);
+    expect(darkRootRules(parsed)).toHaveLength(1);
+    expect(darkRootRules(parsed)[0]?.declarations.find((d) => d.property === 'color-scheme')?.value).toBe('dark');
+    expect(lightRootRules(parsed)).toHaveLength(1);
+    expect(lightRootRules(parsed)[0]?.declarations.some((d) => d.property === '--color-page')).toBe(true);
+  });
+
+  it('accepts the double-quoted, single-quoted and unquoted attribute selector, and nothing else', () => {
+    for (const quote of ['"', "'", '']) {
+      const parsed = parseStyles(`${tokenCss(DESIGN_TOKENS)} ${darkBlock(DARK_SAMPLE, quote)}`);
+      expect(parsed.tokenSets, `quote style [${quote}]`).toHaveLength(2);
+    }
+    for (const selector of [':root[data-theme="light"]', ':root[data-theme="dark"] .x', ':root[data-theme="dark"], .y', '.z[data-theme="dark"]']) {
+      const parsed = parseStyles(`${tokenCss(DESIGN_TOKENS)} ${selector} { --color-page: #000000; }`);
+      expect(parsed.tokenSets, `selector ${selector}`).toHaveLength(1);
+      expect(parsed.darkTokenDeclarations, `selector ${selector}`).toEqual([]);
+    }
+    const inMedia = parseStyles(`${tokenCss(DESIGN_TOKENS)} @media (min-width: 1px) { ${darkBlock(DARK_SAMPLE)} }`);
+    expect(inMedia.darkTokenDeclarations, 'a dark block inside an at-rule is not the dark set').toEqual([]);
+  });
+
+  it('a file with no dark block gives no dark set, and themeTokenSets fails on an assertion that names the block', () => {
+    const parsed = parseStyles(tokenCss(DESIGN_TOKENS));
+    expect(parsed.tokenSets).toHaveLength(1);
+    expect(() => themeTokenSets(parsed)).toThrow(/dark token set exists/);
+  });
+
+  it('themeTokenSets returns [light, dark]; a conditional :root block is built from the top-level set and comes after the dark set', () => {
+    const css = `${tokenCss(DESIGN_TOKENS)} ${darkBlock(DARK_SAMPLE)} @media (prefers-contrast: more) { :root { --color-text: #000000; } }`;
+    const parsed = parseStyles(css);
+    expect(parsed.tokenSets).toHaveLength(3);
+    expect(parsed.tokenSets[0]?.label).toBe('top-level');
+    expect(parsed.tokenSets[1]?.label).toBe(DARK_LABEL);
+    expect(parsed.tokenSets[2]?.label).toContain('@media');
+    expect(parsed.tokenSets[2]?.tokens['--color-page'], 'the conditional set is built from the LIGHT set').toBe('#f9fafb');
+    const [light, dark] = themeTokenSets(parsed);
+    expect([light?.label, dark?.label]).toEqual(['light', 'dark']);
+    expect(light?.tokens).toEqual(DESIGN_TOKENS);
+    expect(dark?.tokens).toEqual(DARK_SAMPLE);
+  });
+
+  it('a dark set with a failing pair is found in its own set only', () => {
+    const weak = { ...DARK_SAMPLE, '--color-cell-border': '#1f2937' };
+    const [light, dark] = themeTokenSets(parseStyles(`${tokenCss(DESIGN_TOKENS)} ${darkBlock(weak)}`));
+    expect(contrastProblems(light?.tokens ?? {})).toEqual([]);
+    expect(contrastProblems(dark?.tokens ?? {}).join('\n')).toMatch(/--color-cell-border #1f2937/);
+    expect(contrastProblems(themeTokenSets(parseStyles(`${tokenCss(DESIGN_TOKENS)} ${darkBlock(DARK_SAMPLE)}`))[1]?.tokens ?? {})).toEqual([]);
+  });
+
+  it('scanColours allows --color-* and #rrggbb in the dark block and nowhere else', () => {
+    const base = `${tokenCss(DESIGN_TOKENS)} ${darkBlock(DARK_SAMPLE)}`;
+    expect(scanColours(parseStyles(base))).toEqual({ literals: [], named: [], shorthands: [], tokensOutsideRoot: [], colourProperties: [] });
+    const elsewhere = scanColours(parseStyles(`${base} .x { color: #fff; --color-page: #000000; } @media (min-width: 1px) { .y { color: red; } }`));
+    expect(elsewhere.literals.some((m) => m.includes('.x'))).toBe(true);
+    expect(elsewhere.tokensOutsideRoot).toHaveLength(1);
+    expect(elsewhere.named.some((m) => m.includes('@media'))).toBe(true);
+  });
+
+  it('withTokensInlined(text, tokens) and injectPageStyles(tokens) use the given set and default to the top-level one', () => {
+    const css = `${tokenCss(DESIGN_TOKENS)} ${darkBlock(DARK_SAMPLE)} .x { color: var(--color-text); }`;
+    expect(withTokensInlined(css)).toContain('.x { color: #1f2937; }');
+    expect(withTokensInlined(css, DARK_SAMPLE)).toContain('.x { color: #f3f4f6; }');
+    // injectPageStyles reads src/ui/style.css: here only that the argument is accepted and the sheet is injected and removable
+    const style = injectPageStyles(DARK_SAMPLE);
+    expect(style.isConnected).toBe(true);
+    expect(style.textContent).not.toMatch(/var\(\s*--color-/);
+    style.remove();
+  });
+});
+
+describe('the preference cleanup and the matchMedia stub of installPageLifecycle (add-theme-switch, A-50, FR-113, FR-115)', () => {
+  installPageLifecycle();
+
+  it('dirties storage, cookies, <html> and the head (the next test must find all of it clean)', () => {
+    localStorage.setItem(THEME_KEY, 'dark');
+    sessionStorage.setItem('x', '1');
+    document.cookie = 'probe=1; path=/';
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.style.setProperty('color-scheme', 'dark');
+    addThemeColorMeta('#000000');
+    installMatchMedia(true);
+    expect(localStorage.length).toBe(1);
+  });
+
+  it('starts clean after the test above: no storage entry, no cookie, no data-theme, no inline color-scheme, no theme-color meta', () => {
+    expect(localStorage.length).toBe(0);
+    expect(sessionStorage.length).toBe(0);
+    expect(document.cookie).toBe('');
+    expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
+    expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('');
+    expect(document.head.querySelectorAll('meta[name="theme-color"]')).toHaveLength(0);
+    expect(typeof window.matchMedia, 'the matchMedia stub of the previous test is gone').toBe('undefined');
+  });
+
+  it('installMatchMedia answers the query, records the change listeners, fires them with the current answer and forgets a removed one', () => {
+    const stub = installMatchMedia(false);
+    const list = window.matchMedia(DARK_QUERY);
+    expect(list.matches).toBe(false);
+    expect(list.media).toBe(DARK_QUERY);
+    const seen: boolean[] = [];
+    const listener = (event: { matches: boolean }): void => { seen.push(event.matches); };
+    list.addEventListener('change', listener as unknown as EventListener);
+    expect(stub.listeners).toHaveLength(1);
+    stub.setMatches(true);
+    expect(list.matches, 'the object the page holds follows setMatches').toBe(true);
+    stub.fire();
+    expect(seen).toEqual([true]);
+    list.removeEventListener('change', listener as unknown as EventListener);
+    expect(stub.listeners).toHaveLength(0);
+    stub.fire();
+    expect(seen).toEqual([true]);
+    expect(stub.queries).toEqual([DARK_QUERY]);
+  });
+
+  it('the broken variants: one throws when called, one returns an object without addEventListener', () => {
+    installThrowingMatchMedia();
+    expect(() => window.matchMedia(DARK_QUERY)).toThrow();
+    installMatchMediaWithoutListeners(true);
+    const list = window.matchMedia(DARK_QUERY);
+    expect(list.matches).toBe(true);
+    expect('addEventListener' in list).toBe(false);
+  });
+
+  it('a localStorage whose access throws is put back by the lifecycle (the next test reads a working store)', () => {
+    makeLocalStorageAccessThrow();
+    expect(() => window.localStorage).toThrow();
+  });
+
+  it('works again after the test above', () => {
+    expect(() => { window.localStorage.setItem('a', 'b'); }).not.toThrow();
+    expect(window.localStorage.getItem('a')).toBe('b');
   });
 });

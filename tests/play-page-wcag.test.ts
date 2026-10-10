@@ -2,6 +2,11 @@
 // the board group have a non-empty Ukrainian accessible name, and no element has a tabindex. This does NOT claim real
 // screen-reader or browser coverage (A-28, TC-13); the details live in play-page-keyboard, -semantics and -stylesheet.
 // Scenarios of openspec/specs/play-page/spec.md (reconcile-ux-accessibility).
+//
+// @trace NFR-9
+// @trace NFR-5
+// @trace FR-102
+// @trace FR-117
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,
@@ -12,10 +17,13 @@ import {
   LEVEL_GROUP_LABEL,
   LEVEL_NAMES,
   NEW_LABEL,
+  SETTINGS_LABEL,
   SHEET_LABEL,
   SIZE_GROUP_LABEL,
   START_LABEL,
   SUMMARY_PREFIX,
+  THEME_LABEL,
+  THEME_OPTION_LABELS,
   WIN_PUZZLE,
   accessibleName,
   allCells,
@@ -31,11 +39,13 @@ import {
   mountPage,
   openSheet,
   pressHint,
+  pressTheme,
   seedQueue,
   selectSize,
   sizeButton,
   sizeButtons,
   summaryLabel,
+  themeOptions,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -57,6 +67,9 @@ function accessibleNames(root: HTMLElement): { what: string; name: string }[] {
   const groups = [
     ...Array.from(root.querySelectorAll('[role="radiogroup"]')),
     ...Array.from(root.querySelectorAll('[data-section="setup"]')),
+    // add-theme-switch DELIBERATE CHANGE (NFR-9, FR-117; delta «Every button, the radiogroups, the sheet and the board have a Ukrainian name»):
+    // the settings panel joins the named groups
+    ...Array.from(root.querySelectorAll('[data-section="settings"]')),
     ...Array.from(root.querySelectorAll('[data-board]')),
   ];
   for (const group of groups) {
@@ -73,10 +86,13 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
     // «Підказка», «Скинути», «Нова головоломка», «Зрозуміло», «Так, почати» and «Скасувати») and four groups (two radiogroups, the
     // sheet and the board). Slice DL2 DELIBERATE CHANGE (NFR-9): was 46 buttons and two groups; update-setup-sheet-start (NFR-9,
     // FR-101, NFR-5): 53 buttons, «Почати» joins the names (was 52).
-    expect(root.querySelectorAll('button')).toHaveLength(53);
-    expect(root.querySelectorAll('[role="radiogroup"]')).toHaveLength(2);
+    // add-theme-switch DELIBERATE CHANGE (NFR-9, FR-102, FR-117; autonomy-log row 120): 58 buttons (the settings button, the three theme
+    // options and the settings panel's «Закрити» join), three radiogroups (the theme group joins) and six named groups (the settings panel
+    // joins: three radiogroups, the setup sheet, the settings panel and the board).
+    expect(root.querySelectorAll('button')).toHaveLength(58);
+    expect(root.querySelectorAll('[role="radiogroup"]')).toHaveLength(3);
     expect(allCells(root)).toHaveLength(36);
-    expect(names).toHaveLength(53 + 4);
+    expect(names).toHaveLength(58 + 6);
     for (const { what, name } of names) {
       expect(name, `${what} has a name`).not.toBe('');
       expect(/\p{Script=Cyrillic}/u.test(name), `${what} "${name}" has Cyrillic letters`).toBe(true);
@@ -92,6 +108,7 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
     expect(all).toContain(SHEET_LABEL);
     expect(all).toContain(START_LABEL);
     expect(all).toContain(CLOSE_LABEL);
+    for (const label of [SETTINGS_LABEL, THEME_LABEL, ...THEME_OPTION_LABELS]) expect(all, `the names include «${label}»`).toContain(label);
     // the summary button: the hidden prefix and the visible text, without the aria-hidden cue
     expect(all).toContain(`${SUMMARY_PREFIX}${summaryLabel(6, 1)}`);
     // each level button: name, one space, description
@@ -146,5 +163,17 @@ describe('the radiogroups expose the marked state while the sheet is open (NFR-9
 
     expect(sizeButtons(root).map((b) => b.getAttribute('aria-checked')), 'after the closing toggle «Поле 6×6» only').toEqual(['false', 'true', 'false']);
     expect(levelDisabled(root), 'and no level button has aria-disabled').toEqual([null, null, null, null]);
+  });
+});
+
+// add-theme-switch, scenario «The theme radiogroup exposes its state» (NFR-9, FR-102): the state of the group is in attributes.
+describe('the theme radiogroup exposes its state (NFR-9)', () => {
+  it('@trace NFR-9 @trace FR-102 The theme radiogroup exposes its state', () => {
+    const root = mountFixture(BLANK);
+    const states = (): (string | null)[] => themeOptions(root).map((o) => o.getAttribute('aria-checked'));
+    expect(states(), '«Як у системі» is checked at first').toEqual(['false', 'false', 'true']);
+    pressTheme(root, 'dark');
+    expect(states(), '«Темна» is checked after the press').toEqual(['false', 'true', 'false']);
+    for (const option of themeOptions(root)) expect(option.hasAttribute('aria-disabled'), 'no option has aria-disabled').toBe(false);
   });
 });

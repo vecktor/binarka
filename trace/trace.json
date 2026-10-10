@@ -1063,8 +1063,10 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
+        "tests/play-page-keyboard.test.ts",
         "tests/play-page-rendering.test.ts",
         "tests/play-page-rendering.test.ts",
+        "tests/play-page-settings.test.ts",
         "tests/play-page-setup-sheet.test.ts",
         "tests/play-page-setup-sheet.test.ts"
       ],
@@ -1083,7 +1085,8 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
-        "tests/play-page-semantics.test.ts"
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-settings.test.ts"
       ],
       "recordings": []
     },
@@ -1132,7 +1135,8 @@
       "tests": [
         "tests/play-page-page-text.test.ts",
         "tests/play-page-semantics.test.ts",
-        "tests/play-page-semantics.test.ts"
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-settings.test.ts"
       ],
       "recordings": []
     },
@@ -1207,7 +1211,8 @@
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
-        "tests/play-page-stylesheet.test.ts"
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-theme-stylesheet.test.ts"
       ],
       "recordings": []
     },
@@ -1281,7 +1286,10 @@
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
-        "tests/play-page-layout.test.ts"
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-settings.test.ts",
+        "tests/ui-strings.test.ts"
       ],
       "recordings": []
     },
@@ -1340,6 +1348,7 @@
       "planned": true,
       "tests": [
         "tests/no-image-assets.test.ts",
+        "tests/play-page-logo.test.ts",
         "tests/play-page-logo.test.ts"
       ],
       "recordings": []
@@ -1491,10 +1500,12 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-settings.test.ts",
         "tests/play-page-start-button.test.ts",
         "tests/play-page-start-button.test.ts",
         "tests/play-page-techniques.test.ts",
         "tests/play-page-techniques.test.ts",
+        "tests/ui-strings.test.ts",
         "tests/ui-strings.test.ts"
       ],
       "recordings": []
@@ -1621,10 +1632,12 @@
         "tests/play-page-marked-choice.test.ts",
         "tests/play-page-marked-choice.test.ts",
         "tests/play-page-marked-choice.test.ts",
+        "tests/play-page-preferences.test.ts",
         "tests/play-page-setup-sheet.test.ts",
         "tests/play-page-start-button.test.ts",
         "tests/play-page-start-button.test.ts",
         "tests/play-page-start-button.test.ts",
+        "tests/play-page-theme.test.ts",
         "tests/play-page-wcag.test.ts"
       ],
       "recordings": []
@@ -1671,7 +1684,12 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-settings.test.ts",
+        "tests/play-page-wcag.test.ts",
+        "tests/play-page-wcag.test.ts",
+        "tests/ui-strings.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1681,7 +1699,11 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-theme.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1691,7 +1713,11 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/index-html.test.ts",
+        "tests/play-page-theme-stylesheet.test.ts",
+        "tests/play-page-theme.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1700,7 +1726,10 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-preferences.test.ts",
+        "tests/play-page-theme.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1710,7 +1739,10 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/index-html.test.ts",
+        "tests/play-page-theme.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1766,7 +1798,10 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/index-html.test.ts",
+        "tests/play-page-preferences.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1776,7 +1811,10 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/index-html.test.ts",
+        "tests/play-page-preferences.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1786,7 +1824,10 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/index-html.test.ts",
+        "tests/play-page-preferences.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1796,7 +1837,9 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/index-html.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1806,7 +1849,19 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-action-buttons-stylesheet.test.ts",
+        "tests/play-page-action-buttons-stylesheet.test.ts",
+        "tests/play-page-keyboard.test.ts",
+        "tests/play-page-layout.test.ts",
+        "tests/play-page-logo.test.ts",
+        "tests/play-page-rendering.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-settings.test.ts",
+        "tests/play-page-theme-stylesheet.test.ts",
+        "tests/play-page-wcag.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1816,7 +1871,9 @@
         "openspec/changes/add-theme-switch/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-theme.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1842,26 +1899,6 @@
     },
     {
       "check": "test-trace",
-      "msg": "FR-102 has no test annotated \"@trace FR-102\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-103 has no test annotated \"@trace FR-103\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-104 has no test annotated \"@trace FR-104\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-105 has no test annotated \"@trace FR-105\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-106 has no test annotated \"@trace FR-106\""
-    },
-    {
-      "check": "test-trace",
       "msg": "FR-107 has no test annotated \"@trace FR-107\""
     },
     {
@@ -1879,30 +1916,6 @@
     {
       "check": "test-trace",
       "msg": "FR-111 has no test annotated \"@trace FR-111\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-113 has no test annotated \"@trace FR-113\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-114 has no test annotated \"@trace FR-114\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-115 has no test annotated \"@trace FR-115\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-116 has no test annotated \"@trace FR-116\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-117 has no test annotated \"@trace FR-117\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-118 has no test annotated \"@trace FR-118\""
     },
     {
       "check": "test-trace",

@@ -28,6 +28,7 @@ import {
   mountFixture,
   mountPage,
   mountThenSelect,
+  openSettings,
   openSheet,
   pressHint,
   pressKey,
@@ -40,6 +41,7 @@ import {
   sizeButton,
   snapshot,
   summaryButton,
+  themeOption,
   violationCells,
   winMessage,
   pressStart,
@@ -295,5 +297,22 @@ describe('every cell is its own Tab stop and the page handles no key on the boar
     expect(snapshot(root)).toEqual(before);
     expect([hintMessage(root), winMessage(root)]).toEqual(messages);
     expectActive(other, 'the focus is still on the other cell');
+  });
+});
+
+// add-theme-switch, delta «Every cell is its own Tab stop» (MODIFIED), new scenario «A theme press leaves the focus on the option» (FR-59,
+// FR-103, FR-117): a theme press shows no board, so DOM focus stays on the pressed option, and the page adds no tabindex.
+describe('a theme press leaves the focus on the option', () => {
+  it('@trace FR-59 @trace FR-103 @trace FR-117 A theme press leaves the focus on the option', () => {
+    const root = mountFixture(BLANK);
+    openSettings(root);
+    const option = themeOption(root, 'dark');
+    option.focus();
+    expectActive(option, 'premise: DOM focus is on «Темна»');
+
+    option.click();
+
+    expectActive(option, 'DOM focus is still on the option «Темна»');
+    expect(root.querySelectorAll('[tabindex]'), 'the page has added no tabindex to any element').toHaveLength(0);
   });
 });

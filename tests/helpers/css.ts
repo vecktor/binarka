@@ -13,6 +13,7 @@
 // (`#fff` becomes `rgb(255, 255, 255)`), so the literal scan is told by the `rgb(` form, not by a leading `#`;
 // custom property values (the `:root` tokens) are kept verbatim.
 import { readFileSync } from 'node:fs';
+import { expect } from 'vitest';
 
 export interface Declaration {
   property: string;
@@ -43,9 +44,20 @@ export interface ParsedStyles {
   tokenDeclarations: Declaration[];
   /** the top-level token set (the last declaration of a name wins) */
   tokens: Record<string, string>;
-  /** the top-level set, then the top-level set with each conditional `:root` rule's overrides applied */
+  /**
+   * add-theme-switch (FR-65, A-51, TD finding 8): every `--color-*` declaration of the top-level `:root[data-theme="dark"]`
+   * rule, in source order (empty when the file has no such rule).
+   */
+  darkTokenDeclarations: Declaration[];
+  /**
+   * the top-level set; then, when the file has a top-level `:root[data-theme="dark"]` rule, the dark set (the top-level set with
+   * that rule's overrides applied); then the top-level set with each conditional `:root` rule's overrides applied
+   */
   tokenSets: TokenSet[];
 }
+
+/** The label of the dark token set in `ParsedStyles.tokenSets`. */
+export const DARK_LABEL = 'data-theme=dark';
 
 /** Vitest runs from the project root (the engine-purity test reads src/engine the same way). */
 export const STYLE_PATH = `${process.cwd()}/src/ui/style.css`;
@@ -147,6 +159,15 @@ function walk(list: CSSRuleList, context: string[], parents: string[] | null, ou
 }
 
 const isRootRule = (rule: StyleRuleInfo): boolean => rule.selectors.length > 0 && rule.selectors.every((s) => s === ':root');
+/**
+ * add-theme-switch (FR-65, A-51, TD finding 8): the dark palette rule `:root[data-theme="dark"]` (jsdom keeps the quote style
+ * the file uses, so a double quote, a single quote and no quote are all accepted). Only a rule outside every at-rule counts as
+ * the dark set; `isRootRule` stays the PLAIN predicate that `tokens` and `tokenDeclarations` use, so each token is still
+ * declared once in the plain `:root`.
+ */
+const DARK_SELECTOR = /^:root\[data-theme=(["']?)dark\1\]$/;
+const isDarkRootRule = (rule: StyleRuleInfo): boolean =>
+  rule.context.length === 0 && rule.selectors.length > 0 && rule.selectors.every((s) => DARK_SELECTOR.test(s));
 const isColourToken = (property: string): boolean => property.startsWith('--color-');
 
 export function parseStyles(text: string): ParsedStyles {
@@ -166,7 +187,13 @@ export function parseStyles(text: string): ParsedStyles {
     .filter((r) => isRootRule(r) && r.context.length === 0)
     .flatMap((r) => r.declarations.filter((d) => isColourToken(d.property)));
   const tokens = Object.fromEntries(tokenDeclarations.map((d) => [d.property, d.value]));
+  const darkTokenDeclarations = rules
+    .filter((r) => isDarkRootRule(r))
+    .flatMap((r) => r.declarations.filter((d) => isColourToken(d.property)));
   const tokenSets: TokenSet[] = [{ label: 'top-level', tokens }];
+  if (darkTokenDeclarations.length > 0) {
+    tokenSets.push({ label: DARK_LABEL, tokens: { ...tokens, ...Object.fromEntries(darkTokenDeclarations.map((d) => [d.property, d.value])) } });
+  }
   for (const rule of rules) {
     if (!isRootRule(rule) || rule.context.length === 0) continue;
     const overrides = rule.declarations.filter((d) => isColourToken(d.property));
@@ -176,12 +203,41 @@ export function parseStyles(text: string): ParsedStyles {
       tokens: { ...tokens, ...Object.fromEntries(overrides.map((d) => [d.property, d.value])) },
     });
   }
-  return { text, rules, tokenDeclarations, tokens, tokenSets };
+  return { text, rules, tokenDeclarations, darkTokenDeclarations, tokens, tokenSets };
+}
+
+/**
+ * add-theme-switch (FR-65, A-51): the two shipped token sets, light first then dark, for a per-set loop. The dark set is
+ * ASSERTED: a stylesheet without a `:root[data-theme="dark"]` block fails here, on an assertion that names it, so a loop over
+ * `themeTokenSets(parsed)` can never pass on the light set alone.
+ */
+export function themeTokenSets(parsed: ParsedStyles): TokenSet[] {
+  const light = parsed.tokenSets.find((set) => set.label === 'top-level');
+  const dark = parsed.tokenSets.find((set) => set.label === DARK_LABEL);
+  expect.assert(light !== undefined, 'themeTokenSets: the top-level token set is missing');
+  expect.assert(
+    dark !== undefined,
+    'the dark token set exists: src/ui/style.css has no top-level :root[data-theme="dark"] rule that redefines --color-* tokens',
+  );
+  return [
+    { label: 'light', tokens: light.tokens },
+    { label: 'dark', tokens: dark.tokens },
+  ];
 }
 
 // ---------------------------------------------------------------------------------------------------------
 // Lookups
 // ---------------------------------------------------------------------------------------------------------
+
+/** The top-level `:root` rules (plain predicate: the light token rules, `color-scheme: light` lives here). */
+export function lightRootRules(parsed: ParsedStyles): StyleRuleInfo[] {
+  return parsed.rules.filter((r) => r.context.length === 0 && isRootRule(r));
+}
+
+/** The top-level `:root[data-theme="dark"]` rules (any quote style). */
+export function darkRootRules(parsed: ParsedStyles): StyleRuleInfo[] {
+  return parsed.rules.filter((r) => isDarkRootRule(r));
+}
 
 /** The rules (anywhere in the file) whose resolved selector list contains exactly `selector`. */
 export function rulesWithSelector(parsed: ParsedStyles, selector: string): StyleRuleInfo[] {
@@ -281,7 +337,7 @@ export interface ColourScan {
 export function scanColours(parsed: ParsedStyles): ColourScan {
   const scan: ColourScan = { literals: [], named: [], shorthands: [], tokensOutsideRoot: [], colourProperties: [] };
   for (const rule of parsed.rules) {
-    if (isRootRule(rule)) continue;
+    if (isRootRule(rule) || isDarkRootRule(rule)) continue;
     const where = `${rule.context.join(' ')} ${rule.selectors.join(', ')}`.trim();
     for (const { property, value } of rule.declarations) {
       const message = `${where} { ${property}: ${value} }`;
@@ -346,9 +402,11 @@ export function rgbOf(hex: string): string {
   return `rgb(${Number.parseInt(m[1], 16)}, ${Number.parseInt(m[2], 16)}, ${Number.parseInt(m[3], 16)})`;
 }
 
-/** The text with every `var(--color-x)` replaced by the top-level value of that token (unknown tokens stay as they are). */
-export function withTokensInlined(text: string): string {
-  const { tokens } = parseStyles(text);
+/**
+ * The text with every `var(--color-x)` replaced by the value of that token in `tokens` (default: the top-level set of the
+ * text itself; unknown tokens stay as they are). add-theme-switch: a caller passes the dark set to inline the dark values.
+ */
+export function withTokensInlined(text: string, tokens: Record<string, string> = parseStyles(text).tokens): string {
   return text.replace(/var\(\s*(--color-[\w-]+)\s*\)/g, (whole, name: string) => tokens[name] ?? whole);
 }
 
@@ -423,7 +481,10 @@ export function removeInjectedStyles(): void {
   for (const style of Array.from(document.head.querySelectorAll(`style[${INJECTED_STYLE_ATTRIBUTE}]`))) style.remove();
 }
 
-/** Inject src/ui/style.css with every `var(--color-x)` replaced by its `:root` value (jsdom does not resolve var()). */
-export function injectPageStyles(): HTMLStyleElement {
-  return injectStyles(withTokensInlined(readStyleText()));
+/**
+ * Inject src/ui/style.css with every `var(--color-x)` replaced by its `:root` value (jsdom does not resolve var()). With
+ * `tokens` (a resolved token set, see `themeTokenSets`) the values of that set are substituted instead.
+ */
+export function injectPageStyles(tokens?: Record<string, string>): HTMLStyleElement {
+  return injectStyles(withTokensInlined(readStyleText(), tokens));
 }

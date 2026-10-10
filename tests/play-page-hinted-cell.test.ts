@@ -37,10 +37,12 @@ import {
   isGivenCell,
   mountFixture,
   mountPage,
+  openSettings,
   openSheet,
   pressHint,
   pressNew,
   pressReset,
+  pressTheme,
   q,
   rulesPanel,
   seedQueue,
@@ -375,6 +377,21 @@ describe('@trace FR-66 actions that change no cell keep the marker', () => {
 
     expect(hintedCells(root)).toEqual([x]);
     expect(cellText(root, x[0], x[1])).toBe(digit);
+  });
+
+  // add-theme-switch, delta «Hinted cell marker» (MODIFIED), scenario «Actions that change no cell keep the marker», new table row: "opens the
+  // settings panel through the stubbed showPopover() and presses a theme option" (FR-66, FR-103; a theme switch changes no cell).
+  it('@trace FR-103 Opening the settings panel and pressing a theme option keeps the marker', () => {
+    const { root, x } = pageWithHint();
+    const digit = cellText(root, x[0], x[1]);
+    const before = snapshot(root);
+
+    openSettings(root);
+    pressTheme(root, 'dark');
+
+    expect(hintedCells(root)).toEqual([x]);
+    expect(cellText(root, x[0], x[1])).toBe(digit);
+    expect(snapshot(root)).toEqual(before);
   });
 });
 
