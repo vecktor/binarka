@@ -2,7 +2,7 @@
 
 Phase G2. Written by the session `keen-archimedes-c4cd63` on 2026-10-10; run 1 at 13:20 (UTC+5:30), against `main` `a2879b1` plus the uncommitted `fix-size-option-focus-ring` CSS line. That line changes no reference shot, because no shot has a focused size option.
 
-**Latest: run 3** (2026-10-10 15:43, against `review-set-14`, with the PD-2 adapter): **FAIL**, 0 of 170 at 0.98; table below. Every board shot now shows the design's fixture board (FR-119), so what remains is the port itself.
+**Latest: run 4** (2026-10-10 16:49, against `review-set-14`, with the PD-3 adapter): **FAIL**, 0 of 170 at 0.98; table below. Every board shot shows the design's fixture board (FR-119, PD-2), and the capture now reproduces the reference's rendering exactly (PD-3: the design build scores 1.0000 on all 170 shots, `docs/qa/g2/harness-calibration.txt`), so what remains is the port itself.
 
 **Verdict of run 1: FAIL.** 0 of 170 shots reach 0.98. 168 were captured and scored (lowest 0.1218, highest 0.9666). 2 failed with no state driver (`logo-*`). Full output: [`docs/qa/g2/check-visual-run-1.txt`](../g2/check-visual-run-1.txt) (exit 1, `Result: FAIL, 1 warning(s)`). Each shot's `report.json` is in its own folder. The `diff.png` files are not committed (about 19 MB per run; `.gitignore`), and `npm run check:visual` writes them again.
 
@@ -15,7 +15,7 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
   - Threshold **0.98 per shot** (autonomy-log row 68). The checker warns because 0.98 is below its 0.99 default; row 68 expects that warning.
 - **Reference:** the frozen PNG `design/v0-screenshots/review-set-14/<shot>.png`. Its `SHA1SUMS` has the SHA-1 `e89badbf4bdbe29478563e9f2edef91fcc5c853f`; the user moved the reference from `review-set-13` (`532e0b78…`, row 134) on 2026-10-10 at about 14:18 (autonomy-log row 142). Run 1 was measured against set 13. The served design is not fetched.
 - **Product:** the built page (`vite preview` on `localhost:4174`, started by the adapter; stop any other server on that port first), captured in Chromium (Playwright) under the conditions of the reference (`design/README.md`, decision 25):
-  - device scale 2;
+  - device scale 2, **a real one** (PD-3, since run 4): one browser per shot, launched with `--force-device-scale-factor=2 --window-size=W,H`, Playwright's viewport emulation off; the shot fails if the window is not exactly W×H at 2. The emulated scale used before rasterised text and fractional edges differently, so even the design build scored only 0.9765 to 0.9993 against its own reference (5 shots below 0.98). With the real scale, it reproduces all 170 exactly;
   - the system scheme from the shot name;
   - reduced motion;
   - `--hide-scrollbars`;
@@ -44,7 +44,9 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
 
 ## Capture determinism
 
-7 product shots captured twice: 7 of 7 byte-identical ([`docs/qa/g2/determinism.txt`](../g2/determinism.txt)). That is a sample of 7 of the 168 drivable shots, not the whole set.
+**Since PD-3 (run 4):** 7 of 7 sampled shots byte-identical when captured twice through the adapter (`docs/qa/improvements/PD-3-proof.txt`, section 3). **Harness ceiling:** the design build captured by the PD-3 method scores 1.0000 on all 170 shots against the frozen reference; captured by the old emulated method, 0.9765 to 0.9993 (`docs/qa/g2/harness-calibration.txt`).
+
+Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`docs/qa/g2/determinism.txt`](../g2/determinism.txt)). That is a sample of 7 of the 168 drivable shots, not the whole set.
 
 ## Known gaps (open, for the convergence sessions)
 
@@ -55,9 +57,33 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
 5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` shows the fixture at level 2 («Задачка») and opens the sheet. `setup-marked` marks 8×8 «Головоломка» on the fixture and puts keyboard focus on «Почати». `hint` shows the hint board without its hinted cell and presses «Підказка» once. `settings-light` and `settings-dark` store the manual theme before load.
 6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits. **Closed by PD-2:** it fails when something already answers on the port, and when its own preview exits before answering (`PD-2-proof.txt`, section 3: before, a stale copy on 4174 was scored 0.9125 without a word; after, "something already answers on http://localhost:4174/").
 
+## Run 4 (against review-set-14, PD-3 adapter): by state
+
+Run 4, 2026-10-10 16:49 to 16:51, with the real device scale of PD-3: **FAIL**, exit 1, 0 of 170 at 0.98. 168 scored 0.1188 to 0.9662 (mean 0.8214, telemetry). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-4.txt`](../g2/check-visual-run-4.txt). The per-shot `report.json` files now hold run 4. Against run 3, the phone setup-sheet shots drop by up to 0.018 (375-light-setup-marked-four 0.8477 → 0.8292): with a real scale, the page's text lays out a few pixels taller. Every other shot moves by less than 0.004.
+
+| State | Shots | Lowest | Highest |
+|---|---|---|---|
+| confirm | 10 | 0.1188 | 0.9662 |
+| default | 12 | 0.7270 | 0.9584 |
+| eight | 12 | 0.7258 | 0.9324 |
+| four | 10 | 0.7207 | 0.9511 |
+| hint | 10 | 0.6885 | 0.9137 |
+| level | 10 | 0.7250 | 0.9320 |
+| rules | 12 | 0.1320 | 0.9496 |
+| rules-techniques | 8 | 0.1320 | 0.9496 |
+| settings | 12 | 0.8280 | 0.9612 |
+| settings-dark | 5 | 0.8336 | 0.9626 |
+| settings-focus | 4 | 0.8433 | 0.9556 |
+| settings-light | 5 | 0.8388 | 0.9507 |
+| setup | 12 | 0.7248 | 0.9369 |
+| setup-four | 12 | 0.7515 | 0.9394 |
+| setup-marked | 12 | 0.7175 | 0.9359 |
+| setup-marked-four | 12 | 0.7516 | 0.9388 |
+| win | 10 | 0.7256 | 0.9309 |
+
 ## Run 3 (against review-set-14, PD-2 adapter): by state
 
-Run 3, 2026-10-10 15:43 to 15:46, against `review-set-14`, with the adapter of PD-2 (the fixture boards; own preview only): **FAIL**, exit 1, 0 of 170 at 0.98. 168 scored 0.1187 to 0.9661 (mean 0.8224, telemetry). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-3.txt`](../g2/check-visual-run-3.txt). The per-shot `report.json` files now hold run 3; run 2 is in git history.
+Run 3, 2026-10-10 15:43 to 15:46, against `review-set-14`, with the adapter of PD-2 (the fixture boards; own preview only): **FAIL**, exit 1, 0 of 170 at 0.98. 168 scored 0.1187 to 0.9661 (mean 0.8224, telemetry). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-3.txt`](../g2/check-visual-run-3.txt). Run 2 is in git history.
 
 The board shots barely moved (hint lowest 0.6182 → 0.6907, win 0.6546 → 0.7277; the rest within about 0.02): the palette, header, type and button styles dominate every shot. The very low `confirm` and `rules` light shots (0.12 to 0.36) are mostly the backdrop: the design dims the whole page behind the dialog and the panel, and the page does not, so almost every pixel differs (seen in `1440-light-confirm/diff.png`). The page column is also narrower than the design's (`#app` 420 px against the design's `--page-max: 34rem`), which moves every block.
 

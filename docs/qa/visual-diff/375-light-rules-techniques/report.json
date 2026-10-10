@@ -1,12 +1,12 @@
 {
   "breakpoint": "375-light-rules-techniques",
-  "score": 0.8132,
+  "score": 0.8119,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 812,
   "localHeight": 812,
   "masked": 0,
   "pass": false,
-  "reason": "pixel score 0.8132 below threshold 0.98",
+  "reason": "pixel score 0.8119 below threshold 0.98",
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }

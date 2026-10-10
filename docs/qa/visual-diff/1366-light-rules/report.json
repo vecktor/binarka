@@ -1,12 +1,12 @@
 {
   "breakpoint": "1366-light-rules",
-  "score": 0.1767,
+  "score": 0.1766,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 650,
   "localHeight": 650,
   "masked": 0,
   "pass": false,
-  "reason": "pixel score 0.1767 below threshold 0.98",
+  "reason": "pixel score 0.1766 below threshold 0.98",
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }
