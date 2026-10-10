@@ -43,6 +43,8 @@ Dependencies and database schema: none. No dependency (TC-10), no network (TC-11
 - [x] 4.5 Run `node scripts/check-eval-ratchet.mjs` and `node scripts/check-traceability.mjs` (FR-102 to FR-106, FR-113 to FR-118 cited and traced; restore regenerated report files unless intended).
 - [x] 4.6 Run `npm run test:e2e` (NFR-10, NFR-12 with the gear and options, and the NFR-18 spec through its `testMatch` pattern) and `npm run check:a11y` (NFR-13 with the manual-theme states). Both must pass; restore `docs/qa/e2e-report.json` and `docs/qa/a11y-report.json` afterwards unless the update is intended. Coverage is `sampled`, never continuum; say so in the report.
 
+Evidence of 4.1 to 4.6 after the second review fix round (`1446856`, autonomy-log row 130): `docs/qa/add-theme-switch-fix-round-2-green-run.txt` (lint 0, tsc 0, 1378 of 1378, build 0, strict 4 of 4, eval ratchet PASS, traceability 0 failures, e2e 80, a11y 54; sampled). The earlier files `docs/qa/add-theme-switch-green-run.txt` and `docs/qa/add-theme-switch-fix-round-green-run.txt` predate the fix rounds.
+
 ## 5. Review-gate
 
 - [ ] 5.1 Run the review-gate with `change: add-theme-switch`: one run, one fix round for confirmed defects (tests first), one confirming run (a confirming run with a confirmed code defect stops the session, row 119). Record the report path in `docs/current-state.md`. Do not archive before it passes.

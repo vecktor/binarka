@@ -321,8 +321,8 @@ Re-run by the orchestrator after the archive of `update-setup-sheet-start` (`c0c
 | 1.1 | `ls openspec/changes/archive \| grep update-setup-sheet-start` | `2026-10-10-update-setup-sheet-start` |
 | 1.1 | `grep -c "Marked choice" openspec/specs/play-page/spec.md` | 2 (at least 1) |
 | 1.1 | autonomy-log rows 116 to 120; FR-102 to FR-118 and TC-12 in `docs/requirements.md` | each present once |
-| 1.1 | NFR-18 held with its pending tag before the red run | yes until `c0812f2`, where it moved on the row-68 (1) pattern after its red run (row 128) |
-| 1.2 | the confirmed list | sections 4 to 8 of this file; every changed assertion in the red commit `1c34ddb` carries its source row |
+| 1.1 | NFR-18 held with its pending tag before the red run | yes until `d2be569`, where it moved on the row-68 (1) pattern after its red run (row 128) |
+| 1.2 | the confirmed list | sections 4 to 8 of this file; every changed assertion in the red commit `e14511c` carries its source row |
 | 1.3 | the design gate | the confirming design review of `review-set-13` has no blocking finding (autonomy-log row 123); `update-setup-sheet-start` added no token, so FR-65 reads 13 and no TD-Q15 edit is needed |
 | 1.4 | hooks against the signed wireframe and the review set | section 9 above; the divergences F1 to F3 decided in autonomy-log row 124, F4 to F12 resolved as proposed; `git diff c0ce96f..HEAD -- openspec/specs/play-page/spec.md` is empty (no drift of the baseline under the 10 MODIFIED blocks) |
 

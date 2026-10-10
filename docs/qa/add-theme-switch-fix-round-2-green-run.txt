@@ -1,0 +1,28 @@
+Battery of add-theme-switch at 1446856 (after the second review fix round), 2026-10-10 09:48 +0530
+== npm run lint
+exit 0
+== npx tsc --noEmit -p .
+exit 0
+== npm run test:run
+ Test Files  63 passed (63)
+      Tests  1378 passed (1378)
+exit 0
+== npm run build
+exit 0
+== npx openspec validate --all --strict
+Totals: 4 passed, 0 failed (4 items)
+exit 0
+== node scripts/check-eval-ratchet.mjs
+Result: PASS
+exit 0
+== node scripts/check-traceability.mjs
+traceability: 113 MVP FRs checked — 0 failure(s), 123 warning(s)
+exit 0
+== npm run test:e2e
+  80 passed (17.7s)
+exit 0
+== npm run check:a11y
+  54 passed (16.9s)
+exit 0
+
+Sampled coverage (fixed viewports), never continuum. New since the first fix round: the two jsdom tests of the confirming run's code defect and e2e/nfr-10-header-fit.spec.ts (9 widths; the 1 px sweep of 320..800 is the stricter instrument, docs/qa/add-theme-switch/header-sweep-run.txt). docs/qa/e2e-report.json and docs/qa/a11y-report.json restored after each Playwright run.

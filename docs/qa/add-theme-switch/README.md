@@ -2,7 +2,7 @@
 
 Status: the slice is **NOT archived**. The session stopped at the review gate on 2026-10-10 at about 08:04 (UTC+5:30) under autonomy-log row 119. The confirming run `wf_6e154572-16a` confirmed a code defect, which is a regression from the fix round (see `openspec/changes/add-theme-switch/review-findings.json` and autonomy-log row 129).
 
-## Browser check (task 6.1, run at `5c6281b`)
+## Browser check (task 6.1, run at `f74022c`)
 
 - **Setup:** Chromium (Playwright), `vite preview` serving the built page, system scheme light, reduced motion.
 - **Script:** `browser-check.mjs.txt`. **Output:** `browser-check-run.txt`.
@@ -31,7 +31,7 @@ The gear (44 px plus a gap) was added to the header. The product never had the d
 
 | Variant | Widths with overflow | Worst |
 |---|---|---|
-| The page at `5c6281b` | 40 widths: 320 to 334, and 361 to 385 | 14.8 px at 320, 24.6 px at 361 |
+| The page at `f74022c` | 40 widths: 320 to 334, and 361 to 385 | 14.8 px at 320, 24.6 px at 361 |
 | With the phone rule ported | 3 widths: 320 to 322 | 2.8 px at 320 |
 
 - **How measured:** `header-sweep.mjs.txt`, 1 px steps from 320 to 800, rightmost header child against the header's right edge.
