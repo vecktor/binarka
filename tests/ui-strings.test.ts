@@ -10,6 +10,35 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  EN_CLOSE_LABEL,
+  EN_CONFIRM_NO,
+  EN_CONFIRM_TEXT,
+  EN_CONFIRM_YES,
+  EN_HINT_LABEL,
+  EN_IDLE_TEXT,
+  EN_LANGUAGE_LABEL,
+  EN_LEVEL_DESCRIPTIONS,
+  EN_LEVEL_GROUP_LABEL,
+  EN_LEVEL_NAMES,
+  EN_NEW_LABEL,
+  EN_REASON_4X4,
+  EN_RESET_LABEL,
+  EN_RULES_CLOSE_LABEL,
+  EN_RULES_ITEMS,
+  EN_RULES_LABEL,
+  EN_SETTINGS_LABEL,
+  EN_SHEET_LABEL,
+  EN_SIZE_GROUP_LABEL,
+  EN_START_LABEL,
+  EN_SUMMARY_PREFIX,
+  EN_TECHNIQUES_HEADING,
+  EN_TECHNIQUES_ITEMS,
+  EN_THEME_LABEL,
+  EN_THEME_OPTION_LABELS,
+  EN_TITLE,
+  EN_WIN_MESSAGE,
+} from './helpers/english';
+import {
   CLOSE_LABEL,
   IDLE_TEXT,
   LEVEL_DESCRIPTIONS,
@@ -208,5 +237,31 @@ describe('@trace NFR-5 @trace FR-94 @trace FR-102 @trace FR-68 the settings and 
     expect(files.length, 'the scan covers files').toBeGreaterThan(3);
     const offenders = files.filter((f) => CYRILLIC.test(readFileSync(f, 'utf8'))).map((f) => f.slice(process.cwd().length + 1));
     expect(offenders).toEqual([]);
+  });
+});
+
+// add-english-version (NFR-5, FR-94, FR-111, FR-107; delta «Texts of the settings button, the settings panel and the theme control», scenario «The settings and
+// theme texts live in the strings module», extended): strings.ts holds the Ukrainian texts of the table AND the English ones of «English page text», and
+// the Cyrillic source scans above (unchanged) still find nothing in any other file. Like the scenario above, the file is read as text, never imported (the
+// key-parity scenario that does import it is in tests/play-page-english-text.test.ts). A text whose source may hold an escape for U+00A0, U+201C or U+201D
+// is matched in either form.
+describe('@trace NFR-5 @trace FR-94 @trace FR-111 @trace FR-107 the English texts live in the strings module', () => {
+  const source = (): string => (existsSync(STRINGS_FILE) ? readFileSync(STRINGS_FILE, 'utf8') : '');
+  const escaped = (text: string): string => text.replaceAll('\u00A0', '\\u00A0').replaceAll('\u201C', '\\u201C').replaceAll('\u201D', '\\u201D');
+
+  it('The English texts live in the strings module: strings.ts holds every constant text of the English table, and «Мова», «Українська» and "English"', () => {
+    const text = source();
+    const wanted: string[] = [
+      EN_TITLE, EN_HINT_LABEL, EN_RESET_LABEL, EN_NEW_LABEL, EN_RULES_LABEL, EN_RULES_CLOSE_LABEL, EN_SIZE_GROUP_LABEL,
+      EN_CONFIRM_TEXT, EN_CONFIRM_YES, EN_CONFIRM_NO, ...EN_RULES_ITEMS, EN_IDLE_TEXT, EN_WIN_MESSAGE, EN_SHEET_LABEL, EN_SUMMARY_PREFIX,
+      EN_CLOSE_LABEL, EN_START_LABEL, EN_LEVEL_GROUP_LABEL, ...EN_LEVEL_NAMES, ...EN_LEVEL_DESCRIPTIONS, EN_REASON_4X4, EN_TECHNIQUES_HEADING,
+      ...EN_TECHNIQUES_ITEMS, EN_SETTINGS_LABEL, EN_THEME_LABEL, ...EN_THEME_OPTION_LABELS, EN_LANGUAGE_LABEL,
+    ];
+    for (const english of wanted) {
+      expect(text.includes(english) || text.includes(escaped(english)), `strings.ts holds the English text "${english}"`).toBe(true);
+    }
+    for (const ukrainian of ['Мова', 'Українська', 'English']) {
+      expect(text, `strings.ts holds «${ukrainian}» as a string literal of its own`).toMatch(new RegExp(`(['"\`])${ukrainian}\\1`));
+    }
   });
 });

@@ -8,6 +8,8 @@
 // row and column, on the spec's 6x6 boards and on an 8x8 board derived by hand from FR-75 (no 8x8 board is pinned by
 // the spec); look-ahead on the spec's three 6x6 boards. CONSCIOUS GAP: look-ahead at N = 8 has no spec board and
 // none can be derived without running an implementation, so it is not covered here (reported in the red-run file).
+// add-english-version (FR-112, NFR-4, NFR-5 per language, FR-22): the English blocks at the end ask the same ten boards in English; each
+// first asserts a Latin sentence, so the Ukrainian sentence a pre-change engine returns cannot pass them vacuously.
 // Green by design at red: the shape checks on the literal sentences of the spec (they test the helpers on the spec's
 // text) and the checks of the existing no-rule and broken sentences. Everything that asks the engine for a new
 // technique fails at red.
@@ -146,5 +148,74 @@ describe('@trace NFR-4 @trace NFR-5 the no-rule and broken-rule sentences keep t
     expect(isOneSentence(sentence)).toBe(true);
     expect(hasCyrillic(sentence)).toBe(true);
     expect(hasLatin(sentence)).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// add-english-version: the English sentences of the three technique kinds (FR-112)
+// ---------------------------------------------------------------------------------------------------------
+
+describe('@trace NFR-4 @trace FR-78 @trace FR-79 @trace FR-80 @trace FR-112 the English technique sentences are exactly one sentence', () => {
+  it.each(CASES)('$label: one terminal mark, at the end, no earlier break, no U+0027 or U+02BC', ({ board, ceiling, rule }) => {
+    const h = hint(board, ceiling, 'en');
+    expect(h.kind).toBe('fill');
+    expect(h.rule).toBe(rule);
+    expect(h.sentence, 'premise: an English sentence').toMatch(/[A-Za-z]/);
+    expect(terminalMarkCount(h.sentence), JSON.stringify(h.sentence)).toBe(1);
+    expect(isOneSentence(h.sentence), JSON.stringify(h.sentence)).toBe(true);
+    expect(h.sentence.endsWith('.')).toBe(true);
+    expect(/['\u02BC]/.test(h.sentence), JSON.stringify(h.sentence)).toBe(false);
+  });
+});
+
+describe('@trace NFR-5 @trace FR-112 the English technique sentences are Latin, with no Cyrillic letter', () => {
+  it.each(CASES)('$label: Latin letters, no Cyrillic letters', ({ board, ceiling, rule }) => {
+    const h = hint(board, ceiling, 'en');
+    expect(h.rule).toBe(rule);
+    expect(hasLatin(h.sentence), JSON.stringify(h.sentence)).toBe(true);
+    expect(hasCyrillic(h.sentence), JSON.stringify(h.sentence)).toBe(false);
+  });
+});
+
+describe('@trace FR-22 @trace FR-112 the English technique sentences name their line or their cell', () => {
+  it('line balance names its row or column with a 1-based number', () => {
+    const row = hint(LB_ROW, 2, 'en');
+    const col = hint(LB_COL, 2, 'en');
+    const eight = hint(LB_N8, 2, 'en');
+    expect([row.rule, col.rule, eight.rule]).toEqual(['balance', 'balance', 'balance']);
+    expect(row.sentence).toMatch(/^Row 3 has room for only one more 0, /);
+    expect(row.sentence).not.toMatch(/column/i);
+    expect(col.sentence).toMatch(/^Column 2 has room for only one more 1, /);
+    expect(col.sentence).not.toMatch(/\brow\b/i);
+    expect(eight.sentence).toMatch(/^Row 1 has room for only one more 0, /);
+  });
+
+  it('unique lines starts with the target line and names the complete line (N = 6 and N = 8)', () => {
+    expect(hint(UL_ROW, 3, 'en').sentence).toMatch(/^Row 2 matches the complete row 5 everywhere except two empty cells, /);
+    expect(hint(UL_COL, 3, 'en').sentence).toMatch(/^Column 2 matches the complete column 5 everywhere except two empty cells, /);
+    expect(hint(UL_ROW_8, 3, 'en').sentence).toMatch(/^Row 2 matches the complete row 5 everywhere except two empty cells, /);
+    expect(hint(UL_COL_8, 3, 'en').sentence).toMatch(/^Column 2 matches the complete column 5 everywhere except two empty cells, /);
+  });
+
+  it('the look-ahead sentences name the cell by row and column', () => {
+    expect(hint(LA_TWO, 4, 'en').sentence).toContain('in row 6, column 5,');
+    expect(hint(LA_FOUR, 4, 'en').sentence).toContain('in row 6, column 1,');
+    expect(hint(LA_EQUAL, 4, 'en').sentence).toContain('in row 5, column 3,');
+  });
+});
+
+describe('@trace NFR-4 @trace NFR-5 @trace FR-112 the English no-rule and broken-rule sentences keep the one-sentence shape', () => {
+  it.each(['None of the rules points to a next move right now.', 'First fix the rule break highlighted on the board.'])('%s', (sentence) => {
+    expect(isOneSentence(sentence)).toBe(true);
+    expect(hasLatin(sentence)).toBe(true);
+    expect(hasCyrillic(sentence)).toBe(false);
+    expect(/['\u02BC]/.test(sentence)).toBe(false);
+  });
+
+  it('the engine returns them in English at every ceiling', () => {
+    expect(hint(boardOf(6, { cells: [[1, 1, 0]] }), 1, 'en').sentence).toBe('None of the rules points to a next move right now.');
+    expect(hint(boardOf(6, { cells: [[1, 1, 0]] }), 4, 'en').sentence).toBe('None of the rules points to a next move right now.');
+    expect(hint(boardOf(6, { rows: { 1: '0 0 0 . . .' } }), 1, 'en').sentence).toBe('First fix the rule break highlighted on the board.');
+    expect(hint(boardOf(6, { rows: { 1: '0 0 0 . . .' } }), 4, 'en').sentence).toBe('First fix the rule break highlighted on the board.');
   });
 });

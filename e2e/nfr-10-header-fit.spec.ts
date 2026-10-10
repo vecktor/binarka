@@ -1,6 +1,8 @@
 // @trace FR-68
 import { expect, test } from '@playwright/test';
-import { openPage } from './helpers';
+import type { Page } from '@playwright/test';
+import type { LanguageChoice } from './helpers';
+import { expectLanguage, openPage } from './helpers';
 
 // The header (FR-68: the title, the settings button and «Правила») fits its column on phones, and the page never scrolls sideways
 // (docs/frontend-conventions.md rule 18; A-14: phones from 320 px). Added in the second review-gate fix round of add-theme-switch
@@ -8,6 +10,8 @@ import { openPage } from './helpers';
 // (docs/qa/add-theme-switch/header-sweep-run.txt). This is not an NFR-10 mechanism; the file sits with the fit checks of the `layout`
 // project. Sampled, not continuum: the widths below take the two ends of each overflow band, its worst points and two wide controls. The
 // stricter instrument is the 1 px sweep of 320 to 800 px (docs/qa/add-theme-switch/header-sweep.mjs.txt).
+// add-english-version (FR-68, A-14): the same sampled check in English ("Binarka", "Rules"); the Ukrainian test and its widths are unchanged. TD-D5 leaves
+// the English header at 320 px to the browser check ("observed, not verified"); this sampled test is the machine instrument for the same widths.
 const WIDTHS = [320, 322, 334, 361, 369, 375, 385, 768, 1280] as const;
 
 interface HeaderFit {
@@ -17,10 +21,11 @@ interface HeaderFit {
   innerWidth: number;
 }
 
-for (const width of WIDTHS) {
-  test(`header sampled at ${width} px: every header child inside the header, no sideways scroll`, async ({ page }) => {
+async function expectHeaderFits(page: Page, width: number, language: LanguageChoice): Promise<void> {
+  {
     await page.setViewportSize({ width, height: 812 });
-    await openPage(page);
+    await openPage(page, 1, language === 'en' ? { language } : {});
+    await expectLanguage(page, language);
 
     const fit = await page.evaluate((): HeaderFit => {
       const header = document.querySelector('header');
@@ -43,5 +48,15 @@ for (const width of WIDTHS) {
       expect(child.right, `${child.name} ends ${(child.right - fit.header.right).toFixed(1)} px right of the header`).toBeLessThanOrEqual(fit.header.right + 0.5);
     }
     expect(fit.scrollWidth, `the page is ${fit.scrollWidth} px wide in a ${fit.innerWidth} px viewport (sideways scroll)`).toBeLessThanOrEqual(fit.innerWidth);
+  }
+}
+
+for (const width of WIDTHS) {
+  test(`header sampled at ${width} px: every header child inside the header, no sideways scroll`, async ({ page }) => {
+    await expectHeaderFits(page, width, 'uk');
+  });
+
+  test(`header sampled at ${width} px in English: every header child inside the header, no sideways scroll`, async ({ page }) => {
+    await expectHeaderFits(page, width, 'en');
   });
 }

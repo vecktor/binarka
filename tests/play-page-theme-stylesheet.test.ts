@@ -9,7 +9,11 @@
 // The rules are read as declarations (jsdom never matches :focus-visible and applies no nested rule to computed style, A-28, TC-13).
 // The dark block is found through the helper, never by a raw-text search for one quote style (jsdom keeps the quote style the file uses).
 //
+// add-english-version (FR-65, FR-107, FR-117, NFR-9; delta «The theme options set their own colours», scenario «The language options declare their
+// colours and a cue»): the last block of this file asks the same of `.language-control button` and its checked rule. Nothing above changes.
+//
 // @trace FR-65
+// @trace FR-107
 // @trace FR-104
 // @trace FR-117
 // @trace NFR-9
@@ -155,5 +159,50 @@ describe('The theme options set their own colours', () => {
       cues,
       `the checked rule declares a border-style, border-width, box-shadow or text-decoration that the plain rule does not (checked: ${[...checked.keys()].join(', ')})`,
     ).not.toEqual([]);
+  });
+});
+
+describe('The theme options set their own colours (the language options)', () => {
+  const LANGUAGE_PLAIN = '.language-control button';
+  const LANGUAGE_CHECKED = ".language-control button[aria-checked='true']";
+
+  it('The language options declare their colours and a cue', () => {
+    const root = mountFixture(BLANK);
+    expect(q(root, '[data-control="language"]').classList.contains('language-control'), 'the language control carries the class language-control (a spec-made proxy)').toBe(true);
+    const parsed = readStyles();
+    for (const selector of [LANGUAGE_PLAIN, LANGUAGE_CHECKED]) {
+      expect(rulesWithSelector(parsed, selector).length, `a rule for ${selector}`).toBeGreaterThan(0);
+      const declarations = declarationsFor(parsed, selector);
+      for (const property of ['color', 'background-color']) {
+        const value = declarations.get(property);
+        expect(tokenOf(parsed, value), `${selector} { ${property} } is a single var(--color-...) of a declared token (is ${value ?? 'missing'})`).toBeDefined();
+      }
+      expect(declarations.has('opacity'), `${selector} does not declare opacity`).toBe(false);
+    }
+
+    // the ratio of text to background is at least 4.5 in each state in the light and in the dark token set
+    const plain = declarationsFor(parsed, LANGUAGE_PLAIN);
+    const checked = new Map([...plain, ...declarationsFor(parsed, LANGUAGE_CHECKED)]); // the checked rule laid over the plain rule
+    let ratios = 0;
+    for (const set of themeTokenSets(parsed)) {
+      for (const [state, declarations] of [['plain', plain], ['checked', checked]] as const) {
+        const fg = tokenOf(parsed, declarations.get('color'));
+        const bg = tokenOf(parsed, declarations.get('background-color'));
+        expect.assert(fg !== undefined && bg !== undefined, `${state}: color and background-color are single tokens`);
+        expect(contrastRatio(hexOf(set, fg), hexOf(set, bg)), `${set.label} set, ${state}: ${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+        ratios += 1;
+      }
+    }
+    expect(ratios, 'four ratios were computed').toBe(4);
+
+    // the checked rule declares a cue the plain rule does not (the reading of the theme test above)
+    const shape = (property: string, value: string | undefined): string | undefined =>
+      value === undefined ? undefined : property === 'border' ? value.replace(/var\([^)]*\)/g, '').replace(/\s+/g, ' ').trim() : value.trim();
+    const cues = ['border-style', 'border-width', 'border', 'box-shadow', 'text-decoration', 'text-decoration-line'].filter((property) => {
+      const own = shape(property, declarationsFor(parsed, LANGUAGE_CHECKED).get(property));
+      if (own === undefined || /^(none|0|0px|medium)$/i.test(own)) return false;
+      return own !== shape(property, plain.get(property));
+    });
+    expect(cues, 'the checked rule declares a border-style, border-width, box-shadow or text-decoration that the plain rule does not').not.toEqual([]);
   });
 });

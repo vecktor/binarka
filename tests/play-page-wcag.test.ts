@@ -24,6 +24,9 @@ import {
   SUMMARY_PREFIX,
   THEME_LABEL,
   THEME_OPTION_LABELS,
+  LANGUAGE_LABEL,
+  LANGUAGE_OPTION_LABELS,
+  documentLanguage,
   WIN_PUZZLE,
   accessibleName,
   allCells,
@@ -89,12 +92,16 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
     // add-theme-switch DELIBERATE CHANGE (NFR-9, FR-102, FR-117; autonomy-log row 120): 58 buttons (the settings button, the three theme
     // options and the settings panel's «Закрити» join), three radiogroups (the theme group joins) and six named groups (the settings panel
     // joins: three radiogroups, the setup sheet, the settings panel and the board).
-    expect(root.querySelectorAll('button')).toHaveLength(58);
-    expect(root.querySelectorAll('[role="radiogroup"]')).toHaveLength(3);
+    // add-english-version DELIBERATE CHANGE (NFR-9, FR-107, A-52; delta «Every button, the radiogroups, the sheet and the board have a Ukrainian
+    // name»): 60 buttons (the two language options join), four radiogroups (the language group joins) and seven named groups. The name of the
+    // option "English" is the one exception of the Cyrillic and Latin checks: its own `lang` differs from <html lang>.
+    expect(root.querySelectorAll('button')).toHaveLength(60);
+    expect(root.querySelectorAll('[role="radiogroup"]')).toHaveLength(4);
     expect(allCells(root)).toHaveLength(36);
-    expect(names).toHaveLength(58 + 6);
+    expect(names).toHaveLength(60 + 7);
     for (const { what, name } of names) {
       expect(name, `${what} has a name`).not.toBe('');
+      if (name === 'English') continue; // the option named in its own language, with lang="en" (A-52)
       expect(/\p{Script=Cyrillic}/u.test(name), `${what} "${name}" has Cyrillic letters`).toBe(true);
       expect(/[A-Za-z]/.test(name), `${what} "${name}" has no Latin letters`).toBe(false);
     }
@@ -108,7 +115,9 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
     expect(all).toContain(SHEET_LABEL);
     expect(all).toContain(START_LABEL);
     expect(all).toContain(CLOSE_LABEL);
-    for (const label of [SETTINGS_LABEL, THEME_LABEL, ...THEME_OPTION_LABELS]) expect(all, `the names include «${label}»`).toContain(label);
+    for (const label of [SETTINGS_LABEL, THEME_LABEL, ...THEME_OPTION_LABELS, LANGUAGE_LABEL, ...LANGUAGE_OPTION_LABELS]) {
+      expect(all, `the names include «${label}»`).toContain(label);
+    }
     // the summary button: the hidden prefix and the visible text, without the aria-hidden cue
     expect(all).toContain(`${SUMMARY_PREFIX}${summaryLabel(6, 1)}`);
     // each level button: name, one space, description
@@ -116,6 +125,25 @@ describe('the page meets the accessibility requirements (NFR-9)', () => {
       expect(all, `the level button «${name}» is named by its name and its description`).toContain(`${name} ${LEVEL_DESCRIPTIONS[i] ?? ''}`);
     });
     for (const cell of allCells(root)) expect(all).toContain(expectedCellLabel(cell));
+  });
+
+  it('@trace NFR-9 @trace NFR-5 @trace FR-111 English mode names every control', () => {
+    const root = mountFixture(WIN_PUZZLE, { language: 'en' });
+    const names = accessibleNames(root);
+    expect(root.querySelectorAll('button'), 'the same 60 buttons').toHaveLength(60);
+    expect(root.querySelectorAll('[role="radiogroup"]'), 'four radiogroups').toHaveLength(4);
+    expect(names, 'the buttons, the groups, the sheet, the settings panel and the board').toHaveLength(60 + 7);
+    for (const { what, name } of names) {
+      expect(name, `${what} has a name`).not.toBe('');
+      if (name === 'Українська') continue; // the option named in its own language, with lang="uk" (A-52)
+      expect(/[A-Za-z]/.test(name), `${what} "${name}" has Latin letters`).toBe(true);
+      expect(/\p{Script=Cyrillic}/u.test(name), `${what} "${name}" has no Cyrillic letters`).toBe(false);
+    }
+    const all = names.map((n) => n.name);
+    for (const label of ['Hint', 'Reset', 'New puzzle', 'Grid size', 'Grid 6×6', 'Difficulty', 'Grid and difficulty', 'Settings', 'Theme', 'Light', 'Dark', 'System', 'Language', 'Start', 'Close', 'Grid and difficulty: 6×6 · Warm-up']) {
+      expect(all, `the names include "${label}"`).toContain(label);
+    }
+    expect(documentLanguage(), '<html lang> is en').toBe('en');
   });
 
   it('@trace NFR-9 No element of the page has a tabindex, before and after play', () => {

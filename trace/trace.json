@@ -499,6 +499,8 @@
       "planned": true,
       "tests": [
         "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences.test.ts",
         "tests/hint.test.ts"
       ],
       "recordings": []
@@ -511,6 +513,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/hint-language.test.ts",
         "tests/hint-order-ceiling.test.ts",
         "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
@@ -584,7 +587,11 @@
         "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint-language.test.ts",
+        "tests/hint.test.ts",
+        "tests/play-page-language.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -660,6 +667,7 @@
       "tests": [
         "tests/hint-line-balance.test.ts",
         "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
         "tests/hint-sentences-techniques.test.ts"
       ],
       "recordings": []
@@ -672,6 +680,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/hint-sentences-techniques.test.ts",
         "tests/hint-sentences-techniques.test.ts",
         "tests/hint-sentences-techniques.test.ts",
         "tests/hint-unique-lines.test.ts"
@@ -689,6 +698,7 @@
       "tests": [
         "tests/hint-look-ahead.test.ts",
         "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
         "tests/hint-sentences-techniques.test.ts"
       ],
       "recordings": []
@@ -700,7 +710,19 @@
         "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/eval-hint-clarity-en.test.ts",
+        "tests/hint-language.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences-techniques.test.ts",
+        "tests/hint-sentences.test.ts",
+        "tests/hint-sentences.test.ts",
+        "tests/hint-sentences.test.ts",
+        "tests/hint.test.ts",
+        "evals/cases/hint-clarity-en.eval.ts"
+      ],
       "recordings": []
     },
     {
@@ -944,6 +966,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-english-text.test.ts",
         "tests/play-page-win.test.ts"
       ],
       "recordings": []
@@ -1058,6 +1081,7 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts",
+        "tests/play-page-language.test.ts",
         "tests/play-page-rendering.test.ts",
         "tests/play-page-rendering.test.ts",
         "tests/play-page-settings.test.ts",
@@ -1091,6 +1115,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-english-text.test.ts",
         "tests/play-page-page-text.test.ts",
         "tests/play-page-page-text.test.ts",
         "tests/play-page-rendering.test.ts",
@@ -1224,6 +1249,7 @@
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
         "tests/play-page-hinted-cell.test.ts",
+        "tests/play-page-language.test.ts",
         "tests/play-page-marked-choice.test.ts",
         "tests/play-page-marked-choice.test.ts"
       ],
@@ -1303,7 +1329,8 @@
         "tests/play-page-cells.test.ts",
         "tests/play-page-cells.test.ts",
         "tests/play-page-cells.test.ts",
-        "tests/play-page-cells.test.ts"
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-english-text.test.ts"
       ],
       "recordings": []
     },
@@ -1315,6 +1342,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-english-text.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts"
@@ -1402,6 +1430,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-english-text.test.ts",
         "tests/play-page-level-control.test.ts",
         "tests/play-page-level-control.test.ts"
       ],
@@ -1476,11 +1505,13 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-english-text.test.ts",
         "tests/play-page-settings.test.ts",
         "tests/play-page-start-button.test.ts",
         "tests/play-page-start-button.test.ts",
         "tests/play-page-techniques.test.ts",
         "tests/play-page-techniques.test.ts",
+        "tests/ui-strings.test.ts",
         "tests/ui-strings.test.ts",
         "tests/ui-strings.test.ts"
       ],
@@ -1507,6 +1538,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-english-text.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-setup-sheet.test.ts",
@@ -1522,6 +1554,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-english-text.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-semantics.test.ts",
         "tests/play-page-semantics.test.ts",
@@ -1590,6 +1623,7 @@
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-keyboard.test.ts",
+        "tests/play-page-language.test.ts",
         "tests/play-page-level-4x4.test.ts",
         "tests/play-page-level-control.test.ts",
         "tests/play-page-level-interplay.test.ts",
@@ -1720,7 +1754,12 @@
         "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-action-buttons-stylesheet.test.ts",
+        "tests/play-page-language.test.ts",
+        "tests/play-page-theme-stylesheet.test.ts",
+        "tests/ui-strings.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1729,7 +1768,9 @@
         "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-language.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1738,7 +1779,11 @@
         "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/index-html.test.ts",
+        "tests/main-entry.test.ts",
+        "tests/play-page-language.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1748,7 +1793,10 @@
         "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/hint-language.test.ts",
+        "tests/play-page-language.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1757,7 +1805,11 @@
         "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-english-text.test.ts",
+        "tests/play-page-wcag.test.ts",
+        "tests/ui-strings.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1769,6 +1821,7 @@
       "planned": true,
       "tests": [
         "tests/index-html.test.ts",
+        "tests/main-entry.test.ts",
         "tests/play-page-preferences.test.ts"
       ],
       "recordings": []
@@ -1821,7 +1874,9 @@
       "tests": [
         "tests/play-page-action-buttons-stylesheet.test.ts",
         "tests/play-page-action-buttons-stylesheet.test.ts",
+        "tests/play-page-action-buttons-stylesheet.test.ts",
         "tests/play-page-keyboard.test.ts",
+        "tests/play-page-language.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-logo.test.ts",
         "tests/play-page-rendering.test.ts",
@@ -1841,6 +1896,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-language.test.ts",
         "tests/play-page-theme.test.ts"
       ],
       "recordings": []
@@ -1852,44 +1908,15 @@
         "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-english-text.test.ts",
+        "tests/play-page-language.test.ts"
+      ],
       "recordings": []
     }
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-56 has no test annotated \"@trace FR-56\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-112 has no test annotated \"@trace FR-112\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-107 has no test annotated \"@trace FR-107\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-108 has no test annotated \"@trace FR-108\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-109 has no test annotated \"@trace FR-109\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-110 has no test annotated \"@trace FR-110\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-111 has no test annotated \"@trace FR-111\""
-    },
-    {
-      "check": "test-trace",
-      "msg": "FR-55 has no test annotated \"@trace FR-55\""
-    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"

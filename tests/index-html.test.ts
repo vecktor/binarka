@@ -10,7 +10,15 @@
 // The colours the head step must carry are read from src/ui/style.css (--color-page of the light and of the dark token set).
 // The real-browser flash check (NFR-18) lives in e2e/nfr-18-flash.spec.ts.
 //
+// add-english-version (FR-116, FR-109, FR-114, FR-115; delta spec openspec/changes/add-english-version/specs/play-page/spec.md, «Preferences are
+// applied before the first paint»): the head step also sets `lang` and `document.title` from `binarka.language`. DELIBERATE CHANGES to this file
+// (source rows FR-116 and FR-109 of design.md «Tests that change deliberately», row `tests/main-entry.test.ts`, `tests/index-html.test.ts`): the helper
+// `runHeadStep` takes a stored `language` and returns `lang` and `title`; the test «The head step survives bad and throwing storage» also asserts
+// `uk` and «Бінарка»; the test «The duplicated names and colours equal the module and the tokens» also compares the second key and both titles. The
+// theme assertions are unchanged; «The head step sets the language and the title» and «The static title» are new.
+//
 // @trace FR-116
+// @trace FR-109
 // @trace FR-106
 // @trace FR-104
 // @trace FR-114
@@ -27,6 +35,7 @@ import { readStyles, themeTokenSets } from './helpers/css';
 const ROOT = process.cwd();
 const INDEX_HTML = readFileSync(`${ROOT}/index.html`, 'utf8');
 const KEY = 'binarka.theme';
+const LANGUAGE_KEY = 'binarka.language';
 
 const parse = (html: string): Document => new DOMParser().parseFromString(html, 'text/html');
 
@@ -52,6 +61,15 @@ describe('Browser colour follows the theme (the static half)', () => {
   });
 });
 
+describe('Preferences are applied before the first paint (the static file)', () => {
+  // GUARD (green before the change, must stay green): the static page is Ukrainian; the head step only changes it when `en` is stored.
+  it('The static title of index.html stays «Бінарка» and the static lang is uk', () => {
+    const doc = parse(INDEX_HTML);
+    expect(doc.title).toBe('Бінарка');
+    expect(doc.documentElement.getAttribute('lang')).toBe('uk');
+  });
+});
+
 describe('Preferences are applied before the first paint', () => {
   it('The head step is a classic inline script in the head', () => {
     const doc = parse(INDEX_HTML);
@@ -72,11 +90,13 @@ describe('Preferences are applied before the first paint', () => {
   interface Run {
     theme: string | null;
     meta: string | null;
+    lang: string | null;
+    title: string;
     errors: string[];
   }
 
   /** Run the REAL head step of index.html in jsdom with the given storage and system theme. */
-  function runHeadStep(options: { stored?: string; storage?: 'ok' | 'access-throws' | 'getItem-throws'; system?: 'dark' | 'light' | 'none' | 'throws' }): Run {
+  function runHeadStep(options: { stored?: string; language?: string; storage?: 'ok' | 'access-throws' | 'getItem-throws'; system?: 'dark' | 'light' | 'none' | 'throws' }): Run {
     const errors: string[] = [];
     const virtualConsole = new VirtualConsole();
     virtualConsole.on('jsdomError', (error) => { errors.push(error.message); });
@@ -87,6 +107,7 @@ describe('Preferences are applied before the first paint', () => {
       beforeParse(window) {
         const storage = options.storage ?? 'ok';
         if (storage === 'ok' && options.stored !== undefined) window.localStorage.setItem(KEY, options.stored);
+        if (storage === 'ok' && options.language !== undefined) window.localStorage.setItem(LANGUAGE_KEY, options.language);
         if (storage === 'access-throws') {
           Object.defineProperty(window, 'localStorage', {
             configurable: true,
@@ -126,6 +147,8 @@ describe('Preferences are applied before the first paint', () => {
     return {
       theme: doc.documentElement.getAttribute('data-theme'),
       meta: doc.querySelector('meta[name="theme-color"]')?.getAttribute('content')?.toLowerCase() ?? null,
+      lang: doc.documentElement.getAttribute('lang'),
+      title: doc.title,
       errors,
     };
   }
@@ -145,6 +168,18 @@ describe('Preferences are applied before the first paint', () => {
     expect(auto.meta).toBe(colours.dark);
   });
 
+  it('The head step sets the language and the title', () => {
+    const english = runHeadStep({ language: 'en' });
+    const ukrainian = runHeadStep({ language: 'uk' });
+    const bad = runHeadStep({ language: 'EN' });
+    for (const run of [english, ukrainian, bad]) expect(run.errors).toEqual([]);
+    expect([english.lang, ukrainian.lang, bad.lang], '<html lang> is en, uk and uk').toEqual(['en', 'uk', 'uk']);
+    expect([english.title, ukrainian.title, bad.title], 'document.title is "Binarka", «Бінарка» and «Бінарка»').toEqual(['Binarka', 'Бінарка', 'Бінарка']);
+    // both halves in one run: the theme and the language are independent keys
+    const both = runHeadStep({ stored: 'dark', language: 'en', system: 'light' });
+    expect([both.theme, both.lang, both.title]).toEqual(['dark', 'en', 'Binarka']);
+  });
+
   it('The head step survives bad and throwing storage', () => {
     const runs: [string, Run, string][] = [
       ['a bad stored value, no matchMedia', runHeadStep({ stored: 'Dark' }), 'light'],
@@ -157,6 +192,8 @@ describe('Preferences are applied before the first paint', () => {
     for (const [name, run, theme] of runs) {
       expect(run.errors, `${name}: it raises no error`).toEqual([]);
       expect(run.theme, `${name}: data-theme is the system theme`).toBe(theme);
+      expect(run.lang, `${name}: <html lang> is uk`).toBe('uk');
+      expect(run.title, `${name}: document.title is «Бінарка»`).toBe('Бінарка');
     }
     const colours = pageColours();
     for (const [name, run, theme] of runs) {
@@ -177,6 +214,14 @@ describe('Preferences are applied before the first paint', () => {
     const colours = pageColours();
 
     expect(/['"]binarka\.theme['"]/.test(script), 'the key name in the head step equals the module\'s').toBe(true);
+    // add-english-version: the second key name, in the module and in the head step, and both titles, in strings.ts and in the head step
+    expect(/['"]binarka\.language['"]/.test(script), 'the head step holds the second key name binarka.language').toBe(true);
+    expect(/['"]binarka\.language['"]/.test(modules[0]?.text ?? ''), 'the preferences module holds the same key name').toBe(true);
+    const stringsText = readFileSync(`${uiDir}/strings.ts`, 'utf8');
+    for (const title of ['Бінарка', 'Binarka']) {
+      expect(script, `the head step holds the title ${title}`).toContain(title);
+      expect(stringsText, `src/ui/strings.ts holds the title ${title} as a string of its own`).toMatch(new RegExp(`(['"\`])${title}\\1`));
+    }
     for (const [name, colour] of [['light', colours.light], ['dark', colours.dark]] as const) {
       expect(colour, `premise: the ${name} --color-page is #rrggbb`).toMatch(/^#[0-9a-f]{6}$/);
       expect(script.toLowerCase(), `the head step holds the ${name} --color-page ${colour}`).toContain(colour);

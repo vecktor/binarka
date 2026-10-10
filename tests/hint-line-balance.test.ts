@@ -1,6 +1,8 @@
 // Line balance hint (technique 2). Written from the delta spec of add-difficulty-engine before the implementation exists.
 // Scenarios of «Requirement: Line balance hint». Coordinates in the expectations are 1-based, as the spec writes them;
 // the engine's row and col are 0-based. The ceiling argument is reached through the engine.
+// add-english-version DELIBERATE CHANGE (FR-110, FR-112; design.md «Tests that change deliberately», file `tests/hint-line-balance.test.ts` l. 27, 35, 39, 43):
+// the four whole-object checks of a fill carry the data of its sentence (axis, line, digit) and are `toStrictEqual`; every other check is unchanged.
 // At red every test fails: the positive ones because technique 2 does not exist, the ceiling-1 and near-miss ones
 // (today's engine offers no such fill either, so their behaviour is unchanged) only because the no-rule sentence is
 // the new one (FR-25 as amended, autonomy-log row 87).
@@ -24,7 +26,7 @@ import {
 
 describe('@trace FR-74 @trace FR-78 line balance hint', () => {
   it('Line balance in a row: row 3 column 6, value 1, rule balance, exact sentence (ceiling 2)', () => {
-    expect(hint(LB_ROW, 2)).toEqual({ kind: 'fill', row: 2, col: 5, value: 1, rule: 'balance', sentence: LB_ROW_SENTENCE });
+    expect(hint(LB_ROW, 2)).toStrictEqual({ kind: 'fill', row: 2, col: 5, value: 1, rule: 'balance', axis: 'row', line: 2, digit: 0, sentence: LB_ROW_SENTENCE });
   });
 
   it('Line balance in a row: the same board with ceiling 1 yields no target and the no-rule sentence', () => {
@@ -32,15 +34,15 @@ describe('@trace FR-74 @trace FR-78 line balance hint', () => {
   });
 
   it('Line balance in a column: row 6 column 2, value 0, rule balance, exact sentence (ceiling 2)', () => {
-    expect(hint(LB_COL, 2)).toEqual({ kind: 'fill', row: 5, col: 1, value: 0, rule: 'balance', sentence: LB_COL_SENTENCE });
+    expect(hint(LB_COL, 2)).toStrictEqual({ kind: 'fill', row: 5, col: 1, value: 0, rule: 'balance', axis: 'col', line: 1, digit: 1, sentence: LB_COL_SENTENCE });
   });
 
   it('Two cells qualify, zeros: the lower position first (row 3 column 2, value 1, exact sentence)', () => {
-    expect(hint(LB_TWO_ZEROS, 2)).toEqual({ kind: 'fill', row: 2, col: 1, value: 1, rule: 'balance', sentence: LB_ROW_SENTENCE });
+    expect(hint(LB_TWO_ZEROS, 2)).toStrictEqual({ kind: 'fill', row: 2, col: 1, value: 1, rule: 'balance', axis: 'row', line: 2, digit: 0, sentence: LB_ROW_SENTENCE });
   });
 
   it('Two cells qualify, ones: the lower position first (row 3 column 2, value 0, sentence names «однієї одиниці»)', () => {
-    expect(hint(LB_TWO_ONES, 2)).toEqual({ kind: 'fill', row: 2, col: 1, value: 0, rule: 'balance', sentence: LB_TWO_ONES_SENTENCE });
+    expect(hint(LB_TWO_ONES, 2)).toStrictEqual({ kind: 'fill', row: 2, col: 1, value: 0, rule: 'balance', axis: 'row', line: 2, digit: 1, sentence: LB_TWO_ONES_SENTENCE });
   });
 
   it('The threshold follows N: an 8x8 row with 3 = N/2 - 1 zeros targets row 1 column 5 with value 1', () => {

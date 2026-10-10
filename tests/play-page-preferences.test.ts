@@ -9,6 +9,13 @@
 // `restoreMocks`). The scenario «The page source names no other store» is a source scan and a GUARD: it is green before the
 // implementation and must stay green (TC-12 narrowed: localStorage only).
 //
+// add-english-version (FR-113 to FR-115, FR-116; delta spec openspec/changes/add-english-version/specs/play-page/spec.md): the same
+// requirements are extended to the key `binarka.language`. The theme tests above are UNCHANGED; the language scenarios are added in the blocks
+// at the end of this file («A language press writes the pressed value once», «The stored language survives a remount», «Each bad language value
+// gives Ukrainian», «A language press still applies when storage throws», «A later mount keeps a session-only language», «A remount on the same
+// root keeps a session-only language», «An English mount shows no Cyrillic text»). The session-only values live in the module Map of
+// src/ui/preferences.ts and are forgotten by the test lifecycle between tests (`forgetSessionPreferences`), as a page reload would.
+//
 // @trace FR-113
 // @trace FR-114
 // @trace FR-115
@@ -26,8 +33,14 @@ import {
   checkedTheme,
   clickCell,
   collectPageText,
+  documentLanguage,
   documentTheme,
+  checkedLanguage,
   generatorBySize,
+  LANGUAGE_KEY,
+  hasForeignLanguage,
+  pressLanguage,
+  languageOption,
   installMatchMedia,
   installPageLifecycle,
   makeLocalStorageAccessThrow,
@@ -284,5 +297,249 @@ describe('Auto follows the system theme live (storage part)', () => {
 
     expect(setItem).not.toHaveBeenCalled();
     expect(localStorage.length).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------------
+// add-english-version: the language key
+// ---------------------------------------------------------------------------------------------------------
+
+describe('Stored preferences (the language key)', () => {
+  it('A language press writes the pressed value once', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    const root = mountFixture(PAIR_ROW);
+    expect(setItem, 'premise: the mount wrote nothing').not.toHaveBeenCalled();
+
+    pressLanguage(root, 'en');
+    pressLanguage(root, 'uk');
+
+    expect(setItem).toHaveBeenCalledTimes(2);
+    expect(setItem.mock.calls[0]).toEqual([LANGUAGE_KEY, 'en']);
+    expect(setItem.mock.calls[1], 'the default value is written too (A-48)').toEqual([LANGUAGE_KEY, 'uk']);
+    expect(localStorage.length, 'localStorage holds no other key than binarka.language').toBe(1);
+    expect(localStorage.getItem(LANGUAGE_KEY)).toBe('uk');
+  });
+
+  it('A press on the option already chosen writes nothing', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    const fresh = mountFixture(PAIR_ROW);
+    pressLanguage(fresh, 'uk'); // «Українська» is checked by default
+    expect(setItem, 'the default option is already chosen: nothing is written').not.toHaveBeenCalled();
+
+    localStorage.setItem(LANGUAGE_KEY, 'en');
+    setItem.mockClear();
+    const english = mountFixture(PAIR_ROW);
+    pressLanguage(english, 'en');
+    expect(setItem, 'a press on the option already chosen calls setItem zero times').not.toHaveBeenCalled();
+    expect(localStorage.length).toBe(1);
+  });
+
+  it('A theme press and a language press write their own keys only', () => {
+    const root = mountFixture(PAIR_ROW);
+    pressTheme(root, 'dark');
+    pressLanguage(root, 'en');
+    expect(localStorage.length, 'two keys, nothing else').toBe(2);
+    expect(localStorage.getItem(THEME_KEY)).toBe('dark');
+    expect(localStorage.getItem(LANGUAGE_KEY)).toBe('en');
+  });
+
+  it('The mount and the game actions write no language', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    localStorage.setItem(LANGUAGE_KEY, 'en');
+    setItem.mockClear();
+    const root = mountFixture(PAIR_ROW);
+    clickCell(root, 1, 1, 2);
+    pressHint(root);
+    startNewPuzzle(root);
+    expect(setItem, 'setItem was never called').not.toHaveBeenCalled();
+    expect(localStorage.getItem(LANGUAGE_KEY), 'the stored value is untouched').toBe('en');
+    expect(sessionStorage.length).toBe(0);
+    expect(document.cookie).toBe('');
+  });
+
+  it('The stored language survives a remount', () => {
+    const first = mountFixture(PAIR_ROW);
+    pressLanguage(first, 'en');
+    expect(localStorage.getItem(LANGUAGE_KEY), 'premise: the press stored the choice').toBe('en');
+    document.documentElement.removeAttribute('lang'); // the remount has to set the attribute from the stored value itself
+    first.remove();
+
+    const second = mountOn(document.createElement('div'));
+
+    expect(checkedLanguage(second), 'aria-checked is on "English" only').toBe('en');
+    expect(documentLanguage(), '<html lang> is en').toBe('en');
+    expect(document.title, 'and the texts are English').toBe('Binarka');
+  });
+});
+
+describe('Invalid or missing stored values fall back (the language key)', () => {
+  const BAD_LANGUAGES: [string, string | null][] = [
+    ['key missing', null],
+    ['empty string', ''],
+    ['EN', 'EN'],
+    ['english', 'english'],
+    ['de', 'de'],
+    ['{}', '{}'],
+  ];
+
+  for (const [label, stored] of BAD_LANGUAGES) {
+    it(`Each bad language value gives Ukrainian (${label})`, () => {
+      if (stored !== null) localStorage.setItem(LANGUAGE_KEY, stored);
+      const setItem = vi.spyOn(Storage.prototype, 'setItem');
+      const removeItem = vi.spyOn(Storage.prototype, 'removeItem');
+
+      const root = mountFixture(PAIR_ROW);
+
+      expect(checkedLanguage(root), '«Українська» only').toBe('uk');
+      expect(documentLanguage(), '<html lang> is uk').toBe('uk');
+      expect(document.title, 'and the texts are Ukrainian').toBe('Бінарка');
+      expect(setItem, 'no setItem').not.toHaveBeenCalled();
+      expect(removeItem, 'no removeItem').not.toHaveBeenCalled();
+      expect(localStorage.getItem(LANGUAGE_KEY), 'the stored value is exactly as before the mount').toBe(stored);
+    });
+  }
+});
+
+describe('Failing storage does not stop the page (the language key)', () => {
+  it('A language press still applies when storage throws', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError');
+    });
+    const root = mountFixture(PAIR_ROW);
+    const tracker = trackErrors();
+    try {
+      pressLanguage(root, 'en');
+    } finally {
+      tracker.stop();
+    }
+
+    expect(tracker.errors, 'the window error listener recorded nothing').toEqual([]);
+    expect(document.title, 'the texts are English').toBe('Binarka');
+    expect(documentLanguage(), '<html lang> is en').toBe('en');
+    expect(checkedLanguage(root)).toBe('en');
+    expect(setItem, 'setItem was called once').toHaveBeenCalledTimes(1);
+
+    pressLanguage(root, 'en'); // the option is already chosen for the session: nothing is retried
+    expect(setItem, 'a second press on the same option does not call setItem again').toHaveBeenCalledTimes(1);
+  });
+
+  it('The access to localStorage throws: the language press applies', () => {
+    makeLocalStorageAccessThrow();
+    const tracker = trackErrors();
+    let root: HTMLElement;
+    try {
+      root = mountFixture(PAIR_ROW);
+      expect(documentLanguage(), 'at load the default is used').toBe('uk');
+      pressLanguage(root, 'en');
+    } finally {
+      tracker.stop();
+    }
+
+    expect(tracker.errors).toEqual([]);
+    expect(allCells(root), 'the page shows its board').toHaveLength(36);
+    expect(checkedLanguage(root)).toBe('en');
+    expect(documentLanguage()).toBe('en');
+  });
+
+  it('getItem throws: the language is Ukrainian and the board is shown', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('getItem is broken');
+    });
+    const tracker = trackErrors();
+    let root: HTMLElement;
+    try {
+      root = mountFixture(PAIR_ROW);
+    } finally {
+      tracker.stop();
+    }
+
+    expect(tracker.errors).toEqual([]);
+    expect(checkedLanguage(root), 'the language is Ukrainian').toBe('uk');
+    expect(documentLanguage()).toBe('uk');
+    expect(allCells(root), 'the board is shown').toHaveLength(36);
+  });
+
+  // The press "applies for the session, on every later mount too, until the page is reloaded" (FR-115): the same behaviour as the theme.
+  it('A later mount keeps a session-only language', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError');
+    });
+    const first = mountFixture(PAIR_ROW);
+    pressLanguage(first, 'en');
+    expect(setItem, 'premise: the press tried to store the choice').toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem(LANGUAGE_KEY), 'premise: the storage does not hold it').toBeNull();
+
+    const tracker = trackErrors();
+    let second: HTMLElement;
+    try {
+      second = mountFixture(PAIR_ROW);
+    } finally {
+      tracker.stop();
+    }
+
+    expect(tracker.errors).toEqual([]);
+    expect(checkedLanguage(second), 'the later mount shows the session choice').toBe('en');
+    expect(documentLanguage(), 'and keeps it on the document').toBe('en');
+    expect(languageOption(second, 'en').getAttribute('aria-checked')).toBe('true');
+    expect(setItem, 'nothing is retried').toHaveBeenCalledTimes(1);
+  });
+
+  it('A remount on the same root keeps a session-only language', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError');
+    });
+    const root = mountFixture(PAIR_ROW);
+    pressLanguage(root, 'en');
+    expect(localStorage.getItem(LANGUAGE_KEY), 'premise: the storage does not hold it').toBeNull();
+
+    mountOn(root);
+    expect(checkedLanguage(root), 'the remount on the same root shows the session choice').toBe('en');
+    expect(documentLanguage()).toBe('en');
+
+    root.remove();
+    const later = mountOn(document.createElement('div'));
+    expect(checkedLanguage(later), 'a mount after every earlier root was removed shows it too').toBe('en');
+    expect(documentLanguage()).toBe('en');
+    expect(setItem, 'nothing is retried').toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Preferences are applied before the first paint (the English mount)', () => {
+  const CYRILLIC = /\p{Script=Cyrillic}/u;
+
+  // jsdom delivers the records asynchronously, so the test takes them from the observer right after the mount (takeRecords).
+  it('An English mount shows no Cyrillic text', () => {
+    localStorage.setItem(LANGUAGE_KEY, 'en');
+    document.documentElement.setAttribute('lang', 'en'); // what the head step of index.html has done before the bundle runs
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+    const observer = new MutationObserver(() => undefined);
+    observer.observe(root, { childList: true, subtree: true, characterData: true, characterDataOldValue: true });
+
+    mountOn(root);
+    const records = observer.takeRecords();
+    observer.disconnect();
+
+    expect(records.length, 'premise: the observer saw the mount').toBeGreaterThan(0);
+    const seen: string[] = [];
+    const visit = (node: Node): void => {
+      if (node instanceof Text) {
+        if (!hasForeignLanguage(node.parentElement) && CYRILLIC.test(node.data)) seen.push(`text "${node.data}"`);
+        return;
+      }
+      if (!(node instanceof Element)) return;
+      if (node.hasAttribute('lang') && node.getAttribute('lang') !== 'en') return; // the option «Українська» (A-52)
+      for (const name of ['aria-label', 'title', 'alt']) {
+        const value = node.getAttribute(name);
+        if (value !== null && CYRILLIC.test(value)) seen.push(`${name} "${value}"`);
+      }
+      node.childNodes.forEach(visit);
+    };
+    for (const record of records) {
+      record.addedNodes.forEach(visit);
+      record.removedNodes.forEach(visit);
+      if (record.type === 'characterData' && record.oldValue !== null && CYRILLIC.test(record.oldValue)) seen.push(`old value "${record.oldValue}"`);
+    }
+    expect(seen, 'no Cyrillic text was added, removed or replaced outside an element with another lang').toEqual([]);
   });
 });

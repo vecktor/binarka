@@ -1,6 +1,8 @@
 // Unique lines hint (technique 3). Written from the delta spec of add-difficulty-engine before the implementation exists.
 // Scenarios of «Requirement: Unique lines hint». Coordinates are 1-based in the spec and 0-based in the engine.
 // The ceiling argument is reached through the engine.
+// add-english-version DELIBERATE CHANGE (FR-110, FR-112; design.md «Tests that change deliberately», file `tests/hint-unique-lines.test.ts` l. 21, 29, 45):
+// the three whole-object checks of a fill carry the data of its sentence (axis, line, other; no digit) and are `toStrictEqual`; the rest is unchanged.
 // At red every test fails: the positive ones because technique 3 does not exist; the ceiling-2 and near-miss ones
 // (unchanged behaviour of the engine) only because the no-rule sentence is the new one (FR-25 as amended, row 87).
 import { describe, expect, it } from 'vitest';
@@ -18,7 +20,7 @@ import {
 
 describe('@trace FR-75 @trace FR-79 unique lines hint', () => {
   it('Unique lines in a row: row 2 column 3, value 1, rule unique, exact sentence (ceiling 3)', () => {
-    expect(hint(UL_ROW, 3)).toEqual({ kind: 'fill', row: 1, col: 2, value: 1, rule: 'unique', sentence: UL_ROW_SENTENCE });
+    expect(hint(UL_ROW, 3)).toStrictEqual({ kind: 'fill', row: 1, col: 2, value: 1, rule: 'unique', axis: 'row', line: 1, other: 4, sentence: UL_ROW_SENTENCE });
   });
 
   it('Unique lines in a row: the same board with ceiling 2 yields no target and the no-rule sentence', () => {
@@ -26,7 +28,7 @@ describe('@trace FR-75 @trace FR-79 unique lines hint', () => {
   });
 
   it('Unique lines in a row: ceiling 4 gives the same fill as ceiling 3 (technique 3 beats look-ahead)', () => {
-    expect(hint(UL_ROW, 4)).toEqual({ kind: 'fill', row: 1, col: 2, value: 1, rule: 'unique', sentence: UL_ROW_SENTENCE });
+    expect(hint(UL_ROW, 4)).toStrictEqual({ kind: 'fill', row: 1, col: 2, value: 1, rule: 'unique', axis: 'row', line: 1, other: 4, sentence: UL_ROW_SENTENCE });
   });
 
   it('the fill that follows: after writing 1 at row 2 column 3, ceiling 3 targets row 2 column 4 with value 0 by the pair rule', () => {
@@ -42,7 +44,7 @@ describe('@trace FR-75 @trace FR-79 unique lines hint', () => {
   });
 
   it('Unique lines in a column: row 3 column 2, value 1, rule unique, exact sentence (ceiling 3)', () => {
-    expect(hint(UL_COL, 3)).toEqual({ kind: 'fill', row: 2, col: 1, value: 1, rule: 'unique', sentence: UL_COL_SENTENCE });
+    expect(hint(UL_COL, 3)).toStrictEqual({ kind: 'fill', row: 2, col: 1, value: 1, rule: 'unique', axis: 'col', line: 1, other: 4, sentence: UL_COL_SENTENCE });
   });
 
   it('Unique lines in a column: ceiling 2 yields no target and the no-rule sentence', () => {

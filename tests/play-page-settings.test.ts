@@ -25,6 +25,9 @@ import {
   SETTINGS_LABEL,
   THEME_CHOICES,
   THEME_KEY,
+  hasForeignLanguage,
+  languageControl,
+  pressLanguage,
   THEME_LABEL,
   THEME_OPTION_LABELS,
   TITLE_TEXT,
@@ -99,12 +102,16 @@ describe('Settings button and panel', () => {
     expect(messageArea(root).contains(panel), 'the panel is not inside the message area').toBe(false);
     expectInDocumentOrder([messageArea(root), panel, q(root, '[data-dialog="confirm"]')]);
 
+    // add-english-version DELIBERATE CHANGE (FR-107, FR-117; delta «Settings button and panel», source row: design.md decision 7): the panel gains
+    // the label «Мова» and the language control between the theme group and «Закрити» (3 children become 5)
     const children = Array.from(panel.children);
-    expect(children, 'the panel holds, in order: a label, the theme control, the close button').toHaveLength(3);
+    expect(children, 'the panel holds, in order: a label, the theme control, a label, the language control, the close button').toHaveLength(5);
     expect(children[0]?.textContent).toBe(THEME_LABEL);
     expect(children[0]?.tagName.toLowerCase(), 'the label is a plain-text element, not a label element').not.toBe('label');
     expect(children[1]).toBe(themeControl(root));
-    expect(children[2]).toBe(settingsCloseButton(root));
+    expect(children[2]?.textContent).toBe('Мова');
+    expect(children[3]).toBe(languageControl(root));
+    expect(children[4]).toBe(settingsCloseButton(root));
   });
 
   it('The close button', () => {
@@ -178,18 +185,20 @@ describe('Settings button and panel', () => {
         () => mountPage({ seedSource: () => 1, generate: (size, seed, level) => bySize({ 6: PAIR_ROW, 4: BLANK_4 })(0, size, seed, level) }),
       ],
       ['a theme press', (root) => { pressTheme(root, 'dark'); }, () => mountFixture(PAIR_ROW)],
+      ['a language press', (root) => { pressLanguage(root, 'en'); }, () => mountFixture(PAIR_ROW)],
     ];
 
     for (const [name, act, build] of ACTIONS) {
-      it(`after ${name} there is one settings panel, the same element, with the same three children`, () => {
+      // add-english-version DELIBERATE CHANGE (FR-107; design.md decision 7): five children, and a language press joins the actions
+      it(`after ${name} there is one settings panel, the same element, with the same five children`, () => {
         const root = build();
         const panel = settingsPanel(root);
         const children = Array.from(panel.children);
-        expect(children).toHaveLength(3);
+        expect(children).toHaveLength(5);
         act(root);
         const after = settingsPanel(root);
         expect(after, 'the same element as at mount').toBe(panel);
-        expect(Array.from(after.children), 'the same three children').toEqual(children);
+        expect(Array.from(after.children), 'the same five children').toEqual(children);
       });
     }
   });
@@ -259,8 +268,11 @@ describe('Texts of the settings button, the settings panel and the theme control
     // everything the gear and the panel show or expose: every non-blank text node (aria-hidden ones too, so a hidden «Тема»
     // cannot slip through) and the aria-label, title, alt and label attributes of every element inside them
     const collected: string[] = [];
+    // add-english-version DELIBERATE CHANGE (NFR-5 per mode, A-52; delta «The theme texts are Ukrainian»): the text and the attributes of the
+    // element with lang="en" (the option "English") are skipped; «Мова», «Українська» and "English" join the required texts
     for (const host of [settingsButton(root), settingsPanel(root)]) {
       for (const el of [host, ...Array.from(host.querySelectorAll('*'))]) {
+        if (hasForeignLanguage(el)) continue;
         for (const name of ['aria-label', 'title', 'alt', 'label']) {
           const value = el.getAttribute(name);
           if (value !== null) collected.push(value);
@@ -268,10 +280,10 @@ describe('Texts of the settings button, the settings panel and the theme control
       }
       const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
       for (let n = walker.nextNode(); n !== null; n = walker.nextNode()) {
-        if ((n as Text).data.trim() !== '') collected.push((n as Text).data);
+        if ((n as Text).data.trim() !== '' && !hasForeignLanguage((n as Text).parentElement)) collected.push((n as Text).data);
       }
     }
-    for (const text of [SETTINGS_LABEL, THEME_LABEL, ...THEME_OPTION_LABELS, 'Закрити']) {
+    for (const text of [SETTINGS_LABEL, THEME_LABEL, ...THEME_OPTION_LABELS, 'Мова', 'Українська', 'Закрити']) {
       expect(collected, `the collection contains «${text}»`).toContain(text);
     }
     for (const text of collected) {

@@ -2,7 +2,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import type { ElementHandle, Page } from '@playwright/test';
-import { chooseSize, hexToRgb, markLevel, markSize, openConfirm, openPage, openRules, openSettings, openSheet, pressTheme, readPageColours, sel, showHint, solveByHints } from './helpers';
+import { chooseSize, expectLanguage, hexToRgb, markLevel, markSize, openConfirm, openPage, openRules, openSettings, openSheet, pressTheme, readPageColours, sel, showHint, solveByHints } from './helpers';
 import type { ThemeChoice } from './helpers';
 
 // NFR-13 (sampled): two viewports x two colour schemes. axe runs in the default, hint, win, rules and confirmation
@@ -13,7 +13,14 @@ import type { ThemeChoice } from './helpers';
 // add-theme-switch (NFR-13, FR-102, FR-104 to FR-106, FR-117; delta spec openspec/changes/add-theme-switch/specs/play-page/spec.md): the
 // sweep until now only emulated the SYSTEM scheme, so a manual override was never checked. The manual-theme states, the rendered colours,
 // the live change of auto, the focused theme option and the focus sweep over the settings panel are added at the end of the file and in
-// the focus test. Coverage is `sampled` (two viewports, the listed theme pairs), never continuum. The dark and light --color-page are read
+// the focus test. Coverage is `sampled` (two viewports, the listed theme pairs), never continuum.
+// add-english-version (NFR-13, FR-107, FR-109; delta «The accessibility sweep covers English mode»): the English default and hint states, and the
+// English page with the settings panel open (the language control), run axe in the two viewports and the two schemes; the focus sweep reaches the
+// language options by the keyboard; and the focused language option shows an outline. The three language rules `html-has-lang`, `html-lang-valid` and
+// `valid-lang` must be among the PASSED rules: the first two in every English state, `valid-lang` in the state with the settings panel open, because
+// axe tests an element with a `lang` attribute only while it is rendered and the two language options sit in the closed popover otherwise (in the
+// closed-panel states `valid-lang` is reported inapplicable: measured on a static page with the same structure). Coverage is `sampled`; the
+// escalation path is the 1 px width sweep from 320 to 400 px in English with the panel open, run before G2. The dark and light --color-page are read
 // from the built stylesheet's own rules (`readPageColours`), never from the page being judged, and each test first asserts that the page
 // really is in the theme it is meant to check, so a page that never turns dark cannot pass by being compared with itself.
 const VIEWPORTS = [
@@ -96,7 +103,7 @@ for (const [width, height] of VIEWPORTS) {
 
         // add-theme-switch (autonomy-log row 124, A6): the settings button, the theme options and the panel's «Закрити» join the controls that
         // the keyboard must reach (the existing rule "every control reached by the keyboard", applied to the new controls)
-        const expected = ['cell', 'hint', 'reset', 'new', 'rules', 'settings', 'setup', 'size option', 'level option', 'theme option', 'setup-start', 'setup-close', 'settings-close', 'rules-close', 'confirm yes', 'confirm no'];
+        const expected = ['cell', 'hint', 'reset', 'new', 'rules', 'settings', 'setup', 'size option', 'level option', 'theme option', 'language option', 'setup-start', 'setup-close', 'settings-close', 'rules-close', 'confirm yes', 'confirm no'];
         const misses = [
           ...expected.filter((k) => !seen.has(k)).map((k) => `${k}: never reached by the keyboard`),
           ...[...seen.values()].filter((v) => v !== ''),
@@ -106,6 +113,66 @@ for (const [width, height] of VIEWPORTS) {
     });
   }
 }
+
+// ---------------------------------------------------------------------------------------------------------
+// add-english-version: English mode (NFR-13, FR-107, FR-109)
+// ---------------------------------------------------------------------------------------------------------
+
+const LANGUAGE_RULES = ['html-has-lang', 'html-lang-valid', 'valid-lang'] as const;
+
+const ENGLISH_STATES: readonly [string, (page: Page) => Promise<void>, readonly string[]][] = [
+  ['default', async () => { /* as mounted */ }, ['html-has-lang', 'html-lang-valid']],
+  ['hint', showHint, ['html-has-lang', 'html-lang-valid']],
+  // the settings panel open with the language control in view: `valid-lang` applies to the options with their own lang attribute (see the header)
+  ['settings panel open (the language control)', openSettings, LANGUAGE_RULES],
+];
+
+for (const [width, height] of VIEWPORTS) {
+  for (const colorScheme of SCHEMES) {
+    test.describe(`${width}x${height} ${colorScheme} English`, () => {
+      test.use({ viewport: { width, height }, colorScheme });
+
+      for (const [state, enter, rules] of ENGLISH_STATES) {
+        test(`NFR-13 axe: no violation in the English ${state} state, and the language rules pass`, async ({ page }) => {
+          await openPage(page, 1, { language: 'en' });
+          await expectLanguage(page, 'en');
+          await enter(page);
+          const { violations, passes } = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
+          const lines = violations.map((v) => `${v.id} (${v.impact ?? 'n/a'}, ${v.nodes.length} node(s)): ${v.help} — ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join('; ')}`);
+          expect(lines, `${lines.length} axe violation(s) in the English ${state} state:\n${lines.join('\n')}`).toEqual([]);
+          const passed = passes.map((rule) => rule.id);
+          for (const rule of rules) expect(passed, `${rule} is among the passed rules in the English ${state} state`).toContain(rule);
+        });
+      }
+    });
+  }
+}
+
+test.describe('the focused language option', () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test('NFR-13 focus: Tab from the settings button reaches a language option with a solid outline of at least 2px', async ({ page }) => {
+    // delta «The focused language option shows an indicator»
+    await openPage(page);
+    await openSettings(page);
+    await page.locator(sel.settings).focus();
+    let reached = false;
+    for (let i = 0; i < 12 && !reached; i++) {
+      await page.keyboard.press('Tab');
+      reached = await page.evaluate(() => document.activeElement?.matches('[data-language-option]') ?? false);
+    }
+    expect(reached, 'Tab reaches a language option').toBe(true);
+    const outline = await page.evaluate(() => {
+      const el = document.activeElement;
+      if (el === null) throw new Error('no focused element');
+      const s = getComputedStyle(el);
+      return { style: s.outlineStyle, width: parseFloat(s.outlineWidth), focusVisible: el.matches(':focus-visible') };
+    });
+    expect(outline.focusVisible, ':focus-visible matches after a keyboard move').toBe(true);
+    expect(outline.style, 'the outline style is not none').not.toBe('none');
+    expect(outline.width, 'the outline is at least 2px wide').toBeGreaterThanOrEqual(2);
+  });
+});
 
 // update-setup-sheet-start, review-gate second fix round (finding 1, FR-65, WCAG 2.4.11): with «Поле 4×4» marked the sheet scrolls inside
 // itself, and the sticky footer strip (the ::before of the open sheet, calc(2.75rem + 16px) tall, bottom-aligned with «Почати» and
@@ -393,11 +460,13 @@ function look(el: HTMLElement): Look {
         ? 'level option'
         : el.matches('[data-theme-option]')
           ? 'theme option'
-          : el.matches('.rules-close')
-            ? 'rules-close'
-            : el.matches('[data-confirm]')
-              ? `confirm ${el.getAttribute('data-confirm') ?? ''}`
-              : (el.getAttribute('data-action') ?? '');
+          : el.matches('[data-language-option]')
+            ? 'language option'
+            : el.matches('.rules-close')
+              ? 'rules-close'
+              : el.matches('[data-confirm]')
+                ? `confirm ${el.getAttribute('data-confirm') ?? ''}`
+                : (el.getAttribute('data-action') ?? '');
   const s = getComputedStyle(el);
   const outline = s.outlineStyle === 'none' || parseFloat(s.outlineWidth) === 0 ? '' : `${s.outlineStyle} ${s.outlineWidth} ${s.outlineColor} offset ${s.outlineOffset}`;
   return { kind, name: (el.getAttribute('aria-label') ?? el.textContent).trim().slice(0, 40), focusVisible: el.matches(':focus-visible'), outline, shadow: s.boxShadow };

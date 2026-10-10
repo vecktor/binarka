@@ -8,6 +8,7 @@
 // @trace FR-101
 // @trace FR-117
 //
+// add-english-version adds the language options at the very end (see there); the settings-controls test now runs through the same function.
 // update-setup-sheet-start adds the section at the end: «Почати», the summary button and «Закрити» declare the same 44 px floor
 // (NFR-12, FR-101; delta scenario «The stylesheet declares a 44 px minimum height for the three buttons»). The seven tests above stay.
 //
@@ -306,12 +307,16 @@ const SETTINGS_CONTROLS: [string, string][] = [
   ['the settings panel\'s «Закрити»', '[data-action="settings-close"]'],
 ];
 
-describe('@trace NFR-12 @trace FR-117 the stylesheet declares a 44 px minimum height for the settings controls', () => {
-  it('The stylesheet declares a 44 px minimum height for the settings controls', () => {
+/**
+ * The body of the scenario, shared by the settings controls and (add-english-version, FR-107, NFR-12) the two language options: the page is
+ * mounted in jsdom, the stylesheet is applied, and every control declares a min-height of at least 44 px at the top level, never `!important`.
+ */
+function expectFloorDeclared(controls: [string, string][]): void {
+  {
     const root = mountFixture(BLANK);
     injectPageStyles();
     const rules = readStyles().rules;
-    for (const [name, selector] of SETTINGS_CONTROLS) {
+    for (const [name, selector] of controls) {
       const button = q(root, selector); // the control is missing on a page without the settings panel: this line fails first
       expect(button.tagName, `${name} is a button element`).toBe('BUTTON');
       const value = getComputedStyle(button).minHeight;
@@ -333,5 +338,24 @@ describe('@trace NFR-12 @trace FR-117 the stylesheet declares a 44 px minimum he
       const important = strippedMinHeightRulesFor(button, rules).filter((rule) => rule.declarations.some((d) => d.property === 'min-height' && d.important));
       expect(important.map((rule) => rule.selectors.join(', ')), `${name}: no min-height declaration is !important`).toEqual([]);
     }
+  }
+}
+
+describe('@trace NFR-12 @trace FR-117 the stylesheet declares a 44 px minimum height for the settings controls', () => {
+  it('The stylesheet declares a 44 px minimum height for the settings controls', () => {
+    expectFloorDeclared(SETTINGS_CONTROLS);
+  });
+});
+
+// add-english-version (NFR-12, FR-107, FR-117; delta «English labels meet the touch-target floor», scenario «The language options declare a 44 px
+// minimum height»): found by the hook the spec pins, `data-language-option`, never by a class the implementation invents.
+const LANGUAGE_CONTROLS: [string, string][] = [
+  ['«Українська»', '[data-language-option="uk"]'],
+  ['"English"', '[data-language-option="en"]'],
+];
+
+describe('@trace NFR-12 @trace FR-107 @trace FR-117 the stylesheet declares a 44 px minimum height for the language options', () => {
+  it('The language options declare a 44 px minimum height', () => {
+    expectFloorDeclared(LANGUAGE_CONTROLS);
   });
 });

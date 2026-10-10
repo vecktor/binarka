@@ -2,7 +2,9 @@ import { expect } from '@playwright/test';
 import type { Locator, Page } from '@playwright/test';
 
 export type ThemeChoice = 'light' | 'dark' | 'auto';
+export type LanguageChoice = 'uk' | 'en';
 export const THEME_KEY = 'binarka.theme';
+export const LANGUAGE_KEY = 'binarka.language';
 
 /**
  * add-theme-switch (design.md "Risks", AGENTS.md lesson capture-determinism item 5): store the theme preference BEFORE the page runs.
@@ -11,21 +13,36 @@ export const THEME_KEY = 'binarka.theme';
  * that presses an option and reloads must not rely on this: it stores by `page.evaluate`, or presses the option in the UI.
  */
 export async function seedTheme(page: Page, value: ThemeChoice): Promise<void> {
+  await seedPreference(page, THEME_KEY, value);
+}
+
+/**
+ * add-english-version (FR-113, FR-116): the same once-per-tab store for any preference key. The marker is PER KEY (`e2e-seeded:<key>`), so a test that
+ * seeds both the theme and the language writes both: one shared marker would skip the second write. The page never reads the markers.
+ */
+export async function seedPreference(page: Page, key: string, value: string): Promise<void> {
   await page.addInitScript(
-    (seed: { key: string; theme: string }) => {
-      if (window.sessionStorage.getItem('e2e-theme-seeded') === null) {
-        window.sessionStorage.setItem('e2e-theme-seeded', '1');
-        window.localStorage.setItem(seed.key, seed.theme);
+    (seed: { key: string; value: string }) => {
+      const marker = `e2e-seeded:${seed.key}`;
+      if (window.sessionStorage.getItem(marker) === null) {
+        window.sessionStorage.setItem(marker, '1');
+        window.localStorage.setItem(seed.key, seed.value);
       }
     },
-    { key: THEME_KEY, theme: value },
+    { key, value },
   );
+}
+
+/** Store the language preference BEFORE the page runs (`addInitScript`, once per tab, see `seedPreference`). */
+export async function seedLanguage(page: Page, value: LanguageChoice): Promise<void> {
+  await seedPreference(page, LANGUAGE_KEY, value);
 }
 
 // The page draws its seed from Math.random (src/ui/seed.ts). A seeded Math.random makes every run show the same
 // puzzles, so a re-run of a check measures the same page (capture determinism). `options.theme` stores a theme preference first.
-export async function openPage(page: Page, seed = 1, options: { theme?: ThemeChoice } = {}): Promise<void> {
+export async function openPage(page: Page, seed = 1, options: { theme?: ThemeChoice; language?: LanguageChoice } = {}): Promise<void> {
   if (options.theme !== undefined) await seedTheme(page, options.theme);
+  if (options.language !== undefined) await seedLanguage(page, options.language);
   await page.addInitScript((start: number) => {
     let a = start >>> 0;
     Math.random = () => {
@@ -38,6 +55,22 @@ export async function openPage(page: Page, seed = 1, options: { theme?: ThemeCho
   }, seed);
   await page.goto('/');
   await expect(page.locator('[data-board] [data-cell]').first()).toBeVisible();
+}
+
+/**
+ * The seeded `Math.random` that `openPage` installs in the browser, as a Node function with the same arithmetic. The spec that needs to know
+ * which puzzle the page will show (e2e/nfr-10-fit.spec.ts, the English hint state) replays it; the spec checks the replay against the DOM, so a
+ * drift between this copy and the init script fails there, loudly.
+ */
+export function seededRandom(start: number): () => number {
+  let a = start >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
 export const sel = {
@@ -56,6 +89,8 @@ export const sel = {
   settingsClose: '[data-action="settings-close"]',
   themeControl: '[data-control="theme"]',
   themeOption: '[data-theme-option]',
+  languageControl: '[data-control="language"]',
+  languageOption: '[data-language-option]',
   sheet: '[data-section="setup"]',
   sizeOption: '[data-size-option]',
   levelOption: '[data-control="level"] [role="radio"]',
@@ -100,6 +135,20 @@ export async function openSettings(page: Page): Promise<void> {
 export async function closeSettings(page: Page): Promise<void> {
   await page.locator(sel.settingsClose).click();
   await expect(page.locator(`${sel.settingsPanel}:popover-open`)).toHaveCount(0);
+}
+
+/**
+ * The page is in `language`: <html lang> says so. The assertion comes first in every English test, so a page that ignores the stored language
+ * fails on an assertion here and not later on a missing English text or a click timeout (add-english-version).
+ */
+export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+  await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+}
+
+/** Press a language option in the open settings panel and wait for it to be checked. */
+export async function pressLanguage(page: Page, language: LanguageChoice): Promise<void> {
+  await page.locator(`${sel.languageOption}[data-language-option="${language}"]`).click();
+  await expect(page.locator(`${sel.languageOption}[data-language-option="${language}"]`)).toHaveAttribute('aria-checked', 'true');
 }
 
 export async function pressTheme(page: Page, choice: ThemeChoice): Promise<void> {

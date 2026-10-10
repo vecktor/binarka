@@ -2,7 +2,7 @@
 // @trace FR-116
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { openPage, readPageColours, seedTheme, sel } from './helpers';
+import { expectLanguage, openPage, readPageColours, seedLanguage, seedTheme, sel } from './helpers';
 import type { ThemeChoice } from './helpers';
 
 // NFR-18 (sampled): no flash of the wrong theme on reload (spec openspec/changes/add-theme-switch/specs/play-page/spec.md, requirement «No flash of the
@@ -17,6 +17,10 @@ import type { ThemeChoice } from './helpers';
 //    not a change). The test needs at least one counted record (a run with none fails: it must not pass vacuously), the last value is the stored one, and
 //    every counted record comes before the first child of <body>; none follows during the mount.
 // Storage is set by addInitScript per test in a fresh browser context (no storageState), through the once-only guard of e2e/helpers.ts.
+// add-english-version (NFR-18, FR-116, FR-109; delta «Variant 1 and 2 for the language»): the same two variants for the language. With `en` stored,
+// the head step alone sets <html lang="en"> (and the title) before the bundle runs, and with the bundle loaded the `lang` change comes before the
+// first child of <body> and none follows. The observer now filters on ['data-theme', 'lang'] and tags each record by the attribute it saw; the
+// theme tests read the `theme` records exactly as before. Storage is set by addInitScript with one marker per key (e2e/helpers.ts `seedPreference`).
 // NFR-18 is held (autonomy-log row 118) until this spec has been seen failing against the page without the head step (tasks.md 2.6, 2.7).
 const VIEWPORTS = [
   [375, 812],
@@ -29,7 +33,7 @@ const PAIRS: readonly { stored: Exclude<ThemeChoice, 'auto'>; system: 'light' | 
 ];
 
 interface FlashEvent {
-  kind: 'theme' | 'body-child';
+  kind: 'theme' | 'lang' | 'body-child';
   oldValue: string | null;
   newValue: string | null;
   counted: boolean;
@@ -40,29 +44,29 @@ async function installFlashObserver(page: Page): Promise<void> {
   await page.addInitScript(() => {
     const events: FlashEvent[] = [];
     interface FlashEvent {
-      kind: 'theme' | 'body-child';
+      kind: 'theme' | 'lang' | 'body-child';
       oldValue: string | null;
       newValue: string | null;
       counted: boolean;
     }
     let bodyChildSeen = false;
     const observer = new MutationObserver((records) => {
-      const themeRecords = records.filter((r) => r.type === 'attributes' && r.attributeName === 'data-theme');
       records.forEach((record) => {
-        if (record.type === 'attributes' && record.attributeName === 'data-theme') {
-          // the value this record wrote is the old value of the next theme record, or the current value for the last one
-          const at = themeRecords.indexOf(record);
-          const next = themeRecords[at + 1];
+        if (record.type === 'attributes' && (record.attributeName === 'data-theme' || record.attributeName === 'lang')) {
+          const attribute = record.attributeName;
+          // the value this record wrote is the old value of the next record of the same attribute, or the current value for the last one
+          const same = records.filter((r) => r.type === 'attributes' && r.attributeName === attribute);
+          const next = same[same.indexOf(record) + 1];
           const target = record.target as Element;
-          const newValue = next !== undefined ? next.oldValue : target.getAttribute('data-theme');
-          events.push({ kind: 'theme', oldValue: record.oldValue, newValue, counted: record.oldValue !== newValue });
+          const newValue = next !== undefined ? next.oldValue : target.getAttribute(attribute);
+          events.push({ kind: attribute === 'lang' ? 'lang' : 'theme', oldValue: record.oldValue, newValue, counted: record.oldValue !== newValue });
         } else if (record.type === 'childList' && record.target.nodeName === 'BODY' && record.addedNodes.length > 0 && !bodyChildSeen) {
           bodyChildSeen = true;
           events.push({ kind: 'body-child', oldValue: null, newValue: null, counted: false });
         }
       });
     });
-    observer.observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-theme'], attributeOldValue: true });
+    observer.observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-theme', 'lang'], attributeOldValue: true });
     (window as unknown as { __flashEvents: FlashEvent[] }).__flashEvents = events;
   });
 }
@@ -102,4 +106,42 @@ for (const [width, height] of VIEWPORTS) {
       });
     });
   }
+}
+
+// ---------------------------------------------------------------------------------------------------------
+// add-english-version: the language (Variant 1 and 2)
+// ---------------------------------------------------------------------------------------------------------
+
+for (const [width, height] of VIEWPORTS) {
+  test.describe(`${width}x${height} en stored`, () => {
+    test.use({ viewport: { width, height } });
+
+    test('NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted)', async ({ page }) => {
+      await seedLanguage(page, 'en');
+      await page.route('**/assets/*.js', (route) => route.abort());
+      await page.goto('/');
+      await expect(page.locator(sel.cell), 'premise: the page bundle did not run, so the board is not built').toHaveCount(0);
+      await expectLanguage(page, 'en');
+      await expect(page, 'the document title is Binarka before the bundle runs').toHaveTitle('Binarka');
+    });
+
+    test('NFR-18 variant 2: lang en is set before the body gets a child, and not changed after', async ({ page }) => {
+      await seedLanguage(page, 'en');
+      await installFlashObserver(page);
+      await openPage(page); // waits for the board: the bundle has mounted
+      await expectLanguage(page, 'en');
+      const events = await page.evaluate(() => (window as unknown as { __flashEvents: FlashEvent[] }).__flashEvents.slice());
+      const counted = events.filter((e) => e.kind === 'lang' && e.counted);
+      expect(counted.length, `at least one counted lang record (events: ${JSON.stringify(events)})`).toBeGreaterThanOrEqual(1);
+      expect(counted[counted.length - 1]?.newValue, 'the last value is the stored one').toBe('en');
+      const firstBodyChild = events.findIndex((e) => e.kind === 'body-child');
+      expect(firstBodyChild, 'the observer saw the first child added to <body>').toBeGreaterThanOrEqual(0);
+      const late = events.filter((e, i) => e.kind === 'lang' && e.counted && i > firstBodyChild);
+      expect(late, 'no counted lang record follows the first child of <body>').toEqual([]);
+      expect(
+        events.findIndex((e) => e.kind === 'lang' && e.counted),
+        'a counted record comes before the first child of <body>',
+      ).toBeLessThan(firstBodyChild);
+    });
+  });
 }

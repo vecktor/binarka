@@ -275,8 +275,10 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
     const panel = rulesPanel(root);
     // add-theme-switch DELIBERATE CHANGE (FR-65, FR-102, FR-117; delta «Every page button is a button element»): the three theme options are
     // radios inside the root too (7 becomes 10), and the settings button and the settings panel's close button join the list (53 becomes 58)
+    // add-english-version DELIBERATE CHANGE (FR-65, FR-107; delta «Every page button is a button element»): the two language options are radios
+    // too (10 becomes 12), and the list of buttons grows from 58 to 60
     const radios = Array.from(root.querySelectorAll('[role="radio"]'));
-    expect(radios, 'the three size buttons, the four level buttons and the three theme options').toHaveLength(10);
+    expect(radios, 'the three size buttons, the four level buttons, the three theme options and the two language options').toHaveLength(12);
     const panelButtons = Array.from(panel.querySelectorAll('button'));
     expect(panelButtons, 'premise: the rules panel holds one button, its close button').toHaveLength(1);
     const buttons: Element[] = [
@@ -295,7 +297,7 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
       q(root, '[data-confirm="no"]'),
       ...allCells(root),
     ];
-    expect(buttons).toHaveLength(1 + 1 + 1 + 10 + 1 + 1 + 1 + 3 + 1 + 2 + 36);
+    expect(buttons).toHaveLength(1 + 1 + 1 + 12 + 1 + 1 + 1 + 3 + 1 + 2 + 36);
     for (const button of buttons) {
       expect(button.tagName, `${button.getAttribute('data-action') ?? button.getAttribute('data-confirm') ?? button.getAttribute('role') ?? 'cell'} is a button element`).toBe('BUTTON');
     }

@@ -1,0 +1,1694 @@
+TEST-ENGINEER'S RED RUN of add-english-version, task 2.6 (the Playwright part). Written 2026-10-10 (UTC+5:30) by the test-engineer agent. Run once, after all vitest tests were written, against the page as it is (no implementation, no stub).
+Command: npm run test:e2e   (builds the page with `npm run build` = tsc --noEmit && vite build, then runs the projects `layout` and `a11y` in Chromium). docs/qa/e2e-report.json and docs/qa/a11y-report.json were restored with git checkout afterwards.
+
+RESULT: 116 tests; 48 failed, 68 passed. Exit code 1.
+Every failure is an expect() assertion with a message that names the English or language fact that is missing (for example "<html lang> is en", "the settings panel holds the two language options", "Tab reaches a language option"); the polling assertions end with "Timeout: 5000ms" because they wait for a fact that never becomes true. 0 TypeErrors, 0 compile errors, 0 failures of the web server. The English tests assert the language FIRST (`expectLanguage`), so they fail on the missing English page and not on a later click timeout.
+
+RED (48):
+ - e2e/nfr-10-fit.spec.ts: 2 English tests (default and win; the hint state with the line-balance sentence). The Ukrainian test is green.
+ - e2e/nfr-10-header-fit.spec.ts: 9 English header tests (widths 320, 322, 334, 361, 369, 375, 385, 768, 1280). The 9 Ukrainian ones are green.
+ - e2e/nfr-12-targets.spec.ts: 8 English viewports AND the 8 Ukrainian viewports (the Ukrainian probe now also measures the two language options with the settings panel open: "the settings panel holds the two language options" fails; this is the delta's NFR-12 scenario applied to both languages, listed in changed-tests.md).
+ - e2e/nfr-13-a11y.spec.ts: 12 English axe tests (2 viewports x 2 schemes x 3 states: default, hint, settings panel open); 4 focus sweeps (the sweep must now reach a "language option"); 1 test "the focused language option".
+ - e2e/nfr-18-flash.spec.ts: 4 language tests (variant 1 and 2 at 375x812 and 1280x800). The 8 theme tests are green with the generalised observer.
+GREEN (68): every other existing test, unchanged in meaning (Ukrainian default, hint and win fit; Ukrainian header; NFR-13 axe in the Ukrainian states; NFR-18 theme variants; the theme tests).
+NOTE for the green run: the English `valid-lang` rule is asserted in the state with the settings panel open only. With the panel closed the two options (the only elements with a lang attribute) sit in a closed popover, and axe reports valid-lang as inapplicable (measured on a static page of the same structure), so the delta's wording "in the list of passed rules" for the closed-panel states cannot hold for valid-lang; html-has-lang and html-lang-valid are asserted in all three English states.
+NOTE: the same run against a throw-away prototype of the change (scratch copy, not in this tree): 116 of 116 passed.
+----------------------------------------------------------------------------------------------------
+
+
+> binarka@0.1.0 test:e2e
+> playwright test
+
+
+Running 116 tests using 5 workers
+
+  ✓    4 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 320 px: every header child inside the header, no sideways scroll (492ms)
+  ✓    6 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 322 px: every header child inside the header, no sideways scroll (82ms)
+  ✓    5 [layout] › e2e/nfr-10-fit.spec.ts:43:1 › NFR-10 sampled 375x812 at 6x6: board, buttons and messages fit without vertical scroll; buttons hold still (1.4s)
+  ✓    8 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 334 px: every header child inside the header, no sideways scroll (81ms)
+  ✘    3 [layout] › e2e/nfr-10-fit.spec.ts:105:1 › NFR-10 English sampled 375x812 at 6x6: the default and the win states fit; buttons hold still (5.5s)
+  ✘    2 [layout] › e2e/nfr-10-fit.spec.ts:120:1 › NFR-10 English sampled 375x812 at 6x6: the hint state with the longest English sentence (a line-balance fill) fits; buttons hold still (5.5s)
+  ✘    1 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 320 px in English: every header child inside the header, no sideways scroll (5.5s)
+  ✘    7 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 322 px in English: every header child inside the header, no sideways scroll (5.1s)
+  ✓   11 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 369 px: every header child inside the header, no sideways scroll (219ms)
+  ✓   12 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 361 px: every header child inside the header, no sideways scroll (219ms)
+  ✓   14 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 375 px: every header child inside the header, no sideways scroll (102ms)
+  ✓   16 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 385 px: every header child inside the header, no sideways scroll (81ms)
+  ✘    9 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 334 px in English: every header child inside the header, no sideways scroll (5.1s)
+  ✓   18 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 768 px: every header child inside the header, no sideways scroll (99ms)
+  ✘   10 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 361 px in English: every header child inside the header, no sideways scroll (5.2s)
+  ✘   15 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 375 px in English: every header child inside the header, no sideways scroll (5.1s)
+  ✘   13 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 369 px in English: every header child inside the header, no sideways scroll (5.1s)
+  ✘   17 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 385 px in English: every header child inside the header, no sideways scroll (5.1s)
+  ✓   20 [layout] › e2e/nfr-10-header-fit.spec.ts:55:3 › header sampled at 1280 px: every header child inside the header, no sideways scroll (155ms)
+  ✘   19 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 768 px in English: every header child inside the header, no sideways scroll (5.1s)
+  ✘   21 [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 1280 px in English: every header child inside the header, no sideways scroll (5.1s)
+  ✘   24 [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 320x700: cells and controls meet their size floors (5.1s)
+  ✘   23 [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 375x812: cells and controls meet their size floors (5.5s)
+  ✘   22 [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 320x700: cells and controls meet their size floors (5.5s)
+  ✘   25 [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 375x812: cells and controls meet their size floors (5.1s)
+  ✘   27 [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 768x1024: cells and controls meet their size floors (5.1s)
+  ✘   26 [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 768x1024: cells and controls meet their size floors (5.5s)
+  ✘   29 [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1024x768: cells and controls meet their size floors (5.1s)
+  ✘   28 [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1024x768: cells and controls meet their size floors (5.4s)
+  ✘   30 [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1366x650: cells and controls meet their size floors (5.4s)
+  ✘   31 [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1366x650: cells and controls meet their size floors (5.1s)
+  ✘   33 [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1440x900: cells and controls meet their size floors (5.1s)
+  ✘   32 [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1440x900: cells and controls meet their size floors (5.4s)
+  ✘   34 [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1280x420: cells and controls meet their size floors (5.4s)
+  ✘   35 [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1280x420: cells and controls meet their size floors (5.1s)
+  ✓   38 [layout] › e2e/nfr-18-flash.spec.ts:79:7 › 375x812 dark stored on a light system › NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted) (104ms)
+  ✓   39 [layout] › e2e/nfr-18-flash.spec.ts:90:7 › 375x812 light stored on a dark system › NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after (81ms)
+  ✓   40 [layout] › e2e/nfr-18-flash.spec.ts:79:7 › 1280x800 dark stored on a light system › NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted) (71ms)
+  ✓   43 [layout] › e2e/nfr-18-flash.spec.ts:90:7 › 1280x800 dark stored on a light system › NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after (92ms)
+  ✓   44 [layout] › e2e/nfr-18-flash.spec.ts:79:7 › 1280x800 light stored on a dark system › NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted) (81ms)
+  ✓   42 [layout] › e2e/nfr-18-flash.spec.ts:79:7 › 375x812 light stored on a dark system › NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted) (120ms)
+  ✓   41 [layout] › e2e/nfr-18-flash.spec.ts:90:7 › 375x812 dark stored on a light system › NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after (121ms)
+  ✓   45 [layout] › e2e/nfr-18-flash.spec.ts:90:7 › 1280x800 light stored on a dark system › NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after (90ms)
+  ✘   37 [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 844x390: cells and controls meet their size floors (5.1s)
+  ✘   36 [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 844x390: cells and controls meet their size floors (5.4s)
+  ✘   46 [layout] › e2e/nfr-18-flash.spec.ts:119:5 › 375x812 en stored › NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted) (5.1s)
+  ✘   47 [layout] › e2e/nfr-18-flash.spec.ts:128:5 › 375x812 en stored › NFR-18 variant 2: lang en is set before the body gets a child, and not changed after (5.1s)
+  ✘   48 [layout] › e2e/nfr-18-flash.spec.ts:119:5 › 1280x800 en stored › NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted) (5.1s)
+  ✓   50 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the default state (492ms)
+  ✓   51 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the confirmation state (459ms)
+  ✓   53 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the hint state (635ms)
+  ✓   54 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the rules state (652ms)
+  ✓   55 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet state (559ms)
+  ✓   56 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (580ms)
+  ✓   57 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the setup sheet with a marked choice that differs from the board state (615ms)
+  ✓   52 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the win state (1.5s)
+  ✓   59 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the default state (456ms)
+  ✓   60 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the hint state (501ms)
+  ✘   58 [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (1.1s)
+  ✓   62 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the rules state (508ms)
+  ✓   63 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the confirmation state (392ms)
+  ✓   64 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (585ms)
+  ✓   65 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet with a marked choice that differs from the board state (626ms)
+  ✓   61 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the win state (1.4s)
+  ✓   66 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the setup sheet state (642ms)
+  ✓   68 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the default state (465ms)
+  ✓   69 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the hint state (519ms)
+  ✓   72 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the confirmation state (478ms)
+  ✓   71 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the rules state (621ms)
+  ✘   67 [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (1.3s)
+  ✘   49 [layout] › e2e/nfr-18-flash.spec.ts:128:5 › 1280x800 en stored › NFR-18 variant 2: lang en is set before the body gets a child, and not changed after (5.1s)
+  ✓   73 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet state (703ms)
+  ✓   70 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the win state (1.6s)
+  ✓   74 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet at 4x4 state (821ms)
+  ✓   75 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the default state (534ms)
+  ✓   76 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the hint state (548ms)
+  ✓   77 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the setup sheet with a marked choice that differs from the board state (750ms)
+  ✓   80 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the rules state (600ms)
+  ✓   81 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the confirmation state (434ms)
+  ✓   78 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the win state (1.4s)
+  ✓   82 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet state (603ms)
+  ✓   83 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet at 4x4 state (646ms)
+  ✓   84 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the setup sheet with a marked choice that differs from the board state (670ms)
+  ✘   79 [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (1.4s)
+  ✘   85 [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (940ms)
+  ✘   86 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English default state, and the language rules pass (5.1s)
+  ✘   87 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English hint state, and the language rules pass (5.1s)
+  ✘   88 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass (5.1s)
+  ✘   89 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English default state, and the language rules pass (5.1s)
+  ✘   90 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English hint state, and the language rules pass (5.1s)
+  ✘   91 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass (5.1s)
+  ✘   92 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English default state, and the language rules pass (5.1s)
+  ✘   93 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English hint state, and the language rules pass (5.1s)
+  ✘   94 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass (5.1s)
+  ✘   98 [a11y] › e2e/nfr-13-a11y.spec.ts:154:3 › the focused language option › NFR-13 focus: Tab from the settings button reaches a language option with a solid outline of at least 2px (202ms)
+  ✘   95 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English default state, and the language rules pass (5.1s)
+  ✓   99 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 320x700 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (261ms)
+  ✓  100 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 1366x650 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (229ms)
+  ✓  101 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 375x667 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (192ms)
+  ✓  102 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 375x812 manual dark on a light system › NFR-13 axe: no violation with the settings panel closed (543ms)
+  ✓  103 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 375x812 manual dark on a light system › NFR-13 axe: no violation with the settings panel open (576ms)
+  ✓  104 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 320x568 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (283ms)
+  ✓  105 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 375x812 manual light on a dark system › NFR-13 axe: no violation with the settings panel closed (492ms)
+  ✓  106 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 375x812 manual light on a dark system › NFR-13 axe: no violation with the settings panel open (555ms)
+  ✓  107 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 1280x800 manual dark on a light system › NFR-13 axe: no violation with the settings panel closed (497ms)
+  ✓  108 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 1280x800 manual dark on a light system › NFR-13 axe: no violation with the settings panel open (514ms)
+  ✓  109 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 1280x800 manual light on a dark system › NFR-13 axe: no violation with the settings panel closed (446ms)
+  ✓  111 [a11y] › e2e/nfr-13-a11y.spec.ts:275:3 › manual themes against auto on the same system › NFR-13 theme: a manual theme resolves the same colours as auto on that system (160ms)
+  ✓  112 [a11y] › e2e/nfr-13-a11y.spec.ts:308:3 › the rendered colours follow the effective theme › NFR-13 theme: dark stored on a light system gives the dark background and color-scheme dark (78ms)
+  ✓  110 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 1280x800 manual light on a dark system › NFR-13 axe: no violation with the settings panel open (521ms)
+  ✓  113 [a11y] › e2e/nfr-13-a11y.spec.ts:321:3 › the rendered colours follow the effective theme › NFR-13 theme: auto follows a live change of the system scheme without a reload (90ms)
+  ✓  115 [a11y] › e2e/nfr-13-a11y.spec.ts:352:3 › the rendered colours follow the effective theme › NFR-13 theme: light stored by the test on a dark system is light after a reload (104ms)
+  ✓  116 [a11y] › e2e/nfr-13-a11y.spec.ts:364:3 › the focused theme option › NFR-13 focus: Tab from the settings button reaches a theme option with a solid outline of at least 2px (111ms)
+  ✓  114 [a11y] › e2e/nfr-13-a11y.spec.ts:337:3 › the rendered colours follow the effective theme › NFR-13 theme: a press stores the theme, a reload keeps it and a light dismiss keeps the choice (216ms)
+  ✘   96 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English hint state, and the language rules pass (5.1s)
+  ✘   97 [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass (5.1s)
+
+
+  1) [layout] › e2e/nfr-10-fit.spec.ts:105:1 › NFR-10 English sampled 375x812 at 6x6: the default and the win states fit; buttons hold still 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-fit.spec.ts:107:9
+
+    Error Context: test-results/nfr-10-fit-NFR-10-English--fe4a9-ates-fit-buttons-hold-still-layout/error-context.md
+
+  2) [layout] › e2e/nfr-10-fit.spec.ts:120:1 › NFR-10 English sampled 375x812 at 6x6: the hint state with the longest English sentence (a line-balance fill) fits; buttons hold still 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-fit.spec.ts:124:9
+
+    Error Context: test-results/nfr-10-fit-NFR-10-English--59c97-ill-fits-buttons-hold-still-layout/error-context.md
+
+  3) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 320 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-fc29b-e-header-no-sideways-scroll-layout/error-context.md
+
+  4) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 322 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-1d075-e-header-no-sideways-scroll-layout/error-context.md
+
+  5) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 334 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-dc09f-e-header-no-sideways-scroll-layout/error-context.md
+
+  6) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 361 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-83299-e-header-no-sideways-scroll-layout/error-context.md
+
+  7) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 369 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-01fbb-e-header-no-sideways-scroll-layout/error-context.md
+
+  8) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 375 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-7b6f6-e-header-no-sideways-scroll-layout/error-context.md
+
+  9) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 385 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-cf2e3-e-header-no-sideways-scroll-layout/error-context.md
+
+  10) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 768 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-c083e-e-header-no-sideways-scroll-layout/error-context.md
+
+  11) [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 1280 px in English: every header child inside the header, no sideways scroll 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at expectHeaderFits (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:28:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts:60:5
+
+    Error Context: test-results/nfr-10-header-fit-header-s-f08be-e-header-no-sideways-scroll-layout/error-context.md
+
+  12) [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 320x700: cells and controls meet their size floors 
+
+    Error: the settings panel holds the two language options
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-language-option]')
+    Expected: 2
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - the settings panel holds the two language options locator('[data-language-option]') with timeout 5000ms
+      - waiting for locator('[data-language-option]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      58 |     await openSettings(page);
+      59 |     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    > 60 |     await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+         |                                                                                                         ^
+      61 |     const settingsControls = [
+      62 |       ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      63 |       ...(await measure(page.locator(sel.languageOption), 'language option')),
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:60:105)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:103:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-c7ec1-rols-meet-their-size-floors-layout/error-context.md
+
+  13) [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 320x700: cells and controls meet their size floors 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:34:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:107:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-Engl-fe545-rols-meet-their-size-floors-layout/error-context.md
+
+  14) [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 375x812: cells and controls meet their size floors 
+
+    Error: the settings panel holds the two language options
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-language-option]')
+    Expected: 2
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - the settings panel holds the two language options locator('[data-language-option]') with timeout 5000ms
+      - waiting for locator('[data-language-option]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      58 |     await openSettings(page);
+      59 |     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    > 60 |     await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+         |                                                                                                         ^
+      61 |     const settingsControls = [
+      62 |       ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      63 |       ...(await measure(page.locator(sel.languageOption), 'language option')),
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:60:105)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:103:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-31b1c-rols-meet-their-size-floors-layout/error-context.md
+
+  15) [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 375x812: cells and controls meet their size floors 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:34:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:107:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-Engl-eb022-rols-meet-their-size-floors-layout/error-context.md
+
+  16) [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 768x1024: cells and controls meet their size floors 
+
+    Error: the settings panel holds the two language options
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-language-option]')
+    Expected: 2
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - the settings panel holds the two language options locator('[data-language-option]') with timeout 5000ms
+      - waiting for locator('[data-language-option]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      58 |     await openSettings(page);
+      59 |     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    > 60 |     await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+         |                                                                                                         ^
+      61 |     const settingsControls = [
+      62 |       ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      63 |       ...(await measure(page.locator(sel.languageOption), 'language option')),
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:60:105)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:103:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-a2dfb-rols-meet-their-size-floors-layout/error-context.md
+
+  17) [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 768x1024: cells and controls meet their size floors 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:34:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:107:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-Engl-43d13-rols-meet-their-size-floors-layout/error-context.md
+
+  18) [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1024x768: cells and controls meet their size floors 
+
+    Error: the settings panel holds the two language options
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-language-option]')
+    Expected: 2
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - the settings panel holds the two language options locator('[data-language-option]') with timeout 5000ms
+      - waiting for locator('[data-language-option]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      58 |     await openSettings(page);
+      59 |     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    > 60 |     await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+         |                                                                                                         ^
+      61 |     const settingsControls = [
+      62 |       ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      63 |       ...(await measure(page.locator(sel.languageOption), 'language option')),
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:60:105)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:103:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-bc742-rols-meet-their-size-floors-layout/error-context.md
+
+  19) [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1024x768: cells and controls meet their size floors 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:34:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:107:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-Engl-f2dcc-rols-meet-their-size-floors-layout/error-context.md
+
+  20) [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1366x650: cells and controls meet their size floors 
+
+    Error: the settings panel holds the two language options
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-language-option]')
+    Expected: 2
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - the settings panel holds the two language options locator('[data-language-option]') with timeout 5000ms
+      - waiting for locator('[data-language-option]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      58 |     await openSettings(page);
+      59 |     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    > 60 |     await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+         |                                                                                                         ^
+      61 |     const settingsControls = [
+      62 |       ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      63 |       ...(await measure(page.locator(sel.languageOption), 'language option')),
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:60:105)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:103:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-cc0d8-rols-meet-their-size-floors-layout/error-context.md
+
+  21) [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1366x650: cells and controls meet their size floors 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:34:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:107:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-Engl-b5e7a-rols-meet-their-size-floors-layout/error-context.md
+
+  22) [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1440x900: cells and controls meet their size floors 
+
+    Error: the settings panel holds the two language options
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-language-option]')
+    Expected: 2
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - the settings panel holds the two language options locator('[data-language-option]') with timeout 5000ms
+      - waiting for locator('[data-language-option]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      58 |     await openSettings(page);
+      59 |     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    > 60 |     await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+         |                                                                                                         ^
+      61 |     const settingsControls = [
+      62 |       ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      63 |       ...(await measure(page.locator(sel.languageOption), 'language option')),
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:60:105)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:103:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-6ed21-rols-meet-their-size-floors-layout/error-context.md
+
+  23) [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1440x900: cells and controls meet their size floors 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:34:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:107:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-Engl-0f36a-rols-meet-their-size-floors-layout/error-context.md
+
+  24) [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1280x420: cells and controls meet their size floors 
+
+    Error: the settings panel holds the two language options
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-language-option]')
+    Expected: 2
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - the settings panel holds the two language options locator('[data-language-option]') with timeout 5000ms
+      - waiting for locator('[data-language-option]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      58 |     await openSettings(page);
+      59 |     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    > 60 |     await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+         |                                                                                                         ^
+      61 |     const settingsControls = [
+      62 |       ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      63 |       ...(await measure(page.locator(sel.languageOption), 'language option')),
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:60:105)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:103:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-54399-rols-meet-their-size-floors-layout/error-context.md
+
+  25) [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1280x420: cells and controls meet their size floors 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:34:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:107:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-Engl-a7027-rols-meet-their-size-floors-layout/error-context.md
+
+  26) [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 844x390: cells and controls meet their size floors 
+
+    Error: the settings panel holds the two language options
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-language-option]')
+    Expected: 2
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - the settings panel holds the two language options locator('[data-language-option]') with timeout 5000ms
+      - waiting for locator('[data-language-option]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      58 |     await openSettings(page);
+      59 |     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
+    > 60 |     await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+         |                                                                                                         ^
+      61 |     const settingsControls = [
+      62 |       ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      63 |       ...(await measure(page.locator(sel.languageOption), 'language option')),
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:60:105)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:103:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-samp-5f811-rols-meet-their-size-floors-layout/error-context.md
+
+  27) [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 844x390: cells and controls meet their size floors 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at probe (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:34:11)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-12-targets.spec.ts:107:5
+
+    Error Context: test-results/nfr-12-targets-NFR-12-Engl-8cc42-rols-meet-their-size-floors-layout/error-context.md
+
+  28) [layout] › e2e/nfr-18-flash.spec.ts:119:5 › 375x812 en stored › NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted) 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-18-flash.spec.ts:124:13
+
+    Error Context: test-results/nfr-18-flash-375x812-en-st-9a4dd-d-the-title-bundle-aborted--layout/error-context.md
+
+  29) [layout] › e2e/nfr-18-flash.spec.ts:128:5 › 375x812 en stored › NFR-18 variant 2: lang en is set before the body gets a child, and not changed after 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-18-flash.spec.ts:132:13
+
+    Error Context: test-results/nfr-18-flash-375x812-en-st-9860b-child-and-not-changed-after-layout/error-context.md
+
+  30) [layout] › e2e/nfr-18-flash.spec.ts:119:5 › 1280x800 en stored › NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted) 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-18-flash.spec.ts:124:13
+
+    Error Context: test-results/nfr-18-flash-1280x800-en-s-1f04d-d-the-title-bundle-aborted--layout/error-context.md
+
+  31) [layout] › e2e/nfr-18-flash.spec.ts:128:5 › 1280x800 en stored › NFR-18 variant 2: lang en is set before the body gets a child, and not changed after 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-18-flash.spec.ts:132:13
+
+    Error Context: test-results/nfr-18-flash-1280x800-en-s-c72a4-child-and-not-changed-after-layout/error-context.md
+
+  32) [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 1 focus problem(s):
+    language option: never reached by the keyboard
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "language option: never reached by the keyboard",
+    + ]
+
+      109 |           ...[...seen.values()].filter((v) => v !== ''),
+      110 |         ];
+    > 111 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+          |                                                                                    ^
+      112 |       });
+      113 |     });
+      114 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:111:84
+
+    Error Context: test-results/nfr-13-a11y-375x812-light--ebabd-indicator-from-the-keyboard-a11y/error-context.md
+
+  33) [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 1 focus problem(s):
+    language option: never reached by the keyboard
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "language option: never reached by the keyboard",
+    + ]
+
+      109 |           ...[...seen.values()].filter((v) => v !== ''),
+      110 |         ];
+    > 111 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+          |                                                                                    ^
+      112 |       });
+      113 |     });
+      114 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:111:84
+
+    Error Context: test-results/nfr-13-a11y-375x812-dark-N-e90d7-indicator-from-the-keyboard-a11y/error-context.md
+
+  34) [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 1 focus problem(s):
+    language option: never reached by the keyboard
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "language option: never reached by the keyboard",
+    + ]
+
+      109 |           ...[...seen.values()].filter((v) => v !== ''),
+      110 |         ];
+    > 111 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+          |                                                                                    ^
+      112 |       });
+      113 |     });
+      114 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:111:84
+
+    Error Context: test-results/nfr-13-a11y-1280x800-light-8c33a-indicator-from-the-keyboard-a11y/error-context.md
+
+  35) [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+
+    Error: 1 focus problem(s):
+    language option: never reached by the keyboard
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "language option: never reached by the keyboard",
+    + ]
+
+      109 |           ...[...seen.values()].filter((v) => v !== ''),
+      110 |         ];
+    > 111 |         expect(misses, `${misses.length} focus problem(s):\n${misses.join('\n')}`).toEqual([]);
+          |                                                                                    ^
+      112 |       });
+      113 |     });
+      114 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:111:84
+
+    Error Context: test-results/nfr-13-a11y-1280x800-dark--1e60f-indicator-from-the-keyboard-a11y/error-context.md
+
+  36) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English default state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-375x812-light--81376-and-the-language-rules-pass-a11y/error-context.md
+
+  37) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English hint state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-375x812-light--44965-and-the-language-rules-pass-a11y/error-context.md
+
+  38) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-375x812-light--61bd6-and-the-language-rules-pass-a11y/error-context.md
+
+  39) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English default state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="dark">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-375x812-dark-E-3cd9b-and-the-language-rules-pass-a11y/error-context.md
+
+  40) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English hint state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="dark">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-375x812-dark-E-50159-and-the-language-rules-pass-a11y/error-context.md
+
+  41) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="dark">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-375x812-dark-E-c03b6-and-the-language-rules-pass-a11y/error-context.md
+
+  42) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English default state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-1280x800-light-d8ea7-and-the-language-rules-pass-a11y/error-context.md
+
+  43) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English hint state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-1280x800-light-c9a2e-and-the-language-rules-pass-a11y/error-context.md
+
+  44) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="light">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-1280x800-light-b5970-and-the-language-rules-pass-a11y/error-context.md
+
+  45) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English default state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="dark">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-1280x800-dark--37e45-and-the-language-rules-pass-a11y/error-context.md
+
+  46) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English hint state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="dark">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-1280x800-dark--1c6db-and-the-language-rules-pass-a11y/error-context.md
+
+  47) [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass 
+
+    Error: <html lang> is en
+
+    expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('html')
+    Expected: "en"
+    Received: "uk"
+    Timeout:  5000ms
+
+    Call log:
+      - <html lang> is en locator('html') with timeout 5000ms
+      - waiting for locator('html')
+        14 × locator resolved to <html lang="uk" data-theme="dark">…</html>
+           - unexpected value "uk"
+
+
+       at helpers.ts:145
+
+      143 |  */
+      144 | export async function expectLanguage(page: Page, language: LanguageChoice): Promise<void> {
+    > 145 |   await expect(page.locator('html'), `<html lang> is ${language}`).toHaveAttribute('lang', language);
+          |                                                                    ^
+      146 | }
+      147 |
+      148 | /** Press a language option in the open settings panel and wait for it to be checked. */
+        at expectLanguage (/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/helpers.ts:145:68)
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:138:17
+
+    Error Context: test-results/nfr-13-a11y-1280x800-dark--b8b53-and-the-language-rules-pass-a11y/error-context.md
+
+  48) [a11y] › e2e/nfr-13-a11y.spec.ts:154:3 › the focused language option › NFR-13 focus: Tab from the settings button reaches a language option with a solid outline of at least 2px 
+
+    Error: Tab reaches a language option
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      162 |       reached = await page.evaluate(() => document.activeElement?.matches('[data-language-option]') ?? false);
+      163 |     }
+    > 164 |     expect(reached, 'Tab reaches a language option').toBe(true);
+          |                                                      ^
+      165 |     const outline = await page.evaluate(() => {
+      166 |       const el = document.activeElement;
+      167 |       if (el === null) throw new Error('no focused element');
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-13-a11y.spec.ts:164:54
+
+    Error Context: test-results/nfr-13-a11y-the-focused-la-b660e-lid-outline-of-at-least-2px-a11y/error-context.md
+
+  48 failed
+    [layout] › e2e/nfr-10-fit.spec.ts:105:1 › NFR-10 English sampled 375x812 at 6x6: the default and the win states fit; buttons hold still 
+    [layout] › e2e/nfr-10-fit.spec.ts:120:1 › NFR-10 English sampled 375x812 at 6x6: the hint state with the longest English sentence (a line-balance fill) fits; buttons hold still 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 320 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 322 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 334 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 361 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 369 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 375 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 385 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 768 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-10-header-fit.spec.ts:59:3 › header sampled at 1280 px in English: every header child inside the header, no sideways scroll 
+    [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 320x700: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 320x700: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 375x812: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 375x812: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 768x1024: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 768x1024: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1024x768: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1024x768: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1366x650: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1366x650: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1440x900: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1440x900: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 1280x420: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 1280x420: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:102:3 › NFR-12 sampled 844x390: cells and controls meet their size floors 
+    [layout] › e2e/nfr-12-targets.spec.ts:106:3 › NFR-12 English sampled 844x390: cells and controls meet their size floors 
+    [layout] › e2e/nfr-18-flash.spec.ts:119:5 › 375x812 en stored › NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted) 
+    [layout] › e2e/nfr-18-flash.spec.ts:128:5 › 375x812 en stored › NFR-18 variant 2: lang en is set before the body gets a child, and not changed after 
+    [layout] › e2e/nfr-18-flash.spec.ts:119:5 › 1280x800 en stored › NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted) 
+    [layout] › e2e/nfr-18-flash.spec.ts:128:5 › 1280x800 en stored › NFR-18 variant 2: lang en is set before the body gets a child, and not changed after 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:60:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English default state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English hint state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 light English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English default state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English hint state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 375x812 dark English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English default state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English hint state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 light English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English default state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English hint state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:136:9 › 1280x800 dark English › NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:154:3 › the focused language option › NFR-13 focus: Tab from the settings button reaches a language option with a solid outline of at least 2px 
+  68 passed (1.1m)
+EXIT 1

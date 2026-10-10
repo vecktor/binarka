@@ -1,7 +1,8 @@
 // @trace NFR-12
 import { expect, test } from '@playwright/test';
-import type { Measured } from './helpers';
-import { chooseSize, closeSheet, closeSettings, measure, openConfirm, openPage, openRules, openSettings, openSheet, sel } from './helpers';
+import type { Page } from '@playwright/test';
+import type { LanguageChoice, Measured } from './helpers';
+import { chooseSize, closeSheet, closeSettings, expectLanguage, measure, openConfirm, openPage, openRules, openSettings, openSheet, sel } from './helpers';
 
 // NFR-12 (sampled): the eight viewports declared in docs/requirements-held.md. Not continuum coverage; the stricter
 // instrument is a fine-step width and height sweep of the same measurements.
@@ -16,6 +17,9 @@ const VIEWPORTS = [
   [844, 390],
 ] as const;
 
+// add-english-version (NFR-12, FR-107; delta «English labels meet the touch-target floor»): the same probe runs in English at the same eight viewports,
+// with the longer English labels (they may wrap at 320 px), and with the settings panel open the two language options are measured too (in both
+// languages). The Ukrainian test keeps its name and its measurements; the language options join it. Coverage is `sampled`, never continuum.
 const CONTROL_FLOOR = 44;
 const CELL_FLOOR_8 = 24;
 
@@ -23,10 +27,11 @@ function below(items: Measured[], floor: number, where: string): string[] {
   return items.filter((m) => m.width < floor || m.height < floor).map((m) => `${where}: ${m.name} is ${m.width}x${m.height}, floor ${floor}x${floor}`);
 }
 
-for (const [width, height] of VIEWPORTS) {
-  test(`NFR-12 sampled ${width}x${height}: cells and controls meet their size floors`, async ({ page }) => {
+async function probe(page: Page, width: number, height: number, language: LanguageChoice): Promise<void> {
+  {
     await page.setViewportSize({ width, height });
-    await openPage(page);
+    await openPage(page, 1, language === 'en' ? { language } : {});
+    await expectLanguage(page, language);
     const misses: string[] = [];
 
     // 6x6 (the default board) and the page controls.
@@ -52,7 +57,12 @@ for (const [width, height] of VIEWPORTS) {
     // with the settings panel opened by the settings button, the three theme options and the panel's «Закрити» are measured.
     await openSettings(page);
     await expect(page.locator(sel.themeOption), 'the settings panel holds the three theme options').toHaveCount(3);
-    const settingsControls = [...(await measure(page.locator(sel.themeOption), 'theme option')), ...(await measure(page.locator(sel.settingsClose), 'settings close'))];
+    await expect(page.locator(sel.languageOption), 'the settings panel holds the two language options').toHaveCount(2);
+    const settingsControls = [
+      ...(await measure(page.locator(sel.themeOption), 'theme option')),
+      ...(await measure(page.locator(sel.languageOption), 'language option')),
+      ...(await measure(page.locator(sel.settingsClose), 'settings close')),
+    ];
     misses.push(...below(settingsControls, CONTROL_FLOOR, 'settings panel'));
     await closeSettings(page);
 
@@ -84,6 +94,16 @@ for (const [width, height] of VIEWPORTS) {
     misses.push(...below(sheetControlsAt4, CONTROL_FLOOR, 'setup sheet at 4x4'));
     await closeSheet(page);
 
-    expect(misses, `${misses.length} element(s) below the floor at ${width}x${height}:\n${misses.join('\n')}`).toEqual([]);
+    expect(misses, `${misses.length} element(s) below the floor at ${width}x${height} (${language}):\n${misses.join('\n')}`).toEqual([]);
+  }
+}
+
+for (const [width, height] of VIEWPORTS) {
+  test(`NFR-12 sampled ${width}x${height}: cells and controls meet their size floors`, async ({ page }) => {
+    await probe(page, width, height, 'uk');
+  });
+
+  test(`NFR-12 English sampled ${width}x${height}: cells and controls meet their size floors`, async ({ page }) => {
+    await probe(page, width, height, 'en');
   });
 }

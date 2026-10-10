@@ -2,7 +2,7 @@
 // COORDINATES: every row/col taken or returned by the DOM helpers is 1-BASED, exactly as the page shows them
 // (data-row / data-col). The engine is 0-based; conversions are written out where a test crosses the two.
 import { afterEach, beforeEach, expect } from 'vitest';
-import { findViolations, hint, isSolved } from '../../src/engine/index';
+import { findViolations, hint as engineHint, isSolved } from '../../src/engine/index';
 import type { Cell, Grid, Hint, Puzzle } from '../../src/engine/index';
 import { mountPlayPage } from '../../src/ui/index';
 import type { PlayPageOptions } from '../../src/ui/index';
@@ -194,6 +194,17 @@ export const THEME_LABEL = 'Тема';
 export const THEME_OPTION_LABELS = ['Світла', 'Темна', 'Як у системі'];
 export const THEME_CHOICES = ['light', 'dark', 'auto'] as const;
 export type ThemeChoice = (typeof THEME_CHOICES)[number];
+// ---- add-english-version: the language control and the English page (FR-107 to FR-111, FR-113). Exact literals, as everywhere here.
+/** The localStorage key of the language preference (FR-113). */
+export const LANGUAGE_KEY = 'binarka.language';
+export type PageLanguage = 'uk' | 'en';
+export type MountOptions = PlayPageOptions & { language?: PageLanguage };
+export const LANGUAGE_CHOICES: readonly PageLanguage[] = ['uk', 'en'];
+/** The visible label and the group name of the language control in Ukrainian mode ("Language" in English mode). */
+export const LANGUAGE_LABEL = 'Мова';
+/** The two option names: each is written in its own language in both modes (Q5). */
+export const LANGUAGE_OPTION_LABELS = ['Українська', 'English'];
+
 /** The system-theme query of FR-105. */
 export const DARK_QUERY = '(prefers-color-scheme: dark)';
 
@@ -320,6 +331,7 @@ function resetPreferenceEnvironment(): void {
     if (name !== '') document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
   }
   document.documentElement.removeAttribute('data-theme');
+  document.documentElement.removeAttribute('lang'); // the page sets <html lang> (FR-109); jsdom starts without one
   document.documentElement.style.removeProperty('color-scheme');
   for (const meta of Array.from(document.head.querySelectorAll('meta[name="theme-color"]'))) meta.remove();
 }
@@ -353,20 +365,24 @@ export function installPageLifecycle(): void {
 }
 
 /** Mount onto an existing root (appended to document.body when it is not attached yet). */
-export function mountOn(root: HTMLElement, options?: PlayPageOptions): HTMLElement {
+export function mountOn(root: HTMLElement, options?: MountOptions): HTMLElement {
   if (!root.isConnected) document.body.appendChild(root);
   if (!roots.includes(root)) roots.push(root);
-  mountPlayPage(root, options);
+  // add-english-version (FR-113): `language` starts the page in that language by storing `binarka.language` BEFORE the mount, as a player's
+  // earlier press would have; it is not an option of the page.
+  const { language, ...pageOptions } = options ?? {};
+  if (language !== undefined) storeLanguage(language);
+  mountPlayPage(root, pageOptions);
   return root;
 }
 
 /** Mount into a fresh <div> appended to document.body. */
-export function mountPage(options?: PlayPageOptions): HTMLElement {
+export function mountPage(options?: MountOptions): HTMLElement {
   return mountOn(document.createElement('div'), options);
 }
 
 /** Mount a fixture puzzle (the injected generator returns it for its own size and throws for any other size). */
-export function mountFixture(puzzle: Puzzle, options: Omit<PlayPageOptions, 'generate'> = {}): HTMLElement {
+export function mountFixture(puzzle: Puzzle, options: Omit<MountOptions, 'generate'> = {}): HTMLElement {
   return mountPage({ seedSource: () => 1, ...options, generate: fixedGenerate(puzzle) });
 }
 
@@ -803,7 +819,12 @@ export function trackErrors(): ErrorTracker {
 
 /** The sizes, in the order of the three buttons. */
 const SIZE_ORDER = [4, 6, 8];
-const sizeButtonText = (n: number): string => `Поле ${n}×${n}`;
+/**
+ * add-english-version DELIBERATE CHANGE (FR-111, FR-43; the helpers find a button by its position AND its text): the text is the one of the page
+ * language, read from <html lang> ("Grid n×n" in English mode, «Поле n×n» otherwise); the lookup by position is unchanged.
+ */
+const pageIsEnglish = (): boolean => document.documentElement.getAttribute('lang') === 'en';
+const sizeButtonText = (n: number): string => (pageIsEnglish() ? `Grid ${n}×${n}` : `Поле ${n}×${n}`);
 
 /** The size control `[data-control="size"]`, asserted to be a radiogroup of exactly three `button[role="radio"]`. */
 export function sizeControl(root: ParentNode): HTMLElement {
@@ -1076,6 +1097,37 @@ export function openSettings(root: ParentNode): HTMLElement {
   return panel;
 }
 
+// ---- the language control `[data-control="language"]` (FR-107), found through the settings panel like the theme control ----
+
+/** Store a language as an earlier press would have (a test calls this BEFORE the mount; the lifecycle clears it after each test). */
+export function storeLanguage(language: string): void {
+  localStorage.setItem(LANGUAGE_KEY, language);
+}
+/** The language control `[data-control="language"]`: asserts that there is exactly one in `root`. */
+export const languageControl = (root: ParentNode): HTMLElement => exactlyOne(root, '[data-control="language"]');
+/** The two language options in document order (asserts that the control holds exactly two buttons). */
+export function languageOptions(root: ParentNode): HTMLElement[] {
+  const options = Array.from(languageControl(root).querySelectorAll<HTMLElement>('button'));
+  expect(options, 'the language control holds two buttons').toHaveLength(2);
+  return options;
+}
+/** The language option `language`, found by its `data-language-option` value. */
+export function languageOption(root: ParentNode, language: PageLanguage): HTMLElement {
+  return q(languageControl(root), `button[data-language-option="${language}"]`);
+}
+/** The player presses the language option `language`. */
+export const pressLanguage = (root: ParentNode, language: PageLanguage): void => { languageOption(root, language).click(); };
+/** `aria-checked` of the two language options as a list. */
+export const languageStates = (root: ParentNode): (string | null)[] => languageOptions(root).map((b) => b.getAttribute('aria-checked'));
+/** The language whose option has aria-checked="true"; asserts that exactly one says "true" and the other "false". */
+export function checkedLanguage(root: ParentNode): PageLanguage {
+  const states = languageStates(root);
+  expect(states.slice().sort(), `exactly one language option is checked (states ${states.join(',')})`).toEqual(['false', 'true']);
+  return states[0] === 'true' ? 'uk' : 'en';
+}
+/** `<html lang>` (FR-109). */
+export const documentLanguage = (): string | null => document.documentElement.getAttribute('lang');
+
 /** The visible text of the summary button: its SECOND child, the text span (FR-95: prefix span, text span, cue span). */
 export function summaryText(root: ParentNode): string {
   const span = summaryButton(root).children[1];
@@ -1106,7 +1158,7 @@ export const levelButtonName = (button: Element): string => button.children[0]?.
 
 /** The button of level `level` (1 to 4), found by its position AND the text of its first span. */
 export function levelButton(root: ParentNode, level: number): HTMLElement {
-  const name = LEVEL_NAMES[level - 1];
+  const name = (pageIsEnglish() ? ['Warm-up', 'Teaser', 'Puzzler', 'Brain-twister'] : LEVEL_NAMES)[level - 1];
   expect(name, `${level} is one of the levels 1 to 4`).toBeDefined();
   const button = levelButtons(root)[level - 1];
   expect.assert(button !== undefined, `premise: the level control has a button ${level}`);
@@ -1206,7 +1258,13 @@ export function mountThenSelect(puzzle: Puzzle, start: Puzzle = BLANK): HTMLElem
  * Slice DL2 (FR-77, autonomy-log row 88), DELIBERATE CHANGE: the page asks the engine with the technique ceiling 4, so the
  * "expected hint" is `hint(board, 4)`, not the engine's default ceiling 1.
  */
-export const expectedHint = (root: ParentNode): Hint => hint(readBoard(root), 4);
+/**
+ * add-english-version DELIBERATE CHANGE (FR-112, FR-40; design.md «Tests that change deliberately», row `tests/helpers/play-page.ts` l. 966):
+ * `expectedHint` takes the page language (default 'uk'), the third argument of `hint(board, 4, language)`. The call goes through a cast, so
+ * this file compiles against the engine as it was before the language input existed (the type-check of `npm run build` covers tests/).
+ */
+const hintInLanguage: (board: Grid, ceiling?: number, language?: PageLanguage) => Hint = engineHint;
+export const expectedHint = (root: ParentNode, language: PageLanguage = 'uk'): Hint => hintInLanguage(readBoard(root), 4, language);
 
 /** Next text in the player cycle: empty -> 0 -> 1 -> empty. */
 export function nextInCycle(text: string): string {
@@ -1508,6 +1566,17 @@ export const solved = (board: Grid): boolean => isSolved(board);
 // String collectors for the page-text and seed-not-shown scenarios
 // ---------------------------------------------------------------------------------------------------------
 
+/**
+ * True when `el` or an ancestor has a `lang` attribute different from `<html lang>` (A-52: the option "English" in Ukrainian mode and the option
+ * «Українська» in English mode). `<html lang>` absent counts as the empty string, so before the page sets it nothing is foreign.
+ * add-english-version DELIBERATE CHANGE (NFR-5 per mode, FR-111; design.md decision 5): `collectPageText` skips such an element.
+ */
+export function hasForeignLanguage(el: Element | null): boolean {
+  const own = el?.closest('[lang]');
+  if (own === null || own === undefined || own === document.documentElement) return false;
+  return own.getAttribute('lang') !== (document.documentElement.getAttribute('lang') ?? '');
+}
+
 function elementsOf(root: HTMLElement): Element[] {
   return [root, ...Array.from(root.querySelectorAll('*'))];
 }
@@ -1541,10 +1610,13 @@ export function collectPageText(root: HTMLElement): string[] {
     if (t.parentElement?.closest('[data-cell]') !== null && t.parentElement !== null) continue;
     // decoration (aria-hidden="true", the examples of the rules panel, A-26) is not page text (NFR-5)
     if (t.parentElement?.closest('[aria-hidden="true"]') != null) continue;
+    // add-english-version (A-52): the one exception of the per-mode scan, an element whose own `lang` differs from <html lang>
+    if (hasForeignLanguage(t.parentElement)) continue;
     out.push(t.data);
   }
   out.push(document.title);
   for (const el of elementsOf(root)) {
+    if (hasForeignLanguage(el)) continue;
     for (const name of ['aria-label', 'title', 'placeholder', 'alt']) {
       const value = el.getAttribute(name);
       if (value !== null) out.push(value);

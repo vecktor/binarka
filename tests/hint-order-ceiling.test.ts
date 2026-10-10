@@ -1,6 +1,8 @@
 // Hint order and ceiling (FR-77) with the modified FR-23, FR-24, FR-25 and FR-26 scenarios of add-difficulty-engine.
 // Written from the delta spec before the implementation exists. Coordinates are 1-based in the spec, 0-based in the engine.
 // The ceiling argument is reached through the engine.
+// add-english-version DELIBERATE CHANGE (FR-110, FR-112; design.md «Tests that change deliberately», file `tests/hint-order-ceiling.test.ts` l. 203): the
+// whole-object check of the 4x4 legal-entry fill carries axis, line and digit (a pair of ones in row 1) and is `toStrictEqual`; nothing else here changes.
 // Green by design at red (unchanged behaviour, named here so they are not mistaken for red evidence): the default
 // ceiling equal to ceiling 1 on every board (today the ceiling is ignored), repeated calls give the same result, the
 // pair and count boards give the same fill at every ceiling, the broken-board scenarios at every ceiling, the
@@ -200,12 +202,15 @@ describe('@trace FR-26 broken-board hint wins at every ceiling', () => {
 
   it.each([1, 4])('a legal entry that differs from the solution is followed, not corrected (ceiling %i)', (ceiling) => {
     const board = boardOf(4, { cells: [[1, 1, 1], [1, 2, 1]] });
-    expect(hint(board, ceiling)).toEqual({
+    expect(hint(board, ceiling)).toStrictEqual({
       kind: 'fill',
       row: 0,
       col: 2,
       value: 0,
       rule: 'pair',
+      axis: 'row',
+      line: 0,
+      digit: 1,
       sentence: 'Дві одиниці поспіль у рядку 1, тож поруч може стояти лише нуль, бо три однакові цифри поспіль заборонені.',
     });
   });
