@@ -251,9 +251,9 @@ Traces: NFR-13, FR-107, FR-109
 
 #### Scenario: English states pass the sweep
 
-- **GIVEN** the built page in Chromium with `binarka.language` = `en` set by `addInitScript`, in the default state and after a hint press
+- **GIVEN** the built page in Chromium with `binarka.language` = `en` set by `addInitScript`, in the default state, after a hint press, and with the settings panel open
 - **WHEN** the sweep runs axe-core
-- **THEN** axe reports no violation, and `html-has-lang`, `html-lang-valid` and `valid-lang` are in the list of passed rules
+- **THEN** axe reports no violation in each state; `html-has-lang` and `html-lang-valid` are in the list of passed rules in each state, and `valid-lang` is in it with the settings panel open (amended in the first review-gate fix round: while the panel is closed the two language options, the only elements with their own `lang`, are hidden in the popover, so axe reports `valid-lang` as inapplicable, measured by the red tests of this folder)
 
 #### Scenario: The focused language option shows an indicator
 
@@ -1618,6 +1618,12 @@ Traces: FR-68, FR-102, FR-117, NFR-9, FR-107, FR-111
 - **WHEN** the check reads the boxes of the header and of its three children (the heading, the settings button, «Правила») and the page's scroll width
 - **THEN** every child lies inside the header (within 0.5 px) and the scroll width is at most the viewport width (no sideways scroll, `docs/frontend-conventions.md` rule 18, A-14)
 - **AND** coverage is sampled; the stricter instrument is the 1 px sweep of 320 to 800 px (`docs/qa/add-theme-switch/header-sweep-run.txt`). Up to 30rem the title is 1.75rem and the logo 2.75rem (the design's phone rule); up to 22.5rem the title is 1.5rem, the «Правила» padding `0 0.625rem` (both the design's small-phone rule) and the gaps 0.375rem, a deliberate step under the design's 0.5rem: with 0.5rem gaps «Правила» still overflowed by up to 2.8 px at 320 to 322 px
+
+#### Scenario: A remount on the same root replaces the previous mount
+
+- **GIVEN** a `matchMedia` stub that does not match and a page mounted on a root (added in the first review-gate fix round of `add-english-version`: the page attaches its content to the root last, so the previous mount's controls are still connected while a remount runs)
+- **WHEN** the page is mounted again on the same root and the player presses "English"
+- **THEN** the stub holds one `change` listener (the replaced mount's listener was removed at the remount), and the replaced mount's language control is not rendered again (its "English" option keeps `aria-checked="false"`)
 
 #### Scenario: The close button
 

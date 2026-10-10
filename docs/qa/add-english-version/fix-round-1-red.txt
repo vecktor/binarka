@@ -1,0 +1,8 @@
+add-english-version, first review-gate fix round (run wf_68de0c7a-b11): red run before the fix, 2026-10-10 12:00 UTC+5:30, on e4b13d1 plus the new test.
+
+npx vitest run tests/play-page-language.test.ts -t "A remount on the same root"
+     × A remount on the same root replaces the previous mount
+AssertionError: the replaced mount's system listener is removed: expected [ [Function onSystemChange], …(1) ] to have a length of 1 but got 2
+      Tests  1 failed | 34 skipped (35)
+
+After the fix (isGone: a control outside the document or inside the root being remounted): npm run test:run, Tests 1652 passed (1652).

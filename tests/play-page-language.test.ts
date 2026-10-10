@@ -90,6 +90,7 @@ import {
   selectSize,
   sizeButton,
   chooseLevel,
+  installMatchMedia,
 } from './helpers/play-page';
 import {
   EN_CLOSE_LABEL,
@@ -599,6 +600,23 @@ describe('Settings button and panel (the language halves)', () => {
 
     expect(settingsPanel(root), 'the same element as at mount').toBe(panel);
     expect(Array.from(settingsPanel(root).children), 'the same five children').toEqual(children);
+  });
+
+  // Review-gate run wf_68de0c7a-b11 (fix round 1): the page now attaches its content to the root last, so at a remount on the same root
+  // the previous mount's controls are still connected while the mount sets are cleaned. A mount whose controls sit inside the root being
+  // remounted is replaced, so it is dropped at once: its system listener is removed and a press no longer renders it.
+  it('A remount on the same root replaces the previous mount', () => {
+    const stub = installMatchMedia(false);
+    const root = mountFixture(PAIR_ROW);
+    const replaced = languageControl(root);
+    expect(stub.listeners, 'premise: one system listener for the first mount').toHaveLength(1);
+
+    mountOn(root);
+
+    expect(stub.listeners, 'the replaced mount\'s system listener is removed').toHaveLength(1);
+    expect(languageControl(root), 'premise: the remount built a new control').not.toBe(replaced);
+    pressLanguage(root, 'en');
+    expect(replaced.querySelector('[data-language-option="en"]')?.getAttribute('aria-checked'), 'the replaced mount is no longer rendered').toBe('false');
   });
 });
 
