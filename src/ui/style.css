@@ -1,37 +1,62 @@
+/* The colour tokens (FR-65, A-57 block 2): 25 names, light here and dark in the block below; the values are the appendix of A-57
+   (design/v0/app/binarka.css with three recorded deviations: --color-cell-border and --color-given-border, --color-violation-text).
+   The page always sets data-theme on <html> (the head step of index.html, then the page), so there is no media-query block. */
 :root {
   color-scheme: light;
-  --color-page: #f9fafb;
-  --color-text: #1f2937;
-  --color-cell-bg: #ffffff;
-  --color-cell-border: #6b7280;
-  --color-given-bg: #e5e7eb;
-  --color-given-border: #374151;
-  --color-violation-bg: #fecaca;
-  --color-violation-border: #b91c1c;
-  --color-violation-text: #991b1b;
-  --color-focus: #1d4ed8;
-  --color-control-bg: #ffffff;
-  --color-control-border: #6b7280;
-  --color-win-text: #166534;
+  --color-page: #f7f3ea;
+  --color-text: #1e2126;
+  --color-text-muted: #5f5549;
+  --color-cell-bg: #fffdf8;
+  --color-control-bg: #fffdf8;
+  --color-line: #e2dbcc;
+  --color-cell-border: #847b6d;
+  --color-control-border: #8c8374;
+  --color-given-bg: #ddd3be;
+  --color-given-border: #847b6d;
+  --color-given-text: #1e2126;
+  --color-entry-text: #a8400c;
+  --color-primary: #b4460d;
+  --color-primary-text: #fffdf8;
+  --color-primary-soft: #f6e3d4;
+  --color-hover-ring: #d28f6b;
+  --color-violation-bg: #fbe4e1;
+  --color-violation-border: #b3261e;
+  --color-violation-stripe: #f1c9c6;
+  --color-violation-text: #8f1d17;
+  --color-success: #2f6b3a;
+  --color-success-bg: #e2efdf;
+  --color-success-glow: #2f6b3a73;
+  --color-win-text: #1e2126;
+  --color-focus: #1e2126;
 }
 
-/* The dark token set (A-51): the same 13 names, mapped from design/v0/app/binarka.css. The page always sets data-theme on <html>
-   (the head step of index.html, then the page), so there is no media-query block for the system scheme. */
 :root[data-theme='dark'] {
   color-scheme: dark;
   --color-page: #1a1714;
   --color-text: #f1ede4;
+  --color-text-muted: #b8b0a4;
   --color-cell-bg: #24201b;
-  --color-cell-border: #9a8f80;
+  --color-control-bg: #24201b;
+  --color-line: #3a332b;
+  --color-cell-border: #8a7f71;
+  --color-control-border: #8a7f71;
   --color-given-bg: #4d4438;
-  --color-given-border: #e0d6c4;
+  --color-given-border: #8a7f71;
+  --color-given-text: #f7f3ea;
+  --color-entry-text: #f7a46a;
+  --color-primary: #f39a5b;
+  --color-primary-text: #1a1007;
+  --color-primary-soft: #3d2b1e;
+  --color-hover-ring: #a06941;
   --color-violation-bg: #3f2320;
   --color-violation-border: #ff8a7d;
-  --color-violation-text: #ffb4ab;
-  --color-focus: #f39a5b;
-  --color-control-bg: #24201b;
-  --color-control-border: #9a8f80;
-  --color-win-text: #8fd19a;
+  --color-violation-stripe: #5e332f;
+  --color-violation-text: #ff8a7d;
+  --color-success: #8fd19a;
+  --color-success-bg: #1f3324;
+  --color-success-glow: #8fd19a73;
+  --color-win-text: #f1ede4;
+  --color-focus: #f1ede4;
 }
 
 /* ---------- Layout geometry (update-page-layout-geometry, NFR-14): ported from design/v0/app/binarka.css with the same formulas, so
@@ -114,15 +139,16 @@ body {
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;
+  color: var(--color-text);
 }
 
 .logo {
   flex: none;
-  color: var(--color-text);
+  color: var(--color-primary);
 }
 
 .logo .logo-cell {
-  fill: var(--color-cell-bg);
+  fill: var(--color-primary-text);
 }
 
 .logo .logo-digit {
@@ -158,6 +184,13 @@ body {
   line-height: 1.2;
 }
 
+.rules-button,
+.settings-button {
+  border-color: var(--color-control-border);
+  background-color: var(--color-control-bg);
+  color: var(--color-text);
+}
+
 /* The board: one column for every size (--column from 48rem caps 8×8 at the 6×6 width). The cells size their digits from the board's
    width (container query units). */
 .board-host {
@@ -182,9 +215,23 @@ body {
   padding: var(--board-pad);
   border-width: 1px;
   border-style: solid;
-  border-color: transparent;
+  border-color: var(--color-line);
   border-radius: var(--radius-l);
+  background-color: var(--color-line);
   touch-action: manipulation;
+}
+
+/* The solved board (the design keys this on the board with a has-selector; the page's host carries the hook): a 1px border plus a 1px
+   ring, so the cells do not shrink on a win. */
+.board-host[data-solved='true'] .board {
+  border-color: var(--color-success);
+  background-color: var(--color-success-bg);
+  box-shadow: 0 0 0 1px var(--color-success);
+}
+
+.board-host[data-solved='true'] .cell {
+  box-shadow: none;
+  cursor: default;
 }
 
 .board[data-size='4'] {
@@ -239,9 +286,10 @@ body {
   border-width: 1px;
   border-style: solid;
   border-color: var(--color-cell-border);
+  box-shadow: inset 0 -2px 0 var(--color-line);
   padding: 0;
   border-radius: var(--radius-s);
-  color: inherit;
+  color: var(--color-entry-text);
   font-family: inherit;
   cursor: pointer;
   user-select: none;
@@ -249,10 +297,12 @@ body {
 }
 
 .cell-given {
-  font-weight: 700;
+  font-weight: 800;
   background-color: var(--color-given-bg);
-  border-width: 2px;
+  border-width: 1px;
   border-color: var(--color-given-border);
+  box-shadow: none;
+  color: var(--color-given-text);
   cursor: default;
 }
 
@@ -260,16 +310,35 @@ body {
   /* Non-colour cue: dashed border, italic and bold digit (design/v0/app/binarka.css .cell-hinted). */
   border-width: 2px;
   border-style: dashed;
-  border-color: var(--color-given-border);
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
+  box-shadow: none;
+  color: var(--color-text);
   font-style: italic;
   font-weight: 700;
 }
 
 .cell-violation {
   background-color: var(--color-violation-bg);
-  border-width: 3px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-violation-stripe) 0,
+    var(--color-violation-stripe) 4px,
+    transparent 4px,
+    transparent 9px
+  );
+  border-width: 2px;
   border-color: var(--color-violation-border);
   color: var(--color-violation-text);
+  font-weight: 700;
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.12em;
+}
+
+/* A given cell in a violation keeps weight 800, its only cue (A-57). */
+.cell-given.cell-violation {
+  font-weight: 800;
 }
 
 .cell:focus-visible {
@@ -295,18 +364,35 @@ body {
   min-height: 2.75rem;
   padding: 0 var(--space-4);
   border-width: 2px;
+  border-color: transparent;
   border-radius: var(--radius-m);
+  background-color: transparent;
+  color: var(--color-text);
   font-weight: 500;
   line-height: 1.2;
 }
 
 .buttons button[data-action='hint'] {
   flex-basis: 100%;
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
   font-weight: 700;
+}
+
+.buttons button[data-action='new'] {
+  border-color: var(--color-primary);
+  background-color: var(--color-control-bg);
+  color: var(--color-text);
 }
 
 .buttons button[data-action='reset'] {
   flex-grow: 0;
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--color-text-muted);
+  text-decoration-line: underline;
+  text-underline-offset: 0.2em;
 }
 
 @media (min-width: 30rem) {
@@ -325,11 +411,24 @@ body {
 /* After a win the new-puzzle button is the main action: it takes the bold weight from the hint button. The board host carries
    data-solved while the board is solved (the design keys this on the solved board with a has-selector, not allowed here). Weights only (geometry). */
 .board-host[data-solved='true'] ~ .buttons button[data-action='new'] {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
   font-weight: 700;
 }
 
 .board-host[data-solved='true'] ~ .buttons button[data-action='hint'] {
+  border-color: var(--color-control-border);
+  background-color: var(--color-control-bg);
+  color: var(--color-text-muted);
   font-weight: 500;
+}
+
+/* Pointer feedback: the hover ring (the design's colour-mixed ring is the opaque token). The hover filter is not ported (block 2). */
+@media (hover: hover) {
+  .board-host:not([data-solved='true']) .cell:not(.cell-given):hover {
+    box-shadow: inset 0 0 0 2px var(--color-hover-ring);
+  }
 }
 
 button {
@@ -372,6 +471,7 @@ button:focus-visible {
   border-style: solid;
   border-color: transparent;
   border-radius: var(--radius-m);
+  color: var(--color-text);
   font-size: var(--message-size);
   line-height: var(--message-line);
   text-align: left;
@@ -389,7 +489,7 @@ button:focus-visible {
   margin-block: auto;
   padding: 0 var(--space-3);
   border-style: none;
-  color: var(--color-control-border);
+  color: var(--color-text-muted);
   font-size: 0.875rem;
   text-align: center;
   text-wrap: balance;
@@ -398,6 +498,8 @@ button:focus-visible {
 /* Only a shown hint takes the 4px accent: on an empty line it would override .message:empty and leave a 4px x 0 box (review run 1). */
 .message[data-message='hint']:not(:empty) {
   border-left-width: 4px;
+  border-left-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
   border-radius: 0.125rem var(--radius-m) var(--radius-m) 0.125rem;
 }
 
@@ -406,6 +508,8 @@ button:focus-visible {
 }
 
 .message-win {
+  border-color: var(--color-success);
+  background-color: var(--color-success-bg);
   font-size: 1.0625rem;
   font-weight: 700;
   text-align: center;
@@ -588,7 +692,7 @@ button:focus-visible {
 
 .mini-sep {
   padding: 0 8px;
-  color: var(--color-control-border);
+  color: var(--color-text-muted);
   font-weight: 700;
 }
 
@@ -639,6 +743,7 @@ button:focus-visible {
 
 .setup-cue {
   flex: none;
+  color: var(--color-primary);
   font-size: 1.125rem;
 }
 
@@ -1078,4 +1183,25 @@ button:focus-visible {
   margin-top: 8px;
   border-width: 2px;
   font-weight: 700;
+}
+
+/* The win glow (design @keyframes glow; the colour-mixed ring is the translucent token). Only without reduced motion. */
+@keyframes glow {
+  0% {
+    box-shadow:
+      0 0 0 1px var(--color-success),
+      0 0 0 1px var(--color-success-glow);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 1px var(--color-success),
+      0 0 0 1rem transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .board-host[data-solved='true'] .board {
+    animation: glow 600ms ease-out;
+  }
 }

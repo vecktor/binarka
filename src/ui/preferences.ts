@@ -5,7 +5,7 @@ export type ThemeChoice = 'light' | 'dark' | 'auto';
 
 export const THEME_KEY = 'binarka.theme';
 /** --color-page of the light and of the dark token set of style.css (also in the head step of index.html). */
-export const THEME_COLOR_LIGHT = '#f9fafb';
+export const THEME_COLOR_LIGHT = '#f7f3ea';
 export const THEME_COLOR_DARK = '#1a1714';
 
 export const THEME_CHOICES: readonly ThemeChoice[] = ['light', 'dark', 'auto'];
