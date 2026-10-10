@@ -1,0 +1,82 @@
+Browser check of add-english-version (task 6.1) at 9e2e442, 2026-10-10 11:33 UTC+5:30, Chromium via vite preview:
+
+## 375 375x812
+PASS (b) the page starts Ukrainian (lang uk)
+PASS (b) panel order «Тема», theme, «Мова», language, «Закрити»: ["Тема","theme","Мова","language","settings-close"]
+PASS (b) «Українська» is checked
+PASS (c) lang is en
+PASS (c) the tab title is Binarka (Binarka)
+PASS (c) binarka.language is en
+PASS (c) focus stays on English
+PASS (c) the board did not change
+PASS (c) header title Binarka
+PASS (c) Rules
+PASS (c) Hint
+PASS (c) Reset
+PASS (c) New puzzle
+PASS (c) summary 6×6 · Warm-up (6×6 · Warm-up)
+PASS (c) the idle line is English
+PASS (c) no Cyrillic text left on the page besides «Українська»
+PASS (d) an English hint: "Two ones side by side in column 5, so only a zero can go next to them, because three equal digits side by side are not allowed."
+PASS (d) one cell was filled and marked hinted
+PASS (d) the same hint in Ukrainian: "Дві одиниці поспіль у стовпці 5, тож поруч може стояти лише нуль, бо три однакові цифри поспіль заборонені."
+PASS (d) the board and the hinted cell are unchanged by the switch
+PASS (d) back to English: the same English sentence
+PASS (e) with the bundle blocked, lang is already en
+PASS (e) with the bundle blocked, the title is Binarka
+PASS (f) the sheet is "Grid and difficulty"
+PASS (f) four English level names: Warm-up, Teaser, Puzzler, Brain-twister
+PASS (f) Start and Close
+PASS (f) the 4x4 reason: The 4×4 grid has only the “Warm-up” level.
+PASS (f) dialog buttons Yes, start over / Cancel
+PASS (f) the dialog text
+PASS (g) the English win message (Congratulations, puzzle solved!)
+PASS (g) the win message switches to Ukrainian (Вітаємо, головоломку розвʼязано!)
+PASS (h) a stored EN gives Ukrainian
+PASS (h) EN is not rewritten
+PASS (i) uk option shows a focus ring when reached by keyboard (solid 3px)
+PASS (i) en option shows a focus ring when reached by keyboard (solid 3px)
+PASS (i) opening the panel closes the setup sheet
+
+## 1280 1280x800
+PASS (b) the page starts Ukrainian (lang uk)
+PASS (b) panel order «Тема», theme, «Мова», language, «Закрити»: ["Тема","theme","Мова","language","settings-close"]
+PASS (b) «Українська» is checked
+PASS (c) lang is en
+PASS (c) the tab title is Binarka (Binarka)
+PASS (c) binarka.language is en
+PASS (c) focus stays on English
+PASS (c) the board did not change
+PASS (c) header title Binarka
+PASS (c) Rules
+PASS (c) Hint
+PASS (c) Reset
+PASS (c) New puzzle
+PASS (c) summary 6×6 · Warm-up (6×6 · Warm-up)
+PASS (c) the idle line is English
+PASS (c) no Cyrillic text left on the page besides «Українська»
+PASS (d) an English hint: "Two ones side by side in row 2, so only a zero can go next to them, because three equal digits side by side are not allowed."
+PASS (d) one cell was filled and marked hinted
+PASS (d) the same hint in Ukrainian: "Дві одиниці поспіль у рядку 2, тож поруч може стояти лише нуль, бо три однакові цифри поспіль заборонені."
+PASS (d) the board and the hinted cell are unchanged by the switch
+PASS (d) back to English: the same English sentence
+PASS (e) with the bundle blocked, lang is already en
+PASS (e) with the bundle blocked, the title is Binarka
+PASS (f) the sheet is "Grid and difficulty"
+PASS (f) four English level names: Warm-up, Teaser, Puzzler, Brain-twister
+PASS (f) Start and Close
+PASS (f) the 4x4 reason: The 4×4 grid has only the “Warm-up” level.
+PASS (f) dialog buttons Yes, start over / Cancel
+PASS (f) the dialog text
+PASS (g) the English win message (Congratulations, puzzle solved!)
+PASS (g) the win message switches to Ukrainian (Вітаємо, головоломку розвʼязано!)
+PASS (h) a stored EN gives Ukrainian
+PASS (h) EN is not rewritten
+PASS (i) uk option shows a focus ring when reached by keyboard (solid 3px)
+PASS (i) en option shows a focus ring when reached by keyboard (solid 3px)
+PASS (i) opening the panel closes the setup sheet
+
+## 320x640 (observe, not verified)
+OBSERVED English at 320: {"scrollW":320,"summaryW":288,"fits":true}
+
+72 PASS, 0 FAIL

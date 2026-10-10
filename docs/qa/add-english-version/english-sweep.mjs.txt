@@ -1,0 +1,39 @@
+// add-english-version task 4.6: 1 px width sweep 320..400 px in English with the settings panel open (the escalation path of the spec).
+// For each width: the header's children inside the header, the open panel's controls inside the viewport, each option at least 44x44,
+// option labels on one line, and no sideways scroll. Run: node <copy as .mjs> <port>. Sampled at 1 px steps, not continuum.
+import { chromium } from '@playwright/test';
+const port = process.argv[2];
+const b = await chromium.launch();
+const ctx = await b.newContext({ viewport: { width: 320, height: 700 }, reducedMotion: 'reduce' });
+await ctx.addInitScript(() => { try { localStorage.setItem('binarka.language', 'en'); } catch {} });
+const p = await ctx.newPage();
+await p.goto(`http://localhost:${port}/`); await p.locator('[data-cell]').first().waitFor();
+if ((await p.evaluate(() => document.documentElement.lang)) !== 'en') throw new Error('premise: the page is not in English');
+await p.locator('[data-action="settings"]').click();
+await p.locator('[data-section="settings"]').waitFor({ state: 'visible' });
+const bad = [];
+for (let w = 320; w <= 400; w++) {
+  await p.setViewportSize({ width: w, height: 700 });
+  const r = await p.evaluate(() => {
+    const out = [];
+    const h = document.querySelector('header').getBoundingClientRect();
+    for (const c of document.querySelector('header').children) { const k = c.getBoundingClientRect(); if (k.right > h.right + 0.5 || k.left < h.left - 0.5) out.push(`header:${c.getAttribute('data-action') ?? c.tagName}`); }
+    const panel = document.querySelector('[data-section="settings"]');
+    if (!panel.matches(':popover-open')) out.push('panel closed');
+    for (const el of panel.querySelectorAll('button, .settings-label, [role="radiogroup"]')) {
+      const k = el.getBoundingClientRect();
+      if (k.left < -0.5 || k.right > innerWidth + 0.5) out.push(`outside:${el.textContent.trim().slice(0, 12)}`);
+      if (el.matches('button[role="radio"]')) {
+        if (k.width < 44 || k.height < 44) out.push(`small:${el.textContent.trim()}:${k.width.toFixed(0)}x${k.height.toFixed(0)}`);
+        const lh = parseFloat(getComputedStyle(el).lineHeight) || 20;
+        if (k.height > 44 + lh * 0.9) out.push(`wrap:${el.textContent.trim()}`);
+      }
+    }
+    if (document.documentElement.scrollWidth > innerWidth) out.push('S');
+    return out;
+  });
+  if (r.length) bad.push(`${w}:${r.join(',')}`);
+}
+console.log(bad.length ? `problems at ${bad.length} widths:\n${bad.join('\n')}` : 'English, panel open: no problem at any width 320..400 (1 px steps)');
+await p.screenshot({ path: process.argv[3] ?? '/dev/null' }).catch(() => {});
+await b.close();

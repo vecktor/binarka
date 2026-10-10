@@ -1,0 +1,3 @@
+English 1 px sweep (task 4.6) at 9e2e442, 2026-10-10 11:33 UTC+5:30, Chromium via vite preview, settings panel open:
+English, panel open: no problem at any width 320..400 (1 px steps)
+Checks per width: header children inside the header; every panel control inside the viewport; each language and theme option at least 44x44 and on one line; no sideways scroll. Sampled at 1 px steps (81 widths), not continuum.

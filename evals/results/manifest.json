@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T18:45:14Z",
+  "generatedAt": "2026-10-10T06:03:20Z",
   "kind": "eval",
   "results": [
     {
@@ -13,14 +13,35 @@
       "id": "eval-hint-clarity-sandwich",
       "dimension": "hint-clarity",
       "proof": "NFR-6, FR-20",
-      "score": 95,
+      "score": 93,
       "pass": true
     },
     {
       "id": "eval-hint-clarity-count",
       "dimension": "hint-clarity",
       "proof": "NFR-6, FR-21",
-      "score": 95,
+      "score": 93,
+      "pass": true
+    },
+    {
+      "id": "eval-hint-clarity-en-pair",
+      "dimension": "hint-clarity-en",
+      "proof": "NFR-6, FR-19, FR-112",
+      "score": 84,
+      "pass": true
+    },
+    {
+      "id": "eval-hint-clarity-en-sandwich",
+      "dimension": "hint-clarity-en",
+      "proof": "NFR-6, FR-20, FR-112",
+      "score": 93,
+      "pass": true
+    },
+    {
+      "id": "eval-hint-clarity-en-count",
+      "dimension": "hint-clarity-en",
+      "proof": "NFR-6, FR-21, FR-112",
+      "score": 93,
       "pass": true
     }
   ]

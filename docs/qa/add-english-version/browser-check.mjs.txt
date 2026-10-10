@@ -1,0 +1,128 @@
+// Real-browser smoke test for add-english-version, task 6.1 (a) to (l). Chromium (Playwright), the built page via vite preview.
+// Run: node <copy as .mjs> <port> <out dir>. Sampled: 375x812 and 1280x800 (and 320 for observation), light system scheme.
+import { chromium } from '@playwright/test';
+const [port, OUT] = process.argv.slice(2);
+const URL = `http://localhost:${port}/`;
+const log = [];
+let fails = 0;
+const ok = (cond, msg) => { log.push(`${cond ? 'PASS' : 'FAIL'} ${msg}`); if (!cond) fails++; };
+const S = {
+  gear: '[data-action="settings"]', panel: '[data-section="settings"]', close: '[data-action="settings-close"]',
+  lang: (v) => `[data-language-option="${v}"]`, summary: '[data-action="setup"]', sheet: '[data-section="setup"]',
+  hint: '[data-action="hint"]', start: '[data-action="setup-start"]', dialog: 'dialog[data-dialog="confirm"]',
+  win: '[data-message="win"]', hintMsg: '[data-message="hint"]', idle: '[data-message="idle"]',
+};
+const text = (p, q) => p.locator(q).first().evaluate((e) => e.textContent.trim());
+const boardState = (p) => p.evaluate(() => [...document.querySelectorAll('[data-board] [data-cell]')].map((c) => c.textContent + (c.classList.contains('cell-hinted') ? 'h' : '')).join(''));
+
+async function run(width, height, tag) {
+  const b = await chromium.launch();
+  const ctx = await b.newContext({ viewport: { width, height }, colorScheme: 'light', reducedMotion: 'reduce' });
+  const p = await ctx.newPage();
+  log.push(`\n## ${tag} ${width}x${height}`);
+  const shot = (name) => p.screenshot({ path: `${OUT}/${tag}-${name}.png` });
+  await p.goto(URL); await p.locator('[data-cell]').first().waitFor();
+  await p.evaluate(() => localStorage.clear()); await p.reload(); await p.locator('[data-cell]').first().waitFor();
+  // (b)
+  ok((await p.evaluate(() => document.documentElement.lang)) === 'uk', '(b) the page starts Ukrainian (lang uk)');
+  await p.click(S.gear); await p.locator(S.panel).waitFor({ state: 'visible' });
+  const labels = await p.locator(`${S.panel} > *`).evaluateAll((els) => els.map((e) => e.getAttribute('data-control') ?? e.getAttribute('data-action') ?? e.textContent.trim()));
+  ok(JSON.stringify(labels) === JSON.stringify(['Тема', 'theme', 'Мова', 'language', 'settings-close']), `(b) panel order «Тема», theme, «Мова», language, «Закрити»: ${JSON.stringify(labels)}`);
+  ok((await p.locator(S.lang('uk')).getAttribute('aria-checked')) === 'true', '(b) «Українська» is checked');
+  if (tag === '375') await shot('panel-uk');
+  // (c)
+  const before = await boardState(p);
+  await p.locator(S.lang('en')).focus(); await p.keyboard.press('Enter');
+  ok((await p.evaluate(() => document.documentElement.lang)) === 'en', '(c) lang is en');
+  ok((await p.title()) === 'Binarka', `(c) the tab title is Binarka (${await p.title()})`);
+  ok((await p.evaluate(() => localStorage.getItem('binarka.language'))) === 'en', '(c) binarka.language is en');
+  ok((await p.evaluate(() => document.activeElement?.getAttribute('data-language-option'))) === 'en', '(c) focus stays on English');
+  ok((await boardState(p)) === before, '(c) the board did not change');
+  ok((await text(p, 'header h1')) === 'Binarka', '(c) header title Binarka');
+  for (const [q, t] of [['[data-action="rules"]', 'Rules'], [S.hint, 'Hint'], ['[data-action="reset"]', 'Reset'], ['[data-action="new"]', 'New puzzle']]) ok((await text(p, q)) === t, `(c) ${t}`);
+  ok((await text(p, '.setup-summary')) === '6×6 · Warm-up', `(c) summary 6×6 · Warm-up (${await text(p, '.setup-summary')})`);
+  ok((await text(p, S.idle)).startsWith('Press the cells'), '(c) the idle line is English');
+  ok((await p.evaluate(() => /[Ѐ-ӿ]/.test(document.body.innerText.replace(/Українська/g, '')))) === false, '(c) no Cyrillic text left on the page besides «Українська»');
+  if (tag === '375') await shot('panel-en');
+  await p.click(S.close);
+  if (tag === '375') await shot('default-en');
+  // (d)
+  await p.click(S.hint);
+  const enHint = await text(p, S.hintMsg);
+  ok(/^[^Ѐ-ӿ]+$/.test(enHint) && enHint.length > 10, `(d) an English hint: "${enHint}"`);
+  const afterHint = await boardState(p);
+  ok(afterHint !== before && (afterHint.match(/h/g) ?? []).length === 1, '(d) one cell was filled and marked hinted');
+  if (tag === '375') await shot('hint-en');
+  await p.click(S.gear); await p.click(S.lang('uk'));
+  const ukHint = await text(p, S.hintMsg);
+  ok(/[Ѐ-ӿ]/.test(ukHint), `(d) the same hint in Ukrainian: "${ukHint}"`);
+  ok((await boardState(p)) === afterHint, '(d) the board and the hinted cell are unchanged by the switch');
+  await p.click(S.lang('en'));
+  ok((await text(p, S.hintMsg)) === enHint, '(d) back to English: the same English sentence');
+  await p.click(S.close);
+  // (e)
+  await p.route('**/assets/*.js', (r) => r.abort());
+  await p.reload(); await p.waitForLoadState('domcontentloaded');
+  ok((await p.evaluate(() => document.documentElement.lang)) === 'en', '(e) with the bundle blocked, lang is already en');
+  ok((await p.title()) === 'Binarka', '(e) with the bundle blocked, the title is Binarka');
+  await p.unroute('**/assets/*.js');
+  await p.reload(); await p.locator('[data-cell]').first().waitFor();
+  // (f)
+  await p.locator('[data-cell][data-given="false"]').first().click();
+  await p.click(S.summary); await p.locator(S.sheet).waitFor({ state: 'visible' });
+  ok((await p.locator(S.sheet).getAttribute('aria-label')) === 'Grid and difficulty', '(f) the sheet is "Grid and difficulty"');
+  const levels = await p.locator('[data-control="level"] .level-name').allTextContents();
+  ok(levels.length === 4 && levels.every((l) => /^[A-Za-z -]+$/.test(l.trim())), `(f) four English level names: ${levels.join(', ')}`);
+  ok((await text(p, S.start)) === 'Start' && (await text(p, '[data-action="setup-close"]')) === 'Close', '(f) Start and Close');
+  await p.locator('[data-size-option]').first().click();
+  ok((await text(p, '[data-level-reason]')) === 'The 4×4 grid has only the “Warm-up” level.', `(f) the 4x4 reason: ${await text(p, '[data-level-reason]')}`);
+  if (tag === '375') await shot('sheet-en');
+  await p.click(S.start);
+  await p.locator(S.dialog).waitFor({ state: 'visible' });
+  ok((await text(p, `${S.dialog} [data-confirm="yes"]`)) === 'Yes, start over' && (await text(p, `${S.dialog} [data-confirm="no"]`)) === 'Cancel', '(f) dialog buttons Yes, start over / Cancel');
+  ok((await p.locator(S.dialog).innerText()).includes('Start over? Your moves on this board will be lost.'), '(f) the dialog text');
+  await p.click(`${S.dialog} [data-confirm="yes"]`);
+  await p.locator('[data-board][data-size="4"]').waitFor();
+  // (g)
+  for (let i = 0; i < 20 && !(await text(p, S.win)); i++) await p.click(S.hint);
+  ok((await text(p, S.win)) === 'Congratulations, puzzle solved!', `(g) the English win message (${await text(p, S.win)})`);
+  await p.click(S.gear); await p.click(S.lang('uk'));
+  ok(/[Ѐ-ӿ]/.test(await text(p, S.win)), `(g) the win message switches to Ukrainian (${await text(p, S.win)})`);
+  await p.click(S.lang('en')); await p.click(S.close);
+  // (h)
+  await p.evaluate(() => localStorage.setItem('binarka.language', 'EN')); await p.reload(); await p.locator('[data-cell]').first().waitFor();
+  ok((await p.evaluate(() => document.documentElement.lang)) === 'uk', '(h) a stored EN gives Ukrainian');
+  ok((await p.evaluate(() => localStorage.getItem('binarka.language'))) === 'EN', '(h) EN is not rewritten');
+  // (i)
+  await p.click(S.gear); await p.locator(S.panel).waitFor({ state: 'visible' });
+  for (const v of ['uk', 'en']) {
+    await p.locator(S.lang(v)).focus();
+    await p.keyboard.press('Shift+Tab'); await p.keyboard.press('Tab');
+    const ring = await p.locator(S.lang(v)).evaluate((e) => { const s = getComputedStyle(e); return `${s.outlineStyle} ${s.outlineWidth}`; });
+    ok(ring.startsWith('solid') && parseFloat(ring.split(' ')[1]) >= 2, `(i) ${v} option shows a focus ring when reached by keyboard (${ring})`);
+  }
+  await p.keyboard.press('Escape');
+  await p.click(S.summary); await p.locator(S.sheet).waitFor({ state: 'visible' });
+  await p.click(S.gear);
+  ok(!(await p.locator(S.sheet).evaluate((e) => e.matches(':popover-open'))), '(i) opening the panel closes the setup sheet');
+  await p.keyboard.press('Escape');
+  await b.close();
+}
+
+await run(375, 812, '375');
+await run(1280, 800, '1280');
+// (k) observe at 320 in English
+{
+  const b = await chromium.launch();
+  const ctx = await b.newContext({ viewport: { width: 320, height: 640 }, reducedMotion: 'reduce' });
+  await ctx.addInitScript(() => { try { localStorage.setItem('binarka.language', 'en'); } catch {} });
+  const p = await ctx.newPage(); await p.goto(URL); await p.locator('[data-cell]').first().waitFor();
+  await p.screenshot({ path: `${OUT}/320-header-en.png` });
+  const fit = await p.evaluate(() => ({ scrollW: document.documentElement.scrollWidth, summaryW: Math.round(document.querySelector('[data-action="setup"]').getBoundingClientRect().width), fits: document.documentElement.scrollHeight <= innerHeight }));
+  log.push(`\n## 320x640 (observe, not verified)\nOBSERVED English at 320: ${JSON.stringify(fit)}`);
+  await p.click(S.gear); await p.screenshot({ path: `${OUT}/320-panel-en.png` });
+  await b.close();
+}
+log.push(`\n${log.filter((l) => l.startsWith('PASS')).length} PASS, ${fails} FAIL`);
+console.log(log.join('\n'));
+process.exit(fails ? 1 : 0);

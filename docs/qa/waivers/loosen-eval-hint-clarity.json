@@ -1,0 +1,7 @@
+{
+  "check": "eval-ratchet",
+  "metrics": ["hint-clarity"],
+  "reason": "Judge-to-judge variation, not a quality change. The eval-suite run wf_ed802833-a5b (add-english-version task 4.5) re-graded the three Ukrainian hint-clarity cases 92, 93, 93 (mean 92.7) against the baseline 94 (92, 95, 95). The produced outputs that the judges graded are byte-identical before (a75e3cf) and after (9e2e442) the slice: docs/qa/add-english-version/eval-hint-clarity-uk-outputs.txt, compared with cmp. Every case passes its bar of 80.",
+  "approvedBy": "the user, in chat on 2026-10-10 at about 11:42 UTC+5:30 (\"Waiver\")",
+  "scope": "this one re-baseline of hint-clarity from 94 to 92.7; a later drop needs its own waiver"
+}

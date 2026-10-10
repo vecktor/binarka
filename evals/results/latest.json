@@ -1,8 +1,9 @@
 {
-  "generatedAt": "2026-10-04T18:45:14Z",
+  "generatedAt": "2026-10-10T06:03:20Z",
   "threshold": 80,
   "dimensions": {
-    "hint-clarity": 94
+    "hint-clarity": 92.7,
+    "hint-clarity-en": 90
   },
   "cases": [
     {
@@ -12,12 +13,12 @@
         "NFR-6",
         "FR-19"
       ],
-      "capability": "",
+      "capability": "puzzle-engine",
       "score": 92,
       "pass": true,
       "judges": 1,
       "disagreement": false,
-      "notes": "All three critical criteria are met. The board shows a pair of zeros at row 3, columns 1–2. The sentence correctly names \"рядку 3\" and zeros, and the 1 placed at row 3, column 3 is the digit the sentence implies. The text is one grammatical Ukrainian sentence with no Latin letters, and it states the no-three-in-a-row rule. The small deduction is because \"поруч\" does not say which cell gets the 1."
+      "notes": "All three critical criteria are met. The board shows 0 0 at row 3, columns 1 and 2. The sentence names that pair in row 3 correctly, and the 1 placed at row 3, column 3 is the only legal digit there. The sentence is a single line of Ukrainian with no Latin letters, correct agreement, and an explicit statement of the rule. I took a few points off because the opening clause has no verb and 'поруч' does not say which side."
     },
     {
       "id": "eval-hint-clarity-sandwich",
@@ -26,12 +27,12 @@
         "NFR-6",
         "FR-20"
       ],
-      "capability": "",
-      "score": 95,
+      "capability": "puzzle-engine",
+      "score": 93,
       "pass": true,
       "judges": 1,
       "disagreement": false,
-      "notes": "All three critical criteria are met. The board shows 0, empty, 0 in rows 1 to 3 of column 2. The sentence names the gap rule, the correct column (стовпці 2) and the correct digits (zeros around the gap, one placed). It is one grammatical Ukrainian sentence with no Latin letters, and it explains the reason for the move. The only small deduction is for slight wording stiffness ('може стояти лише одиниця'); I would otherwise ship it unchanged."
+      "notes": "All three critical criteria are met. The gap rule really holds in column 2: there are 0s in rows 1 and 3 and an empty cell in row 2. The line type and number match the filled cell, and the digit placed (1) is the one the sentence implies. The sentence is a single, grammatical Ukrainian sentence with no Latin letters, and it states the rule clearly. I took a small deduction because the sentence does not name which cell is meant (row 2), though the gap between the two zeros makes it clear."
     },
     {
       "id": "eval-hint-clarity-count",
@@ -40,12 +41,57 @@
         "NFR-6",
         "FR-21"
       ],
-      "capability": "",
-      "score": 95,
+      "capability": "puzzle-engine",
+      "score": 93,
       "pass": true,
       "judges": 1,
       "disagreement": false,
-      "notes": "Row 5 on the board (0 1 0 1 . 0) really does already hold three zeros. The hint names the correct line (row 5) and gives the deduced digit (1), which matches the action of filling row 5, column 5 with 1, so all critical criteria are met. The sentence is one grammatical Ukrainian sentence with no Latin letters, and it explains the equal-count rule without assuming the player knows it. I took a small deduction because the sentence does not say that half of a 6-cell row is three. A beginner has to count the cells on the board to see why three zeros is the limit."
+      "notes": "All three critical criteria are met. Row 5 \\\"0 1 0 1 . 0\\\" already holds three zeros out of six cells, so the half-line rule really applies. The only empty cell is column 5, and it was correctly filled with 1, which matches the sentence. The explanation is one clear, grammatical Ukrainian sentence with no Latin letters. Minor deduction: the sentence relies on the player working out that 3 is half of 6, and \\\"рядку 5\\\" is a little less natural than \\\"п'ятому рядку\\\"."
+    },
+    {
+      "id": "eval-hint-clarity-en-pair",
+      "dimension": "hint-clarity-en",
+      "trace": [
+        "NFR-6",
+        "FR-19",
+        "FR-112"
+      ],
+      "capability": "puzzle-engine",
+      "score": 84,
+      "pass": true,
+      "judges": 2,
+      "disagreement": false,
+      "notes": "All three critical criteria are met. The board shows two zeros side by side in row 3, the hint fills row 3, column 3 with 1, and the sentence names the same row, digit and rule. It is one English sentence with no Cyrillic. Points come off only because the opening clause has no verb ('Two zeros side by side in row 3, so...'), so criterion 4 is only partly met. | All three critical criteria are met. The pair rule really holds in row 3 (\\\"0 0 . . . .\\\"), the line is correctly named \\\"row 3\\\", and the placed 1 matches \\\"only a one\\\". The output is one English sentence with no Cyrillic. Points come off criterion 4 because the opening clause has no verb (\\\"Two zeros side by side in row 3, so...\\\"), which is not fully correct grammar, and \\\"next to them\\\" is slightly vague. The output passes but is not ready to ship unchanged."
+    },
+    {
+      "id": "eval-hint-clarity-en-sandwich",
+      "dimension": "hint-clarity-en",
+      "trace": [
+        "NFR-6",
+        "FR-20",
+        "FR-112"
+      ],
+      "capability": "puzzle-engine",
+      "score": 93,
+      "pass": true,
+      "judges": 1,
+      "disagreement": false,
+      "notes": "All three critical criteria are met. The gap rule really holds in column 2 (0 in row 1, empty row 2, 0 in row 3). The sentence names the correct line and number, and the 1 that was placed is the digit the sentence implies. The text is one clear, grammatical English sentence. I took a few points off because 'side by side' is a slightly loose phrase for three cells stacked vertically in a column. It is still understandable, so the output is close to ship-ready."
+    },
+    {
+      "id": "eval-hint-clarity-en-count",
+      "dimension": "hint-clarity-en",
+      "trace": [
+        "NFR-6",
+        "FR-21",
+        "FR-112"
+      ],
+      "capability": "puzzle-engine",
+      "score": 93,
+      "pass": true,
+      "judges": 1,
+      "disagreement": false,
+      "notes": "All three critical criteria are met. Row 5 (\\\"0 1 0 1 . 0\\\") holds three zeros, so its only empty cell, column 5, must be 1. The sentence names the right rule, the right line and the right digit. It is one clear, grammatical English sentence. A few points are taken off because \\\"the last empty cell\\\" does not say which column the cell is in, though the board makes it clear."
     }
   ]
 }

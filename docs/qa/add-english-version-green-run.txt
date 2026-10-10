@@ -28,3 +28,7 @@ exit 0
 exit 0
 
 Sampled coverage (fixed viewports), never continuum. The one red test is the NOT-EARNED gate tests/eval-hint-clarity-en.test.ts: it stays red until the eval-suite grades hint-clarity-en (task 4.5); this file is re-saved after that run. e2e and a11y reports restored after each run.
+
+== after task 4.5 (eval-suite wf_ed802833-a5b: 6 of 6 pass, hint-clarity 92.7, hint-clarity-en 90 (84, 93, 93); docs/qa/eval-report.md)
+npm run test:run: Tests 1651 passed (1651); the eval gate tests/eval-hint-clarity-en.test.ts is green.
+node scripts/check-eval-ratchet.mjs: Result PASS after --update under the user's waiver docs/qa/waivers/loosen-eval-hint-clarity.json (hint-clarity 94 -> 92.7, judge variation over byte-identical outputs).
