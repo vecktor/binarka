@@ -174,6 +174,13 @@
       "processComplete": false
     },
     {
+      "slice": "2026-10-10-update-segmented-focus-ring-wording",
+      "reviewEvidence": "missing",
+      "trailerCommits": 1,
+      "libDomains": [],
+      "processComplete": false
+    },
+    {
       "slice": "2026-10-10-update-setup-sheet-start",
       "reviewEvidence": "unclean",
       "trailerCommits": 22,
@@ -256,6 +263,14 @@
     {
       "check": "process",
       "msg": "2026-10-10-fix-size-option-focus-ring: archived change is missing design.md and/or tasks.md"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-10-update-segmented-focus-ring-wording: review-findings.json is missing (review must have run clean before archive)"
+    },
+    {
+      "check": "process",
+      "msg": "2026-10-10-update-segmented-focus-ring-wording: archived change is missing design.md and/or tasks.md"
     },
     {
       "check": "review-evidence",

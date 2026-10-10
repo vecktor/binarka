@@ -10,8 +10,8 @@ Trailers `Slice: update-segmented-focus-ring-wording` and `Refs: FR-65`; signed 
 
 - [x] 2.1 Mutation run 2 (scratch, restored): `important-size` (`outline-offset: -1px !important`), `delete-theme`, `colour-size` (`outline-color` added to the size rule), `width-language` (`outline-width: 1px` added to the language rule). Each is killed. Saved as `docs/qa/fix-size-option-focus-ring/mutation-run-2.txt`.
 - [x] 2.2 Browser shots of an UNCHECKED focused size option next to the checked one (4×4 focused, 6×6 checked) at 375×812 and 1366×650, light and dark, with the measured ring edges. Saved as `docs/qa/fix-size-option-focus-ring/size-focus-unchecked-*.png` and `ring-geometry.txt`.
-- [ ] 2.3 Battery: lint, test:run, build, strict validate, eval ratchet.
+- [x] 2.3 Battery: lint, test:run, build, strict validate, eval ratchet.
 
 ## 3. Archive
 
-- [ ] 3.1 Write the review-findings.json of `fix-size-option-focus-ring` with dispositions, archive this change, validate, and log it.
+- [x] 3.1 Write the review-findings.json of `fix-size-option-focus-ring` with dispositions, archive this change, validate, and log it.
