@@ -2,9 +2,9 @@
 
 ## Purpose
 
-The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a summary button that names the size and the level of the board and opens a setup sheet with a segmented size control (4×4, 6×6, 8×8; 6×6 at start), a four-level control (Розминка at start) and a «Почати» button (a press on a size or a level only marks the choice, and «Почати» starts the puzzle), a hint button, a reset button and a new-puzzle button, a «Правила» button in the header that opens a rules popover with a section of the harder techniques, an idle line that tells a new player what to do, asks in a confirmation dialog before a new puzzle, «Почати» (a size or level change) or a reset discards the player's moves, makes every cell a button with a Ukrainian label for keyboard and screen-reader play, shows a Ukrainian win message when the board is solved, and has a settings button in the header whose panel holds a theme control (light, dark, or as the system), applied at once and remembered as a preference. The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
+The play page is the single static page on which a player solves a Takuzu (Бінарка) puzzle. It renders a generated puzzle as a grid of clickable cells, marks the givens, highlights rule violations as the player fills the board, offers a summary button that names the size and the level of the board and opens a setup sheet with a segmented size control (4×4, 6×6, 8×8; 6×6 at start), a four-level control (Розминка at start) and a «Почати» button (a press on a size or a level only marks the choice, and «Почати» starts the puzzle), a hint button, a reset button and a new-puzzle button, a «Правила» button in the header that opens a rules popover with a section of the harder techniques, an idle line that tells a new player what to do, asks in a confirmation dialog before a new puzzle, «Почати» (a size or level change) or a reset discards the player's moves, makes every cell a button with a Ukrainian label for keyboard and screen-reader play, shows a Ukrainian win message when the board is solved, and has a settings button in the header whose panel holds a theme control (light, dark, or as the system) and a language control (Ukrainian, the default, or English), each applied at once and remembered as a preference; in English mode every page text, accessible name and hint sentence is English. The page is vanilla TypeScript DOM code (`src/main.ts`, `src/ui/`) tested in jsdom with Vitest. It only consumes the engine described in `openspec/specs/puzzle-engine/spec.md` (generator, rule checker, hint engine); what counts as a violation, as solved, or as a hint is defined there and is not restated here.
 
-Ownership: this capability owns FR-31 to FR-44 (FR-39, FR-42 and FR-43 amended), FR-57 and FR-58 (both amended), FR-66 to FR-73 (FR-66, FR-67, FR-68 and FR-73 amended), FR-59 to FR-65 (FR-59, FR-62 and FR-65 amended) and NFR-9 (the accessibility requirements of `main`, reconciled with the UX page model on 2026-10-09 by the change `reconcile-ux-accessibility`; NFR-9 extended to the summary button, the sheet, the level control, «Почати» and the marked state), and FR-87 to FR-101 (the summary button, the setup sheet, the level control, the page retry and the page hint, added by the change `add-level-selector`; FR-100 and FR-101, the marked choice and the start button, added by the change `update-setup-sheet-start`), and FR-102 to FR-106 and FR-113 to FR-118 (the settings button and panel, the theme control and the stored preference, theme parts), NFR-18 (its theme half; the `en` and `lang` half joins with `add-english-version`) and TC-12 as amended, added by the change `add-theme-switch`, which also amends FR-65 and FR-68. The change `update-setup-sheet-start` amends FR-43, FR-59, FR-65 to FR-67, FR-73, FR-87, FR-88, FR-90 to FR-92 and FR-94 to FR-99. NFR-4 is extended: the reason line and the level descriptions are one sentence each. It traces NFR-5 only for the text the page itself shows (labels, buttons including the reset label, the size control, the header, the rules panel, the idle line, the confirmation dialog, cell labels, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
+Ownership: this capability owns FR-31 to FR-44 (FR-39, FR-42 and FR-43 amended), FR-57 and FR-58 (both amended), FR-66 to FR-73 (FR-66, FR-67, FR-68 and FR-73 amended), FR-59 to FR-65 (FR-59, FR-62 and FR-65 amended) and NFR-9 (the accessibility requirements of `main`, reconciled with the UX page model on 2026-10-09 by the change `reconcile-ux-accessibility`; NFR-9 extended to the summary button, the sheet, the level control, «Почати» and the marked state), and FR-87 to FR-101 (the summary button, the setup sheet, the level control, the page retry and the page hint, added by the change `add-level-selector`; FR-100 and FR-101, the marked choice and the start button, added by the change `update-setup-sheet-start`), and FR-102 to FR-106 and FR-113 to FR-118 (the settings button and panel, the theme control and the stored preference, theme parts), NFR-18 (its theme half; the `en` and `lang` half joins with `add-english-version`) and TC-12 as amended, added by the change `add-theme-switch`, which also amends FR-65 and FR-68; and FR-55 and FR-56 (now MVP), FR-107 to FR-112 (the language control, the in-place re-render, `lang` and the title, the hint re-rendered as the same hint, the English page text, the English hint sentences shown) and the language parts of FR-113 to FR-116, NFR-5 per mode and NFR-18's `en` and `lang` half, added by the change `add-english-version`. The change `update-setup-sheet-start` amends FR-43, FR-59, FR-65 to FR-67, FR-73, FR-87, FR-88, FR-90 to FR-92 and FR-94 to FR-99. NFR-4 is extended: the reason line and the level descriptions are one sentence each. It traces NFR-5 only for the text the page itself shows (labels, buttons including the reset label, the size control, the header, the rules panel, the idle line, the confirmation dialog, cell labels, win message, heading, page title). NFR-5 is shared by design with `puzzle-engine`, which owns the hint sentences and CLI errors; the page only displays hint sentences and never restates them. NFR-5 is therefore a shared, per-text-owner requirement and not a double-owned or unowned one.
 
 ## DOM contract used by the scenarios
 
@@ -17,12 +17,12 @@ FR-31 to FR-43, FR-57, FR-58 and A-4 only require that the seed is injectable. T
 - Entry point: `mountPlayPage(root: HTMLElement, options?: { seedSource?: () => number; generate?: (size: number, seed: number, level: number) => Puzzle }): void`, exported from `src/ui/`. `Puzzle` is the type the engine generator returns (engine interface in `openspec/specs/puzzle-engine/spec.md`). `src/main.ts` calls it with the `#app` element and no options.
 - Mounting is synchronous: when the call returns, the header (heading «Бінарка» and the «Правила» button), the summary button, the board, the buttons (including reset), the three messages (idle, hint, win), the rules panel, the setup sheet (with the size control, the level control and the start button) and the confirmation dialog are in `root`. It replaces the previous content of `root`. Two mounts on two different roots are independent.
 - Seed source: a synchronous function with no arguments that returns an integer. The page calls it exactly once for each generation attempt (the mount, each performed press of the new puzzle button and each performed press of «Почати», that is at once on a board without player entries or after «Так, почати» in the confirmation dialog, including an attempt whose generator call throws, and each retry seed after a run-out: up to 3 seeds for one action, see «Page retry on a run-out») and at no other time, and passes the returned value to the generator unchanged. When no `seedSource` is injected the page uses its own default source (see the seed requirement).
-- Generator: when `generate` is not injected the page uses the engine generator. A scenario that says "fixture puzzle" injects a hand-written puzzle through `generate` (a fixture of the requested size; the page assumes `generate(n, s, l)` returns an n×n puzzle); a spy on `generate` reads `(size, seed)` pairs unless a scenario names the level; a generator that "throws" throws an ordinary `Error`, not the run-out error of the engine, unless a scenario says run-out; its givens, and its solution where a scenario needs one, are written in the test suite so that the board state a scenario needs can be reached by clicks. A scenario that says "the generator output for size N and seed S" uses the real engine generator with no injection of `generate`. The rule checker and the hint engine are always the real engine; an "expected hint" in a scenario is the engine hint called with ceiling 4, `hint(board, 4)`, as the page calls it (see «The page hint uses all four techniques»), applied to the board as read from the DOM.
+- Generator: when `generate` is not injected the page uses the engine generator. A scenario that says "fixture puzzle" injects a hand-written puzzle through `generate` (a fixture of the requested size; the page assumes `generate(n, s, l)` returns an n×n puzzle); a spy on `generate` reads `(size, seed)` pairs unless a scenario names the level; a generator that "throws" throws an ordinary `Error`, not the run-out error of the engine, unless a scenario says run-out; its givens, and its solution where a scenario needs one, are written in the test suite so that the board state a scenario needs can be reached by clicks. A scenario that says "the generator output for size N and seed S" uses the real engine generator with no injection of `generate`. The rule checker and the hint engine are always the real engine; an "expected hint" in a scenario is the engine hint called with ceiling 4 and the page language, `hint(board, 4, language)` (default `'uk'`, so `hint(board, 4)` in Ukrainian mode), as the page calls it (see «The page hint uses all four techniques»), applied to the board as read from the DOM.
 - Theme stubs (A-50): jsdom has no `matchMedia`; tests install a stub on `window` that records the `change` listeners and lets the test fire them, and remove it after each test. Before and after each test the lifecycle clears `localStorage`, `sessionStorage` and cookies, removes `data-theme` and the inline `color-scheme` from `<html>` and any injected `meta[name="theme-color"]`, and calls `forgetSessionPreferences()` of `src/ui/preferences.ts`, which drops the session-only values as a page reload does (FR-115).
 - Dialog stubs: jsdom has no `showModal` or `close`; tests install stubs on `HTMLDialogElement.prototype` (`showModal` sets `open`, `close` removes it) and remove them after each test; Escape is simulated by the dialog's `cancel` and `close` events. Popover stubs (A-44): jsdom has no `popover` support either, so tests install `showPopover`, `hidePopover` and `togglePopover` on `HTMLElement.prototype`, which record each call and keep an open or closed state per element, and remove them after each test (see «Setup sheet»).
 - Unless a scenario names a seed, its board is a fixture puzzle; a scenario that says real engine generator uses it without naming a seed.
 
-- Board element: `[data-board]`, with `role="group"`, the Ukrainian `aria-label` «Поле N×N» (FR-61) and `data-size` holding N. Its children are exactly the N×N cells (no row elements).
+- Board element: `[data-board]`, with `role="group"`, the `aria-label` «Поле N×N» in Ukrainian mode or "Grid N×N" in English mode (FR-61) and `data-size` holding N. Its children are exactly the N×N cells (no row elements).
 - Cell element: a `button type="button"` `[data-cell]` with an `aria-label` (FR-70), a given has `aria-disabled="true"`, and with `data-row`, `data-col`, and `data-given` equal to `true` for a given and `false` otherwise. A given also carries the class `cell-given`. A cell that a hint filled carries the class `cell-hinted` (FR-66). A cell's shown text is empty, `0` or `1`.
 - Highlighted cell: carries the class `cell-violation` and `aria-invalid="true"` (FR-61); no other cell has `aria-invalid`.
 - Size control: `[data-control="size"]` with `role="radiogroup"`, three `button[role="radio"]` in the order 4, 6, 8 labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8»; `aria-checked="true"` on the marked size, which is the size shown whenever the sheet is closed (see «Marked choice»). It sits inside the setup sheet.
@@ -35,11 +35,12 @@ FR-31 to FR-43, FR-57, FR-58 and A-4 only require that the seed is injectable. T
 - Buttons: `[data-action="hint"]` (label «Підказка»), `[data-action="reset"]` (label «Скинути») and `[data-action="new"]` (label «Нова головоломка»).
 - Rules panel: `[data-section="rules"]`, a `popover` element opened by `[data-action="rules"]` in the header, with the heading «Правила», two lists (the rules list and the list of the techniques section `div[data-section="techniques"]`, whose heading `h3` is «Складніші прийоми»), six `li` items in all (three and three) and the close button «Зрозуміло»; it is the last child of the root, after the message area, outside the FR-68 sequence (see «Rules panel» and «Page document order»).
 - Message regions: `[data-message="idle"]`, `[data-message="hint"]` and `[data-message="win"]` in this order, always present; for hint and win, empty text content means no message is shown; the idle line always holds its text (see «Idle line»); `[data-message="hint"]` and `[data-message="win"]` carry `role="status"` and the idle line has no role; the two status regions stay rendered while empty (FR-63, FR-71).
-- Page root: the `root` passed to `mountPlayPage`. The header with the heading «Бінарка» is required (FR-68) and is inside the root; the document title is `document.title`. `<html>` carries `data-theme` with the effective theme (FR-104).
+- Page root: the `root` passed to `mountPlayPage`. The header with the heading «Бінарка» is required (FR-68) and is inside the root; the document title is `document.title` («Бінарка» in Ukrainian mode, "Binarka" in English mode). `<html>` carries `data-theme` with the effective theme (FR-104) and `lang` with the page language (FR-109). The mount reads the stored language and builds every text in it (FR-113, FR-116).
 - Logo: one decorative inline `svg` with `aria-hidden="true"` inside the `h1` of the `header`, built once at mount, with no text, no `id` and no `href`/`src`; its shapes carry the classes `logo-cell`, `logo-digit`, `logo-digit-ring` (see «Logo»). The gear of the settings button is the second `svg` of the header; it is not the logo.
 - Ids: an `id` exists under the root only to wire the rules popover, the setup sheet and the confirmation dialog (`popovertarget`, `aria-labelledby`): the rules panel, its heading «Правила», the setup sheet, the settings panel and the element that holds the confirmation text. Each of the five ends in a number that belongs to the mount, so two pages mounted on two roots of one document share no id. No other element has an `id`, and no `for` attribute is used (FR-61).
 - Settings button: `button[data-action="settings"]` with `type="button"`, the `aria-label` «Налаштування» and one decorative `svg` gear, in the header between the heading and «Правила»; its `popovertarget` names the settings panel (see «Settings button and panel»).
-- Settings panel: `[data-section="settings"]`, a `popover` element (`popover="auto"`) with `role="dialog"` and the `aria-label` «Налаштування», after the message area and before the confirmation dialog; it holds the label «Тема», the theme control and the close button `[data-action="settings-close"]` «Закрити».
+- Settings panel: `[data-section="settings"]`, a `popover` element (`popover="auto"`) with `role="dialog"` and the `aria-label` «Налаштування», after the message area and before the confirmation dialog; it holds the label «Тема», the theme control, the label «Мова», the language control and the close button `[data-action="settings-close"]` «Закрити».
+- Language control: `[data-control="language"]` with the class `language-control`, `role="radiogroup"` and the `aria-label` «Мова» ("Language" in English mode), holding two `button[role="radio"]` with `data-language-option` `uk` and `en`, «Українська» with `lang="uk"` and "English" with `lang="en"` in both modes; `aria-checked="true"` is on the page language (see «Language control»).
 - Theme control: `[data-control="theme"]` with the class `theme-control`, `role="radiogroup"` and the `aria-label` «Тема», holding three `button[role="radio"]` with `data-theme-option` `light`, `dark`, `auto` («Світла», «Темна», «Як у системі»); `aria-checked="true"` is on the current choice (see «Theme control»).
 - Key events: when a scenario says the test dispatches a key, the test fires a bubbling, cancelable `keydown` or `keyup` event (`new KeyboardEvent(type, { key, bubbles: true, cancelable: true })`, with `ctrlKey`, `altKey`, `shiftKey` or `repeat` set when the scenario names them) on the named element, and reads `event.defaultPrevented` after the dispatch. Keys are named by their `key` value (`Enter`, a single space for Space, `ArrowRight`, `Home`, and so on). The page handles no key on the board (FR-59, FR-60): jsdom does not turn Enter or Space into a click on a button, so where a scenario needs the activation of a cell, the test clicks it.
 ## Requirements
@@ -303,15 +304,21 @@ Traces: FR-39, FR-66
 
 ### Requirement: Hint button shows the engine's sentence
 
-The page SHALL, when the hint button is pressed, show the sentence the hint engine returns in `[data-message="hint"]`, including the sentence for "no rule applies" and the sentence for "the board breaks a rule", in which cases no cell is filled. The page SHALL NOT alter or rephrase the sentence.
+The page SHALL, when the hint button is pressed, show the sentence the hint engine returns in the page language (`hint(board, 4, language)`, FR-112) in `[data-message="hint"]`, including the sentence for "no rule applies" and the sentence for "the board breaks a rule", in which cases no cell is filled. The page SHALL NOT alter or rephrase the sentence.
 
-Traces: FR-40
+Traces: FR-40, FR-56, FR-110
 
 #### Scenario: Sentence shown with a fill
 
 - **GIVEN** a board on which the hint engine returns a target cell and a sentence
 - **WHEN** the player presses the hint button
 - **THEN** the text content of `[data-message="hint"]` equals that sentence
+
+#### Scenario: Sentence in English mode
+
+- **GIVEN** a board on which the hint engine returns a target cell, and the page in English mode
+- **WHEN** the player presses the hint button
+- **THEN** the text content of `[data-message="hint"]` equals the English sentence of `hint(board, 4, 'en')` for that board, unchanged, and contains no Cyrillic letter
 
 #### Scenario: Board breaks a rule
 
@@ -376,9 +383,9 @@ Traces: FR-40, FR-43, FR-88, FR-100, FR-101
 
 ### Requirement: Win message when solved
 
-The page SHALL show the Ukrainian win message «Вітаємо, головоломку розвʼязано!» in `[data-message="win"]` when the rule checker recognises the board as solved after a board change, whether the change is a click or a hint fill. The apostrophe in «розвʼязано» SHALL be the modifier letter ʼ (U+02BC), not the ASCII apostrophe U+0027 and not the right single quotation mark U+2019; an equality check on the win message compares against the code point U+02BC exactly (FR-41). While the board is not solved the win region SHALL have empty text content.
+In Ukrainian mode the page SHALL show the win message «Вітаємо, головоломку розвʼязано!» in `[data-message="win"]` when the rule checker recognises the board as solved after a board change, whether the change is a click or a hint fill. The apostrophe in «розвʼязано» SHALL be the modifier letter ʼ (U+02BC), not the ASCII apostrophe U+0027 and not the right single quotation mark U+2019; an equality check on the win message compares against the code point U+02BC exactly (FR-41). In English mode the win message SHALL be exactly "Congratulations, puzzle solved!" (FR-41, Q4): the U+02BC rule is a Ukrainian spelling rule and applies to the Ukrainian text only, and no English page text or hint sentence contains U+0027 or U+02BC. While the board is not solved the win region SHALL have empty text content.
 
-Traces: FR-41
+Traces: FR-41, FR-111
 
 #### Scenario: Final click solves the board
 
@@ -413,6 +420,12 @@ Traces: FR-41
 - **WHEN** the player clicks a non-given cell
 - **THEN** the cell changes to the next value in the cycle (the board is not locked)
 - **AND** `[data-message="win"]` has empty text content, because the board is no longer solved (the puzzle has exactly one solution, so any changed cell leaves the board unsolved)
+
+#### Scenario: The English win message
+
+- **GIVEN** a fixture puzzle whose solution the test knows, with every cell filled with the solution except one non-given cell, and the page in English mode
+- **WHEN** the player clicks that cell until it shows the solution digit
+- **THEN** `[data-message="win"]` has the exact text "Congratulations, puzzle solved!", it contains Latin letters and no Cyrillic letter, and no U+0027, U+02BC or U+2019
 
 ### Requirement: New puzzle button
 
@@ -459,7 +472,7 @@ Traces: FR-42, FR-43, FR-67, FR-66, FR-92, FR-95
 
 ### Requirement: Seed is chosen outside the engine, injectable and not shown
 
-The page SHALL obtain the seed for each puzzle from a seed source outside `src/engine/`, calling it exactly once for each generation attempt (the mount, each performed press of the new puzzle button and each performed press of «Почати», including an attempt whose generator call throws), and at no other time. One performed action makes one attempt, or up to three when each earlier attempt of it ended in a run-out of the generator (FR-88, A-38, see «Page retry on a run-out»), so «one seed per action» holds only when the first seed succeeds. A seed is never taken for a press that only marks a size or a level (FR-73, FR-100), for a press of a level that is unavailable at 4×4 (FR-91), for a requested action that the player cancelled (FR-67) and never for reset; «Почати» is never a no-op (FR-101), so even a press of «Почати» with the marked choice equal to the board shown takes a seed. It SHALL accept an injected seed source (contract in the DOM contract section) so tests are deterministic, and MUST NOT display the seed anywhere on the page, including in locale-formatted or separator-split form. When no seed source is injected, the default source SHALL give a different seed on each call (no two consecutive calls return the same seed) and every seed it returns SHALL be an integer from 0 to 2^31 - 1 inclusive. That range is the seed domain pinned by FR-51 and A-25.
+The page SHALL obtain the seed for each puzzle from a seed source outside `src/engine/`, calling it exactly once for each generation attempt (the mount, each performed press of the new puzzle button and each performed press of «Почати», including an attempt whose generator call throws), and at no other time. One performed action makes one attempt, or up to three when each earlier attempt of it ended in a run-out of the generator (FR-88, A-38, see «Page retry on a run-out»), so «one seed per action» holds only when the first seed succeeds. A seed is never taken for a press that only marks a size or a level (FR-73, FR-100), for a press of a level that is unavailable at 4×4 (FR-91), for a requested action that the player cancelled (FR-67) and never for reset; «Почати» is never a no-op (FR-101), so even a press of «Почати» with the marked choice equal to the board shown takes a seed. It SHALL accept an injected seed source (contract in the DOM contract section) so tests are deterministic, and MUST NOT display the seed anywhere on the page, including in locale-formatted or separator-split form (in either language). When no seed source is injected, the default source SHALL give a different seed on each call (no two consecutive calls return the same seed) and every seed it returns SHALL be an integer from 0 to 2^31 - 1 inclusive. That range is the seed domain pinned by FR-51 and A-25.
 
 Traces: FR-31, FR-42, FR-43, FR-51, FR-67, FR-73, FR-88, FR-100, FR-101
 
@@ -487,7 +500,13 @@ Traces: FR-31, FR-42, FR-43, FR-51, FR-67, FR-73, FR-88, FR-100, FR-101
 
 - **GIVEN** the page is mounted with a seed source returning 987654
 - **WHEN** the test inspects every text node under the page root, `document.title`, and every attribute value of every element in the root, each as a separate string
-- **THEN** none of those strings contains `987654`, none contains `Intl.NumberFormat('uk-UA').format(987654)`, and none matches `/9\D?8\D?7\D?6\D?5\D?4/` (this covers `987 654` with a space, NBSP or narrow NBSP, `987,654` and `987.654`)
+- **THEN** none of those strings contains `987654`, none contains `Intl.NumberFormat('uk-UA').format(987654)` or `Intl.NumberFormat('en').format(987654)`, and none matches `/9\D?8\D?7\D?6\D?5\D?4/` (this covers `987 654` with a space, NBSP or narrow NBSP, `987,654` and `987.654`)
+
+#### Scenario: Seed is not shown in English mode
+
+- **GIVEN** the page in English mode mounted with a seed source returning 987654
+- **WHEN** the test inspects every text node, `document.title` and every attribute value of every element in the root, each as a separate string
+- **THEN** none of those strings contains `987654`, `987,654` or `987 654`, and none matches `/9\D?8\D?7\D?6\D?5\D?4/`
 
 #### Scenario: Seed calls follow the puzzles generated
 
@@ -509,14 +528,14 @@ Traces: FR-31, FR-42, FR-43, FR-51, FR-67, FR-73, FR-88, FR-100, FR-101
 
 ### Requirement: Ukrainian page text
 
-The page SHALL show all of its own text (the title in the header, labels, buttons including «Правила» and «Зрозуміло», the size control labels, the rules texts, the idle line, the win message, `document.title` and any user-visible attribute such as `aria-label`, `title`, `placeholder`, `alt` and the `label` attribute of `option` and `optgroup` elements, which a browser shows instead of the option text) in Ukrainian: each such text contains Cyrillic letters and no Latin letters. The digits and the sign × inside a size label such as «Поле 4×4» are not Latin letters. The digits shown in the cells of the board are puzzle content, not page text, and are not collected. Text inside an element with `aria-hidden="true"` (the decorative examples of the rules panel, A-26) is decoration made of digits and symbols, not page text, and is not collected; it holds no letter at all (see «Ukrainian texts of the header, rules panel and idle line»). Hint sentences are owned by the puzzle-engine capability and are only displayed here.
+In Ukrainian mode (the default) the page SHALL show all of its own text (the title in the header, labels, buttons including «Правила» and «Зрозуміло», the size control labels, the rules texts, the idle line, the win message, `document.title` and any user-visible attribute such as `aria-label`, `title`, `placeholder`, `alt` and the `label` attribute of `option` and `optgroup` elements, which a browser shows instead of the option text) in Ukrainian: each such text contains Cyrillic letters and no Latin letters. The digits and the sign × inside a size label such as «Поле 4×4» are not Latin letters. The digits shown in the cells of the board are puzzle content, not page text, and are not collected. Text inside an element with `aria-hidden="true"` (the decorative examples of the rules panel, A-26) is decoration made of digits and symbols, not page text, and is not collected; it holds no letter at all (see «Ukrainian texts of the header, rules panel and idle line»). Text inside an element whose own `lang` differs from `<html lang>` (the option "English", A-52) is skipped by this scan. Hint sentences are owned by the puzzle-engine capability and are only displayed here. English mode is specified by «Page text is per mode» and «English page text».
 
-Traces: NFR-5, FR-43, FR-57, FR-71
+Traces: NFR-5, FR-43, FR-57, FR-71, FR-111
 
 #### Scenario: Static page text
 
 - **GIVEN** the page has just been mounted
-- **WHEN** the test collects every non-whitespace text node under the page root (including the buttons, the size control labels and the header, the rules panel and the idle line, but not the text of `[data-cell]` elements, which is puzzle content, and not the text of elements with `aria-hidden="true"`, which is decoration), `document.title`, and the values of the attributes `aria-label`, `title`, `placeholder` and `alt` on every element in the root and of the attribute `label` on every `option` and `optgroup` element; `data-*` attributes, `class` and option `value` attributes are not user-visible and are not collected
+- **WHEN** the test collects every non-whitespace text node under the page root (including the buttons, the size control labels and the header, the rules panel and the idle line, but not the text of `[data-cell]` elements, which is puzzle content, and not the text of elements with `aria-hidden="true"`, which is decoration), `document.title`, and the values of the attributes `aria-label`, `title`, `placeholder` and `alt` on every element in the root and of the attribute `label` on every `option` and `optgroup` element; `data-*` attributes, `class` and option `value` attributes are not user-visible and are not collected; the elements whose own `lang` differs from `<html lang>` (the option "English", A-52) are skipped
 - **THEN** every collected text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
 - **AND** the collected texts include «Поле 4×4», «Поле 6×6» and «Поле 8×8»
 - **AND** the collected texts include «Розмір поля», the board name «Поле 6×6» as an `aria-label` value, and the 36 cell names
@@ -535,9 +554,9 @@ Traces: NFR-5, FR-43, FR-57, FR-71
 
 ### Requirement: Grid size selector
 
-The page SHALL offer a size control `[data-control="size"]` inside the setup sheet (FR-96; it is not in the page body), a segmented control: an element with `role="radiogroup"` and the accessible name «Розмір поля» (`aria-label`), holding exactly three `<button type="button" role="radio">` elements labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8» (sizes 4, 6, 8, in this order) (FR-43, A-24). While the sheet is open the button of the **marked** size SHALL have `aria-checked="true"` and the other two `aria-checked="false"`; while the sheet is closed `aria-checked="true"` is on the size of the board shown (FR-100, A-47); 6×6 is selected when the page is mounted. **One press of a size button only marks that size** (FR-43, FR-73, FR-100): it starts no puzzle, takes no seed, calls no generator, opens no dialog and does not close the sheet. A new puzzle of the marked size and the marked level is started only by «Почати» (FR-101, see «Start button»): it takes a new seed from the seed source (one seed per generation attempt; a run-out of the generator is retried, FR-88), renders a board of that size and level, updates the summary, and clears the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker; when the board has player entries the page SHALL first ask for confirmation (FR-67, FR-98) and start the new puzzle only after «Так, почати». The size marked at the press of «Почати» is the size performed. Until the confirmation, and after «Скасувати», `aria-checked` is on the size of the board shown (the sheet is already closed). The page calls `generate(n, seed, level)` and assumes that it returns an n×n puzzle: if the generator throws, or the returned `puzzle.givens` is not n rows of n cells, the page SHALL treat it as a generator failure and keep the previous board, the previous messages and highlights, `cell-hinted` and the previous size, and `aria-checked` SHALL stay on the size of the board that is shown, with no uncaught error (an ordinary failure is not retried; only a run-out is, see «Page retry on a run-out»). A performed and a failed «Почати» close the sheet and move focus to the summary button (FR-97, FR-101), and when the change needs the confirmation the sheet is closed first (FR-98). The page reads a size only from the three buttons, never from a free value: the behaviour «a changed value that is not exactly 4, 6 or 8 is ignored» of the earlier select-based control is REMOVED, because with three fixed buttons no free value can be submitted; the invariant that exactly three sizes exist is carried by «exactly three buttons». A press of the size button of the size already shown or already marked is specified by «Pressing the shown size changes nothing». Marking 6 or 8 keeps the marked level and marking 4 sets the marked level to 1, and one «Почати» makes one new puzzle with both, as «Size and level interplay» says. Rules, hint and win message work at the chosen size exactly as at 6. The page MUST NOT remember the choice: a reload or a new mount starts at 6 (TC-12, FR-100).
+The page SHALL offer a size control `[data-control="size"]` inside the setup sheet (FR-96; it is not in the page body), a segmented control: an element with `role="radiogroup"` and the accessible name «Розмір поля» (`aria-label`), holding exactly three `<button type="button" role="radio">` elements labelled «Поле 4×4», «Поле 6×6» and «Поле 8×8» (sizes 4, 6, 8, in this order) (FR-43, A-24). The group name «Розмір поля» and the labels «Поле N×N» follow the page language ("Grid size" and "Grid N×N" in English mode, FR-111). While the sheet is open the button of the **marked** size SHALL have `aria-checked="true"` and the other two `aria-checked="false"`; while the sheet is closed `aria-checked="true"` is on the size of the board shown (FR-100, A-47); 6×6 is selected when the page is mounted. **One press of a size button only marks that size** (FR-43, FR-73, FR-100): it starts no puzzle, takes no seed, calls no generator, opens no dialog and does not close the sheet. A new puzzle of the marked size and the marked level is started only by «Почати» (FR-101, see «Start button»): it takes a new seed from the seed source (one seed per generation attempt; a run-out of the generator is retried, FR-88), renders a board of that size and level, updates the summary, and clears the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker; when the board has player entries the page SHALL first ask for confirmation (FR-67, FR-98) and start the new puzzle only after «Так, почати». The size marked at the press of «Почати» is the size performed. Until the confirmation, and after «Скасувати», `aria-checked` is on the size of the board shown (the sheet is already closed). The page calls `generate(n, seed, level)` and assumes that it returns an n×n puzzle: if the generator throws, or the returned `puzzle.givens` is not n rows of n cells, the page SHALL treat it as a generator failure and keep the previous board, the previous messages and highlights, `cell-hinted` and the previous size, and `aria-checked` SHALL stay on the size of the board that is shown, with no uncaught error (an ordinary failure is not retried; only a run-out is, see «Page retry on a run-out»). A performed and a failed «Почати» close the sheet and move focus to the summary button (FR-97, FR-101), and when the change needs the confirmation the sheet is closed first (FR-98). The page reads a size only from the three buttons, never from a free value: the behaviour «a changed value that is not exactly 4, 6 or 8 is ignored» of the earlier select-based control is REMOVED, because with three fixed buttons no free value can be submitted; the invariant that exactly three sizes exist is carried by «exactly three buttons». A press of the size button of the size already shown or already marked is specified by «Pressing the shown size changes nothing». Marking 6 or 8 keeps the marked level and marking 4 sets the marked level to 1, and one «Почати» makes one new puzzle with both, as «Size and level interplay» says. Rules, hint and win message work at the chosen size exactly as at 6. The page MUST NOT remember the choice: a reload or a new mount starts at 6 (TC-12, FR-100).
 
-Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101
+Traces: FR-43, FR-67, FR-66, FR-92, FR-97, FR-98, FR-73, FR-100, FR-101, FR-111
 
 #### Scenario: Size control structure and default
 
@@ -707,9 +726,9 @@ Traces: FR-58, FR-67, FR-66, FR-92, NFR-5
 
 ### Requirement: Rules panel
 
-The page header SHALL hold a button `[data-action="rules"]` labelled «Правила» whose `popovertarget` attribute names the `id` of the rules panel. The rules panel `[data-section="rules"]` SHALL be an element with the `popover` attribute, opened by that button with no script, and SHALL contain, in this order: the heading «Правила»; the rules list, a `ul` that is a direct child of the panel, with exactly three `li` items in this order: «Не більше двох однакових цифр поспіль у рядку чи стовпці.», «У кожному рядку та стовпці порівну нулів і одиниць.», «Усі рядки різні, і всі стовпці різні.»; the techniques section `[data-section="techniques"]` (FR-93); and one close button «Зрозуміло» with `popovertarget` naming the same `id` and `popovertargetaction="hide"` (FR-57). The techniques section SHALL hold a heading `h3` with the text «Складніші прийоми» and its own `ul` with exactly three `li` items, one sentence each, one for each of the techniques 2, 3 and 4 (FR-74 to FR-76), in this order (wording provisional until the user confirms it in chat during the slice, Q6; a confirmed change edits this table, `src/ui/strings.ts` and the tests together): the table below. The clause «exactly three list items» of FR-57 means the three items of the rules list; the techniques list is a separate list. The techniques items carry no decorative example and no `aria-hidden` descendant, and the techniques section has no `id`. A list item of the rules list MAY carry a decorative example drawn from digits and symbols inside an element with `aria-hidden="true"` (A-26, not pinned); the text of an item is its text content without the descendants that have `aria-hidden="true"`. The panel SHALL be created once at mount, sit inside the page root and outside the element that holds the board, need no new dependency, and stay the same element with the same texts after a new puzzle, a size change, a level change and a win. There SHALL be no rules block below the board and no `<details>` element anywhere on the page. Each mount SHALL give its panel an `id` that is unique in the document, so two mounts on two roots stay independent. The panel SHALL have `role="dialog"` and `aria-labelledby` naming the `id` of its heading «Правила» (also unique per mount), so assistive technology announces it as a named dialog, and the close button «Зрозуміло» SHALL carry the `autofocus` attribute, so that opening the popover moves focus into the panel (A-20). Where the panel is drawn (bottom sheet on phones, centred panel from 48rem) is layout and is not claimed here: it is covered by the held NFR-14 (or NFR-10 / NFR-15), see `docs/requirements-held.md`.
+The page header SHALL hold a button `[data-action="rules"]` labelled «Правила» whose `popovertarget` attribute names the `id` of the rules panel. The rules panel `[data-section="rules"]` SHALL be an element with the `popover` attribute, opened by that button with no script, and SHALL contain, in this order: the heading «Правила»; the rules list, a `ul` that is a direct child of the panel, with exactly three `li` items in this order: «Не більше двох однакових цифр поспіль у рядку чи стовпці.», «У кожному рядку та стовпці порівну нулів і одиниць.», «Усі рядки різні, і всі стовпці різні.»; the techniques section `[data-section="techniques"]` (FR-93); and one close button «Зрозуміло» with `popovertarget` naming the same `id` and `popovertargetaction="hide"` (FR-57). The techniques section SHALL hold a heading `h3` with the text «Складніші прийоми» and its own `ul` with exactly three `li` items, one sentence each, one for each of the techniques 2, 3 and 4 (FR-74 to FR-76), in this order (wording provisional until the user confirms it in chat during the slice, Q6; a confirmed change edits this table, `src/ui/strings.ts` and the tests together): the table below. The clause «exactly three list items» of FR-57 means the three items of the rules list; the techniques list is a separate list. The techniques items carry no decorative example and no `aria-hidden` descendant, and the techniques section has no `id`. A list item of the rules list MAY carry a decorative example drawn from digits and symbols inside an element with `aria-hidden="true"` (A-26, not pinned); the text of an item is its text content without the descendants that have `aria-hidden="true"`. The panel SHALL be created once at mount, sit inside the page root and outside the element that holds the board, need no new dependency, and stay the same element with the same texts after a new puzzle, a size change, a level change and a win. There SHALL be no rules block below the board and no `<details>` element anywhere on the page. Each mount SHALL give its panel an `id` that is unique in the document, so two mounts on two roots stay independent. The panel SHALL have `role="dialog"` and `aria-labelledby` naming the `id` of its heading «Правила» (also unique per mount), so assistive technology announces it as a named dialog, and the close button «Зрозуміло» SHALL carry the `autofocus` attribute, so that opening the popover moves focus into the panel (A-20). The texts of the panel follow the page language: the Ukrainian texts of the tables below are those of Ukrainian mode, the English texts are in «English page text» (FR-57, FR-93, FR-111); the structure and the counts are the same in both modes. Where the panel is drawn (bottom sheet on phones, centred panel from 48rem) is layout and is not claimed here: it is covered by the held NFR-14 (or NFR-10 / NFR-15), see `docs/requirements-held.md`.
 
-Traces: FR-57, FR-93, NFR-5
+Traces: FR-57, FR-93, NFR-5, FR-111
 
 #### Scenario: Rules button in the header
 
@@ -739,6 +758,12 @@ Traces: FR-57, FR-93, NFR-5
 | 1 | `Баланс рядка: якщо в рядку є місце лише для одного нуля або однієї одиниці, а в клітинці вона дала б три однакові цифри поспіль, там стоїть інша цифра.` |
 | 2 | `Однакові рядки: якщо рядок збігається з повним рядком усюди, крім двох клітинок, ці дві клітинки протилежні до нього.` |
 | 3 | `Хід наперед: уявно поставте цифру; якщо за кілька кроків порушиться правило, у клітинці стоїть інша.` |
+
+#### Scenario: The rules panel in English mode
+
+- **GIVEN** the page in English mode
+- **WHEN** the test reads `[data-section="rules"]`
+- **THEN** its headings are an `h2` "Rules" and an `h3` "Harder techniques", the three rules texts and the three techniques texts are the English ones of «English page text», its close button reads "Got it", and the panel has the same structure and six `li` elements
 
 #### Scenario: The panel is a named dialog and takes focus when opened
 
@@ -836,9 +861,9 @@ Traces: FR-68, FR-95, FR-96, FR-117, FR-102
 
 ### Requirement: Idle line
 
-The message area SHALL hold an idle line `[data-message="idle"]` with the text «Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.» (FR-71). The two spaces inside «0 і 1» SHALL be non-breaking spaces U+00A0, one between «0» and «і» and one between «і» and «1»; every other space of the sentence is an ordinary space U+0020; the «і» is the Cyrillic letter U+0456. The line SHALL always be in the DOM. It is visible only while `[data-message="hint"]` and `[data-message="win"]` both have empty text content, and this SHALL be done by CSS only: the page code never removes the line, never sets `hidden` or an inline `style` on it and never changes its text. The visibility itself is layout and is not claimed here: it is covered by the held NFR-14 (or NFR-10 / NFR-15), see `docs/requirements-held.md`.
+The message area SHALL hold an idle line `[data-message="idle"]` with the text «Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.» in Ukrainian mode and `Press the cells to place 0 and 1. For the rules, use the “Rules” button at the top.` in English mode (FR-71, FR-111). The two spaces inside «0 і 1» SHALL be non-breaking spaces U+00A0, one between «0» and «і» and one between «і» and «1»; every other space of the sentence is an ordinary space U+0020; the «і» is the Cyrillic letter U+0456. In English mode the two spaces inside "0 and 1" are U+00A0 as well, one between "0" and "and" and one between "and" and "1", and the quotes around Rules are U+201C and U+201D. The line SHALL always be in the DOM. It is visible only while `[data-message="hint"]` and `[data-message="win"]` both have empty text content, and this SHALL be done by CSS only: the page code never removes the line, never sets `hidden` or an inline `style` on it and never changes its text except on a language switch (FR-108). The visibility itself is layout and is not claimed here: it is covered by the held NFR-14 (or NFR-10 / NFR-15), see `docs/requirements-held.md`.
 
-Traces: FR-71
+Traces: FR-71, FR-111, FR-108
 
 #### Scenario: Idle line text, code point by code point
 
@@ -846,6 +871,13 @@ Traces: FR-71
 - **WHEN** the test reads the text content of `[data-message="idle"]`
 - **THEN** it equals the JavaScript string `'Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.'`
 - **AND** it contains exactly two U+00A0 characters, and the character after the first one is U+0456
+
+#### Scenario: The English idle line, code point by code point
+
+- **GIVEN** the page in English mode
+- **WHEN** the test reads the text content of `[data-message="idle"]`
+- **THEN** it equals the JavaScript string `'Press the cells to place 0\u00A0and\u00A01. For the rules, use the \u201CRules\u201D button at the top.'`
+- **AND** it contains exactly two U+00A0 characters
 
 #### Scenario: The idle line stays in the DOM and untouched
 
@@ -861,6 +893,12 @@ Traces: FR-71
 
 - **THEN** after each action `[data-message="idle"]` is still in the DOM exactly once, with the same text, without a `hidden` attribute and without a `style` attribute (so only CSS can hide it)
 
+#### Scenario: A language switch keeps the idle line in the DOM and untouched in kind
+
+- **GIVEN** a mounted page, with the element `[data-message="idle"]` read at mount
+- **WHEN** the player presses "English"
+- **THEN** it is the same element, without a `hidden` or `style` attribute, and its text is the English idle line
+
 #### Scenario: The hint and win messages are empty at mount
 
 - **GIVEN** the page has just been mounted
@@ -869,9 +907,9 @@ Traces: FR-71
 
 ### Requirement: Ukrainian texts of the header, rules panel and idle line
 
-Every text that the header, the rules panel and the idle line show or expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5). This covers the title «Бінарка», the button «Правила», the panel heading «Правила», the three rules texts of «Rules panel», the close button «Зрозуміло», the idle line and any `aria-label`, `title`, `alt` or `label` attribute in them. Decorative examples inside the panel (A-26) are inside elements with `aria-hidden="true"` and hold digits and symbols but no letter of any alphabet. By the user's code-organisation decision of 2026-10-05 (not a requirement; languages stay Future, FR-55 and FR-56) these texts are kept in the single module `src/ui/strings.ts` and no other file of `src/ui/` and no `src/main.ts` holds a Cyrillic character; the last scenario below guards it as a source scan.
+In Ukrainian mode every text that the header, the rules panel and the idle line show or expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5); in English mode each is the English counterpart of «English page text» and contains Latin letters and no Cyrillic letters (NFR-5 per mode). This covers the title «Бінарка», the button «Правила», the panel heading «Правила», the three rules texts of «Rules panel», the close button «Зрозуміло», the idle line and any `aria-label`, `title`, `alt` or `label` attribute in them. Decorative examples inside the panel (A-26) are inside elements with `aria-hidden="true"` and hold digits and symbols but no letter of any alphabet. By the user's code-organisation decision of 2026-10-05 (not a requirement) these texts are kept, in both languages, in the single module `src/ui/strings.ts` and no other file of `src/ui/` and no `src/main.ts` holds a Cyrillic character; the last scenario below guards it as a source scan.
 
-Traces: NFR-5
+Traces: NFR-5, FR-111, FR-55
 
 #### Scenario: The new texts are Ukrainian
 
@@ -879,6 +917,13 @@ Traces: NFR-5
 - **WHEN** the test collects the texts of the header, of the rules panel (without `aria-hidden` descendants) and of the idle line, and the values of `aria-label`, `title`, `alt` and `label` attributes inside them
 - **THEN** the collection contains «Бінарка», «Правила», «Зрозуміло», the three rules texts of the table in «Rules panel» and the idle line, each at least once
 - **AND** every collected text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
+
+#### Scenario: The English texts of the header, rules panel and idle line
+
+- **GIVEN** the page in English mode
+- **WHEN** the test collects the texts of the header, of the rules panel (without `aria-hidden` descendants) and of the idle line, and the values of `aria-label`, `title`, `alt` and `label` attributes inside them
+- **THEN** the collection contains "Binarka", "Rules", "Got it", the three English rules texts of «English page text» and the English idle line, each at least once
+- **AND** every collected text matches `/[A-Za-z]/` and none matches `/\p{Script=Cyrillic}/u`
 
 #### Scenario: Decorative examples hold no letters
 
@@ -895,9 +940,9 @@ Traces: NFR-5
 
 ### Requirement: Hinted cell marker
 
-The cell that the hint button filled SHALL carry the class `cell-hinted` until the next board change, and at most one cell SHALL carry it at any time (FR-66). The marker SHALL be removed by any later board change: a click on a non-given cell (including the hinted cell itself), a hint that fills another cell (the marker then moves to that new cell), «Нова головоломка», a press of «Почати» (at once, or after «Так, почати») and «Скинути». The marker SHALL NOT be removed by an action that changes no cell: a click on a given cell (FR-33), a hint that fills no cell (FR-25, FR-26), opening or closing the rules panel (FR-57), opening or closing the setup sheet (FR-96), marking a size or a level in the setup sheet (FR-100), a theme switch (FR-103), a failed generation that keeps the previous board (FR-43), a cancelled confirmation (FR-67) and a press of the already selected size (FR-73; that press now only marks). An action that needs confirmation (FR-67) removes the marker when it is performed, not when it is requested. A given cell SHALL never carry the marker, and no cell carries it at mount. Which cue the marker draws (a cue that is not colour alone) is rendering and is covered by the held NFR-11 and NFR-14, see `docs/requirements-held.md`; this requirement pins the class only.
+The cell that the hint button filled SHALL carry the class `cell-hinted` until the next board change, and at most one cell SHALL carry it at any time (FR-66). The marker SHALL be removed by any later board change: a click on a non-given cell (including the hinted cell itself), a hint that fills another cell (the marker then moves to that new cell), «Нова головоломка», a press of «Почати» (at once, or after «Так, почати») and «Скинути». The marker SHALL NOT be removed by an action that changes no cell: a click on a given cell (FR-33), a hint that fills no cell (FR-25, FR-26), opening or closing the rules panel (FR-57), opening or closing the setup sheet (FR-96), marking a size or a level in the setup sheet (FR-100), a theme or language switch (FR-103, FR-108), a failed generation that keeps the previous board (FR-43), a cancelled confirmation (FR-67) and a press of the already selected size (FR-73; that press now only marks). An action that needs confirmation (FR-67) removes the marker when it is performed, not when it is requested. A given cell SHALL never carry the marker, and no cell carries it at mount. Which cue the marker draws (a cue that is not colour alone) is rendering and is covered by the held NFR-11 and NFR-14, see `docs/requirements-held.md`; this requirement pins the class only.
 
-Traces: FR-66, FR-39, FR-88, FR-96, FR-100, FR-101, FR-103
+Traces: FR-66, FR-39, FR-88, FR-96, FR-100, FR-101, FR-103, FR-108
 
 #### Scenario: No cell carries the marker at mount
 
@@ -943,6 +988,7 @@ Traces: FR-66, FR-39, FR-88, FR-96, FR-100, FR-101, FR-103
 | opens the setup sheet through the stubbed `showPopover()`, then clicks `[data-action="setup-close"]` |
 | opens the setup sheet, presses «Поле 8×8» and «Задачка» (marking presses, no «Почати»), then clicks `[data-action="setup-close"]` |
 | opens the settings panel through the stubbed `showPopover()` and presses a theme option |
+| opens the settings panel and presses the language option that is not shown |
 
 - **THEN** after each action exactly one cell has the class `cell-hinted`, it is X, and X still shows the digit the hint wrote
 
@@ -967,9 +1013,9 @@ Traces: FR-66, FR-39, FR-88, FR-96, FR-100, FR-101, FR-103
 
 ### Requirement: Confirmation before discarding player entries
 
-«Нова головоломка», «Почати» and «Скинути» SHALL ask for confirmation only when the board has player entries (FR-67). A change of size or level is no longer an action of its own: it happens only through «Почати» (FR-101), and marking a size or a level asks for nothing (FR-100). A player entry is a non-given cell that is not empty; a cell filled by a hint counts as one (A-8); a board that was just solved has entries, so the confirmation is also asked after a win (A-29). The confirmation SHALL be a native `<dialog>` `[data-dialog="confirm"]`, created once at mount inside the page root, outside the board element and outside the sequence of «Page document order» (it follows the rules panel), closed at mount, and opened with `showModal()`. It SHALL hold the text «Почати заново? Ваші ходи на цьому полі буде втрачено.» and exactly two `<button type="button">`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати». «Так, почати» SHALL close the dialog (calling `close()`) and then perform the pending action exactly as it would on an untouched board. «Скасувати», and Escape (the dialog's `cancel` and `close` events with no button pressed), SHALL close the dialog and leave unchanged the board, the size and the level (`aria-checked`), the summary, the hint message, the win message, the highlights and `cell-hinted`; no seed is taken and the generator is not called. A cancelled action is dropped: it is never performed later. On a board with no player entries the action happens at once and `showModal()` is never called. When the pending action is the press of «Почати», the sheet is closed first and then the dialog opens, and «Скасувати» (which drops the pending action), Escape and «Так, почати» end with focus on the summary button (FR-98, see «Sheet and confirmation»). The pending action is the marked size and level taken at the press of «Почати». Reading rule: wherever another requirement of this capability says that pressing «Нова головоломка», changing the size, changing the level or pressing «Скинути» has an effect (for example «Highlighting follows every board change», «Hint message stays until the next hint or a new puzzle» and the size steps of «Board rendering and default size»), the effect happens when the action is performed: at once on a board without player entries, after «Так, почати» on a board with entries; a requested but unperformed action has no effect. The dialog SHALL have `aria-labelledby` naming the `id` of the element that holds its text (unique per mount), so assistive technology announces the question (A-20). When the page opens the dialog it SHALL move focus to «Скасувати» (after `showModal()`), so that the safe choice is the default and two key presses cannot discard the player's moves (A-20; the user's decision of 2026-10-06, review round 1). Where the dialog is drawn and its focus ring are layout and are covered by the held NFR-13 and NFR-14, see `docs/requirements-held.md`.
+«Нова головоломка», «Почати» and «Скинути» SHALL ask for confirmation only when the board has player entries (FR-67). A change of size or level is no longer an action of its own: it happens only through «Почати» (FR-101), and marking a size or a level asks for nothing (FR-100). A player entry is a non-given cell that is not empty; a cell filled by a hint counts as one (A-8); a board that was just solved has entries, so the confirmation is also asked after a win (A-29). The confirmation SHALL be a native `<dialog>` `[data-dialog="confirm"]`, created once at mount inside the page root, outside the board element and outside the sequence of «Page document order» (it follows the rules panel), closed at mount, and opened with `showModal()`. It SHALL hold the text «Почати заново? Ваші ходи на цьому полі буде втрачено.» ("Start over? Your moves on this board will be lost." in English mode, with the buttons "Yes, start over" and "Cancel", FR-111) and exactly two `<button type="button">`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати». «Так, почати» SHALL close the dialog (calling `close()`) and then perform the pending action exactly as it would on an untouched board. «Скасувати», and Escape (the dialog's `cancel` and `close` events with no button pressed), SHALL close the dialog and leave unchanged the board, the size and the level (`aria-checked`), the summary, the hint message, the win message, the highlights and `cell-hinted`; no seed is taken and the generator is not called. A cancelled action is dropped: it is never performed later. On a board with no player entries the action happens at once and `showModal()` is never called. When the pending action is the press of «Почати», the sheet is closed first and then the dialog opens, and «Скасувати» (which drops the pending action), Escape and «Так, почати» end with focus on the summary button (FR-98, see «Sheet and confirmation»). The pending action is the marked size and level taken at the press of «Почати». Reading rule: wherever another requirement of this capability says that pressing «Нова головоломка», changing the size, changing the level or pressing «Скинути» has an effect (for example «Highlighting follows every board change», «Hint message stays until the next hint or a new puzzle» and the size steps of «Board rendering and default size»), the effect happens when the action is performed: at once on a board without player entries, after «Так, почати» on a board with entries; a requested but unperformed action has no effect. The dialog SHALL have `aria-labelledby` naming the `id` of the element that holds its text (unique per mount), so assistive technology announces the question (A-20). When the page opens the dialog it SHALL move focus to «Скасувати» (after `showModal()`), so that the safe choice is the default and two key presses cannot discard the player's moves (A-20; the user's decision of 2026-10-06, review round 1). Where the dialog is drawn and its focus ring are layout and are covered by the held NFR-13 and NFR-14, see `docs/requirements-held.md`.
 
-Traces: FR-67, FR-42, FR-43, FR-58, FR-66, FR-90, FR-98, FR-100, FR-101
+Traces: FR-67, FR-42, FR-43, FR-58, FR-66, FR-90, FR-98, FR-100, FR-101, FR-111
 
 #### Scenario: The dialog at mount
 
@@ -1164,9 +1210,9 @@ Traces: FR-69
 
 ### Requirement: Cell labels
 
-Every cell SHALL have an `aria-label` in Ukrainian of the form «Рядок R, стовпець C, V» followed by an optional suffix, where R and C are the 1-based row and column and V is «порожньо» for an empty cell, «0» for a zero and «1» for a one (FR-70). A given cell appends «, задано»; the cell that a hint filled (FR-66) appends «, підказка»; any other cell has no suffix, and a cell does not get a suffix for being in violation. The label SHALL be updated after every change of the cell (a click, a hint, reset, a new puzzle, a size change). A label contains no Latin letters (NFR-5).
+Every cell SHALL have an `aria-label` in the page language, in Ukrainian mode of the form «Рядок R, стовпець C, V» and in English mode of the form "Row R, column C, V", followed by an optional suffix, where R and C are the 1-based row and column and V is «порожньо» ("empty" in English mode) for an empty cell, «0» for a zero and «1» for a one (FR-70). A given cell appends «, задано» (", given"); the cell that a hint filled (FR-66) appends «, підказка» (", hinted"); any other cell has no suffix, and a cell does not get a suffix for being in violation. The label SHALL be updated after every change of the cell (a click, a hint, reset, a new puzzle, a size change). A label contains no Latin letters (NFR-5).
 
-Traces: FR-70, FR-66, NFR-5
+Traces: FR-70, FR-66, NFR-5, FR-111
 
 #### Scenario: The four label forms
 
@@ -1175,6 +1221,13 @@ Traces: FR-70, FR-66, NFR-5
 - **THEN** the label of (3, 2) before the click is «Рядок 3, стовпець 2, порожньо» and after one click is «Рядок 3, стовпець 2, 0»
 - **AND** the label of (1, 4) is «Рядок 1, стовпець 4, 1, задано»
 - **AND** the label of (5, 6) is «Рядок 5, стовпець 6, 0, підказка»
+
+#### Scenario: The four label forms in English
+
+- **GIVEN** a mounted 6x6 fixture board whose givens are `1` at (1, 4), `0` at (5, 3), `1` at (5, 4) and `1` at (5, 5), the page in English mode
+- **WHEN** the player presses "Hint", and the test reads the labels of the cells (3, 2), (1, 4) and (5, 6), after clicking (3, 2) once for the digit form
+- **THEN** the label of (3, 2) before the click is "Row 3, column 2, empty" and after one click is "Row 3, column 2, 0"
+- **AND** the label of (1, 4) is "Row 1, column 4, 1, given" and the label of (5, 6) is "Row 5, column 6, 0, hinted"
 
 #### Scenario: Labels follow every change of the cell
 
@@ -1206,9 +1259,9 @@ Traces: FR-70, FR-66, NFR-5
 
 ### Requirement: Ukrainian texts of the confirmation dialog, size control and cell labels
 
-Every text that the confirmation dialog, the size control and the cells expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5). This covers the group name «Розмір поля», the labels «Поле 4×4», «Поле 6×6» and «Поле 8×8», the confirmation text «Почати заново? Ваші ходи на цьому полі буде втрачено.», «Так, почати», «Скасувати», every cell label of «Cell labels», and any `aria-label`, `title`, `alt` or `label` attribute among them. Digits, «×» and the cell digits are not Latin letters. By the user's code-organisation decision of 2026-10-05 (not a requirement) these texts are kept in `src/ui/strings.ts`, the single module created by `update-page-layout`; the source scan of «Ukrainian texts of the header, rules panel and idle line» guards it.
+In Ukrainian mode every text that the confirmation dialog, the size control and the cells expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5); in English mode each is the English counterpart of «English page text» ("Grid size", "Grid 4×4", "Start over? Your moves on this board will be lost.", "Yes, start over", "Cancel", "Row R, column C, empty") and contains Latin letters and no Cyrillic letters. This covers the group name «Розмір поля», the labels «Поле 4×4», «Поле 6×6» and «Поле 8×8», the confirmation text «Почати заново? Ваші ходи на цьому полі буде втрачено.», «Так, почати», «Скасувати», every cell label of «Cell labels», and any `aria-label`, `title`, `alt` or `label` attribute among them. Digits, «×» and the cell digits are not Latin letters. By the user's code-organisation decision of 2026-10-05 (not a requirement) these texts are kept in `src/ui/strings.ts`, the single module created by `update-page-layout`; the source scan of «Ukrainian texts of the header, rules panel and idle line» guards it.
 
-Traces: NFR-5, FR-43, FR-67, FR-70
+Traces: NFR-5, FR-43, FR-67, FR-70, FR-111
 
 #### Scenario: The new texts are Ukrainian
 
@@ -1218,11 +1271,18 @@ Traces: NFR-5, FR-43, FR-67, FR-70
 - **AND** every collected text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
 - **AND** the source scan of `update-page-layout` (no Cyrillic outside `src/ui/strings.ts`) still finds nothing
 
+#### Scenario: The English texts of the dialog, the size control and the cells
+
+- **GIVEN** the page in English mode
+- **WHEN** the test collects the text nodes of the size control, of the confirmation dialog, the `aria-label` of the size control and of every `[data-cell]`
+- **THEN** the collection contains "Grid size", "Grid 4×4", "Grid 6×6", "Grid 8×8", "Start over? Your moves on this board will be lost.", "Yes, start over" and "Cancel"
+- **AND** every collected text matches `/[A-Za-z]/` and none matches `/\p{Script=Cyrillic}/u`
+
 ### Requirement: Cells expose a Ukrainian name and their state
 
-The page SHALL give every `[data-cell]` an `aria-label` that is its label as «Cell labels» defines it, «Рядок R, стовпець C, V» with the optional suffix «, задано» or «, підказка» (FR-70), so that the accessible name of a cell is its FR-70 label (FR-61). The label SHALL match the cell's text content, which stays empty, `0` or `1` (FR-34), and SHALL be rewritten whenever the cell changes (a click, a hint fill, a reset, a new board). The page SHALL set `aria-disabled="true"` on every given cell (FR-69) and on no other cell, and SHALL NOT set `aria-readonly` on any element, because that attribute is not allowed on a button. The page SHALL set `aria-invalid="true"` on exactly the cells that carry the class `cell-violation` (the same set, including every cell of a line highlighted for too many of one digit) and SHALL remove the attribute from every other cell, with the attribute absent rather than `"false"`. A given cell in a violation carries both `aria-disabled="true"` and `aria-invalid="true"`.
+The page SHALL give every `[data-cell]` an `aria-label` that is its label as «Cell labels» defines it, «Рядок R, стовпець C, V» with the optional suffix «, задано» or «, підказка» (FR-70; in English mode "Row R, column C, V" with the suffix ", given" or ", hinted"), so that the accessible name of a cell is its FR-70 label (FR-61). The label SHALL match the cell's text content, which stays empty, `0` or `1` (FR-34), and SHALL be rewritten whenever the cell changes (a click, a hint fill, a reset, a new board). The page SHALL set `aria-disabled="true"` on every given cell (FR-69) and on no other cell, and SHALL NOT set `aria-readonly` on any element, because that attribute is not allowed on a button. The page SHALL set `aria-invalid="true"` on exactly the cells that carry the class `cell-violation` (the same set, including every cell of a line highlighted for too many of one digit) and SHALL remove the attribute from every other cell, with the attribute absent rather than `"false"`. A given cell in a violation carries both `aria-disabled="true"` and `aria-invalid="true"`.
 
-Traces: FR-61, FR-70, FR-69, FR-35, FR-36, FR-37, FR-38
+Traces: FR-61, FR-70, FR-69, FR-35, FR-36, FR-37, FR-38, FR-111
 
 #### Scenario: Names of a fresh board
 
@@ -1230,6 +1290,12 @@ Traces: FR-61, FR-70, FR-69, FR-35, FR-36, FR-37, FR-38
 - **WHEN** the test reads `aria-label` of the cells at row 2 column 3, row 3 column 1 and row 6 column 6
 - **THEN** they are «Рядок 2, стовпець 3, порожньо», «Рядок 3, стовпець 1, 0, задано» and «Рядок 6, стовпець 6, порожньо»
 - **AND** for every cell the name equals the FR-70 label built from its `data-row`, `data-col`, text content, `data-given` and `cell-hinted`
+
+#### Scenario: Names in English mode
+
+- **GIVEN** a 6x6 fixture board whose only givens are `0` at row 3 columns 1 and 2, and the page in English mode
+- **WHEN** the test reads `aria-label` of the cells at row 2 column 3, row 3 column 1 and row 6 column 6
+- **THEN** they are "Row 2, column 3, empty", "Row 3, column 1, 0, given" and "Row 6, column 6, empty"
 
 #### Scenario: The name follows a click and a hint
 
@@ -1418,16 +1484,16 @@ Traces: FR-65, FR-64, NFR-9, FR-104
 
 ### Requirement: The page meets the WCAG 2.2 AA criteria of the accessibility requirements
 
-The page SHALL meet WCAG 2.2 AA for what FR-43, FR-59 to FR-65, FR-67, FR-69, FR-70 and FR-87 to FR-101, FR-102 and FR-117 cover (NFR-9): keyboard operation 2.1.1 (every cell and every control reached by Tab in reading order and operated by Enter and Space as a native button, FR-59 and FR-60), name, role and value 4.1.2 (the role and name of the board group, of the three radiogroups, of the summary button, of the settings button, of the start button «Почати», of the setup sheet and of the settings panel, the cell names, `aria-checked` (the marked state in the two radiogroups while the sheet is open, FR-100), `aria-disabled`, `aria-invalid`), labels 3.3.2 (the accessible names «Розмір поля», «Складність», «Тема» and «Налаштування» and the visible text of each size button, each level button, each theme option and the summary button), status messages 4.1.3 (the two `role="status"` regions), use of colour 1.4.1 (the heavier violation border and `aria-invalid`) and non-text contrast 1.4.11 (the 3:1 pairs) and visible focus 2.4.7 (the `:focus-visible` rules). Every button of the page (the cell buttons, the size radio buttons, the level radio buttons, the summary button, the start button, the settings button and the close buttons of the sheet and of the settings panel included; the name of a button without `aria-label` is its text content without `aria-hidden` descendants) SHALL have a non-empty accessible name in Ukrainian: its `aria-label` when it has one (every cell), otherwise its text; the board group, the three radiogroups, the setup sheet and the settings panel SHALL have a non-empty Ukrainian `aria-label`. No element of the page SHALL have a `tabindex` attribute, before or after play. Real screen-reader output and real-browser rendering are not tested (A-28, TC-13).
+The page SHALL meet WCAG 2.2 AA for what FR-43, FR-59 to FR-65, FR-67, FR-69, FR-70 and FR-87 to FR-101, FR-102, FR-107 to FR-109 and FR-117 cover (NFR-9): language of page 3.1.1 (`<html lang>` is "uk" or "en" and matches the page language, FR-109) and language of parts 3.1.2 (the two language options carry their own `lang`, A-52), keyboard operation 2.1.1 (every cell and every control reached by Tab in reading order and operated by Enter and Space as a native button, FR-59 and FR-60), name, role and value 4.1.2 (the role and name of the board group, of the four radiogroups, of the summary button, of the settings button, of the start button «Почати», of the setup sheet and of the settings panel, the cell names, `aria-checked` (the marked state in the two radiogroups while the sheet is open, FR-100), `aria-disabled`, `aria-invalid`), labels 3.3.2 (the accessible names «Розмір поля», «Складність», «Тема», «Мова» and «Налаштування» and the visible text of each size button, each level button, each theme option, each language option and the summary button), status messages 4.1.3 (the two `role="status"` regions), use of colour 1.4.1 (the heavier violation border and `aria-invalid`) and non-text contrast 1.4.11 (the 3:1 pairs) and visible focus 2.4.7 (the `:focus-visible` rules). Every button of the page (the cell buttons, the size radio buttons, the level radio buttons, the summary button, the start button, the settings button and the close buttons of the sheet and of the settings panel included; the name of a button without `aria-label` is its text content without `aria-hidden` descendants) SHALL have a non-empty accessible name in the page language: its `aria-label` when it has one (every cell), otherwise its text; the board group, the four radiogroups, the setup sheet and the settings panel SHALL have a non-empty `aria-label` in the page language (the option of the other language keeps its own language, A-52). No element of the page SHALL have a `tabindex` attribute, before or after play. Real screen-reader output and real-browser rendering are not tested (A-28, TC-13).
 
-Traces: NFR-9, NFR-5, FR-43, FR-59, FR-60, FR-61, FR-62, FR-63, FR-64, FR-65, FR-67, FR-69, FR-70, FR-87, FR-88, FR-91, FR-95, FR-96, FR-97, FR-98, FR-99, FR-100, FR-101, FR-102, FR-117
+Traces: NFR-9, NFR-5, FR-43, FR-59, FR-60, FR-61, FR-62, FR-63, FR-64, FR-65, FR-67, FR-69, FR-70, FR-87, FR-88, FR-91, FR-95, FR-96, FR-97, FR-98, FR-99, FR-100, FR-101, FR-102, FR-117, FR-107, FR-108, FR-109
 
 #### Scenario: Every button, the radiogroups, the sheet and the board have a Ukrainian name
 
 - **GIVEN** a mounted page on a 6x6 fixture
 - **WHEN** the test computes the accessible name of each `button` (its `aria-label` when present, else its text content without `aria-hidden` descendants) and of each `[role="radiogroup"]`, of `[data-section="setup"]` and of `[data-board]` (their `aria-label`)
-- **THEN** there are 58 buttons (36 cells and 22 others: «Правила», the settings button, the summary button, three size buttons, four level buttons, three theme options, «Почати», «Закрити», the settings panel's «Закрити», «Підказка», «Скинути», «Нова головоломка», «Зрозуміло», «Так, почати» and «Скасувати»), three radiogroups, the setup sheet, the settings panel and the board, every name is non-empty, matches `/\p{Script=Cyrillic}/u` and does not match `/[A-Za-z]/`
-- **AND** the names include «Підказка», «Скинути», «Нова головоломка», «Розмір поля», «Поле 6×6», «Складність», «Поле і складність», «Налаштування», «Тема», «Світла», «Темна», «Як у системі», «Почати», «Закрити», `Поле і складність: 6×6 · Розминка`, the four level buttons as name, space and description, and the 36 cell names
+- **THEN** there are 60 buttons (36 cells and 24 others: the two language options, «Правила», the settings button, the summary button, three size buttons, four level buttons, three theme options, «Почати», «Закрити», the settings panel's «Закрити», «Підказка», «Скинути», «Нова головоломка», «Зрозуміло», «Так, почати» and «Скасувати»), four radiogroups, the setup sheet, the settings panel and the board, every name is non-empty, matches `/\p{Script=Cyrillic}/u` and does not match `/[A-Za-z]/` (except the name of the option "English", whose own `lang` differs from `<html lang>`, A-52)
+- **AND** the names include «Підказка», «Скинути», «Нова головоломка», «Розмір поля», «Поле 6×6», «Складність», «Поле і складність», «Налаштування», «Тема», «Світла», «Темна», «Як у системі», «Мова», «Українська», "English", «Почати», «Закрити», `Поле і складність: 6×6 · Розминка`, the four level buttons as name, space and description, and the 36 cell names
 
 #### Scenario: No element of the page has a tabindex, before and after play
 
@@ -1447,6 +1513,12 @@ Traces: NFR-9, NFR-5, FR-43, FR-59, FR-60, FR-61, FR-62, FR-63, FR-64, FR-65, FR
 - **WHEN** the test reads `aria-checked` of the three theme options
 - **THEN** exactly one option has `aria-checked="true"` («Як у системі» at first, «Темна» after the press), the others `"false"`, and none has `aria-disabled`
 
+#### Scenario: The language radiogroup exposes its state
+
+- **GIVEN** a mounted page with `localStorage` empty, and the same page after "English" is pressed
+- **WHEN** the test reads `aria-checked` of the two language options
+- **THEN** exactly one has `aria-checked="true"` («Українська» at first, "English" after the press), and `<html lang>` and the `lang` of each option are as in «Document language and title»
+
 #### Scenario: The radiogroups expose the marked state while the sheet is open
 
 - **GIVEN** a mounted 6×6 page at «Розминка», the sheet opened, and «Поле 4×4» marked
@@ -1454,11 +1526,18 @@ Traces: NFR-9, NFR-5, FR-43, FR-59, FR-60, FR-61, FR-62, FR-63, FR-64, FR-65, FR
 - **THEN** `aria-checked="true"` is on «Поле 4×4» only and on «Розминка» only, and «Задачка», «Головоломка» and «Мозколамка» have `aria-disabled="true"`
 - **AND** after the sheet is closed by a `toggle` event with `newState` `closed`, `aria-checked="true"` is on «Поле 6×6» only and no level button has `aria-disabled`
 
+#### Scenario: English mode names every control
+
+- **GIVEN** a mounted page on a 6x6 fixture in English mode
+- **WHEN** the test computes the accessible name of each `button` and of each `[role="radiogroup"]`, of `[data-section="setup"]`, of `[data-section="settings"]` and of `[data-board]`
+- **THEN** there are the same 60 buttons, four radiogroups, the sheet, the settings panel and the board, every name is non-empty, matches `/[A-Za-z]/` and does not match `/\p{Script=Cyrillic}/u` except the name of the option «Українська» (its own `lang` differs)
+- **AND** `<html lang>` is `en`
+
 ### Requirement: Every cell is its own Tab stop
 
-The page SHALL make every `[data-cell]` of the board shown its own Tab stop: the cells are reached by Tab in reading order (row by row, left to right), after the summary button and before the hint button (FR-59, FR-68, FR-69, FR-95), and the page SHALL NOT put a `tabindex` attribute on any element of its root, at mount and after every board change. The page SHALL NOT handle the Arrow, Home and End keys, with or without Ctrl, Shift or Alt: it handles no key event on the board or its cells, so no key event on the board or a cell is default-prevented (Tab, Shift+Tab, PageUp, PageDown, Escape and letters included), no key moves DOM focus, and no key changes a cell (FR-59). Showing a board (the mount, a performed new puzzle, a performed «Почати», a reset) SHALL NOT move DOM focus, with one exception: «Почати» and the close button «Закрити» of the setup sheet return DOM focus to the summary button (FR-97, FR-101, see «Choosing and closing the sheet»); when «Почати» needs the confirmation, DOM focus goes to «Скасувати» while the dialog is open and then to the summary button (FR-98). A press on a size button or a level button inside the sheet moves no focus: it stays on the pressed button. A press on a theme option leaves DOM focus on the pressed option (it shows no board, FR-103, FR-117). A hint, whether or not it fills a cell, SHALL leave DOM focus on the hint button. Tab and Shift+Tab are the browser's. A new puzzle or «Почати» whose generation fails keeps the previous board and its cells.
+The page SHALL make every `[data-cell]` of the board shown its own Tab stop: the cells are reached by Tab in reading order (row by row, left to right), after the summary button and before the hint button (FR-59, FR-68, FR-69, FR-95), and the page SHALL NOT put a `tabindex` attribute on any element of its root, at mount and after every board change. The page SHALL NOT handle the Arrow, Home and End keys, with or without Ctrl, Shift or Alt: it handles no key event on the board or its cells, so no key event on the board or a cell is default-prevented (Tab, Shift+Tab, PageUp, PageDown, Escape and letters included), no key moves DOM focus, and no key changes a cell (FR-59). Showing a board (the mount, a performed new puzzle, a performed «Почати», a reset) SHALL NOT move DOM focus, with one exception: «Почати» and the close button «Закрити» of the setup sheet return DOM focus to the summary button (FR-97, FR-101, see «Choosing and closing the sheet»); when «Почати» needs the confirmation, DOM focus goes to «Скасувати» while the dialog is open and then to the summary button (FR-98). A press on a size button or a level button inside the sheet moves no focus: it stays on the pressed button. A press on a theme option or a language option leaves DOM focus on the pressed option (it shows no board, FR-103, FR-108, FR-117); after a language switch the focused element is the same element as before the switch. A hint, whether or not it fills a cell, SHALL leave DOM focus on the hint button. Tab and Shift+Tab are the browser's. A new puzzle or «Почати» whose generation fails keeps the previous board and its cells.
 
-Traces: FR-59, FR-43, FR-68, FR-69, FR-95, FR-97, FR-100, FR-101, FR-103, FR-117
+Traces: FR-59, FR-43, FR-68, FR-69, FR-95, FR-97, FR-100, FR-101, FR-103, FR-117, FR-108
 
 #### Scenario: Every cell is a Tab stop in reading order
 
@@ -1516,6 +1595,12 @@ Traces: FR-59, FR-43, FR-68, FR-69, FR-95, FR-97, FR-100, FR-101, FR-103, FR-117
 - **WHEN** the player presses «Темна»
 - **THEN** `document.activeElement` is still the option «Темна», and the page has added no `tabindex` to any element
 
+#### Scenario: A language press leaves the focus on the option
+
+- **GIVEN** the settings panel opened through the stubbed `showPopover()` and the test focus on the option "English"
+- **WHEN** the player presses "English"
+- **THEN** `document.activeElement` is still that option element (the same element object), and the page has added no `tabindex` and no key handler
+
 ### Requirement: Enter and Space activate a cell like a click
 
 Enter or Space on a focused non-given cell SHALL cycle it exactly as a click on it does (FR-34), by the native activation of a `<button type="button">` (FR-60, FR-69): the page SHALL NOT handle key events on a cell, so it never calls `preventDefault()` on Enter or Space (that would suppress the browser's click), and a `keydown` or `keyup` alone changes no cell. On a given cell (`aria-disabled="true"`) Enter, Space and a click change nothing (FR-33, see «Given cells are locked»). A cell SHALL keep DOM focus after its value changes: the page updates a cell element in place and never moves or drops the focus of a cell, so a player who cycles a cell with the keyboard stays on it. jsdom does not turn a key press into a click, so these two keys are covered by the element type, by the absence of any key handling and by the click; real key behaviour is covered by the held NFR-13, see `docs/requirements-held.md`.
@@ -1538,9 +1623,9 @@ Traces: FR-60, FR-33, FR-34, FR-69
 
 ### Requirement: The board is a labelled group of cell buttons
 
-The page SHALL give `[data-board]` `role="group"` and the Ukrainian `aria-label` «Поле N×N» for the size N of the board shown (digits and the sign × U+00D7, no Latin letters), and the children of the board SHALL be exactly its N×N `[data-cell]` buttons, in reading order (FR-61, FR-69). No element of the page SHALL have `role="grid"`, `role="row"` or `role="gridcell"`, and no `[data-cell]` SHALL carry a `role` attribute (a button keeps its own role). The attributes and classes of the DOM contract on cells (`data-cell`, `data-row`, `data-col`, `data-given`, `cell-given`, `cell-violation`) are unchanged. The page SHALL put an `id` on a descendant of its root only to wire the rules popover, the setup sheet, the settings panel and the confirmation dialog: the rules panel, the heading inside it, the setup sheet, the settings panel and the element that holds the confirmation text (FR-57, FR-96, FR-117, FR-67). Each of these five ids ends in a number that belongs to the mount, so two pages mounted on two roots of one document share no id, and no other descendant of the root has an `id`. The page SHALL NOT use a `for` attribute. The stylesheet SHALL NOT use `display: contents` on any rule, because that has a history of dropping the semantics of the element it is applied to (here the board group and the cell buttons).
+The page SHALL give `[data-board]` `role="group"` and the `aria-label` «Поле N×N» in Ukrainian mode or "Grid N×N" in English mode for the size N of the board shown (digits and the sign × U+00D7, no letter of the other script), and the children of the board SHALL be exactly its N×N `[data-cell]` buttons, in reading order (FR-61, FR-69). No element of the page SHALL have `role="grid"`, `role="row"` or `role="gridcell"`, and no `[data-cell]` SHALL carry a `role` attribute (a button keeps its own role). The attributes and classes of the DOM contract on cells (`data-cell`, `data-row`, `data-col`, `data-given`, `cell-given`, `cell-violation`) are unchanged. The page SHALL put an `id` on a descendant of its root only to wire the rules popover, the setup sheet, the settings panel and the confirmation dialog: the rules panel, the heading inside it, the setup sheet, the settings panel and the element that holds the confirmation text (FR-57, FR-96, FR-117, FR-67). Each of these five ids ends in a number that belongs to the mount, so two pages mounted on two roots of one document share no id, and no other descendant of the root has an `id`. The page SHALL NOT use a `for` attribute. The stylesheet SHALL NOT use `display: contents` on any rule, because that has a history of dropping the semantics of the element it is applied to (here the board group and the cell buttons).
 
-Traces: FR-61, FR-43, FR-57, FR-67, FR-69, FR-96, FR-117
+Traces: FR-61, FR-43, FR-57, FR-67, FR-69, FR-96, FR-117, FR-111
 
 #### Scenario: Role and name of the default board
 
@@ -1549,6 +1634,12 @@ Traces: FR-61, FR-43, FR-57, FR-67, FR-69, FR-96, FR-117
 - **THEN** it has `role="group"` and `aria-label` equal to «Поле 6×6»
 - **AND** it has exactly 36 children, and they are exactly the 36 `[data-cell]` buttons, with `data-row` and `data-col` running row by row and left to right from (1, 1) to (6, 6)
 - **AND** no element of the root has `role="grid"`, `role="row"` or `role="gridcell"`, and no cell has a `role` attribute
+
+#### Scenario: The group name in English mode
+
+- **GIVEN** the page in English mode with the default size
+- **WHEN** the test reads `[data-board]`
+- **THEN** it has `role="group"` and `aria-label` equal to "Grid 6×6", and after the board 4×4 and the board 8×8 are shown the names are "Grid 4×4" and "Grid 8×8"
 
 #### Scenario: The group name follows the size
 
@@ -1584,9 +1675,9 @@ Traces: FR-61, FR-43, FR-57, FR-67, FR-69, FR-96, FR-117
 
 ### Requirement: The size radiogroup has an accessible name
 
-The size radiogroup `[data-control="size"]` (FR-43) SHALL have the accessible name «Розмір поля», given by its `aria-label`, and each of its three size buttons SHALL be labelled by its own visible text «Поле N×N»: a size button SHALL NOT carry `aria-label` or `aria-labelledby` (FR-62). No text of the page SHALL show «Розмір поля», and the page SHALL contain no `label` element and no `select`: the frozen design has no visible label for the control (FR-62). The name has Cyrillic letters and no Latin letters (NFR-5).
+The size radiogroup `[data-control="size"]` (FR-43) SHALL have the accessible name «Розмір поля», given by its `aria-label`, and each of its three size buttons SHALL be labelled by its own visible text «Поле N×N»: a size button SHALL NOT carry `aria-label` or `aria-labelledby` (FR-62). No text of the page SHALL show «Розмір поля», and the page SHALL contain no `label` element and no `select`: the frozen design has no visible label for the control (FR-62). The name has Cyrillic letters and no Latin letters in Ukrainian mode (NFR-5); in English mode the group name is "Grid size" and the buttons are labelled "Grid 4×4", "Grid 6×6" and "Grid 8×8" (FR-43, FR-111), with Latin letters and no Cyrillic letters.
 
-Traces: FR-62, FR-43, NFR-5
+Traces: FR-62, FR-43, NFR-5, FR-111
 
 #### Scenario: The radiogroup is named by its aria-label
 
@@ -1602,11 +1693,17 @@ Traces: FR-62, FR-43, NFR-5
 - **THEN** their texts are «Поле 4×4», «Поле 6×6» and «Поле 8×8» in this order, and none has `aria-label` or `aria-labelledby`
 - **AND** each text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
 
+#### Scenario: The size group is named in English
+
+- **GIVEN** the page in English mode
+- **WHEN** the test reads `[data-control="size"]` and its three buttons
+- **THEN** the `aria-label` is "Grid size", the button texts are "Grid 4×4", "Grid 6×6" and "Grid 8×8" in this order, none of the buttons has `aria-label` or `aria-labelledby`, and no text matches `/\p{Script=Cyrillic}/u`
+
 ### Requirement: Cells and buttons show a visible, unobscured focus indicator
 
-The stylesheet SHALL contain a `:focus-visible` rule for `.cell` and for `button` (FR-65), found anywhere in the file (top level, nested with `&` resolved against its parent, or inside an at-rule), each declaring `outline-style: solid`, `outline-width` of at least 2px and `outline-color: var(--color-focus)`. Together they cover every cell and every page button: the header «Правила» and the settings button, the summary button, the three size buttons, the four level buttons, the three theme options, the close button «Закрити» of the settings panel, the start button «Почати» and the close button «Закрити» of the setup sheet, «Підказка», «Скинути», «Нова головоломка», «Зрозуміло», «Так, почати» and «Скасувати», all of them `<button>` elements. The `.cell:focus-visible` rule SHALL declare `outline-offset: 2px`, `position: relative` and `z-index` of at least 1, so the 3px ring is drawn outside the cell (the cell's own border, the violation cue included, stays visible), the 2px gap between cells shows the page colour on the ring's inner side, the ring's outer edge lands on a neighbour's fill (the pairs `--color-focus` against cell, given and violation fills, 6.70, 5.41 and 4.63 with the design's values) and the ring is not covered by neighbouring cells; the trade-off is that the ring covers the border of a neighbour on that side while the cell is focused. The `button:focus-visible` rule SHALL declare a positive `outline-offset`. No rule SHALL remove the outline: no declaration `outline: none`, `outline: 0`, `outline-style: none` or `outline-width: 0` exists in the file. The stylesheet SHALL NOT contain `!important`, and SHALL NOT contain `:has(` except in the one selector that hides the idle line: exactly one rule contains `:has(`, the subject of its selector is `.message-idle`, and it declares nothing but `display: none` (FR-71: the idle line is hidden by CSS only, and only `:has` can reach a previous sibling; FR-68 fixes the order idle, hint, win). Where a browser does not know `:has` (Firefox 114 to 120, the Vite 8 build target of `docs/frontend-conventions.md` rule 20) the idle line stays visible next to a message and nothing else depends on the rule. This is the one exception that FR-65 allows. CSS nesting, media queries and `@layer` are allowed by that rule; the test reads them all. The open setup sheet SHALL keep a keyboard-focused control clear of its sticky footer row (FR-65 "unobscured", WCAG 2.4.11): the open sheet declares a `scroll-padding-bottom` of at least the footer height, so the browser's own focus scrolling brings a focused option above the footer (second review-gate fix round, 2026-10-10, autonomy-log row 126).
+The stylesheet SHALL contain a `:focus-visible` rule for `.cell` and for `button` (FR-65), found anywhere in the file (top level, nested with `&` resolved against its parent, or inside an at-rule), each declaring `outline-style: solid`, `outline-width` of at least 2px and `outline-color: var(--color-focus)`. Together they cover every cell and every page button: the header «Правила» and the settings button, the summary button, the three size buttons, the four level buttons, the three theme options, the two language options, the close button «Закрити» of the settings panel, the start button «Почати» and the close button «Закрити» of the setup sheet, «Підказка», «Скинути», «Нова головоломка», «Зрозуміло», «Так, почати» and «Скасувати», all of them `<button>` elements. The `.cell:focus-visible` rule SHALL declare `outline-offset: 2px`, `position: relative` and `z-index` of at least 1, so the 3px ring is drawn outside the cell (the cell's own border, the violation cue included, stays visible), the 2px gap between cells shows the page colour on the ring's inner side, the ring's outer edge lands on a neighbour's fill (the pairs `--color-focus` against cell, given and violation fills, 6.70, 5.41 and 4.63 with the design's values) and the ring is not covered by neighbouring cells; the trade-off is that the ring covers the border of a neighbour on that side while the cell is focused. The `button:focus-visible` rule SHALL declare a positive `outline-offset`. No rule SHALL remove the outline: no declaration `outline: none`, `outline: 0`, `outline-style: none` or `outline-width: 0` exists in the file. The stylesheet SHALL NOT contain `!important`, and SHALL NOT contain `:has(` except in the one selector that hides the idle line: exactly one rule contains `:has(`, the subject of its selector is `.message-idle`, and it declares nothing but `display: none` (FR-71: the idle line is hidden by CSS only, and only `:has` can reach a previous sibling; FR-68 fixes the order idle, hint, win). Where a browser does not know `:has` (Firefox 114 to 120, the Vite 8 build target of `docs/frontend-conventions.md` rule 20) the idle line stays visible next to a message and nothing else depends on the rule. This is the one exception that FR-65 allows. CSS nesting, media queries and `@layer` are allowed by that rule; the test reads them all. The open setup sheet SHALL keep a keyboard-focused control clear of its sticky footer row (FR-65 "unobscured", WCAG 2.4.11): the open sheet declares a `scroll-padding-bottom` of at least the footer height, so the browser's own focus scrolling brings a focused option above the footer (second review-gate fix round, 2026-10-10, autonomy-log row 126).
 
-Traces: FR-65, FR-87, FR-95, FR-97, FR-101, FR-102, FR-117
+Traces: FR-65, FR-87, FR-95, FR-97, FR-101, FR-102, FR-117, FR-107
 
 #### Scenario: Focus-visible rules exist for the cell and the button
 
@@ -1624,7 +1721,7 @@ Traces: FR-65, FR-87, FR-95, FR-97, FR-101, FR-102, FR-117
 #### Scenario: Every page button is a button element
 
 - **GIVEN** the page has just been mounted
-- **WHEN** the test reads `[data-action="rules"]`, the summary button `[data-action="setup"]`, the three size `button[role="radio"]` and the four level `button[role="radio"]` (FR-87), the three theme `button[role="radio"]` (FR-102), the settings button `[data-action="settings"]`, the close button `[data-action="settings-close"]`, the start button `[data-action="setup-start"]`, the close button `[data-action="setup-close"]`, `[data-action="hint"]`, `[data-action="reset"]`, `[data-action="new"]`, the close button of `[data-section="rules"]`, `[data-confirm="yes"]`, `[data-confirm="no"]` and every `[data-cell]`
+- **WHEN** the test reads `[data-action="rules"]`, the summary button `[data-action="setup"]`, the three size `button[role="radio"]` and the four level `button[role="radio"]` (FR-87), the three theme `button[role="radio"]` (FR-102), the two language `button[role="radio"]` (FR-107), the settings button `[data-action="settings"]`, the close button `[data-action="settings-close"]`, the start button `[data-action="setup-start"]`, the close button `[data-action="setup-close"]`, `[data-action="hint"]`, `[data-action="reset"]`, `[data-action="new"]`, the close button of `[data-section="rules"]`, `[data-confirm="yes"]`, `[data-confirm="no"]` and every `[data-cell]`
 - **THEN** each of them is a `button` element, so `button:focus-visible` (and `.cell:focus-visible` for the cells) applies to it
 
 #### Scenario: Nothing removes the outline
@@ -1751,9 +1848,9 @@ Traces: FR-72, TC-14, FR-117
 
 ### Requirement: Summary button
 
-The page SHALL show, in the place of the size control in the page order (FR-68), one button `[data-action="setup"]` with `type="button"` and a `popovertarget` attribute equal to the `id` of the setup sheet, so that it opens the sheet with no script (FR-95, A-40). The button SHALL hold three children in this order: a visually hidden prefix span with the text `Поле і складність: ` (ending in one ordinary space), a text span with the visible text `N×N · Name` for the size and the level of the board shown (the separator is « · », an ordinary space, U+00B7 and an ordinary space), for example `6×6 · Задачка`, and a decorative span `aria-hidden="true"` with the cue `▾`. At mount the visible text is `6×6 · Розминка`. The visible text SHALL be rewritten after every board that is shown (the mount, a performed «Почати», «Нова головоломка»; a reset shows the same size and level and leaves the text as it is, as «Reset button» says) and after nothing else: marking a size or a level (FR-100), a cancelled confirmation, a failed generation, the press of an unavailable level and the opening or closing of the sheet leave it as it was. The summary shows the board shown, never the marked choice (FR-95). The accessible name of the button is its text content without `aria-hidden` descendants, that is the prefix followed by the visible text, for example `Поле і складність: 6×6 · Задачка`; the button SHALL NOT carry `aria-label`, `aria-labelledby`, `aria-haspopup`, `aria-expanded` or `tabindex` (A-41, A-43: browsers expose the open state of a `popovertarget` button natively). The height of the button (44 CSS px) and the look of the cue are layout and are covered by the held NFR-12 and NFR-14, see `docs/requirements-held.md`. The names of the size and the level in the text come from `src/ui/strings.ts`.
+The page SHALL show, in the place of the size control in the page order (FR-68), one button `[data-action="setup"]` with `type="button"` and a `popovertarget` attribute equal to the `id` of the setup sheet, so that it opens the sheet with no script (FR-95, A-40). The button SHALL hold three children in this order: a visually hidden prefix span with the text `Поле і складність: ` (ending in one ordinary space), a text span with the visible text `N×N · Name` for the size and the level of the board shown (the separator is « · », an ordinary space, U+00B7 and an ordinary space), for example `6×6 · Задачка`, and a decorative span `aria-hidden="true"` with the cue `▾`. At mount the visible text is `6×6 · Розминка`. The visible text SHALL be rewritten after every board that is shown (the mount, a performed «Почати», «Нова головоломка»; a reset shows the same size and level and leaves the text as it is, as «Reset button» says) and after nothing else except a language switch (FR-108), which changes its text, never its size or level: marking a size or a level (FR-100), a cancelled confirmation, a failed generation, the press of an unavailable level and the opening or closing of the sheet leave it as it was. The summary shows the board shown, never the marked choice (FR-95). The accessible name of the button is its text content without `aria-hidden` descendants, that is the prefix followed by the visible text, for example `Поле і складність: 6×6 · Задачка`; the button SHALL NOT carry `aria-label`, `aria-labelledby`, `aria-haspopup`, `aria-expanded` or `tabindex` (A-41, A-43: browsers expose the open state of a `popovertarget` button natively). The height of the button (44 CSS px) and the look of the cue are layout and are covered by the held NFR-12 and NFR-14, see `docs/requirements-held.md`. The names of the size and the level in the text come from `src/ui/strings.ts`. In English mode the hidden prefix is `Grid and difficulty: ` and the visible text uses the English level names, for example `6×6 · Teaser` (FR-111); the text and the accessible name follow the page language.
 
-Traces: FR-95, NFR-5, NFR-9, FR-100, FR-101
+Traces: FR-95, NFR-5, NFR-9, FR-100, FR-101, FR-108, FR-111
 
 #### Scenario: Summary button structure at mount
 
@@ -1768,6 +1865,12 @@ Traces: FR-95, NFR-5, NFR-9, FR-100, FR-101
 - **GIVEN** the page has just been mounted
 - **WHEN** the test computes the text content of the button without its `aria-hidden` descendants
 - **THEN** it equals `Поле і складність: 6×6 · Розминка`, matches `/\p{Script=Cyrillic}/u` and does not match `/[A-Za-z]/`
+
+#### Scenario: The summary in English mode and across a switch
+
+- **GIVEN** a mounted 6×6 board at «Задачка» in Ukrainian mode whose summary reads `6×6 · Задачка`
+- **WHEN** the player presses "English"
+- **THEN** the hidden prefix is `Grid and difficulty: `, the visible text is `6×6 · Teaser`, the accessible name is `Grid and difficulty: 6×6 · Teaser`, and the board, the size and the level are unchanged
 
 #### Scenario: The summary follows every shown board
 
@@ -1801,11 +1904,11 @@ Traces: FR-95, NFR-5, NFR-9, FR-100, FR-101
 
 ### Requirement: Setup sheet
 
-The page SHALL contain, created once at mount, a setup sheet `[data-section="setup"]` (FR-96, A-40): an element with the `popover` attribute and `role="dialog"`, with the Ukrainian `aria-label` «Поле і складність», with an `id` that is unique in the document (it ends in a number that belongs to the mount, like the other ids), and with no `aria-labelledby` and no heading element (A-41). It SHALL sit inside the page root and outside the element that holds the board, follow the rules panel in document order and precede the confirmation dialog, need no new dependency and hold, in this order: the size control `[data-control="size"]` (see «Grid size selector»), the level control `[data-control="level"]` (see «Level selector»; it contains the reason line `[data-level-reason]` first, see «Only the first level exists at 4x4»), the start button `[data-action="setup-start"]` «Почати» (see «Start button») and the close button `[data-action="setup-close"]` with the text «Закрити», `type="button"`, `popovertarget` equal to the sheet's `id` and `popovertargetaction="hide"`. The sheet SHALL be the same element, with the same children, after a hint, a win, a reset, «Нова головоломка» and a press of «Почати» (only the attributes and texts that those requirements define change). Where the sheet is drawn (a bottom sheet on phones, a centred panel from 48rem), the footer drawing and the 44 px targets and its look are layout and are covered by the held NFR-10, NFR-12 and NFR-14, see `docs/requirements-held.md`; nothing here claims them.
+The page SHALL contain, created once at mount, a setup sheet `[data-section="setup"]` (FR-96, A-40): an element with the `popover` attribute and `role="dialog"`, with the `aria-label` «Поле і складність» ("Grid and difficulty" in English mode, FR-111), with an `id` that is unique in the document (it ends in a number that belongs to the mount, like the other ids), and with no `aria-labelledby` and no heading element (A-41). It SHALL sit inside the page root and outside the element that holds the board, follow the rules panel in document order and precede the confirmation dialog, need no new dependency and hold, in this order: the size control `[data-control="size"]` (see «Grid size selector»), the level control `[data-control="level"]` (see «Level selector»; it contains the reason line `[data-level-reason]` first, see «Only the first level exists at 4x4»), the start button `[data-action="setup-start"]` «Почати» (see «Start button») and the close button `[data-action="setup-close"]` with the text «Закрити», `type="button"`, `popovertarget` equal to the sheet's `id` and `popovertargetaction="hide"`. The sheet SHALL be the same element, with the same children, after a hint, a win, a reset, «Нова головоломка» and a press of «Почати» (only the attributes and texts that those requirements define change). Where the sheet is drawn (a bottom sheet on phones, a centred panel from 48rem), the footer drawing and the 44 px targets and its look are layout and are covered by the held NFR-10, NFR-12 and NFR-14, see `docs/requirements-held.md`; nothing here claims them.
 
 Reading rule and test contract (A-44). jsdom has no `popover` support: tests install stubs for `showPopover`, `hidePopover` and `togglePopover` on `HTMLElement.prototype` that record each call and keep an open or closed state per element, and remove them after each test; the stub of `hidePopover` closes the state and dispatches no event, and a `toggle` event is dispatched by the test itself (an `Event` of type `toggle` with a `newState` property set to `closed` or `open`). The opening of the sheet by the summary button is native and not tested in jsdom: a test opens the sheet by calling the stubbed `showPopover()` on it. **Reading rule for choices (A-44, A-47).** The verb **«chooses»** (in a requirement this change does not modify also «presses», «selects», «changes the size to N» or «changes the level to X» followed by an effect on the board, the seed source, the generator, the dialog, the messages or the summary; the list is in `design.md`) means a **choice**: the test first opens the sheet this way, presses the option (which only marks, FR-100), presses «Почати», and, where the scenario confirms, `[data-confirm="yes"]`. «A size change» and «a level change» mean a board shown by such a choice. A choice of the size and level already shown is therefore not a no-op: it makes one new puzzle like «Нова головоломка». The verbs «marks» and «makes a marking press», and every use of «presses» that carries the note «(a marking press)» or «(marking presses)», mean one press on the option and no «Почати»; so do the scenarios that say a press «does nothing». `aria-checked` read after a choice is read with the sheet closed, that is on the board shown (A-47). A generator that "throws" in a scenario throws an ordinary `Error`, not the run-out error of the engine, unless the scenario says run-out.
 
-Traces: FR-96, FR-95, FR-97, FR-94, NFR-5, NFR-9, FR-100, FR-101
+Traces: FR-96, FR-95, FR-97, FR-94, NFR-5, NFR-9, FR-100, FR-101, FR-111
 
 #### Scenario: Sheet structure at mount
 
@@ -1827,6 +1930,12 @@ Traces: FR-96, FR-95, FR-97, FR-94, NFR-5, NFR-9, FR-100, FR-101
 - **WHEN** the test reads `[data-action="setup-close"]`
 - **THEN** it is a `button` with `type="button"`, the text «Закрити», `popovertarget` equal to the sheet's `id` and `popovertargetaction="hide"`, and no `tabindex`
 - **AND** the sheet holds exactly nine buttons in all: the three size buttons, the four level buttons, «Почати» and the close button
+
+#### Scenario: The sheet is named in the page language
+
+- **GIVEN** the page in English mode
+- **WHEN** the test reads `[data-section="setup"]` and `[data-action="setup-start"]` and `[data-action="setup-close"]`
+- **THEN** the sheet's `aria-label` is "Grid and difficulty", the texts are "Start" and "Close", and the sheet has no `aria-labelledby`
 
 #### Scenario: The sheet opens and closes with no script
 
@@ -1963,11 +2072,11 @@ Traces: FR-98, FR-90, FR-97, FR-101, FR-100
 
 ### Requirement: Level selector
 
-The setup sheet SHALL contain a level control `[data-control="level"]` after the size control (FR-44, FR-87): an element with `role="radiogroup"` and the accessible name «Складність» (`aria-label`, no visible label, as FR-62), holding exactly four `<button type="button" role="radio">` elements for the levels 1, 2, 3 and 4, in this order, with the names «Розминка», «Задачка», «Головоломка» and «Мозколамка». While the sheet is open the button of the **marked** level SHALL have `aria-checked="true"` and the other three `aria-checked="false"`; while the sheet is closed `aria-checked="true"` is on the level of the board shown (FR-87, FR-100, A-47); «Розминка» is selected when the page is mounted (FR-88). A level button SHALL NOT carry `aria-label`, `aria-labelledby` or `aria-describedby`, SHALL NOT have the `disabled` attribute or a `tabindex` attribute, and is operated by a click (the native activation of Enter and Space); arrow keys are not required and not handled (A-24, FR-59). No text of the page shows «Складність», and the page has no `label` element for the control. The page reads a level only from the four buttons, never from a free value. The content of a level button is specified by «Level option content».
+The setup sheet SHALL contain a level control `[data-control="level"]` after the size control (FR-44, FR-87): an element with `role="radiogroup"` and the accessible name «Складність» (`aria-label`, no visible label, as FR-62), holding exactly four `<button type="button" role="radio">` elements for the levels 1, 2, 3 and 4, in this order, with the names «Розминка», «Задачка», «Головоломка» and «Мозколамка» ("Warm-up", "Teaser", "Puzzler", "Brain-twister" in English mode, FR-111); the group name «Складність» is "Difficulty" in English mode. While the sheet is open the button of the **marked** level SHALL have `aria-checked="true"` and the other three `aria-checked="false"`; while the sheet is closed `aria-checked="true"` is on the level of the board shown (FR-87, FR-100, A-47); «Розминка» is selected when the page is mounted (FR-88). A level button SHALL NOT carry `aria-label`, `aria-labelledby` or `aria-describedby`, SHALL NOT have the `disabled` attribute or a `tabindex` attribute, and is operated by a click (the native activation of Enter and Space); arrow keys are not required and not handled (A-24, FR-59). No text of the page shows «Складність», and the page has no `label` element for the control. The page reads a level only from the four buttons, never from a free value. The content of a level button is specified by «Level option content».
 
 **One press of an available level button only marks that level** (FR-73, FR-100): it starts no puzzle, takes no seed, calls no generator, opens no dialog and does not close the sheet. A new puzzle of the marked size and the marked level is started only by «Почати» (FR-101): the page SHALL take a new seed from the seed source, call the generator as `generate(size, seed, level)`, the three-argument form of the engine generator (FR-13, FR-81), render the new board, update the summary, and clear the hint message, the win message, all highlights that belonged to the old board and the `cell-hinted` marker. When the board has player entries the page SHALL first close the sheet and ask for confirmation and start the new puzzle only after «Так, почати» (FR-90, FR-98). A level choice SHALL NOT change the size. A run-out of the generator is retried with the next seed (FR-88, see «Page retry on a run-out»). If the generator fails in any other way, or the returned `puzzle.givens` is not n rows of n cells, or every retry ran out, the page SHALL keep the previous board, messages, highlights, `cell-hinted`, size and level, with `aria-checked` and the summary unchanged and no uncaught error; the page shows no error text for it, and the sheet is closed (FR-97). The page MUST NOT remember the level: a reload or a new mount starts at «Розминка» (TC-12, FR-88). Pressing the button of the level already shown or already marked is specified by «Pressing the shown size changes nothing» (FR-73); whether the pressed level exists at the size shown by «Only the first level exists at 4x4». Layout of the control, wrapping, 44 px targets and the one-screen fit are not claimed here: held NFR-10, NFR-12 and NFR-14, see `docs/requirements-held.md`.
 
-Traces: FR-44, FR-87, FR-88, FR-97, NFR-9, NFR-5, FR-73, FR-100, FR-101
+Traces: FR-44, FR-87, FR-88, FR-97, NFR-9, NFR-5, FR-73, FR-100, FR-101, FR-111
 
 #### Scenario: Level control structure and default
 
@@ -2051,7 +2160,7 @@ Traces: FR-44, FR-87, FR-88, FR-97, NFR-9, NFR-5, FR-73, FR-100, FR-101
 
 ### Requirement: Level option content
 
-Each level button inside the sheet SHALL be one `button[role="radio"]` whose content is two spans separated by one ordinary space (a text node): a name span with the level name and a description span with the level description (FR-99, FR-89). There is no persistent description line on the page body, no `[data-level-description]` and no toast: the descriptions live only in the buttons. Each span is plain text with no `id`, and the button has no other child element: the radio ring that marks the checked state is drawn by the stylesheet (a pseudo-element), not by an extra element. The accessible name of a level button is therefore its name followed by one space and its description (A-42). Each description SHALL be one sentence (exactly one terminal mark at the end, no other sentence break) of at most 80 characters, and is the final wording of the user (autonomy-log rows 89 and 90). The descriptions are:
+Each level button inside the sheet SHALL be one `button[role="radio"]` whose content is two spans separated by one ordinary space (a text node): a name span with the level name and a description span with the level description (FR-99, FR-89). There is no persistent description line on the page body, no `[data-level-description]` and no toast: the descriptions live only in the buttons. Each span is plain text with no `id`, and the button has no other child element: the radio ring that marks the checked state is drawn by the stylesheet (a pseudo-element), not by an extra element. The accessible name of a level button is therefore its name followed by one space and its description (A-42). Each description SHALL be one sentence (exactly one terminal mark at the end, no other sentence break) of at most 80 characters, and is the final wording of the user (autonomy-log rows 89 and 90); the English descriptions of «English page text» are subject to the same limits (one sentence, at most 80 characters, measured by a test; FR-89, FR-111). The Ukrainian descriptions are:
 
 | Level | Name | Description |
 |-------|------|-------------|
@@ -2060,7 +2169,7 @@ Each level button inside the sheet SHALL be one `button[role="radio"]` whose con
 | 3 | `Головоломка` | `Додатково треба порівнювати рядки і стовпці: двох однакових не буває.` |
 | 4 | `Мозколамка` | `Додатково треба пробувати хід наперед: якщо правило порушиться, тут інша цифра.` |
 
-Traces: FR-99, FR-89, FR-87, FR-94, NFR-4, NFR-5
+Traces: FR-99, FR-89, FR-87, FR-94, NFR-4, NFR-5, FR-111
 
 #### Scenario: Name and description in each button
 
@@ -2081,6 +2190,13 @@ Traces: FR-99, FR-89, FR-87, FR-94, NFR-4, NFR-5
 - **WHEN** the test measures each (`string.length`) and applies `/^[^.!?…]+\.$/`, the Cyrillic check and the Latin check
 - **THEN** every description has at most 80 characters, matches the pattern and the Cyrillic check, and does not match `/[A-Za-z]/`
 
+#### Scenario: Every English description is one sentence of at most 80 characters
+
+- **GIVEN** the four English level names and descriptions of «English page text» (Warm-up, Teaser, Puzzler, Brain-twister)
+- **WHEN** the test measures each description (`string.length`) and applies `/^[^.!?…]+\.$/` and the Latin and Cyrillic checks
+- **THEN** every description has at most 80 characters, matches the pattern and `/[A-Za-z]/`, and does not match `/\p{Script=Cyrillic}/u`
+- **AND** in English mode each level button holds a name span and a description span with one ordinary space between them, with these texts
+
 #### Scenario: The description does not move with a pending press
 
 - **GIVEN** a 6×6 board with player entries and the level «Розминка»
@@ -2089,9 +2205,9 @@ Traces: FR-99, FR-89, FR-87, FR-94, NFR-4, NFR-5
 
 ### Requirement: Only the first level exists at 4x4
 
-The page SHALL, while the **marked size** is 4×4 (while the sheet is closed, the size of the board shown), keep the level control visible inside the sheet with «Розминка» marked and SHALL give the buttons «Задачка», «Головоломка» and «Мозколамка» `aria-checked="false"` and `aria-disabled="true"` (FR-91, FR-44, A-34, FR-100): they are focusable and readable like the given cells (FR-69), so they have no `disabled` attribute and no `tabindex`. «Розминка» has no `aria-disabled` attribute. Pressing an unavailable level button SHALL do nothing at all (FR-73, FR-97): no dialog, no new puzzle, no seed taken, no generator call, the sheet stays open, focus stays on the button, and the board, both messages, the highlights, `aria-checked` of both groups, the summary and `cell-hinted` are unchanged. The level control SHALL hold a reason line `[data-level-reason]` as its first child, before the four buttons (FR-91 "in the level group"; the designer's iteration 10 puts it there): a `p` of plain text with no `role` and no `id`, present at every size, which while the marked size is 4×4 has no `hidden` attribute and the text `Для поля 4×4 є лише рівень «Розминка».` (the guillemets inside the code span are part of the text; signed wording, autonomy-log row 101; one sentence, NFR-4), and which at 6×6 and 8×8 has the `hidden` attribute and empty text content (the `hidden` mechanism is spec-made). The reason is not on the page body. The radiogroup thus holds one non-radio child; the four radio buttons are still exactly four, and the arrangement is confirmed against the signed review set in task 1.4 of this change. Marking 4×4 sets the marked level to «Розминка». As soon as the marked size is 6×6 or 8×8 (a 6×6 or 8×8 board is shown, or the sheet marks one of them), the three buttons lose `aria-disabled` and the reason is hidden, and «Розминка» stays the marked level: the page does not restore an earlier marked level. `aria-disabled` is set only on the buttons of levels the shown size does not offer. After a «Почати» whose generation fails the previous board stays, the sheet is closed, and the state of the buttons is that of the board shown. An unavailable level is marked by a cue that is not colour alone (FR-91; the stylesheet requirement «The summary and level buttons set their own colours» pins a non-colour declaration).
+The page SHALL, while the **marked size** is 4×4 (while the sheet is closed, the size of the board shown), keep the level control visible inside the sheet with «Розминка» marked and SHALL give the buttons «Задачка», «Головоломка» and «Мозколамка» `aria-checked="false"` and `aria-disabled="true"` (FR-91, FR-44, A-34, FR-100): they are focusable and readable like the given cells (FR-69), so they have no `disabled` attribute and no `tabindex`. «Розминка» has no `aria-disabled` attribute. Pressing an unavailable level button SHALL do nothing at all (FR-73, FR-97): no dialog, no new puzzle, no seed taken, no generator call, the sheet stays open, focus stays on the button, and the board, both messages, the highlights, `aria-checked` of both groups, the summary and `cell-hinted` are unchanged. The level control SHALL hold a reason line `[data-level-reason]` as its first child, before the four buttons (FR-91 "in the level group"; the designer's iteration 10 puts it there): a `p` of plain text with no `role` and no `id`, present at every size, which while the marked size is 4×4 has no `hidden` attribute and the text `Для поля 4×4 є лише рівень «Розминка».` (in English mode the text is `The 4×4 grid has only the “Warm-up” level.`; the guillemets inside the code span are part of the text; signed wording, autonomy-log row 101; one sentence, NFR-4), and which at 6×6 and 8×8 has the `hidden` attribute and empty text content (the `hidden` mechanism is spec-made). The reason is not on the page body. The radiogroup thus holds one non-radio child; the four radio buttons are still exactly four, and the arrangement is confirmed against the signed review set in task 1.4 of this change. Marking 4×4 sets the marked level to «Розминка». As soon as the marked size is 6×6 or 8×8 (a 6×6 or 8×8 board is shown, or the sheet marks one of them), the three buttons lose `aria-disabled` and the reason is hidden, and «Розминка» stays the marked level: the page does not restore an earlier marked level. `aria-disabled` is set only on the buttons of levels the shown size does not offer. After a «Почати» whose generation fails the previous board stays, the sheet is closed, and the state of the buttons is that of the board shown. An unavailable level is marked by a cue that is not colour alone (FR-91; the stylesheet requirement «The summary and level buttons set their own colours» pins a non-colour declaration).
 
-Traces: FR-91, FR-44, FR-97, FR-99, NFR-9, NFR-5, FR-100
+Traces: FR-91, FR-44, FR-97, FR-99, NFR-9, NFR-5, FR-100, FR-111
 
 #### Scenario: The 4x4 state of the level control follows the marked size
 
@@ -2328,9 +2444,9 @@ Traces: FR-77, FR-39, FR-40
 
 ### Requirement: Ukrainian texts of the summary, the setup sheet, the level control and the techniques section
 
-Every text that the summary button, the setup sheet, the level control and the techniques section of the rules panel show or expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5, FR-94). This covers the summary's visible text and its accessible name, the visually hidden prefix, the sheet's `aria-label` «Поле і складність», the start button «Почати», the close button «Закрити», the group name «Складність», the four level names and four descriptions of «Level option content», the 4×4 reason of «Only the first level exists at 4x4», the techniques heading «Складніші прийоми», the three techniques items of «Rules panel» and any `aria-label`, `title`, `alt` or `label` attribute among them. «×», «·», «▾» and digits are not Latin letters. The 4×4 reason and the techniques items are each exactly one sentence (NFR-4, by analogy; the signed NFR-4 covers hint sentences only). By the user's code-organisation decision of 2026-10-05 these texts (the summary format parts, the visually hidden prefix, the sheet's label, the start label, the close label, the group name, the four names, the four descriptions, the 4×4 reason, the techniques heading and its three items) are kept in `src/ui/strings.ts`, and no other file of `src/ui/` and no `src/main.ts` holds a Cyrillic character; the source scan of «Ukrainian texts of the header, rules panel and idle line» guards it.
+In Ukrainian mode every text that the summary button, the setup sheet, the level control and the techniques section of the rules panel show or expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5, FR-94); in English mode each is the English counterpart of «English page text» and contains Latin letters and no Cyrillic letters. This covers the summary's visible text and its accessible name, the visually hidden prefix, the sheet's `aria-label` «Поле і складність», the start button «Почати», the close button «Закрити», the group name «Складність», the four level names and four descriptions of «Level option content», the 4×4 reason of «Only the first level exists at 4x4», the techniques heading «Складніші прийоми», the three techniques items of «Rules panel» and any `aria-label`, `title`, `alt` or `label` attribute among them. «×», «·», «▾» and digits are not Latin letters. The 4×4 reason and the techniques items are each exactly one sentence (NFR-4, by analogy; the signed NFR-4 covers hint sentences only). By the user's code-organisation decision of 2026-10-05 these texts (the summary format parts, the visually hidden prefix, the sheet's label, the start label, the close label, the group name, the four names, the four descriptions, the 4×4 reason, the techniques heading and its three items) are kept in `src/ui/strings.ts`, and no other file of `src/ui/` and no `src/main.ts` holds a Cyrillic character; the source scan of «Ukrainian texts of the header, rules panel and idle line» guards it.
 
-Traces: NFR-5, NFR-4, FR-94, FR-95, FR-96, FR-87, FR-89, FR-91, FR-93, FR-101
+Traces: NFR-5, NFR-4, FR-94, FR-95, FR-96, FR-87, FR-89, FR-91, FR-93, FR-101, FR-111
 
 #### Scenario: The new texts are Ukrainian
 
@@ -2338,6 +2454,13 @@ Traces: NFR-5, NFR-4, FR-94, FR-95, FR-96, FR-87, FR-89, FR-91, FR-93, FR-101
 - **WHEN** the test collects the text nodes of the summary button (without `aria-hidden` descendants), of the sheet and of the techniques section, the `aria-label` of the sheet and of the level control, and every `title`, `alt` and `label` attribute inside them
 - **THEN** the collection contains `Поле і складність: `, `6×6 · Розминка`, «Поле і складність», «Почати», «Закрити», «Складність», the four level names, the four descriptions, `Для поля 4×4 є лише рівень «Розминка».`, «Складніші прийоми» and the three techniques items of «Rules panel»
 - **AND** every collected text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
+
+#### Scenario: The English texts of the summary, the sheet, the levels and the techniques
+
+- **GIVEN** the page in English mode at 6×6, and the same page after the board 4×4 is shown
+- **WHEN** the test collects the text nodes of the summary button (without `aria-hidden` descendants), of the sheet and of the techniques section, and the `aria-label` of the sheet and of the level control
+- **THEN** the collection contains `Grid and difficulty: `, `6×6 · Warm-up`, "Grid and difficulty", "Start", "Close", "Difficulty", the four level names and descriptions, `The 4×4 grid has only the “Warm-up” level.`, "Harder techniques" and the three English techniques items
+- **AND** every collected text matches `/[A-Za-z]/` and none matches `/\p{Script=Cyrillic}/u`
 
 #### Scenario: The techniques items and the reason are one sentence each
 
@@ -2593,9 +2716,9 @@ Traces: NFR-13, FR-100, FR-101
 
 ### Requirement: Settings button and panel
 
-The page header SHALL hold, between the title and the button «Правила» (document order: the heading, then `[data-action="settings"]`, then `[data-action="rules"]`), a settings button `[data-action="settings"]` with `type="button"`, whose only child is one decorative inline `svg` (a drawn gear, `aria-hidden="true"`, no text), with the accessible name «Налаштування» given by its `aria-label` and a `popovertarget` equal to the `id` of the settings panel, so that it opens the panel with no script (FR-68, FR-117, signed wireframe Topic 3 B, autonomy-log row 120). The button carries no `aria-haspopup`, `aria-expanded` or `tabindex`. The settings panel `[data-section="settings"]` SHALL be created once at mount, inside the page root and outside the header, the board and the message area; it is an element with the `popover` attribute (`popover="auto"`) and `role="dialog"`, with the `aria-label` «Налаштування», no `aria-labelledby`, and an `id` that ends in a number belonging to the mount (the fifth id of the mount, A-41 amended). It holds, in this order: the visible plain-text label «Тема» and the theme control `[data-control="theme"]` (see «Theme control»), and a close button `[data-action="settings-close"]` with the text «Закрити», `type="button"`, `popovertarget` equal to the panel's `id` and `popovertargetaction="hide"`. `add-english-version` adds the label «Мова» and the language control between the theme control and the close button. The panel follows the message area in document order and precedes `[data-dialog="confirm"]`; it is outside the sequence of «Page document order». Escape, a click outside the panel (the light dismiss) and the close button close it natively; the page adds no key handler and no focus handling for it (FR-59). The panel is the same element, with the same children, after a hint, a win, a reset, «Нова головоломка», a press of «Почати» and a theme press. Where the button is drawn, the bottom sheet on the phone and the panel under the header at the right on tablet and desktop, the gear's drawing and the 44 px sizes are layout, covered by NFR-12 (see «The theme options meet the touch-target floor») and the held NFR-14 (`review-set-13`). The hooks `[data-action="settings"]`, `[data-section="settings"]` and `[data-action="settings-close"]` are spec-made proxies, to confirm against the signed review set (task 1.4).
+The page header SHALL hold, between the title and the button «Правила» (document order: the heading, then `[data-action="settings"]`, then `[data-action="rules"]`), a settings button `[data-action="settings"]` with `type="button"`, whose only child is one decorative inline `svg` (a drawn gear, `aria-hidden="true"`, no text), with the accessible name «Налаштування» ("Settings" in English mode) given by its `aria-label` and a `popovertarget` equal to the `id` of the settings panel, so that it opens the panel with no script (FR-68, FR-117, signed wireframe Topic 3 B, autonomy-log row 120). The button carries no `aria-haspopup`, `aria-expanded` or `tabindex`. The settings panel `[data-section="settings"]` SHALL be created once at mount, inside the page root and outside the header, the board and the message area; it is an element with the `popover` attribute (`popover="auto"`) and `role="dialog"`, with the `aria-label` «Налаштування» ("Settings" in English mode), no `aria-labelledby`, and an `id` that ends in a number belonging to the mount (the fifth id of the mount, A-41 amended). It holds, in this order: the visible plain-text label «Тема» and the theme control `[data-control="theme"]` (see «Theme control»), the visible plain-text label «Мова» and the language control `[data-control="language"]` (see «Language control»), and a close button `[data-action="settings-close"]` with the text «Закрити», `type="button"`, `popovertarget` equal to the panel's `id` and `popovertargetaction="hide"`. The panel follows the message area in document order and precedes `[data-dialog="confirm"]`; it is outside the sequence of «Page document order». Escape, a click outside the panel (the light dismiss) and the close button close it natively; the page adds no key handler and no focus handling for it (FR-59). The panel is the same element, with the same children, after a hint, a win, a reset, «Нова головоломка», a press of «Почати», a theme press and a language press. Where the button is drawn, the bottom sheet on the phone and the panel under the header at the right on tablet and desktop, the gear's drawing and the 44 px sizes are layout, covered by NFR-12 (see «The theme options meet the touch-target floor») and the held NFR-14 (`review-set-13`). The hooks `[data-action="settings"]`, `[data-section="settings"]` and `[data-action="settings-close"]` are spec-made proxies, to confirm against the signed review set (task 1.4).
 
-Traces: FR-68, FR-102, FR-117, NFR-9
+Traces: FR-68, FR-102, FR-117, NFR-9, FR-107, FR-111
 
 #### Scenario: Settings button and panel at mount
 
@@ -2603,7 +2726,7 @@ Traces: FR-68, FR-102, FR-117, NFR-9
 - **WHEN** the test reads `[data-action="settings"]` and `[data-section="settings"]`
 - **THEN** exactly one of each exists in the root; the button is a `button` with `type="button"`, `aria-label` equal to «Налаштування», `popovertarget` equal to the panel's `id`, no `aria-haspopup`, `aria-expanded` or `tabindex`, and exactly one child element, an `svg` with `aria-hidden="true"` and no text node
 - **AND** the panel has the `popover` attribute, `role="dialog"`, `aria-label` equal to «Налаштування», no `aria-labelledby`, a non-empty `id`, is not inside the `header`, `[data-board]` or the message area, follows the message area and precedes `[data-dialog="confirm"]`
-- **AND** its element children, in order, are a plain-text element with the text «Тема», `[data-control="theme"]` and `[data-action="settings-close"]`
+- **AND** its element children, in order, are a plain-text element with the text «Тема», `[data-control="theme"]`, a plain-text element with the text «Мова», `[data-control="language"]` and `[data-action="settings-close"]`
 
 #### Scenario: The header fits its column on phones
 
@@ -2612,11 +2735,23 @@ Traces: FR-68, FR-102, FR-117, NFR-9
 - **THEN** every child lies inside the header (within 0.5 px) and the scroll width is at most the viewport width (no sideways scroll, `docs/frontend-conventions.md` rule 18, A-14)
 - **AND** coverage is sampled; the stricter instrument is the 1 px sweep of 320 to 800 px (`docs/qa/add-theme-switch/header-sweep-run.txt`). Up to 30rem the title is 1.75rem and the logo 2.75rem (the design's phone rule); up to 22.5rem the title is 1.5rem, the «Правила» padding `0 0.625rem` (both the design's small-phone rule) and the gaps 0.375rem, a deliberate step under the design's 0.5rem: with 0.5rem gaps «Правила» still overflowed by up to 2.8 px at 320 to 322 px
 
+#### Scenario: A remount on the same root replaces the previous mount
+
+- **GIVEN** a `matchMedia` stub that does not match and a page mounted on a root (added in the first review-gate fix round of `add-english-version`: the page attaches its content to the root last, so the previous mount's controls are still connected while a remount runs)
+- **WHEN** the page is mounted again on the same root and the player presses "English"
+- **THEN** the stub holds one `change` listener (the replaced mount's listener was removed at the remount), and the replaced mount's language control is not rendered again (its "English" option keeps `aria-checked="false"`)
+
 #### Scenario: The close button
 
 - **GIVEN** the page has just been mounted
 - **WHEN** the test reads `[data-action="settings-close"]`
 - **THEN** it is a `button` with `type="button"`, the text «Закрити», `popovertarget` equal to the panel's `id`, `popovertargetaction="hide"` and no `tabindex`
+
+#### Scenario: The settings button and panel are named in English
+
+- **GIVEN** the page in English mode
+- **WHEN** the test reads `[data-action="settings"]`, `[data-section="settings"]` and the labels in the panel
+- **THEN** the button's and the panel's `aria-label` are "Settings", the labels read "Theme" and "Language", and the close button reads "Close"
 
 #### Scenario: The panel opens and closes with no script
 
@@ -2639,14 +2774,14 @@ Traces: FR-68, FR-102, FR-117, NFR-9
 #### Scenario: The panel survives every action
 
 - **GIVEN** a mounted page with a fixture puzzle, the panel element and its children read at mount
-- **WHEN** the player presses «Підказка», reaches a win, presses «Скинути», «Нова головоломка», chooses a size and a level, and presses a theme option (each from a freshly mounted page, confirmed where asked)
-- **THEN** after each action there is exactly one `[data-section="settings"]`, it is the same element as at mount, with the same three children
+- **WHEN** the player presses «Підказка», reaches a win, presses «Скинути», «Нова головоломка», chooses a size and a level, presses a theme option and presses the language option that is not shown (each from a freshly mounted page, confirmed where asked)
+- **THEN** after each action there is exactly one `[data-section="settings"]`, it is the same element as at mount, with the same five children
 
 ### Requirement: Theme control
 
-The page SHALL offer a theme control `[data-control="theme"]` (FR-102): an element with `role="radiogroup"` and the accessible name «Тема» (`aria-label`), holding exactly three `<button type="button" role="radio">` elements in this order, labelled «Світла», «Темна» and «Як у системі» (Q6), with the attribute `data-theme-option` equal to `light`, `dark` and `auto`. The option that is chosen SHALL have `aria-checked="true"` and the other two `aria-checked="false"`. With nothing valid stored the option «Як у системі» is chosen (Q14, see «Invalid or missing stored values fall back»). Each option is labelled by its own visible text and carries no `aria-label` and no `aria-labelledby` (as FR-62); the group has no `aria-labelledby` and shows no visible label. The control and its options carry no `id`. **The control sits in the settings panel** (Topic 3, option B of the signed wireframe, autonomy-log row 120), directly below a visible plain-text label «Тема» (an element that is not a `label`, with no `for`; the group's name stays its `aria-label`); the panel and the button that opens it are specified by «Settings button and panel». A test finds the control with `root.querySelector('[data-control="theme"]')` and opens the panel first through the stubbed `showPopover()` (A-44). How the panel is drawn is the design's (`review-set-13`, held NFR-14). Its texts are specified by «Texts of the settings button, the settings panel and the theme control».
+The page SHALL offer a theme control `[data-control="theme"]` (FR-102): an element with `role="radiogroup"` and the accessible name «Тема» ("Theme" in English mode, `aria-label`), holding exactly three `<button type="button" role="radio">` elements in this order, labelled «Світла», «Темна» and «Як у системі» ("Light", "Dark", "System" in English mode, Q6, FR-111), with the attribute `data-theme-option` equal to `light`, `dark` and `auto`. The option that is chosen SHALL have `aria-checked="true"` and the other two `aria-checked="false"`. With nothing valid stored the option «Як у системі» is chosen (Q14, see «Invalid or missing stored values fall back»). Each option is labelled by its own visible text and carries no `aria-label` and no `aria-labelledby` (as FR-62); the group has no `aria-labelledby` and shows no visible label. The control and its options carry no `id`. **The control sits in the settings panel** (Topic 3, option B of the signed wireframe, autonomy-log row 120), directly below a visible plain-text label «Тема» (an element that is not a `label`, with no `for`; the group's name stays its `aria-label`); the panel and the button that opens it are specified by «Settings button and panel». A test finds the control with `root.querySelector('[data-control="theme"]')` and opens the panel first through the stubbed `showPopover()` (A-44). How the panel is drawn is the design's (`review-set-13`, held NFR-14). Its texts are specified by «Texts of the settings button, the settings panel and the theme control».
 
-Traces: FR-102, FR-68, NFR-9
+Traces: FR-102, FR-68, NFR-9, FR-111
 
 #### Scenario: Theme control structure and default
 
@@ -2666,6 +2801,12 @@ Traces: FR-102, FR-68, NFR-9
 - **GIVEN** `localStorage` holds `binarka.theme` = `dark` before the page is mounted
 - **WHEN** the page is mounted
 - **THEN** `aria-checked="true"` is on «Темна» only, and `localStorage` still holds exactly the same value
+
+#### Scenario: The theme control in English mode
+
+- **GIVEN** the page mounted with `binarka.language` = `en`
+- **WHEN** the test reads `[data-control="theme"]` and its options
+- **THEN** the group's `aria-label` is "Theme", the option texts are "Light", "Dark" and "System" in this order, `data-theme-option` is still `light`, `dark` and `auto`, and the visible label above the group reads "Theme"
 
 #### Scenario: The group is named by its aria-label and no label element exists
 
@@ -2816,15 +2957,22 @@ Traces: FR-106, FR-116
 
 ### Requirement: Stored preferences
 
-The page SHALL store the theme preference, and no other data, in `localStorage` (FR-113, TC-12): one key, `binarka.theme`, with the value `light`, `dark` or `auto`. The page SHALL write the key only when the player presses a theme option that is not already chosen, and it writes the value of the pressed option, also when that value is the default `auto` (A-48). It SHALL NOT write at the mount, at a reload, on a game action (a cell click, a hint, «Нова головоломка», «Скинути», «Почати», a mark) or on a change of the system theme. It SHALL store nothing else, ever: no game state (the board, the entries, the givens, the size, the level, the seed, the messages, the hinted cell), no marked choice of the setup sheet (FR-100), no cookie, no `sessionStorage` and no IndexedDB (TC-12). Game state is never stored; saved progress is Future (FR-46). A preference is not game state (A-48).
+The page SHALL store the two preferences, and no other data, in `localStorage` (FR-113, TC-12): `binarka.theme` with the value `light`, `dark` or `auto`, and `binarka.language` with the value `uk` or `en`. The page SHALL write a key only when the player presses an option of that control that is not already chosen, and it writes the value of the pressed option, also when that value is the default (`auto`, `uk`; A-48). It SHALL NOT write at the mount, at a reload, on a game action (a cell click, a hint, «Нова головоломка», «Скинути», «Почати», a mark) or on a change of the system theme. It SHALL store nothing else, ever: no game state (the board, the entries, the givens, the size, the level, the seed, the messages, the hinted cell), no marked choice of the setup sheet (FR-100), no cookie, no `sessionStorage` and no IndexedDB (TC-12). Game state is never stored; saved progress is Future (FR-46). A preference is not game state (A-48).
 
-Traces: FR-113, FR-100, TC-12
+Traces: FR-113, FR-100, TC-12, FR-108
 
 #### Scenario: A press writes the pressed value once
 
 - **GIVEN** `localStorage` empty and a `setItem` spy
 - **WHEN** the player presses «Темна», and then «Як у системі»
 - **THEN** `setItem` was called twice, with `binarka.theme` and `dark`, then with `binarka.theme` and `auto` (the default value is written too, A-48), and `localStorage` holds no other key
+
+#### Scenario: A language press writes the pressed value once
+
+- **GIVEN** `localStorage` empty and a `setItem` spy
+- **WHEN** the player presses "English", and then «Українська»
+- **THEN** `setItem` was called twice, with `binarka.language` and `en`, then with `binarka.language` and `uk` (the default value is written too, A-48), and `localStorage` holds no other key than `binarka.language`
+- **AND** a press on the option already chosen, in a separate run, calls `setItem` zero times
 
 #### Scenario: Pressing the default option on a fresh page writes nothing
 
@@ -2851,11 +2999,17 @@ Traces: FR-113, FR-100, TC-12
 - **THEN** after the first remount `aria-checked="true"` is on «Темна» only and `data-theme` is `dark`
 - **AND** after the third mount `data-theme` is `light` and `aria-checked="true"` is on «Світла» only on the second and the third root (a mount reads the stored value; amended in the third review-gate fix round, autonomy-log row 130, because with the first mount alive the shared choice answered instead of storage)
 
+#### Scenario: The stored language survives a remount
+
+- **GIVEN** a page on which the player pressed "English", and a new root
+- **WHEN** the page is mounted again on the new root
+- **THEN** `aria-checked="true"` is on "English" only, `<html lang>` is `en` and the texts are English
+
 ### Requirement: Invalid or missing stored values fall back
 
-At load the page SHALL ignore a missing key, an empty value and a value outside the list of «Stored preferences» (for example `Dark`, `system`, `ru`, `{}`) and use the default: the theme `auto` (FR-114, Q14). The page SHALL NOT rewrite or remove a bad value until the player presses an option.
+At load the page SHALL ignore a missing key, an empty value and a value outside the list of «Stored preferences» (for example `Dark`, `system`, `ru`, `{}`) and use the default: the theme `auto` (Q14) and the language Ukrainian (FR-114). The page SHALL NOT rewrite or remove a bad value until the player presses an option.
 
-Traces: FR-114, FR-113
+Traces: FR-114, FR-113, FR-107
 
 #### Scenario: Each bad theme value gives auto
 
@@ -2874,11 +3028,28 @@ Traces: FR-114, FR-113
 - **THEN** in every run `aria-checked="true"` is on «Як у системі» only, and the effective theme is the system theme
 - **AND** the stored value is exactly as before the mount (no `setItem` and no `removeItem` call)
 
+#### Scenario: Each bad language value gives Ukrainian
+
+- **GIVEN** `localStorage` holds `binarka.language` = each of the values of the table below, in separate runs
+- **WHEN** the page is mounted
+
+| Stored value |
+|--------------|
+| (key missing) |
+| (empty string) |
+| `EN` |
+| `english` |
+| `de` |
+| `{}` |
+
+- **THEN** in every run `aria-checked="true"` is on «Українська» only, `<html lang>` is `uk`, and the texts are Ukrainian
+- **AND** the stored value is exactly as before the mount (no `setItem` and no `removeItem` call)
+
 ### Requirement: Failing storage does not stop the page
 
-When reading or writing `localStorage` throws (the access to `window.localStorage` throws, as in some private modes or with storage blocked, or `getItem` or `setItem` throws, for example on a quota error), the page SHALL still mount and play with no uncaught error and no message (FR-115): at load it uses the defaults of «Invalid or missing stored values fall back»; a press still applies the chosen theme for the rest of the session, on every later mount too, until the page is reloaded; nothing is retried.
+When reading or writing `localStorage` throws (the access to `window.localStorage` throws, as in some private modes or with storage blocked, or `getItem` or `setItem` throws, for example on a quota error), the page SHALL still mount and play with no uncaught error and no message (FR-115): at load it uses the defaults of «Invalid or missing stored values fall back»; a press still applies the chosen theme or language for the rest of the session, on every later mount too, until the page is reloaded; nothing is retried.
 
-Traces: FR-115, FR-113
+Traces: FR-115, FR-113, FR-107
 
 #### Scenario: The access to localStorage throws
 
@@ -2910,11 +3081,17 @@ Traces: FR-115, FR-113
 - **WHEN** the page is mounted again on the same root, then that root is removed and the page is mounted on a new root
 - **THEN** after each mount `aria-checked="true"` is on «Темна» only and `data-theme` is `dark`, and `setItem` was still called once
 
+#### Scenario: A language press still applies when storage throws
+
+- **GIVEN** `Storage.prototype.setItem` throws and a `window` `error` listener
+- **WHEN** the player presses "English"
+- **THEN** the `error` listener recorded nothing, the texts are English, `<html lang>` is `en`, and `setItem` was called once
+
 ### Requirement: Preferences are applied before the first paint
 
-The stored theme (or the default) SHALL be applied to `<html>` (`data-theme`; `color-scheme` follows from the stylesheet) and to the theme-color meta by a classic inline script in the document head of `index.html` that runs before the body is parsed, not by the page module (FR-116). The page then mounts with `aria-checked` already on the stored option. The step follows «Invalid or missing stored values fall back» and «Failing storage does not stop the page». It is the one deliberate duplicate outside `src/ui/strings.ts` and the storage module: it holds the key name `binarka.theme` and the two theme-color values; a test asserts that the name equals the module's value and that the two theme-color values equal `--color-page` of the light and of the dark token set. The inline script lives in `index.html`, so lint and `tsc` do not see it; its tests are its only check. The built file SHALL keep the inline classic script ahead of the module script and the stylesheet link that Vite injects into `<head>`; the test makes the build itself (`vite build` into a temporary output directory) so a stale `dist/` can never give a green result.
+The stored theme and the stored language (or the defaults) SHALL be applied to `<html>` (`data-theme` and `lang`; `color-scheme` follows from the stylesheet), to the theme-color meta and to `document.title` by a classic inline script in the document head of `index.html` that runs before the body is parsed, not by the page module (FR-116). The static `<title>` of `index.html` stays «Бінарка»; with `en` stored the step replaces it with "Binarka". The page then mounts directly in the stored language, with `aria-checked` already on the stored options. The step follows «Invalid or missing stored values fall back» and «Failing storage does not stop the page». It is the one deliberate duplicate outside `src/ui/strings.ts` and the storage module: it holds the two key names, the two titles and the two theme-color values; a test asserts that the names and the titles equal the module's values and that the two theme-color values equal `--color-page` of the light and of the dark token set. The inline script lives in `index.html`, so lint and `tsc` do not see it; its tests are its only check. The built file SHALL keep the inline classic script ahead of the module script and the stylesheet link that Vite injects into `<head>`; the test makes the build itself (`vite build` into a temporary output directory) so a stale `dist/` can never give a green result.
 
-Traces: FR-116, FR-114, FR-115, FR-104, FR-106
+Traces: FR-116, FR-114, FR-115, FR-104, FR-106, FR-109, FR-107, FR-55
 
 #### Scenario: The head step is a classic inline script in the head
 
@@ -2928,17 +3105,23 @@ Traces: FR-116, FR-114, FR-115, FR-104, FR-106
 - **WHEN** the test runs the inline script
 - **THEN** `data-theme` is `dark`, then `light`, then `dark`, and the theme-color `content` equals the `--color-page` of the matching token set
 
+#### Scenario: The head step sets the language and the title
+
+- **GIVEN** a jsdom document built from `index.html` and a storage stub with `binarka.language` = `en`, then `uk`, then a bad value, in separate runs
+- **WHEN** the test runs the inline script
+- **THEN** `<html lang>` is `en`, `uk` and `uk`, and `document.title` is "Binarka", «Бінарка» and «Бінарка»
+
 #### Scenario: The head step survives bad and throwing storage
 
 - **GIVEN** the same document with a bad stored value, and with storage whose access throws
 - **WHEN** the test runs the inline script
-- **THEN** it raises no error and `data-theme` is the system theme (light without `matchMedia`)
+- **THEN** it raises no error, `data-theme` is the system theme (light without `matchMedia`), `<html lang>` is `uk` and `document.title` is «Бінарка»
 
 #### Scenario: The duplicated names and colours equal the module and the tokens
 
 - **GIVEN** the inline script text, the storage module, and the tokens of `src/ui/style.css`
 - **WHEN** the test compares them
-- **THEN** the key name equals the module's, and the two theme-color values equal `--color-page` of the top-level `:root` and of `:root[data-theme="dark"]`
+- **THEN** both key names (`binarka.theme` and `binarka.language`) and both titles equal the module's, and the two theme-color values equal `--color-page` of the top-level `:root` and of `:root[data-theme="dark"]`
 
 #### Scenario: The built file keeps the order
 
@@ -2946,11 +3129,17 @@ Traces: FR-116, FR-114, FR-115, FR-104, FR-106
 - **WHEN** the test reads the order of its head children
 - **THEN** the inline classic script precedes the `script type="module"` and the stylesheet `link` that Vite injected
 
+#### Scenario: An English mount shows no Cyrillic text
+
+- **GIVEN** `binarka.language` = `en` stored, the head step run, and a `MutationObserver` on the mount root with `childList`, `subtree`, `characterData` and `characterDataOldValue`
+- **WHEN** the page is mounted
+- **THEN** the observer sees no Cyrillic text in an added node, a removed node or an old character value, outside an element whose `lang` differs from `<html lang>` (A-52)
+
 ### Requirement: No flash of the wrong theme on reload
 
-With `dark` stored on a light system and with `light` stored on a dark system, the head step alone SHALL put the page in the stored theme before the page bundle runs (NFR-18, held until its e2e spec is seen failing against the page). **Variant 1:** the test aborts the page bundle (`page.route('**/assets/*.js', r => r.abort())`; the stylesheet stays a `<link>` and loads) and asserts that `<html>` has the stored `data-theme` and that the computed `background-color` of `body` equals the `--color-page` of the stored theme. **Variant 2** (bundle loaded): an `addInitScript` `MutationObserver` with `attributes`, `attributeFilter: ['data-theme']` and `attributeOldValue: true` records the changes of `<html>` and the first child added to `<body>`; only records whose `oldValue` differs from the new value count, so a mount that rewrites an equal value is not a change. There is at least one counted record, the last value is the stored one, every counted record comes before that first child, and none follows during the mount; a run with no counted record fails (it must not pass vacuously). The paint itself is not measured. Sampled: 375×812 and 1280×800; the coverage is `sampled`, never continuum. Storage is set by `addInitScript` per test in a fresh browser context (no `storageState`). The spec file is `e2e/nfr-18-*.spec.ts` and `playwright.config.ts` gains one `testMatch` pattern for it (approved, autonomy-log row 117). NFR-18 is held (autonomy-log row 118) and moves into `docs/requirements.md` on the pattern of row 68 (1) once the spec is seen failing against the page without the head step (the red run is a task, not a scenario).
+With `dark` stored on a light system, with `light` stored on a dark system and with `en` stored, the head step alone SHALL put the page in the stored theme and language before the page bundle runs (NFR-18, held until its e2e spec is seen failing against the page). **Variant 1:** the test aborts the page bundle (`page.route('**/assets/*.js', r => r.abort())`; the stylesheet stays a `<link>` and loads) and asserts that `<html>` has the stored `data-theme` and `lang` and that the computed `background-color` of `body` equals the `--color-page` of the stored theme. **Variant 2** (bundle loaded): an `addInitScript` `MutationObserver` with `attributes`, `attributeFilter: ['data-theme', 'lang']` and `attributeOldValue: true` records the changes of `<html>` and the first child added to `<body>`; only records whose `oldValue` differs from the new value count, so a mount that rewrites an equal value is not a change. There is at least one counted record, the last value is the stored one, every counted record of `data-theme` and `lang` comes before that first child, and none follows during the mount; a run with no counted record fails (it must not pass vacuously). The paint itself is not measured. Sampled: 375×812 and 1280×800; the coverage is `sampled`, never continuum. Storage is set by `addInitScript` per test in a fresh browser context (no `storageState`). The spec file is `e2e/nfr-18-*.spec.ts` and `playwright.config.ts` gains one `testMatch` pattern for it (approved, autonomy-log row 117). NFR-18 is held (autonomy-log row 118) and moves into `docs/requirements.md` on the pattern of row 68 (1) once the spec is seen failing against the page without the head step (the red run is a task, not a scenario).
 
-Traces: NFR-18, FR-116
+Traces: NFR-18, FR-116, FR-109
 
 #### Scenario: Variant 1, the head step alone sets the theme
 
@@ -2964,11 +3153,17 @@ Traces: NFR-18, FR-116
 - **WHEN** the page loads with `dark` stored on a light system scheme
 - **THEN** there is at least one counted `data-theme` record, the last value is `dark`, every counted record precedes the first child of `<body>`, and no counted record follows; without a head step this scenario fails too (no record before the first child)
 
+#### Scenario: Variant 1 and 2 for the language
+
+- **GIVEN** the built page in Chromium with `binarka.language` = `en` set by `addInitScript`, once with the bundle aborted and once with the bundle loaded and the observer of Variant 2
+- **WHEN** the check reads `<html>`
+- **THEN** `lang` is `en` with the bundle aborted, and with the bundle loaded the `lang` change precedes the first child of `<body>` and none follows
+
 ### Requirement: The theme options set their own colours
 
-The stylesheet `src/ui/style.css` SHALL set an explicit `color` and an explicit `background-color`, each a single `var(--color-...)` token, in the rule that styles the theme options (`.theme-control button`) and in the rule of the chosen option (`.theme-control button[aria-checked='true']`), so that the colours do not depend on the browser, the operating system or the effective theme (FR-65, FR-117). For each state and for each token set (light and dark) the text colour against the background colour SHALL have at least 4.5:1 contrast (the WCAG 2 formula on the resolved tokens). The three options are `button` elements, so the existing `button:focus-visible` rule gives them the focus indicator. The element `[data-control="theme"]` carries the class `theme-control` (a spec-made proxy, to confirm against the signed review set). A chosen option differs from an unchosen one by more than colour (a ring or a mark drawn by the stylesheet, WCAG 1.4.1), as for the level buttons. How the control is laid out is the signed design's (held NFR-14).
+The stylesheet `src/ui/style.css` SHALL set an explicit `color` and an explicit `background-color`, each a single `var(--color-...)` token, in the rule that styles the theme options (`.theme-control button`) and in the rule of the chosen option (`.theme-control button[aria-checked='true']`), so that the colours do not depend on the browser, the operating system or the effective theme (FR-65, FR-117). For each state and for each token set (light and dark) the text colour against the background colour SHALL have at least 4.5:1 contrast (the WCAG 2 formula on the resolved tokens). The three options are `button` elements, so the existing `button:focus-visible` rule gives them the focus indicator. The element `[data-control="theme"]` carries the class `theme-control`, and `[data-control="language"]` carries the class `language-control` with the same pair of rules (`.language-control button` and `.language-control button[aria-checked='true']`). A chosen option differs from an unchosen one by more than colour (a ring or a mark drawn by the stylesheet, WCAG 1.4.1), as for the level buttons. How the control is laid out is the signed design's (held NFR-14).
 
-Traces: FR-65, FR-117, NFR-9
+Traces: FR-65, FR-117, NFR-9, FR-107
 
 #### Scenario: The theme options declare their colours
 
@@ -2988,36 +3183,55 @@ Traces: FR-65, FR-117, NFR-9
 - **WHEN** the test compares their declarations
 - **THEN** the checked rule declares a `border-style`, `border-width`, `box-shadow` or `text-decoration` that the plain rule does not
 
+#### Scenario: The language options declare their colours and a cue
+
+- **GIVEN** the text of `src/ui/style.css`
+- **WHEN** the test reads the declarations of `.language-control button` and `.language-control button[aria-checked='true']`
+- **THEN** each rule exists and declares `color` and `background-color`, each a single `var(--color-...)` of a declared token, neither declares `opacity`, the ratio of text to background is at least 4.5 in each state in the light and in the dark token set, and the checked rule declares a cue the plain rule does not
+
 ### Requirement: Texts of the settings button, the settings panel and the theme control
 
-Every text that the settings button, the settings panel and the theme control show or expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5, FR-94): the accessible name «Налаштування» of the button and of the panel, the visible label and group name «Тема», the three option texts «Світла», «Темна» and «Як у системі», the close text «Закрити», and any `aria-label`, `title`, `alt` or `label` attribute among them. The gear is a drawn `svg` (not a text glyph) and has no text. By the user's code-organisation decision of 2026-10-05 these texts are kept in `src/ui/strings.ts`, and no other file of `src/ui/` and no `src/main.ts` holds a Cyrillic character; the source scan of «Ukrainian texts of the header, rules panel and idle line» guards it. This requirement is generalised to both modes by `add-english-version`.
+In Ukrainian mode every text that the settings button, the settings panel, the theme control and the language control show or expose SHALL be Ukrainian: it contains Cyrillic letters and no Latin letters (NFR-5, FR-94), with the one exception that the option "English" is named in its own language and carries `lang="en"` (A-52); in English mode each is the English counterpart of «English page text» ("Settings", "Theme", "Light", "Dark", "System", "Language", "Close") and contains Latin letters and no Cyrillic letters, with the one exception of the option «Українська». In Ukrainian mode the texts are: the accessible name «Налаштування» of the button and of the panel, the visible label and group name «Тема», the three option texts «Світла», «Темна» and «Як у системі», the visible label and group name «Мова», the two option names «Українська» and "English", the close text «Закрити», and any `aria-label`, `title`, `alt` or `label` attribute among them. The gear is a drawn `svg` (not a text glyph) and has no text. By the user's code-organisation decision of 2026-10-05 these texts are kept in `src/ui/strings.ts`, and no other file of `src/ui/` and no `src/main.ts` holds a Cyrillic character; the source scan of «Ukrainian texts of the header, rules panel and idle line» guards it.
 
-Traces: NFR-5, FR-94, FR-102, FR-68
+Traces: NFR-5, FR-94, FR-102, FR-68, FR-111, FR-107
 
 #### Scenario: The theme texts are Ukrainian
 
 - **GIVEN** the page has just been mounted
 - **WHEN** the test collects the text nodes and the `aria-label`, `title`, `alt` and `label` attributes of `[data-action="settings"]` and of `[data-section="settings"]` with everything inside it
-- **THEN** the collection contains «Налаштування», «Тема», «Світла», «Темна», «Як у системі» and «Закрити»
-- **AND** every collected text matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
+- **THEN** the collection contains «Налаштування», «Тема», «Світла», «Темна», «Як у системі», «Мова», «Українська», "English" and «Закрити»
+- **AND** every collected text, except the text and the attributes of the element with `lang="en"`, matches `/\p{Script=Cyrillic}/u` and none matches `/[A-Za-z]/`
+
+#### Scenario: The settings and language texts in English mode
+
+- **GIVEN** the page in English mode
+- **WHEN** the test collects the same texts
+- **THEN** the collection contains "Settings", "Theme", "Light", "Dark", "System", "Language", «Українська», "English" and "Close"
+- **AND** every collected text, except the text and the attributes of the element with `lang="uk"`, matches `/[A-Za-z]/` and none matches `/\p{Script=Cyrillic}/u`
 
 #### Scenario: The settings and theme texts live in the strings module
 
 - **GIVEN** the source files of the page
 - **WHEN** the test reads `src/ui/strings.ts` and every other `.ts` or `.css` file under `src/ui/` and `src/main.ts`
-- **THEN** `src/ui/strings.ts` contains the six texts, and no other file contains a character matching `/\p{Script=Cyrillic}/u`
+- **THEN** `src/ui/strings.ts` contains the Ukrainian texts of the table and the English ones of «English page text», and no other file contains a character matching `/\p{Script=Cyrillic}/u`
 
 ### Requirement: Common rules for the theme and language options
 
-Every option of the theme control SHALL be a `<button type="button" role="radio">` labelled by its own visible text, with no `aria-label` (as FR-62); the group name is an `aria-label` (FR-117). Every option is a Tab stop in reading order, activated by Enter and Space as a native button; the page adds no key handler and no `tabindex` (FR-59, FR-60). Every option shows the `:focus-visible` indicator (FR-65, NFR-13) and is at least 44×44 CSS px (NFR-12, see «The theme options meet the touch-target floor»). The options set their own text and background colours from the tokens with at least 4.5:1 in both themes (see «The theme options set their own colours»). The control adds no `id` (the settings panel that holds it has the fifth id of the mount, see «Settings button and panel»). This requirement is generalised to the language control by `add-english-version`; the name says "theme and language" so that its later MODIFIED block matches.
+Every option of the theme control and of the language control SHALL be a `<button type="button" role="radio">` labelled by its own visible text, with no `aria-label` (as FR-62); the group names are `aria-label`s in the page language (FR-117); the two language options also carry their own `lang` (FR-107, A-52). Every option is a Tab stop in reading order, activated by Enter and Space as a native button; the page adds no key handler and no `tabindex` (FR-59, FR-60). Every option shows the `:focus-visible` indicator (FR-65, NFR-13) and is at least 44×44 CSS px (NFR-12, see «The theme options meet the touch-target floor»). The options set their own text and background colours from the tokens with at least 4.5:1 in both themes (see «The theme options set their own colours»). The control adds no `id` (the settings panel that holds it has the fifth id of the mount, see «Settings button and panel»). The language control follows the same rules.
 
-Traces: FR-117, FR-59, FR-60, FR-62, FR-65
+Traces: FR-117, FR-59, FR-60, FR-62, FR-65, FR-107
 
 #### Scenario: The options are native buttons in the tab order
 
 - **GIVEN** the page has just been mounted
 - **WHEN** the test reads the three theme options
 - **THEN** each is a `button` with `type="button"` and `role="radio"`, none has `tabindex`, `aria-label` or `disabled`, and no key event dispatched on the options has `defaultPrevented` true
+
+#### Scenario: The language options are native buttons in the tab order
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the two language options
+- **THEN** each is a `button` with `type="button"` and `role="radio"`, none has `tabindex`, `aria-label` or `disabled`, each has its own `lang`, and no key event dispatched on them has `defaultPrevented` true
 
 #### Scenario: No id is added
 
@@ -3027,15 +3241,21 @@ Traces: FR-117, FR-59, FR-60, FR-62, FR-65
 
 ### Requirement: The option controls are not part of the marked choice
 
-The theme control sits in the settings panel, not in the setup sheet, so its options SHALL never be marked, need no «Почати», and a press on them SHALL leave the marked size and the marked level unchanged (FR-118, FR-100, FR-103). Opening the settings panel while the setup sheet is open closes the sheet natively (opening another `popover="auto"` closes an open one; the signed wireframe notes it for Topic 3), and the closing of the sheet then discards the marked choice as for any close (FR-97(d), FR-100). This requirement is generalised to the language control by `add-english-version`.
+The theme control and the language control sit in the settings panel, not in the setup sheet, so their options SHALL never be marked, need no «Почати», and a press on them SHALL leave the marked size and the marked level unchanged (FR-118, FR-100, FR-103). Opening the settings panel while the setup sheet is open closes the sheet natively (opening another `popover="auto"` closes an open one; the signed wireframe notes it for Topic 3), and the closing of the sheet then discards the marked choice as for any close (FR-97(d), FR-100). A language press behaves like a theme press (FR-108).
 
-Traces: FR-118, FR-100, FR-103
+Traces: FR-118, FR-100, FR-103, FR-108
 
 #### Scenario: A press leaves the marked choice alone
 
 - **GIVEN** the sheet marked with «Поле 8×8» and «Мозколамка» and not yet closed, and the settings panel opened through the stubbed `showPopover()` with the closing `toggle` event of the sheet not yet dispatched
 - **WHEN** the player presses «Темна»
 - **THEN** `aria-checked="true"` is still on «Поле 8×8» and on «Мозколамка», and `hidePopover` was not called by the press
+
+#### Scenario: A language press leaves the marked choice alone
+
+- **GIVEN** the sheet marked with «Поле 8×8» and «Мозколамка» and not yet closed, and the settings panel opened through the stubbed `showPopover()`
+- **WHEN** the player presses "English"
+- **THEN** `aria-checked="true"` is still on "Grid 8×8" and on "Brain-twister" (the page is now in English), `hidePopover` was not called by the press, and a later "Start" uses `(8, 4)`
 
 #### Scenario: Opening the panel closes the sheet and discards the marked choice
 
@@ -3086,6 +3306,267 @@ Traces: NFR-13, FR-102, FR-105
 - **WHEN** the sweep reads the computed outline of the focused option
 - **THEN** its outline style is not `none` and its outline width is at least 2px
 
+### Requirement: Language control
+
+The settings panel SHALL hold, below the theme control and above its close button, a visible plain-text label «Мова» (an element that is not a `label`, with no `for`) and a language control `[data-control="language"]` (FR-107, FR-55): an element with `role="radiogroup"` and the accessible name «Мова» ("Language" in English mode, `aria-label`), holding exactly two `<button type="button" role="radio">` elements in this order: «Українська» with `lang="uk"` and "English" with `lang="en"`, each named in its own language in both modes (Q5), with the attribute `data-language-option` equal to `uk` and `en`. The option of the page language SHALL have `aria-checked="true"` and the other `aria-checked="false"`. With nothing valid stored the page language is Ukrainian and «Українська» is checked (FR-114). The page never reads `navigator.language`, `navigator.languages` or `Accept-Language`: it is Ukrainian unless `en` is stored (A-49). The control and its options carry no `id`. The rules of «Common rules for the theme and language options» apply to its options.
+
+Traces: FR-107, FR-55, FR-117, NFR-9
+
+#### Scenario: Language control structure and default
+
+- **GIVEN** the page has just been mounted with `localStorage` empty and `navigator.language` stubbed to `en-US`
+- **WHEN** the test reads `[data-control="language"]`
+- **THEN** exactly one such element exists, inside `[data-section="settings"]` after `[data-control="theme"]`, it has `role="radiogroup"` and `aria-label` equal to «Мова», no `aria-labelledby` and no `id`, and it contains exactly two `button` elements, each with `type="button"` and `role="radio"`, whose texts are «Українська» and "English", with `lang` `uk` and `en` and `data-language-option` `uk` and `en`
+- **AND** the first button has `aria-checked="true"` and the second `aria-checked="false"`, and a plain-text element «Мова» that is not a `label` element immediately precedes the control
+
+#### Scenario: Each language is named in its own language in both modes
+
+- **GIVEN** the page in Ukrainian mode, and again after the player presses "English"
+- **WHEN** the test reads the texts of the two options
+- **THEN** they are «Українська» and "English" in both modes, and the group name is «Мова» in Ukrainian mode and "Language" in English mode
+
+#### Scenario: The stored language is checked at mount
+
+- **GIVEN** `localStorage` holds `binarka.language` = `en` before the page is mounted
+- **WHEN** the page is mounted
+- **THEN** `aria-checked="true"` is on "English" only, and `<html>` has `lang="en"`
+
+### Requirement: A language press re-renders in place and changes nothing else
+
+A press on the language option that is not shown SHALL set the page language, store it (see «Stored preferences») and re-render every page text and accessible name in the new language, in place (FR-108): the header title, every button label, the summary text and its hidden prefix, the sheet's label, the group names and the visible labels, the size labels, the level names and descriptions, the 4×4 reason, the rules and the techniques, the idle line, the confirmation texts, the board's `aria-label`, every cell's `aria-label`, the theme and language texts, the settings texts, a hint message on screen (see «A hint message on screen re-renders as the same hint») and a win message on screen. The board, the givens, the entries, the highlights, `cell-hinted`, the size, the level, the marked choice of the setup sheet (FR-100) and DOM focus (FR-59) stay; after the switch the focused element is the same element as before. It takes no seed, calls no generator and asks for no confirmation. A confirmation dialog is modal, so no language press can happen while a pending action exists (A-55). The press itself opens and closes nothing; a `popover="auto"` light dismiss caused by a click outside an open sheet or panel is the browser's (A-55). A press on the language already shown changes nothing and stores nothing. A re-render may change the text of a non-empty `role="status"` region, so a screen reader may announce it again in the new language; this is accepted and not tested (A-53, A-28).
+
+Traces: FR-108, FR-118, FR-100, FR-59, FR-55
+
+#### Scenario: A language press re-renders every text
+
+- **GIVEN** a mounted 6×6 board in Ukrainian mode with player entries, the sheet and the settings panel not open, and the test focus on the option "English" after the settings panel is opened through the stubbed `showPopover()`
+- **WHEN** the player presses "English"
+- **THEN** the texts of the table of «English page text» appear in place of the Ukrainian ones, the board's `aria-label` is "Grid 6×6" and the first cell's is "Row 1, column 1, empty" (or the digit form), `document.title` is "Binarka", and `aria-checked="true"` is on "English" only
+- **AND** `document.activeElement` is still the option "English"
+
+#### Scenario: A language press changes nothing else
+
+- **GIVEN** a mounted 6×6 board at «Задачка» with player entries, a hint sentence shown, a hint-filled cell with `cell-hinted`, some cells with `cell-violation`, the sheet marked with «Поле 8×8» and «Мозколамка», a counting seed source, a `generate` spy and the `showModal` spy with the counts read now
+- **WHEN** the player presses "English"
+- **THEN** every cell keeps its text, its `data-given` and its class list (`cell-violation` and `cell-hinted` included), the size and the level are unchanged (the summary reads `6×6 · Teaser`), and `aria-checked="true"` is still on «Поле 8×8» and «Мозколамка» as "Grid 8×8" and "Brain-twister"
+- **AND** `showModal` was never called and the seed-source and generator call counts equal the counts read now
+
+#### Scenario: A switch never brings back a cleared message
+
+- **GIVEN** a hint shown on a board, then «Нова головоломка» confirmed (the hint region is empty), and in another run a win shown, then a click on a non-given cell (the win region is empty)
+- **WHEN** the player presses "English"
+- **THEN** both regions are still empty after the switch
+
+#### Scenario: The 4×4 state survives a switch
+
+- **GIVEN** the sheet opened with «Поле 4×4» marked, so the three levels 2 to 4 have `aria-disabled="true"` and the reason is shown
+- **WHEN** the player presses "English" in the settings panel
+- **THEN** the reason reads `The 4×4 grid has only the “Warm-up” level.`, the three levels still have `aria-disabled="true"`, and `aria-checked="true"` is still on "Grid 4×4" and "Warm-up"; at a marked size of 6×6 or 8×8 the reason is still hidden with empty text
+
+#### Scenario: Pressing the language already shown changes nothing
+
+- **GIVEN** a mounted page with `binarka.language` = `en` stored, and a `setItem` spy
+- **WHEN** the player presses "English"
+- **THEN** `setItem` was not called and the texts are unchanged
+
+#### Scenario: Switching back restores the Ukrainian texts byte for byte
+
+- **GIVEN** the Ukrainian texts of the page read at mount
+- **WHEN** the player presses "English" and then «Українська»
+- **THEN** every text and accessible name equals the one read at mount
+
+### Requirement: Document language and title
+
+`<html lang>` SHALL be `"uk"` in Ukrainian mode and `"en"` in English mode, set at load (see «Preferences are applied before the first paint») and on every language switch (FR-109, NFR-9: WCAG 3.1.1 Language of Page). `document.title` SHALL be «Бінарка» in Ukrainian mode and "Binarka" in English mode (Q3), and the heading in the header follows the same choice. The two language options carry their own `lang` (WCAG 3.1.2 Language of Parts, A-52); no other element carries a `lang` different from `<html lang>`.
+
+Traces: FR-109, NFR-9, NFR-5
+
+#### Scenario: The attribute and the title follow the language
+
+- **GIVEN** a page mounted with `localStorage` empty
+- **WHEN** the test reads `<html lang>`, `document.title` and the heading in the header, then the player presses "English" and the test reads them again
+- **THEN** they are `uk`, «Бінарка», «Бінарка», and then `en`, "Binarka", "Binarka"
+
+#### Scenario: The value is one of the two codes
+
+- **GIVEN** a page mounted with each of `localStorage` empty, `binarka.language` = `en`, `uk` and a bad value
+- **WHEN** the test reads `<html lang>`
+- **THEN** it is `uk`, `en`, `uk` and `uk`, and in every run it matches the page language
+
+#### Scenario: Only the two language options carry a different lang
+
+- **GIVEN** the page in each mode
+- **WHEN** the test lists the elements of the root with a `lang` attribute different from `<html lang>`
+- **THEN** they are exactly the language option of the other language
+
+### Requirement: A hint message on screen re-renders as the same hint
+
+After a language switch, a hint message on screen SHALL show the sentence of the **same** hint (the same technique, line, digit and cell, or the same no-rule or broken-rule sentence) in the new language (FR-110, FR-56). The page SHALL NOT compute a new hint against the current board: the hint already filled its cell, and the message stays across cell clicks (see «Hint message stays until the next hint or a new puzzle»). The page therefore keeps the data of the hint on screen (or both sentences) until the message is cleared. How the page gets the other sentence is left to the design (`design.md`); the engine stays DOM-free (TC-7) and never reads storage. A win message on screen re-renders in the new language too (see «Win message when solved»). An empty message region stays empty.
+
+Traces: FR-110, FR-56, FR-40, FR-41
+
+#### Scenario: A hint sentence switches language and stays the same hint
+
+- **GIVEN** a fixture board on which `hint(board, 4, 'uk')` fills a cell with a pair sentence, the player pressed «Підказка», and `[data-message="hint"]` shows that Ukrainian sentence
+- **WHEN** the player presses "English"
+- **THEN** `[data-message="hint"]` shows exactly the English sentence the engine returns for that same hint on the board as it was before the fill (`hint(boardBefore, 4, 'en')`), the filled cell keeps its text and `cell-hinted`, and no other cell changed
+
+#### Scenario: It survives a cell click and a second switch
+
+- **GIVEN** the page of the previous scenario in English mode
+- **WHEN** the player clicks a non-given cell, and then presses «Українська»
+- **THEN** after the click `[data-message="hint"]` kept its English sentence, and after the switch it shows the original Ukrainian sentence byte for byte
+
+#### Scenario: The no-rule and broken-rule sentences switch too
+
+- **GIVEN** a board on which the hint is the no-rule sentence, and another on which it is the broken-rule sentence, each shown after a hint press
+- **WHEN** the player presses "English"
+- **THEN** the region shows "None of the rules points to a next move right now." and "First fix the rule break highlighted on the board." respectively, and no cell changed
+
+#### Scenario: The win message and empty regions
+
+- **GIVEN** a fixture board solved so that `[data-message="win"]` shows the win text, and `[data-message="hint"]` empty
+- **WHEN** the player presses "English"
+- **THEN** the win region shows exactly "Congratulations, puzzle solved!" and the hint region is still empty
+
+### Requirement: Page text is per mode
+
+In Ukrainian mode every text the page shows or exposes SHALL contain Cyrillic letters and no Latin letters, and in English mode every such text SHALL contain Latin letters and no Cyrillic letters (NFR-5 per mode, FR-111): the title in the header, every label and button (the start button, the settings button and every text of the theme and language controls included), the size, level, summary and sheet texts, the rules and the idle line, the confirmation texts, the win message, `document.title` ("Binarka" in English mode) and every `aria-label`, `title`, `placeholder`, `alt` and `label` attribute. Hint sentences follow the same rule for their language. **One exception:** each language option is named in its own language and carries its own `lang` attribute; the scan skips the text and the attributes of an element whose own `lang` differs from `<html lang>`, and nothing else is exempt (A-52). Digits, «×», «·» and «▾» are letters of neither script. Text inside an element with `aria-hidden="true"` stays out of the scan and holds no letter at all. The digits shown in the cells are puzzle content and are not collected.
+
+Traces: NFR-5, FR-111, FR-107, FR-109
+
+#### Scenario: English mode has Latin texts and no Cyrillic
+
+- **GIVEN** the page mounted with `binarka.language` = `en`
+- **WHEN** the test collects every non-whitespace text node under the root (not the text of `[data-cell]` elements and not the text of `aria-hidden` elements), `document.title`, and the values of `aria-label`, `title`, `placeholder` and `alt` on every element and of `label` on every `option` and `optgroup`, and skips the elements whose own `lang` differs from `<html lang>`
+- **THEN** every collected text matches `/[A-Za-z]/` or consists of digits and the signs «×» and «·» only, and none matches `/\p{Script=Cyrillic}/u`
+- **AND** the only skipped element is the option «Українська» (in Ukrainian mode the only skipped element is the option "English", see the next scenario)
+
+#### Scenario: Ukrainian mode keeps Cyrillic texts and no Latin
+
+- **GIVEN** the page mounted with `localStorage` empty
+- **WHEN** the test collects the same texts with the same exception
+- **THEN** every collected text matches `/\p{Script=Cyrillic}/u` or consists of digits and the signs «×», «·» and «▾» only, and none matches `/[A-Za-z]/`
+
+#### Scenario: Both modes at every size and after a switch
+
+- **GIVEN** a page that shows 4×4, 6×6 and 8×8 boards in turn in each mode, and a page switched from one mode to the other with the settings panel
+- **WHEN** the test collects the board names and the 4×4, 6×6 and 8×8 cell names
+- **THEN** each name matches `/^Grid [468]×[468]$/` and `/^Row [1-8], column [1-8], (empty|0|1)(, given|, hinted)?$/` in English mode and the Ukrainian forms in Ukrainian mode, and none contains a letter of the other script
+
+### Requirement: English page text
+
+Every Ukrainian page string of `src/ui/strings.ts` SHALL have an English counterpart in the table below (FR-111, FR-94, A-54: the wording is the appendix of the signed amendment, taken as final by autonomy-log row 119 and refined only by the eval judge and the reviewers). `src/ui/strings.ts` keeps its existing Ukrainian export names and shapes unchanged (named constants, arrays, nested objects and the functions `sizeLabel`, `cellLabel` and `summaryText`); the English texts are a second table of the same shape (for example `EN`) with the same functions, and a language-keyed accessor picks one of the two. A parity test flattens the string leaves of both tables, compares the two key sets, and calls every format function with sample arguments in both languages. No file under `src/ui/` other than `src/ui/strings.ts`, and no `src/main.ts`, holds a Cyrillic character. No English page text or English hint sentence contains U+0027 or U+02BC; if an English text ever needs an apostrophe it uses U+2019 (Q4). The U+02BC rule of FR-41 is a Ukrainian spelling rule and applies to the Ukrainian text only. **Reading rule:** wherever another requirement or scenario of this capability quotes a Ukrainian text, it describes Ukrainian mode, the default, and the English counterpart of the table applies in English mode; a scenario that says "English mode" sets the language by pressing "English" in the settings panel or by storing `binarka.language` = `en` before the mount. Digits, «×», «·» and the ordinary spaces are the same in both modes.
+
+| Ukrainian | English |
+|---|---|
+| Бінарка | Binarka |
+| Підказка / Скинути / Нова головоломка | Hint / Reset / New puzzle |
+| Правила / Зрозуміло | Rules / Got it |
+| Розмір поля / Поле N×N | Grid size / Grid N×N |
+| Почати заново? Ваші ходи на цьому полі буде втрачено. | Start over? Your moves on this board will be lost. |
+| Так, почати / Скасувати | Yes, start over / Cancel |
+| Рядок R, стовпець C, порожньо / , задано / , підказка | Row R, column C, empty / , given / , hinted |
+| Не більше двох однакових цифр поспіль у рядку чи стовпці. | No more than two equal digits side by side in a row or column. |
+| У кожному рядку та стовпці порівну нулів і одиниць. | Every row and every column has as many zeros as ones. |
+| Усі рядки різні, і всі стовпці різні. | All rows are different, and all columns are different. |
+| Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі. | Press the cells to place 0 and 1. For the rules, use the “Rules” button at the top. |
+| Вітаємо, головоломку розвʼязано! | Congratulations, puzzle solved! |
+| Поле і складність: / Поле і складність / Закрити / Почати | Grid and difficulty: / Grid and difficulty / Close / Start |
+| Складність | Difficulty |
+| Розминка / Задачка / Головоломка / Мозколамка | Warm-up / Teaser / Puzzler / Brain-twister |
+| Вистачає трьох простих правил: пара, між двома однаковими і підрахунок цифр. | Three simple rules are enough: pairs, gaps between equal digits and counting. |
+| Додатково треба рахувати, де в рядку помістяться решта нулів чи одиниць. | Also count where the remaining zeros or ones can still fit in a line. |
+| Додатково треба порівнювати рядки і стовпці: двох однакових не буває. | Also compare rows and columns: no two of them can be the same. |
+| Додатково треба пробувати хід наперед: якщо правило порушиться, тут інша цифра. | Also try a move ahead: if a rule breaks, the other digit goes here. |
+| Для поля 4×4 є лише рівень «Розминка». | The 4×4 grid has only the “Warm-up” level. |
+| Складніші прийоми | Harder techniques |
+| Баланс рядка: якщо в рядку є місце лише для одного нуля або однієї одиниці, а в клітинці вона дала б три однакові цифри поспіль, там стоїть інша цифра. | Line balance: if a line has room for only one more 0 or only one more 1, and putting it in a cell would make three equal digits side by side, that cell holds the other digit. |
+| Однакові рядки: якщо рядок збігається з повним рядком усюди, крім двох клітинок, ці дві клітинки протилежні до нього. | Matching lines: if a line matches a complete line everywhere except two cells, those two cells are the opposite of it. |
+| Хід наперед: уявно поставте цифру; якщо за кілька кроків порушиться правило, у клітинці стоїть інша. | Look ahead: imagine a digit in a cell; if a rule breaks within a few steps, the cell holds the other digit. |
+| Налаштування / Тема / Світла / Темна / Як у системі | Settings / Theme / Light / Dark / System |
+| Мова / Українська / English | Language / Українська / English (each option in its own language) |
+
+Traces: FR-111, FR-94, FR-55, NFR-5
+
+#### Scenario: Every Ukrainian string has an English counterpart with the same key
+
+- **GIVEN** the exports of `src/ui/strings.ts`
+- **WHEN** the test flattens the string leaves of the Ukrainian and the English table, compares the two key sets, and calls `sizeLabel`, `cellLabel` and `summaryText` with sample arguments in both languages
+- **THEN** the two key sets are equal, the Ukrainian outputs equal those of the existing exports, and every English value is a non-empty string that matches `/[A-Za-z]/` and not `/\p{Script=Cyrillic}/u`, except the option name «Українська»
+
+#### Scenario: The English page at mount
+
+- **GIVEN** the page mounted with `binarka.language` = `en`
+- **WHEN** the test reads the header, the buttons, the idle line, the rules panel, the sheet and the settings panel
+- **THEN** their texts are those of the English column of the table: the title "Binarka", the buttons "Rules", "Hint", "Reset", "New puzzle", "Start", the sheet label "Grid and difficulty", the summary `Grid and difficulty: 6×6 · Warm-up` (the hidden prefix, then the visible text), the group names "Grid size", "Difficulty", "Theme", "Language", the options "Grid 4×4", "Grid 6×6", "Grid 8×8", the four level names and descriptions, the rules and techniques texts, and the close texts "Close" and "Got it"
+
+#### Scenario: The English idle line keeps its non-breaking spaces
+
+- **GIVEN** the page in English mode
+- **WHEN** the test reads the text content of `[data-message="idle"]`
+- **THEN** it equals the JavaScript string `'Press the cells to place 0\u00A0and\u00A01. For the rules, use the “Rules” button at the top.'`, and it contains exactly two U+00A0 characters
+
+#### Scenario: The English win message and the confirmation
+
+- **GIVEN** the page in English mode, a solved board, and a board with player entries
+- **WHEN** the test reads the win message and presses "New puzzle"
+- **THEN** the win text is exactly "Congratulations, puzzle solved!", the dialog text is "Start over? Your moves on this board will be lost.", and its buttons read "Yes, start over" and "Cancel"
+
+#### Scenario: No English text contains an apostrophe
+
+- **GIVEN** every English value of `src/ui/strings.ts`
+- **WHEN** the test searches them for U+0027 and U+02BC
+- **THEN** there is no match
+
+### Requirement: English mode keeps the phone page on one screen
+
+The built page in English mode SHALL fit the board, the buttons and the message area on one screen at 375×812 and 6×6 in the default, hint and win states without vertical scroll (NFR-10, FR-108), where the hint state shows the longest English hint sentence, a line-balance fill of about 140 characters, on a board that the test reaches by a seed and level that a search step finds (the page seeds `Math.random`, `e2e/helpers.ts`, so the seed is fixed there) and that the test asserts to be a balance fill. The real-browser check `e2e/nfr-10-fit.spec.ts` (`npm run test:e2e`) gains these English samples; the coverage is `sampled` (one viewport, three states), never continuum, and the Ukrainian samples stay as they are.
+
+Traces: NFR-10, FR-108
+
+#### Scenario: Default, hint and win states fit in English
+
+- **GIVEN** the built page open in Chromium at 375×812 with `binarka.language` = `en` set by `addInitScript`, at 6×6, in the default state, after a hint press on the board of the searched seed and level whose first hint at ceiling 4 is a line-balance fill (the test asserts that the shown sentence contains "has room for only one more"), and after a win
+- **WHEN** `e2e/nfr-10-fit.spec.ts` measures the page
+- **THEN** in all three states the board, the buttons and the message area fit without vertical scroll, and the buttons hold still when a message appears
+
+### Requirement: English labels meet the touch-target floor
+
+In English mode the touch-target floor of NFR-12 SHALL hold for every control the probe `e2e/nfr-12-targets.spec.ts` measures: at all eight sampled viewports, with the longer English labels (they may wrap at 320 px), every control is at least 44×44 CSS px, and so are the language options with the settings panel open (NFR-12, FR-107, FR-117). The stylesheet gives the language options the `min-height` of at least `2.75rem` that the theme options have (see «The theme options meet the touch-target floor»). The sampled viewports are not continuum coverage.
+
+Traces: NFR-12, FR-107, FR-117
+
+#### Scenario: The language options declare a 44 px minimum height
+
+- **GIVEN** the page is mounted in jsdom and the text of `src/ui/style.css` is applied to the document
+- **WHEN** the test reads the computed `min-height` of the two language options
+- **THEN** each value is at least 44 px
+
+#### Scenario: Measured in a real browser in English
+
+- **GIVEN** the built page in Chromium at each of the eight viewports of `e2e/nfr-12-targets.spec.ts` with `binarka.language` = `en` set by `addInitScript`, and the settings panel open
+- **WHEN** the probe measures the controls of the page, the sheet and the panel
+- **THEN** each is at least 44 px wide and at least 44 px tall, and the spec reports no line for a measured control below 44×44
+
+### Requirement: The accessibility sweep covers English mode
+
+The real-browser accessibility sweep `e2e/nfr-13-a11y.spec.ts` (`npm run check:a11y`) SHALL include English mode (the default state and the hint state) and the language control focused from the keyboard (NFR-13, FR-107, FR-109). In every state axe-core SHALL report no violation, and the rules `html-has-lang`, `html-lang-valid` and `valid-lang` SHALL be among the rules that run and pass. The coverage is `sampled`, never continuum; the escalation path for English labels at 320 px is a 1 px-step width sweep from 320 to 400 px in English with the settings panel open, run before G2.
+
+Traces: NFR-13, FR-107, FR-109
+
+#### Scenario: English states pass the sweep
+
+- **GIVEN** the built page in Chromium with `binarka.language` = `en` set by `addInitScript`, in the default state, after a hint press, and with the settings panel open
+- **WHEN** the sweep runs axe-core
+- **THEN** axe reports no violation in each state; `html-has-lang` and `html-lang-valid` are in the list of passed rules in each state, and `valid-lang` is in it with the settings panel open (amended in the first review-gate fix round: while the panel is closed the two language options, the only elements with their own `lang`, are hidden in the popover, so axe reports `valid-lang` as inapplicable, measured on the built page: `docs/qa/add-english-version/valid-lang-measure.txt`)
+
+#### Scenario: The focused language option shows an indicator
+
+- **GIVEN** the page with focus moved to a language option by Tab with the settings panel open
+- **WHEN** the sweep reads the computed outline of the focused option
+- **THEN** its outline style is not `none` and its outline width is at least 2px
+
 ## Exclusions
 
 The following are intentionally unsupported in MVP; testers must not report them as defects.
@@ -3102,7 +3583,5 @@ The following are intentionally unsupported in MVP; testers must not report them
 - The seed is not shown on the page (A-4).
 - Grid sizes of 10 and above (FR-18) are not offered; the size choice, the level choice and the marked choice are not remembered (TC-12); «Почати» is never a no-op, a press always starts a puzzle or asks for the confirmation (FR-101).
 - Levels 2 to 4 at 4×4 are intentionally unavailable (A-34); a failed or run-out generation shows no message (A-38); the layout of the summary button and the sheet is held NFR-10, NFR-12, NFR-13, NFR-14.
-- FR-55 (a bilingual page with a language switch) is Future: the page text is Ukrainian only.
-- FR-56 (English hint sentences) is Future: hint sentences are Ukrainian only.
 - The page does not restate or re-implement rule checking, solving, generation or hint selection; it only displays engine results (see `openspec/specs/puzzle-engine/spec.md`).
 - The page does not validate an injected seed: the generator rejects one outside 0 to 2147483647 (FR-51), and what the page does with that error at mount or on the new puzzle button is not asserted by any scenario (on a press of «Почати» any generator error keeps the previous board, and that is asserted). This spec pins the domain of the page's own default seeds only (integers from 0 to 2^31 - 1).
