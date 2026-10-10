@@ -2,6 +2,8 @@
 
 Phase G2. Written by the session `keen-archimedes-c4cd63` on 2026-10-10; run 1 at 13:20 (UTC+5:30), against `main` `a2879b1` plus the uncommitted `fix-size-option-focus-ring` CSS line. That line changes no reference shot, because no shot has a focused size option.
 
+**Latest: run 3** (2026-10-10 15:43, against `review-set-14`, with the PD-2 adapter): **FAIL**, 0 of 170 at 0.98; table below. Every board shot now shows the design's fixture board (FR-119), so what remains is the port itself.
+
 **Verdict of run 1: FAIL.** 0 of 170 shots reach 0.98. 168 were captured and scored (lowest 0.1218, highest 0.9666). 2 failed with no state driver (`logo-*`). Full output: [`docs/qa/g2/check-visual-run-1.txt`](../g2/check-visual-run-1.txt) (exit 1, `Result: FAIL, 1 warning(s)`). Each shot's `report.json` is in its own folder. The `diff.png` files are not committed (about 19 MB per run; `.gitignore`), and `npm run check:visual` writes them again.
 
 The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**: the gate is per shot (AGENTS.md, the block-conquest lesson).
@@ -12,7 +14,7 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
 - **Config:** [`quality/visual-parity.config.json`](../../../quality/visual-parity.config.json). One "breakpoint" per reference shot (170), named as the shot.
   - Threshold **0.98 per shot** (autonomy-log row 68). The checker warns because 0.98 is below its 0.99 default; row 68 expects that warning.
 - **Reference:** the frozen PNG `design/v0-screenshots/review-set-14/<shot>.png`. Its `SHA1SUMS` has the SHA-1 `e89badbf4bdbe29478563e9f2edef91fcc5c853f`; the user moved the reference from `review-set-13` (`532e0b78…`, row 134) on 2026-10-10 at about 14:18 (autonomy-log row 142). Run 1 was measured against set 13. The served design is not fetched.
-- **Product:** the built page (`vite preview` on `localhost:4174`, started by the adapter), captured in Chromium (Playwright) under the conditions of the reference (`design/README.md`, decision 25):
+- **Product:** the built page (`vite preview` on `localhost:4174`, started by the adapter; stop any other server on that port first), captured in Chromium (Playwright) under the conditions of the reference (`design/README.md`, decision 25):
   - device scale 2;
   - the system scheme from the shot name;
   - reduced motion;
@@ -21,7 +23,9 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
   - no pointer on the page: states are reached by `element.click()` and keyboard focus, never by mouse moves;
   - the page window focused;
   - the same Mac and fonts;
-  - seeded `Math.random` (seed 1, as in `e2e/helpers.ts`).
+  - seeded `Math.random` (seed 1, as in `e2e/helpers.ts`);
+  - **the design's fixture board** of the state (PD-2, since run 3): an init script sets `window.__binarkaCaptureBoard` (FR-119) from `design/v0/lib/boards.json`, as the design route of that state does (the table is in `docs/qa/improvements/PD-2-capture-board-in-adapter.md`). The shot fails if the page does not show that board, because FR-119 ignores an invalid value silently;
+  - **only its own preview** (PD-2): the adapter fails if something already answers on port 4174, or if its preview exits before answering.
 - **Diff:** the checker's own pixelmatch adapter (per-pixel threshold 0.1). The score is 1 − mismatched / total, rounded to 4 places.
 - **Page-height pre-gate:** inert for these shots. Both sides report the viewport height, because the shots are viewport-cropped. A structural mismatch shows in the pixel score instead.
 
@@ -44,12 +48,38 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
 
 ## Known gaps (open, for the convergence sessions)
 
-1. **Board content.** The design shots use fixture boards (`design/v0/lib/boards.ts`). The page draws its puzzle from the seed, so the givens, entries and violations differ in every board shot. Even a perfect port cannot reach 0.98 on board shots until the capture can show the fixture board. This needs a decision from the user, and probably a spec: for example, a capture-only way to load a given board, or new reference shots of the seeded board. It is the first blocker to convergence. **Decided (rows 140 and 142):** a capture-only board (FR-119, amendment draft unsigned); the 6×6 fixtures were made valid puzzles (iteration 16), and the reference moved to `review-set-14`.
+1. **Board content.** The design shots use fixture boards (`design/v0/lib/boards.ts`). The page draws its puzzle from the seed, so the givens, entries and violations differ in every board shot. Even a perfect port cannot reach 0.98 on board shots until the capture can show the fixture board. This needs a decision from the user, and probably a spec: for example, a capture-only way to load a given board, or new reference shots of the seeded board. It is the first blocker to convergence. **Decided (rows 140 and 142):** a capture-only board (FR-119); the 6×6 fixtures were made valid puzzles (iteration 16), and the reference moved to `review-set-14`. **Closed by PD-2 (autonomy-log row 147):** the adapter sets the fixture board for each shot and checks that the page shows it (`docs/qa/improvements/PD-2-proof.txt`, section 1).
 2. **Logo shots** (`logo-light`, `logo-dark`: the logo at 40, 56 and 64 px on the design's `/logo/` route). The page has no such view, so these fail with "no state driver". They are related to NFR-15 (slice H).
 3. **`qa-verify` runs the checker without the adapter.** `scripts/qa-verify.mjs` (locked) calls `node scripts/check-visual-fidelity.mjs` directly, without `CHECK_VISUAL_FIDELITY_ADAPTERS`. That run uses the default adapters: it captures the two config URLs full page at device scale 1. It fails while the design is not served on `127.0.0.1:4175`. **Do not read a qa-verify result for visual-fidelity as NFR-14.** The fix is a process change to a locked file: let the checker read the adapter path from the config, or have qa-verify set the variable. That needs the user's approval (`Refs: PD-<n>`).
 4. **The adapter is under the lock (closed by PD-1, autonomy-log row 140).** It was renamed to `scripts/check-visual-parity-adapters.mjs`, so the lock pattern `check-*.mjs` covers it, and the lock was re-sealed (`docs/qa/improvements/PD-1-lock-visual-parity-adapters.md`).
-5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` starts a 6×6 «Задачка» puzzle and then opens the sheet. `setup-marked` marks 8×8 «Головоломка» and puts keyboard focus on «Почати». `settings-light` and `settings-dark` store the manual theme before load.
-6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits.
+5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` shows the fixture at level 2 («Задачка») and opens the sheet. `setup-marked` marks 8×8 «Головоломка» on the fixture and puts keyboard focus on «Почати». `hint` shows the hint board without its hinted cell and presses «Підказка» once. `settings-light` and `settings-dark` store the manual theme before load.
+6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits. **Closed by PD-2:** it fails when something already answers on the port, and when its own preview exits before answering (`PD-2-proof.txt`, section 3: before, a stale copy on 4174 was scored 0.9125 without a word; after, "something already answers on http://localhost:4174/").
+
+## Run 3 (against review-set-14, PD-2 adapter): by state
+
+Run 3, 2026-10-10 15:43 to 15:46, against `review-set-14`, with the adapter of PD-2 (the fixture boards; own preview only): **FAIL**, exit 1, 0 of 170 at 0.98. 168 scored 0.1187 to 0.9661 (mean 0.8224, telemetry). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-3.txt`](../g2/check-visual-run-3.txt). The per-shot `report.json` files now hold run 3; run 2 is in git history.
+
+The board shots barely moved (hint lowest 0.6182 → 0.6907, win 0.6546 → 0.7277; the rest within about 0.02): the palette, header, type and button styles dominate every shot. The very low `confirm` and `rules` light shots (0.12 to 0.36) are mostly the backdrop: the design dims the whole page behind the dialog and the panel, and the page does not, so almost every pixel differs (seen in `1440-light-confirm/diff.png`). The page column is also narrower than the design's (`#app` 420 px against the design's `--page-max: 34rem`), which moves every block.
+
+| State | Shots | Lowest | Highest |
+|---|---|---|---|
+| confirm | 10 | 0.1187 | 0.9661 |
+| default | 12 | 0.7280 | 0.9583 |
+| eight | 12 | 0.7258 | 0.9324 |
+| four | 10 | 0.7208 | 0.9511 |
+| hint | 10 | 0.6907 | 0.9138 |
+| level | 10 | 0.7251 | 0.9320 |
+| rules | 12 | 0.1315 | 0.9496 |
+| rules-techniques | 8 | 0.1315 | 0.9496 |
+| settings | 12 | 0.8280 | 0.9612 |
+| settings-dark | 5 | 0.8335 | 0.9626 |
+| settings-focus | 4 | 0.8465 | 0.9554 |
+| settings-light | 5 | 0.8382 | 0.9506 |
+| setup | 12 | 0.7269 | 0.9373 |
+| setup-four | 12 | 0.7516 | 0.9410 |
+| setup-marked | 12 | 0.7209 | 0.9362 |
+| setup-marked-four | 12 | 0.7517 | 0.9403 |
+| win | 10 | 0.7277 | 0.9309 |
 
 ## Run 2 (against review-set-14): by state
 

@@ -1,12 +1,12 @@
 {
   "breakpoint": "1366-dark-default",
-  "score": 0.9345,
+  "score": 0.9583,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 650,
   "localHeight": 650,
   "masked": 0,
   "pass": false,
-  "reason": "pixel score 0.9345 below threshold 0.98",
+  "reason": "pixel score 0.9583 below threshold 0.98",
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }
