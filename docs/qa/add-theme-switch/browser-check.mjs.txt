@@ -1,5 +1,5 @@
 // Real-browser smoke test for add-theme-switch, task 6.1. Chromium (Playwright), the built page via vite preview.
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 const URL = 'http://localhost:4319/';
 const OUT = process.argv[2];
 const log = [];

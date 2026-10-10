@@ -3,7 +3,7 @@
   "persistedBy": "orchestrator by hand from both run results (the workflow wrote only a per-run summary, overwritten by run 2)",
   "change": "add-theme-switch",
   "clean": false,
-  "verdict": "SECOND FIX ROUND DONE (2026-10-10, user approval about 09:37, row 130; red 36be736, fix 1446856), confirming run pending. Before it: STOPPED, CONFIRMED CODE DEFECT IN THE CONFIRMING RUN: run 2 confirms that the fix of run-1 finding 3 (a module-level documentTheme shared by every mount) leaves a second mount's aria-checked stale and drops a press on that option, and a later mount resets a session-only choice when setItem throws (FR-103, FR-115). The verifiers rate the real-user reach low (src/main.ts mounts once), but it is a code defect, so the session stops by autonomy-log row 119. Not archived.",
+  "verdict": "STOPPED AGAIN, CONFIRMED CODE DEFECT IN THE SECOND CONFIRMING RUN (wf_aa7a4a9e-9da, after fix round 2: red 36be736, fix 1446856): a remount on the same root, or a mount after every mount is gone, re-reads storage and drops a session-only choice (FR-115, minor); and a major test-integrity finding: 'The stored choice survives a remount' now passes from the in-memory choice and no longer reaches storage. Stopped by autonomy-log row 119 pending the user's decision on a third fix round. Not archived. History: run 2 (wf_6e154572-16a) confirmed the stale aria-checked regression, fixed in round 2 (verified fixed by run 3: no finding repeats it).",
   "runs": [
     {
       "runId": "wf_dfa2a0c3-9a9",
@@ -47,6 +47,98 @@
       ],
       "rejectedTitles": [
         "Finding 1 only partly fixed: the theme value list still exists three times, and nothing checks the lists are complete against each other (minor)"
+      ]
+    },
+    {
+      "runId": "wf_aa7a4a9e-9da",
+      "kind": "second confirming run after fix round 2 (36be736, 1446856, docs 65a0f11)",
+      "baseRef": "d2be569",
+      "headRef": "65a0f11",
+      "confirmed": 8,
+      "contested": 1,
+      "rejected": 2,
+      "confirmedTitles": [
+        "Remounting on the same root (or after every mount has gone) reads storage again and drops a session-only theme choice (FR-115) (minor)",
+        "No test covers pruning a disconnected mount or removing its system listener (minor)",
+        "'The stored choice survives a remount' test no longer reaches storage: the first mount is still connected, so the shared in-memory documentTheme answers (major)",
+        "Pruning a mount whose theme control left the document, and removing its system listener, has no requirement and no test (minor)",
+        "A remount on the same root after a failing setItem still drops the session-only choice (FR-115 'for the rest of the session') (minor)",
+        "Header-fit behaviour (no overflow, no sideways scroll at 320 to 800 px) and the 30rem/22.5rem header CSS have no requirement or scenario in the delta (minor)",
+        "docs/qa/add-theme-switch/README.md still describes the header overflow and the run-2 defect as unfixed (minor)",
+        "Phone-width stills that are still listed show the old overflowing header, and the QA README still calls the header fix and the theme defect unapplied (minor)"
+      ],
+      "contestedTitles": [
+        "Pruning happens only at mount time, so a detached mount keeps its system listener and gets sync calls until the next mount (minor)"
+      ],
+      "rejectedTitles": [
+        "Task 6.1 (browser smoke test) is unticked although its artifacts exist; tasks 4.1 to 4.6 are now backed by fresh evidence (minor)",
+        "The phone browser-check stills and the 62 PASS run come from before fix round 2, so the shipped phone page has no full-page visual check (minor)"
+      ],
+      "confirmedDetail": [
+        {
+          "title": "Remounting on the same root (or after every mount has gone) reads storage again and drops a session-only theme choice (FR-115)",
+          "severity": "minor",
+          "file": "src/ui/play-page.ts",
+          "line": 416,
+          "evidence": "`root.replaceChildren(header, ..., settingsPanel, dialog)` (line ~140) runs before the theme block. So when a page is mounted again on the same root, the old mount's `themeControl` is already disconnected. The prune loop then deletes it, `themeMounts.size` drops to 0, and `if (themeMounts.size === 0) documentTheme = readTheme();` returns 'auto' when the earlier `setItem` threw. `applyTheme()` then switches `<html data-theme>` from the pressed 'dark' back to the system theme. The new test 'A later mount keeps a session-only choice' only covers a second root while the first is still connected, so this path is untested. Real-user reach is low because src/main.ts mounts once.",
+          "suggestion": "Keep the session choice once a press has set it, whether or not any mount is left. For example, add a module-level `sessionChoice: ThemeChoice | null` that the click handler sets, and read storage only while it is null. Or prune after reading, treating a mount that this root's replaceChildren just removed as still live. Add a test: setItem throws, press dark, `mountOn(sameRoot)`, then expect 'dark'."
+        },
+        {
+          "title": "No test covers pruning a disconnected mount or removing its system listener",
+          "severity": "minor",
+          "file": "tests/play-page-theme.test.ts",
+          "line": 141,
+          "evidence": "The fix adds a prune step (`if (mount.control.isConnected) continue; themeMounts.delete(mount); mount.stop();`), and the scope says 'a mount whose theme control left the document is pruned (listener removed)'. A search of the theme and preferences tests finds no assertion that `stub.listeners` shrinks after a root is removed and another mount follows, and none that a pruned mount's sync is no longer called. The `installMatchMedia` stub already records removals ('add records, remove forgets'), so nothing is in the way of such a test. Without it, a regression in `stop()` or in the prune condition would pass the suite.",
+          "suggestion": "Add a test: mount A, remove A's root, mount B, then expect `stub.listeners` to have length 1. Also check that firing a system change with B on 'auto' still updates the document."
+        },
+        {
+          "title": "'The stored choice survives a remount' test no longer reaches storage: the first mount is still connected, so the shared in-memory documentTheme answers",
+          "severity": "major",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/tests/play-page-preferences.test.ts",
+          "line": 123,
+          "evidence": "Scenario (spec.md l.243): 'GIVEN a page on which the player pressed «Темна», and a new root WHEN the page is mounted again on the new root THEN aria-checked=\"true\" is on «Темна» only and data-theme is dark'. The test calls mountFixture (appended to body, still connected), then mountOn(new div). In play-page.ts (~l.412-417) the prune loop keeps the first mount because control.isConnected is true, so `if (themeMounts.size === 0) documentTheme = readTheme();` is skipped and the second mount shows 'dark' from the module variable. The test would still pass if writeTheme stored nothing or readTheme ignored the key. Before fix round 2 every mount re-read storage, so this was a real persistence test. Now it does not check that persistence works.",
+          "suggestion": "Make the scenario's test detach the first root before the remount (first.remove(), or remount on the same root), so the readTheme path runs. Better, also reset the module state, for example with a page reload through vi.resetModules() and a fresh import, so 'survives' means storage. Keep the current two-connected-roots case as its own assertion."
+        },
+        {
+          "title": "Pruning a mount whose theme control left the document, and removing its system listener, has no requirement and no test",
+          "severity": "minor",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/src/ui/play-page.ts",
+          "line": 412,
+          "evidence": "Code: `for (const mount of themeMounts) { if (mount.control.isConnected) continue; themeMounts.delete(mount); mount.stop(); }` plus a `stop` that calls systemQuery.removeEventListener. No scenario in specs/play-page/spec.md covers pruning or listener removal ('Auto follows the system theme live' only says one listener per mount, added once). No test checks that stub.listeners shrinks after a root is removed and a new mount runs, or that a pruned mount no longer gets sync(). This is the behaviour the confirming-run scope names ('a mount whose theme control left the document is pruned (listener removed)'). Also, pruning only happens at the next mount, so a removed mount's listener stays live until then.",
+          "suggestion": "Add a scenario under 'Auto follows the system theme live' or 'Two mounts show one choice': GIVEN two mounts, the first root removed, WHEN a third mount happens THEN stub.listeners has 2 (not 3) and a system change does not touch the removed root. Add the jsdom test. Either amend the spec to say pruning happens lazily at the next mount, or prune inside applyTheme too."
+        },
+        {
+          "title": "A remount on the same root after a failing setItem still drops the session-only choice (FR-115 'for the rest of the session')",
+          "severity": "minor",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/src/ui/play-page.ts",
+          "line": 417,
+          "evidence": "Requirement 'Failing storage does not stop the page': 'a press still applies the chosen theme for the rest of the session'. The new scenario 'A later mount keeps a session-only choice' only covers a second root 'while the first is still mounted'. If the page is remounted on the same root (root.replaceChildren disconnects the old control), the prune empties themeMounts and `documentTheme = readTheme()` gives 'auto', so the choice is lost in the same session. src/main.ts mounts once, so a real user is unlikely to hit this.",
+          "suggestion": "Decide deliberately. Either keep a module flag like 'session choice set' and skip readTheme once a press happened, or amend the requirement and scenario to say the session choice lasts only while a mount is alive. Add a test for the same-root remount case whichever way it goes."
+        },
+        {
+          "title": "Header-fit behaviour (no overflow, no sideways scroll at 320 to 800 px) and the 30rem/22.5rem header CSS have no requirement or scenario in the delta",
+          "severity": "minor",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/e2e/nfr-10-header-fit.spec.ts",
+          "line": 1,
+          "evidence": "The new e2e is tagged `@trace FR-68`, and its own comment says 'This is not an NFR-10 mechanism', yet the file is named nfr-10-*. The delta 'Settings button and panel' says only that the gear's drawing and the 44 px sizes 'are layout, covered by NFR-12 ... and the held NFR-14'. No scenario in specs/play-page/spec.md mentions header children inside the header or horizontal scroll (grep for 'sideways|horizontal|overflow|30rem' in spec.md and design.md finds nothing). style.css l.~646-671 adds a 30rem rule (title 1.75rem, logo 2.75rem, down from 3.5rem) and a 22.5rem rule (0.375rem gaps, which differ from the design's 0.5rem). The change is backed only by docs/frontend-conventions.md rule 18 and the sweep. The behaviour is checked (red seen at 7 sampled widths in fix-round-2-red.txt, and the 1 px sweep reports 0 overflow at 320 to 800), but the spec does not describe it.",
+          "suggestion": "Add a scenario to the delta, for example under 'Settings button and panel' or a MODIFIED layout requirement: 'At every sampled width from 320 px the heading, the gear and «Правила» lie inside the header and the page does not scroll sideways (sampled: the e2e widths; stricter instrument: the 1 px sweep)'. Note the 0.375rem difference from the design as a decision. Rename the e2e file so it does not suggest an NFR-10 mechanism, or trace it explicitly."
+        },
+        {
+          "title": "docs/qa/add-theme-switch/README.md still describes the header overflow and the run-2 defect as unfixed",
+          "severity": "minor",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-dubinsky-5f3d44/docs/qa/add-theme-switch/README.md",
+          "line": 39,
+          "evidence": "README l.39-40: '**Candidate fix (not applied):** port the phone rule...' and '**Status:** no test covers this... nothing above is claimed as fixed.' l.42: '## Open defect from the review gate (not fixed)'. But commit 1446856 applied the phone rule and the 0.375rem gaps, added e2e/nfr-10-header-fit.spec.ts, and added the themeMounts set. header-sweep-run.txt now records 'no header overflow at any width 320..800'. The browser check in browser-check-run.txt (62 PASS) predates the fix and records the 320 header only as OBSERVED.",
+          "suggestion": "Update the README: mark both items fixed at 1446856 with evidence pointers (fix-round-2-red.txt, fix-round-2-green-run.txt, header-sweep-run.txt, 320/375-header-fix-round-2.png). Keep the earlier text as history. Either re-run the browser check after the fix or say that it predates it."
+        },
+        {
+          "title": "Phone-width stills that are still listed show the old overflowing header, and the QA README still calls the header fix and the theme defect unapplied",
+          "severity": "minor",
+          "file": "docs/qa/add-theme-switch/320-header-light.png",
+          "line": 0,
+          "evidence": "I measured the stills pixel by pixel. In 320-header-light.png and 320-header-dark.png, «Правила» ends at x=319 of 320 while the setup button below ends at x=303, so the button sits in the 16 px side gutter. These stills were taken at f74022c, before the fix. The fixed header shows only in the new 320-header-fix-round-2.png (header right edge x=303) and 375-header-fix-round-2.png (x=358). docs/qa/add-theme-switch/README.md was edited in 65a0f11, but only the commit id changed. It still lists 320-header-light/dark as the folder's screenshots and does not list the fix-round-2 stills. It still says 'Candidate fix (not applied)', 'no test covers this' (e2e/nfr-10-header-fit.spec.ts now covers it) and 'Open defect from the review gate (not fixed)', although 1446856 applies both fixes.",
+          "suggestion": "Update the README. Mark 320-header-light/dark.png as before-fix stills (or rename them, e.g. *-f74022c.png) and list 320-header-fix-round-2.png and 375-header-fix-round-2.png as the current header evidence. Change the header section to say the phone rule and the 0.375rem gaps were applied in 1446856, citing header-sweep-run.txt and the new e2e spec. Mark the theme-mount defect as fixed in 1446856, waiting for the confirming run."
+        }
       ]
     }
   ]

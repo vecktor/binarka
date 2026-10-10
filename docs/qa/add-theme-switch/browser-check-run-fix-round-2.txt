@@ -1,0 +1,72 @@
+Browser check re-run after the second review fix round, at 65a0f11, 2026-10-10 09:52 UTC+5:30 (script imports chromium from @playwright/test):
+
+## 375x812
+PASS (a) storage clear, light system: data-theme light
+PASS (b) header order title, gear, «Правила»: h1,settings,rules
+PASS (b) the gear opens the panel
+PASS (b) panel content: Тема|Світла|Темна|Як у системі|Закрити
+PASS (b) «Як у системі» is checked: auto
+PASS (b) bottom sheet on the phone: {"x":0,"y":626.75,"width":375,"height":185.25}
+PASS (c) dark at once: dark, dark, rgb(26, 23, 20)
+PASS (c) focus stays on «Темна», panel open: option:dark
+PASS (c) the board is unchanged
+PASS (c) stored dark, meta #1a1714
+PASS (d) reload: dark, checked dark
+PASS (d) bundle blocked: no board, data-theme dark, background rgb(26, 23, 20)
+PASS (e) light after reload: light, stored light
+PASS (f) system dark, no reload: dark, meta #1a1714
+PASS (f) system back to light: light
+PASS (g) «Dark» stored: light, still stored Dark
+PASS (g) auto checked: auto
+PASS (h) marked 8×8, gear pressed: sheet closed, panel open
+PASS (h) the marked choice is gone when the sheet reopens: 8×8 aria-checked false
+PASS (i) Escape closes the panel
+PASS (i) a click outside closes the panel
+PASS (i) «Закрити» closes the panel
+PASS (j) light: Tab stops gear then «Правила»: settings, rules
+PASS (j) light: focus rings [{"style":"solid","width":3},{"style":"solid","width":3}]
+PASS (j) light: Tab into the panel reaches a theme option with a ring: option:light {"style":"solid","width":3}
+PASS (j) dark: Tab stops gear then «Правила»: settings, rules
+PASS (j) dark: focus rings [{"style":"solid","width":3},{"style":"solid","width":3}]
+PASS (j) dark: Tab into the panel reaches a theme option with a ring: option:light {"style":"solid","width":3}
+PASS (k2) light stored on a dark system: light, rgb(249, 250, 251)
+PASS (k2) press with the sheet opened first: dark, panel true, sheet false
+PASS (k2) a click outside closes the panel, the choice kept: open false, dark, stored dark
+
+## 1280x800
+PASS (a) storage clear, light system: data-theme light
+PASS (b) header order title, gear, «Правила»: h1,settings,rules
+PASS (b) the gear opens the panel
+PASS (b) panel content: Тема|Світла|Темна|Як у системі|Закрити
+PASS (b) «Як у системі» is checked: auto
+PASS (c) dark at once: dark, dark, rgb(26, 23, 20)
+PASS (c) focus stays on «Темна», panel open: option:dark
+PASS (c) the board is unchanged
+PASS (c) stored dark, meta #1a1714
+PASS (d) reload: dark, checked dark
+PASS (d) bundle blocked: no board, data-theme dark, background rgb(26, 23, 20)
+PASS (e) light after reload: light, stored light
+PASS (f) system dark, no reload: dark, meta #1a1714
+PASS (f) system back to light: light
+PASS (g) «Dark» stored: light, still stored Dark
+PASS (g) auto checked: auto
+PASS (h) marked 8×8, gear pressed: sheet closed, panel open
+PASS (h) the marked choice is gone when the sheet reopens: 8×8 aria-checked false
+PASS (i) Escape closes the panel
+PASS (i) a click outside closes the panel
+PASS (i) «Закрити» closes the panel
+PASS (j) light: Tab stops gear then «Правила»: settings, rules
+PASS (j) light: focus rings [{"style":"solid","width":3},{"style":"solid","width":3}]
+PASS (j) light: Tab into the panel reaches a theme option with a ring: option:light {"style":"solid","width":3}
+PASS (j) dark: Tab stops gear then «Правила»: settings, rules
+PASS (j) dark: focus rings [{"style":"solid","width":3},{"style":"solid","width":3}]
+PASS (j) dark: Tab into the panel reaches a theme option with a ring: option:light {"style":"solid","width":3}
+PASS (k) panel under the header at the right: panel {"x":498,"y":104,"width":352,"height":178.25}, header {"x":430,"y":16,"width":420,"height":88}
+PASS (k2) light stored on a dark system: light, rgb(249, 250, 251)
+PASS (k2) press with the sheet opened first: dark, panel true, sheet false
+PASS (k2) a click outside closes the panel, the choice kept: open false, dark, stored dark
+
+## 320x640 (observe, not verified)
+OBSERVED header at 320 light: {"header":[16,16,288,68],"scrollW":320,"children":[[16,24,142,44],[167,28,44,44],[217,28,87,44]]}
+
+62 PASS, 0 FAIL
