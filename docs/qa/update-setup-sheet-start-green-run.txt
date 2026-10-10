@@ -4,7 +4,7 @@ History: the run at f9ddf47 (old id; eb27808 after the re-sign, row 125) was gre
 
 ## npm run lint
 
-exit 
+exit 0 (npm run lint, re-run separately: the first capture lost the code)
 ## npm run test:run
  Test Files  58 passed (58)
       Tests  1295 passed (1295)
