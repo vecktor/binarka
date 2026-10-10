@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 const port = process.argv[2];
 const b = await chromium.launch();
 const p = await (await b.newContext({ viewport: { width: 320, height: 700 } })).newPage();

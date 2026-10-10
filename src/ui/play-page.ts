@@ -9,6 +9,9 @@ import { BUTTONS, CONFIRM, IDLE, LEVELS, LEVEL_GROUP, LEVEL_REASON_4X4, RULES, S
 
 /** The theme choice of the document: shared by every mount, because they all write the one <html data-theme> and meta. */
 let documentTheme: ThemeChoice = 'auto';
+/** Every live mount: its theme control (to tell a mount whose root was replaced or removed), the function that shows documentTheme
+ * on its options, and the function that removes its system listener. */
+const themeMounts = new Set<{ control: HTMLElement; sync: () => void; stop: () => void }>();
 
 export interface PlayPageOptions {
   seedSource?: () => number;
@@ -403,8 +406,15 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   });
 
   // Theme (FR-102 to FR-106, FR-113 to FR-118): the choice, the effective theme on <html> and the one theme-color meta.
-  // The choice belongs to the document (one <html data-theme>), so every mount reads and writes the shared documentTheme.
-  documentTheme = readTheme();
+  // The choice belongs to the document (one <html data-theme>), so every mount reads and writes the shared documentTheme. A mount whose
+  // control left the document is dropped. Storage is read only when no mount is left: otherwise the page keeps the session's choice,
+  // which lives only here when storing it failed (FR-115).
+  for (const mount of themeMounts) {
+    if (mount.control.isConnected) continue;
+    themeMounts.delete(mount);
+    mount.stop();
+  }
+  if (themeMounts.size === 0) documentTheme = readTheme();
   let systemQuery: MediaQueryList | null = null;
   try {
     if (typeof window.matchMedia === 'function') systemQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -424,6 +434,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     const effective = documentTheme === 'auto' ? (systemIsDark() ? 'dark' : 'light') : documentTheme;
     document.documentElement.setAttribute('data-theme', effective);
     document.head.querySelector('meta[name="theme-color"]')?.setAttribute('content', effective === 'dark' ? THEME_COLOR_DARK : THEME_COLOR_LIGHT);
+    for (const mount of themeMounts) mount.sync(); // every mount shows the one choice, so a press on any of them acts (FR-103)
+  }
+
+  function syncThemeOptions(): void {
     for (const [value, button] of themeButtons) button.setAttribute('aria-checked', value === documentTheme ? 'true' : 'false');
   }
 
@@ -435,13 +449,22 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
       applyTheme();
     });
   }
+  const onSystemChange = (): void => {
+    if (documentTheme === 'auto') applyTheme();
+  };
   try {
-    systemQuery?.addEventListener('change', () => {
-      if (documentTheme === 'auto') applyTheme();
-    });
+    systemQuery?.addEventListener('change', onSystemChange);
   } catch {
     // no listener support: the page follows the system at mount only
   }
+  const stop = (): void => {
+    try {
+      systemQuery?.removeEventListener('change', onSystemChange);
+    } catch {
+      // no listener support: nothing was added
+    }
+  };
+  themeMounts.add({ control: themeControl, sync: syncThemeOptions, stop });
   applyTheme();
 
   syncControls();
