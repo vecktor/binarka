@@ -19,3 +19,11 @@ Verdict: a real defect (WCAG 2.4.11, docs/frontend-conventions.md rule 12). Intr
 (3e4fd71, f9ddf47); the green commit e9e8df0 had no sticky footer. Likely fix (NOT applied, the user's stop rule, row 119):
 scroll-padding-bottom on the open sheet equal to the strip height, plus a focus-not-obscured e2e check at 320x700 and
 1366x650 with 4x4 marked.
+
+## After the second fix round (2026-10-10 06:24 +0530, working tree on c4bcc3f with the CSS fix)
+Same method, Tab from «Поле 4×4» with 4x4 marked:
+320x700: 6 options focused by Tab, 0 with the ring under the strip
+1366x650: 6 options focused by Tab, 0 with the ring under the strip
+320x568: 6 options focused by Tab, 0 with the ring under the strip
+375x667: 6 options focused by Tab, 0 with the ring under the strip
+Fix: scroll-padding-bottom calc(2.75rem + 48px) on the open sheet, margin-bottom 24px on the level group in the sheet. Two intermediate values were too small and are recorded in the commit message: calc(2.75rem + 24px) missed the 16px bottom padding (ring 12.8px under the strip at 320x700), calc(2.75rem + 40px) missed the 24px desktop padding and the scroll limit (5px under at both).

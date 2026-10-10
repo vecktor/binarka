@@ -534,10 +534,15 @@ button:focus-visible {
   grid-template-rows: auto auto minmax(2.75rem, 1fr);
   column-gap: 8px;
   align-content: start;
+  /* Focus scrolling keeps a focused option and its ring above the footer strip (FR-65, WCAG 2.4.11): the strip is
+     2.75rem + 16px tall, the sticky row sits on the sheet's bottom padding (16px, 24px from 48rem), and the ring
+     reaches 5px beyond the option (measured in Chromium, docs/qa/update-setup-sheet-start/focus-obscured-repro.txt). */
+  scroll-padding-bottom: calc(2.75rem + 48px);
 }
 
-/* One opaque strip behind the footer row (as in the design): scrolled content never shows between or under the two
-   buttons. It spans every row, sits at the end and sticks with them; it takes no pointer events. */
+/* One strip behind the footer row (as in the design): scrolled content fades out above it and never shows between
+   or under the two buttons. It spans every row, sits at the end and sticks with them; a tap on it reaches no hidden
+   option, because it takes the tap itself (the buttons paint above it). */
 .setup-sheet:popover-open::before {
   content: '';
   grid-column: 1 / -1;
@@ -546,22 +551,24 @@ button:focus-visible {
   position: sticky;
   bottom: 0;
   height: calc(2.75rem + 16px);
-  background-color: var(--color-control-bg);
+  background: linear-gradient(to bottom, transparent, var(--color-control-bg) 16px);
   box-shadow: 0 16px 0 16px var(--color-control-bg);
-  pointer-events: none;
 }
 
 .setup-sheet > * {
   grid-column: 1 / -1;
 }
 
-/* Explicit rows (as in the design): the strip below spans every row, so auto-placement must not move the groups. */
+/* Explicit rows (as in the design): the strip and the two buttons span every row, so auto-placement must not move
+   the groups. */
 .setup-sheet > [data-control='size'] {
   grid-row: 1;
 }
 
 .setup-sheet > [data-control='level'] {
   grid-row: 2;
+  /* Room for the ring of the last level option above the footer strip at full scroll (FR-65, WCAG 2.4.11). */
+  margin-bottom: 24px;
 }
 
 .setup-sheet > .setup-start {
@@ -574,7 +581,7 @@ button:focus-visible {
 
 .setup-sheet > .setup-start,
 .setup-sheet > .setup-close {
-  grid-row: 3;
+  grid-row: 1 / -1;
   align-self: end;
   position: sticky;
   bottom: 0;

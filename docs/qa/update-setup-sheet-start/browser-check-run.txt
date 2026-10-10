@@ -7,7 +7,7 @@ PASS (c) «Почати» and «Закрити» visible
 PASS (d) 8×8 and Мозколамка marked, sheet open ([8,4,true])
 PASS (d) focus stays on the pressed option (radio:Мозколамка Д)
 PASS (d) board and summary unchanged
-OBSERVED (not verified) footer: start 17,752,222,44 close 247,752,111,44; sheet scrollHeight/clientHeight 534,534; one row: true
+OBSERVED (not verified) footer: start 17,752,222,44 close 247,752,111,44; sheet scrollHeight/clientHeight 542,542; one row: true
 PASS (e) «Закрити» discards the mark
 PASS (e) Escape closes the sheet
 PASS (e) Escape discards the mark
@@ -41,7 +41,7 @@ PASS (c) «Почати» and «Закрити» visible
 PASS (d) 8×8 and Мозколамка marked, sheet open ([8,4,true])
 PASS (d) focus stays on the pressed option (radio:Мозколамка Д)
 PASS (d) board and summary unchanged
-OBSERVED (not verified) footer: start 441,587,260,44 close 709,587,130,44; sheet scrollHeight/clientHeight 510,510; one row: true
+OBSERVED (not verified) footer: start 441,591,260,44 close 709,591,130,44; sheet scrollHeight/clientHeight 518,518; one row: true
 PASS (e) «Закрити» discards the mark
 PASS (e) Escape closes the sheet
 PASS (e) Escape discards the mark
@@ -66,7 +66,7 @@ PASS (i) Tab reaches «Почати» before «Закрити»
 PASS (i) each control reached by Tab shows a ring (the first was focused by script, so :focus-visible need not apply)
 PASS (k2) Enter on «Почати» starts the marked 8×8
 PASS (k2) Space on «Почати» starts the marked 6×6
-OBSERVED (not verified) 320x700 4×4 marked: sheet scrollHeight/clientHeight 621,559; footer one row true; «Почати» bottom 684 vs sheet bottom 700
-OBSERVED (not verified) 1366x650 4×4 marked: sheet scrollHeight/clientHeight 538,518; footer one row true; «Почати» bottom 560 vs sheet bottom 585
+OBSERVED (not verified) 320x700 4×4 marked: sheet scrollHeight/clientHeight 629,559; footer one row true; «Почати» bottom 684 vs sheet bottom 700
+OBSERVED (not verified) 1366x650 4×4 marked: sheet scrollHeight/clientHeight 546,518; footer one row true; «Почати» bottom 560 vs sheet bottom 585
 
 RESULT: 0 failing step(s)
