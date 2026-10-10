@@ -1,0 +1,4 @@
+# add-capture-board fix round 2 red, 2026-10-10 15:15 +0530 (confirming review wf_aea0e7f9-1a1; the user approved fix round 2 in chat)
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 a throwing accessor on the global falls back silently > a getter on window.__binarkaCaptureBoard that throws: one seed, the generated board, no throw, no console output
+AssertionError: the mount does not throw: expected [Function] to not throw an error but 'Error: hostile global' was thrown
+      Tests  1 failed | 53 passed (54)

@@ -32,14 +32,38 @@
         "Placeholder `solution: []` passed as a Puzzle is a latent contract hazard (minor, spec-compliance)",
         "Scope drift: validator accepts and tests cover cases beyond the spec text (no amendment needed, informational) (minor, spec-compliance)"
       ]
+    },
+    {
+      "runId": "wf_aea0e7f9-1a1",
+      "kind": "confirming run after fix round 1 (the user asked for it)",
+      "baseRef": "b035cf8",
+      "headRef": "52db0de",
+      "confirmed": 2,
+      "contested": 4,
+      "rejected": 2,
+      "confirmedTitles": [
+        "A throwing accessor on the global itself still escapes the mount: the window property is read outside the try/catch (minor, correctness)",
+        "A throwing getter on the global itself still escapes the mount: the read of window.__binarkaCaptureBoard sits outside the try/catch (minor, spec-compliance)"
+      ],
+      "contestedTitles": [
+        "The try/catch also swallows engine bugs in countSolutions as a silent fallback (minor, correctness)",
+        "The capture branch calls refreshHighlights twice (minor, correctness)",
+        "hinted is still read through its own iterator, while the grids are read by index (minor, spec-compliance)",
+        "Screenshot has no manifest or provenance, so vision-verify will not pick it up (minor, visual)"
+      ],
+      "rejectedTitles": [
+        "hinted is read through its own iterator, which goes against the 'read by index' rule the fix introduced (minor, correctness)",
+        "Only one still exists, so the hinted marker, win state and 4x4/8x8 sizes have no rendered evidence (minor, visual)"
+      ]
     }
   ],
-  "codeDefects": 1,
+  "codeDefects": 2,
   "dispositions": {
     "code defect (hostile value: an overridden Symbol.iterator, a throwing getter or a Proxy makes mount throw instead of falling back silently)": "FIXED in fix round 1 (approved by the user): readGrid copies by index with the length checked per row; readCaptureBoard wraps the validation in try/catch and returns null on any throw. Red 5487adc (5 red); evidence fix-round-1-red.txt, fix-round-1-check.txt (the fixed tests fail on the old loader, pass on the fix; a try/catch-removed mutant is killed), fix-round-1-green-run.txt.",
     "test change inside the round": "The two custom-iterator cases of 5487adc expected a fallback. Once grids are read by index, such a value holds a valid 6x6 board at its indexes (valid under the spec), so they moved to their own test: the board shown is the cells at their indexes, no seed, no throw. That test fails on the old loader (fix-round-1-check.txt).",
     "design build claimed without an artifact": "FIXED: docs/qa/add-capture-board/design-build.txt (exit 0).",
     "fixture mount loop checks only givens and entries": "FIXED: capture-fixtures test 'mounted, the fixtures show their violation, their hinted cell and the win text'.",
-    "rejected (6)": "No action."
+    "rejected (6)": "No action.",
+    "run 2 code defect (a throwing getter on window itself: the global is read outside the try/catch)": "OPEN: needs the user's decision (fix round 2 or hand-off)."
   }
 }

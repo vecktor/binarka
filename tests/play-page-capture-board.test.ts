@@ -566,6 +566,33 @@ describe('@trace FR-119 the grids are read by index, not through their own itera
   });
 });
 
+// Fix round 2 (confirming review wf_aea0e7f9-1a1): the read of the global itself may throw (an accessor defined on window for the key).
+// That too is an invalid value, ignored silently: the mount generates as if the value were absent.
+describe('@trace FR-119 a throwing accessor on the global falls back silently', () => {
+  it('a getter on window.__binarkaCaptureBoard that throws: one seed, the generated board, no throw, no console output', () => {
+    Object.defineProperty(window, KEY, {
+      configurable: true,
+      get: () => {
+        throw new Error('hostile global');
+      },
+    });
+    const consoles = (['error', 'warn', 'log', 'info', 'debug'] as const).map((method) => vi.spyOn(console, method).mockImplementation(() => undefined));
+    const seeds = seedQueue([7]);
+    const spy = generateSpy(bySize({ 6: PAIR_ROW }));
+    let root: HTMLElement | undefined;
+    expect(() => {
+      root = mountPage({ seedSource: seeds.source, generate: spy.generate });
+    }, 'the mount does not throw').not.toThrow();
+    expect.assert(root !== undefined, 'premise: the page mounted');
+    expect(seeds.calls(), 'exactly one seed is taken').toBe(1);
+    expect(spy.calls, 'the generator is called once, at size 6').toEqual([{ size: 6, seed: 7 }]);
+    expect(readBoard(root), 'the generated board is shown').toEqual(PAIR_ROW.givens);
+    consoles.forEach((c) => {
+      expect(c).not.toHaveBeenCalled();
+    });
+  });
+});
+
 describe('@trace FR-119 the value is read once and never written', () => {
   it('after a capture board, a change of the global is not read; «Нова головоломка» takes a seed and generates; nothing is written', () => {
     const value = deepFreeze(sixBase(2));
