@@ -3,7 +3,7 @@
   "persistedBy": "orchestrator by hand from both run results (the workflow wrote only a per-run summary, overwritten by run 2)",
   "change": "add-theme-switch",
   "clean": false,
-  "verdict": "STOPPED AGAIN, CONFIRMED CODE DEFECT IN THE SECOND CONFIRMING RUN (wf_aa7a4a9e-9da, after fix round 2: red 36be736, fix 1446856): a remount on the same root, or a mount after every mount is gone, re-reads storage and drops a session-only choice (FR-115, minor); and a major test-integrity finding: 'The stored choice survives a remount' now passes from the in-memory choice and no longer reaches storage. Stopped by autonomy-log row 119 pending the user's decision on a third fix round. Not archived. History: run 2 (wf_6e154572-16a) confirmed the stale aria-checked regression, fixed in round 2 (verified fixed by run 3: no finding repeats it).",
+  "verdict": "PASSED AT RUN 4 with no code defect: wf_19ff9129-b85 (after fix round 3, red b3f05c6, fix b3fdab9) confirmed 8 minor findings (docs, spec wording, one missing assertion, one visual note), 0 contested, 5 rejected. Seven were fixed as after-run edits without a further run; the visual note is an open user question. History: runs 2 and 3 confirmed code defects and stopped the session (row 119); the user approved fix rounds 2 and 3 (row 130).",
   "runs": [
     {
       "runId": "wf_dfa2a0c3-9a9",
@@ -140,6 +140,67 @@
           "suggestion": "Update the README. Mark 320-header-light/dark.png as before-fix stills (or rename them, e.g. *-f74022c.png) and list 320-header-fix-round-2.png and 375-header-fix-round-2.png as the current header evidence. Change the header section to say the phone rule and the 0.375rem gaps were applied in 1446856, citing header-sweep-run.txt and the new e2e spec. Mark the theme-mount defect as fixed in 1446856, waiting for the confirming run."
         }
       ]
+    },
+    {
+      "runId": "wf_19ff9129-b85",
+      "kind": "third confirming run after fix round 3 (b3f05c6, b3fdab9, docs 30016a3)",
+      "baseRef": "d2be569",
+      "headRef": "30016a3",
+      "confirmed": 8,
+      "contested": 0,
+      "rejected": 5,
+      "confirmedTitles": [
+        "QA README still lists the round-2 defect and the missing header requirement as open after fix round 3 (minor)",
+        "current-state.md was not updated for fix rounds 2 and 3 and still shows the header overflow and the defect as undelivered (minor)",
+        "The new header-fit scenario gives the wrong small-phone CSS: at 320 px the title is 1.5rem and the «Правила» padding is reduced (minor)",
+        "«Effective theme on the document» says only a press, a system change and the head step change data-theme, but a mount changes it too, and the amended remount scenario depends on that (minor)",
+        "design.md was not updated for the round-2/3 theme architecture: one choice shared by the document, lazy drop of removed mounts, session-only values in the preferences module (minor)",
+        "forgetSessionPreferences() is a production export used only by the test lifecycle, and no requirement or design note records it (minor)",
+        "«A removed mount is dropped at the next mount»: the test never checks the scenario's 'not before: the drop is lazy' clause (minor)",
+        "The selected theme option and the keyboard focus ring are the same colour, so a focused option that is not selected looks selected too (minor)"
+      ],
+      "rejectedTitles": [
+        "Lazy drop treats a mount on a still-detached root as gone (minor)",
+        "A session-only choice permanently shadows storage, so a value another tab later writes is never read (minor)",
+        "Coverage summary: 131 scenarios: 130 implemented, 1 partial, 0 missing, 0 contradicted (fix items a to e of run wf_aa7a4a9e-9da verified) (minor)",
+        "After one failed write, readTheme stops reading working storage until a later write succeeds (minor)",
+        "The committed 375 px stills still show the header from before the phone rule; the round-3 browser re-run did not refresh them (minor)"
+      ],
+      "dispositions": [
+        {
+          "title": "QA README still lists the round-2 defect and the missing header requirement as open after fix round 3",
+          "disposition": "fixed after the run (README status, round-3 note, evidence paths)"
+        },
+        {
+          "title": "current-state.md was not updated for fix rounds 2 and 3 and still shows the header overflow and the defect as undelivered",
+          "disposition": "fixed at the hand-off (docs/current-state.md add-theme-switch block)"
+        },
+        {
+          "title": "The new header-fit scenario gives the wrong small-phone CSS: at 320 px the title is 1.5rem and the «Правила» padding is reduced",
+          "disposition": "fixed after the run (scenario names the 1.5rem title, the padding and which gap overflowed)"
+        },
+        {
+          "title": "«Effective theme on the document» says only a press, a system change and the head step change data-theme, but a mount changes it too, and the amended remount scenario depends on that",
+          "disposition": "fixed after the run (a mount added to the list of what changes data-theme)"
+        },
+        {
+          "title": "design.md was not updated for the round-2/3 theme architecture: one choice shared by the document, lazy drop of removed mounts, session-only values in the preferences module",
+          "disposition": "fixed after the run (design.md decisions 6, 6a, 6b and the error-handling line)"
+        },
+        {
+          "title": "forgetSessionPreferences() is a production export used only by the test lifecycle, and no requirement or design note records it",
+          "disposition": "fixed after the run (design.md decision 6b records it; «Failing storage» says 'until the page is reloaded')"
+        },
+        {
+          "title": "«A removed mount is dropped at the next mount»: the test never checks the scenario's 'not before: the drop is lazy' clause",
+          "disposition": "fixed after the run (the lazy assertion added after remove(); green, a strengthening)"
+        },
+        {
+          "title": "The selected theme option and the keyboard focus ring are the same colour, so a focused option that is not selected looks selected too",
+          "disposition": "not fixed: a visual design question for the user (README «Open visual note»), same family as the size-option inset ring"
+        }
+      ]
     }
-  ]
+  ],
+  "cleanNote": "false on purpose: run 4 still confirmed minor findings; they were fixed after the run and not re-reviewed (the pattern of the archived update-setup-sheet-start). No confirmed code defect remains."
 }

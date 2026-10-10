@@ -1,6 +1,6 @@
 # add-theme-switch: browser check and observations
 
-Status: the slice is **NOT archived**. It stopped at the review gate twice under autonomy-log row 119: at about 08:04 (UTC+5:30) after `wf_6e154572-16a` (row 129), and at about 09:58 after `wf_aa7a4a9e-9da`, the confirming run of the second fix round (row 130). The second stop is a remount on the same root that drops a session-only choice, plus a test that no longer reaches storage. See `openspec/changes/add-theme-switch/review-findings.json`.
+Status: the review gate passed with no code defect at the fourth run, `wf_19ff9129-b85` (8 confirmed, all minor: docs, spec wording, one test assertion and one visual note). The slice is archived in the commit that follows these after-run fixes (autonomy-log row 130). History: the slice stopped at the review gate twice under row 119. The first stop came at about 08:04 (UTC+5:30) after `wf_6e154572-16a` (row 129). The second came at about 09:58 after `wf_aa7a4a9e-9da` (row 130). Each was fixed in a further round approved by the user, `1446856` and `b3fdab9`. See `openspec/changes/add-theme-switch/review-findings.json`.
 
 The sections below describe the page at `f74022c` (before the second fix round). Each one ends with a note saying what the second fix round (`1446856`) changed.
 
@@ -42,7 +42,7 @@ The gear (44 px plus a gap) was added to the header. The product never had the d
 - **Visible effect:** «Правила» runs into the 16 px side gutter. At 361 to 369 px the page itself scrolls sideways (marked "S" in `header-sweep-run.txt`), which breaks the no-horizontal-scroll rule; at the other widths only the gutter is lost.
 - **Candidate fix (not applied):** port the phone rule. The remaining 2.8 px at 320 to 322 needs a little more, such as a 0.375rem header gap at 22.5rem.
 - **Status at `f74022c`:** no test covered this.
-- **Fixed in `1446856`** (the second fix round, approved by the user in chat at about 09:37): the phone rule is ported, and the 22.5rem gaps are 0.375rem, a deliberate step under the design's 0.5rem. The new `e2e/nfr-10-header-fit.spec.ts` checks 9 sampled widths. It was red at the 7 widths inside the bands (`fix-round-2-red.txt`) and is green now (`../add-theme-switch-fix-round-2-green-run.txt`). The 1 px sweep of 320 to 800 px finds no overflow (`header-sweep-run.txt`). This is sampled, not continuum. No requirement row states the header fit yet; this was a confirmed minor finding of `wf_aa7a4a9e-9da`.
+- **Fixed in `1446856`** (the second fix round, approved by the user in chat at about 09:37): the phone rule is ported, and the 22.5rem gaps are 0.375rem, a deliberate step under the design's 0.5rem. The new `e2e/nfr-10-header-fit.spec.ts` checks 9 sampled widths. It was red at the 7 widths inside the bands (`fix-round-2-red.txt`) and is green now (`../add-theme-switch-fix-round-2-green-run.txt`). The 1 px sweep of 320 to 800 px finds no overflow (`header-sweep-run.txt`). This is sampled, not continuum. The delta scenario «The header fits its column on phones» (added in round 3) now states the fit. No `docs/requirements.md` row does: it rests on FR-68, A-14 and `docs/frontend-conventions.md` rule 18.
 
 ## Defect from the review gate run `wf_6e154572-16a` (fixed in `1446856`; a follow-on defect is open)
 
@@ -56,3 +56,9 @@ Production mounts once (`src/main.ts`), so a player cannot reach this today. It 
 Suggested fix: keep a module-level set of every mount's sync function, so a press refreshes `aria-checked` everywhere. Do not re-read storage on later mounts once a session choice exists. Extend the two-mount test to check the second mount's `aria-checked` and a press there.
 
 **Second fix round (`1446856`):** a module-level set of live mounts. A press refreshes `aria-checked` on every mount, and a later mount keeps the session choice while another mount is alive. The tests «Two mounts show one choice» and «A later mount keeps a session-only choice» were red first and are green now. **Still open** (`wf_aa7a4a9e-9da`): a remount on the same root, or a mount after every mount is gone, still re-reads storage. Also, «The stored choice survives a remount» now passes from memory and no longer reaches storage.
+
+**Third fix round (`b3fdab9`, red `b3f05c6`):** the session-only value now lives in `src/ui/preferences.ts` and every mount reads `readTheme()`. A remount on the same root, or after every root is gone, keeps the choice. «The stored choice survives a remount» reads storage again: it removes the first root, and it must show a value stored directly. Evidence: `fix-round-3-red.txt`, `../add-theme-switch-fix-round-3-green-run.txt` (1380 of 1380, e2e 80, a11y 54) and `browser-check-run-fix-round-3.txt` (62 PASS at `b3fdab9`). The confirming run `wf_19ff9129-b85` found no code defect.
+
+## Open visual note (a question for the user, not fixed)
+
+`wf_19ff9129-b85` confirmed this, minor: the checked theme option's frame and the keyboard focus ring are both `--color-focus`. So a focused option that is not checked looks checked at a glance, as in `375-focus-option-dark.png`. Only the fill and the bold text tell them apart. It is the same family as the open «size-option inset ring» question. A fix changes the look against `review-set-13` (a selected frame in a primary colour, the ring in ink, as the design does), so it waits for the user or G2.

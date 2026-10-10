@@ -266,6 +266,7 @@ describe('Auto follows the system theme live', () => {
     const removed = mountFixture(PAIR_ROW);
     expect(stub.listeners, 'premise: one listener for the first mount').toHaveLength(1);
     removed.remove();
+    expect(stub.listeners, 'the drop is lazy: the listener stays until the next mount').toHaveLength(1);
 
     const live = mountFixture(PAIR_ROW);
     expect(stub.listeners, 'the removed mount\'s listener is gone, the live mount has one').toHaveLength(1);
