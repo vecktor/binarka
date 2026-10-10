@@ -1590,11 +1590,11 @@ Traces: FR-65, FR-87, FR-95, FR-97, FR-101, FR-102, FR-117, FR-107
 
 - **GIVEN** the parsed `src/ui/style.css`
 - **WHEN** the test reads the rule for the open setup sheet (`.setup-sheet:popover-open`)
-- **THEN** it declares `scroll-padding-bottom` with a length of at least `2.75rem` plus the strip (`calc(2.75rem + 16px)` or more)
+- **THEN** it declares `scroll-padding-bottom` with a length of at least `calc(2.75rem + 48px)` (the strip of `2.75rem + 16px`, the sheet's bottom padding of up to 24px and the 5px ring, the need measured in `docs/qa/update-setup-sheet-start/focus-obscured-repro.txt`); the e2e walk decides the fit
 
 #### Scenario: A focused option in a scrolling sheet is not covered by the footer
 
-- **GIVEN** a real browser at 320×700 and at 1366×650 (e2e, `e2e/nfr-13-a11y.spec.ts`), the setup sheet open with «Поле 4×4» marked, so the sheet scrolls inside itself
+- **GIVEN** a real browser at 320×700, 1366×650, 320×568 and 375×667 (e2e, `e2e/nfr-13-a11y.spec.ts`; sampled), the setup sheet open with «Поле 4×4» marked, so the sheet scrolls inside itself
 - **WHEN** the keyboard moves the focus with Tab from «Поле 4×4» through the size options and the four level options, with no scrolling by script
 - **THEN** for each focused option the bottom of its focus ring (its rect bottom plus the outline offset and width) is at or above the top of the footer strip behind «Почати» and «Закрити»
 

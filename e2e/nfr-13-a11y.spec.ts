@@ -96,6 +96,8 @@ for (const [width, height] of VIEWPORTS) {
 for (const [width, height] of [
   [320, 700],
   [1366, 650],
+  [320, 568],
+  [375, 667],
 ] as const) {
   test.describe(`${width}x${height} focus not obscured by the sheet footer`, () => {
     test.use({ viewport: { width, height } });

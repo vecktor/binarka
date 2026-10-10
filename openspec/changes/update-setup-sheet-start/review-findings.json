@@ -3,7 +3,7 @@
   "persistedBy": "orchestrator by hand: both runs returned reviewEvidence null and wrote no file; counts and titles copied from the run results",
   "change": "update-setup-sheet-start",
   "clean": false,
-  "verdict": "NOT CLEAN: the confirming run has a confirmed code defect (focus obscured by the sticky footer at short viewports, reproduced: docs/qa/update-setup-sheet-start/focus-obscured-repro.txt). The session stopped by the user's rule (autonomy-log row 119); the slice is not archived.",
+  "verdict": "NOT CLEAN, NO CODE DEFECT: the third run (after the user-approved second fix round) confirms both earlier majors fixed; its 12 confirmed and 1 contested findings are minor (test floor, coverage, stale docs, layout notes for G2). After-run fixes in the commit that follows; archived like fix-action-button-targets (confirming run not clean, no product defect).",
   "runs": [
     {
       "runId": "wf_910d6e21-34b",
@@ -52,6 +52,33 @@
         "Centred sheet covers the summary and header at desktop heights (minor)"
       ],
       "contestedTitles": []
+    },
+    {
+      "runId": "wf_571919ed-94e",
+      "kind": "confirming run after the second fix round (user-approved, rows 124-125)",
+      "baseRef": "5835437",
+      "headRef": "f0c10a7",
+      "confirmed": 12,
+      "contested": 1,
+      "rejected": 1,
+      "confirmedTitles": [
+        "Unit check on scroll-padding-bottom accepts 60px, which does not clear the footer (minor)",
+        "Delta spec cites autonomy-log row 126, which does not exist (minor)",
+        "The automated focus-not-obscured check skips 320x568, the worst case in the repro (minor)",
+        "FR-65 requirement text cites autonomy-log row 126, which does not exist (minor)",
+        "docs/current-state.md was not updated after the second fix round and now makes false claims (minor)",
+        "tasks.md annotations are stale after the re-sign and the second fix round (minor)",
+        "The jsdom scroll-padding floor (60 px) is below the value already measured to fail; the 24 px level-group margin the fix needs has no requirement (minor)",
+        "The browser-check README still describes the tree before the second fix round (minor)",
+        "At 1366x650 the centred sheet cuts across the header: the «Бінарка» wordmark and the «Правила» button are half covered (minor)",
+        "The centred desktop sheet moves about 14px when 4×4 is marked, so the size control shifts under the pointer (minor)",
+        "No still shows the fixed major finding: every scrolled-sheet still is at scrollTop 0 with no option focused near the strip (minor)",
+        "README.md for the browser check is stale after 773cb6e: wrong tree and old scroll measurements (minor)"
+      ],
+      "contestedTitles": [
+        "Coverage summary for this confirming run (sampled, information only): both majors from wf_d2edbb2b-4db are fixed and no scenario is missing or contradicted (minor)"
+      ]
     }
-  ]
+  ],
+  "note_old_ids": "Runs 1 and 2 cite pre-re-sign ids (autonomy-log row 125 maps them: 6fcd8d5->5835437, e9e8df0->4f95922, 0c9da1f->89f84bc)."
 }
