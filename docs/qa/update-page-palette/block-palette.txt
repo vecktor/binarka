@@ -1,14 +1,73 @@
-Sun Oct 11 00:38:43 +0530 2026
-676ee03
+# Per-block tool, update-page-palette task 3.5 (re-run after review run wf_42e6a5ef-152, finding: the earlier file was a crash log, COR-2)
+Sun Oct 11 04:36:44 +0530 2026
+HEAD 0f5f706 (the port is 676ee03; HEAD adds docs only)
+Ports checked before the run: 4174 and 4177 free; 4176 (the geometry preview) was held by an orphaned vite preview of an earlier run of this tool, serving the same dist/ from disk (the build at 676ee03); it was stopped after the run (line at the end). The orphan leak is the harness defect noted in autonomy-log rows 159 and 160.
 $ node scripts/visual-block.mjs --block layout --states default,four,eight,level,win,hint --out docs/qa/g2/blocks/palette
-file:///Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/scripts/check-visual-parity-adapters.mjs:213
-    throw new Error(`something already answers on ${localUrl}; stop it first (the capture measures only the preview it starts itself)`);
-          ^
+1024-dark-default              pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1024-dark-eight                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1024-dark-four                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1024-dark-hint                 pixel 1 geometry n/a (state reached by a driver)
+1024-dark-level                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1024-dark-win                  pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1024-light-default             pixel 0.9987 geometry off 0/16, unpaired 0, max delta 0px
+1024-light-eight               pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1024-light-four                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1024-light-hint                pixel 1 geometry n/a (state reached by a driver)
+1024-light-level               pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1024-light-win                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1366-dark-default              pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1366-dark-eight                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1366-light-default             pixel 0.9994 geometry off 0/16, unpaired 0, max delta 0px
+1366-light-eight               pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-dark-default              pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-dark-eight                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-dark-four                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-dark-hint                 pixel 1 geometry n/a (state reached by a driver)
+1440-dark-level                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-dark-win                  pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-light-default             pixel 0.9989 geometry off 0/16, unpaired 0, max delta 0px
+1440-light-eight               pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-light-four                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-light-hint                pixel 1 geometry n/a (state reached by a driver)
+1440-light-level               pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+1440-light-win                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-dark-default               pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-dark-eight                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-dark-four                  pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-dark-hint                  pixel 1 geometry n/a (state reached by a driver)
+320-dark-level                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-dark-win                   pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-light-default              pixel 0.9983 geometry off 0/16, unpaired 0, max delta 0px
+320-light-eight                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-light-four                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-light-hint                 pixel 1 geometry n/a (state reached by a driver)
+320-light-level                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+320-light-win                  pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-dark-default               pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-dark-eight                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-dark-four                  pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-dark-hint                  pixel 1 geometry n/a (state reached by a driver)
+375-dark-level                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-dark-win                   pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-light-default              pixel 0.9981 geometry off 0/16, unpaired 0, max delta 0px
+375-light-eight                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-light-four                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-light-hint                 pixel 1 geometry n/a (state reached by a driver)
+375-light-level                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+375-light-win                  pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-dark-default               pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-dark-eight                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-dark-four                  pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-dark-hint                  pixel 1 geometry n/a (state reached by a driver)
+768-dark-level                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-dark-win                   pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-light-default              pixel 0.998 geometry off 0/16, unpaired 0, max delta 0px
+768-light-eight                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-light-four                 pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-light-hint                 pixel 1 geometry n/a (state reached by a driver)
+768-light-level                pixel 1 geometry off 0/16, unpaired 0, max delta 0px
+768-light-win                  pixel 1 geometry off 0/16, unpaired 0, max delta 0px
 
-Error: something already answers on http://localhost:4174/; stop it first (the capture measures only the preview it starts itself)
-    at startServer (file:///Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/scripts/check-visual-parity-adapters.mjs:213:11)
-    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at async captureLocal (file:///Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/scripts/check-visual-parity-adapters.mjs:270:3)
-    at async file:///Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/scripts/visual-block.mjs:236:35
-
-Node.js v22.21.1
+Block layout: 64 shot(s), geometry within 0.5px (coverage: sampled)
+exit=0
+orphan on 4176: node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-

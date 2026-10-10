@@ -184,12 +184,6 @@ body {
   line-height: 1.2;
 }
 
-.rules-button,
-.settings-button {
-  border-color: var(--color-control-border);
-  background-color: var(--color-control-bg);
-  color: var(--color-text);
-}
 
 /* The board: one column for every size (--column from 48rem caps 8×8 at the 6×6 width). The cells size their digits from the board's
    width (container query units). */
@@ -408,8 +402,9 @@ body {
   }
 }
 
-/* After a win the new-puzzle button is the main action: it takes the bold weight from the hint button. The board host carries
-   data-solved while the board is solved (the design keys this on the solved board with a has-selector, not allowed here). Weights only (geometry). */
+/* After a win the new-puzzle button is the main action: the win swap of A-57 fills the new-puzzle button with the primary colour and the
+   bold weight, and mutes the hint button on the control fill. The board host carries data-solved while the board is solved (the design keys this on
+   the solved board with a has-selector, not allowed here). */
 .board-host[data-solved='true'] ~ .buttons button[data-action='new'] {
   border-color: var(--color-primary);
   background-color: var(--color-primary);

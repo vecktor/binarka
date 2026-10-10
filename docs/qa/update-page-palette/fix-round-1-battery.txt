@@ -1,0 +1,47 @@
+# Battery after fix round 1 of update-page-palette (review run wf_42e6a5ef-152; the user: «Fix all, then archive»)
+Sun Oct 11 04:39:51 +0530 2026
+HEAD 0f5f706 plus the uncommitted fix-round changes (style.css comment and duplicate rule, e2e wanted() check, helper default, evidence files)
+
+$ npm run lint
+exit=0
+
+$ npm run test:run
+ ❯ tests/play-page-controls-text.test.ts (5 tests | 1 failed) 65ms
+ ❯ tests/ui-strings.test.ts (9 tests | 3 failed) 68ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 69 passed (71)
+      Tests  4 failed | 1753 passed (1757)
+exit=1
+
+$ npm run build
+exit=0
+
+$ npx openspec validate --all --strict
+Totals: 3 passed, 0 failed (3 items)
+exit=0
+
+$ node scripts/check-eval-ratchet.mjs
+Result: PASS
+exit=0
+
+$ npm run test:e2e
+  181 passed (21.9s)
+exit=0
+
+$ npm run check:a11y
+  67 passed (13.5s)
+exit=0
+Sun Oct 11 04:41:53 +0530 2026
+
+# The 4 failures above were the NFR-5 guard (no Cyrillic outside src/ui/strings.ts): the fix round's new style.css comment named the two buttons in Ukrainian. The comment was reworded in English, then:
+Sun Oct 11 04:43:13 +0530 2026
+$ npm run lint
+exit=0
+$ npm run test:run
+ Test Files  71 passed (71)
+      Tests  1757 passed (1757)
+exit=0
+$ npm run build
+✓ built in 33ms
+exit=0
+(e2e 181 and a11y 67 above ran on the CSS with the Ukrainian comment; a comment change does not alter the computed page.)

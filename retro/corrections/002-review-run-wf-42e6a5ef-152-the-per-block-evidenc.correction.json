@@ -1,0 +1,15 @@
+{
+  "id": "COR-2",
+  "ts": "2026-10-10T23:06:35.930Z",
+  "utterance": "Review run wf_42e6a5ef-152: the per-block evidence of update-page-palette task 3.5 (docs/qa/update-page-palette/block-palette.txt) is a crash log (port 4174 busy), not the scores it is cited for; the claim '64 shots, geometry 0 off, pixel 1 except light default 0.998 to 0.9996' is unbacked and overstated (geometry was measured on 54 shots; hint shots are pixel-only)",
+  "contradictedClaim": "docs/qa/update-page-palette/block-palette.txt:3",
+  "mappedReqIds": [
+    "NFR-14"
+  ],
+  "gateThatShouldHaveCaught": null,
+  "failureMode": "wrong-claim",
+  "failureModeSource": "explicit",
+  "source": "human",
+  "autoKey": null,
+  "disposition": null
+}

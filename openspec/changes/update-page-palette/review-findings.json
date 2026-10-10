@@ -1,0 +1,212 @@
+{
+  "slice": "update-page-palette",
+  "runs": [
+    {
+      "runId": "wf_42e6a5ef-152",
+      "baseRef": "51a0830",
+      "headRef": "0f5f706",
+      "date": "2026-10-11",
+      "note": "Persisted by hand from the workflow result (the workflow wrote no file), as in block 1. No product-code defect; one major evidence defect (the per-block evidence file was a crash log). The user chose «Fix all, then archive» (autonomy-log row 160).",
+      "confirmed": [
+        {
+          "title": "The cited evidence for the per-block pixel claim is a crash log, not a score",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/docs/qa/update-page-palette/block-palette.txt",
+          "line": 3,
+          "severity": "major",
+          "confidence": "high",
+          "evidence": "The committed file has only the command line and the PD-2 guard error: `Error: something already answers on http://localhost:4174/; stop it first`. It has no shot count, no pixel scores and no summary. Four committed places still cite this file as evidence for '64 shots, geometry 0 off, pixel 1 except light default 0.998 to 0.9996': task 3.5, marked done in openspec/changes/update-page-palette/tasks.md:29; autonomy-log row 159 (docs/autonomy-log.md:173); the run 7 paragraph of docs/qa/visual-diff/README.md; and the Block 2 line in docs/current-state.md:11. The real output, docs/qa/g2/blocks/palette/summary.json (00:38), is untracked and not committed. The committed file is a later failed re-run (00:38:43), so the done-claim's evidence pointer resolves to a failure. AGENTS.md treats this as an unbacked claim: 'Every done/verified claim carries an evidence path'.",
+          "suggestion": "Either commit the per-block summary (summary.json, or a text extract of its per-shot geometryOff/unpaired/pixel rows) and point block-palette.txt at it, or re-run task 3.5 on a free port with the output captured into block-palette.txt. Until then, change the four claims to 'Scope NOT delivered' and record the gap with `npm run correct`. Separately, file the orphaned `vite preview` child that visual-block's capture leaves on 4174 as a harness defect.",
+          "dimension": "correctness",
+          "verdict": "confirmed",
+          "verifierNotes": [
+            "Confirmed by reading the code. The committed docs/qa/update-page-palette/block-palette.txt holds only the command line and the PD-2 guard error (\"something already answers on http://localhost:4174/\"). It has no shot count and no pixel scores. The README (run 7 paragraph), autonomy-log row 159 and current-state.md each cite block-palette.txt as evidence for the \"pixel 1 / 0.998 to 0.9996\" claim. docs/qa/g2/blocks/ is untracked, so summary.json exists locally but is not committed. Task 3.5 in tasks.md is marked [x]; its text names the command, not the .txt file, so the finding slightly overstates \"four places cite this file\". At least three cite it, and task 3.5 is a done-claim whose evidence is this failed run. The evidence pointer resolves to a failure, which breaks the AGENTS.md rule that every done/verified claim carries evidence.",
+            "The finding holds. docs/qa/update-page-palette/block-palette.txt is tracked in git. Its content is a timestamp, the commit hash, the command line, and then the PD-2 guard error \"something already answers on http://localhost:4174/; stop it first\". It has no shot count and no pixel scores. Task 3.5 in tasks.md is marked [x], and its \"done: 64 shots, geometry 0 off, pixel 1 except light default 0.998 to 0.9996\" claim cites exactly this file as evidence. The crops in docs/qa/g2/blocks/ are untracked (git status shows `?? docs/qa/g2/blocks/`), and the task text itself says they are \"not committed\". The evidence pointer therefore resolves to a failure log. That breaks AGENTS.md's rule that every done claim carries an evidence path. I did not open the other three cited places (autonomy-log row 159, the visual-diff README, current-state.md). Row 159 of the autonomy log is in the same commit range, so the cross-reference claim is plausible. The untracked output directory does exist locally, so the real run probably happened. That makes this an unbacked-evidence problem, not a false claim of work, but the severity as a documentation or process defect still stands."
+          ]
+        },
+        {
+          "title": "Comment on the post-win button rules says 'Weights only (geometry)' but the rules now set colours",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/src/ui/style.css",
+          "line": 412,
+          "severity": "minor",
+          "confidence": "high",
+          "evidence": "The comment above `.board-host[data-solved='true'] ~ .buttons button[data-action='new']` still ends with 'Weights only (geometry).' Since this change, both rules also declare `border-color`, `background-color` and `color` from `--color-primary`, `--color-primary-text`, `--color-control-border`, `--color-control-bg` and `--color-text-muted`. The comment now describes the opposite of what the rules do.",
+          "suggestion": "Update the comment to say the rules carry the win swap's paint and weight: the filled «Нова головоломка» and the muted «Підказка», as in A-57.",
+          "dimension": "correctness",
+          "verdict": "confirmed",
+          "verifierNotes": [
+            "Confirmed in src/ui/style.css around lines 410-424. The comment above the post-win button rules ends with \"Weights only (geometry).\" Both rules set border-color, background-color and color from design tokens, along with font-weight. The comment's first clause, \"takes the bold weight from the hint button\", also understates what the rules do. The comment is stale and contradicts the code. The effect is cosmetic, so minor severity fits.",
+            "Confirmed at src/ui/style.css around line 410-425. The comment above the data-solved rules ends with \"Weights only (geometry).\" The rules below set border-color, background-color and color (primary and muted tokens) as well as font-weight. So the comment is stale and contradicts the code. This is a documentation-only inaccuracy with no runtime effect, so it is real but cosmetic. Minor severity is correct."
+          ]
+        },
+        {
+          "title": "The new .rules-button, .settings-button colour rule repeats the base button rule",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/src/ui/style.css",
+          "line": 187,
+          "severity": "minor",
+          "confidence": "medium",
+          "evidence": "The added rule `.rules-button, .settings-button { border-color: var(--color-control-border); background-color: var(--color-control-bg); color: var(--color-text); }` sets the same three values the base `button` rule already gives every button (style.css around lines 433-443). No later rule overrides those properties for these two buttons. The spec delta, design.md and tasks.md never mention it, and no test asserts it. It adds a second place that has to stay in sync when a later block changes the header paint.",
+          "suggestion": "Remove the duplicate rule, or give it a comment explaining why the header buttons need their own binding (for example a later block that changes the base button), so the duplication is intended.",
+          "dimension": "correctness",
+          "verdict": "confirmed",
+          "verifierNotes": [
+            "The duplication is real. style.css lines 187-191 set `.rules-button, .settings-button` to border-color var(--color-control-border), background-color var(--color-control-bg) and color var(--color-text). The base `button` rule at lines 434-444 sets the same three properties to the same values. Neither `.rules-button` (line 176) nor `.settings-button` (line 941) overrides those properties. So the rule changes nothing today, and it is a second place to keep in sync. This is only redundancy: behaviour is unaffected, so it is not a true correctness defect. I did not check the spec delta, design.md or tasks.md for the claim that they never mention the rule.",
+            "The duplicate exists. The rule at src/ui/style.css:187-191 sets border-color, background-color and color for .rules-button and .settings-button using the same tokens that the base `button` rule (line 434-444) already sets. No later rule overrides these properties for the two buttons. The finding is therefore factually accurate. It is a pure redundancy with no runtime effect, so it can't be exploited or cause a user-visible problem. It only adds a maintainability cost, which matches the finding's own minor severity and framing."
+          ]
+        },
+        {
+          "title": "Task 3.5 per-block evidence is a failed run; the claimed numbers are overstated",
+          "file": "docs/qa/update-page-palette/block-palette.txt",
+          "line": 3,
+          "severity": "major",
+          "confidence": "high",
+          "evidence": "tasks.md:29 is ticked with \"done: 64 shots, geometry 0 off, pixel 1 except light default 0.998 to 0.9996 (docs/qa/update-page-palette/block-palette.txt)\". The committed block-palette.txt holds only a crashed run: \"Error: something already answers on http://localhost:4174/; stop it first\" from check-visual-parity-adapters.mjs:213. The numbers come from the uncommitted docs/qa/g2/blocks/palette/summary.json (untracked in git status), and it does not fully back them either. All 10 hint shots (320/375/768/1024/1440 x light/dark) have no geometryOff/unpaired fields, because visual-block.mjs:251 reports \"geometry n/a (state reached by a driver)\". So geometry was measured on 54 shots, not 64. The light-default pixel range there is 0.998 to 0.9994; 0.9996 is the full-page check:visual figure from run 7. docs/qa/visual-diff/README.md:62 and docs/current-state.md (Current phase line) repeat the claim and cite the same file.",
+          "suggestion": "Re-run visual-block.mjs on a free port, save its real stdout in block-palette.txt (or commit summary.json), and change the wording to \"geometry 0 off on 54 measured shots (hint shots n/a); pixel 0.998 to 0.9994 on light default\" in tasks.md 3.5, README run 7 and current-state.md. Per AGENTS.md (done-claims-need-evidence), log the mismatch with `npm run correct`.",
+          "dimension": "spec-compliance",
+          "verdict": "confirmed",
+          "verifierNotes": [
+            "I checked the evidence files directly. docs/qa/update-page-palette/block-palette.txt holds the command line and a crash: \"something already answers on http://localhost:4174/; stop it first\", thrown at check-visual-parity-adapters.mjs:213. It has no results. Task 3.5 in tasks.md is ticked \"done: 64 shots, geometry 0 off, pixel 1 except light default 0.998 to 0.9996\" and cites that file, so the cited evidence does not back the claim. The numbers come from docs/qa/g2/blocks/palette/summary.json, which is untracked. That file has 64 shots, but only 54 carry geometryOff, so geometry was measured on 54 shots. The 10 hint shots have no geometry fields. The light-default pixel scores run 0.998 to 0.9994 (1366 is 0.9994; the others are 0.9980 to 0.9989), so the 0.9996 in the claim is not in the per-block data. All of this matches the finding. Severity \"major\" fits the done-claims-need-evidence rule in AGENTS.md, so I would keep it.",
+            "Confirmed. block-palette.txt contains only the \"something already answers on http://localhost:4174/\" crash from check-visual-parity-adapters.mjs:213, not a successful run. tasks.md 3.5 cites that file as evidence for \"64 shots, geometry 0 off\". The untracked summary.json has 64 shots, but only 54 carry geometryOff, and the sum is 0. The other 10 are the hint shots, which visual-block.mjs:251 prints as \"geometry n/a (state reached by a driver)\". So \"geometry 0 off\" holds for 54 shots, not 64. I did not check the 0.998 to 0.9994 versus 0.9996 pixel range. The evidence-pointer defect and the geometry overstatement are real and reproducible."
+          ]
+        },
+        {
+          "title": "Task 3.3 ticked without an artifact for check:trace and check:acceptance",
+          "file": "openspec/changes/update-page-palette/tasks.md",
+          "line": 27,
+          "severity": "minor",
+          "confidence": "high",
+          "evidence": "Task 3.3 says \"done: eval ratchet PASS (battery.txt); check:trace 0 failures; check:acceptance PASS (run 2026-10-11 about 00:45)\". battery.txt holds lint, test:run, build, openspec validate, eval ratchet, test:e2e and check:a11y, but neither check:trace nor check:acceptance, and no file under docs/qa/update-page-palette/ mentions them. I re-ran both: check:trace gives \"114 MVP FRs checked — 0 failure(s), 115 warning(s)\" (exit 0), and check:acceptance gives \"131 contract(s) ... 0 failure(s) ... Result: PASS\". The claim holds, but the slice had no evidence for it.",
+          "suggestion": "Add both outputs to battery.txt, or put an evidence path on the 3.3 line.",
+          "dimension": "spec-compliance",
+          "verdict": "confirmed",
+          "verifierNotes": [
+            "I read tasks.md line 27 (task 3.3). It cites `battery.txt` only for the eval ratchet. For `check:trace` it says \"0 failures\" and for `check:acceptance` it says \"PASS (run 2026-10-11 about 00:45)\". Neither claim has an evidence path. I grepped docs/qa/update-page-palette/, which holds battery.txt, block-palette.txt, green-run.txt, red-run.txt and smoke-test.txt. None of those files mentions check:trace or check:acceptance. Only docs/current-state.md matches the grep. That is a handoff narrative, not an artifact of the slice's own run. The other task lines (3.1, 3.2, 3.4 to 3.6) point to artifact files. So the evidence gap for 3.3 is real and matches the project rule in AGENTS.md that every done-claim carries an evidence pointer. Severity stays minor, because the claims themselves were reproduced as true.",
+            "Line 27 of tasks.md (task 3.3) cites `battery.txt` only for the eval ratchet. For `check:trace` (\"0 failures\") and `check:acceptance` (\"PASS (run ... about 00:45)\") it gives no resolvable evidence path. A grep of docs/qa/update-page-palette/ for \"check:trace\" and \"check:acceptance\" matched nothing. That directory holds only battery.txt, block-palette.txt, green-run.txt, red-run.txt and smoke-test.txt. The finding's re-run results are consistent with the claim, so the claim is likely true. But the repo's done-claims-need-evidence and process-honesty rules say each done claim needs an evidence path, so this is an unbacked claim on the task line. The impact is a documentation and traceability gap, not a user-facing or security defect. It is reproducible by reading the files, so minor severity is right."
+          ]
+        },
+        {
+          "title": "Smoke test 3.8 was run by the agent and departs from the written steps",
+          "file": "docs/qa/update-page-palette/smoke-test.txt",
+          "line": 2,
+          "severity": "minor",
+          "confidence": "high",
+          "evidence": "Task 3.8 calls for a \"Manual smoke test\" that solves a 4x4 board. The record says \"Run by the agent (not a human) ... mix of real clicks ... and scripted element.click() calls\". Step 6 solved a 6x6 board with 26 hint presses instead. In step 8 the no-flash check was \"not observed frame by frame\", and hover and the glow were not covered. All of this is disclosed.",
+          "suggestion": "Leave the disclosure as is, and have a human repeat steps 2-8 (4x4 solve included) before the archive in task 4.3, or record a waiver.",
+          "dimension": "spec-compliance",
+          "verdict": "confirmed",
+          "verifierNotes": [
+            "I read the cited file and the task. Every claim in the finding matches the record in smoke-test.txt.\n- Line 2 says the test was \"Run by the agent (not a human)\".\n- Line 4 says it used \"a mix of real clicks and key presses ... and scripted element.click() calls\".\n- Step 6 solved a 6x6 board with 26 «Підказка» presses. Task 3.8 in tasks.md asks for a 4x4 solve, and tasks.md itself notes this substitution.\n- Step 8 says the no-flash check was \"not observed frame by frame\".\n- The closing line lists hover and the win glow as not covered.\nTask 3.8 is ticked [x], and task 4.3 (archive) is gated on it. The deviation is therefore real and the step-by-step plan was not followed to the letter. The record is honest about it and no defect was found, so the severity stays minor and the suggestion (a human repeat or a recorded waiver) is reasonable.",
+            "The facts in the finding are accurate. smoke-test.txt says the test was run by the agent and not a human. It used a mix of real clicks and scripted clicks. Step 6 solved a 6x6 board with 26 hint presses, where task 3.8 says 4x4. Step 8 says the no-flash check was not observed frame by frame. The last line says hover and the win glow were not covered. tasks.md 3.8 also records the 6x6 deviation. Task 4.3, the archive, is still open and is gated on the smoke test. No code path or attack is involved. The only question is whether the record matches what the task required, and it differs in the ways described. The finding is minor, since everything is disclosed and no defect was found. It is not refuted, but its severity is low."
+          ]
+        },
+        {
+          "title": "Stale default #f9fafb left in the test helper addThemeColorMeta",
+          "file": "tests/helpers/play-page.ts",
+          "line": 340,
+          "severity": "minor",
+          "confidence": "high",
+          "evidence": "`export function addThemeColorMeta(content = '#f9fafb')` still defaults to the old light page colour, which the palette replaced with #f7f3ea (index.html, preferences.ts THEME_COLOR_LIGHT). Every current caller passes an explicit value ('#000000', '#abcdef'), so no test depends on it today.",
+          "suggestion": "Change the default to '#f7f3ea' (or THEME_COLOR_LIGHT), or remove it, so a future caller does not seed the old colour.",
+          "dimension": "spec-compliance",
+          "verdict": "confirmed",
+          "verifierNotes": [
+            "Confirmed. tests/helpers/play-page.ts line 340 has `addThemeColorMeta(content = '#f9fafb')`. index.html and preferences.ts THEME_COLOR_LIGHT use #f7f3ea, so the default is the old colour. All three callers (play-page-helpers.test.ts:1284, play-page-theme.test.ts:184 and :313) pass explicit values, so the finding is accurate. It is minor: stale default, no current impact.",
+            "The code matches the finding. Line 340 of tests/helpers/play-page.ts has `addThemeColorMeta(content = '#f9fafb')`, and grep finds no `f9fafb` in index.html or src, so the default is stale. All three callers pass an explicit value: tests/play-page-helpers.test.ts:1284 passes '#000000', and tests/play-page-theme.test.ts:184 and :313 pass '#abcdef'. Nothing reaches the default today. It is a test-only helper, so no user or attacker can hit it, and the failure needs a hypothetical future caller that omits the argument. The finding is accurate but is a latent hygiene nit, so I'd downgrade it to nit."
+          ]
+        },
+        {
+          "title": "The cited per-block pixel evidence is a crash log; the real block captures are not committed",
+          "file": "docs/qa/update-page-palette/block-palette.txt",
+          "line": 3,
+          "severity": "minor",
+          "confidence": "high",
+          "evidence": "The committed file (14 lines) holds only the `visual-block.mjs --block layout ... --out docs/qa/g2/blocks/palette` invocation and then `Error: something already answers on http://localhost:4174/; stop it first`. It contains no per-shot results. docs/qa/visual-diff/README.md:62 and docs/current-state.md cite this file as evidence that \"the per-block tool reads pixel 1 on the main-column crops of 64 shots, 0.998 to 0.9996 on the light default shots\". The data that would back the claim is docs/qa/g2/blocks/palette/summary.json and its per-shot product/reference/diff/onion PNGs. That directory is untracked (`?? docs/qa/g2/blocks/`, and `git ls-files docs/qa/g2/blocks` returns nothing). Its numbers also differ from the claim: 58 of 64 shots read 1, and the six light-default shots read 0.998 to 0.9994, not up to 0.9996. All 12 hint shots have no geometryOff or unpaired field, so geometry was not measured for them. I read the untracked stills (375-light-default, 375-dark-default, 375-dark-hint, 375-light-win, 320-dark-win, 1440-light-eight). They look correct. The only difference in the light default diff is the A-57 violating-digit deviation, and its text stays readable on the striped pink cell. So the visual result looks real, but the committed evidence pointer resolves to a failed run.",
+          "suggestion": "Replace block-palette.txt with the output of the successful re-run, or commit docs/qa/g2/blocks/palette/summary.json (and the stills, if wanted) and cite that file. Correct the range to 0.998 to 0.9994. Say that hint shots have pixel scores but no geometry measurement.",
+          "dimension": "visual",
+          "verdict": "confirmed",
+          "verifierNotes": [
+            "I read docs/qa/update-page-palette/block-palette.txt. It holds only the visual-block.mjs command line and an \"Error: something already answers on http://localhost:4174/; stop it first\" stack trace. It has no per-shot results. docs/qa/visual-diff/README.md:62 and docs/current-state.md cite this file as evidence for \"pixel 1 on 64 shots, 0.998 to 0.9996\". `git ls-files docs/qa/g2/blocks` returns nothing, so the real captures are untracked, though the directory exists locally (for example palette/1024-dark-default). The autonomy-log row 159 confirms the first run left an orphaned vite preview on 4174, which is the cause of the crash. I did not re-check the 0.9994 versus 0.9996 range or the missing geometry fields on hint shots. The main point stands: the cited evidence pointer resolves to a failed run, not to the results.",
+            "I confirmed the finding by reading the file and the repo state. The committed docs/qa/update-page-palette/block-palette.txt holds the `visual-block.mjs` command line and then the error \"something already answers on http://localhost:4174/; stop it first\". It has no per-shot results. docs/qa/visual-diff/README.md line 62 and docs/current-state.md both cite this file as evidence for \"pixel 1 on the main-column crops of 64 shots, 0.998 to 0.9996 on the light default shots\". docs/autonomy-log.md row 159 cites it the same way. `git ls-files docs/qa/g2/blocks` returns nothing, and git status shows `?? docs/qa/g2/blocks/`, so the real capture data is untracked. The evidence pointer therefore resolves to a failed run, which breaks the project's own rule that every done-claim must carry a resolvable evidence path. I did not re-check the 58-of-64 count, the 0.9994 maximum or the missing geometry fields on the hint shots. Severity \"minor\" fits: this is a documentation and evidence-pointer defect, and the visual result itself looks real."
+          ]
+        }
+      ],
+      "contested": [
+        {
+          "title": "Coverage summary: 55 scenarios: 54 implemented, 1 partial, 0 missing, 0 contradicted",
+          "file": "openspec/changes/update-page-palette/specs/play-page/spec.md",
+          "line": 1,
+          "severity": "minor",
+          "confidence": "high",
+          "evidence": "The delta has 55 scenarios across 6 requirements (14/4/8/7/8/14). I traced every new or changed scenario to code and tests: the 25 tokens x 2 sets (style.css:4-60), cell/given/hinted/violation bindings (style.css:273-341), the longhand underline and stripe, solved paint on .board-host[data-solved='true'] (style.css:224-235, 413-425), the transparent action row, the hover ring under @media (hover: hover), @keyframes glow under prefers-reduced-motion, exactly one :has( (style.css:506), .message:empty kept rendered (style.css:481), no color-mix, and the three light page-colour copies (index.html:7,34; preferences.ts:8). The paint fixture holds the scenario AND-clauses: violation underline+gradient, other kinds none; hinted dashed/2px/italic/700; hint line 4px primary left border on primary-soft. I did not re-read the unchanged scenarios (every page button is a button, sheet scroll padding, settings-panel geometry, etc.). Their basis is the battery at 676ee03: vitest 1757/1757, e2e 181, a11y 67 (docs/qa/update-page-palette/battery.txt). The partial one is «The given cue is weight» (see the separate finding).",
+          "suggestion": "No action for the implemented scenarios. Handle the partial and the evidence findings below before the review gate (task 4.1).",
+          "dimension": "spec-compliance",
+          "verdict": "contested",
+          "verifierNotes": [
+            "The finding is an informational coverage summary, not a defect claim. I checked its verifiable facts. The spec delta has 55 scenarios across 6 requirements, split 14/4/8/7/8/14, matching the finding. src/ui/style.css has exactly one ':has(' and zero 'color-mix', as claimed. I did not re-trace every scenario to code, so the 54 implemented / 1 partial split is not verified. Nothing in the checked parts contradicts the summary.",
+            "This finding is an informational coverage summary, not a defect. It claims no problem that a user or attacker could trigger, and its own suggestion says \"No action for the implemented scenarios.\" I checked its one verifiable number: spec.md has 55 scenarios across 6 requirements, as stated. The \"1 partial\" scenario is tracked in a separate finding. There is no exploitable or reproducible problem here, so I refute it."
+          ]
+        },
+        {
+          "title": "e2e wanted() applies a deviation's expected value without checking the design value it overrides",
+          "file": "e2e/nfr-14-palette.spec.ts",
+          "line": 176,
+          "severity": "minor",
+          "confidence": "high",
+          "evidence": "wanted() returns d.expected for any (case, element, property) in a sampled deviation group and never checks that the frozen designValue equals d.design. If the design had a different value in one of those slots (for example cell-given border-left-color in win), the test would still demand #847b6d and pass, and the A-57 reason would not apply to that slot. I checked every sampled slot of quality/design-paint.json: all equal d.design (rgb(140, 131, 116) / rgb(179, 38, 30)), and the only absent element is cell-ordinary in 1024-light-win. So nothing is masked today, but a fixture refreeze could hide a real miss.",
+          "suggestion": "In wanted(), add expect(designValue).toBe(d.design) or skip the override when they differ, so a deviation only replaces the exact value it documents.",
+          "dimension": "spec-compliance",
+          "verdict": "contested",
+          "verifierNotes": [
+            "The mechanism is real. wanted() at lines 176-184 returns d.expected for any (case, element, property) match without comparing the frozen designValue to d.design. No other check closes the gap. The pre-test at lines 82-100 only checks the deviation records themselves, not each sampled slot's frozen value. The reviewer says every sampled slot equals d.design today, so nothing is masked now. It is a latent test-hardening gap, so minor severity is right.",
+            "The wanted() code does skip comparing designValue to d.design, as the finding says. But the finding's only scenario is a fixture refreeze that puts a different design value into a deviation slot, and scripts/freeze-design-paint.mjs line 298 already blocks that. It calls fail() when entry.values[property] !== group.design, with the message \"is X in the design, the deviation records Y\". So a refreeze cannot produce a mismatch that the spec would then mask. The finding also admits every sampled slot matches today, so nothing is hidden now. The missing check is redundant defense in depth, not a problem a user or attacker could hit."
+          ]
+        }
+      ],
+      "rejected": [
+        {
+          "title": "Weight test strips every `font: inherit` reset from the stylesheet before computing weights",
+          "file": "tests/play-page-stylesheet.test.ts",
+          "severity": "minor",
+          "confidence": "low",
+          "evidence": "injectForWeights removes every `font: inherit;` in the whole stylesheet, not just the `button` rule that jsdom mishandles. The computed weights (500, 800, 700, 800) are therefore read from a modified cascade. If a future rule gives `.cell` or `.cell-given` a wrong `font-weight` that only works because of a `font` shorthand elsewhere, this test would not catch it. No such case exists today, because the static `expectDecl` checks for 500 and 800 cover the declared values. This is a test-strength note, not an exploitable bug.",
+          "suggestion": "Limit the strip to the `button { font: inherit }` rule, or assert the same weights in the Playwright paint spec (e2e/nfr-14-palette.spec.ts) against a real browser. State in the test that the e2e spec is the authority.",
+          "dimension": "security",
+          "verdict": "rejected",
+          "verifierNotes": [
+            "The regex in `injectForWeights` (tests/play-page-stylesheet.test.ts:513-514) does strip every `font: inherit;` in the stylesheet, not only the one in `button`. But this is deliberate, and the doc comment at lines 508-512 says so. It works around a jsdom cascade bug where a later `font` shorthand overrides an earlier higher-specificity `font-weight` longhand. The finding itself says no failing case exists today. The static `expectDecl` checks (lines 147 and 198-202) already assert the declared weights of `.cell`, `.cell-given` and the violation variants. So a wrong declared weight would be caught regardless of the stripping. What remains is a hypothetical future gap, not a defect in this code. The finding also carries the wrong dimension tag (\"security\"). I could not positively confirm that anything is wrong, so I am treating it as refuted. If it is kept, it should be at most a nit.",
+            "The strip is real: the regex in `injectForWeights` removes every `font: inherit;` in the stylesheet. But the finding is a hypothetical test-strength concern, labelled \"dimension: security\" with no exploit path. The test comment explains the reason: jsdom lets a later `font` shorthand override a higher-specificity `font-weight` longhand, which a real browser does not. The static `expectDecl` checks at lines 147, 198, 199 and 202 already assert the declared weights, so a wrong declared weight would still fail. No current case is missed, and nothing can occur for a real user or attacker."
+          ]
+        },
+        {
+          "title": "«The given cue is weight»: given-in-violation weight 800 is checked only in jsdom, on a modified stylesheet",
+          "file": "tests/play-page-stylesheet.test.ts",
+          "line": 513,
+          "severity": "minor",
+          "confidence": "medium",
+          "evidence": "The scenario says \"the injected stylesheet ... THEN the weights are 500, 800, 700 and 800\". injectForWeights strips every `font: inherit;` before injecting. The comment says jsdom wrongly lets the later `button { font: inherit }` shorthand override the higher-specificity .cell font-weight longhand. The reasoning is sound, since a browser cascades per longhand, so the stripping hides no real defect. Still, the e2e fixture marks the 800 deviation as not sampled (\"sampled\": false, cases []), so nothing checks .cell-given.cell-violation at 800 in a real browser. The jsdom check also runs on text that differs from the shipped file.",
+          "suggestion": "Add a small page-only Playwright check that marks a given cell in a violation (capture board or DOM class) and asserts computed font-weight 800. Or record in design.md that the 800 is checked in jsdom only, with the font:inherit workaround named.",
+          "dimension": "spec-compliance",
+          "verdict": "rejected",
+          "verifierNotes": [
+            "The finding doesn't show a wrong mechanism. It describes a test-coverage gap. The jsdom test strips `font: inherit` and documents why in a comment. A browser cascades per longhand, so the stripped text gives the same weights a browser would. The finding itself calls this reasoning sound and says the workaround hides no real defect. design.md lines 26 and 29 specify the `.cell-given.cell-violation { font-weight: 800 }` rule, and the jsdom test checks the resulting weight. No claim in the code is incorrect. A missing real-browser check of the 800 weight is a nice-to-have, not a defect in the mechanism. I could not confirm the e2e fixture's \"sampled: false\" entry in my search, so that part is unverified. Under the default-to-refuted rule, I refute it.",
+            "The finding describes a test-coverage and process observation, not a defect that a user or attacker could hit. The shipped CSS has an explicit `.cell-given.cell-violation { font-weight: 800; }` rule at src/ui/style.css:340-341. The jsdom test strips `font: inherit` only to work around a jsdom cascade quirk, and the finding itself admits that this \"hides no real defect\". Nothing in the product is wrong, so there is nothing to reproduce. I did not look for the e2e fixture claim (`sampled: false`). That claim is a coverage gap at most, and is minor."
+          ]
+        },
+        {
+          "title": "Undocumented drift: text-underline-offset declarations",
+          "file": "src/ui/style.css",
+          "line": 336,
+          "severity": "minor",
+          "confidence": "high",
+          "evidence": "The spec names text-decoration-line and text-decoration-thickness for .cell-violation and text-decoration-line for «Скинути». The code also declares `text-underline-offset: 0.12em` (style.css:336) and `0.2em` (style.css:395). No requirement or scenario backs them; they are probably copied from the design. The @media (hover: hover) wrapper on the hover ring is also unstated in the spec, but it matches the design.",
+          "suggestion": "Add one sentence to the spec delta noting that the underline offsets follow the design, or leave them out if they are not intended.",
+          "dimension": "spec-compliance",
+          "verdict": "rejected",
+          "verifierNotes": [
+            "The code does declare text-underline-offset at style.css:336 (0.12em) and :395 (0.2em), and the spec requirement text and scenarios do not mention it. But the claim that it is undocumented is wrong. The change's own design.md, decision 6 (line 31), says the port uses `text-decoration-line`, `text-decoration-thickness` and `text-underline-offset`, and that the computed paint matches the design. The offsets are therefore a recorded, intentional decision in the OpenSpec change. They are pure cosmetic values with no requirement to contradict, and the spec does not forbid them. The finding is also minor and its own suggestion is optional, so no real defect remains.",
+            "The two declarations exist at src/ui/style.css:336 and :395, but the finding calls them \"undocumented\", and that is wrong. openspec/changes/update-page-palette/design.md, decision 6, says the port uses `text-decoration-line`, `text-decoration-thickness` and `text-underline-offset`, and that the computed paint matches the design. The extra property is therefore a recorded, intentional choice, not unexplained drift. The spec requirements mention only the line and thickness longhands, but the spec does not forbid the offset. There is also no user-visible or attacker-reachable defect: it is a cosmetic property that matches the design, and the only gap is that one spec sentence is silent about it."
+          ]
+        }
+      ]
+    }
+  ]
+}
