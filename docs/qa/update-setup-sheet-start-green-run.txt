@@ -1,16 +1,15 @@
-# update-setup-sheet-start green run at f9ddf47 (2026-10-10 02:36 +0530, orchestrator; src/ and tests/ clean at HEAD)
+# update-setup-sheet-start green run at 773cb6e (2026-10-10 06:24 +0530, orchestrator; src/ and tests/ clean at HEAD; after the second fix round)
 Coverage of the Playwright runs: sampled (the viewports and states in e2e/), not continuum.
-History: a first fix-round run at the previous commit had 2 e2e failures (NFR-12 at 320 and 375: size options 38 px wide, a grid placement bug in the new footer strip), fixed at f9ddf47.
+History: the run at f9ddf47 (old id; eb27808 after the re-sign, row 125) was green before the confirming run found the focus-obscured defect; this run follows its fix.
 
 ## npm run lint
-> eslint .
 
-exit 0
+exit 
 ## npm run test:run
  Test Files  58 passed (58)
-      Tests  1294 passed (1294)
+      Tests  1295 passed (1295)
 ## npm run build
-✓ built in 44ms
+✓ built in 47ms
 ## npx openspec validate update-setup-sheet-start --strict
 Change 'update-setup-sheet-start' is valid
 ## npx openspec validate --all --strict
@@ -21,10 +20,7 @@ Result: PASS
 ## node scripts/check-traceability.mjs
 traceability: 113 MVP FRs checked — 0 failure(s), 135 warning(s)
 wrote docs/qa/traceability-report.md and trace/trace.json
-(FR-100/FR-101 warnings:)
-WARN  [recording-evidence] FR-100 is not referenced by any recording manifest under docs/qa/
-WARN  [recording-evidence] FR-101 is not referenced by any recording manifest under docs/qa/
 ## npm run test:e2e
-  45 passed (13.0s)
+  47 passed (13.5s)
 ## npm run check:a11y
-  36 passed (9.0s)
+  38 passed (9.1s)
