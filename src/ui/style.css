@@ -893,18 +893,20 @@ button:focus-visible {
   #app {
     --gap: var(--space-4);
     --reserve: 24rem;
-    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 5rem) + 5 * var(--board-gap-6) + 2 * var(--board-pad-6) + 2px));
+    /* The cells' upper size: 5rem here, 4.5rem from 64rem. The column and the board read it, so each formula is written once (review run 2). */
+    --cell-cap: 5rem;
+    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), var(--cell-cap)) + 5 * var(--board-gap-6) + 2 * var(--board-pad-6) + 2px));
     --page-max: calc(var(--column) + max(var(--page-pad), env(safe-area-inset-left)) + max(var(--page-pad), env(safe-area-inset-right)));
     padding-top: var(--space-5);
     padding-bottom: var(--space-4);
   }
 
   .board {
-    --cell-max: clamp(2.75rem, calc((100dvh - var(--reserve)) / var(--n)), 5rem);
+    --cell-max: clamp(2.75rem, calc((100dvh - var(--reserve)) / var(--n)), var(--cell-cap));
   }
 
   .board[data-size='8'] {
-    --cell-max: clamp(1.5rem, calc((100dvh - var(--reserve)) / 8), 5rem);
+    --cell-max: clamp(1.5rem, calc((100dvh - var(--reserve)) / 8), var(--cell-cap));
   }
 
   .page-header h1 {
@@ -919,18 +921,10 @@ button:focus-visible {
   }
 }
 
-/* Desktop: the same height-aware size and floors, capped at 4.5rem cells. The 8×8 rule is repeated because it outranks plain .board. */
+/* Desktop: the same height-aware size and floors, capped at 4.5rem cells (the column and the board follow --cell-cap). */
 @media (min-width: 64rem) {
   #app {
-    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 4.5rem) + 5 * var(--board-gap-6) + 2 * var(--board-pad-6) + 2px));
-  }
-
-  .board {
-    --cell-max: clamp(2.75rem, calc((100dvh - var(--reserve)) / var(--n)), 4.5rem);
-  }
-
-  .board[data-size='8'] {
-    --cell-max: clamp(1.5rem, calc((100dvh - var(--reserve)) / 8), 4.5rem);
+    --cell-cap: 4.5rem;
   }
 }
 

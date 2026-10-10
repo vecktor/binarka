@@ -1,0 +1,9 @@
+# Review run 2 follow-up: a malformed percent escape no longer ends the dev server's run, 2026-10-10 22:43 +0530.
+# scripts/visual-block.mjs started on one shot; while its design server (127.0.0.1:4177) ran, three requests were sent with curl.
+GET /%E0%A4%A                -> 400   (malformed escape: 400; before the fix, per review run 2 (derived from the code, not reproduced here), decodeURIComponent threw in the handler and ended the process)
+GET /..%2f..%2fpackage.json  -> 403   (escape outside the build: 403, fix round 1)
+GET /                        -> 200   (served)
+# The tool then finished its shot:
+Block layout: 1 shot(s), geometry within 0.5px (coverage: sampled)
+tool exit 0
+# The freeze script's server has the same guard (scripts/freeze-design-geometry.mjs); it ran in full for the 32-case fixture after the change.

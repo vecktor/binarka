@@ -38,8 +38,11 @@ const SEED = config.seed ?? 1;
 
 /** Each block names the elements it owns; one selector serves both sides (the design keeps the page's data-* contract). */
 const BLOCKS = {
+  // The same 16 elements as quality/design-geometry.json (scripts/freeze-design-geometry.mjs), so the cross-check measures what the gate test does.
   layout: [
     '.page-header',
+    '.page-header h1',
+    '.page-header .logo',
     '[data-action="settings"]',
     '[data-action="rules"]',
     '[data-action="setup"]',
@@ -49,7 +52,10 @@ const BLOCKS = {
     '[data-action="hint"]',
     '[data-action="reset"]',
     '[data-action="new"]',
+    '.messages',
     '[data-message="idle"]',
+    '[data-message="hint"]',
+    '[data-message="win"]',
   ],
 };
 const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win']);
@@ -76,7 +82,14 @@ function serveDesign() {
   if (!existsSync(join(root, 'index.html'))) throw new Error('design/v0/out is missing: build the design first (design/README.md)');
   const rootAbs = resolve(root);
   const server = createServer((req, res) => {
-    let p = resolve(rootAbs, `.${decodeURIComponent(new URL(req.url, 'http://x').pathname)}`);
+    let path;
+    try {
+      path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+    } catch {
+      res.writeHead(400).end(); // a malformed escape must not end the run (review run 2)
+      return;
+    }
+    let p = resolve(rootAbs, `.${path}`);
     if (p !== rootAbs && !p.startsWith(rootAbs + sep)) {
       res.writeHead(403).end(); // never serve outside the build folder
       return;
@@ -163,6 +176,8 @@ function geometry(design, product) {
     const d = design[i];
     const p = product[i];
     if (!d || !p) return { sel, unpaired: true, design: d, product: p };
+    // Two 0x0 boxes paint nothing, so their positions are not geometry (as in e2e/nfr-14-layout-geometry.spec.ts).
+    if (d.w === 0 && d.h === 0 && p.w === 0 && p.h === 0) return { sel, delta: 0, off: false, design: d, product: p };
     const delta = Math.max(Math.abs(d.x - p.x), Math.abs(d.y - p.y), Math.abs(d.x + d.w - p.x - p.w), Math.abs(d.y + d.h - p.y - p.h));
     return { sel, delta: Math.round(delta * 100) / 100, off: delta > TOLERANCE_PX, design: d, product: p };
   });

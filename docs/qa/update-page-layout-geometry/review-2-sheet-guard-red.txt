@@ -1,0 +1,5 @@
+# Review run 2 follow-up: the setup-sheet guard (e2e/nfr-14-layout-geometry.spec.ts, «1366x650: the open setup sheet shows all four levels above the footer strip without scrolling») red without fix round 1's line-height: normal on .setup-sheet, 2026-10-10 22:41 +0530. Mutant applied alone, restored from git (4cc25dd) after the run; with the fix the test passes.
+
+    +   "level 4 ends at 564, strip top 496",
+  1 failed
+  ✘  1 [layout] › e2e/nfr-14-layout-geometry.spec.ts:125:1 › @trace NFR-14 1366x650: the open setup sheet shows all four levels above the footer strip without scrolling (178ms)

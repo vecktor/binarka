@@ -21,6 +21,8 @@ interface GeometryCase {
   height: number;
   state: string;
   captureBoard: unknown;
+  /** One action after load, as the capture adapter does (the hint state: one press of the hint button). */
+  afterLoad?: 'press-hint';
   boxes: Record<string, Box | null>;
 }
 interface Fixture {
@@ -40,6 +42,7 @@ const EXPECTED_SHOTS = [
   ...NO_1366.map((w) => `${w}-light-four`),
   ...NO_1366.map((w) => `${w}-light-level`),
   ...NO_1366.map((w) => `${w}-light-win`),
+  ...NO_1366.map((w) => `${w}-light-hint`),
 ].sort();
 
 test('@trace NFR-14 the fixture covers exactly the sampled layout cases of the spec', () => {
@@ -55,6 +58,12 @@ for (const c of fixture.cases) {
     }, c.captureBoard);
     await page.goto('/');
     await expect(page.locator('[data-board] [data-cell]').first()).toBeVisible();
+    if (c.afterLoad === 'press-hint') {
+      await page.locator('[data-action="hint"]').evaluate((el: HTMLElement) => {
+        el.click();
+      });
+      await expect(page.locator('[data-message="hint"]')).not.toBeEmpty();
+    }
     const actual = await page.evaluate((sels: string[]) => sels.map((s) => {
       const el = document.querySelector(s);
       if (!el) return null;
@@ -106,7 +115,32 @@ for (const [width, height] of [
     expect.soft(m, 'the panel and the header exist').not.toBeNull();
     if (m === null) return;
     expect(Math.abs(m.panel.right - m.header.right), `panel right ${m.panel.right} vs column right ${m.header.right}`).toBeLessThanOrEqual(0.5);
-    expect(m.panel.top, `panel top ${m.panel.top} at or below the header bottom ${m.header.bottom}`).toBeGreaterThanOrEqual(m.header.bottom);
+    // The design places it 0.5rem below the header (its 6rem top margin, the header ending at 5.5rem); review run 2 asked for both bounds.
+    expect(Math.abs(m.panel.top - (m.header.bottom + 8)), `panel top ${m.panel.top}, 0.5rem under the header bottom ${m.header.bottom}`).toBeLessThanOrEqual(0.5);
     expect(m.panel.left, `panel left ${m.panel.left} inside the column (from ${m.header.left})`).toBeGreaterThanOrEqual(m.header.left - 0.5);
   });
 }
+
+// Review run 2 (wf_aa7e0963-7b7): the guard of fix round 1's sheet fix. The body's 1.5 line height of this change slid the fourth level under the
+// sticky footer at 1366x650 (it showed fully before); the sheet keeps the normal line height until its own block. Opened at the default 6x6 board,
+// before any scrolling, every level option ends above the footer strip (the start button's top minus its 16 px strip, as in nfr-13-a11y.spec.ts).
+test('@trace NFR-14 1366x650: the open setup sheet shows all four levels above the footer strip without scrolling', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 650 });
+  await page.goto('/');
+  await expect(page.locator('[data-board] [data-cell]').first()).toBeVisible();
+  await page.locator('[data-action="setup"]').click();
+  await expect(page.locator('[data-section="setup"]')).toBeVisible();
+  const m = await page.evaluate(() => {
+    const sheet = document.querySelector('[data-section="setup"]');
+    const start = document.querySelector('[data-action="setup-start"]');
+    const levels = Array.from(document.querySelectorAll('[data-control="level"] [role="radio"]'));
+    if (sheet === null || start === null) return null;
+    return { scrollTop: sheet.scrollTop, stripTop: start.getBoundingClientRect().top - 16, bottoms: levels.map((l) => l.getBoundingClientRect().bottom) };
+  });
+  expect(m, 'the sheet and its start button exist').not.toBeNull();
+  if (m === null) return;
+  expect(m.scrollTop, 'premise: not scrolled').toBe(0);
+  expect(m.bottoms, 'four level options').toHaveLength(4);
+  const hidden = m.bottoms.map((b, i) => ({ i, b })).filter(({ b }) => b > m.stripTop).map(({ i, b }) => `level ${i + 1} ends at ${b}, strip top ${m.stripTop}`);
+  expect(hidden, 'level options under the footer strip').toEqual([]);
+});

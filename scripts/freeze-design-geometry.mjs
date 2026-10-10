@@ -7,8 +7,8 @@
 // them (playwright.config.ts: Playwright's "Desktop Chrome" device, the viewport set per case, reduced motion, light
 // scheme), so the test compares like with like. Box edges are CSS px as getBoundingClientRect gives them.
 //
-// Sampling: the light shots of review-set-14 whose state is reached at mount (default, four, eight, level, win), at the
-// reference viewports; geometry does not depend on the scheme. Coverage: sampled, never continuum.
+// Sampling: the light shots of review-set-14 whose state is reached at mount (default, four, eight, level, win) or by one press of the hint
+// button (hint), at the reference viewports; geometry does not depend on the scheme. Coverage: sampled, never continuum.
 //
 // Usage: node scripts/freeze-design-geometry.mjs   (design/v0/out must be built; port 4177 must be free)
 import { createHash } from 'node:crypto';
@@ -37,7 +37,10 @@ export const LAYOUT_SELECTORS = [
   '[data-message="hint"]',
   '[data-message="win"]',
 ];
-const STATES = ['default', 'four', 'eight', 'level', 'win'];
+const STATES = ['default', 'four', 'eight', 'level', 'win', 'hint'];
+// The page reaches a state after load with one action, as the capture adapter does: the hint state is the hint board without its hinted cell,
+// then one press of the hint button (FR-119 Q4). The e2e test replays it.
+const AFTER_LOAD = { hint: 'press-hint' };
 const PORT = 4177;
 const OUT = 'quality/design-geometry.json';
 
@@ -51,7 +54,14 @@ const root = 'design/v0/out';
 if (!existsSync(join(root, 'index.html'))) throw new Error('design/v0/out is missing: build the design first (design/README.md)');
 const rootAbs = resolve(root);
 const server = createServer((req, res) => {
-  let p = resolve(rootAbs, `.${decodeURIComponent(new URL(req.url, 'http://x').pathname)}`);
+  let path;
+  try {
+    path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  } catch {
+    res.writeHead(400).end(); // a malformed escape must not end the run (review run 2)
+    return;
+  }
+  let p = resolve(rootAbs, `.${path}`);
   if (p !== rootAbs && !p.startsWith(rootAbs + sep)) {
     res.writeHead(403).end(); // never serve outside the build folder
     return;
@@ -79,7 +89,7 @@ try {
       const r = el.getBoundingClientRect();
       return [s, { x: r.x, y: r.y, w: r.width, h: r.height }];
     })), LAYOUT_SELECTORS);
-    out.push({ shot: c.name, width: c.width, height: c.height, state: c.state, captureBoard: captureBoardFor(c.state), boxes });
+    out.push({ shot: c.name, width: c.width, height: c.height, state: c.state, captureBoard: captureBoardFor(c.state), ...(AFTER_LOAD[c.state] ? { afterLoad: AFTER_LOAD[c.state] } : {}), boxes });
     await ctx.close();
   }
 } finally {

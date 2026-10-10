@@ -36,6 +36,33 @@
         "The stricter instrument (1 px width sweep) is declared but no task schedules it before archive",
         "The requirement's Traces line omits FR-63 and FR-38, which it relies on"
       ]
+    },
+    {
+      "runId": "wf_aa7e0963-7b7",
+      "kind": "confirming run after fix round 1",
+      "baseRef": "6ccaf8c",
+      "headRef": "4cc25dd",
+      "confirmed": 11,
+      "contested": 2,
+      "rejected": 0,
+      "confirmedTitles": [
+        "The spec delta was not updated when fix round 1 added the hint line to the fixture: its element list and its 0x0 clause still name only the win line (minor, correctness)",
+        "A shown hint line's geometry (the ported 4px accent, padding, radius and the message area with a hint) is never checked against the design (minor, correctness)",
+        "Both dev static servers still crash on a malformed percent escape: decodeURIComponent throws inside the request handler (minor, correctness)",
+        "The --column formulas still repeat the board's cell-size clamp and its caps; the run-1 fix only removed the gap/pad duplication (minor, correctness)",
+        "Dev static servers can crash on a malformed percent-escape in the URL (minor, security)",
+        "Task 4.5 is ticked at 4cc25dd, but its run-6 artifact is not in that commit (the run-1 Task 3.4 pattern again) (minor, spec-compliance)",
+        "The spec's element list and 0×0 clause leave out the hint line, which is the 16th element in the fixture and the e2e test (minor, spec-compliance)",
+        "The setup-sheet line-height regression fix has no automated guard; its only evidence is a vision judgement (minor, spec-compliance)",
+        "design.md says borders take an existing colour token, but the new .board and .message borders use the `transparent` keyword (minor, spec-compliance)",
+        "The cross-check instrument measures 11 elements, while the gate test measures 16 (minor, spec-compliance)",
+        "At 1366x650 dark, the idle footer line now shows half-clipped just below the setup dialog's bottom edge (minor, visual)"
+      ],
+      "contestedTitles": [
+        "The settings-panel placement check only bounds the panel's top from one side, so a panel pushed far down still passes (minor, correctness)",
+        "Coverage summary: 6 scenarios: 6 implemented, 0 partial, 0 missing, 0 contradicted. All 14 confirmed run-1 findings are fixed as their dispositions say. (minor, spec-compliance)"
+      ],
+      "rejectedTitles": []
     }
   ],
   "codeDefects": [
@@ -282,5 +309,220 @@
       "docs/qa/update-page-layout-geometry/fix-round-1-block-layout.txt",
       "docs/qa/g2/check-visual-run-6.txt"
     ]
-  }
+  },
+  "confirmingRunFindings": [
+    {
+      "title": "The spec delta was not updated when fix round 1 added the hint line to the fixture: its element list and its 0x0 clause still name only the win line",
+      "file": "openspec/changes/update-page-layout-geometry/specs/play-page/spec.md",
+      "line": 5,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The requirement lists the elements as '... the message area `.messages`, the idle line `[data-message=\"idle\"]` and the win line `[data-message=\"win\"]`', and the zero-size clause explains only 'the design hides an empty win line with `display: none`'. LAYOUT_SELECTORS in scripts/freeze-design-geometry.mjs now has 16 entries, including `[data-message=\"hint\"]`, and design.md decision 6 says 'Both lines are among the fixture's elements.' So the spec describes 15 elements while the test pins 16.",
+      "suggestion": "Add `[data-message=\"hint\"]` to the requirement's element list. Reword the 0x0 sentence so it covers both the empty hint line and the empty win line (both live regions, FR-63).",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The spec requirement's element list ends with the idle line and the win line and omits [data-message=\"hint\"]. Its zero-size clause mentions only the empty win line. LAYOUT_SELECTORS in scripts/freeze-design-geometry.mjs includes [data-message=\"hint\"] at line 37. design.md decision 6 says an empty hint is also 0x0 and that both lines are among the fixture's elements. The spec delta is stale relative to the fixture and the design. The severity is minor, as the finding says.",
+        "Confirmed by reading the files. The spec requirement's element list ends with the idle line and the win line and does not name `[data-message=\"hint\"]`. The 0x0 sentence explains only the empty win line. `scripts/freeze-design-geometry.mjs` lists `[data-message=\"hint\"]` at line 37, between idle and win. design.md decision 6 covers the empty hint line as 0x0 and says \"Both lines are among the fixture's elements\". So the spec delta lags the fixture and the design note. The mismatch is real but limited to documentation. It is a minor spec-completeness issue, so severity stays the same."
+      ]
+    },
+    {
+      "title": "A shown hint line's geometry (the ported 4px accent, padding, radius and the message area with a hint) is never checked against the design",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 39,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`const STATES = ['default', 'four', 'eight', 'level', 'win'];` leaves out the design's `hint` route (design/v0/app/hint exists). In every fixture case the hint line is 0x0 on both sides, and the e2e check skips it with `if (want.w === 0 && want.h === 0 && got.w === 0 && got.h === 0) return;`. Fix round 1 moved the accent to `.message[data-message='hint']:not(:empty)`. The test proves the empty line is 0x0, but no geometry check ever sees the non-empty rule, so a wrong padding, border or radius on a shown hint would pass.",
+      "suggestion": "Add a hint case. For example, extend the e2e with a test that presses «Підказка» on the fixture board and compares against boxes frozen from the design's /hint/ route. Or record in design.md, under the coverage declaration, that the shown-hint geometry is not sampled in this block.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. In scripts/freeze-design-geometry.mjs, STATES is ['default','four','eight','level','win']. It leaves out the hint route, although quality/visual-parity.config.json defines hint breakpoints (e.g. \"1024-light-hint\"). The shown-hint selector '[data-message=\"hint\"]' is sampled only in non-hint states, where the line is empty and 0x0. e2e/nfr-14-layout-geometry.spec.ts skips boxes that are 0x0 on both sides. The `.message[data-message='hint']:not(:empty)` rule in src/ui/style.css (4px border, radius) is therefore never checked against the design's shown-hint boxes by the geometry check. design.md item 6 describes the empty-hint behaviour but does not declare that shown-hint geometry is unsampled. The pixel check:visual may cover hint frames, but that is a different instrument from this geometry check. The finding is real. Minor severity is fair.",
+        "The gap is real. STATES in scripts/freeze-design-geometry.mjs omits 'hint', though design/v0/out/hint exists. The fixture and e2e skip 0x0 boxes on both sides, and design.md's coverage line lists only the default, four, eight, level and win states. The shown-hint rule in src/ui/style.css (.message[data-message='hint']:not(:empty), with the 4px accent and radius) is therefore never compared against the design, so wrong padding, border or radius on a shown hint would pass. This is a test-coverage gap, not a user-facing defect, and design.md doesn't say the shown hint is unsampled. Minor severity fits."
+      ]
+    },
+    {
+      "title": "Both dev static servers still crash on a malformed percent escape: decodeURIComponent throws inside the request handler",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 54,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`let p = resolve(rootAbs, `.${decodeURIComponent(new URL(req.url, 'http://x').pathname)}`);` runs before any guard. A request such as `/%E0%A4%A` makes decodeURIComponent throw URIError. Nothing catches the throw in the http request callback, so it becomes an uncaught exception and ends the whole freeze run (or the visual-block run, which has the same code at scripts/visual-block.mjs:79). The fix round's new path guard is correct (`..%2f` escapes get 403), but this parse error is not handled.",
+      "suggestion": "Wrap the decode in try/catch and answer 400 on URIError in both serveDesign (visual-block.mjs) and the freeze script's server. Better still, move the guarded resolve into one shared helper so the two copies cannot drift.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed in code. scripts/freeze-design-geometry.mjs:54 and scripts/visual-block.mjs:79 both call decodeURIComponent(new URL(req.url, 'http://x').pathname) as the first statement inside the createServer callback. There is no try/catch there and nothing wraps the handler. A path like /%E0%A4%A makes decodeURIComponent throw URIError. A synchronous throw in an http 'request' listener is an uncaught exception and kills the Node process, so the freeze or visual run would die. The 403 path guard comes after the decode, so it doesn't help. Reachability is low: the servers bind only to 127.0.0.1 and are hit only by the Playwright-driven design pages, which don't send malformed escapes. That makes this a robustness issue in dev tooling, not a likely failure. Minor severity is right.",
+        "Confirmed by reading the code. scripts/freeze-design-geometry.mjs:54 and scripts/visual-block.mjs:79 call decodeURIComponent on the request pathname inside the createServer callback, before the 403 guard and with no try/catch. A request like /%E0%A4%A throws URIError, which is uncaught in the handler and ends the process. I did not run the servers. Exposure is narrow: both servers bind to 127.0.0.1, normal browser traffic only requests fixed design-build URLs, and only a local process or a no-cors fetch from a web page in the user's own browser could trigger it. The effect is aborting a dev run. The finding is real but minor, and the stated severity fits."
+      ]
+    },
+    {
+      "title": "The --column formulas still repeat the board's cell-size clamp and its caps; the run-1 fix only removed the gap/pad duplication",
+      "file": "src/ui/style.css",
+      "line": 896,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`--column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 5rem) + 5 * var(--board-gap-6) + ...))` repeats the `.board { --cell-max: clamp(2.75rem, calc((100dvh - var(--reserve)) / var(--n)), 5rem); }` written at line 903. Lines 924 and 928 do the same with 4.5rem. Changing the floor, the reserve divisor or the cap in only one place would quietly make the column stop matching the 6x6 board width, which is the drift run 1 flagged. The disposition fixed the gap/pad part only.",
+      "suggestion": "On #app inside each breakpoint, declare a named 6x6 cell size (for example `--cell-6: clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 5rem)`) and build --column from it. Or declare the caps as variables (`--cell-cap`) that both the --column and .board --cell-max formulas read.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "I read src/ui/style.css lines 880-940. The duplication is real. In the 48rem block, `--column` on `#app` hard-codes `clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 5rem)`. The `.board { --cell-max: clamp(2.75rem, calc((100dvh - var(--reserve)) / var(--n)), 5rem) }` rule repeats the same floor, divisor and cap. The 64rem block repeats both with 4.5rem. The two formulas agree today, so this is not a live bug. The only defect is drift risk: changing the floor, the reserve or a cap in one place without the other would make the column stop matching the 6x6 board width. The suggested fix is feasible, because `--reserve` is defined on `#app` and a `--cell-6` variable could be built from it. The finding already rates itself minor, so I keep the severity.",
+        "I read src/ui/style.css lines 880-940. The duplication is real. At line 896, --column hardcodes clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 5rem). Line 903 repeats the same formula in .board --cell-max, with var(--n) in place of 6. The 64rem block repeats the same pairing with 4.5rem at lines 924 and 928. The gap and pad parts are already shared through --board-gap-6 and --board-pad-6, but the floor, the divisor and the caps are written twice per breakpoint. Nothing else guards this, such as a comment tying the two formulas together or a variable they both read.\n\nThis is a maintainability risk, not a current defect. Today the two formulas agree, so no user sees a wrong layout. If someone edits only one copy, the column would stop matching the 6x6 board width. No attacker or real user can trigger that. Only a future edit can. I therefore confirm the finding as minor maintainability and downgrade its severity, since its correctness dimension is overstated."
+      ]
+    },
+    {
+      "title": "Dev static servers can crash on a malformed percent-escape in the URL",
+      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/scripts/freeze-design-geometry.mjs",
+      "line": 59,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The path guard added in fix round 1 is correct: the resolved path must equal or sit under the build root, and anything else gets 403. But `decodeURIComponent(new URL(req.url,'http://x').pathname)` is not wrapped in try/catch, in this script or in scripts/visual-block.mjs. A request such as `/%E0%A4%A` throws URIError inside the request handler and takes down the Node process. The servers bind to 127.0.0.1 and run only for the length of a dev run, so only a local process could trigger it. Symlinks inside design/v0/out are not resolved either, which is also dev-only.",
+      "suggestion": "Wrap the decode in try/catch and answer 400 on failure. Optionally use realpath for the root check.",
+      "dimension": "security",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism is real. In scripts/freeze-design-geometry.mjs line 54 and scripts/visual-block.mjs line 79, `decodeURIComponent(new URL(req.url,'http://x').pathname)` runs synchronously inside the createServer request handler. Neither handler has a try/catch. The try/finally at freeze line 70 only covers the browser loop, and visual-block's try at line 101 is a readiness probe. A malformed escape such as `/%E0%A4%A` makes decodeURIComponent throw a URIError. Node's http server does not catch an exception thrown in a request listener, so it becomes an uncaught exception and the process exits. Impact is limited as the finding says: the servers bind to 127.0.0.1 and only run during dev runs. Minor severity is right.",
+        "Confirmed by reading the code. Line 54 of scripts/freeze-design-geometry.mjs calls decodeURIComponent on the URL pathname inside the createServer handler. Line 79 of scripts/visual-block.mjs does the same. Neither call is in a try/catch, and no other handler or 'error' listener covers it. A request path like /%E0%A4%A makes decodeURIComponent throw URIError synchronously. A synchronous throw inside a Node http request listener is an uncaught exception, so the process exits. The path guard added in fix round 1 comes after the decode and does not help. I did not run the crash. The reachability is limited: the servers bind to 127.0.0.1 and run only during a dev run, so only a local process, or a web page in a browser on the same machine, could send the request. The result is a denial of service against a dev script, with no data exposure or file access. The mechanism is real, but the severity is trivial."
+      ]
+    },
+    {
+      "title": "Task 4.5 is ticked at 4cc25dd, but its run-6 artifact is not in that commit (the run-1 Task 3.4 pattern again)",
+      "file": "openspec/changes/update-page-layout-geometry/tasks.md",
+      "line": 32,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Task 4.5 reads: \"[x] 4.5 Battery again (...); run 6 `docs/qa/g2/check-visual-run-6.txt` (1 of 170; the setup sheet above run 4).\" `git ls-tree -r 4cc25dd` lists every fix-round-1-*.txt artifact but not docs/qa/g2/check-visual-run-6.txt. That file arrived only in the next commit, 389080b (\"docs: run 6 of check:visual ...\"). design.md and review-findings.json also cite run-6 numbers (0.8254, 0.8214, 0.8445, 0.8439) at a commit where the evidence did not yet exist. Run 1 confirmed the same defect for Task 3.4.",
+      "suggestion": "Add a note to Task 4.5, as was done for 3.4, saying the run-6 evidence landed in 389080b. In future, tick a task in the same commit as its artifact or after it.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Verified with git. `git ls-tree -r 4cc25dd` lists check-visual-run-1 through run-5 and no run-6. Run-6 first appears in 389080b. `tasks.md` at 4cc25dd already has `[x] 4.5` citing `docs/qa/g2/check-visual-run-6.txt`, and the working-tree line is the same. Task 3.4 carries the explanatory note about the same pattern; 4.5 has none. The mechanism is real, but the impact is minor: a process or evidence-ordering issue, and the artifact exists one commit later.",
+        "Confirmed by git. `git ls-tree -r 4cc25dd` has no `docs/qa/g2/check-visual-run-6.txt` (count 0). The file first appears in 389080b. Task 4.5 at 4cc25dd is already ticked and cites that path. The current tasks.md line 32 has no note about the late landing. Task 3.4 on line 24 does have such a note (\"the evidence landed in b342d87, one commit after the ticked task\"), so the missing note on 4.5 is an inconsistency in the same file. This is a process and traceability defect, not a runtime or security problem. It is real and reproducible, but low-impact, so it stays minor."
+      ]
+    },
+    {
+      "title": "The spec's element list and 0×0 clause leave out the hint line, which is the 16th element in the fixture and the e2e test",
+      "file": "openspec/changes/update-page-layout-geometry/specs/play-page/spec.md",
+      "line": 5,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The spec lists 15 elements, ending with \"... the message area `.messages`, the idle line `[data-message=\"idle\"]` and the win line `[data-message=\"win\"]`\". Its 0×0 clause names only \"an empty win line\". The code does more: fix round 1 added `[data-message=\"hint\"]` to LAYOUT_SELECTORS in scripts/freeze-design-geometry.mjs and to quality/design-geometry.json `selectors` (16 entries). proposal.md already says \"the boxes of 16 main-column elements\", and design.md decision 6 says an empty hint is also 0×0 and that \"Both lines are among the fixture's elements.\" The enforced behaviour goes beyond the normative text.",
+      "suggestion": "Amend the requirement. Add the hint line `[data-message=\"hint\"]` to the element list, and widen the 0×0 sentence to \"an empty hint or win line\" (FR-63).",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The spec's element list ends with the idle line and win line and never names [data-message=\"hint\"], and the 0x0 clause mentions only \"an empty win line\". The code does track the hint line: scripts/freeze-design-geometry.mjs includes '[data-message=\"hint\"]' at line 37, and quality/design-geometry.json lists it in selectors (line 29) and in every sampled case. The normative text therefore omits an element the enforced fixture covers. This is a minor spec/code drift, as the finding says.",
+        "I confirmed the mismatch by reading the files. The spec's element list ends with the idle line and the win line, so it leaves out `[data-message=\"hint\"]`. Its 0×0 clause names only an empty win line. scripts/freeze-design-geometry.mjs line 37 lists `'[data-message=\"hint\"]'` in the layout selectors. quality/design-geometry.json lists it as the second of three message selectors in `selectors` and in each case's boxes. The enforced geometry therefore covers 16 elements, while the normative text lists 15. The gap is a spec-versus-code inconsistency and is minor. A real user cannot trigger it, but a reproducible reader of the spec would be misled about what is checked."
+      ]
+    },
+    {
+      "title": "The setup-sheet line-height regression fix has no automated guard; its only evidence is a vision judgement",
+      "file": "src/ui/style.css",
+      "line": 645,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Fix round 1 added `.setup-sheet { line-height: normal; }` because \"the fourth level slid under the sticky footer at 1366x650 ... and the sheet grew over the board at 375\" (design.md, side effects). fix-round-1-sheet.txt shows the regression was found and checked only with stills reviewed by a vision judge. No test asserts that the fourth level is fully visible above the footer at 1366×650 when not scrolled. The NFR-13 check only covers the focus ring at full scroll, and it stayed green while the regression existed. The spec says panels are outside this requirement, so this is an undocumented, untested side-effect fix. The style.css comment also calls fix-round-1-sheet.txt \"stills\", but that file is a text index that points to the PNGs.",
+      "suggestion": "Add an e2e check, for example in the nfr-13 or nfr-10 suite: open the setup sheet at 1366×650 and 375×812, then assert that the last level option's bottom is at or above the footer's top without scrolling. Alternatively, add a scenario to the setup-sheet spec so the next block (the sheet port) cannot silently reintroduce the regression.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The cited code matches. `.setup-sheet { line-height: normal; }` is at src/ui/style.css:645, and its comment cites the 1366x650 and 375 regression and points to fix-round-1-sheet.txt. I found no automated guard for the unscrolled layout. The only test touching the sheet's stylesheet is the `scroll-padding-bottom` check in tests/play-page-stylesheet.test.ts. The only e2e check near the footer is the focus-ring-under-footer check in e2e/nfr-13-a11y.spec.ts, which runs at 1366x650 but only checks focus ring visibility. I found no test that asserts the last level option sits above the footer's top without scrolling, and none that checks line-height. The evidence is therefore stills reviewed by a vision judge. The \"stills\" wording is a trivial nit, because that file is a text index and the PNGs are in the stills/ directory. The missing guard is real, but it is a minor test-coverage gap rather than a functional bug.",
+        "Confirmed at src/ui/style.css:645. `.setup-sheet { line-height: normal; }` exists with a comment citing the fourth level sliding under the sticky footer at 1366x650 and the sheet growing at 375, with evidence in a stills index. A grep of tests/ and e2e/ finds no assertion on line-height or lineHeight. The only nearby e2e check, nfr-13-a11y.spec.ts lines 177-230, Tabs through the options and checks focus ring bottom against the strip top. The test body never reads lineHeight, so it does not pin this rule. It is a different property (focus ring, scrolled), and the finding says it stayed green during the regression. No test asserts that the last level is fully visible above the footer without scrolling. The mechanism is real: if someone removes or overrides the rule, for example when the sheet is ported in the next G2 block, nothing fails. This is a test-coverage gap, not a user-facing defect today. The sheet scrolls internally and the focus path is guarded. Real-world impact is only a possible future silent regression, so it is minor and I downgrade it."
+      ]
+    },
+    {
+      "title": "design.md says borders take an existing colour token, but the new .board and .message borders use the `transparent` keyword",
+      "file": "openspec/changes/update-page-layout-geometry/design.md",
+      "line": 10,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Decision 2 says \"Borders take their colour from an existing token (`--color-cell-border`, `--color-control-border`, `--color-given-border`, `--color-focus`).\" proposal.md says \"Where a ported border needs a colour, it uses an existing token.\" The code differs: style.css `.board { border-width: 1px; border-style: solid; border-color: transparent; }` and `.message { border-width: 2px; border-style: solid; border-color: transparent; }`. FR-65's scan allows `transparent`, so no rule is broken. The doc claim is still inaccurate, and the design's visible board frame is not painted yet.",
+      "suggestion": "Amend decision 2: borders whose paint belongs to the palette block (the board frame and the message frames) are `transparent` until that block, and the others use the listed tokens.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "src/ui/style.css has `.board` (lines 183-185) and `.message` (lines 371-373) with `border-color: transparent`. Decision 2 in design.md and proposal.md line 25 say ported borders use an existing colour token. The doc is inaccurate for those two borders, as the finding says. It is a minor documentation mismatch and breaks no rule.",
+        "src/ui/style.css sets `border-color: transparent` on .board (line 185), .message (373), and several button rules (438, 1017, 1060). design.md decision 2 and proposal.md line 25 say ported borders take an existing colour token. So the doc statement is inaccurate for these borders. It is a documentation-only inaccuracy with no user-facing effect, and FR-65 allows `transparent`. The finding's minor severity is right."
+      ]
+    },
+    {
+      "title": "The cross-check instrument measures 11 elements, while the gate test measures 16",
+      "file": "docs/qa/update-page-layout-geometry/fix-round-1-block-layout.txt",
+      "line": 2,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "design.md Instruments says: \"Cross-check: `scripts/visual-block.mjs --block layout` ... geometry off 0, unpaired 0 on the same states.\" Every row of fix-round-1-block-layout.txt reads \"geometry off 0/11\". The e2e gate compares 16 selectors. The cross-check therefore covers a narrower element set than the gate it corroborates, and the docs do not say so. Per the sampling-blindness lesson, an instrument's sample set should be declared.",
+      "suggestion": "State the cross-check's 11-element set in design.md, or make visual-block's layout block use LAYOUT_SELECTORS from freeze-design-geometry.mjs so both instruments sample the same elements.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed by reading the code. The layout block in scripts/visual-block.mjs lists 11 selectors, which is why the output file reads \"geometry off 0/11\". LAYOUT_SELECTORS in scripts/freeze-design-geometry.mjs lists 16. The cross-check omits .page-header h1, .page-header .logo, .messages, [data-message=\"hint\"] and [data-message=\"win\"]. design.md line 20 describes the cross-check as covering \"the same states\" and never mentions its narrower element set. The sampling-blindness lesson in AGENTS.md says a check's sample set should be declared, so this is a real but minor gap. The gate itself covers all 16 elements.",
+        "The mismatch is real. The layout block in scripts/visual-block.mjs lists exactly 11 selectors, which matches the \"0/11\" in every row of fix-round-1-block-layout.txt. The gate uses LAYOUT_SELECTORS from scripts/freeze-design-geometry.mjs, which the finding puts at 16 (I did not count it). design.md line 20 says the cross-check runs \"on the same states\", not on the same elements, and it does not declare the 11-element set. So the narrower sample is undocumented, and the finding's description of the code is accurate. The impact is small, because the cross-check is only corroboration and the gate itself covers all 16 selectors. It is a documentation gap, not a user-facing defect, so I would downgrade it."
+      ]
+    },
+    {
+      "title": "At 1366x650 dark, the idle footer line now shows half-clipped just below the setup dialog's bottom edge",
+      "file": "docs/qa/update-page-layout-geometry/stills/1366-dark-setup.png",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "In the post-fix still 1366-dark-setup.png, the dialog's bottom border cuts through the backdrop line «Правила — кнопка «Правила» вгорі.» (about y=855 at 2000px display width). Only the lower half of the glyphs shows under the dialog, and it reads as a rendering glitch. In before-block-1-1366-dark-setup.png (6ccaf8c) nothing shows below the dialog. Block 1's main-column geometry moved the idle text down: 1366-light-default.png puts it at about y=826-866, right where the dialog ends. The dialog's top edge cutting through the «Бінарка» title was already there before block 1. The fix round's `.setup-sheet { line-height: normal }` brought back all four levels, but it does not change this footer overlap, and fix-round-1-sheet.txt does not mention it.",
+      "suggestion": "When the sheet block ports the dialog's top offset and height, check this frame again. Either end the dialog clear of the idle line, or have the backdrop cover or hide the main column's message area while the sheet is open. Until then, record it in fix-round-1-sheet.txt as a known block-1 side effect, so the confirming review does not treat the 1366 setup frame as clean.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed by viewing both stills. In the post-fix 1366-dark-setup.png, the backdrop line «Правила — кнопка «Правила» вгорі.» is half-clipped just below the dialog's bottom edge (about y=855). In before-block-1-1366-dark-setup.png nothing shows below the dialog. The fix-round-1-sheet.txt does not mention this overlap. This is a minor visual side effect of block 1 moving the idle text down, and the finding's description of it is accurate.",
+        "I looked at both stills. In 1366-dark-setup.png, a faint, half-clipped line of backdrop text («Правила — кнопка «Правила» вгорі.») shows just below the dialog's bottom edge at about y=855. In before-block-1-1366-dark-setup.png, nothing shows below the dialog. The finding's description matches what is on screen. The effect is small and low contrast, and it only appears at this viewport with the dialog open, so it stays minor. I did not read the CSS, so this rests on the stills alone."
+      ]
+    },
+    {
+      "title": "The settings-panel placement check only bounds the panel's top from one side, so a panel pushed far down still passes",
+      "file": "e2e/nfr-14-layout-geometry.spec.ts",
+      "line": 108,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "`expect(m.panel.top, ...).toBeGreaterThanOrEqual(m.header.bottom);` is the only vertical assertion. The CSS places the panel at `margin: 6rem ...` with the comment 'The header ends at 5.5rem; the panel starts 0.5rem below', and the fixture's header bottom is 88px (y 24 + h 64), so the panel top should be about 96px. A regression that drops the panel 200px down would still pass the check that the design pins.",
+      "suggestion": "Also assert `Math.abs(m.panel.top - m.header.bottom - 8) <= 0.5`, or compare against a frozen design box for the open settings panel.",
+      "dimension": "correctness",
+      "verdict": "contested",
+      "verifierNotes": [
+        "At e2e/nfr-14-layout-geometry.spec.ts:108 the only vertical assertion is `panel.top >= header.bottom`, with no upper bound. A panel pushed 200px down would pass it. The fixture cases above it (shots at mount states) never open settings, so nothing else pins the panel's vertical placement. The CSS and design say the panel starts 0.5rem below the header (design/v0/app/binarka.css near line 959). The gap is real but small: the test title says \"sits under the header\", and the left and right edges are pinned tightly. Severity stays minor.",
+        "The facts hold. Line 109 only asserts `panel.top >= header.bottom`, and style.css:982 sets `margin: 6rem` for the panel, so a panel dropped 200px would still pass. But this is a choice about how strict the test is, not a defect a user or attacker could trigger. The test's stated contract (comment at lines 86-88, quoting the spec) is that the panel \"stays under the header\" with its right edge on the column's right edge. The panel's own geometry is explicitly outside this block, and the right-edge and left-edge checks do pin the horizontal placement. The \"at or below\" check matches the spec sentence, and a vertical offset is not part of that requirement. The finding is a speculative suggestion to tighten the test, rated low confidence, with no demonstrated way for it to hide a real spec violation."
+      ]
+    },
+    {
+      "title": "Coverage summary: 6 scenarios: 6 implemented, 0 partial, 0 missing, 0 contradicted. All 14 confirmed run-1 findings are fixed as their dispositions say.",
+      "file": "openspec/changes/update-page-layout-geometry/specs/play-page/spec.md",
+      "line": 1,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "How each scenario is covered: (1) Default page at 6 viewports, (2) 4×4/8×8/level, (3) solved board: e2e/nfr-14-layout-geometry.spec.ts runs one test per fixture case and pins EXPECTED_SHOTS to the 27-shot matrix. (4) Board host marks solved: tests/play-page-layout-geometry.test.ts covers mount, hint, click solve, un-solving click, size change, new puzzle and reset; fix-round-1-mutation.txt shows 3 of 3 mutants killed. (5) Settings panel from 48rem: e2e settings loop at 768/1024/1366/1440, red against the old placement (fix-round-1-settings-red.txt). (6) Colours unchanged: the LIGHT/DARK token test. Run-1 fixes checked in code: the hint accent is now `.message[data-message='hint']:not(:empty)` (style.css), which is mutually exclusive with `.message:empty`, so an empty hint is 0×0. `--board-gap-6`/`--board-pad-6` feed the `.board` default and both `--column` formulas. Both dev servers now have a resolve plus `startsWith(rootAbs + sep)` guard. `designBuildSha1` is in the provenance. design.md Risks now puts the bleed on `.board[data-size='8']`. FR-65 still holds: there is exactly one `:has(`, on the idle-line rule (style.css:404), and the new `transparent` borders are allowed by COLOUR_KEYWORDS in tests/helpers/css.ts. FR-63 still holds: empty hint and win lines stay rendered (position: absolute, not display: none) with role=status. updateWin/clearWin handle every path that changes the board, including a failed newPuzzle, which keeps both the old board and the attribute.",
+      "suggestion": "No action. Recorded for the coverage line.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The finding is an informational \"no action\" coverage note, not a defect claim. I checked the code claims I could reach and they hold. In src/ui/style.css, `.message[data-message='hint']:not(:empty)` is at line 399. `--board-gap-6` and `--board-pad-6` are defined at lines 79-80, used as the `.board` defaults at lines 172-173, and used in both `--column` formulas at lines 896 and 925. There is exactly one `:has(` in the stylesheet, on the idle-line rule at line 404. The e2e spec `e2e/nfr-14-layout-geometry.spec.ts` and the unit test `tests/play-page-layout-geometry.test.ts` both exist. I did not confirm the dev-server `startsWith(rootAbs + sep)` guard, because my grep failed on a shell glob error. I also did not re-run the mutation or red-run evidence files. Nothing I checked contradicts the note, so I found no basis to refute it.",
+        "The finding is a coverage summary with \"No action\" as its suggestion. It describes no defect, so no real user or attacker can trigger a problem from it. There is nothing here to reproduce or exploit. I did not read the code, so I have not checked the summary's own claims about the scenarios and fixes. I'm marking it refuted as a non-defect."
+      ]
+    }
+  ],
+  "codeDefectsConfirmingRun": [
+    "none in product code; in dev tooling: both dev static servers end the run on a malformed percent escape (decodeURIComponent throws before the guard; minor, 127.0.0.1 only)"
+  ],
+  "dispositionsConfirmingRun": {
+    "approval": "the user chose «Fix minors, then archive (Recommended)» in chat on 2026-10-10 about 22:3x (autonomy-log row 153); no third review run, as in rows 126 and 141",
+    "spec delta element list and 0x0 clause (two findings)": "fixed: 16 elements named; the 0x0 clause covers the hint and win lines",
+    "shown hint geometry never checked": "fixed: 5 hint cases in the fixture (32), the e2e test presses the hint button once; they pass",
+    "dev servers crash on a malformed escape (two findings)": "fixed: 400 on a malformed escape in both servers (review-2-escape.txt)",
+    "--column repeats the cell-size clamp and caps": "fixed: --cell-cap on #app (5rem, 4.5rem from 64rem) feeds the column and both board rules; the 64rem formulas removed",
+    "task 4.5 ticked before its artifact": "noted in tasks.md",
+    "sheet line-height fix has no automated guard": "fixed: e2e «The setup sheet keeps its levels in view at 1366×650», red without the fix (review-2-sheet-guard-red.txt)",
+    "design.md borders vs transparent": "fixed in design.md",
+    "cross-check measures 11 elements": "fixed: visual-block measures the same 16 with the 0x0 rule (review-2-block-layout.txt: 54 of 54 shots, 0 off)",
+    "idle line peeks under the sheet at 1366x650": "recorded in design.md for the sheet block (not fixed here)",
+    "settings top bounded from one side (contested)": "fixed: top pinned to 0.5rem under the header within 0.5 px",
+    "coverage summary (contested)": "no action (6 of 6 scenarios implemented)"
+  },
+  "closedBy": "after-run fixes on the user's choice; battery review-2-green-run.txt; archived without a third review run"
 }

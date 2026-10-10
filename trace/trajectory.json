@@ -183,6 +183,15 @@
       "processComplete": false
     },
     {
+      "slice": "2026-10-10-update-page-layout-geometry",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 4,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
       "slice": "2026-10-10-update-segmented-focus-ring-wording",
       "reviewEvidence": "missing",
       "trailerCommits": 2,
@@ -280,6 +289,10 @@
     {
       "check": "process",
       "msg": "2026-10-10-fix-size-option-focus-ring: archived change is missing design.md and/or tasks.md"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-10-update-page-layout-geometry: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "review-evidence",

@@ -672,6 +672,215 @@
       }
     },
     {
+      "shot": "1024-light-hint",
+      "width": 1024,
+      "height": 768,
+      "state": "hint",
+      "captureBoard": {
+        "size": 6,
+        "level": 1,
+        "givens": [
+          [
+            1,
+            null,
+            null,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            null,
+            1,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            1
+          ],
+          [
+            0,
+            null,
+            0,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            0,
+            null
+          ]
+        ],
+        "entries": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            1,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            0,
+            0,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          [
+            null,
+            null,
+            null,
+            1,
+            null,
+            null
+          ]
+        ]
+      },
+      "afterLoad": "press-hint",
+      "boxes": {
+        ".page-header": {
+          "x": 303,
+          "y": 24,
+          "w": 418,
+          "h": 64
+        },
+        ".page-header h1": {
+          "x": 303,
+          "y": 24,
+          "w": 225.15625,
+          "h": 64
+        },
+        ".page-header .logo": {
+          "x": 303,
+          "y": 24,
+          "w": 64,
+          "h": 64
+        },
+        "[data-action=\"settings\"]": {
+          "x": 565.890625,
+          "y": 34,
+          "w": 44,
+          "h": 44
+        },
+        "[data-action=\"rules\"]": {
+          "x": 621.890625,
+          "y": 34,
+          "w": 99.109375,
+          "h": 44
+        },
+        "[data-action=\"setup\"]": {
+          "x": 303,
+          "y": 104,
+          "w": 418,
+          "h": 44
+        },
+        "[data-board]": {
+          "x": 303,
+          "y": 164,
+          "w": 418,
+          "h": 418
+        },
+        "[data-board] [data-cell]:first-child": {
+          "x": 310,
+          "y": 171,
+          "w": 64,
+          "h": 64
+        },
+        "[data-board] [data-cell]:last-child": {
+          "x": 650,
+          "y": 511,
+          "w": 64,
+          "h": 64
+        },
+        "[data-action=\"hint\"]": {
+          "x": 303,
+          "y": 598,
+          "w": 114.65625,
+          "h": 44
+        },
+        "[data-action=\"reset\"]": {
+          "x": 425.65625,
+          "y": 598,
+          "w": 101.265625,
+          "h": 44
+        },
+        "[data-action=\"new\"]": {
+          "x": 534.921875,
+          "y": 598,
+          "w": 186.078125,
+          "h": 44
+        },
+        ".messages": {
+          "x": 303,
+          "y": 650,
+          "w": 418,
+          "h": 85.25
+        },
+        "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
+          "x": 303,
+          "y": 650,
+          "w": 418,
+          "h": 85.25
+        },
+        "[data-message=\"win\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      }
+    },
+    {
       "shot": "1024-light-level",
       "width": 1024,
       "height": 768,
@@ -2272,6 +2481,215 @@
       }
     },
     {
+      "shot": "1440-light-hint",
+      "width": 1440,
+      "height": 900,
+      "state": "hint",
+      "captureBoard": {
+        "size": 6,
+        "level": 1,
+        "givens": [
+          [
+            1,
+            null,
+            null,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            null,
+            1,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            1
+          ],
+          [
+            0,
+            null,
+            0,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            0,
+            null
+          ]
+        ],
+        "entries": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            1,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            0,
+            0,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          [
+            null,
+            null,
+            null,
+            1,
+            null,
+            null
+          ]
+        ]
+      },
+      "afterLoad": "press-hint",
+      "boxes": {
+        ".page-header": {
+          "x": 487,
+          "y": 24,
+          "w": 466,
+          "h": 64
+        },
+        ".page-header h1": {
+          "x": 487,
+          "y": 24,
+          "w": 225.15625,
+          "h": 64
+        },
+        ".page-header .logo": {
+          "x": 487,
+          "y": 24,
+          "w": 64,
+          "h": 64
+        },
+        "[data-action=\"settings\"]": {
+          "x": 797.890625,
+          "y": 34,
+          "w": 44,
+          "h": 44
+        },
+        "[data-action=\"rules\"]": {
+          "x": 853.890625,
+          "y": 34,
+          "w": 99.109375,
+          "h": 44
+        },
+        "[data-action=\"setup\"]": {
+          "x": 487,
+          "y": 104,
+          "w": 466,
+          "h": 44
+        },
+        "[data-board]": {
+          "x": 487,
+          "y": 164,
+          "w": 466,
+          "h": 466
+        },
+        "[data-board] [data-cell]:first-child": {
+          "x": 494,
+          "y": 171,
+          "w": 72,
+          "h": 72
+        },
+        "[data-board] [data-cell]:last-child": {
+          "x": 874,
+          "y": 551,
+          "w": 72,
+          "h": 72
+        },
+        "[data-action=\"hint\"]": {
+          "x": 487,
+          "y": 646,
+          "w": 138.65625,
+          "h": 44
+        },
+        "[data-action=\"reset\"]": {
+          "x": 633.65625,
+          "y": 646,
+          "w": 101.265625,
+          "h": 44
+        },
+        "[data-action=\"new\"]": {
+          "x": 742.921875,
+          "y": 646,
+          "w": 210.078125,
+          "h": 44
+        },
+        ".messages": {
+          "x": 487,
+          "y": 698,
+          "w": 466,
+          "h": 85.25
+        },
+        "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
+          "x": 487,
+          "y": 698,
+          "w": 466,
+          "h": 63.5
+        },
+        "[data-message=\"win\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      }
+    },
+    {
       "shot": "1440-light-level",
       "width": 1440,
       "height": 900,
@@ -3382,6 +3800,215 @@
           "y": 0,
           "w": 0,
           "h": 0
+        },
+        "[data-message=\"win\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      }
+    },
+    {
+      "shot": "320-light-hint",
+      "width": 320,
+      "height": 700,
+      "state": "hint",
+      "captureBoard": {
+        "size": 6,
+        "level": 1,
+        "givens": [
+          [
+            1,
+            null,
+            null,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            null,
+            1,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            1
+          ],
+          [
+            0,
+            null,
+            0,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            0,
+            null
+          ]
+        ],
+        "entries": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            1,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            0,
+            0,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          [
+            null,
+            null,
+            null,
+            1,
+            null,
+            null
+          ]
+        ]
+      },
+      "afterLoad": "press-hint",
+      "boxes": {
+        ".page-header": {
+          "x": 12,
+          "y": 16,
+          "w": 296,
+          "h": 44
+        },
+        ".page-header h1": {
+          "x": 12,
+          "y": 16,
+          "w": 141.828125,
+          "h": 44
+        },
+        ".page-header .logo": {
+          "x": 12,
+          "y": 16,
+          "w": 44,
+          "h": 44
+        },
+        "[data-action=\"settings\"]": {
+          "x": 168.890625,
+          "y": 16,
+          "w": 44,
+          "h": 44
+        },
+        "[data-action=\"rules\"]": {
+          "x": 220.890625,
+          "y": 16,
+          "w": 87.109375,
+          "h": 44
+        },
+        "[data-action=\"setup\"]": {
+          "x": 12,
+          "y": 72,
+          "w": 296,
+          "h": 44
+        },
+        "[data-board]": {
+          "x": 15.5,
+          "y": 128,
+          "w": 289,
+          "h": 289
+        },
+        "[data-board] [data-cell]:first-child": {
+          "x": 20.5,
+          "y": 133,
+          "w": 44,
+          "h": 44
+        },
+        "[data-board] [data-cell]:last-child": {
+          "x": 255.5,
+          "y": 368,
+          "w": 44,
+          "h": 44
+        },
+        "[data-action=\"hint\"]": {
+          "x": 12,
+          "y": 429,
+          "w": 296,
+          "h": 44
+        },
+        "[data-action=\"reset\"]": {
+          "x": 12,
+          "y": 481,
+          "w": 93.265625,
+          "h": 44
+        },
+        "[data-action=\"new\"]": {
+          "x": 113.265625,
+          "y": 481,
+          "w": 194.734375,
+          "h": 44
+        },
+        ".messages": {
+          "x": 12,
+          "y": 533,
+          "w": 296,
+          "h": 107
+        },
+        "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
+          "x": 12,
+          "y": 533,
+          "w": 296,
+          "h": 107
         },
         "[data-message=\"win\"]": {
           "x": 0,
@@ -4512,6 +5139,215 @@
       }
     },
     {
+      "shot": "375-light-hint",
+      "width": 375,
+      "height": 812,
+      "state": "hint",
+      "captureBoard": {
+        "size": 6,
+        "level": 1,
+        "givens": [
+          [
+            1,
+            null,
+            null,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            null,
+            1,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            1
+          ],
+          [
+            0,
+            null,
+            0,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            0,
+            null
+          ]
+        ],
+        "entries": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            1,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            0,
+            0,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          [
+            null,
+            null,
+            null,
+            1,
+            null,
+            null
+          ]
+        ]
+      },
+      "afterLoad": "press-hint",
+      "boxes": {
+        ".page-header": {
+          "x": 16,
+          "y": 16,
+          "w": 343,
+          "h": 44
+        },
+        ".page-header h1": {
+          "x": 16,
+          "y": 16,
+          "w": 161.28125,
+          "h": 44
+        },
+        ".page-header .logo": {
+          "x": 16,
+          "y": 16,
+          "w": 44,
+          "h": 44
+        },
+        "[data-action=\"settings\"]": {
+          "x": 203.890625,
+          "y": 16,
+          "w": 44,
+          "h": 44
+        },
+        "[data-action=\"rules\"]": {
+          "x": 259.890625,
+          "y": 16,
+          "w": 99.109375,
+          "h": 44
+        },
+        "[data-action=\"setup\"]": {
+          "x": 16,
+          "y": 72,
+          "w": 343,
+          "h": 44
+        },
+        "[data-board]": {
+          "x": 16,
+          "y": 128,
+          "w": 343,
+          "h": 343
+        },
+        "[data-board] [data-cell]:first-child": {
+          "x": 23,
+          "y": 135,
+          "w": 51.5,
+          "h": 51.5
+        },
+        "[data-board] [data-cell]:last-child": {
+          "x": 300.5,
+          "y": 412.5,
+          "w": 51.5,
+          "h": 51.5
+        },
+        "[data-action=\"hint\"]": {
+          "x": 16,
+          "y": 483,
+          "w": 343,
+          "h": 44
+        },
+        "[data-action=\"reset\"]": {
+          "x": 16,
+          "y": 535,
+          "w": 101.265625,
+          "h": 44
+        },
+        "[data-action=\"new\"]": {
+          "x": 125.265625,
+          "y": 535,
+          "w": 233.734375,
+          "h": 44
+        },
+        ".messages": {
+          "x": 16,
+          "y": 587,
+          "w": 343,
+          "h": 85.25
+        },
+        "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
+          "x": 16,
+          "y": 587,
+          "w": 343,
+          "h": 85.25
+        },
+        "[data-message=\"win\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      }
+    },
+    {
       "shot": "375-light-level",
       "width": 375,
       "height": 812,
@@ -5622,6 +6458,215 @@
           "y": 0,
           "w": 0,
           "h": 0
+        },
+        "[data-message=\"win\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        }
+      }
+    },
+    {
+      "shot": "768-light-hint",
+      "width": 768,
+      "height": 1024,
+      "state": "hint",
+      "captureBoard": {
+        "size": 6,
+        "level": 1,
+        "givens": [
+          [
+            1,
+            null,
+            null,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            null,
+            1,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            1
+          ],
+          [
+            0,
+            null,
+            0,
+            null,
+            0,
+            null
+          ],
+          [
+            null,
+            1,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            0,
+            null
+          ]
+        ],
+        "entries": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            1,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            0,
+            0,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            0
+          ],
+          [
+            null,
+            null,
+            null,
+            1,
+            null,
+            null
+          ]
+        ]
+      },
+      "afterLoad": "press-hint",
+      "boxes": {
+        ".page-header": {
+          "x": 127,
+          "y": 24,
+          "w": 514,
+          "h": 64
+        },
+        ".page-header h1": {
+          "x": 127,
+          "y": 24,
+          "w": 225.15625,
+          "h": 64
+        },
+        ".page-header .logo": {
+          "x": 127,
+          "y": 24,
+          "w": 64,
+          "h": 64
+        },
+        "[data-action=\"settings\"]": {
+          "x": 485.890625,
+          "y": 34,
+          "w": 44,
+          "h": 44
+        },
+        "[data-action=\"rules\"]": {
+          "x": 541.890625,
+          "y": 34,
+          "w": 99.109375,
+          "h": 44
+        },
+        "[data-action=\"setup\"]": {
+          "x": 127,
+          "y": 104,
+          "w": 514,
+          "h": 44
+        },
+        "[data-board]": {
+          "x": 127,
+          "y": 164,
+          "w": 514,
+          "h": 514
+        },
+        "[data-board] [data-cell]:first-child": {
+          "x": 134,
+          "y": 171,
+          "w": 80,
+          "h": 80
+        },
+        "[data-board] [data-cell]:last-child": {
+          "x": 554,
+          "y": 591,
+          "w": 80,
+          "h": 80
+        },
+        "[data-action=\"hint\"]": {
+          "x": 127,
+          "y": 694,
+          "w": 162.65625,
+          "h": 44
+        },
+        "[data-action=\"reset\"]": {
+          "x": 297.65625,
+          "y": 694,
+          "w": 101.265625,
+          "h": 44
+        },
+        "[data-action=\"new\"]": {
+          "x": 406.921875,
+          "y": 694,
+          "w": 234.078125,
+          "h": 44
+        },
+        ".messages": {
+          "x": 127,
+          "y": 746,
+          "w": 514,
+          "h": 85.25
+        },
+        "[data-message=\"idle\"]": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "[data-message=\"hint\"]": {
+          "x": 127,
+          "y": 746,
+          "w": 514,
+          "h": 63.5
         },
         "[data-message=\"win\"]": {
           "x": 0,
