@@ -125,6 +125,12 @@ Traces: FR-104, FR-65, A-51
 - **WHEN** the check reads the computed `background-color` of `body` and the computed `color-scheme` of `<html>`
 - **THEN** the background equals the dark `--color-page` and `color-scheme` is `dark`
 
+#### Scenario: In dark every backdrop dims the page
+
+- **GIVEN** the text of `src/ui/style.css` and its dark token set (added in the review-gate fix round, autonomy-log row 129: the backdrops of the rules panel, the setup sheet, the settings panel and the confirmation were the text colour, which is light in dark)
+- **WHEN** the test resolves the background colour of `.rules::backdrop`, `.setup-sheet::backdrop`, `.settings::backdrop` and `.confirm::backdrop` under `:root[data-theme="dark"]` (a dark override when one exists, else the plain rule)
+- **THEN** each colour is a token of the dark set and is no lighter than the dark `--color-page`, so an open panel never lightens the page
+
 ### Requirement: Auto follows the system theme live
 
 While the chosen theme is `auto`, the effective theme SHALL be `dark` when `window.matchMedia('(prefers-color-scheme: dark)').matches` is true and `light` otherwise, and the page SHALL follow a `change` event of that query at once, with no reload: `data-theme` and the browser colour (see «Browser colour follows the theme») update, and `color-scheme` follows from the stylesheet (FR-105). While the chosen theme is `light` or `dark`, a change of the system theme changes nothing. If `window.matchMedia` is missing, `auto` resolves to `light` (A-50). jsdom has no `matchMedia`: tests install a stub on `window` that returns `{ matches, media, addEventListener, removeEventListener }`, records the `change` listeners and lets the test fire them, and remove it after each test, like the popover stubs (A-44).

@@ -56,6 +56,32 @@ describe('Effective theme on the document (the stylesheet half)', () => {
   });
 });
 
+// Review-gate fix round (autonomy-log row 129): the delta scenario «In dark every backdrop dims the page» of «Effective theme on the document».
+describe('Effective theme on the document (the backdrops)', () => {
+  it('In dark every backdrop dims the page', () => {
+    const parsed = readStyles();
+    const [, dark] = themeTokenSets(parsed);
+    expect.assert(dark !== undefined, 'the dark token set exists');
+    const page = dark.tokens['--color-page'];
+    expect.assert(page !== undefined, 'the dark set has --color-page');
+    for (const host of ['.rules', '.setup-sheet', '.settings', '.confirm']) {
+      const darkSelector = new RegExp(`^:root\\[data-theme=["']dark["']\\] ${host.replace('.', '\\.')}::backdrop$`);
+      const overrides = parsed.rules.filter((rule) => rule.context.length === 0 && rule.selectors.some((sel) => darkSelector.test(sel)));
+      const rules = overrides.length > 0 ? overrides : rulesWithSelector(parsed, `${host}::backdrop`);
+      const values = rules.flatMap((rule) => rule.declarations.filter((d) => d.property === 'background-color').map((d) => d.value));
+      const value = values[values.length - 1];
+      const name = /^var\(\s*(--color-[\w-]+)\s*\)$/.exec(value ?? '')?.[1];
+      expect.assert(name !== undefined, `${host}::backdrop takes its background from a token in dark, got ${String(value)}`);
+      const colour = dark.tokens[name];
+      expect.assert(colour !== undefined, `${name} is in the dark set`);
+      // no lighter than the page: at least the page's contrast against white
+      expect(contrastRatio(colour, '#ffffff'), `${host}::backdrop (${name} = ${colour}) is no lighter than the dark --color-page ${page}`).toBeGreaterThanOrEqual(
+        contrastRatio(page, '#ffffff'),
+      );
+    }
+  });
+});
+
 describe('Borders, cues and focus rings have enough contrast (the dark set)', () => {
   it('Tokens exist and are literal: the dark block declares each of the 13 names once as #rrggbb, so each token has exactly two value sets', () => {
     const parsed = readStyles();

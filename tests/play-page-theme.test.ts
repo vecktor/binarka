@@ -227,6 +227,21 @@ describe('Auto follows the system theme live', () => {
     expect(documentTheme(), 'an object without addEventListener: the page follows matches').toBe('dark');
   });
 
+  // Review-gate fix round (autonomy-log row 129): «A manual choice ignores the system» holds for the document, not per mount.
+  // Both mounts write the one <html data-theme>, so a second mount that still holds auto must not undo the first mount's press.
+  it('A manual choice ignores the system (two mounts share one document)', () => {
+    const stub = installMatchMedia(false);
+    const first = mountFixture(PAIR_ROW);
+    mountFixture(PAIR_ROW);
+    expect(stub.listeners, 'premise: one listener per mount').toHaveLength(2);
+    pressTheme(first, 'dark');
+    stub.setMatches(true);
+    stub.fire();
+    stub.setMatches(false);
+    stub.fire();
+    expect(documentTheme(), 'dark pressed on one mount, then two system changes').toBe('dark');
+  });
+
   it('Without matchMedia auto is light', () => {
     expect(typeof window.matchMedia, 'premise: no matchMedia').toBe('undefined');
     const tracker = trackErrors();

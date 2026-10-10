@@ -1,0 +1,12 @@
+Review-gate fix round of add-theme-switch (run wf_dfa2a0c3-9a9: 4 confirmed, all minor), red tests, 2026-10-10 about 08:00 UTC+5:30.
+
+Two tests added first:
+ - tests/play-page-theme.test.ts «A manual choice ignores the system (two mounts share one document)» (finding 3).
+ - tests/play-page-theme-stylesheet.test.ts «In dark every backdrop dims the page» (finding 2; delta scenario added to «Effective theme on the document»).
+
+In the worktree at 8add6de plus these tests: the two-mount test fails (the backdrop override already exists in 8add6de):
+  AssertionError: dark pressed on one mount, then two system changes: expected 'light' to be 'dark'
+In a scratch copy with the dark backdrop rules removed from src/ui/style.css, both fail:
+  AssertionError: .rules::backdrop (--color-text = #f1ede4) is no lighter than the dark --color-page #1a1714: expected 1.168346722099732 to be greater than or equal to 17.84830599278569
+  AssertionError: dark pressed on one mount, then two system changes: expected 'light' to be 'dark' // Object.is equality
+  Tests  2 failed | 20 passed (22)
