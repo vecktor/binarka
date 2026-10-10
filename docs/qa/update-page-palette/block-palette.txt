@@ -1,0 +1,14 @@
+Sun Oct 11 00:38:43 +0530 2026
+676ee03
+$ node scripts/visual-block.mjs --block layout --states default,four,eight,level,win,hint --out docs/qa/g2/blocks/palette
+file:///Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/scripts/check-visual-parity-adapters.mjs:213
+    throw new Error(`something already answers on ${localUrl}; stop it first (the capture measures only the preview it starts itself)`);
+          ^
+
+Error: something already answers on http://localhost:4174/; stop it first (the capture measures only the preview it starts itself)
+    at startServer (file:///Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/scripts/check-visual-parity-adapters.mjs:213:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async captureLocal (file:///Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/scripts/check-visual-parity-adapters.mjs:270:3)
+    at async file:///Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/scripts/visual-block.mjs:236:35
+
+Node.js v22.21.1

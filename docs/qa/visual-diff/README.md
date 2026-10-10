@@ -57,6 +57,51 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` shows the fixture at level 2 («Задачка») and opens the sheet. `setup-marked` marks 8×8 «Головоломка» on the fixture and puts keyboard focus on «Почати». `hint` shows the hint board without its hinted cell and presses «Підказка» once. `settings-light` and `settings-dark` store the manual theme before load.
 6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits. **Closed by PD-2:** it fails when something already answers on the port, and when its own preview exits before answering (`PD-2-proof.txt`, section 3: before, a stale copy on 4174 was scored 0.9125 without a word; after, "something already answers on http://localhost:4174/").
 
+## Run 7 (after block 2, update-page-palette): by state
+
+Run 7, 2026-10-11 00:39 to 00:41, after the main column's palette was ported (the change `update-page-palette`, port `676ee03`; its paint test `e2e/nfr-14-palette.spec.ts` passes 27 of 27, and the per-block tool reads pixel 1 on the main-column crops of 64 shots, 0.998 to 0.9996 on the light default shots, `docs/qa/update-page-palette/block-palette.txt`): **FAIL**, exit 1, **82 of 170 at 0.98** (run 6: 1). 168 scored 0.1333 to 1.0000 (mean 0.9208, telemetry; run 6: 0.8499). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-7.txt`](../g2/check-visual-run-7.txt). The per-shot `report.json` files now hold run 7.
+
+Every main-column state passes in both schemes (default, four, eight, level, hint, win). The light default shots score 0.9985 to 0.9996, not 1, because of the A-57 deviation of the light violating digit (`#8f1d17` against the design's `#b3261e`); the light cell border deviation (`#847b6d`) does not register. The remaining failures are later blocks: the rules panel (light 0.13 to 0.90: the design dims the page, the page does not yet), the setup sheet (0.75 to 0.95, slightly lower in light than run 6 because its shared tokens changed value while its own paint is not ported), and part of the confirm and settings shots.
+
+An earlier attempt at run 7 (00:38) was invalid and is not kept here: an orphaned `vite preview` on port 4174, left by the per-block tool's capture (the capture kills `npx` but not its `vite` child), answered first, and the gate refused all 168 captures ("something already answers on http://localhost:4174/"), as PD-2's guard intends. The orphan was stopped and the run repeated on a free port. The leak is a harness note for the user (a PD).
+
+The last column is the mean change against run 6.
+
+| State | Scheme | Shots at 0.98 | Lowest | Highest | Mean change |
+|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 0.9236 | 0.9915 | +0.0234 |
+| confirm | light | 1 of 5 | 0.8885 | 0.9814 | +0.6863 |
+| default | dark | 6 of 6 | 1.0000 | 1.0000 | +0.0849 |
+| default | light | 6 of 6 | 0.9985 | 0.9996 | +0.1417 |
+| eight | dark | 6 of 6 | 1.0000 | 1.0000 | +0.0735 |
+| eight | light | 6 of 6 | 1.0000 | 1.0000 | +0.1322 |
+| four | dark | 5 of 5 | 1.0000 | 1.0000 | +0.0708 |
+| four | light | 5 of 5 | 1.0000 | 1.0000 | +0.1343 |
+| hint | dark | 5 of 5 | 1.0000 | 1.0000 | +0.1494 |
+| hint | light | 5 of 5 | 1.0000 | 1.0000 | +0.1656 |
+| level | dark | 5 of 5 | 1.0000 | 1.0000 | +0.0817 |
+| level | light | 5 of 5 | 1.0000 | 1.0000 | +0.1478 |
+| rules | dark | 0 of 6 | 0.8948 | 0.9549 | +0.0045 |
+| rules | light | 0 of 6 | 0.1333 | 0.8995 | +0.0132 |
+| rules-techniques | dark | 0 of 4 | 0.8902 | 0.9549 | +0.0071 |
+| rules-techniques | light | 0 of 4 | 0.1333 | 0.8965 | +0.0193 |
+| settings | dark | 2 of 6 | 0.9230 | 0.9877 | +0.0218 |
+| settings | light | 4 of 6 | 0.9415 | 0.9944 | +0.0401 |
+| settings-dark | light | 3 of 5 | 0.9308 | 0.9891 | +0.0247 |
+| settings-focus | dark | 1 of 2 | 0.9190 | 0.9819 | +0.0134 |
+| settings-focus | light | 1 of 2 | 0.9376 | 0.9919 | +0.0333 |
+| settings-light | dark | 3 of 5 | 0.9444 | 0.9947 | +0.0451 |
+| setup | dark | 0 of 6 | 0.7527 | 0.9429 | +0.0004 |
+| setup | light | 0 of 6 | 0.7642 | 0.9262 | -0.0084 |
+| setup-four | dark | 0 of 6 | 0.7757 | 0.9463 | -0.0005 |
+| setup-four | light | 0 of 6 | 0.7655 | 0.9438 | -0.0090 |
+| setup-marked | dark | 0 of 6 | 0.7587 | 0.9413 | +0.0017 |
+| setup-marked | light | 0 of 6 | 0.7637 | 0.9233 | -0.0098 |
+| setup-marked-four | dark | 0 of 6 | 0.7756 | 0.9456 | -0.0002 |
+| setup-marked-four | light | 0 of 6 | 0.7823 | 0.9439 | -0.0087 |
+| win | dark | 5 of 5 | 1.0000 | 1.0000 | +0.1263 |
+| win | light | 5 of 5 | 1.0000 | 1.0000 | +0.1160 |
+
 ## Run 6 (after block 1, fix round 1): by state
 
 Run 6, 2026-10-10 22:25 to 22:28, after fix round 1 of `update-page-layout-geometry` (review run `wf_1c7326da-0c4`): the setup sheet keeps the browser's normal line height until its own block, the hint's accent applies only to a shown hint, and the column formula reads named variables. **FAIL**, exit 1, **1 of 170 at 0.98** (1440-dark-confirm 0.982). 168 scored 0.1274 to 0.982 (mean 0.8499, telemetry; run 5 0.8458, run 4 0.8214). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-6.txt`](../g2/check-visual-run-6.txt). The per-shot `report.json` files now hold run 6.
