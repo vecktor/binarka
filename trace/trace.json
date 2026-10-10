@@ -955,8 +955,7 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/fix-size-option-focus-ring/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1144,8 +1143,7 @@
     {
       "id": "FR-65",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/fix-size-option-focus-ring/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1613,8 +1611,7 @@
     {
       "id": "FR-102",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/fix-size-option-focus-ring/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1678,8 +1675,7 @@
     {
       "id": "FR-107",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/fix-size-option-focus-ring/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -2289,10 +2285,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-55 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"fix-size-option-focus-ring\" is not archived"
     }
   ]
 }

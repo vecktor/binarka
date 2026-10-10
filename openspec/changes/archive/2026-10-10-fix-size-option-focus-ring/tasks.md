@@ -20,4 +20,4 @@ Order of work: section 1 (the test) is written FIRST and seen red before section
 
 ## 4. Archive
 
-- [ ] 4.1 Archive the change (`npx openspec archive fix-size-option-focus-ring --yes`), validate, update `docs/current-state.md` and an autonomy-log row.
+- [x] 4.1 Archive the change (`npx openspec archive fix-size-option-focus-ring --yes`), validate, update `docs/current-state.md` and an autonomy-log row.

@@ -165,6 +165,15 @@
       "processComplete": true
     },
     {
+      "slice": "2026-10-10-fix-size-option-focus-ring",
+      "reviewEvidence": "missing",
+      "trailerCommits": 2,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": false
+    },
+    {
       "slice": "2026-10-10-update-setup-sheet-start",
       "reviewEvidence": "unclean",
       "trailerCommits": 22,
@@ -239,6 +248,14 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-10-add-theme-switch: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-10-fix-size-option-focus-ring: review-findings.json is missing (review must have run clean before archive)"
+    },
+    {
+      "check": "process",
+      "msg": "2026-10-10-fix-size-option-focus-ring: archived change is missing design.md and/or tasks.md"
     },
     {
       "check": "review-evidence",
