@@ -1,6 +1,6 @@
 # Requirements amendment draft: the design palette (G2 block 2) (2026-10-10)
 
-Status: **DRAFT, UNSIGNED.** Written by the session `admiring-chandrasekhar-34afb0` on 2026-10-10 from about 22:58 to 23:26 (UTC+5:30). Read by a fresh independent auditor before the user sees it: 4 major, 10 minor and 7 note findings, all folded in (section 10). Nothing in `src/` changes before the user signs.
+Status: **SIGNED** by the user in chat on 2026-10-10 at about 23:27 (UTC+5:30): PA-Q1 «A: the design's cue» and «Signed, use defaults» for PA-Q2 to PA-Q8 (autonomy-log row 157). FR-65, A-51 and A-57 (with the token appendix) are in `docs/requirements.md`. The text below is kept as the record of what was signed; it was written by the session `admiring-chandrasekhar-34afb0` from about 22:58 to 23:26 and read by a fresh independent auditor first (section 10).
 
 ## Basis
 
