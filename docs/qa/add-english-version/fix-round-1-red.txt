@@ -6,3 +6,10 @@ AssertionError: the replaced mount's system listener is removed: expected [ [Fun
       Tests  1 failed | 34 skipped (35)
 
 After the fix (isGone: a control outside the document or inside the root being remounted): npm run test:run, Tests 1652 passed (1652).
+
+Second red half, shown by a mutant (confirming run wf_c33587f5-bd8 asked for it): in a scratch copy of 57a8a4c only the language-set cleanup was reverted to '!mount.control.isConnected' (the theme half kept), 12:11 UTC+5:30:
+     × A remount on the same root replaces the previous mount 48ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the replaced mount is no longer rendered: expected 'true' to be 'false' // Object.is equality
+      Tests  1 failed | 34 skipped (35)
+So each half of isGone() is seen failing on its own assertion: the theme half on the listener count (above), the language half on the render.

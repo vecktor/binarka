@@ -19,7 +19,7 @@ import type { ThemeChoice } from './helpers';
 // language options by the keyboard; and the focused language option shows an outline. The three language rules `html-has-lang`, `html-lang-valid` and
 // `valid-lang` must be among the PASSED rules: the first two in every English state, `valid-lang` in the state with the settings panel open, because
 // axe tests an element with a `lang` attribute only while it is rendered and the two language options sit in the closed popover otherwise (in the
-// closed-panel states `valid-lang` is reported inapplicable: measured on a static page with the same structure). Coverage is `sampled`; the
+// closed-panel states `valid-lang` is reported inapplicable: measured on the built page: docs/qa/add-english-version/valid-lang-measure.txt). Coverage is `sampled`; the
 // escalation path is the 1 px width sweep from 320 to 400 px in English with the panel open, run before G2. The dark and light --color-page are read
 // from the built stylesheet's own rules (`readPageColours`), never from the page being judged, and each test first asserts that the page
 // really is in the theme it is meant to check, so a page that never turns dark cannot pass by being compared with itself.

@@ -4,8 +4,8 @@ import { hintSentence } from './sentences';
 import type { Fill } from './techniques';
 import type { Grid, Hint, HintLanguage, Sentenceless } from './types';
 
-/** The fill with the data its sentence is built from, minus the sentence (ADR-0005); absent fields stay absent. */
-
+/** The fill with the data its sentence is built from, minus the sentence (ADR-0005). The fields a kind's sentence needs are set (a field
+ * the technique leaves unset gets its default: axis 'row', line 0, digit 0, empties 1, other 0, steps 0); the others stay absent. */
 function withData(f: Fill, n: number): Sentenceless<Extract<Hint, { kind: 'fill' }>> {
   const base = { kind: 'fill' as const, row: f.row, col: f.col, value: f.value };
   const axis = f.axis ?? 'row';

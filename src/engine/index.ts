@@ -3,6 +3,7 @@ export { findViolations, isSolved } from './rules';
 export { countSolutions } from './solver';
 export { generate } from './generator';
 export { hint } from './hint';
+export type { Sentenceless } from './types';
 export { hintSentence } from './sentences';
 export { InvalidSizeError, InvalidSeedError, InvalidArgumentTypeError } from './types';
 export { InvalidLevelError, GenerationRunOutError } from './types';

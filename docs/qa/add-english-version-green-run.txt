@@ -44,3 +44,34 @@ OK    hint-clarity 92.7 (baseline 92.7)
 OK    hint-clarity-en 90 (baseline 90)
 Result: PASS
 exit 0
+
+== after-run fixes of the confirming run wf_c33587f5-bd8, 2026-10-10 12:11 +0530, captured output (excerpts filtered by grep: the count lines and the exit code of each command; working tree = 57a8a4c plus the after-run fixes)
+== npm run lint
+> eslint .
+exit 0
+== npx tsc --noEmit -p .
+exit 0
+== npm run test:run
+ Test Files  67 passed (67)
+      Tests  1652 passed (1652)
+exit 0
+== npm run build
+✓ built in 34ms
+exit 0
+== npx openspec validate --all --strict
+Totals: 3 passed, 0 failed (3 items)
+exit 0
+== node scripts/check-eval-ratchet.mjs
+OK    hint-clarity 92.7 (baseline 92.7)
+OK    hint-clarity-en 90 (baseline 90)
+Result: PASS
+exit 0
+== node scripts/check-traceability.mjs
+traceability: 113 MVP FRs checked — 0 failure(s), 114 warning(s)
+exit 0
+== npm run test:e2e
+  116 passed (20.1s)
+exit 0
+== npm run check:a11y
+  67 passed (13.4s)
+exit 0

@@ -253,7 +253,7 @@ Traces: NFR-13, FR-107, FR-109
 
 - **GIVEN** the built page in Chromium with `binarka.language` = `en` set by `addInitScript`, in the default state, after a hint press, and with the settings panel open
 - **WHEN** the sweep runs axe-core
-- **THEN** axe reports no violation in each state; `html-has-lang` and `html-lang-valid` are in the list of passed rules in each state, and `valid-lang` is in it with the settings panel open (amended in the first review-gate fix round: while the panel is closed the two language options, the only elements with their own `lang`, are hidden in the popover, so axe reports `valid-lang` as inapplicable, measured by the red tests of this folder)
+- **THEN** axe reports no violation in each state; `html-has-lang` and `html-lang-valid` are in the list of passed rules in each state, and `valid-lang` is in it with the settings panel open (amended in the first review-gate fix round: while the panel is closed the two language options, the only elements with their own `lang`, are hidden in the popover, so axe reports `valid-lang` as inapplicable, measured on the built page: `docs/qa/add-english-version/valid-lang-measure.txt`)
 
 #### Scenario: The focused language option shows an indicator
 

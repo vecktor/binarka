@@ -3,7 +3,7 @@
   "persistedBy": "orchestrator from the run result",
   "change": "add-english-version",
   "clean": false,
-  "verdict": "Run 1 wf_68de0c7a-b11: 8 confirmed (6 minor, 2 major evidence/spec items), 1 contested, 1 rejected. One minor code defect (a same-root remount keeps the previous mount). One fix round, tests first; confirming run pending.",
+  "verdict": "PASSED AT THE CONFIRMING RUN with no code defect: wf_c33587f5-bd8 (after fix round 1: red 69a143c, fix 57a8a4c) confirmed 6 minor findings and 2 contested minor findings, all evidence, comment or wording items; fixed after the run without a further run (the pattern of rows 126 and 131). clean stays false on purpose: findings were confirmed.",
   "runs": [
     {
       "runId": "wf_68de0c7a-b11",
@@ -71,6 +71,71 @@
       ],
       "rejectedTitles": [
         "Coverage summary: 321 scenarios, about 95 read against code and tests: 93 implemented, 2 partial, 0 missing, 0 contradicted"
+      ]
+    },
+    {
+      "runId": "wf_c33587f5-bd8",
+      "kind": "confirming run after fix round 1",
+      "baseRef": "9f82cd7",
+      "headRef": "57a8a4c",
+      "confirmed": 6,
+      "contested": 2,
+      "rejected": 4,
+      "findings": [
+        {
+          "title": "The red run never showed the language-set half of the fix failing",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (evidence): a mutant reverting only the language-set cleanup fails on the render assertion (fix-round-1-red.txt)"
+        },
+        {
+          "title": "Orphaned JSDoc comment in hint.ts is separated from withData by a blank line",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed: the comment is attached to withData and names the defaults"
+        },
+        {
+          "title": "The fix-round green-run capture only covers test:run and the ratchet; the post-fix lint, build, e2e 116 and a11y 67 have no captured output",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (evidence): the full post-fix battery captured with exit codes (green-run file, section «after-run fixes of the confirming run»)"
+        },
+        {
+          "title": "tasks.md evidence lines for 4.1-4.6 and 6.1 still cite the pre-fix-round artifacts",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed: 4.x cites the post-fix capture (1652), 6.1 cites browser-check-run-fix-round-1.txt and the README"
+        },
+        {
+          "title": "Task 6.1 specifies a manual real-browser smoke test; the evidence is a scripted Playwright run",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (wording): 6.1 says scripted Playwright on the built page; the manual pass goes under Scope NOT delivered"
+        },
+        {
+          "title": "The NFR-13 amendment says valid-lang inapplicability was 'measured', but no evidence path is given",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (evidence): docs/qa/add-english-version/valid-lang-measure.txt measured on the built page; the spec and the e2e comment cite it"
+        },
+        {
+          "title": "Fix-round green-run capture covers only test:run and the ratchet; the claimed post-fix lint, build, e2e 116 and a11y 67 have no captured output",
+          "severity": "minor",
+          "status": "contested",
+          "disposition": "fixed with the item above"
+        },
+        {
+          "title": "hintSentence's public parameter type Sentenceless is not exported from the engine index",
+          "severity": "minor",
+          "status": "contested",
+          "disposition": "fixed: Sentenceless exported from src/engine/index.ts and noted in ADR-0005"
+        }
+      ],
+      "rejectedTitles": [
+        "If the remount fails partway, the replaced mount is already unregistered while its DOM stays on screen",
+        "Dangling doc comment left in hint.ts after the Sentenceless type moved to types.ts",
+        "The new remount scenario sits under «Settings button and panel», apart from the existing remount scenarios",
+        "Selected option and focused option have the same 3px ring, so the stills cannot show which language option has focus"
       ]
     }
   ]

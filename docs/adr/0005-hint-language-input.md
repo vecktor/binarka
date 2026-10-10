@@ -13,7 +13,7 @@ Status: **ACCEPTED** by the signed amendment of 2026-10-10 (TD-Q8, autonomy-log 
 
 1. `hint(board, ceiling = 1, language = 'uk')`: the language is the **third parameter**, after `ceiling`, with the default `'uk'`, so no existing call changes (design decision 2).
 2. A fill result gains the data its sentence is built from: `axis`, `line`, `digit`, `empties`, `other`, and `size` on count results only. `steps` already exists. `line` and `other` are 0-based like `row` and `col`; the sentences number from 1.
-3. A pure `hintSentence(hint, language = 'uk')` is exported from `src/engine/index.ts`. It rebuilds the sentence of any result in either language. The page keeps the result on screen and calls it on a switch.
+3. A pure `hintSentence(hint, language = 'uk')` is exported from `src/engine/index.ts`. It rebuilds the sentence of any result in either language. The page keeps the result on screen and calls it on a switch. Its parameter is `Sentenceless<Hint>`, a result without its `sentence`, also exported; a full `Hint` is one too. This was amended in the first review fix round of `add-english-version`, so that `hint()` builds no placeholder objects.
 4. For every existing caller, the Ukrainian `sentence`, `kind`, `row`, `col`, `value`, `rule` and `steps` stay byte-identical. The only new members are the data fields, and `hintSentence(h, 'uk')` equals `h.sentence` (precedent: row 88, option B).
 
 ## Alternatives rejected

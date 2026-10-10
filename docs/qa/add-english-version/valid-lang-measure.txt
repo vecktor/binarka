@@ -1,0 +1,4 @@
+valid-lang applicability on the built page (axe-core via @axe-core/playwright, Chromium, 375x812, binarka.language=en), 2026-10-10 12:10 UTC+5:30, at 57a8a4c:
+lang=en
+English, settings panel closed: passes [html-has-lang, html-lang-valid]; inapplicable [valid-lang]; violations [(none)]
+English, settings panel open: passes [html-has-lang, html-lang-valid, valid-lang]; inapplicable [(none)]; violations [(none)]
