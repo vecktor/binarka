@@ -26,7 +26,7 @@ Result: PASS, 14 warning(s)
 | 2026-10-09-add-logo | **unclean** | 3 | yes | ui |
 | 2026-10-09-add-rule-solvable-generator | **unclean** | 2 | yes | engine |
 | 2026-10-09-fix-action-button-targets | **unclean** | 5 | yes | ui |
-| 2026-10-10-add-theme-switch | **unclean** | 16 | yes | ui |
+| 2026-10-10-add-theme-switch | **unclean** | 17 | yes | ui |
 | 2026-10-10-update-setup-sheet-start | **unclean** | 22 | yes | ui |
 
 ## Cross-slice module overlap
