@@ -1,6 +1,6 @@
 # Requirements amendment draft: a capture-only board for the pixel check (2026-10-10)
 
-Status: **UNSIGNED.** It waits for the user's signature in chat ("signed, use defaults" takes every default in section 4). This draft has changed nothing in `docs/requirements.md`, `openspec/`, `design/`, `src/` or `tests/`.
+Status: **SIGNED** by the user in chat on 2026-10-10 at about 14:24 (UTC+5:30), «signed, use defaults» (autonomy-log row 143). FR-119 and A-56 are in `docs/requirements.md`, with the defaults of section 4 folded in. The text below is kept as the record of what was signed.
 
 ## Basis
 

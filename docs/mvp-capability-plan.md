@@ -162,6 +162,15 @@ Source: `docs/handoff/setup-sheet-start-amendment-draft-2026-10-09.md` (SD) and 
   - **Scope out:** an English pixel reference (TD-Q10: the pixel gate uses Ukrainian shots only); any change to the CLI (NFR-8).
 - **Risks:** the extra 44 px «Почати» may bring back inner scroll in the sheet (SD section 7); English labels at 320 px (escalation: a 1 px-step width sweep from 320 to 400 px in English, before G2); the engine contract change for the hint re-render (TD-Q8, puzzle-engine spec l. 13); persisted preferences leak between tests and captures (clear storage per test and per shot); NFR-18 stays NOT-EARNED until its spec is seen failing and moved.
 
+### 4.12 Capture-board amendment, slice `add-capture-board` (signed 2026-10-10 about 14:24, autonomy-log row 143)
+
+Source: `docs/handoff/capture-board-amendment-draft-2026-10-10.md`, signed with its defaults; `docs/requirements.md` (FR-119, A-56).
+
+- **Slice CB, `add-capture-board`.** Owns: **FR-119** (capture-only board).
+  - **Scope in:** reading and validating `window.__binarkaCaptureBoard` at mount; moving the fixtures to `design/v0/lib/boards.json`; the committed fixture validity test.
+  - **Scope out:** the capture adapter (`scripts/check-visual-parity-adapters.mjs`). It is locked (PD-1), so its change is a separate approved improvement.
+- **Order:** after G2 step 1 (NFR-14 moved, reference `review-set-14`); before G2 convergence.
+
 ## 5. FR coverage check
 
 | FR | Slice | FR | Slice | FR | Slice |
@@ -232,10 +241,11 @@ Added 2026-10-10 (phase S amendment, section 4.11, autonomy-log row 118; the new
 | FR-104 | S2 | FR-110 | S3 | FR-116 | S2 |
 | FR-105 | S2 | FR-111 | S3 | FR-117 | S2 |
 | FR-55 | S3 | FR-56 | S3 | FR-118 | S2 |
+| FR-119 | CB | | | | |
 
 S1 is `update-setup-sheet-start` (2 FRs), S2 `add-theme-switch` (11 FRs), S3 `add-english-version` (8 FRs, FR-55 and FR-56 included): 21 in all. Every other amended row of the phase S amendment keeps its owner in the tables above; S1 to S3 change it as an amended row and own no new copy of it.
 
-Total: **56 MVP FRs across 5 slices that own FRs** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4, 7 in slice 6; slice 5 adds none; no gaps, no duplicates), plus **9 MVP FRs across slices A, B, C, E, F** from the 2026-10-05 amendment (FR-27, FR-66 to FR-73), 65 in all, plus **27 MVP FRs across slices DL1 and DL2** from the 2026-10-09 difficulty and setup sheet amendments (22 plus FR-95 to FR-99), 92 in all, plus **21 MVP FRs across slices S1, S2 and S3** from the 2026-10-10 phase S amendment (FR-55, FR-56, FR-100 to FR-118), **113 in all**. Slice D owns no new FR (it amends FR-41); slices G and H own no FR.
+Total: **56 MVP FRs across 5 slices that own FRs** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4, 7 in slice 6; slice 5 adds none; no gaps, no duplicates), plus **9 MVP FRs across slices A, B, C, E, F** from the 2026-10-05 amendment (FR-27, FR-66 to FR-73), 65 in all, plus **27 MVP FRs across slices DL1 and DL2** from the 2026-10-09 difficulty and setup sheet amendments (22 plus FR-95 to FR-99), 92 in all, plus **21 MVP FRs across slices S1, S2 and S3** from the 2026-10-10 phase S amendment (FR-55, FR-56, FR-100 to FR-118), **113 in all**, plus **FR-119** in slice CB (`add-capture-board`, the 2026-10-10 capture-board amendment), **114 in all**. Slice D owns no new FR (it amends FR-41); slices G and H own no FR.
 
 ## 6. Sequencing and schedule
 
