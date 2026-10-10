@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-10T08:27:38.138Z",
-  "gitHead": "7ac61dfaf094d16dd9825274224d991b48044ba9",
+  "createdAt": "2026-10-10T10:13:38.870Z",
+  "gitHead": "9eea92c59b5445e390a083539ccaf378f37266e5",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -25,11 +25,11 @@
     "scripts/check-traceability.mjs": "10dfdb95743c685e31f0a1cdb2d4cbef0d728315097efd93544346330250fadf",
     "scripts/check-trajectory.mjs": "2b4e0ba839c639c0da160d74ef204bd9fae09f264404a8342beea815b8ebafc1",
     "scripts/check-visual-fidelity.mjs": "f6fd0816f6293c0394c3cdb57232bb72b85cebe3b40ac6b88bf0628847722504",
-    "scripts/check-visual-parity-adapters.mjs": "b900d5f46a5eb15a58dfc3dc82fe7fc3609cdbeed2c16b8d30a7dead95f89063",
+    "scripts/check-visual-parity-adapters.mjs": "0eba5fed4f54c3ecd85f77915d8d2b3ac7f8d5d8f8f878b43bbaebb676b4d24b",
     "scripts/gate-status.mjs": "07617acbbd6ae513bcc7675478e920bd86ff2c765ae1b2ebc2ab27dad50e5fae",
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-1 (2026-10-10, approved by the user in chat): scripts/check-visual-parity-adapters.mjs (the NFR-14 capture adapter) joins the lock; quality/coverage-baseline.json and quality/eval-baseline.json sealed at their current values"
+    "PD-2: the NFR-14 capture adapter sets the FR-119 capture board per shot and measures only its own preview (approved by the user 2026-10-10)"
   ]
 }

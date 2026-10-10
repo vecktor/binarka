@@ -1,0 +1,82 @@
+# PD-2 red to green proof, 2026-10-10 15:44 +0530
+# The probe of section 1 is docs/qa/improvements/PD-2-dom-probe.mjs (run: node docs/qa/improvements/PD-2-dom-probe.mjs "$PWD" after npm run build). The sample configs were scratch copies of quality/visual-parity.config.json cut to the shots named below.
+
+## 1. Board content: does the captured page show the design's fixture? (DOM probe, 1440x900, the built page)
+# 'seed only' = the page as the adapter at 9eea92c loaded it (seeded Math.random, no capture board).
+# 'PD-2 init' = window.__binarkaCaptureBoard = captureBoardFor(state), exported by the PD-2 adapter.
+default  6x6 level 1 | seed only: NOT the fixture (summary «Поле і складність: 6×6 · Розминка▾») | PD-2 init: fixture shown (summary «Поле і складність: 6×6 · Розминка▾»)
+confirm  6x6 level 1 | seed only: NOT the fixture (summary «Поле і складність: 6×6 · Розминка▾») | PD-2 init: fixture shown (summary «Поле і складність: 6×6 · Розминка▾»)
+setup    6x6 level 2 | seed only: NOT the fixture (summary «Поле і складність: 6×6 · Розминка▾») | PD-2 init: fixture shown (summary «Поле і складність: 6×6 · Задачка▾»)
+hint     6x6 level 1 | seed only: NOT the fixture (summary «Поле і складність: 6×6 · Розминка▾») | PD-2 init: fixture shown (summary «Поле і складність: 6×6 · Розминка▾»)
+win      6x6 level 1 | seed only: NOT the fixture (summary «Поле і складність: 6×6 · Розминка▾») | PD-2 init: fixture shown (summary «Поле і складність: 6×6 · Розминка▾»)
+four     4x4 level 1 | seed only: NOT the fixture (summary «Поле і складність: 6×6 · Розминка▾») | PD-2 init: fixture shown (summary «Поле і складність: 4×4 · Розминка▾»)
+eight    8x8 level 1 | seed only: NOT the fixture (summary «Поле і складність: 6×6 · Розминка▾») | PD-2 init: fixture shown (summary «Поле і складність: 8×8 · Розминка▾»)
+level    8x8 level 4 | seed only: NOT the fixture (summary «Поле і складність: 6×6 · Розминка▾») | PD-2 init: fixture shown (summary «Поле і складність: 8×8 · Мозколамка▾»)
+RESULT: PASS, every board state shows its fixture with the PD-2 init
+
+## 2a. Sample of 12 shots, adapter at 9eea92c (before)
+FAIL  [1366-light-setup-four] pixel score 0.9098 below threshold 0.98
+FAIL  [1440-light-confirm] pixel score 0.1178 below threshold 0.98
+FAIL  [1440-light-default] pixel score 0.9125 below threshold 0.98
+FAIL  [1440-light-eight] pixel score 0.9203 below threshold 0.98
+FAIL  [1440-light-four] pixel score 0.946 below threshold 0.98
+FAIL  [1440-light-hint] pixel score 0.9135 below threshold 0.98
+FAIL  [1440-light-level] pixel score 0.9205 below threshold 0.98
+FAIL  [1440-light-setup-marked] pixel score 0.9241 below threshold 0.98
+FAIL  [1440-light-setup] pixel score 0.9241 below threshold 0.98
+FAIL  [1440-light-win] pixel score 0.93 below threshold 0.98
+FAIL  [375-dark-hint] pixel score 0.6524 below threshold 0.98
+FAIL  [375-light-setup-marked-four] pixel score 0.8306 below threshold 0.98
+Scope: 12 breakpoint(s)
+Result: FAIL, 1 warning(s)
+
+## 2b. The same 12 shots, PD-2 adapter (after): every shot passes the in-adapter board guard (no 'capture failed')
+FAIL  [1366-light-setup-four] pixel score 0.9098 below threshold 0.98
+FAIL  [1440-light-confirm] pixel score 0.1187 below threshold 0.98
+FAIL  [1440-light-default] pixel score 0.9124 below threshold 0.98
+FAIL  [1440-light-eight] pixel score 0.9222 below threshold 0.98
+FAIL  [1440-light-four] pixel score 0.948 below threshold 0.98
+FAIL  [1440-light-hint] pixel score 0.9138 below threshold 0.98
+FAIL  [1440-light-level] pixel score 0.9221 below threshold 0.98
+FAIL  [1440-light-setup-marked] pixel score 0.9241 below threshold 0.98
+FAIL  [1440-light-setup] pixel score 0.9259 below threshold 0.98
+FAIL  [1440-light-win] pixel score 0.9309 below threshold 0.98
+FAIL  [375-dark-hint] pixel score 0.7128 below threshold 0.98
+FAIL  [375-light-setup-marked-four] pixel score 0.8477 below threshold 0.98
+Scope: 12 breakpoint(s)
+Result: FAIL, 1 warning(s)
+# The scores barely move: the palette, header and type (G2 blocks) dominate every shot. Pixel scores are telemetry here; the board proof is section 1.
+
+## 3a. gap 6, before PD-2: another server already on port 4174 (a copy of dist/ served by python http.server, standing for a stale preview), the adapter at HEAD 9eea92c
+FAIL  [1440-light-default] pixel score 0.9125 below threshold 0.98
+Scope: 1 breakpoint(s)
+Result: FAIL, 1 warning(s)
+exit 1
+## 3b. gap 6, after PD-2: the same server on port 4174
+FAIL  [1440-light-default] capture failed: something already answers on http://localhost:4174/; stop it first (the capture measures only the preview it starts itself)
+Scope: 1 breakpoint(s)
+Result: FAIL, 1 warning(s)
+exit 1
+
+## 4. The board guard (FR-119 ignores an invalid value silently, so the adapter must not)
+## guard 1: fixtureBoard row 0 with its first given removed (the page accepted it, so it still had exactly one solution; the adapter expects the same board)
+FAIL  [1440-light-default] pixel score 0.9123 below threshold 0.98
+Scope: 1 breakpoint(s)
+Result: FAIL, 1 warning(s)
+exit 1
+## guard 2: every given of fixtureBoard removed (no givens: more than one solution, so FR-119 ignores the value; scratch, restored after)
+FAIL  [1440-light-default] capture failed: the page does not show the capture board of shot 1440-light-default (FR-119 value rejected or ignored)
+Scope: 1 breakpoint(s)
+Result: FAIL, 1 warning(s)
+exit 1
+
+## 5. factory integrity
+# before the re-seal (adapter edited, lock from PD-1):
+WARN  [scripts/check-visual-parity-adapters.mjs] gate-bearing drift (hash drift) is covered by an approved improvement commit (message contains "Refs: PD-<n>") — reseal with --init-lock inside that improvement.
+Result: PASS, 2 warning(s)
+# re-seal:
+Locked 26 gate-bearing file(s) into factory-lock.json (gitHead: 9eea92c59b5445e390a083539ccaf378f37266e5).
+Scope: 26 locked file(s)
+Result: PASS, 1 warning(s)
+# after the re-seal:
+Result: PASS, 1 warning(s)
