@@ -522,3 +522,16 @@ Iteration 2 of 2 for the wireframe signed in row 120 (the last in the user's bud
     - 10 desktop rules shots (`{1024,1366,1440}-*-rules`, `{1366,1440}-*-rules-techniques`; the backdrop).
     - 8 scrolled sheets where the fade shows (`1366-*-setup-four`, `1366-*-setup-marked-four`, `320-*-setup-four`, `320-*-setup-marked-four`).
     - 28 tablet and desktop setup shots whose only difference is 82 to 88 anti-aliased pixels along the panel's inner bottom corners. These are `{768,1024,1440}-*-{setup,setup-four,setup-marked,setup-marked-four}` and `1366-*-{setup,setup-marked}`. One mask shadow now paints there instead of two; this is not visible.
+
+
+## Pixel reference: moved to review-set-13 (2026-10-10 about 12:21 UTC+5:30, autonomy-log row 134)
+
+The user moved the NFR-14 pixel reference from `review-set-11/` to `review-set-13/` in chat ("Yes"). The new set is iteration 15, which adds «Почати» and the sticky sheet footer, the settings panel with the drawn gear, and the dark theme on `<html data-theme>`. It holds 170 shots; `SHA1SUMS` in the set has its own SHA-1 `532e0b78e801944970a9f3fabf5ba148107dbffb`. `run-2.SHA1SUMS` matches 170 of 170 and `run-3-four.SHA1SUMS` 4 of 4. The confirming design review passed with polish (autonomy-log row 123). `review-set-11/` stays in the repository as history.
+
+Open polish, accepted with the move (rows 123 and 131), all questions for the user:
+- «Почати» as a filled primary.
+- A pressed look for the gear.
+- The size-option inset focus ring.
+- The checked option's frame shares the focus colour.
+
+The pixel gate stays on Ukrainian shots only (TD-Q10). NFR-14 stays held and not declared until `npm run check:visual` exists and is seen failing (G2).
