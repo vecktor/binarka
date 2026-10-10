@@ -126,10 +126,18 @@ describe('Stored preferences', () => {
     expect(localStorage.getItem(THEME_KEY), 'premise: the press stored the choice').toBe('dark');
     document.documentElement.removeAttribute('data-theme'); // the remount has to set the attribute from the stored value itself
 
+    first.remove(); // review-gate run wf_aa7a4a9e-9da (row 130): with the first mount alive, the shared in-memory choice answered instead
     const second = mountOn(document.createElement('div'));
 
     expect(checkedTheme(second)).toBe('dark');
     expect(documentTheme()).toBe('dark');
+
+    // The mount reads the stored value, not a remembered one: a value stored now is what the next mount shows, on every mount.
+    localStorage.setItem(THEME_KEY, 'light');
+    const third = mountOn(document.createElement('div'));
+    expect(checkedTheme(third), 'the next mount shows the stored value').toBe('light');
+    expect(documentTheme()).toBe('light');
+    expect(checkedTheme(second), 'and every live mount shows the one choice').toBe('light');
   });
 });
 
@@ -239,6 +247,27 @@ describe('Failing storage does not stop the page', () => {
     expect(tracker.errors).toEqual([]);
     expect(checkedTheme(second), 'the later mount shows the session choice').toBe('dark');
     expect(documentTheme(), 'and keeps it on the document').toBe('dark');
+    expect(setItem, 'nothing is retried').toHaveBeenCalledTimes(1);
+  });
+
+  // Review-gate fix round 3 (confirming run wf_aa7a4a9e-9da, autonomy-log row 130): the session choice outlives the mounts. A mount again
+  // on the same root (its content replaced) or a mount after every earlier root was removed still shows it.
+  it('A remount on the same root keeps a session-only choice', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError');
+    });
+    const root = mountFixture(PAIR_ROW);
+    pressTheme(root, 'dark');
+    expect(localStorage.getItem(THEME_KEY), 'premise: the storage does not hold it').toBeNull();
+
+    mountOn(root);
+    expect(checkedTheme(root), 'the remount on the same root shows the session choice').toBe('dark');
+    expect(documentTheme()).toBe('dark');
+
+    root.remove();
+    const later = mountOn(document.createElement('div'));
+    expect(checkedTheme(later), 'a mount after every earlier root was removed shows it too').toBe('dark');
+    expect(documentTheme()).toBe('dark');
     expect(setItem, 'nothing is retried').toHaveBeenCalledTimes(1);
   });
 });

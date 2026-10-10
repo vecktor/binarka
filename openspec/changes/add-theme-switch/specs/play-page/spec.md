@@ -14,6 +14,13 @@ Traces: FR-68, FR-102, FR-117, NFR-9
 - **AND** the panel has the `popover` attribute, `role="dialog"`, `aria-label` equal to «Налаштування», no `aria-labelledby`, a non-empty `id`, is not inside the `header`, `[data-board]` or the message area, follows the message area and precedes `[data-dialog="confirm"]`
 - **AND** its element children, in order, are a plain-text element with the text «Тема», `[data-control="theme"]` and `[data-action="settings-close"]`
 
+#### Scenario: The header fits its column on phones
+
+- **GIVEN** the built page open in Chromium at each sampled width 320, 322, 334, 361, 369, 375, 385, 768 and 1280 px, 812 px high (the check lives in `e2e/nfr-10-header-fit.spec.ts`, project `layout`; added in the second review-gate fix round, autonomy-log row 130, after the gear made the header overflow at 320 to 334 and 361 to 385 px)
+- **WHEN** the check reads the boxes of the header and of its three children (the heading, the settings button, «Правила») and the page's scroll width
+- **THEN** every child lies inside the header (within 0.5 px) and the scroll width is at most the viewport width (no sideways scroll, `docs/frontend-conventions.md` rule 18, A-14)
+- **AND** coverage is sampled; the stricter instrument is the 1 px sweep of 320 to 800 px (`docs/qa/add-theme-switch/header-sweep-run.txt`). Up to 30rem the title is 1.75rem and the logo 2.75rem (the design's phone rule); up to 22.5rem the gaps are 0.375rem, a deliberate step under the design's 0.5rem, which still overflowed by up to 2.8 px at 320 to 322 px
+
 #### Scenario: The close button
 
 - **GIVEN** the page has just been mounted
@@ -186,6 +193,12 @@ Traces: FR-105, FR-104, A-50
 - **WHEN** the page is mounted
 - **THEN** `data-theme` is `light` and the mount raises no error
 
+#### Scenario: A removed mount is dropped at the next mount
+
+- **GIVEN** a `matchMedia` stub that does not match, a mounted page whose root is then removed from the document (added in the third review-gate fix round, autonomy-log row 130)
+- **WHEN** the page is mounted on a new root, the system theme changes to dark, and the player presses «Світла» on the new root
+- **THEN** the stub holds one `change` listener (the removed mount's listener was removed at the new mount, not before: the drop is lazy), the system change set `data-theme` to `dark`, and after the press the removed root's options still show «Як у системі» (they are no longer updated)
+
 ### Requirement: Browser colour follows the theme
 
 `index.html` SHALL hold exactly one `meta[name="theme-color"]`, whose `content` equals the resolved `--color-page` value of the effective theme and which the page updates with every change of the effective theme (a theme press, a system change while the choice is `auto`) (FR-106). `index.html` holds no `meta[name="description"]` and this change adds none (Q12). The two colour values the page and the head step use for the meta are duplicates of `--color-page` of the light and the dark token set; a test asserts that they equal those tokens (see «Preferences are applied before the first paint»).
@@ -242,9 +255,10 @@ Traces: FR-113, FR-100, TC-12
 
 #### Scenario: The stored choice survives a remount
 
-- **GIVEN** a page on which the player pressed «Темна», and a new root
-- **WHEN** the page is mounted again on the new root
-- **THEN** `aria-checked="true"` is on «Темна» only and `data-theme` is `dark`
+- **GIVEN** a page on which the player pressed «Темна», whose root is then removed, and a new root
+- **WHEN** the page is mounted again on the new root; then `binarka.theme` = `light` is stored directly and the page is mounted on a third root
+- **THEN** after the first remount `aria-checked="true"` is on «Темна» only and `data-theme` is `dark`
+- **AND** after the third mount `data-theme` is `light` and `aria-checked="true"` is on «Світла» only on the second and the third root (a mount reads the stored value; amended in the third review-gate fix round, autonomy-log row 130, because with the first mount alive the shared choice answered instead of storage)
 
 ### Requirement: Invalid or missing stored values fall back
 
@@ -298,6 +312,12 @@ Traces: FR-115, FR-113
 - **GIVEN** `Storage.prototype.setItem` throws, counted by a spy, a mounted page on which the player pressed «Темна», and `localStorage` holding no `binarka.theme` (added in the second review-gate fix round, autonomy-log row 130)
 - **WHEN** the page is mounted on a second root in the same document while the first is still mounted
 - **THEN** no error reached the page, `aria-checked="true"` is on «Темна» only on the second root, `data-theme` is still `dark`, and `setItem` was still called once
+
+#### Scenario: A remount on the same root keeps a session-only choice
+
+- **GIVEN** `Storage.prototype.setItem` throws, counted by a spy, and a mounted page on which the player pressed «Темна» (added in the third review-gate fix round, autonomy-log row 130)
+- **WHEN** the page is mounted again on the same root, then that root is removed and the page is mounted on a new root
+- **THEN** after each mount `aria-checked="true"` is on «Темна» only and `data-theme` is `dark`, and `setItem` was still called once
 
 ### Requirement: Preferences are applied before the first paint
 

@@ -259,6 +259,25 @@ describe('Auto follows the system theme live', () => {
     expect(documentTheme(), 'dark pressed on one mount, then two system changes').toBe('dark');
   });
 
+  // Review-gate fix round 3 (confirming run wf_aa7a4a9e-9da, autonomy-log row 130): a mount whose root left the document is dropped when
+  // the next mount runs (lazily): its system listener is removed and a press elsewhere no longer updates its options.
+  it('A removed mount is dropped at the next mount', () => {
+    const stub = installMatchMedia(false);
+    const removed = mountFixture(PAIR_ROW);
+    expect(stub.listeners, 'premise: one listener for the first mount').toHaveLength(1);
+    removed.remove();
+
+    const live = mountFixture(PAIR_ROW);
+    expect(stub.listeners, 'the removed mount\'s listener is gone, the live mount has one').toHaveLength(1);
+    stub.setMatches(true);
+    stub.fire();
+    expect(documentTheme(), 'a system change still reaches the document').toBe('dark');
+
+    pressTheme(live, 'light');
+    expect(checkedTheme(live)).toBe('light');
+    expect(checkedTheme(removed), 'the removed mount\'s options are no longer updated').toBe('auto');
+  });
+
   it('Without matchMedia auto is light', () => {
     expect(typeof window.matchMedia, 'premise: no matchMedia').toBe('undefined');
     const tracker = trackErrors();

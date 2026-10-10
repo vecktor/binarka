@@ -337,3 +337,16 @@ Approved by the user in chat at about 09:37 (row 119 needs it). No existing test
 | `e2e/nfr-10-header-fit.spec.ts` | «header sampled at <w> px: every header child inside the header, no sideways scroll», 9 widths | N | FR-68 (the header holds the title, the gear and «Правила»), `docs/frontend-conventions.md` rule 18 (no horizontal scroll), A-14 (phones from 320 px); the observation in `docs/qa/add-theme-switch/README.md`. Not an NFR-10 mechanism; sampled, the 1 px sweep is the stricter instrument |
 
 Red evidence: `docs/qa/add-theme-switch/fix-round-2-red.txt` (Vitest 2 red of 1378, both on assertions; e2e 7 red at the widths inside the overflow bands, 2 green controls).
+
+## 14. Third review-gate fix round (2026-10-10 about 10:05 UTC+5:30, confirming run `wf_aa7a4a9e-9da`, autonomy-log row 130)
+
+Approved by the user in chat at about 09:58. One existing test changes on purpose; two are new.
+
+| File | Test | Kind | Source |
+|---|---|---|---|
+| `tests/play-page-preferences.test.ts` | «The stored choice survives a remount» | C | the major finding of run 3: with the first mount alive, the shared in-memory choice answered and storage was never read. Now the first root is removed before the remount, and a value stored directly must show on the next mount; the scenario text is amended to match. Nothing is weakened: the old assertions stay |
+| `tests/play-page-preferences.test.ts` | «A remount on the same root keeps a session-only choice» | N | the confirmed code defect of run 3 (FR-115: «for the rest of the session»); new delta scenario |
+| `tests/play-page-theme.test.ts` | «A removed mount is dropped at the next mount» | N (guard) | run 3: pruning had no test and no scenario; new delta scenario (lazy drop). Green before the fix; two mutants kill it |
+| `openspec/.../spec.md` | «The header fits its column on phones» | scenario only | run 3: the header fit had no scenario; it describes the existing `e2e/nfr-10-header-fit.spec.ts` (the file keeps its name, user's choice at about 09:58) |
+
+Red evidence: `docs/qa/add-theme-switch/fix-round-3-red.txt` (2 red of 1380, both on assertions; the guard and its two mutants).

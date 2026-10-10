@@ -1,0 +1,21 @@
+add-theme-switch, third review-gate fix round: red run before the fix (2026-10-10 10:12 UTC+5:30, on 7beb849 plus the uncommitted red tests).
+Source: confirming run wf_aa7a4a9e-9da (openspec/changes/add-theme-switch/review-findings.json, run 3).
+
+== npm run test:run (Vitest) ==
+     × The stored choice survives a remount 36ms
+     × A remount on the same root keeps a session-only choice 15ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the next mount shows the stored value: expected 'dark' to be 'light' // Object.is equality
+AssertionError: the remount on the same root shows the session choice: expected 'auto' to be 'dark' // Object.is equality
+ Test Files  1 failed | 62 passed (63)
+      Tests  2 failed | 1378 passed (1380)
+
+Red on assertions: «The stored choice survives a remount» (a value stored while a mount is alive is not read by the next mount: the shared in-memory choice answers) and «A remount on the same root keeps a session-only choice» (the remount re-reads storage and falls back to auto).
+
+Guard, green before the fix: «A removed mount is dropped at the next mount». Two mutants of src/ui/play-page.ts each make it fail:
+- mutant 1, mount.stop() removed:
+     × A removed mount is dropped at the next mount 37ms
+AssertionError: the removed mount's listener is gone, the live mount has one: expected [ [Function onSystemChange], …(1) ] to have a length of 1 but got 2
+- mutant 2, the prune never runs (continue for every mount):
+     × A removed mount is dropped at the next mount 37ms
+AssertionError: the removed mount's listener is gone, the live mount has one: expected [ [Function onSystemChange], …(1) ] to have a length of 1 but got 2
