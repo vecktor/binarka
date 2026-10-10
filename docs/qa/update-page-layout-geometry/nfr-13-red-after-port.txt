@@ -1,0 +1,16 @@
+# npm run test:e2e after the port, before the sheet margin fix (margin-bottom 24px), 2026-10-10 21:10 +0530: 140 passed, 4 failed, all four the NFR-13 sheet-footer focus check (the last level ring up to 1.8 px under the strip). Fixed by margin-bottom 28px (docs/qa/update-page-layout-geometry/green-run.txt).
+
+    +   "«Мозколамка Додатково треба пробувати хід»: ring bottom 488.390625 is below the strip top 487.390625 (scrollTop 272)",
+    +   "«Мозколамка Додатково треба пробувати хід»: ring bottom 497.390625 is below the strip top 496 (scrollTop 100)",
+    +   "«Мозколамка Додатково треба пробувати хід»: ring bottom 588.796875 is below the strip top 587 (scrollTop 121)",
+    +   "«Мозколамка Додатково треба пробувати хід»: ring bottom 620.78125 is below the strip top 619.78125 (scrollTop 166)",
+    «Мозколамка Додатково треба пробувати хід»: ring bottom 488.390625 is below the strip top 487.390625 (scrollTop 272)
+    «Мозколамка Додатково треба пробувати хід»: ring bottom 497.390625 is below the strip top 496 (scrollTop 100)
+    «Мозколамка Додатково треба пробувати хід»: ring bottom 588.796875 is below the strip top 587 (scrollTop 121)
+    «Мозколамка Додатково треба пробувати хід»: ring bottom 620.78125 is below the strip top 619.78125 (scrollTop 166)
+  140 passed (20.5s)
+  4 failed
+  ✘  127 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 320x700 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (246ms)
+  ✘  128 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 1366x650 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (253ms)
+  ✘  129 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 320x568 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (260ms)
+  ✘  132 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 375x667 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (422ms)

@@ -269,7 +269,17 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   }
 
   function updateWin(): void {
-    winMessage.textContent = isSolved(board) ? texts.WIN : '';
+    const solved = isSolved(board);
+    winMessage.textContent = solved ? texts.WIN : '';
+    // The stylesheet reads the solved state on the board host (update-page-layout-geometry): the buttons follow it, and a has-selector is
+    // not allowed by the build target (FR-65).
+    if (solved) boardHost.setAttribute('data-solved', 'true');
+    else boardHost.removeAttribute('data-solved');
+  }
+
+  function clearWin(): void {
+    winMessage.textContent = '';
+    boardHost.removeAttribute('data-solved');
   }
 
   function onBoardClick(event: Event): void {
@@ -374,14 +384,14 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     refreshHighlights();
     shownHint = null;
     hintMessage.textContent = '';
-    winMessage.textContent = '';
+    clearWin();
   }
 
   function startNewPuzzle(): void {
     if (newPuzzle(size, level)) {
       shownHint = null;
       hintMessage.textContent = '';
-      winMessage.textContent = '';
+      clearWin();
     }
   }
 
@@ -389,7 +399,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (newPuzzle(nextSize, nextLevel)) {
       shownHint = null;
       hintMessage.textContent = '';
-      winMessage.textContent = '';
+      clearWin();
     }
   }
 

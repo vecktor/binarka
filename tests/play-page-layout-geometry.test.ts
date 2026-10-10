@@ -1,5 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
+import { generate } from '../src/engine/index';
+import type { Cell, Grid } from '../src/engine/index';
 import { readStyles, themeTokenSets } from './helpers/css';
+import { PAIR_ROW, WIN_MESSAGE, bySize, generateSpy, installPageLifecycle, mountPage, pressHint, q, resetBoard, seedQueue, startNewPuzzle, winMessage } from './helpers/play-page';
 
 // update-page-layout-geometry (NFR-14, G2 block 1), scenario «Colours are unchanged»: the layout port changes geometry only. The 13 colour
 // tokens of A-51 keep their names and their values in both token sets; the palette is a later block. The geometry itself is checked in a real
@@ -40,5 +43,82 @@ describe('@trace NFR-14 the layout geometry port leaves the colours unchanged', 
     const [light, dark] = themeTokenSets(readStyles());
     expect(light?.tokens).toEqual(LIGHT);
     expect(dark?.tokens).toEqual(DARK);
+  });
+});
+
+// update-page-layout-geometry, scenario «The solved board keeps its geometry»: after a win the new-puzzle button takes the bold weight from the hint
+// button (the design's geometry of the button row). The design keys that on the solved board with a has-selector, which the build target allows
+// only for the idle line (FR-65, A-14), and the buttons come before the messages; so the board host carries data-solved="true" exactly while the
+// board is solved (the win line shows), and the stylesheet reads it with a sibling selector.
+installPageLifecycle();
+
+const KEY = '__binarkaCaptureBoard';
+afterEach(() => {
+  Reflect.deleteProperty(window, KEY);
+});
+
+const at = (grid: Grid, r: number, c: number): Cell => grid[r]?.[c] ?? null;
+
+/** The solved 6x6 board as a capture value (FR-119); with `missing`, that many non-given cells (from the end) left empty. */
+function solvedBoard(missing = 0): { size: number; level: number; givens: Grid; entries: Grid } {
+  const puzzle = generate(6, 5, 1);
+  const givens = puzzle.givens.map((row) => [...row]);
+  const entries: Grid = givens.map((row, r) => row.map((cell, c): Cell => (cell === null ? at(puzzle.solution, r, c) : null)));
+  let left = missing;
+  for (let r = 5; r >= 0 && left > 0; r--) {
+    for (let c = 5; c >= 0 && left > 0; c--) {
+      const row = entries[r];
+      if (row !== undefined && row[c] !== null) {
+        row[c] = null;
+        left--;
+      }
+    }
+  }
+  return { size: 6, level: 1, givens, entries };
+}
+
+const solvedFlag = (root: ParentNode): string | null => q(root, '.board-host').getAttribute('data-solved');
+
+function mountWith(value?: unknown): HTMLElement {
+  if (value !== undefined) Reflect.set(window, KEY, value);
+  return mountPage({ seedSource: seedQueue([7, 8, 9]).source, generate: generateSpy(bySize({ 6: PAIR_ROW })).generate });
+}
+
+describe('@trace NFR-14 @trace FR-38 the board host carries data-solved exactly while the board is solved', () => {
+  it('an unsolved board: no data-solved on the board host', () => {
+    const root = mountWith();
+    expect(winMessage(root)).toBe('');
+    expect(solvedFlag(root)).toBeNull();
+  });
+
+  it('a solved board at mount (FR-119): data-solved="true", with the win line', () => {
+    const root = mountWith(solvedBoard());
+    expect(winMessage(root)).toBe(WIN_MESSAGE);
+    expect(solvedFlag(root)).toBe('true');
+  });
+
+  it('the last move by a hint solves the board: data-solved="true" appears with the win line', () => {
+    const root = mountWith(solvedBoard(1));
+    expect(winMessage(root), 'premise: one cell short of solved').toBe('');
+    expect(solvedFlag(root)).toBeNull();
+    pressHint(root);
+    expect(winMessage(root)).toBe(WIN_MESSAGE);
+    expect(solvedFlag(root)).toBe('true');
+  });
+
+  it('a new puzzle after the win removes data-solved', () => {
+    const root = mountWith(solvedBoard());
+    expect(solvedFlag(root)).toBe('true');
+    startNewPuzzle(root);
+    expect(winMessage(root)).toBe('');
+    expect(solvedFlag(root)).toBeNull();
+  });
+
+  it('a reset after the win removes data-solved', () => {
+    const root = mountWith(solvedBoard());
+    expect(solvedFlag(root), 'premise: set after the win').toBe('true');
+    resetBoard(root);
+    expect(winMessage(root)).toBe('');
+    expect(solvedFlag(root)).toBeNull();
   });
 });

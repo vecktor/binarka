@@ -67,7 +67,7 @@
     {
       "slice": "2026-10-06-update-page-layout",
       "reviewEvidence": "unclean",
-      "trailerCommits": 12,
+      "trailerCommits": 13,
       "libDomains": [
         "ui"
       ],

@@ -11,15 +11,17 @@ Order of work: section 1 (the failing test) is written FIRST and seen red before
 
 ## 2. Implementation
 
-- [ ] 2.1 `src/ui/style.css`: port the geometry of the main column from `design/v0/app/binarka.css` (design.md, decisions 1 to 5). Colours unchanged; the 13 token names kept.
-- [ ] 2.2 Run the geometry test: every case green.
+- [x] 2.1 `src/ui/style.css`: port the geometry of the main column from `design/v0/app/binarka.css` (design.md, decisions 1 to 5). Colours unchanged; the 13 token names kept.
+- [x] 2.2 Run the geometry test: every case green.
+- [x] 2.3 Without a has-selector (FR-65, D1): the size variables on `.board[data-size]`, the 8×8 bleed on the board, and the board host's `data-solved` hook (`src/ui/play-page.ts`), test first: `tests/play-page-layout-geometry.test.ts` red on assertions (`docs/qa/update-page-layout-geometry/red-run-2.txt`), then green.
+- [x] 2.4 The sheet's level group keeps the last ring above the footer strip under the new box model (`margin-bottom` 24px → 28px; NFR-13 focus check red at 4 viewports by up to 1.8 px, then green).
 
 ## 3. Battery
 
-- [ ] 3.1 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
-- [ ] 3.2 `npm run test:e2e` (NFR-10, NFR-12, NFR-14 geometry, NFR-18) and `npm run check:a11y` (NFR-13).
-- [ ] 3.3 `node scripts/visual-block.mjs --block layout --states default,four,eight,level,win`: geometry off 0 and unpaired 0; save the output in `docs/qa/update-page-layout-geometry/`.
-- [ ] 3.4 Run 5 of `npm run check:visual` → `docs/qa/g2/check-visual-run-5.txt`; update `docs/qa/visual-diff/README.md`.
+- [x] 3.1 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
+- [x] 3.2 `npm run test:e2e` (NFR-10, NFR-12, NFR-14 geometry, NFR-18) and `npm run check:a11y` (NFR-13).
+- [x] 3.3 `node scripts/visual-block.mjs --block layout --states default,four,eight,level,win`: geometry off 0 and unpaired 0; save the output in `docs/qa/update-page-layout-geometry/`.
+- [x] 3.4 Run 5 of `npm run check:visual` → `docs/qa/g2/check-visual-run-5.txt`; update `docs/qa/visual-diff/README.md`.
 
 ## 4. Review and archive
 

@@ -1,0 +1,98 @@
+# update-page-layout-geometry red run 2 (the data-solved hook), 2026-10-10 21:05 +0530, before any src/ui/*.ts change
+# npx vitest run tests/play-page-layout-geometry.test.ts
+# Expected: the 4 hook tests that need data-solved="true" fail on assertions; the unsolved-board test and the colour guard pass.
+
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a
+
+ ❯ tests/play-page-layout-geometry.test.ts (6 tests | 4 failed) 113ms
+   ❯ @trace NFR-14 @trace FR-38 the board host carries data-solved exactly while the board is solved (5)
+     × a solved board at mount (FR-119): data-solved="true", with the win line 15ms
+     × the last move by a hint solves the board: data-solved="true" appears with the win line 10ms
+     × a new puzzle after the win removes data-solved 8ms
+     × a reset after the win removes data-solved 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-layout-geometry.test.ts > @trace NFR-14 @trace FR-38 the board host carries data-solved exactly while the board is solved > a solved board at mount (FR-119): data-solved="true", with the win line
+AssertionError: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ tests/play-page-layout-geometry.test.ts:97:30
+     95|     const root = mountWith(solvedBoard());
+     96|     expect(winMessage(root)).toBe(WIN_MESSAGE);
+     97|     expect(solvedFlag(root)).toBe('true');
+       |                              ^
+     98|   });
+     99|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/play-page-layout-geometry.test.ts > @trace NFR-14 @trace FR-38 the board host carries data-solved exactly while the board is solved > the last move by a hint solves the board: data-solved="true" appears with the win line
+AssertionError: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ tests/play-page-layout-geometry.test.ts:106:30
+    104|     pressHint(root);
+    105|     expect(winMessage(root)).toBe(WIN_MESSAGE);
+    106|     expect(solvedFlag(root)).toBe('true');
+       |                              ^
+    107|   });
+    108|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/play-page-layout-geometry.test.ts > @trace NFR-14 @trace FR-38 the board host carries data-solved exactly while the board is solved > a new puzzle after the win removes data-solved
+AssertionError: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ tests/play-page-layout-geometry.test.ts:111:30
+    109|   it('a new puzzle after the win removes data-solved', () => {
+    110|     const root = mountWith(solvedBoard());
+    111|     expect(solvedFlag(root)).toBe('true');
+       |                              ^
+    112|     startNewPuzzle(root);
+    113|     expect(winMessage(root)).toBe('');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/play-page-layout-geometry.test.ts > @trace NFR-14 @trace FR-38 the board host carries data-solved exactly while the board is solved > a reset after the win removes data-solved
+AssertionError: premise: set after the win: expected null to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+null
+
+ ❯ tests/play-page-layout-geometry.test.ts:119:60
+    117|   it('a reset after the win removes data-solved', () => {
+    118|     const root = mountWith(solvedBoard());
+    119|     expect(solvedFlag(root), 'premise: set after the win').toBe('true'…
+       |                                                            ^
+    120|     resetBoard(root);
+    121|     expect(winMessage(root)).toBe('');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 2 passed (6)
+   Start at  21:05:30
+   Duration  916ms (environment 47%, import 23%, transform 15%, tests 14%)
+

@@ -59,6 +59,10 @@ for (const c of fixture.cases) {
         if (want !== got) misses.push(`${sel}: ${want === null ? 'absent in the design' : 'missing on the page'}`);
         return;
       }
+      // A box of zero width and zero height paints nothing, so its position is not geometry: the design hides an empty win line with
+      // display: none (0,0 0x0), the page keeps it rendered as a live region (FR-63) at its place in the column, also 0x0. Any box with area
+      // must match within the tolerance.
+      if (want.w === 0 && want.h === 0 && got.w === 0 && got.h === 0) return;
       const delta = Math.max(Math.abs(want.x - got.x), Math.abs(want.y - got.y), Math.abs(want.x + want.w - got.x - got.w), Math.abs(want.y + want.h - got.y - got.h));
       if (delta > fixture.tolerancePx) {
         const f = (b: Box): string => `${b.x.toFixed(2)},${b.y.toFixed(2)} ${b.w.toFixed(2)}x${b.h.toFixed(2)}`;

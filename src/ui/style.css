@@ -34,25 +34,85 @@
   --color-win-text: #8fd19a;
 }
 
+/* ---------- Layout geometry (update-page-layout-geometry, NFR-14): ported from design/v0/app/binarka.css with the same formulas, so
+   fractional sizes match the reference (quality/design-geometry.json). Geometry only: colours stay on the 13 tokens above. ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
+  min-height: 100vh;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
   color: var(--color-text);
   background-color: var(--color-page);
 }
 
+/* The layout variables live on #app (not :root, which holds only the colour tokens); the panels are inside #app and inherit them.
+   The size-dependent ones (--n, --cell-max, --board-gap, --board-pad, --board-width) are declared on the board itself, which carries
+   data-size: the design reads the size on #app with a has-selector, which the build target does not allow outside the idle line (FR-65, A-14).
+   --board-width includes the board's 1 px border on both sides, so a cell is exactly --cell-max. */
 #app {
-  max-width: 420px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --radius-s: 0.375rem;
+  --radius-m: 0.625rem;
+  --radius-l: 1rem;
+  --page-pad: 1rem;
+  --page-max: 34rem;
+  --board-gap: 0.25rem;
+  --board-pad: 0.375rem;
+  --gap: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap);
+  width: 100%;
+  max-width: var(--page-max);
   margin: 0 auto;
-  padding: 16px;
-  text-align: center;
+  padding: var(--space-5) max(var(--page-pad), env(safe-area-inset-right)) var(--space-6) max(var(--page-pad), env(safe-area-inset-left));
 }
 
-h1 {
-  margin: 8px 0 16px;
-  display: inline-flex;
+/* Small phones (320). */
+@media (max-width: 22.5rem) {
+  #app {
+    --page-pad: 0.75rem;
+  }
+}
+
+/* Phones: tighter rows. */
+@media (max-width: 30rem) {
+  #app {
+    --gap: var(--space-3);
+    padding-top: var(--space-4);
+    padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  }
+}
+
+.page-header h1 {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 .logo {
@@ -82,21 +142,47 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
+  width: 100%;
 }
 
 .rules-button {
   flex: none;
   min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border-width: 2px;
+  border-radius: var(--radius-m);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* The board: one column for every size (--column from 48rem caps 8×8 at the 6×6 width). The cells size their digits from the board's
+   width (container query units). */
+.board-host {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .board {
-  display: grid;
   --n: 6;
-  --cell-max: 48px;
-  grid-template-columns: repeat(var(--n), minmax(0, var(--cell-max)));
-  gap: 2px;
-  justify-content: center;
+  --cell-max: 4rem;
+  --board-gap: 0.25rem;
+  --board-pad: 0.375rem;
+  --board-width: calc(var(--n) * var(--cell-max) + (var(--n) - 1) * var(--board-gap) + 2 * var(--board-pad) + 2px);
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--n), minmax(0, 1fr));
+  gap: var(--board-gap);
+  width: min(100%, var(--board-width), var(--column, 100%));
+  aspect-ratio: 1 / 1;
+  container-type: inline-size;
+  padding: var(--board-pad);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: var(--radius-l);
   touch-action: manipulation;
 }
 
@@ -106,31 +192,54 @@ h1 {
 
 .board[data-size='8'] {
   --n: 8;
+  --board-gap: 0.1875rem;
+  --board-pad: 0.25rem;
 }
 
-.board[data-size='4'] .cell,
-.board[data-size='6'] .cell {
-  font-size: 22px;
+/* Small phones (320): 6×6 cells reach 44 px. */
+@media (max-width: 22.5rem) {
+  .board[data-size='6'] {
+    --board-gap: 0.1875rem;
+    --board-pad: 0.25rem;
+  }
 }
 
-.board[data-size='8'] .cell {
-  font-size: 18px;
+/* Phones: height-aware 4×4 and 6×6 cells (svh) that never go below 44 px; 8×8 stays width-based and only its board bleeds into the page
+   padding, so nothing else moves when the size changes. (The design widens the board host; negative margins on the board give the same
+   boxes without a has-selector.) */
+@media (max-width: 30rem) {
+  .board {
+    --cell-max: clamp(2.75rem, calc((100svh - 28rem) / var(--n)), 4rem);
+  }
+
+  .board[data-size='8'] {
+    --cell-max: 4rem;
+    --board-gap: 0.125rem;
+    --board-pad: 0.1875rem;
+    --bleed: calc(var(--page-pad) - 0.5rem);
+    width: min(calc(100% + 2 * var(--bleed)), var(--board-width));
+    margin-inline: calc(-1 * var(--bleed));
+  }
 }
 
 .cell {
-  box-sizing: border-box;
+  --cell-font: calc(100cqi / var(--n) * 0.46);
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 0;
-  aspect-ratio: 1;
-  font-size: 22px;
+  min-height: 0;
+  margin: 0;
+  font-size: var(--cell-font);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
   background-color: var(--color-cell-bg);
   border-width: 1px;
   border-style: solid;
   border-color: var(--color-cell-border);
   padding: 0;
-  border-radius: 0;
+  border-radius: var(--radius-s);
   color: inherit;
   font-family: inherit;
   cursor: pointer;
@@ -174,14 +283,52 @@ h1 {
 .buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
   justify-content: center;
-  margin: 16px 0 8px;
+  gap: var(--space-2);
+  width: 100%;
 }
 
-/* NFR-12: the three action buttons reach the 44 px touch-target floor. */
+/* NFR-12: the three action buttons reach the 44 px touch-target floor. The hint button takes the whole row on phones; reset does not grow. */
 .buttons button {
+  flex: 1 1 auto;
   min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border-width: 2px;
+  border-radius: var(--radius-m);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.buttons button[data-action='hint'] {
+  flex-basis: 100%;
+  font-weight: 700;
+}
+
+.buttons button[data-action='reset'] {
+  flex-grow: 0;
+}
+
+@media (min-width: 30rem) {
+  .buttons button[data-action='hint'] {
+    flex-basis: auto;
+  }
+}
+
+/* Small phones (320): the reset and new-puzzle buttons share one row. */
+@media (max-width: 22.5rem) {
+  .buttons button {
+    padding: 0 var(--space-3);
+  }
+}
+
+/* After a win the new-puzzle button is the main action: it takes the bold weight from the hint button. The board host carries
+   data-solved while the board is solved (the design keys this on the solved board with a has-selector, not allowed here). Weights only (geometry). */
+.board-host[data-solved='true'] ~ .buttons button[data-action='new'] {
+  font-weight: 700;
+}
+
+.board-host[data-solved='true'] ~ .buttons button[data-action='hint'] {
+  font-weight: 500;
 }
 
 button {
@@ -203,19 +350,53 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+/* The message area sits 0.5rem under the buttons and reserves three lines of hint text, so the page never jumps when a message appears. */
+.messages {
+  --message-size: 0.9375rem;
+  --message-line: 1.45;
+  --message-pad: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  margin-top: calc(var(--space-2) - var(--gap));
+  min-height: calc(3 * var(--message-size) * var(--message-line) + 2 * var(--message-pad) + 4px);
+}
+
 .message {
-  min-height: 1.4em;
-  margin: 6px 0;
-}
-
-.message:empty {
-  min-height: 0;
   margin: 0;
+  padding: var(--message-pad) var(--space-3);
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: var(--radius-m);
+  font-size: var(--message-size);
+  line-height: var(--message-line);
+  text-align: left;
 }
 
+/* An empty hint or win line stays rendered (a live region, FR-63) but leaves the flow, so it takes no gap (the design hides it). */
+.message:empty {
+  position: absolute;
+  padding: 0;
+  border-width: 0;
+}
+
+/* Centred in the reserved area; the hint and the win line sit right under the buttons. */
 .message-idle {
+  margin-block: auto;
+  padding: 0 var(--space-3);
+  border-style: none;
   color: var(--color-control-border);
   font-size: 0.875rem;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.message[data-message='hint'] {
+  border-left-width: 4px;
+  border-radius: 0.125rem var(--radius-m) var(--radius-m) 0.125rem;
 }
 
 .messages:has([data-message='hint']:not(:empty), [data-message='win']:not(:empty)) .message-idle {
@@ -223,7 +404,9 @@ button:focus-visible {
 }
 
 .message-win {
+  font-size: 1.0625rem;
   font-weight: 700;
+  text-align: center;
   color: var(--color-win-text);
 }
 
@@ -429,16 +612,32 @@ button:focus-visible {
 .setup-button {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   width: 100%;
-  max-width: 22rem;
   min-height: 2.75rem;
-  margin: 0 auto 12px;
-  box-sizing: border-box;
+  height: 2.75rem;
+  padding: 0 var(--space-4);
+  border-width: 2px;
+  border-radius: var(--radius-m);
   color: var(--color-text);
   background-color: var(--color-control-bg);
+  font-size: 1rem;
   font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.setup-summary {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.setup-cue {
+  flex: none;
+  font-size: 1.125rem;
 }
 
 .setup-sheet {
@@ -592,8 +791,10 @@ button:focus-visible {
 
 .setup-sheet > [data-control='level'] {
   grid-row: 2;
-  /* Room for the ring of the last level option above the footer strip at full scroll (FR-65, WCAG 2.4.11). */
-  margin-bottom: 24px;
+  /* Room for the ring of the last level option above the footer strip at full scroll (FR-65, WCAG 2.4.11). 28px since the layout geometry
+     port: with border-box on every element the footer buttons' 2px borders now sit inside their 44 px, and 24px left the ring up to 1.8 px
+     under the strip (docs/qa/update-page-layout-geometry/nfr-13-red-after-port.txt). */
+  margin-bottom: 28px;
 }
 
 .setup-sheet > .setup-start {
@@ -636,7 +837,7 @@ button:focus-visible {
   margin-left: auto;
   padding: 0;
   border-width: 2px;
-  border-radius: 10px;
+  border-radius: var(--radius-m);
 }
 
 .settings-button .gear {
@@ -662,12 +863,12 @@ button:focus-visible {
   }
 }
 
-/* Small phones (320): title, gear and the rules button share a 296 px column. The gaps are 0.375rem, a little under the design's 0.5rem:
-   with 0.5rem the rules button still ran up to 2.8 px past the column at 320 to 322 px (second review-gate fix round). */
+/* Small phones (320): title, gear and the rules button share a 296 px column, with the design's 0.5rem gaps. (Before the layout geometry
+   port the gaps were 0.375rem: in the old 420 px layout the rules button ran up to 2.8 px past the column at 320 to 322 px.) */
 @media (max-width: 22.5rem) {
   .page-header,
   .page-header h1 {
-    gap: 0.375rem;
+    gap: var(--space-2);
   }
 
   .page-header h1 {
@@ -676,6 +877,54 @@ button:focus-visible {
 
   .rules-button {
     padding: 0 0.625rem;
+  }
+}
+
+/* Wider screens (update-page-layout-geometry): the board grows on tablets up to 5rem cells, height-aware so a short screen shrinks it
+   instead of hiding the buttons, never below 44 px for 4×4 and 6×6 or 24 px for 8×8 (below that the page scrolls). One column for every
+   board size: the 6×6 board's width, at least 26rem; 4×4 sits centred in it, 8×8 is capped at it. The page is exactly the column wide. */
+@media (min-width: 48rem) {
+  #app {
+    --gap: var(--space-4);
+    --reserve: 24rem;
+    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 5rem) + 5 * 0.25rem + 2 * 0.375rem + 2px));
+    --page-max: calc(var(--column) + max(var(--page-pad), env(safe-area-inset-left)) + max(var(--page-pad), env(safe-area-inset-right)));
+    padding-top: var(--space-5);
+    padding-bottom: var(--space-4);
+  }
+
+  .board {
+    --cell-max: clamp(2.75rem, calc((100dvh - var(--reserve)) / var(--n)), 5rem);
+  }
+
+  .board[data-size='8'] {
+    --cell-max: clamp(1.5rem, calc((100dvh - var(--reserve)) / 8), 5rem);
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .page-header,
+  .setup-button,
+  .buttons,
+  .messages {
+    max-width: var(--column);
+  }
+}
+
+/* Desktop: the same height-aware size and floors, capped at 4.5rem cells. The 8×8 rule is repeated because it outranks plain .board. */
+@media (min-width: 64rem) {
+  #app {
+    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 4.5rem) + 5 * 0.25rem + 2 * 0.375rem + 2px));
+  }
+
+  .board {
+    --cell-max: clamp(2.75rem, calc((100dvh - var(--reserve)) / var(--n)), 4.5rem);
+  }
+
+  .board[data-size='8'] {
+    --cell-max: clamp(1.5rem, calc((100dvh - var(--reserve)) / 8), 4.5rem);
   }
 }
 
@@ -718,12 +967,13 @@ button:focus-visible {
 @media (min-width: 48rem) {
   .settings {
     inset: 0;
-    width: 22rem;
+    width: min(22rem, var(--column));
     max-width: calc(100% - 2rem);
     height: fit-content;
     max-height: calc(100dvh - 7rem);
-    /* Under the header, its right edge on the right edge of the 420 px column (#app is centred). */
-    margin: 6.5rem 0 auto calc(50% + 210px - 22rem);
+    /* The header ends at 5.5rem; the panel starts 0.5rem below, its right edge on the column's right edge (the column is centred: its right
+       edge is 50% + column / 2). */
+    margin: 6rem 0 auto calc(50% + var(--column) / 2 - min(22rem, var(--column)));
     padding: 16px;
     border-width: 1px;
     border-radius: 16px;

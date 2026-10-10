@@ -1,0 +1,818 @@
+{
+  "block": "layout",
+  "tolerancePx": 0.5,
+  "pixelThreshold": 0.1,
+  "coverage": "sampled",
+  "shots": [
+    {
+      "shot": "1024-dark-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 606,
+        "y": 48,
+        "w": 836,
+        "h": 1378
+      },
+      "pixel": 0.8465
+    },
+    {
+      "shot": "1024-dark-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 606,
+        "y": 48,
+        "w": 836,
+        "h": 1372
+      },
+      "pixel": 0.8678
+    },
+    {
+      "shot": "1024-dark-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 606,
+        "y": 48,
+        "w": 836,
+        "h": 1170
+      },
+      "pixel": 0.8892
+    },
+    {
+      "shot": "1024-dark-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 606,
+        "y": 48,
+        "w": 836,
+        "h": 1372
+      },
+      "pixel": 0.8678
+    },
+    {
+      "shot": "1024-dark-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1442,
+        "h": 1284
+      },
+      "pixel": 0.9016
+    },
+    {
+      "shot": "1024-light-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 606,
+        "y": 48,
+        "w": 836,
+        "h": 1378
+      },
+      "pixel": 0.7159
+    },
+    {
+      "shot": "1024-light-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 606,
+        "y": 48,
+        "w": 836,
+        "h": 1372
+      },
+      "pixel": 0.7448
+    },
+    {
+      "shot": "1024-light-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 606,
+        "y": 48,
+        "w": 836,
+        "h": 1170
+      },
+      "pixel": 0.7546
+    },
+    {
+      "shot": "1024-light-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 606,
+        "y": 48,
+        "w": 836,
+        "h": 1372
+      },
+      "pixel": 0.7448
+    },
+    {
+      "shot": "1024-light-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1442,
+        "h": 1284
+      },
+      "pixel": 0.8729
+    },
+    {
+      "shot": "1366-dark-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 950,
+        "y": 48,
+        "w": 832,
+        "h": 1142
+      },
+      "pixel": 0.8631
+    },
+    {
+      "shot": "1366-dark-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 950,
+        "y": 48,
+        "w": 832,
+        "h": 1136
+      },
+      "pixel": 0.8773
+    },
+    {
+      "shot": "1366-light-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 950,
+        "y": 48,
+        "w": 832,
+        "h": 1142
+      },
+      "pixel": 0.78
+    },
+    {
+      "shot": "1366-light-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 950,
+        "y": 48,
+        "w": 832,
+        "h": 1136
+      },
+      "pixel": 0.7955
+    },
+    {
+      "shot": "1440-dark-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 974,
+        "y": 48,
+        "w": 932,
+        "h": 1474
+      },
+      "pixel": 0.8532
+    },
+    {
+      "shot": "1440-dark-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 974,
+        "y": 48,
+        "w": 932,
+        "h": 1474
+      },
+      "pixel": 0.875
+    },
+    {
+      "shot": "1440-dark-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 974,
+        "y": 48,
+        "w": 932,
+        "h": 1170
+      },
+      "pixel": 0.8964
+    },
+    {
+      "shot": "1440-dark-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 974,
+        "y": 48,
+        "w": 932,
+        "h": 1474
+      },
+      "pixel": 0.875
+    },
+    {
+      "shot": "1440-dark-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1906,
+        "h": 1380
+      },
+      "pixel": 0.9218
+    },
+    {
+      "shot": "1440-light-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 974,
+        "y": 48,
+        "w": 932,
+        "h": 1474
+      },
+      "pixel": 0.7172
+    },
+    {
+      "shot": "1440-light-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 974,
+        "y": 48,
+        "w": 932,
+        "h": 1474
+      },
+      "pixel": 0.7476
+    },
+    {
+      "shot": "1440-light-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 974,
+        "y": 48,
+        "w": 932,
+        "h": 1170
+      },
+      "pixel": 0.7749
+    },
+    {
+      "shot": "1440-light-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 974,
+        "y": 48,
+        "w": 932,
+        "h": 1474
+      },
+      "pixel": 0.7476
+    },
+    {
+      "shot": "1440-light-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1906,
+        "h": 1380
+      },
+      "pixel": 0.8912
+    },
+    {
+      "shot": "320-dark-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 24,
+        "y": 32,
+        "w": 592,
+        "h": 1160
+      },
+      "pixel": 0.7996
+    },
+    {
+      "shot": "320-dark-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 16,
+        "y": 32,
+        "w": 608,
+        "h": 1190
+      },
+      "pixel": 0.8225
+    },
+    {
+      "shot": "320-dark-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 24,
+        "y": 32,
+        "w": 592,
+        "h": 1138
+      },
+      "pixel": 0.8091
+    },
+    {
+      "shot": "320-dark-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 16,
+        "y": 32,
+        "w": 608,
+        "h": 1190
+      },
+      "pixel": 0.8225
+    },
+    {
+      "shot": "320-dark-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 616,
+        "h": 1050
+      },
+      "pixel": 0.8227
+    },
+    {
+      "shot": "320-light-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 24,
+        "y": 32,
+        "w": 592,
+        "h": 1160
+      },
+      "pixel": 0.6881
+    },
+    {
+      "shot": "320-light-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 16,
+        "y": 32,
+        "w": 608,
+        "h": 1190
+      },
+      "pixel": 0.7078
+    },
+    {
+      "shot": "320-light-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 24,
+        "y": 32,
+        "w": 592,
+        "h": 1138
+      },
+      "pixel": 0.659
+    },
+    {
+      "shot": "320-light-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 16,
+        "y": 32,
+        "w": 608,
+        "h": 1190
+      },
+      "pixel": 0.7078
+    },
+    {
+      "shot": "320-light-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 616,
+        "h": 1050
+      },
+      "pixel": 0.7781
+    },
+    {
+      "shot": "375-dark-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 32,
+        "y": 32,
+        "w": 686,
+        "h": 1268
+      },
+      "pixel": 0.7873
+    },
+    {
+      "shot": "375-dark-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 16,
+        "y": 32,
+        "w": 718,
+        "h": 1300
+      },
+      "pixel": 0.8393
+    },
+    {
+      "shot": "375-dark-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 32,
+        "y": 32,
+        "w": 686,
+        "h": 1146
+      },
+      "pixel": 0.8236
+    },
+    {
+      "shot": "375-dark-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 16,
+        "y": 32,
+        "w": 718,
+        "h": 1300
+      },
+      "pixel": 0.8393
+    },
+    {
+      "shot": "375-dark-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 718,
+        "h": 1158
+      },
+      "pixel": 0.8088
+    },
+    {
+      "shot": "375-light-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 32,
+        "y": 32,
+        "w": 686,
+        "h": 1268
+      },
+      "pixel": 0.6702
+    },
+    {
+      "shot": "375-light-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 16,
+        "y": 32,
+        "w": 718,
+        "h": 1300
+      },
+      "pixel": 0.7187
+    },
+    {
+      "shot": "375-light-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 32,
+        "y": 32,
+        "w": 686,
+        "h": 1146
+      },
+      "pixel": 0.6899
+    },
+    {
+      "shot": "375-light-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 16,
+        "y": 32,
+        "w": 718,
+        "h": 1300
+      },
+      "pixel": 0.7187
+    },
+    {
+      "shot": "375-light-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 718,
+        "h": 1158
+      },
+      "pixel": 0.7804
+    },
+    {
+      "shot": "768-dark-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 254,
+        "y": 48,
+        "w": 1028,
+        "h": 1570
+      },
+      "pixel": 0.8591
+    },
+    {
+      "shot": "768-dark-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 254,
+        "y": 48,
+        "w": 1028,
+        "h": 1570
+      },
+      "pixel": 0.8816
+    },
+    {
+      "shot": "768-dark-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 254,
+        "y": 48,
+        "w": 1028,
+        "h": 1234
+      },
+      "pixel": 0.9006
+    },
+    {
+      "shot": "768-dark-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 254,
+        "y": 48,
+        "w": 1028,
+        "h": 1570
+      },
+      "pixel": 0.8816
+    },
+    {
+      "shot": "768-dark-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1282,
+        "h": 1476
+      },
+      "pixel": 0.8787
+    },
+    {
+      "shot": "768-light-default",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 254,
+        "y": 48,
+        "w": 1028,
+        "h": 1570
+      },
+      "pixel": 0.7188
+    },
+    {
+      "shot": "768-light-eight",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 254,
+        "y": 48,
+        "w": 1028,
+        "h": 1570
+      },
+      "pixel": 0.7513
+    },
+    {
+      "shot": "768-light-four",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 254,
+        "y": 48,
+        "w": 1028,
+        "h": 1234
+      },
+      "pixel": 0.7729
+    },
+    {
+      "shot": "768-light-level",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 254,
+        "y": 48,
+        "w": 1028,
+        "h": 1570
+      },
+      "pixel": 0.7513
+    },
+    {
+      "shot": "768-light-win",
+      "block": "layout",
+      "calibration": 1,
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1282,
+        "h": 1476
+      },
+      "pixel": 0.8195
+    }
+  ]
+}

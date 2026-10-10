@@ -65,7 +65,7 @@ Result: PASS, 115 warning(s)
 | FR-35 | yes | yes | 2 | - |
 | FR-36 | yes | yes | 2 | - |
 | FR-37 | yes | yes | 2 | - |
-| FR-38 | yes | yes | 2 | - |
+| FR-38 | yes | yes | 3 | - |
 | FR-39 | yes | yes | 2 | - |
 | FR-40 | yes | yes | 7 | - |
 | FR-41 | yes | yes | 2 | - |
