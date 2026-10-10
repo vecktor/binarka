@@ -231,6 +231,22 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
     }
   });
 
+  // fix-size-option-focus-ring (FR-65 "unobscured"; «Segmented options keep the focus ring inside the card»): inside a segmented card an
+  // outset ring runs over the gap and the neighbour option, so the options of the size, theme and language controls pull it inside.
+  // That every other button keeps the outset ring is the test above («The button ring has a positive outline-offset»).
+  it('@trace FR-65 Each segmented control declares an inset focus ring: outline-offset -1px, not important', () => {
+    const parsed = readStyles();
+    for (const control of ['.size-control', '.theme-control', '.language-control']) {
+      const selector = `${control} button:focus-visible`;
+      expect(rulesWithSelector(parsed, selector).length, `a rule for ${selector}`).toBeGreaterThan(0);
+      expectDecl(parsed, selector, 'outline-offset', '-1px');
+      const important = rulesWithSelector(parsed, selector).flatMap((r) =>
+        r.declarations.filter((d) => d.property === 'outline-offset' && d.important),
+      );
+      expect(important, `${selector} outline-offset is not !important`).toEqual([]);
+    }
+  });
+
   // update-setup-sheet-start, review-gate second fix round (finding 1, FR-65): the sticky footer strip hides a keyboard-focused
   // level option when the sheet scrolls, unless the scroll container reserves the strip in its scroll padding.
   it('@trace FR-65 The open sheet reserves the footer in its scroll padding: scroll-padding-bottom of at least calc(2.75rem + 48px) (92px)', () => {

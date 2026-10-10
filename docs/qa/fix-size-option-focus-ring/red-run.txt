@@ -1,0 +1,30 @@
+# fix-size-option-focus-ring red run, 2026-10-10 13:15 +0530, before the CSS fix
+# npm run test:run (full suite); the one red test is the new FR-65 inset-ring test, failing on its first control (.size-control: no rule).
+# The theme and language rules already exist (grep below); the loop reaches them only after the size rule exists (green run proves them).
+773:.theme-control button:focus-visible {
+816:.language-control button:focus-visible {
+     × @trace FR-65 Each segmented control declares an inset focus ring: outline-offset -1px, not important 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > visible, unobscured focus indicators (FR-65) > @trace FR-65 Each segmented control declares an inset focus ring: outline-offset -1px, not important
+AssertionError: a rule for .size-control button:focus-visible: expected 0 to be greater than 0
+ ❯ tests/play-page-stylesheet.test.ts:241:84
+    239|     for (const control of ['.size-control', '.theme-control', '.langua…
+    240|       const selector = `${control} button:focus-visible`;
+    241|       expect(rulesWithSelector(parsed, selector).length, `a rule for $…
+       |                                                                                    ^
+    242|       expectDecl(parsed, selector, 'outline-offset', '-1px');
+    243|       const important = rulesWithSelector(parsed, selector).flatMap((r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 66 passed (67)
+      Tests  1 failed | 1652 passed (1653)
+   Start at  13:15:17
+   Duration  61.68s (tests 79%, environment 15%, import 5%, transform 1%)
+
+    Isolate  67 workers spawned · ~621ms startup each (spawn + environment, per file)
+             at least ~4.00s faster with isolate: false — reuses workers across files instead of one per file
+
