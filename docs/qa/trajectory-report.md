@@ -17,7 +17,7 @@ Result: PASS, 22 warning(s)
 | 2026-10-04-update-hint-sentences | clean | 8 | yes | engine |
 | 2026-10-06-add-hinted-cell | **unclean** | 6 | yes | ui |
 | 2026-10-06-update-controls-accessibility | **unclean** | 8 | yes | ui |
-| 2026-10-06-update-page-layout | **unclean** | 16 | yes | ui |
+| 2026-10-06-update-page-layout | **unclean** | 17 | yes | ui |
 | 2026-10-08-add-page-accessibility | clean | 7 | yes | ui |
 | 2026-10-08-reconcile-ux-accessibility | **unclean** | 5 | yes | ui |
 | 2026-10-08-update-win-apostrophe | clean | 2 | yes | ui |
@@ -30,7 +30,7 @@ Result: PASS, 22 warning(s)
 | 2026-10-10-add-english-version | **unclean** | 9 | yes | engine, ui |
 | 2026-10-10-add-theme-switch | **unclean** | 18 | yes | ui |
 | 2026-10-10-fix-size-option-focus-ring | **unclean** | 3 | **no** | ui |
-| 2026-10-10-update-page-layout-geometry | **unclean** | 4 | yes | ui |
+| 2026-10-10-update-page-layout-geometry | **unclean** | 5 | yes | ui |
 | 2026-10-10-update-segmented-focus-ring-wording | **missing** | 2 | **no** | - |
 | 2026-10-10-update-setup-sheet-start | **unclean** | 22 | yes | ui |
 
