@@ -1,0 +1,19 @@
+# PD-1 red to green proof, 2026-10-10 13:57 +0530
+## before: renamed adapter, old lock
+WARN  [scripts/check-visual-parity-adapters.mjs] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
+Scope: 23 locked file(s)
+Result: PASS, 4 warning(s)
+## re-seal
+WARN  [lock] existing factory-lock.json superseded — re-locking is a post-adaptation-G0 / approved-improvement action, not routine.
+Locked 26 gate-bearing file(s) into factory-lock.json (gitHead: 7ac61dfaf094d16dd9825274224d991b48044ba9).
+Scope: 26 locked file(s)
+Result: PASS, 1 warning(s)
+## after
+Scope: 26 locked file(s)
+Result: PASS, 1 warning(s)
+2
+## tamper probe: one line appended to the adapter (restored after)
+FAIL  [scripts/check-visual-parity-adapters.mjs] gate-bearing file drift (hash drift) vs factory-lock.json with NO commit touching it whose message contains "Refs: PD-<n>". Gate scripts may only chang
+Result: FAIL, 1 warning(s)
+## restored
+Result: PASS, 1 warning(s)

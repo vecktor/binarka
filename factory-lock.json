@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-04T09:24:20.580Z",
-  "gitHead": "ce62d24b833f96fb3eaf648a0f1a8911ae5c8407",
+  "createdAt": "2026-10-10T08:27:38.138Z",
+  "gitHead": "7ac61dfaf094d16dd9825274224d991b48044ba9",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -11,6 +11,8 @@
     ".githooks/commit-msg": "c6427b364dbc15da31235e4c0f9a8ac74639b7f0512cadce95f301637387fb5c",
     ".githooks/pre-commit": "c64e18049003ddd126e8ac2c61c1ce759923977748f5f044ee34fc1c3212eaea",
     ".github/workflows/ci.yml": "cee3717d47aaf745fd1b080446dce63387305a0c98bb44266940c626512803f6",
+    "quality/coverage-baseline.json": "bad5d7096b4a86643815cd870761fef3eb8dc8fc02b3341fb7efe580cb13335a",
+    "quality/eval-baseline.json": "93791bb00ddc72e7114105351fe3a55be0063c2976765ef4100f4bc135a88be8",
     "quality/process-baseline.json": "c4138cf68d31420931034e59d580cc4db6fdd08550de95347c7396bd9b2923d5",
     "quality/telemetry.config.json": "98276dbbd18f9d694f3378aed7ecc042439d99c8e292bb3caeed7a833005835b",
     "scripts/check-a11y.mjs": "25930dd0eefb2b70c4ca9b2733e89b712def89120f1b41ff2a215cc52a480f51",
@@ -23,15 +25,11 @@
     "scripts/check-traceability.mjs": "10dfdb95743c685e31f0a1cdb2d4cbef0d728315097efd93544346330250fadf",
     "scripts/check-trajectory.mjs": "2b4e0ba839c639c0da160d74ef204bd9fae09f264404a8342beea815b8ebafc1",
     "scripts/check-visual-fidelity.mjs": "f6fd0816f6293c0394c3cdb57232bb72b85cebe3b40ac6b88bf0628847722504",
+    "scripts/check-visual-parity-adapters.mjs": "b900d5f46a5eb15a58dfc3dc82fe7fc3609cdbeed2c16b8d30a7dead95f89063",
     "scripts/gate-status.mjs": "07617acbbd6ae513bcc7675478e920bd86ff2c765ae1b2ebc2ab27dad50e5fae",
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "agent frontmatter: model/effort set per binarka-brief table (qa-documenter haiku, no effort)",
-    "workflows: review-gate verifiers sonnet/medium and persist writer haiku; eval-suite collect and writer haiku",
-    "qa-verify battery: removed db-integration-tests and browser-e2e-tests (no DB, no Playwright per ADR-0001); recordings, visual-fidelity and eval-ratchet kept as honest NOT-EARNED",
-    "check-trajectory: module scope retargeted from lib/<domain>/ to src/<module>/",
-    "ci.yml: fetch-depth 0, DB/Playwright/coverage/integration steps removed, --release precedence parenthesised, npm audit scoped to --omit=dev",
-    "init: scripts/automations and automations/ skipped; scripts/lib skipped; package.json test:coverage fails loudly until @vitest/coverage-v8 is installed; AGENTS.md rewritten for the TS/Vite stack; openspec init with --tools none"
+    "PD-1 (2026-10-10, approved by the user in chat): scripts/check-visual-parity-adapters.mjs (the NFR-14 capture adapter) joins the lock; quality/coverage-baseline.json and quality/eval-baseline.json sealed at their current values"
   ]
 }

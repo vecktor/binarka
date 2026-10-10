@@ -28,7 +28,7 @@ Result: PASS, 17 warning(s)
 | 2026-10-09-fix-action-button-targets | **unclean** | 5 | yes | ui |
 | 2026-10-10-add-english-version | **unclean** | 9 | yes | engine, ui |
 | 2026-10-10-add-theme-switch | **unclean** | 18 | yes | ui |
-| 2026-10-10-fix-size-option-focus-ring | **missing** | 2 | **no** | ui |
+| 2026-10-10-fix-size-option-focus-ring | **missing** | 3 | **no** | ui |
 | 2026-10-10-update-setup-sheet-start | **unclean** | 22 | yes | ui |
 
 ## Cross-slice module overlap
