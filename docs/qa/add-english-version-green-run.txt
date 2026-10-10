@@ -1,0 +1,30 @@
+Battery of add-english-version after section 3 (uncommitted on a75e3cf), 2026-10-10 11:29 +0530
+== npm run lint
+exit 0
+== npx tsc --noEmit -p .
+exit 0
+== npm run test:run
+      Tests  1 failed | 1650 passed (1651)
+ FAIL  tests/eval-hint-clarity-en.test.ts
+ Test Files  1 failed | 66 passed (67)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+exit 1
+== npm run build
+exit 0
+== npx openspec validate --all --strict
+Totals: 3 passed, 0 failed (3 items)
+exit 0
+== node scripts/check-eval-ratchet.mjs
+Result: PASS
+exit 0
+== node scripts/check-traceability.mjs
+traceability: 113 MVP FRs checked — 0 failure(s), 114 warning(s)
+exit 0
+== npm run test:e2e
+  116 passed (18.2s)
+exit 0
+== npm run check:a11y
+  67 passed (11.8s)
+exit 0
+
+Sampled coverage (fixed viewports), never continuum. The one red test is the NOT-EARNED gate tests/eval-hint-clarity-en.test.ts: it stays red until the eval-suite grades hint-clarity-en (task 4.5); this file is re-saved after that run. e2e and a11y reports restored after each run.

@@ -1,17 +1,22 @@
-import { GenerationRunOutError, findViolations, generate, hint, isSolved } from '../engine/index';
-import type { Cell, Grid, Puzzle } from '../engine/index';
+import { GenerationRunOutError, findViolations, generate, hint, hintSentence, isSolved } from '../engine/index';
+import type { Cell, Grid, Hint, Puzzle } from '../engine/index';
 import { createGear } from './gear';
 import { createLogo } from './logo';
-import { THEME_COLOR_DARK, THEME_COLOR_LIGHT, readTheme, writeTheme } from './preferences';
-import type { ThemeChoice } from './preferences';
+import { THEME_COLOR_DARK, THEME_COLOR_LIGHT, readLanguage, readTheme, writeLanguage, writeTheme } from './preferences';
+import type { LanguageChoice, ThemeChoice } from './preferences';
 import { defaultSeedSource } from './seed';
-import { BUTTONS, CONFIRM, IDLE, LEVELS, LEVEL_GROUP, LEVEL_REASON_4X4, RULES, SETTINGS, SETUP, SIZE_GROUP, TECHNIQUES, THEME_OPTIONS, TITLE, WIN, cellLabel, sizeLabel, summaryText } from './strings';
+import { LANGUAGE_OPTIONS, RULES, textsFor } from './strings';
+import type { PageTexts } from './strings';
 
 /** The theme choice of the document: shared by every mount, because they all write the one <html data-theme> and meta. */
 let documentTheme: ThemeChoice = 'auto';
 /** Every live mount: its theme control (to tell a mount whose root was replaced or removed), the function that shows documentTheme
  * on its options, and the function that removes its system listener. */
 const themeMounts = new Set<{ control: HTMLElement; sync: () => void; stop: () => void }>();
+/** The language of the document: shared by every mount, because <html lang> and document.title are document-wide (same pattern as the theme). */
+let documentLanguage: LanguageChoice = 'uk';
+/** Every live mount: its language control (to tell a mount whose root was replaced or removed) and the function that renders its texts. */
+const languageMounts = new Set<{ control: HTMLElement; render: () => void }>();
 
 export interface PlayPageOptions {
   seedSource?: () => number;
@@ -43,7 +48,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const seedSource = options.seedSource ?? defaultSeedSource;
   const makePuzzle = options.generate ?? generate;
 
-  document.title = TITLE;
+  // The language of the document (FR-113): a mount whose control left the document is dropped here, lazily (like the theme mounts).
+  for (const mount of languageMounts) if (!mount.control.isConnected) languageMounts.delete(mount);
+  documentLanguage = readLanguage();
+  let texts: PageTexts = textsFor(documentLanguage);
 
   panelCounter += 1;
   const panelId = `rules-panel-${panelCounter}`;
@@ -51,47 +59,55 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const sheetId = `setup-sheet-${panelCounter}`;
   const settingsId = `settings-panel-${panelCounter}`;
 
-  const rulesButton = el('button', { type: 'button', class: 'rules-button', 'data-action': 'rules', popovertarget: panelId }, BUTTONS.rules);
+  const rulesButton = el('button', { type: 'button', class: 'rules-button', 'data-action': 'rules', popovertarget: panelId });
   const header = el('header', { class: 'page-header' });
-  const title = el('h1', {}, TITLE);
-  title.prepend(createLogo());
-  const settingsButton = el('button', { type: 'button', class: 'settings-button', 'data-action': 'settings', popovertarget: settingsId, 'aria-label': SETTINGS.label });
+  const title = el('h1');
+  const titleText = document.createTextNode('');
+  title.append(createLogo(), titleText);
+  const settingsButton = el('button', { type: 'button', class: 'settings-button', 'data-action': 'settings', popovertarget: settingsId });
   settingsButton.append(createGear());
   header.append(title, settingsButton, rulesButton);
 
   const boardHost = el('div', { class: 'board-host' });
-  const hintButton = el('button', { type: 'button', 'data-action': 'hint' }, BUTTONS.hint);
-  const newButton = el('button', { type: 'button', 'data-action': 'new' }, BUTTONS.newPuzzle);
+  const hintButton = el('button', { type: 'button', 'data-action': 'hint' });
+  const newButton = el('button', { type: 'button', 'data-action': 'new' });
   const summaryButton = el('button', { type: 'button', class: 'setup-button', 'data-action': 'setup', popovertarget: sheetId });
-  const summaryPrefix = el('span', { class: 'visually-hidden' }, SETUP.prefix);
+  const summaryPrefix = el('span', { class: 'visually-hidden' });
   const summaryLabel = el('span', { class: 'setup-summary' });
-  summaryButton.append(summaryPrefix, summaryLabel, el('span', { class: 'setup-cue', 'aria-hidden': 'true' }, SETUP.cue));
-  const sizeControl = el('div', { 'data-control': 'size', role: 'radiogroup', 'aria-label': SIZE_GROUP, class: 'size-control' });
+  const summaryCue = el('span', { class: 'setup-cue', 'aria-hidden': 'true' });
+  summaryButton.append(summaryPrefix, summaryLabel, summaryCue);
+  const sizeControl = el('div', { 'data-control': 'size', role: 'radiogroup', class: 'size-control' });
   const sizeButtons = new Map<number, HTMLButtonElement>();
   for (const n of SIZES) {
-    const option = el('button', { type: 'button', role: 'radio', 'aria-checked': n === 6 ? 'true' : 'false', 'data-size-option': String(n) }, sizeLabel(n));
+    const option = el('button', { type: 'button', role: 'radio', 'aria-checked': n === 6 ? 'true' : 'false', 'data-size-option': String(n) });
     sizeButtons.set(n, option);
     sizeControl.appendChild(option);
   }
-  const levelControl = el('div', { 'data-control': 'level', role: 'radiogroup', 'aria-label': LEVEL_GROUP, class: 'level-control' });
+  const levelControl = el('div', { 'data-control': 'level', role: 'radiogroup', class: 'level-control' });
   const levelReason = el('p', { 'data-level-reason': '', hidden: '' });
   levelControl.appendChild(levelReason);
   const levelButtons: HTMLButtonElement[] = [];
-  LEVELS.forEach((entry, i) => {
+  const levelNames: HTMLElement[] = [];
+  const levelTexts: HTMLElement[] = [];
+  textsFor('uk').LEVELS.forEach((_entry, i) => {
     const option = el('button', { type: 'button', role: 'radio', 'aria-checked': i === 0 ? 'true' : 'false' });
-    option.append(el('span', { class: 'level-name' }, entry.name), document.createTextNode(' '), el('span', { class: 'level-text' }, entry.description));
+    const levelName = el('span', { class: 'level-name' });
+    const levelText = el('span', { class: 'level-text' });
+    option.append(levelName, document.createTextNode(' '), levelText);
+    levelNames.push(levelName);
+    levelTexts.push(levelText);
     levelButtons.push(option);
     levelControl.appendChild(option);
   });
-  const setupStart = el('button', { type: 'button', class: 'setup-start', 'data-action': 'setup-start' }, SETUP.start);
-  const setupClose = el('button', { type: 'button', class: 'setup-close', 'data-action': 'setup-close', popovertarget: sheetId, popovertargetaction: 'hide' }, SETUP.close);
-  const sheet = el('div', { popover: 'auto', id: sheetId, class: 'setup-sheet', 'data-section': 'setup', role: 'dialog', 'aria-label': SETUP.sheetLabel });
+  const setupStart = el('button', { type: 'button', class: 'setup-start', 'data-action': 'setup-start' });
+  const setupClose = el('button', { type: 'button', class: 'setup-close', 'data-action': 'setup-close', popovertarget: sheetId, popovertargetaction: 'hide' });
+  const sheet = el('div', { popover: 'auto', id: sheetId, class: 'setup-sheet', 'data-section': 'setup', role: 'dialog' });
   sheet.append(sizeControl, levelControl, setupStart, setupClose);
-  const resetButton = el('button', { type: 'button', 'data-action': 'reset' }, BUTTONS.reset);
+  const resetButton = el('button', { type: 'button', 'data-action': 'reset' });
   const buttons = el('div', { class: 'buttons' });
   buttons.append(hintButton, resetButton, newButton);
 
-  const idleMessage = el('p', { 'data-message': 'idle', class: 'message message-idle' }, IDLE);
+  const idleMessage = el('p', { 'data-message': 'idle', class: 'message message-idle' });
   const hintMessage = el('p', { 'data-message': 'hint', class: 'message', role: 'status' });
   const winMessage = el('p', { 'data-message': 'win', class: 'message message-win', role: 'status' });
   const messages = el('div', { class: 'messages' });
@@ -99,9 +115,12 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
 
   const rulesPanel = el('div', { popover: 'auto', id: panelId, class: 'rules', 'data-section': 'rules', role: 'dialog', 'aria-labelledby': panelTitleId });
   const rulesList = el('ul');
-  RULES.items.forEach((text, i) => {
+  const ruleTexts: HTMLElement[] = [];
+  RULES.items.forEach((_text, i) => {
     const item = el('li');
-    item.appendChild(el('span', { class: 'rule-text' }, text));
+    const ruleText = el('span', { class: 'rule-text' });
+    ruleTexts.push(ruleText);
+    item.appendChild(ruleText);
     const example = el('span', { class: 'rule-example', 'aria-hidden': 'true' });
     for (const token of RULE_EXAMPLES[i] ?? []) {
       if (token === '\u2260') example.appendChild(el('span', { class: 'mini-sep' }, token));
@@ -111,33 +130,48 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     item.appendChild(example);
     rulesList.appendChild(item);
   });
-  const closeButton = el('button', { type: 'button', class: 'rules-close', popovertarget: panelId, popovertargetaction: 'hide', autofocus: '' }, BUTTONS.rulesClose);
+  const closeButton = el('button', { type: 'button', class: 'rules-close', popovertarget: panelId, popovertargetaction: 'hide', autofocus: '' });
   const techniques = el('div', { 'data-section': 'techniques' });
   const techniquesList = el('ul');
-  for (const text of TECHNIQUES.items) techniquesList.appendChild(el('li', {}, text));
-  techniques.append(el('h3', {}, TECHNIQUES.heading), techniquesList);
-  rulesPanel.append(el('h2', { id: panelTitleId }, RULES.heading), rulesList, techniques, closeButton);
+  const techniqueItems: HTMLElement[] = [];
+  textsFor('uk').TECHNIQUES.items.forEach(() => {
+    const item = el('li');
+    techniqueItems.push(item);
+    techniquesList.appendChild(item);
+  });
+  const techniquesHeading = el('h3');
+  const rulesHeading = el('h2', { id: panelTitleId });
+  techniques.append(techniquesHeading, techniquesList);
+  rulesPanel.append(rulesHeading, rulesList, techniques, closeButton);
 
-  const themeControl = el('div', { 'data-control': 'theme', role: 'radiogroup', 'aria-label': SETTINGS.themeLabel, class: 'theme-control' });
+  const themeControl = el('div', { 'data-control': 'theme', role: 'radiogroup', class: 'theme-control' });
   const themeButtons = new Map<ThemeChoice, HTMLButtonElement>();
-  for (const entry of THEME_OPTIONS) {
-    const option = el('button', { type: 'button', role: 'radio', 'aria-checked': 'false', 'data-theme-option': entry.value }, entry.name);
+  for (const entry of textsFor('uk').THEME_OPTIONS) {
+    const option = el('button', { type: 'button', role: 'radio', 'aria-checked': 'false', 'data-theme-option': entry.value });
     themeButtons.set(entry.value, option);
     themeControl.appendChild(option);
   }
-  const settingsClose = el('button', { type: 'button', class: 'settings-close', 'data-action': 'settings-close', popovertarget: settingsId, popovertargetaction: 'hide' }, SETTINGS.close);
-  const settingsPanel = el('div', { popover: 'auto', id: settingsId, class: 'settings', 'data-section': 'settings', role: 'dialog', 'aria-label': SETTINGS.label });
-  settingsPanel.append(el('p', { class: 'settings-label' }, SETTINGS.themeLabel), themeControl, settingsClose);
+  const languageControl = el('div', { 'data-control': 'language', role: 'radiogroup', class: 'language-control' });
+  const languageButtons = new Map<LanguageChoice, HTMLButtonElement>();
+  for (const entry of LANGUAGE_OPTIONS) {
+    const option = el('button', { type: 'button', role: 'radio', 'aria-checked': 'false', 'data-language-option': entry.value, lang: entry.value }, entry.name);
+    languageButtons.set(entry.value, option);
+    languageControl.appendChild(option);
+  }
+  const settingsClose = el('button', { type: 'button', class: 'settings-close', 'data-action': 'settings-close', popovertarget: settingsId, popovertargetaction: 'hide' });
+  const settingsPanel = el('div', { popover: 'auto', id: settingsId, class: 'settings', 'data-section': 'settings', role: 'dialog' });
+  const themeLabel = el('p', { class: 'settings-label' });
+  const languageLabel = el('p', { class: 'settings-label' });
+  settingsPanel.append(themeLabel, themeControl, languageLabel, languageControl, settingsClose);
 
   const dialogTextId = `confirm-text-${panelCounter}`;
   const dialog = el('dialog', { 'data-dialog': 'confirm', class: 'confirm', 'aria-labelledby': dialogTextId });
-  const yesButton = el('button', { type: 'button', 'data-confirm': 'yes' }, CONFIRM.yes);
-  const noButton = el('button', { type: 'button', 'data-confirm': 'no' }, CONFIRM.no);
+  const yesButton = el('button', { type: 'button', 'data-confirm': 'yes' });
+  const noButton = el('button', { type: 'button', 'data-confirm': 'no' });
   const dialogButtons = el('div', { class: 'confirm-buttons' });
   dialogButtons.append(yesButton, noButton);
-  dialog.append(el('p', { id: dialogTextId }, CONFIRM.text), dialogButtons);
-
-  root.replaceChildren(header, summaryButton, boardHost, buttons, messages, rulesPanel, sheet, settingsPanel, dialog);
+  const dialogText = el('p', { id: dialogTextId });
+  dialog.append(dialogText, dialogButtons);
 
   let size = 6;
   let level = 1;
@@ -147,20 +181,32 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   let board: Grid = [];
   let cellEls: HTMLElement[][] = [];
   let hinted: [number, number] | null = null;
+  let boardEl: HTMLElement | null = null; // the board group shown (its name follows the language)
+  let shownHint: Hint | null = null; // the hint result on screen: a language switch rebuilds its sentence (FR-110)
+
+  function setAt(list: HTMLElement[], i: number, value: string): void {
+    const node = list[i];
+    if (node !== undefined) setText(node, value);
+  }
+
+  /** Set a text only when it changes, so a live region is not announced again for nothing. */
+  function setText(node: Node, value: string): void {
+    if (node.textContent !== value) node.textContent = value;
+  }
 
   let pending: (() => void) | null = null;
   let returnToSummary = false; // the pending confirmation came from the sheet: focus goes to the summary when it ends
 
   /** The summary from the board shown (`size`, `level`); aria-checked, aria-disabled and the reason from the marked choice (FR-100). */
   function syncControls(): void {
-    summaryLabel.textContent = summaryText(size, level);
+    summaryLabel.textContent = texts.summaryText(size, level);
     for (const [m, button] of sizeButtons) button.setAttribute('aria-checked', m === markedSize ? 'true' : 'false');
     levelButtons.forEach((button, i) => {
       button.setAttribute('aria-checked', i + 1 === markedLevel ? 'true' : 'false');
       if (markedSize === 4 && i > 0) button.setAttribute('aria-disabled', 'true');
       else button.removeAttribute('aria-disabled');
     });
-    levelReason.textContent = markedSize === 4 ? LEVEL_REASON_4X4 : '';
+    levelReason.textContent = markedSize === 4 ? texts.LEVEL_REASON_4X4 : '';
     levelReason.hidden = markedSize !== 4;
   }
 
@@ -192,7 +238,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (given) node.setAttribute('aria-disabled', 'true');
     else node.removeAttribute('aria-disabled');
     const isHinted = hinted !== null && hinted[0] === r && hinted[1] === c;
-    node.setAttribute('aria-label', cellLabel(r + 1, c + 1, value, given, isHinted));
+    node.setAttribute('aria-label', texts.cellLabel(r + 1, c + 1, value, given, isHinted));
   }
 
   function refreshHighlights(): void {
@@ -218,7 +264,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   }
 
   function updateWin(): void {
-    winMessage.textContent = isSolved(board) ? WIN : '';
+    winMessage.textContent = isSolved(board) ? texts.WIN : '';
   }
 
   function onBoardClick(event: Event): void {
@@ -245,19 +291,20 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     hinted = null; // the old cell elements are replaced below
     givens = copyGrid(puzzle.givens);
     board = copyGrid(puzzle.givens);
-    const boardEl = el('div', { 'data-board': '', 'data-size': String(n), class: 'board', role: 'group', 'aria-label': sizeLabel(n) });
+    const nextBoard = el('div', { 'data-board': '', 'data-size': String(n), class: 'board', role: 'group', 'aria-label': texts.sizeLabel(n) });
+    boardEl = nextBoard;
     cellEls = [];
     for (let r = 0; r < n; r++) {
       const rowEls: HTMLElement[] = [];
       for (let c = 0; c < n; c++) {
         const cell = el('button', { type: 'button', 'data-cell': '', 'data-row': String(r + 1), 'data-col': String(c + 1), class: 'cell' });
         rowEls.push(cell);
-        boardEl.appendChild(cell);
+        nextBoard.appendChild(cell);
       }
       cellEls.push(rowEls);
     }
-    boardEl.addEventListener('click', onBoardClick);
-    boardHost.replaceChildren(boardEl);
+    nextBoard.addEventListener('click', onBoardClick);
+    boardHost.replaceChildren(nextBoard);
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) renderCell(r, c);
     refreshHighlights();
   }
@@ -280,7 +327,8 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
 
   hintButton.addEventListener('click', () => {
     if (board.length === 0) return;
-    const h = hint(board, 4);
+    const h = hint(board, 4, documentLanguage);
+    shownHint = h;
     hintMessage.textContent = h.sentence;
     if (h.kind !== 'fill') return;
     (board[h.row] as Cell[])[h.col] = h.value;
@@ -313,12 +361,14 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
     setHinted(null);
     refreshHighlights();
+    shownHint = null;
     hintMessage.textContent = '';
     winMessage.textContent = '';
   }
 
   function startNewPuzzle(): void {
     if (newPuzzle(size, level)) {
+      shownHint = null;
       hintMessage.textContent = '';
       winMessage.textContent = '';
     }
@@ -326,6 +376,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
 
   function changeTo(nextSize: number, nextLevel: number): void {
     if (newPuzzle(nextSize, nextLevel)) {
+      shownHint = null;
       hintMessage.textContent = '';
       winMessage.textContent = '';
     }
@@ -467,6 +518,72 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   themeMounts.add({ control: themeControl, sync: syncThemeOptions, stop });
   applyTheme();
 
+  // Language (FR-107 to FR-110): the choice, <html lang>, document.title and every text. The choice belongs to the document, so every mount
+  // shares documentLanguage and renders on a press. One pass re-sets texts and labels on the existing elements: nothing is remounted, so
+  // focus, the marked choice, the board and the hint-filled cell stay (design decision 4).
+  function render(): void {
+    texts = textsFor(documentLanguage);
+    document.documentElement.setAttribute('lang', documentLanguage);
+    document.title = texts.TITLE;
+    titleText.data = texts.TITLE;
+    settingsButton.setAttribute('aria-label', texts.SETTINGS.label);
+    setText(rulesButton, texts.BUTTONS.rules);
+    setText(hintButton, texts.BUTTONS.hint);
+    setText(resetButton, texts.BUTTONS.reset);
+    setText(newButton, texts.BUTTONS.newPuzzle);
+    setText(idleMessage, texts.IDLE);
+    setText(summaryPrefix, texts.SETUP.prefix);
+    setText(summaryCue, texts.SETUP.cue);
+    sheet.setAttribute('aria-label', texts.SETUP.sheetLabel);
+    sizeControl.setAttribute('aria-label', texts.SIZE_GROUP);
+    for (const [n, button] of sizeButtons) setText(button, texts.sizeLabel(n));
+    levelControl.setAttribute('aria-label', texts.LEVEL_GROUP);
+    texts.LEVELS.forEach((entry, i) => {
+      setAt(levelNames, i, entry.name);
+      setAt(levelTexts, i, entry.description);
+    });
+    setText(setupStart, texts.SETUP.start);
+    setText(setupClose, texts.SETUP.close);
+    setText(rulesHeading, texts.RULES.heading);
+    texts.RULES.items.forEach((text, i) => { setAt(ruleTexts, i, text); });
+    setText(techniquesHeading, texts.TECHNIQUES.heading);
+    texts.TECHNIQUES.items.forEach((text, i) => { setAt(techniqueItems, i, text); });
+    setText(closeButton, texts.BUTTONS.rulesClose);
+    settingsPanel.setAttribute('aria-label', texts.SETTINGS.label);
+    setText(themeLabel, texts.SETTINGS.themeLabel);
+    themeControl.setAttribute('aria-label', texts.SETTINGS.themeLabel);
+    for (const entry of texts.THEME_OPTIONS) {
+      const button = themeButtons.get(entry.value);
+      if (button !== undefined) setText(button, entry.name);
+    }
+    setText(languageLabel, texts.SETTINGS.languageLabel);
+    languageControl.setAttribute('aria-label', texts.SETTINGS.languageLabel);
+    for (const [value, button] of languageButtons) button.setAttribute('aria-checked', value === documentLanguage ? 'true' : 'false');
+    setText(settingsClose, texts.SETTINGS.close);
+    setText(dialogText, texts.CONFIRM.text);
+    setText(yesButton, texts.CONFIRM.yes);
+    setText(noButton, texts.CONFIRM.no);
+    // the board, its cells and the controls that follow the board shown
+    boardEl?.setAttribute('aria-label', texts.sizeLabel(size));
+    for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
+    syncControls();
+    // the regions: a hint on screen is the same hint in the new language; an empty region stays empty
+    if (shownHint !== null) setText(hintMessage, hintSentence(shownHint, documentLanguage));
+    if (winMessage.textContent !== '') setText(winMessage, texts.WIN);
+  }
+
+  for (const [value, button] of languageButtons) {
+    button.addEventListener('click', () => {
+      if (value === documentLanguage) return; // already chosen: nothing is written
+      documentLanguage = value;
+      writeLanguage(value);
+      for (const mount of languageMounts) mount.render(); // every mount shows the one choice
+    });
+  }
+  languageMounts.add({ control: languageControl, render });
+  for (const mount of languageMounts) mount.render(); // this mount and the others show the document's language
+
   syncControls();
   newPuzzle(size, level);
+  root.replaceChildren(header, summaryButton, boardHost, buttons, messages, rulesPanel, sheet, settingsPanel, dialog);
 }

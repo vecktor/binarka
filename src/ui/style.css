@@ -774,6 +774,49 @@ button:focus-visible {
   outline-offset: -1px;
 }
 
+/* Language options: the same segmented card as the theme options; each option is named in its own language (FR-107). */
+.language-control {
+  display: flex;
+  width: 100%;
+  margin: 0 0 16px;
+  padding: 3px;
+  gap: 3px;
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-control-border);
+  border-radius: 10px;
+  background-color: var(--color-control-bg);
+}
+
+.language-control button {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 8px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 7px;
+  color: var(--color-text);
+  background-color: var(--color-control-bg);
+  white-space: nowrap;
+}
+
+/* The chosen option: a filled background and a frame in the focus colour, bold text and an inner ring (cues besides colour). */
+.language-control button[aria-checked='true'] {
+  color: var(--color-text);
+  background-color: var(--color-given-bg);
+  border-color: var(--color-focus);
+  box-shadow: inset 0 0 0 1px var(--color-focus);
+  font-weight: 700;
+}
+
+/* Inside the segmented card an outset ring would run into the neighbour: keep it inside. */
+.language-control button:focus-visible {
+  outline-offset: -1px;
+}
+
 .settings-close {
   width: 100%;
   min-height: 2.75rem;

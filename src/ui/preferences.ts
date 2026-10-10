@@ -23,23 +23,51 @@ export function forgetSessionPreferences(): void {
   sessionValues.clear();
 }
 
-/** The current choice: a session-only value first, else the stored one; a missing, bad or unreadable value gives 'auto'. Nothing is
- * rewritten or removed. */
-export function readTheme(): ThemeChoice {
+/** The current value of a key: a session-only value first, else the stored one; a missing, bad or unreadable value gives the fallback.
+ * Nothing is rewritten or removed. */
+function readChoice<T extends string>(key: string, valid: (value: unknown) => value is T, fallback: T): T {
   try {
-    const value = sessionValues.get(THEME_KEY) ?? window.localStorage.getItem(THEME_KEY);
-    return isThemeChoice(value) ? value : 'auto';
+    const value = sessionValues.get(key) ?? window.localStorage.getItem(key);
+    return valid(value) ? value : fallback;
   } catch {
-    return 'auto';
+    return fallback;
   }
 }
 
-/** Store the choice; when the storage fails, the choice is kept for the session only (FR-115) and nothing is retried. */
-export function writeTheme(choice: ThemeChoice): void {
+/** Store a value; when the storage fails, it is kept for the session only (FR-115) and nothing is retried. */
+function writeChoice(key: string, value: string): void {
   try {
-    window.localStorage.setItem(THEME_KEY, choice);
-    sessionValues.delete(THEME_KEY);
+    window.localStorage.setItem(key, value);
+    sessionValues.delete(key);
   } catch {
-    sessionValues.set(THEME_KEY, choice); // FR-115: silent by design
+    sessionValues.set(key, value); // FR-115: silent by design
   }
+}
+
+/** The current theme choice; a missing, bad or unreadable value gives 'auto'. */
+export function readTheme(): ThemeChoice {
+  return readChoice(THEME_KEY, isThemeChoice, 'auto');
+}
+
+/** Store the theme choice (FR-115 when the storage fails). */
+export function writeTheme(choice: ThemeChoice): void {
+  writeChoice(THEME_KEY, choice);
+}
+
+export type LanguageChoice = 'uk' | 'en';
+
+export const LANGUAGE_KEY = 'binarka.language';
+
+function isLanguageChoice(value: unknown): value is LanguageChoice {
+  return value === 'uk' || value === 'en';
+}
+
+/** The current language; a missing, bad or unreadable value gives Ukrainian (FR-114). */
+export function readLanguage(): LanguageChoice {
+  return readChoice(LANGUAGE_KEY, isLanguageChoice, 'uk');
+}
+
+/** Store the language (FR-115 when the storage fails). */
+export function writeLanguage(choice: LanguageChoice): void {
+  writeChoice(LANGUAGE_KEY, choice);
 }

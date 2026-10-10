@@ -18,15 +18,26 @@ export interface Violation {
   cells: [number, number][];
 }
 
+/** The language of a hint sentence (ADR-0005). */
+export type HintLanguage = 'uk' | 'en';
+
+/** The data a hint sentence is built from (FR-110); `line` and `other` are 0-based like `row` and `col`. */
 export type Hint =
+  | { kind: 'fill'; row: number; col: number; value: 0 | 1; rule: 'pair' | 'sandwich' | 'balance'; axis: 'row' | 'col'; line: number; digit: 0 | 1; sentence: string }
   | {
       kind: 'fill';
       row: number;
       col: number;
       value: 0 | 1;
-      rule: 'pair' | 'sandwich' | 'count' | 'balance' | 'unique';
+      rule: 'count';
+      axis: 'row' | 'col';
+      line: number;
+      digit: 0 | 1;
+      empties: number;
+      size: number;
       sentence: string;
     }
+  | { kind: 'fill'; row: number; col: number; value: 0 | 1; rule: 'unique'; axis: 'row' | 'col'; line: number; other: number; sentence: string }
   | { kind: 'fill'; row: number; col: number; value: 0 | 1; rule: 'lookahead'; steps: number; sentence: string }
   | { kind: 'none' | 'broken'; sentence: string };
 

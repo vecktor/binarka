@@ -18,6 +18,17 @@
               if (window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
             } catch (e) {}
           }
+          var l = null;
+          try {
+            l = window.localStorage.getItem('binarka.language');
+          } catch (e) {}
+          if (l === 'en') {
+            document.documentElement.setAttribute('lang', 'en');
+            document.title = 'Binarka';
+          } else {
+            document.documentElement.setAttribute('lang', 'uk');
+            document.title = 'Бінарка';
+          }
           document.documentElement.setAttribute('data-theme', t);
           var m = document.querySelector('meta[name="theme-color"]');
           if (m) m.setAttribute('content', t === 'dark' ? '#1a1714' : '#f9fafb');
