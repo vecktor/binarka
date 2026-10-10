@@ -1,5 +1,6 @@
 import { GenerationRunOutError, findViolations, generate, hint, hintSentence, isSolved } from '../engine/index';
 import type { Cell, Grid, Hint, Puzzle } from '../engine/index';
+import { readCaptureBoard } from './capture-board';
 import { createGear } from './gear';
 import { createLogo } from './logo';
 import { THEME_COLOR_DARK, THEME_COLOR_LIGHT, readLanguage, readTheme, writeLanguage, writeTheme } from './preferences';
@@ -288,13 +289,19 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     updateWin();
   }
 
-  function showPuzzle(puzzle: Puzzle, n: number): void {
+  /** Show a puzzle; `entries` (a capture board, FR-119) are the player's cells over the givens. */
+  function showPuzzle(puzzle: Puzzle, n: number, entries?: Grid): void {
     if (puzzle.givens.length !== n || puzzle.givens.some((row) => row.length !== n)) {
       throw new Error(`puzzle is not ${n}x${n}`);
     }
     hinted = null; // the old cell elements are replaced below
     givens = copyGrid(puzzle.givens);
     board = copyGrid(puzzle.givens);
+    entries?.forEach((row, r) => {
+      row.forEach((cell, c) => {
+        if (cell !== null) (board[r] as Cell[])[c] = cell;
+      });
+    });
     const nextBoard = el('div', { 'data-board': '', 'data-size': String(n), class: 'board', role: 'group', 'aria-label': texts.sizeLabel(n) });
     boardEl = nextBoard;
     cellEls = [];
@@ -588,6 +595,18 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   for (const mount of languageMounts) mount.render(); // this mount and the others show the document's language
 
   syncControls();
-  newPuzzle(size, level);
+  // A capture board (FR-119) takes the place of the first generated puzzle: no seed, no generator. Absent or invalid: generate as usual.
+  const capture = readCaptureBoard();
+  if (capture === null) {
+    newPuzzle(size, level);
+  } else {
+    showPuzzle({ size: capture.size, givens: capture.givens, solution: [] }, capture.size, capture.entries);
+    size = capture.size;
+    level = capture.level;
+    resetMarked();
+    setHinted(capture.hinted);
+    refreshHighlights();
+    updateWin();
+  }
   root.replaceChildren(header, summaryButton, boardHost, buttons, messages, rulesPanel, sheet, settingsPanel, dialog);
 }

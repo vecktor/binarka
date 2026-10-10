@@ -1,0 +1,8 @@
+fixtureBoard: 6x6, 36 cells, solved=false, violations=3 -> EQUAL
+hintBoard: 6x6, 36 cells, solved=false, violations=0 -> EQUAL
+solvedBoard: 6x6, 36 cells, solved=true, violations=0 -> EQUAL
+eightBoard: 8x8, 64 cells, solved=false, violations=0 -> EQUAL
+fourBoard: 4x4, 16 cells, solved=false, violations=0 -> EQUAL
+boards in boards.ts@0d5491b: fixtureBoard, hintBoard, solvedBoard, eightBoard, fourBoard
+extra keys in boards.json: none
+RESULT: boards.json equals boards.ts@0d5491b (5 boards)

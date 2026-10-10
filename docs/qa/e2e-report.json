@@ -2,11 +2,11 @@
   "config": {
     "argv": [
       "/Users/vecktor/.nvm/versions/node/v22.21.1/bin/node",
-      "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/node_modules/.bin/playwright",
+      "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/node_modules/.bin/playwright",
       "test"
     ],
-    "configFile": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/playwright.config.ts",
-    "rootDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
+    "configFile": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/playwright.config.ts",
+    "rootDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
     "failOnFlakyTests": false,
     "forbidOnly": true,
     "fullyParallel": true,
@@ -22,7 +22,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -30,15 +30,16 @@
         },
         "id": "layout",
         "name": "layout",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
         "testIgnore": [],
         "testMatch": [
-          "/nfr-1[02]-.*\\.spec\\.ts/"
+          "/nfr-1[02]-.*\\.spec\\.ts/",
+          "/nfr-18-.*\\.spec\\.ts/"
         ],
         "timeout": 30000
       },
       {
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -46,7 +47,7 @@
         },
         "id": "a11y",
         "name": "a11y",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
         "testIgnore": [],
         "testMatch": [
           "/nfr-13-.*\\.spec\\.ts/"
@@ -58,17 +59,20 @@
       {
         "grep": {},
         "grepInvert": null,
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
           "actualWorkers": 5
         },
         "name": "layout",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
-        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
+        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
         "testIgnore": [],
-        "testMatch": {},
+        "testMatch": [
+          {},
+          {}
+        ],
         "timeout": 30000,
         "use": {
           "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
@@ -94,15 +98,15 @@
       {
         "grep": {},
         "grepInvert": null,
-        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/test-results",
+        "outputDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
           "actualWorkers": 5
         },
         "name": "a11y",
-        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
-        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-bouman-8d7e45/e2e",
+        "testDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
+        "snapshotDir": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/keen-archimedes-c4cd63/e2e",
         "testIgnore": [],
         "testMatch": {},
         "timeout": 30000,
@@ -181,12 +185,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1482,
+                  "duration": 1146,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:35.070Z",
+                  "startTime": "2026-10-10T09:19:10.846Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -196,8 +200,696 @@
           ],
           "id": "df472d0db591ceb50450-89672904f148c5ad05d1",
           "file": "nfr-10-fit.spec.ts",
-          "line": 39,
+          "line": 43,
           "column": 1
+        },
+        {
+          "title": "NFR-10 English sampled 375x812 at 6x6: the default and the win states fit; buttons hold still",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1206,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:10.853Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "df472d0db591ceb50450-8325415bdfd5062df6f7",
+          "file": "nfr-10-fit.spec.ts",
+          "line": 105,
+          "column": 1
+        },
+        {
+          "title": "NFR-10 English sampled 375x812 at 6x6: the hint state with the longest English sentence (a line-balance fill) fits; buttons hold still",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 520,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:10.868Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "df472d0db591ceb50450-966e5de740d5b8875a60",
+          "file": "nfr-10-fit.spec.ts",
+          "line": 120,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "nfr-10-header-fit.spec.ts",
+      "file": "nfr-10-header-fit.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "header sampled at 320 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 206,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:10.849Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-ae3950f06bcc00a9d00e",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 320 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 189,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:10.849Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-7a6e517aa4eae5c4c6b5",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 322 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 96,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.235Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-171ff869bcc6401b1752",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 322 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 100,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.256Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-f6ba02cd89f225877d4e",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 334 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 90,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.342Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-9f074bc6de401e3c5bd9",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 334 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 114,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.365Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-0aca109e9bd0d0f29e32",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 361 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 133,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.438Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-a0dd6180baebb2477a0a",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 361 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 107,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.496Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-1c991ce2ccfeaf26e7aa",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 369 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 100,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.572Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-0dd931901673ffa82b72",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 369 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 92,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.577Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-d738c1d3867718848f7d",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 375 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 97,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.614Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-dc00d6ef81ad26970dff",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 375 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 91,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.678Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-ab62dcb9b9e0d6b871f5",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 385 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 90,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.681Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-c42ee11669884d7f0715",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 385 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 98,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.716Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-b62e7b2588955ea6dfc6",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 768 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 92,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.776Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-be7e985c77975b32f881",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 768 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 89,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.779Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-82bbae019efd48c57ecc",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 1280 px: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 95,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.825Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-8dc633047b85aab81f01",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 55,
+          "column": 3
+        },
+        {
+          "title": "header sampled at 1280 px in English: every header child inside the header, no sideways scroll",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 87,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.875Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "52d9d2550ae963cf5304-80022e46b6a7d6e098be",
+          "file": "nfr-10-header-fit.spec.ts",
+          "line": 59,
+          "column": 3
         }
       ]
     },
@@ -220,15 +912,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 1957,
+                  "duration": 1478,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:35.096Z",
+                  "startTime": "2026-10-10T09:19:11.880Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -238,7 +930,41 @@
           ],
           "id": "d0d8483d2d074a8cbbc1-4853c42ba4024d54a003",
           "file": "nfr-12-targets.spec.ts",
-          "line": 27,
+          "line": 102,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 English sampled 320x700: cells and controls meet their size floors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 1517,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:11.932Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-ebf5f0823b5912dd15ef",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 106,
           "column": 3
         },
         {
@@ -257,12 +983,12 @@
                   "workerIndex": 2,
                   "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 1958,
+                  "duration": 1499,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:35.097Z",
+                  "startTime": "2026-10-10T09:19:11.974Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -272,7 +998,41 @@
           ],
           "id": "d0d8483d2d074a8cbbc1-e953b01be2f312575080",
           "file": "nfr-12-targets.spec.ts",
-          "line": 27,
+          "line": 102,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 English sampled 375x812: cells and controls meet their size floors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1431,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:12.209Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-6eca2123fe0cd8d31bc0",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 106,
           "column": 3
         },
         {
@@ -288,15 +1048,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 3,
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1958,
+                  "duration": 1469,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:35.076Z",
+                  "startTime": "2026-10-10T09:19:12.273Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -306,7 +1066,41 @@
           ],
           "id": "d0d8483d2d074a8cbbc1-f9a0fa4f884111ed0f05",
           "file": "nfr-12-targets.spec.ts",
-          "line": 27,
+          "line": 102,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 English sampled 768x1024: cells and controls meet their size floors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 1404,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:13.365Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-7823dc681532c693b43a",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 106,
           "column": 3
         },
         {
@@ -322,15 +1116,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 4,
-                  "parallelIndex": 4,
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
                   "status": "passed",
-                  "duration": 1957,
+                  "duration": 1465,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:35.118Z",
+                  "startTime": "2026-10-10T09:19:13.456Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -340,7 +1134,41 @@
           ],
           "id": "d0d8483d2d074a8cbbc1-8c523a5f3eaf539225a3",
           "file": "nfr-12-targets.spec.ts",
-          "line": 27,
+          "line": 102,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 English sampled 1024x768: cells and controls meet their size floors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
+                  "status": "passed",
+                  "duration": 1451,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:13.479Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-93985587e0b5b643f51c",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 106,
           "column": 3
         },
         {
@@ -359,12 +1187,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 1352,
+                  "duration": 1387,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:37.043Z",
+                  "startTime": "2026-10-10T09:19:13.648Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -374,7 +1202,41 @@
           ],
           "id": "d0d8483d2d074a8cbbc1-061dd901dee0bc862fd6",
           "file": "nfr-12-targets.spec.ts",
-          "line": 27,
+          "line": 102,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 English sampled 1366x650: cells and controls meet their size floors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1367,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:13.748Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-febdbfc79916371c205b",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 106,
           "column": 3
         },
         {
@@ -390,15 +1252,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 3,
-                  "parallelIndex": 3,
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
                   "status": "passed",
-                  "duration": 1440,
+                  "duration": 1408,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:37.512Z",
+                  "startTime": "2026-10-10T09:19:14.778Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -408,7 +1270,41 @@
           ],
           "id": "d0d8483d2d074a8cbbc1-a59ba77222228ae4f3b6",
           "file": "nfr-12-targets.spec.ts",
-          "line": 27,
+          "line": 102,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 English sampled 1440x900: cells and controls meet their size floors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 3,
+                  "status": "passed",
+                  "duration": 1351,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:14.930Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-a8397d9f44f504327c47",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 106,
           "column": 3
         },
         {
@@ -424,15 +1320,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 1,
-                  "parallelIndex": 1,
+                  "workerIndex": 2,
+                  "parallelIndex": 2,
                   "status": "passed",
-                  "duration": 1407,
+                  "duration": 1381,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:37.512Z",
+                  "startTime": "2026-10-10T09:19:14.938Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -442,7 +1338,41 @@
           ],
           "id": "d0d8483d2d074a8cbbc1-4ece8af28083353d472d",
           "file": "nfr-12-targets.spec.ts",
-          "line": 27,
+          "line": 102,
+          "column": 3
+        },
+        {
+          "title": "NFR-12 English sampled 1280x420: cells and controls meet their size floors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1353,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:15.043Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-b637ba754f15e1f0e869",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 106,
           "column": 3
         },
         {
@@ -458,15 +1388,15 @@
               "projectName": "layout",
               "results": [
                 {
-                  "workerIndex": 4,
-                  "parallelIndex": 4,
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
                   "status": "passed",
-                  "duration": 1430,
+                  "duration": 1315,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-09T17:10:37.512Z",
+                  "startTime": "2026-10-10T09:19:15.123Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -476,8 +1406,507 @@
           ],
           "id": "d0d8483d2d074a8cbbc1-4b8e39fb17a78c2650a6",
           "file": "nfr-12-targets.spec.ts",
-          "line": 27,
+          "line": 102,
           "column": 3
+        },
+        {
+          "title": "NFR-12 English sampled 844x390: cells and controls meet their size floors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "layout",
+              "projectName": "layout",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 4,
+                  "status": "passed",
+                  "duration": 1428,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-10T09:19:16.193Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d0d8483d2d074a8cbbc1-6da63b9b04cb510362af",
+          "file": "nfr-12-targets.spec.ts",
+          "line": 106,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "nfr-18-flash.spec.ts",
+      "file": "nfr-18-flash.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "375x812 dark stored on a light system",
+          "file": "nfr-18-flash.spec.ts",
+          "line": 76,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 81,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.293Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-e9f0e57269027ac57f86",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 91,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.333Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-b91c1f1f7eecd6f52b27",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 90,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "375x812 light stored on a dark system",
+          "file": "nfr-18-flash.spec.ts",
+          "line": 76,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 82,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.380Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-3508fd0de157a354b2ff",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 94,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.410Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-16f87ced313b765f5372",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 90,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "1280x800 dark stored on a light system",
+          "file": "nfr-18-flash.spec.ts",
+          "line": 76,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-18 variant 1: the head step alone sets data-theme dark and the background (bundle aborted)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 94,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.434Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-00c16232323f9a260ffd",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "NFR-18 variant 2: data-theme dark is set before the body gets a child, and not changed after",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 95,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.452Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-7cd335e3b71867a3494e",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 90,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "1280x800 light stored on a dark system",
+          "file": "nfr-18-flash.spec.ts",
+          "line": 76,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-18 variant 1: the head step alone sets data-theme light and the background (bundle aborted)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 89,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.473Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-d6285490aedfda933b50",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "NFR-18 variant 2: data-theme light is set before the body gets a child, and not changed after",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 97,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.510Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-2cd786f247fef49cc091",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 90,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "375x812 en stored",
+          "file": "nfr-18-flash.spec.ts",
+          "line": 116,
+          "column": 8,
+          "specs": [
+            {
+              "title": "NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 93,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.539Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-0acfef9b6d904e8c7515",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 119,
+              "column": 5
+            },
+            {
+              "title": "NFR-18 variant 2: lang en is set before the body gets a child, and not changed after",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 96,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.555Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-321e8d052496e3f18161",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 128,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "1280x800 en stored",
+          "file": "nfr-18-flash.spec.ts",
+          "line": 116,
+          "column": 8,
+          "specs": [
+            {
+              "title": "NFR-18 variant 1: the head step alone sets lang en and the title (bundle aborted)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 96,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.569Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-1452a31d6097c83e8ff3",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 119,
+              "column": 5
+            },
+            {
+              "title": "NFR-18 variant 2: lang en is set before the body gets a child, and not changed after",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "layout",
+                  "projectName": "layout",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 94,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:16.620Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ba79649c4b6ebfe0370a-1b85574d72198603134e",
+              "file": "nfr-18-flash.spec.ts",
+              "line": 128,
+              "column": 5
+            }
+          ]
         }
       ]
     },
@@ -491,7 +1920,7 @@
         {
           "title": "375x812 light",
           "file": "nfr-13-a11y.spec.ts",
-          "line": 30,
+          "line": 47,
           "column": 10,
           "specs": [
             {
@@ -510,12 +1939,12 @@
                       "workerIndex": 5,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 596,
+                      "duration": 551,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:38.166Z",
+                      "startTime": "2026-10-10T09:19:17.170Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -525,7 +1954,7 @@
               ],
               "id": "99be5e55ed99c833feb1-b839e2eca6718c484707",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -542,14 +1971,14 @@
                   "results": [
                     {
                       "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 662,
+                      "duration": 630,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:39.041Z",
+                      "startTime": "2026-10-10T09:19:17.184Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -559,7 +1988,7 @@
               ],
               "id": "99be5e55ed99c833feb1-fed1f857a213fca0595a",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -575,15 +2004,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1564,
+                      "duration": 1537,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:38.929Z",
+                      "startTime": "2026-10-10T09:19:17.197Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -593,7 +2022,7 @@
               ],
               "id": "99be5e55ed99c833feb1-0df2aae9836ac9c823e9",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -609,15 +2038,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 1,
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 795,
+                      "duration": 631,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:39.449Z",
+                      "startTime": "2026-10-10T09:19:17.227Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -627,7 +2056,7 @@
               ],
               "id": "99be5e55ed99c833feb1-c6deff8240777b67a48c",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -643,15 +2072,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
+                      "workerIndex": 9,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 634,
+                      "duration": 508,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:39.456Z",
+                      "startTime": "2026-10-10T09:19:18.142Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -661,7 +2090,7 @@
               ],
               "id": "99be5e55ed99c833feb1-b0b2b26490f36a8c24d3",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -677,15 +2106,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 811,
+                      "duration": 573,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:39.458Z",
+                      "startTime": "2026-10-10T09:19:17.911Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -695,7 +2124,7 @@
               ],
               "id": "99be5e55ed99c833feb1-3aeef0a303382975a278",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -712,14 +2141,14 @@
                   "results": [
                     {
                       "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 640,
+                      "duration": 608,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:39.843Z",
+                      "startTime": "2026-10-10T09:19:17.993Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -729,7 +2158,41 @@
               ],
               "id": "99be5e55ed99c833feb1-bc1e548b27f827ca8d45",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet with a marked choice that differs from the board state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 640,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:18.020Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-92d230d48b96c0ac2287",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 51,
               "column": 9
             },
             {
@@ -745,15 +2208,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 978,
+                      "duration": 1374,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:40.288Z",
+                      "startTime": "2026-10-10T09:19:18.490Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -763,7 +2226,7 @@
               ],
               "id": "99be5e55ed99c833feb1-9f451c215ee2b942a69e",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 43,
+              "line": 60,
               "column": 7
             }
           ]
@@ -771,7 +2234,7 @@
         {
           "title": "375x812 dark",
           "file": "nfr-13-a11y.spec.ts",
-          "line": 30,
+          "line": 47,
           "column": 10,
           "specs": [
             {
@@ -787,15 +2250,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 6,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 508,
+                      "duration": 472,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:40.447Z",
+                      "startTime": "2026-10-10T09:19:18.607Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -805,7 +2268,7 @@
               ],
               "id": "99be5e55ed99c833feb1-101a5d61318e5f8c856e",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -821,15 +2284,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 579,
+                      "duration": 545,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:40.461Z",
+                      "startTime": "2026-10-10T09:19:18.668Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -839,7 +2302,7 @@
               ],
               "id": "99be5e55ed99c833feb1-a1f7d926334e9801b2af",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -855,15 +2318,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1506,
+                      "duration": 1450,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:40.493Z",
+                      "startTime": "2026-10-10T09:19:18.779Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -873,7 +2336,7 @@
               ],
               "id": "99be5e55ed99c833feb1-b25d285ec212a062ddfe",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -889,15 +2352,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 621,
+                      "duration": 566,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:40.504Z",
+                      "startTime": "2026-10-10T09:19:18.896Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -907,7 +2370,7 @@
               ],
               "id": "99be5e55ed99c833feb1-919d055d65dfed4fc4d4",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -923,15 +2386,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 6,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 463,
+                      "duration": 415,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:40.967Z",
+                      "startTime": "2026-10-10T09:19:19.086Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -941,7 +2404,7 @@
               ],
               "id": "99be5e55ed99c833feb1-1d5456ba1cf5bb6df3f3",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -957,15 +2420,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 593,
+                      "duration": 557,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:41.050Z",
+                      "startTime": "2026-10-10T09:19:19.220Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -975,7 +2438,7 @@
               ],
               "id": "99be5e55ed99c833feb1-cc3f504e210b5eb6d8df",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -991,15 +2454,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 604,
+                      "duration": 598,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:41.136Z",
+                      "startTime": "2026-10-10T09:19:19.469Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1009,7 +2472,41 @@
               ],
               "id": "99be5e55ed99c833feb1-f3103e4373f3e083fbf7",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet with a marked choice that differs from the board state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 648,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:19.508Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-97761282ac686f1454a2",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 51,
               "column": 9
             },
             {
@@ -1026,14 +2523,14 @@
                   "results": [
                     {
                       "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 948,
+                      "duration": 1399,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:41.272Z",
+                      "startTime": "2026-10-10T09:19:19.783Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1043,7 +2540,7 @@
               ],
               "id": "99be5e55ed99c833feb1-289676f5fb89d30ee1e4",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 43,
+              "line": 60,
               "column": 7
             }
           ]
@@ -1051,7 +2548,7 @@
         {
           "title": "1280x800 light",
           "file": "nfr-13-a11y.spec.ts",
-          "line": 30,
+          "line": 47,
           "column": 10,
           "specs": [
             {
@@ -1067,15 +2564,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 1,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 507,
+                      "duration": 472,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:41.438Z",
+                      "startTime": "2026-10-10T09:19:19.870Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1085,7 +2582,7 @@
               ],
               "id": "99be5e55ed99c833feb1-cc2c78d60113a806c0f5",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1101,15 +2598,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 7,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 594,
+                      "duration": 573,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:41.655Z",
+                      "startTime": "2026-10-10T09:19:20.075Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1119,7 +2616,7 @@
               ],
               "id": "99be5e55ed99c833feb1-481c886e231d15daaa88",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1135,15 +2632,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1494,
+                      "duration": 1452,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:41.746Z",
+                      "startTime": "2026-10-10T09:19:20.164Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1153,7 +2650,7 @@
               ],
               "id": "99be5e55ed99c833feb1-02e055324fa36f930b12",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1169,15 +2666,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 1,
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 620,
+                      "duration": 546,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:41.953Z",
+                      "startTime": "2026-10-10T09:19:20.236Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1187,7 +2684,7 @@
               ],
               "id": "99be5e55ed99c833feb1-73ef559cdae489509eac",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1203,15 +2700,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 475,
+                      "duration": 449,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:42.009Z",
+                      "startTime": "2026-10-10T09:19:20.349Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1221,7 +2718,7 @@
               ],
               "id": "99be5e55ed99c833feb1-749ece849e5adbd0a6d9",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1237,15 +2734,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 633,
+                      "duration": 556,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:42.227Z",
+                      "startTime": "2026-10-10T09:19:20.656Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1255,7 +2752,7 @@
               ],
               "id": "99be5e55ed99c833feb1-5a44606f5d16387af3df",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1272,14 +2769,14 @@
                   "results": [
                     {
                       "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 632,
+                      "duration": 670,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:42.257Z",
+                      "startTime": "2026-10-10T09:19:20.791Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1289,7 +2786,41 @@
               ],
               "id": "99be5e55ed99c833feb1-a3239c7d3f11619095a4",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet with a marked choice that differs from the board state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 648,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:20.808Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-70217cd064c3b32d73cb",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 51,
               "column": 9
             },
             {
@@ -1305,15 +2836,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
+                      "workerIndex": 8,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 948,
+                      "duration": 1247,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:42.493Z",
+                      "startTime": "2026-10-10T09:19:21.190Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1323,7 +2854,7 @@
               ],
               "id": "99be5e55ed99c833feb1-8556d2ecd1f2742201d3",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 43,
+              "line": 60,
               "column": 7
             }
           ]
@@ -1331,7 +2862,7 @@
         {
           "title": "1280x800 dark",
           "file": "nfr-13-a11y.spec.ts",
-          "line": 30,
+          "line": 47,
           "column": 10,
           "specs": [
             {
@@ -1348,14 +2879,14 @@
                   "results": [
                     {
                       "workerIndex": 7,
-                      "parallelIndex": 1,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 504,
+                      "duration": 490,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:42.585Z",
+                      "startTime": "2026-10-10T09:19:21.218Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1365,7 +2896,7 @@
               ],
               "id": "99be5e55ed99c833feb1-bbfb32fcca5d5da47195",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1381,15 +2912,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 565,
+                      "duration": 543,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:42.866Z",
+                      "startTime": "2026-10-10T09:19:21.466Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1399,7 +2930,7 @@
               ],
               "id": "99be5e55ed99c833feb1-4a2432725d481962aaf2",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1416,14 +2947,14 @@
                   "results": [
                     {
                       "workerIndex": 9,
-                      "parallelIndex": 3,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 1438,
+                      "duration": 1437,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:42.895Z",
+                      "startTime": "2026-10-10T09:19:21.467Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1433,7 +2964,7 @@
               ],
               "id": "99be5e55ed99c833feb1-dca75758a665f95d75f6",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1449,15 +2980,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
+                      "workerIndex": 6,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 579,
+                      "duration": 537,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:43.097Z",
+                      "startTime": "2026-10-10T09:19:21.623Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1467,7 +2998,7 @@
               ],
               "id": "99be5e55ed99c833feb1-52b2fd87ed390af386ca",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1483,15 +3014,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 456,
+                      "duration": 431,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:43.249Z",
+                      "startTime": "2026-10-10T09:19:21.720Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1501,7 +3032,7 @@
               ],
               "id": "99be5e55ed99c833feb1-ada888532cdad010c0be",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1517,15 +3048,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 8,
-                      "parallelIndex": 4,
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 592,
+                      "duration": 561,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:43.438Z",
+                      "startTime": "2026-10-10T09:19:22.016Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1535,7 +3066,7 @@
               ],
               "id": "99be5e55ed99c833feb1-34b01101855bcc51f0c9",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
               "column": 9
             },
             {
@@ -1551,15 +3082,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 611,
+                      "duration": 644,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:43.449Z",
+                      "startTime": "2026-10-10T09:19:22.162Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1569,7 +3100,41 @@
               ],
               "id": "99be5e55ed99c833feb1-619222480062560e36d0",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 34,
+              "line": 51,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the setup sheet with a marked choice that differs from the board state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 627,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:22.166Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-45600a411bd51cac5029",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 51,
               "column": 9
             },
             {
@@ -1585,15 +3150,15 @@
                   "projectName": "a11y",
                   "results": [
                     {
-                      "workerIndex": 7,
-                      "parallelIndex": 1,
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 701,
+                      "duration": 1278,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-09T17:10:43.686Z",
+                      "startTime": "2026-10-10T09:19:22.443Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1603,8 +3168,1190 @@
               ],
               "id": "99be5e55ed99c833feb1-da153b0094f2f3970908",
               "file": "nfr-13-a11y.spec.ts",
-              "line": 43,
+              "line": 60,
               "column": 7
+            }
+          ]
+        },
+        {
+          "title": "375x812 light English",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 132,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation in the English default state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 512,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:22.584Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-6559aa9b4d2fe22064b3",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the English hint state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 546,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:22.802Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-b53080da0fac73ffda57",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 562,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:22.815Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-dcf25779a5c66e18e76e",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "375x812 dark English",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 132,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation in the English default state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 479,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:22.910Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-95dbf04a188a3a7aea67",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the English hint state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 540,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.106Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-140655a2ac20d5d65d79",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 574,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.357Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-534cd2091b525e50b713",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "1280x800 light English",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 132,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation in the English default state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 479,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.384Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-178eda93103dcf071619",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the English hint state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 557,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.396Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-15a597030bd6a4df4fb7",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 578,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.653Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-e0f3af160839d96662aa",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "1280x800 dark English",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 132,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation in the English default state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 466,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.729Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-1d92ce86e76285eda0c7",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the English hint state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 541,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.870Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-15fa0f8c91b75aa0a4dd",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation in the English settings panel open (the language control) state, and the language rules pass",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 588,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.940Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-ce6c6c3e13699bbc9a5e",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 136,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "the focused language option",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 151,
+          "column": 6,
+          "specs": [
+            {
+              "title": "NFR-13 focus: Tab from the settings button reaches a language option with a solid outline of at least 2px",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 167,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:23.961Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-c379996fb469199d8f90",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 154,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "320x700 focus not obscured by the sheet footer",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 186,
+          "column": 8,
+          "specs": [
+            {
+              "title": "NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 205,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.134Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-0da1ae9b0be3f1bcd913",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 189,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "1366x650 focus not obscured by the sheet footer",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 186,
+          "column": 8,
+          "specs": [
+            {
+              "title": "NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 208,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.203Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-0d64637cec3afda6cb65",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 189,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "320x568 focus not obscured by the sheet footer",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 186,
+          "column": 8,
+          "specs": [
+            {
+              "title": "NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 212,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.237Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-8671a22cf0af3705303e",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 189,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "375x667 focus not obscured by the sheet footer",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 186,
+          "column": 8,
+          "specs": [
+            {
+              "title": "NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 213,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.347Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-26a21463866c4917839c",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 189,
+              "column": 5
+            }
+          ]
+        },
+        {
+          "title": "375x812 manual dark on a light system",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 256,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation with the settings panel closed",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 473,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.419Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-970055c185170f970719",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 261,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation with the settings panel open",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 575,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.419Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-300c22aac00d13cc20f7",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 261,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "375x812 manual light on a dark system",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 256,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation with the settings panel closed",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 484,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.459Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-be3787a390de8f1de426",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 261,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation with the settings panel open",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 585,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.537Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-c88f31b744c6ce66815d",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 261,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "1280x800 manual dark on a light system",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 256,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation with the settings panel closed",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 470,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.566Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-570aa20c49acdb6c66b1",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 261,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation with the settings panel open",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 572,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.899Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-a4e77400296513ddb6e7",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 261,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "1280x800 manual light on a dark system",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 256,
+          "column": 10,
+          "specs": [
+            {
+              "title": "NFR-13 axe: no violation with the settings panel closed",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 488,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:24.955Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-9d4a28a7b3986106f5a5",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 261,
+              "column": 9
+            },
+            {
+              "title": "NFR-13 axe: no violation with the settings panel open",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 549,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:25.004Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-784ebaea3e2174acb05c",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 261,
+              "column": 9
+            }
+          ]
+        },
+        {
+          "title": "manual themes against auto on the same system",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 274,
+          "column": 6,
+          "specs": [
+            {
+              "title": "NFR-13 theme: a manual theme resolves the same colours as auto on that system",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 195,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:25.043Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-c1aea9ef1f4d02050185",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 275,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "the rendered colours follow the effective theme",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 305,
+          "column": 6,
+          "specs": [
+            {
+              "title": "NFR-13 theme: dark stored on a light system gives the dark background and color-scheme dark",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 100,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:25.129Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-71b70d92d11889ee2393",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 308,
+              "column": 3
+            },
+            {
+              "title": "NFR-13 theme: auto follows a live change of the system scheme without a reload",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 124,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:25.238Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-290aee11778e8dc6412c",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 321,
+              "column": 3
+            },
+            {
+              "title": "NFR-13 theme: a press stores the theme, a reload keeps it and a light dismiss keeps the choice",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 244,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:25.244Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-2e57106dc5aaba5125b9",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 337,
+              "column": 3
+            },
+            {
+              "title": "NFR-13 theme: light stored by the test on a dark system is light after a reload",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 112,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:25.371Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-38c1821a795d6b7ee73b",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 352,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "the focused theme option",
+          "file": "nfr-13-a11y.spec.ts",
+          "line": 361,
+          "column": 6,
+          "specs": [
+            {
+              "title": "NFR-13 focus: Tab from the settings button reaches a theme option with a solid outline of at least 2px",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "a11y",
+                  "projectName": "a11y",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 125,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-10T09:19:25.452Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "99be5e55ed99c833feb1-84225908ad5c1237003a",
+              "file": "nfr-13-a11y.spec.ts",
+              "line": 364,
+              "column": 3
             }
           ]
         }
@@ -1613,9 +4360,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-09T17:10:31.560Z",
-    "duration": 12874.842,
-    "expected": 41,
+    "startTime": "2026-10-10T09:19:07.464Z",
+    "duration": 18148.770999999997,
+    "expected": 116,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

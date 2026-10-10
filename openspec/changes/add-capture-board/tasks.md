@@ -16,21 +16,21 @@ Order of work: section 1 (tests) is written FIRST and seen red before section 2.
 
 ## 2. Implementation
 
-- [ ] 2.1 `design/v0/lib/boards.json`: the five boards of `design/v0/lib/boards.ts` at commit `0d5491b`, as data. `boards.ts` imports it and builds the same `BoardSpec` values.
+- [x] 2.1 `design/v0/lib/boards.json`: the five boards of `design/v0/lib/boards.ts` at commit `0d5491b`, as data. `boards.ts` imports it and builds the same `BoardSpec` values.
   - Prove the data is identical: the parsed boards from the JSON equal the parsed boards of `boards.ts` at `0d5491b`, by a scratch comparison saved as `docs/qa/add-capture-board/boards-json-equal.txt`.
   - Run `pnpm build` in `design/v0` with `npm_config_manage_package_manager_versions=false`. It must pass.
-- [ ] 2.2 `src/ui/`: read and validate `window.__binarkaCaptureBoard` at mount (a small module, for example `src/ui/capture-board.ts`, holding the validation; `countSolutions` from `src/engine/index.ts`).
+- [x] 2.2 `src/ui/`: read and validate `window.__binarkaCaptureBoard` at mount (a small module, for example `src/ui/capture-board.ts`, holding the validation; `countSolutions` from `src/engine/index.ts`).
   - When valid, show the board through the same rendering path as a generated puzzle: givens, entries, size and level state, the summary, violations (`refreshHighlights`), the hinted marker (`setHinted`) and the win state (`updateWin`).
   - When absent or invalid, change nothing.
   - No new text in `src/ui/strings.ts`; no `Math.random`; no storage; `src/engine/` untouched.
-- [ ] 2.3 Run `npm run test:run`: every test is green.
+- [x] 2.3 Run `npm run test:run`: every test is green.
 
 ## 3. Battery
 
-- [ ] 3.1 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
-- [ ] 3.2 `npm run test:e2e` and `npm run check:a11y`; the mount path changed, so the browser checks must stay green.
-- [ ] 3.3 A real-browser look: the dev page with the 6×6 fixture set by an init script shows the fixture board, the violation and the summary. Save one shot in `docs/qa/add-capture-board/`.
-- [ ] 3.4 Save the battery output as `docs/qa/add-capture-board/green-run.txt`.
+- [x] 3.1 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
+- [x] 3.2 `npm run test:e2e` and `npm run check:a11y`; the mount path changed, so the browser checks must stay green.
+- [x] 3.3 A real-browser look: the dev page with the 6×6 fixture set by an init script shows the fixture board, the violation and the summary. Save one shot in `docs/qa/add-capture-board/`.
+- [x] 3.4 Save the battery output as `docs/qa/add-capture-board/green-run.txt`.
 
 ## 4. Review and archive
 
