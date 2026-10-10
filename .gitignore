@@ -9,3 +9,4 @@ design/*.zip
 design/v0/next-env.d.ts
 test-results/
 playwright-report/
+docs/qa/visual-diff/*/diff.png

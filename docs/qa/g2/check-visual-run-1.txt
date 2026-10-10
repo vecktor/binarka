@@ -1,0 +1,195 @@
+# npm run check:visual, first run against today's page (main a2879b1 + fix-size-option-focus-ring), 2026-10-10 13:21 +0530
+
+> binarka@0.1.0 check:visual
+> npm run build && CHECK_VISUAL_FIDELITY_ADAPTERS=scripts/visual-parity-adapters.mjs node scripts/check-visual-fidelity.mjs
+
+
+> binarka@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 22 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-Ci1IY2x_.css  12.28 kB │ gzip:  2.61 kB
+dist/assets/index-B5a7KqxK.js   31.77 kB │ gzip: 11.68 kB
+
+✓ built in 31ms
+(adapters injected from scripts/visual-parity-adapters.mjs)
+FAIL  [1024-dark-confirm] pixel score 0.953 below threshold 0.98
+FAIL  [1024-dark-default] pixel score 0.8998 below threshold 0.98
+FAIL  [1024-dark-eight] pixel score 0.8931 below threshold 0.98
+FAIL  [1024-dark-four] pixel score 0.924 below threshold 0.98
+FAIL  [1024-dark-hint] pixel score 0.8553 below threshold 0.98
+FAIL  [1024-dark-level] pixel score 0.8889 below threshold 0.98
+FAIL  [1024-dark-rules] pixel score 0.9278 below threshold 0.98
+FAIL  [1024-dark-settings-light] pixel score 0.9467 below threshold 0.98
+FAIL  [1024-dark-settings] pixel score 0.9433 below threshold 0.98
+FAIL  [1024-dark-setup-four] pixel score 0.8879 below threshold 0.98
+FAIL  [1024-dark-setup-marked-four] pixel score 0.8892 below threshold 0.98
+FAIL  [1024-dark-setup-marked] pixel score 0.9009 below threshold 0.98
+FAIL  [1024-dark-setup] pixel score 0.9013 below threshold 0.98
+FAIL  [1024-dark-win] pixel score 0.8695 below threshold 0.98
+FAIL  [1024-light-confirm] pixel score 0.1611 below threshold 0.98
+FAIL  [1024-light-default] pixel score 0.8888 below threshold 0.98
+FAIL  [1024-light-eight] pixel score 0.891 below threshold 0.98
+FAIL  [1024-light-four] pixel score 0.914 below threshold 0.98
+FAIL  [1024-light-hint] pixel score 0.8912 below threshold 0.98
+FAIL  [1024-light-level] pixel score 0.8913 below threshold 0.98
+FAIL  [1024-light-rules] pixel score 0.2184 below threshold 0.98
+FAIL  [1024-light-settings-dark] pixel score 0.9456 below threshold 0.98
+FAIL  [1024-light-settings] pixel score 0.9457 below threshold 0.98
+FAIL  [1024-light-setup-four] pixel score 0.8741 below threshold 0.98
+FAIL  [1024-light-setup-marked-four] pixel score 0.8755 below threshold 0.98
+FAIL  [1024-light-setup-marked] pixel score 0.8725 below threshold 0.98
+FAIL  [1024-light-setup] pixel score 0.874 below threshold 0.98
+FAIL  [1024-light-win] pixel score 0.9127 below threshold 0.98
+FAIL  [1366-dark-default] pixel score 0.9364 below threshold 0.98
+FAIL  [1366-dark-eight] pixel score 0.9244 below threshold 0.98
+FAIL  [1366-dark-rules-techniques] pixel score 0.9357 below threshold 0.98
+FAIL  [1366-dark-rules] pixel score 0.9357 below threshold 0.98
+FAIL  [1366-dark-settings-focus] pixel score 0.9529 below threshold 0.98
+FAIL  [1366-dark-settings] pixel score 0.9543 below threshold 0.98
+FAIL  [1366-dark-setup-four] pixel score 0.9077 below threshold 0.98
+FAIL  [1366-dark-setup-marked-four] pixel score 0.9077 below threshold 0.98
+FAIL  [1366-dark-setup-marked] pixel score 0.9146 below threshold 0.98
+FAIL  [1366-dark-setup] pixel score 0.9168 below threshold 0.98
+FAIL  [1366-light-default] pixel score 0.9353 below threshold 0.98
+FAIL  [1366-light-eight] pixel score 0.9278 below threshold 0.98
+FAIL  [1366-light-rules-techniques] pixel score 0.1767 below threshold 0.98
+FAIL  [1366-light-rules] pixel score 0.1767 below threshold 0.98
+FAIL  [1366-light-settings-focus] pixel score 0.9516 below threshold 0.98
+FAIL  [1366-light-settings] pixel score 0.953 below threshold 0.98
+FAIL  [1366-light-setup-four] pixel score 0.9098 below threshold 0.98
+FAIL  [1366-light-setup-marked-four] pixel score 0.9098 below threshold 0.98
+FAIL  [1366-light-setup-marked] pixel score 0.8972 below threshold 0.98
+FAIL  [1366-light-setup] pixel score 0.8995 below threshold 0.98
+FAIL  [1440-dark-confirm] pixel score 0.9666 below threshold 0.98
+FAIL  [1440-dark-default] pixel score 0.9215 below threshold 0.98
+FAIL  [1440-dark-eight] pixel score 0.9187 below threshold 0.98
+FAIL  [1440-dark-four] pixel score 0.952 below threshold 0.98
+FAIL  [1440-dark-hint] pixel score 0.8986 below threshold 0.98
+FAIL  [1440-dark-level] pixel score 0.9172 below threshold 0.98
+FAIL  [1440-dark-rules-techniques] pixel score 0.9497 below threshold 0.98
+FAIL  [1440-dark-rules] pixel score 0.9497 below threshold 0.98
+FAIL  [1440-dark-settings-light] pixel score 0.9515 below threshold 0.98
+FAIL  [1440-dark-settings] pixel score 0.9622 below threshold 0.98
+FAIL  [1440-dark-setup-four] pixel score 0.9392 below threshold 0.98
+FAIL  [1440-dark-setup-marked-four] pixel score 0.9403 below threshold 0.98
+FAIL  [1440-dark-setup-marked] pixel score 0.9362 below threshold 0.98
+FAIL  [1440-dark-setup] pixel score 0.9355 below threshold 0.98
+FAIL  [1440-dark-win] pixel score 0.9022 below threshold 0.98
+FAIL  [1440-light-confirm] pixel score 0.1218 below threshold 0.98
+FAIL  [1440-light-default] pixel score 0.9198 below threshold 0.98
+FAIL  [1440-light-eight] pixel score 0.9203 below threshold 0.98
+FAIL  [1440-light-four] pixel score 0.946 below threshold 0.98
+FAIL  [1440-light-hint] pixel score 0.9223 below threshold 0.98
+FAIL  [1440-light-level] pixel score 0.9205 below threshold 0.98
+FAIL  [1440-light-rules-techniques] pixel score 0.1315 below threshold 0.98
+FAIL  [1440-light-rules] pixel score 0.1315 below threshold 0.98
+FAIL  [1440-light-settings-dark] pixel score 0.9636 below threshold 0.98
+FAIL  [1440-light-settings] pixel score 0.951 below threshold 0.98
+FAIL  [1440-light-setup-four] pixel score 0.9342 below threshold 0.98
+FAIL  [1440-light-setup-marked-four] pixel score 0.9353 below threshold 0.98
+FAIL  [1440-light-setup-marked] pixel score 0.9241 below threshold 0.98
+FAIL  [1440-light-setup] pixel score 0.9241 below threshold 0.98
+FAIL  [1440-light-win] pixel score 0.9369 below threshold 0.98
+FAIL  [320-dark-confirm] pixel score 0.8337 below threshold 0.98
+FAIL  [320-dark-default] pixel score 0.7327 below threshold 0.98
+FAIL  [320-dark-eight] pixel score 0.7249 below threshold 0.98
+FAIL  [320-dark-four] pixel score 0.7291 below threshold 0.98
+FAIL  [320-dark-hint] pixel score 0.6312 below threshold 0.98
+FAIL  [320-dark-level] pixel score 0.7151 below threshold 0.98
+FAIL  [320-dark-rules-techniques] pixel score 0.8101 below threshold 0.98
+FAIL  [320-dark-rules] pixel score 0.8096 below threshold 0.98
+FAIL  [320-dark-settings-focus] pixel score 0.85 below threshold 0.98
+FAIL  [320-dark-settings-light] pixel score 0.8227 below threshold 0.98
+FAIL  [320-dark-settings] pixel score 0.8532 below threshold 0.98
+FAIL  [320-dark-setup-four] pixel score 0.7436 below threshold 0.98
+FAIL  [320-dark-setup-marked-four] pixel score 0.7517 below threshold 0.98
+FAIL  [320-dark-setup-marked] pixel score 0.7209 below threshold 0.98
+FAIL  [320-dark-setup] pixel score 0.7189 below threshold 0.98
+FAIL  [320-dark-win] pixel score 0.6669 below threshold 0.98
+FAIL  [320-light-confirm] pixel score 0.364 below threshold 0.98
+FAIL  [320-light-default] pixel score 0.7311 below threshold 0.98
+FAIL  [320-light-eight] pixel score 0.7189 below threshold 0.98
+FAIL  [320-light-four] pixel score 0.7131 below threshold 0.98
+FAIL  [320-light-hint] pixel score 0.7241 below threshold 0.98
+FAIL  [320-light-level] pixel score 0.7182 below threshold 0.98
+FAIL  [320-light-rules-techniques] pixel score 0.7854 below threshold 0.98
+FAIL  [320-light-rules] pixel score 0.7815 below threshold 0.98
+FAIL  [320-light-settings-dark] pixel score 0.8606 below threshold 0.98
+FAIL  [320-light-settings-focus] pixel score 0.8175 below threshold 0.98
+FAIL  [320-light-settings] pixel score 0.8207 below threshold 0.98
+FAIL  [320-light-setup-four] pixel score 0.8324 below threshold 0.98
+FAIL  [320-light-setup-marked-four] pixel score 0.8398 below threshold 0.98
+FAIL  [320-light-setup-marked] pixel score 0.7937 below threshold 0.98
+FAIL  [320-light-setup] pixel score 0.8132 below threshold 0.98
+FAIL  [320-light-win] pixel score 0.7819 below threshold 0.98
+FAIL  [375-dark-confirm] pixel score 0.8554 below threshold 0.98
+FAIL  [375-dark-default] pixel score 0.7436 below threshold 0.98
+FAIL  [375-dark-eight] pixel score 0.7432 below threshold 0.98
+FAIL  [375-dark-four] pixel score 0.7868 below threshold 0.98
+FAIL  [375-dark-hint] pixel score 0.6654 below threshold 0.98
+FAIL  [375-dark-level] pixel score 0.7332 below threshold 0.98
+FAIL  [375-dark-rules-techniques] pixel score 0.8334 below threshold 0.98
+FAIL  [375-dark-rules] pixel score 0.8314 below threshold 0.98
+FAIL  [375-dark-settings-light] pixel score 0.8159 below threshold 0.98
+FAIL  [375-dark-settings] pixel score 0.8312 below threshold 0.98
+FAIL  [375-dark-setup-four] pixel score 0.7601 below threshold 0.98
+FAIL  [375-dark-setup-marked-four] pixel score 0.76 below threshold 0.98
+FAIL  [375-dark-setup-marked] pixel score 0.7572 below threshold 0.98
+FAIL  [375-dark-setup] pixel score 0.7593 below threshold 0.98
+FAIL  [375-dark-win] pixel score 0.7128 below threshold 0.98
+FAIL  [375-light-confirm] pixel score 0.3282 below threshold 0.98
+FAIL  [375-light-default] pixel score 0.7396 below threshold 0.98
+FAIL  [375-light-eight] pixel score 0.7461 below threshold 0.98
+FAIL  [375-light-four] pixel score 0.7741 below threshold 0.98
+FAIL  [375-light-hint] pixel score 0.7415 below threshold 0.98
+FAIL  [375-light-level] pixel score 0.7455 below threshold 0.98
+FAIL  [375-light-rules-techniques] pixel score 0.7985 below threshold 0.98
+FAIL  [375-light-rules] pixel score 0.7938 below threshold 0.98
+FAIL  [375-light-settings-dark] pixel score 0.8367 below threshold 0.98
+FAIL  [375-light-settings] pixel score 0.8143 below threshold 0.98
+FAIL  [375-light-setup-four] pixel score 0.8321 below threshold 0.98
+FAIL  [375-light-setup-marked-four] pixel score 0.8355 below threshold 0.98
+FAIL  [375-light-setup-marked] pixel score 0.8024 below threshold 0.98
+FAIL  [375-light-setup] pixel score 0.8087 below threshold 0.98
+FAIL  [375-light-win] pixel score 0.8118 below threshold 0.98
+FAIL  [768-dark-confirm] pixel score 0.9385 below threshold 0.98
+FAIL  [768-dark-default] pixel score 0.8502 below threshold 0.98
+FAIL  [768-dark-eight] pixel score 0.8474 below threshold 0.98
+FAIL  [768-dark-four] pixel score 0.9044 below threshold 0.98
+FAIL  [768-dark-hint] pixel score 0.8099 below threshold 0.98
+FAIL  [768-dark-level] pixel score 0.8518 below threshold 0.98
+FAIL  [768-dark-rules] pixel score 0.9254 below threshold 0.98
+FAIL  [768-dark-settings-light] pixel score 0.8994 below threshold 0.98
+FAIL  [768-dark-settings] pixel score 0.9319 below threshold 0.98
+FAIL  [768-dark-setup-four] pixel score 0.8852 below threshold 0.98
+FAIL  [768-dark-setup-marked-four] pixel score 0.8859 below threshold 0.98
+FAIL  [768-dark-setup-marked] pixel score 0.8789 below threshold 0.98
+FAIL  [768-dark-setup] pixel score 0.88 below threshold 0.98
+FAIL  [768-dark-win] pixel score 0.8164 below threshold 0.98
+FAIL  [768-light-confirm] pixel score 0.2343 below threshold 0.98
+FAIL  [768-light-default] pixel score 0.8476 below threshold 0.98
+FAIL  [768-light-eight] pixel score 0.8508 below threshold 0.98
+FAIL  [768-light-four] pixel score 0.8971 below threshold 0.98
+FAIL  [768-light-hint] pixel score 0.8531 below threshold 0.98
+FAIL  [768-light-level] pixel score 0.8516 below threshold 0.98
+FAIL  [768-light-rules] pixel score 0.7764 below threshold 0.98
+FAIL  [768-light-settings-dark] pixel score 0.9353 below threshold 0.98
+FAIL  [768-light-settings] pixel score 0.8993 below threshold 0.98
+FAIL  [768-light-setup-four] pixel score 0.7776 below threshold 0.98
+FAIL  [768-light-setup-marked-four] pixel score 0.7952 below threshold 0.98
+FAIL  [768-light-setup-marked] pixel score 0.7873 below threshold 0.98
+FAIL  [768-light-setup] pixel score 0.7874 below threshold 0.98
+FAIL  [768-light-win] pixel score 0.8802 below threshold 0.98
+FAIL  [logo-dark] capture failed: no state driver for "logo" (shot logo-dark); the page has no such state yet
+FAIL  [logo-light] capture failed: no state driver for "logo" (shot logo-light); the page has no such state yet
+WARN  [visual] threshold 0.98 is below the 0.99 default (NFR-19) — make sure the requirement actually allows this
+
+Scope: 170 breakpoint(s)
+Result: FAIL, 1 warning(s)
+exit: 1

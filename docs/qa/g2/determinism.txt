@@ -1,0 +1,9 @@
+# G2 capture determinism (2026-10-10 13:25 +0530): seven product shots captured twice through scripts/visual-parity-adapters.mjs (local role), SHA-1 per run
+# Result: 7 of 7 byte-identical. Sampled (7 of 168 drivable shots), not the whole set.
+1024-dark-setup-marked run1 b5bb70168fa2493dcc5c7ee4ff6114990fdcf865 run2 b5bb70168fa2493dcc5c7ee4ff6114990fdcf865 identical
+1366-light-rules-techniques run1 3611b75afbc82ea1591846694aa35793b5b1d60a run2 3611b75afbc82ea1591846694aa35793b5b1d60a identical
+1440-light-win run1 d79883256faea281817b197af449910f10e8a5d3 run2 d79883256faea281817b197af449910f10e8a5d3 identical
+320-dark-confirm run1 3bec91315786c2b5f0c7d610f75ba91423a5fb51 run2 3bec91315786c2b5f0c7d610f75ba91423a5fb51 identical
+375-dark-hint run1 f22fb1295c7e80c0f4bdbce2972f8f37ea90c3ed run2 f22fb1295c7e80c0f4bdbce2972f8f37ea90c3ed identical
+375-light-default run1 cbcc4570f3439f55278812b7cfa91ffc15bf316f run2 cbcc4570f3439f55278812b7cfa91ffc15bf316f identical
+768-light-settings-focus run1 fc8e575de6e45e03dd7b3ea390b60691f17b285d run2 fc8e575de6e45e03dd7b3ea390b60691f17b285d identical

@@ -1,0 +1,7 @@
+# Fixture boards of design/v0/lib/boards.ts checked with the engine (2026-10-10 13:40 +0530): countSolutions on the givens alone (stops at 2), findViolations and countSolutions on givens plus entries, isSolved.
+# Scratch vitest file (not committed) parsing boards.ts; 'givens-solutions 2' means at least two solutions.
+fixtureBoard 6 givens-solutions 2 violations 1 with-entries-solutions 0 solved false
+hintBoard 6 givens-solutions 2 violations 1 with-entries-solutions 0 solved false
+solvedBoard 6 givens-solutions 2 violations 0 with-entries-solutions 1 solved true
+eightBoard 8 givens-solutions 1 violations 0 with-entries-solutions 1 solved false
+fourBoard 4 givens-solutions 1 violations 0 with-entries-solutions 1 solved false

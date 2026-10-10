@@ -26,7 +26,7 @@
     "check:acceptance:artifact": "node scripts/check-acceptance-methods.mjs --mode=artifact",
     "check:process": "node scripts/check-process-ratchet.mjs",
     "check:integrity": "node scripts/check-factory-integrity.mjs",
-    "check:visual": "node scripts/check-visual-fidelity.mjs",
+    "check:visual": "npm run build && CHECK_VISUAL_FIDELITY_ADAPTERS=scripts/visual-parity-adapters.mjs node scripts/check-visual-fidelity.mjs",
     "docs:vendor": "node scripts/vendor-docs.mjs",
     "check:docs": "node scripts/vendor-docs.mjs --check",
     "test:e2e": "playwright test"

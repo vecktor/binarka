@@ -1,0 +1,864 @@
+{
+  "$comment": "NFR-14 (phase G2). Per shot against the FROZEN reference design/v0-screenshots/review-set-13/ (170 shots; moved by the user 2026-10-10, autonomy-log row 134). Each breakpoint is one reference shot (<width>-<scheme>-<state>); scripts/visual-parity-adapters.mjs reads the reference PNG and drives the built page into the state (npm run check:visual sets CHECK_VISUAL_FIDELITY_ADAPTERS). referenceUrl names the served design the set was captured from (design/v0/out); the adapters do not fetch it. threshold 0.98 per shot (autonomy-log row 68; below the checker 0.99 default, so its warning is expected). Sampling: the 170 shots of the set (pages x viewports x schemes); coverage is sampled, never continuum; the escalation path is in docs/qa/visual-diff/README.md.",
+  "referenceUrl": "http://127.0.0.1:4175/",
+  "localUrl": "http://localhost:4174/",
+  "referenceDir": "design/v0-screenshots/review-set-13",
+  "referenceSha1sums": "532e0b78e801944970a9f3fabf5ba148107dbffb",
+  "deviceScaleFactor": 2,
+  "seed": 1,
+  "threshold": 0.98,
+  "settleMs": 300,
+  "maxHeightDeltaPct": 2,
+  "breakpoints": [
+    {
+      "name": "1024-dark-confirm",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-default",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-eight",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-four",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-hint",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-level",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-rules",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-settings-light",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-settings",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-setup-four",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-setup-marked-four",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-setup-marked",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-setup",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-dark-win",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-confirm",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-default",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-eight",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-four",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-hint",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-level",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-rules",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-settings-dark",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-settings",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-setup-four",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-setup-marked-four",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-setup-marked",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-setup",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1024-light-win",
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "name": "1366-dark-default",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-eight",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-rules-techniques",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-rules",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-settings-focus",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-settings",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-setup-four",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-setup-marked-four",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-setup-marked",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-dark-setup",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-default",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-eight",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-rules-techniques",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-rules",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-settings-focus",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-settings",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-setup-four",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-setup-marked-four",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-setup-marked",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1366-light-setup",
+      "width": 1366,
+      "height": 650
+    },
+    {
+      "name": "1440-dark-confirm",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-default",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-eight",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-four",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-hint",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-level",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-rules-techniques",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-rules",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-settings-light",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-settings",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-setup-four",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-setup-marked-four",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-setup-marked",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-setup",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-dark-win",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-confirm",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-default",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-eight",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-four",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-hint",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-level",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-rules-techniques",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-rules",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-settings-dark",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-settings",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-setup-four",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-setup-marked-four",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-setup-marked",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-setup",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "1440-light-win",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "320-dark-confirm",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-default",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-eight",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-four",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-hint",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-level",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-rules-techniques",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-rules",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-settings-focus",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-settings-light",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-settings",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-setup-four",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-setup-marked-four",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-setup-marked",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-setup",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-dark-win",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-confirm",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-default",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-eight",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-four",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-hint",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-level",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-rules-techniques",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-rules",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-settings-dark",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-settings-focus",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-settings",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-setup-four",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-setup-marked-four",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-setup-marked",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-setup",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "320-light-win",
+      "width": 320,
+      "height": 700
+    },
+    {
+      "name": "375-dark-confirm",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-default",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-eight",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-four",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-hint",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-level",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-rules-techniques",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-rules",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-settings-light",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-settings",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-setup-four",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-setup-marked-four",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-setup-marked",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-setup",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-dark-win",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-confirm",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-default",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-eight",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-four",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-hint",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-level",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-rules-techniques",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-rules",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-settings-dark",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-settings",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-setup-four",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-setup-marked-four",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-setup-marked",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-setup",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "375-light-win",
+      "width": 375,
+      "height": 812
+    },
+    {
+      "name": "768-dark-confirm",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-default",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-eight",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-four",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-hint",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-level",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-rules",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-settings-light",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-settings",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-setup-four",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-setup-marked-four",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-setup-marked",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-setup",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-dark-win",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-confirm",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-default",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-eight",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-four",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-hint",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-level",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-rules",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-settings-dark",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-settings",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-setup-four",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-setup-marked-four",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-setup-marked",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-setup",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "768-light-win",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "logo-dark",
+      "width": 375,
+      "height": 160
+    },
+    {
+      "name": "logo-light",
+      "width": 375,
+      "height": 160
+    }
+  ]
+}

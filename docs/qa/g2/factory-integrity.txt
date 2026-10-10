@@ -1,0 +1,8 @@
+# node scripts/check-factory-integrity.mjs, 2026-10-10 13:30 +0530, after the G2 config, adapter and package.json change
+WARN  [quality/coverage-baseline.json] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
+WARN  [quality/eval-baseline.json] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+
+Scope: 23 locked file(s)
+Result: PASS, 3 warning(s)
+exit: 0

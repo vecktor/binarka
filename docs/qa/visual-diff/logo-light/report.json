@@ -1,0 +1,12 @@
+{
+  "breakpoint": "logo-light",
+  "score": null,
+  "threshold": 0.98,
+  "heightDelta": null,
+  "refHeight": null,
+  "localHeight": null,
+  "masked": 0,
+  "pass": false,
+  "reason": "capture failed: no state driver for \"logo\" (shot logo-light); the page has no such state yet",
+  "generatedBy": "scripts/check-visual-fidelity.mjs"
+}
