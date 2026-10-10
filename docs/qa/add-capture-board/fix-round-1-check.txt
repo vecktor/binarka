@@ -1,0 +1,23 @@
+# add-capture-board fix round 1: the fixed tests against the OLD loader (2aa39ac) and against the fix, 2026-10-10 15:00 +0530
+## old loader (git show 2aa39ac:src/ui/capture-board.ts), new tests
+   1       Tests  5 failed | 58 passed (63)
+   1  FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a Proxy whose every read throws
+   1  FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a getter on size that throws
+   1  FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a revoked Proxy
+   1  FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 the grids are read by index, not through their own iterator > an entries row yields one cell: the board shown is the cells at their indexes, with no seed and no throw
+   1  FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 the grids are read by index, not through their own iterator > the givens and entries arrays yield no …: the board shown is the cells at their indexes, with no seed and no throw
+   1 AssertionError: givens and entries shown, every other cell empty: expected [ …(6) ] to deeply equal [ Array(6) ]
+   1 AssertionError: the mount does not throw: expected [Function] to not throw an error but 'Error: hostile read' was thrown
+   1 AssertionError: the mount does not throw: expected [Function] to not throw an error but 'Error: hostile size' was thrown
+   1 AssertionError: the mount does not throw: expected [Function] to not throw an error but 'Error: puzzle is not 6x6' was thrown
+   1 AssertionError: the mount does not throw: expected [Function] to not throw an error but 'TypeError: Cannot perform \'get\' on …' was thrown
+## fixed loader
+      Tests  63 passed (63)
+## mutant: try/catch removed (validate called directly)
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a getter on size that thr
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a Proxy whose every read 
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a revoked Proxy
+      Tests  3 failed | 50 passed (53)
+## restored
+ src/ui/capture-board.ts | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)

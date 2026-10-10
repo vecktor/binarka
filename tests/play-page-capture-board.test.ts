@@ -450,31 +450,6 @@ describe('@trace FR-119 each invalid value falls back to generation silently', (
     // Fix round 1 (review wf_551a83f7-f44, the code defect): hostile values. Only a script on the page can set the value, but the spec
     // says an invalid value is ignored silently, so none of these may throw out of the mount.
     {
-      name: 'hostile: the givens array has an iterator that yields no rows (length still 6)',
-      valid: sixBase,
-      make: (v) => {
-        const out = clone(v);
-        Reflect.set(out.givens, Symbol.iterator, function* noRows() {
-          yield* [];
-        });
-        Reflect.set(out.entries, Symbol.iterator, function* noRows() {
-          yield* [];
-        });
-        return out;
-      },
-    },
-    {
-      name: 'hostile: an entries row has an iterator that yields one cell (length still 6)',
-      valid: sixBase,
-      make: (v) => {
-        const out = clone(v);
-        Reflect.set(out.entries[0] ?? [], Symbol.iterator, function* oneCell() {
-          yield null;
-        });
-        return out;
-      },
-    },
-    {
       name: 'hostile: a sparse givens row (new Array(6), holes only)',
       valid: sixBase,
       make: (v) => {
@@ -556,6 +531,38 @@ describe('@trace FR-119 each invalid value falls back to generation silently', (
       expect(countSolutions(base.givens)).toBe(1);
       expect(base.entries).toHaveLength(base.size);
     }
+  });
+});
+
+// Fix round 1 (review wf_551a83f7-f44): a grid whose array replaced its own iterator still has its cells at their indexes. The page reads
+// the grids by index, so such a value is the 6x6 board those indexes hold (valid under the spec): it is shown as that board, and the
+// mount neither throws nor shows a grid of another shape (before the fix the iterator was used and the mount threw «puzzle is not 6x6»).
+describe('@trace FR-119 the grids are read by index, not through their own iterator', () => {
+  it.each([
+    { name: 'the givens and entries arrays yield no rows', rows: true },
+    { name: 'an entries row yields one cell', rows: false },
+  ])('$name: the board shown is the cells at their indexes, with no seed and no throw', ({ rows }) => {
+    const value = sixBase();
+    const hostile = clone(value);
+    if (rows) {
+      Reflect.set(hostile.givens, Symbol.iterator, function* noRows() {
+        yield* [];
+      });
+      Reflect.set(hostile.entries, Symbol.iterator, function* noRows() {
+        yield* [];
+      });
+    } else {
+      Reflect.set(hostile.entries[0] ?? [], Symbol.iterator, function* oneCell() {
+        yield null;
+      });
+    }
+    let m: Mounted | undefined;
+    expect(() => {
+      m = mountWith(hostile);
+    }, 'the mount does not throw').not.toThrow();
+    expect.assert(m !== undefined, 'premise: the page mounted');
+    expectNoSeed(m);
+    expectShown(m.root, value);
   });
 });
 

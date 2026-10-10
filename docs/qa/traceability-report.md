@@ -120,7 +120,7 @@ Result: PASS, 115 warning(s)
 | FR-116 | yes | yes | 1 | - |
 | FR-117 | yes | yes | 13 | - |
 | FR-118 | yes | yes | 2 | - |
-| FR-119 | yes | yes | 11 | - |
+| FR-119 | yes | yes | 12 | - |
 | FR-55 | yes | yes | 2 | - |
 
 ## Failures

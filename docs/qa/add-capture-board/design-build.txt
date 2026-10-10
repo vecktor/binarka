@@ -1,0 +1,32 @@
+# design/v0 build with the fixtures in lib/boards.json, 2026-10-10 15:00 +0530: npm_config_manage_package_manager_versions=false pnpm build
+  Generating static pages using 9 workers (5/20) 
+  Generating static pages using 9 workers (10/20) 
+  Generating static pages using 9 workers (15/20) 
+✓ Generating static pages using 9 workers (20/20) in 272ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /confirm
+├ ○ /eight
+├ ○ /four
+├ ○ /hint
+├ ○ /level
+├ ○ /logo
+├ ○ /rules
+├ ○ /rules-techniques
+├ ○ /settings
+├ ○ /settings-dark
+├ ○ /settings-focus
+├ ○ /settings-light
+├ ○ /setup
+├ ○ /setup-four
+├ ○ /setup-marked
+├ ○ /setup-marked-four
+└ ○ /win
+
+
+○  (Static)  prerendered as static content
+
+exit: 0

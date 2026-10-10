@@ -12,13 +12,16 @@ export interface CaptureBoard {
 
 const SIZES = [4, 6, 8];
 
+/** Copy an n×n grid by index (never through the value's own iterator, which a hostile array can replace); null when it is not one. */
 function readGrid(value: unknown, n: number): Grid | null {
   if (!Array.isArray(value) || value.length !== n) return null;
   const grid: Grid = [];
-  for (const row of value as unknown[]) {
+  for (let r = 0; r < n; r++) {
+    const row: unknown = value[r];
     if (!Array.isArray(row) || row.length !== n) return null;
     const cells: Cell[] = [];
-    for (const cell of row as unknown[]) {
+    for (let c = 0; c < n; c++) {
+      const cell: unknown = row[c];
       if (cell !== 0 && cell !== 1 && cell !== null) return null;
       cells.push(cell);
     }
@@ -30,6 +33,15 @@ function readGrid(value: unknown, n: number): Grid | null {
 /** The capture board of the window, copied; null when it is absent or invalid (then the page generates as usual). Reads the property once. */
 export function readCaptureBoard(): CaptureBoard | null {
   const value: unknown = (window as unknown as { __binarkaCaptureBoard?: unknown }).__binarkaCaptureBoard;
+  // A getter, a Proxy or a revoked Proxy inside the value may throw while it is read: that value is invalid too, and is ignored silently.
+  try {
+    return validate(value);
+  } catch {
+    return null;
+  }
+}
+
+function validate(value: unknown): CaptureBoard | null {
   if (typeof value !== 'object' || value === null) return null;
   const { size, level, givens: rawGivens, entries: rawEntries, hinted: rawHinted } = value as Record<string, unknown>;
   if (typeof size !== 'number' || !SIZES.includes(size)) return null;
