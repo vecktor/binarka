@@ -1,0 +1,12 @@
+# Vision judge, update-page-palette task 4.1 (a fresh vision-judge subagent, read-only), 2026-10-11 about 04:45 (UTC+5:30)
+Stills: 375 and 1024 px, light and dark, *-violation (three equal digits in a row on a fresh 6x6 board) and *-hint (one «Підказка» press, one Tab);
+captured from the built page (vite preview, commit faf0b91) at device scale 2 with reduced motion. Compared against review-set-14 375-light-hint and 1024-dark-default for paint.
+
+Per still: all 8 met = yes, readable = yes (legibility; non-colour cues: bolder givens, heavier striped underlined violations, dashed italic hinted cell,
+hint line accent; controls look alive; no layout breakage, overlap, clipping or wrong-moment frame; the palette matches the design reference).
+
+Minor, non-blocking notes:
+- «Скинути» focus ring: about 7px clearance from «Підказка» and the hint panel (1024); at 375 it reaches about x=22 px, left of the 32 px content margin. Not clipped.
+- «Скинути» muted text is the dimmest text in dark (the muted-text pair is 8.32:1 on the page by A-57; the judge read it by eye as about 5 to 6:1). Acceptable.
+- 1024-light-violation: a whole-row count violation also marks two empty cells (border and stripes, no digit). Expected.
+Overall verdict: PASS.
