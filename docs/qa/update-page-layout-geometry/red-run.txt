@@ -1,0 +1,1114 @@
+# update-page-layout-geometry red run, 2026-10-10 20:57 +0530, branch at 6ccaf8c plus the slice's test files (no src/ change)
+# npx playwright test e2e/nfr-14-layout-geometry.spec.ts --project=layout --reporter=list
+# Expected: the 27 layout cases fail on assertions (boxes off), the coverage test passes. The guard test tests/play-page-layout-geometry.test.ts (colours unchanged) passes before and after by design.
+
+
+Running 28 tests using 5 workers
+
+  ✓   3 [layout] › e2e/nfr-14-layout-geometry.spec.ts:34:1 › @trace NFR-14 the fixture covers the sampled layout cases (4ms)
+  ✘   4 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-four: the main column's boxes match the design within 0.5px (179ms)
+  ✘   2 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-eight: the main column's boxes match the design within 0.5px (179ms)
+  ✘   5 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-default: the main column's boxes match the design within 0.5px (174ms)
+  ✘   1 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-level: the main column's boxes match the design within 0.5px (182ms)
+  ✘   6 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-win: the main column's boxes match the design within 0.5px (175ms)
+  ✘   8 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-default: the main column's boxes match the design within 0.5px (158ms)
+  ✘  11 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-four: the main column's boxes match the design within 0.5px (158ms)
+  ✘   9 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1366-light-default: the main column's boxes match the design within 0.5px (169ms)
+  ✘  10 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1366-light-eight: the main column's boxes match the design within 0.5px (183ms)
+  ✘   7 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-eight: the main column's boxes match the design within 0.5px (167ms)
+  ✘  16 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-eight: the main column's boxes match the design within 0.5px (207ms)
+  ✘  15 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-four: the main column's boxes match the design within 0.5px (204ms)
+  ✘  13 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-win: the main column's boxes match the design within 0.5px (213ms)
+  ✘  14 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-default: the main column's boxes match the design within 0.5px (211ms)
+  ✘  12 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-level: the main column's boxes match the design within 0.5px (210ms)
+  ✘  19 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-four: the main column's boxes match the design within 0.5px (267ms)
+  ✘  18 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-level: the main column's boxes match the design within 0.5px (248ms)
+  ✘  20 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-eight: the main column's boxes match the design within 0.5px (252ms)
+  ✘  21 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-default: the main column's boxes match the design within 0.5px (266ms)
+  ✘  17 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-win: the main column's boxes match the design within 0.5px (261ms)
+  ✘  22 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-level: the main column's boxes match the design within 0.5px (239ms)
+  ✘  23 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-win: the main column's boxes match the design within 0.5px (225ms)
+  ✘  24 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-default: the main column's boxes match the design within 0.5px (219ms)
+  ✘  25 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-four: the main column's boxes match the design within 0.5px (208ms)
+  ✘  26 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-eight: the main column's boxes match the design within 0.5px (243ms)
+  ✘  28 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-win: the main column's boxes match the design within 0.5px (120ms)
+  ✘  27 [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-level: the main column's boxes match the design within 0.5px (123ms)
+
+
+  1) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-default: the main column's boxes match the design within 0.5px 
+
+    Error: 1024-light-default: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 302.00,16.00 420.00x88.00, design 303.00,24.00 418.00x64.00 (off by 16.00px)",
+    +   ".page-header h1: page 302.00,24.00 194.33x64.00, design 303.00,24.00 225.16x64.00 (off by 31.83px)",
+    +   ".page-header .logo: page 302.00,24.00 64.00x64.00, design 303.00,24.00 64.00x64.00 (off by 1.00px)",
+    +   "[data-action=\"settings\"]: page 566.72,38.00 44.00x44.00, design 565.89,34.00 44.00x44.00 (off by 4.00px)",
+    +   "[data-action=\"rules\"]: page 622.72,38.00 99.28x44.00, design 621.89,34.00 99.11x44.00 (off by 4.00px)",
+    +   "[data-action=\"setup\"]: page 336.00,104.00 352.00x44.00, design 303.00,104.00 418.00x44.00 (off by 33.00px)",
+    +   "[data-board]: page 302.00,160.00 420.00x298.00, design 303.00,164.00 418.00x418.00 (off by 124.00px)",
+    +   "[data-board] [data-cell]:first-child: page 363.00,160.00 48.00x48.00, design 310.00,171.00 64.00x64.00 (off by 53.00px)",
+    +   "[data-board] [data-cell]:last-child: page 613.00,410.00 48.00x48.00, design 650.00,511.00 64.00x64.00 (off by 117.00px)",
+    +   "[data-action=\"hint\"]: page 313.34,474.00 100.63x44.00, design 303.00,598.00 114.66x44.00 (off by 124.00px)",
+    +   "[data-action=\"reset\"]: page 425.97,474.00 97.64x44.00, design 425.66,598.00 101.27x44.00 (off by 124.00px)",
+    +   "[data-action=\"new\"]: page 535.61,474.00 175.05x44.00, design 534.92,598.00 186.08x44.00 (off by 124.00px)",
+    +   ".messages: page 302.00,526.00 420.00x34.00, design 303.00,650.00 418.00x85.25 (off by 175.25px)",
+    +   "[data-message=\"idle\"]: page 302.00,526.00 420.00x34.00, design 303.00,672.33 418.00x40.59 (off by 152.92px)",
+    +   "[data-message=\"win\"]: page 302.00,566.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 722.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-affea-tch-the-design-within-0-5px-layout/error-context.md
+
+  2) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-eight: the main column's boxes match the design within 0.5px 
+
+    Error: 1024-light-eight: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 302.00,16.00 420.00x88.00, design 303.00,24.00 418.00x64.00 (off by 16.00px)",
+    +   ".page-header h1: page 302.00,24.00 194.33x64.00, design 303.00,24.00 225.16x64.00 (off by 31.83px)",
+    +   ".page-header .logo: page 302.00,24.00 64.00x64.00, design 303.00,24.00 64.00x64.00 (off by 1.00px)",
+    +   "[data-action=\"settings\"]: page 566.72,38.00 44.00x44.00, design 565.89,34.00 44.00x44.00 (off by 4.00px)",
+    +   "[data-action=\"rules\"]: page 622.72,38.00 99.28x44.00, design 621.89,34.00 99.11x44.00 (off by 4.00px)",
+    +   "[data-action=\"setup\"]: page 336.00,104.00 352.00x44.00, design 303.00,104.00 418.00x44.00 (off by 33.00px)",
+    +   "[data-board]: page 302.00,160.00 420.00x398.00, design 304.50,164.00 415.00x415.00 (off by 21.00px)",
+    +   "[data-board] [data-cell]:first-child: page 313.00,160.00 48.00x48.00, design 309.50,169.00 48.00x48.00 (off by 9.00px)",
+    +   "[data-board] [data-cell]:last-child: page 663.00,510.00 48.00x48.00, design 666.50,526.00 48.00x48.00 (off by 16.00px)",
+    +   "[data-action=\"hint\"]: page 313.34,574.00 100.63x44.00, design 303.00,595.00 114.66x44.00 (off by 21.00px)",
+    +   "[data-action=\"reset\"]: page 425.97,574.00 97.64x44.00, design 425.66,595.00 101.27x44.00 (off by 21.00px)",
+    +   "[data-action=\"new\"]: page 535.61,574.00 175.05x44.00, design 534.92,595.00 186.08x44.00 (off by 21.00px)",
+    +   ".messages: page 302.00,626.00 420.00x34.00, design 303.00,647.00 418.00x85.25 (off by 72.25px)",
+    +   "[data-message=\"idle\"]: page 302.00,626.00 420.00x34.00, design 303.00,669.33 418.00x40.59 (off by 49.92px)",
+    +   "[data-message=\"win\"]: page 302.00,666.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 722.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-11a4d-tch-the-design-within-0-5px-layout/error-context.md
+
+  3) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-four: the main column's boxes match the design within 0.5px 
+
+    Error: 1024-light-four: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 302.00,16.00 420.00x88.00, design 303.00,24.00 418.00x64.00 (off by 16.00px)",
+    +   ".page-header h1: page 302.00,24.00 194.33x64.00, design 303.00,24.00 225.16x64.00 (off by 31.83px)",
+    +   ".page-header .logo: page 302.00,24.00 64.00x64.00, design 303.00,24.00 64.00x64.00 (off by 1.00px)",
+    +   "[data-action=\"settings\"]: page 566.72,38.00 44.00x44.00, design 565.89,34.00 44.00x44.00 (off by 4.00px)",
+    +   "[data-action=\"rules\"]: page 622.72,38.00 99.28x44.00, design 621.89,34.00 99.11x44.00 (off by 4.00px)",
+    +   "[data-action=\"setup\"]: page 336.00,104.00 352.00x44.00, design 303.00,104.00 418.00x44.00 (off by 33.00px)",
+    +   "[data-board]: page 302.00,160.00 420.00x198.00, design 355.00,164.00 314.00x314.00 (off by 120.00px)",
+    +   "[data-board] [data-cell]:first-child: page 413.00,160.00 48.00x48.00, design 362.00,171.00 72.00x72.00 (off by 51.00px)",
+    +   "[data-board] [data-cell]:last-child: page 563.00,310.00 48.00x48.00, design 590.00,399.00 72.00x72.00 (off by 113.00px)",
+    +   "[data-action=\"hint\"]: page 313.34,374.00 100.63x44.00, design 303.00,494.00 114.66x44.00 (off by 120.00px)",
+    +   "[data-action=\"reset\"]: page 425.97,374.00 97.64x44.00, design 425.66,494.00 101.27x44.00 (off by 120.00px)",
+    +   "[data-action=\"new\"]: page 535.61,374.00 175.05x44.00, design 534.92,494.00 186.08x44.00 (off by 120.00px)",
+    +   ".messages: page 302.00,426.00 420.00x34.00, design 303.00,546.00 418.00x85.25 (off by 171.25px)",
+    +   "[data-message=\"idle\"]: page 302.00,426.00 420.00x34.00, design 303.00,568.33 418.00x40.59 (off by 148.92px)",
+    +   "[data-message=\"win\"]: page 302.00,466.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 722.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-cc662-tch-the-design-within-0-5px-layout/error-context.md
+
+  4) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-level: the main column's boxes match the design within 0.5px 
+
+    Error: 1024-light-level: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 302.00,16.00 420.00x88.00, design 303.00,24.00 418.00x64.00 (off by 16.00px)",
+    +   ".page-header h1: page 302.00,24.00 194.33x64.00, design 303.00,24.00 225.16x64.00 (off by 31.83px)",
+    +   ".page-header .logo: page 302.00,24.00 64.00x64.00, design 303.00,24.00 64.00x64.00 (off by 1.00px)",
+    +   "[data-action=\"settings\"]: page 566.72,38.00 44.00x44.00, design 565.89,34.00 44.00x44.00 (off by 4.00px)",
+    +   "[data-action=\"rules\"]: page 622.72,38.00 99.28x44.00, design 621.89,34.00 99.11x44.00 (off by 4.00px)",
+    +   "[data-action=\"setup\"]: page 336.00,104.00 352.00x44.00, design 303.00,104.00 418.00x44.00 (off by 33.00px)",
+    +   "[data-board]: page 302.00,160.00 420.00x398.00, design 304.50,164.00 415.00x415.00 (off by 21.00px)",
+    +   "[data-board] [data-cell]:first-child: page 313.00,160.00 48.00x48.00, design 309.50,169.00 48.00x48.00 (off by 9.00px)",
+    +   "[data-board] [data-cell]:last-child: page 663.00,510.00 48.00x48.00, design 666.50,526.00 48.00x48.00 (off by 16.00px)",
+    +   "[data-action=\"hint\"]: page 313.34,574.00 100.63x44.00, design 303.00,595.00 114.66x44.00 (off by 21.00px)",
+    +   "[data-action=\"reset\"]: page 425.97,574.00 97.64x44.00, design 425.66,595.00 101.27x44.00 (off by 21.00px)",
+    +   "[data-action=\"new\"]: page 535.61,574.00 175.05x44.00, design 534.92,595.00 186.08x44.00 (off by 21.00px)",
+    +   ".messages: page 302.00,626.00 420.00x34.00, design 303.00,647.00 418.00x85.25 (off by 72.25px)",
+    +   "[data-message=\"idle\"]: page 302.00,626.00 420.00x34.00, design 303.00,669.33 418.00x40.59 (off by 49.92px)",
+    +   "[data-message=\"win\"]: page 302.00,666.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 722.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-6d05a-tch-the-design-within-0-5px-layout/error-context.md
+
+  5) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-win: the main column's boxes match the design within 0.5px 
+
+    Error: 1024-light-win: 14 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 16
+
+    - Array []
+    + Array [
+    +   ".page-header: page 302.00,16.00 420.00x88.00, design 303.00,24.00 418.00x64.00 (off by 16.00px)",
+    +   ".page-header h1: page 302.00,24.00 194.33x64.00, design 303.00,24.00 225.16x64.00 (off by 31.83px)",
+    +   ".page-header .logo: page 302.00,24.00 64.00x64.00, design 303.00,24.00 64.00x64.00 (off by 1.00px)",
+    +   "[data-action=\"settings\"]: page 566.72,38.00 44.00x44.00, design 565.89,34.00 44.00x44.00 (off by 4.00px)",
+    +   "[data-action=\"rules\"]: page 622.72,38.00 99.28x44.00, design 621.89,34.00 99.11x44.00 (off by 4.00px)",
+    +   "[data-action=\"setup\"]: page 336.00,104.00 352.00x44.00, design 303.00,104.00 418.00x44.00 (off by 33.00px)",
+    +   "[data-board]: page 302.00,160.00 420.00x298.00, design 303.00,164.00 418.00x418.00 (off by 124.00px)",
+    +   "[data-board] [data-cell]:first-child: page 363.00,160.00 48.00x48.00, design 310.00,171.00 64.00x64.00 (off by 53.00px)",
+    +   "[data-board] [data-cell]:last-child: page 613.00,410.00 48.00x48.00, design 650.00,511.00 64.00x64.00 (off by 117.00px)",
+    +   "[data-action=\"hint\"]: page 313.34,474.00 100.63x44.00, design 303.00,598.00 109.61x44.00 (off by 124.00px)",
+    +   "[data-action=\"reset\"]: page 425.97,474.00 97.64x44.00, design 420.61,598.00 101.27x44.00 (off by 124.00px)",
+    +   "[data-action=\"new\"]: page 535.61,474.00 175.05x44.00, design 529.88,598.00 191.13x44.00 (off by 124.00px)",
+    +   ".messages: page 302.00,526.00 420.00x22.39, design 303.00,650.00 418.00x85.25 (off by 186.86px)",
+    +   "[data-message=\"win\"]: page 302.00,526.00 420.00x22.39, design 303.00,650.00 418.00x44.64 (off by 146.25px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-e082d-tch-the-design-within-0-5px-layout/error-context.md
+
+  6) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1366-light-default: the main column's boxes match the design within 0.5px 
+
+    Error: 1366-light-default: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 473.00,16.00 420.00x88.00, design 475.00,24.00 416.00x64.00 (off by 16.00px)",
+    +   ".page-header h1: page 473.00,24.00 194.33x64.00, design 475.00,24.00 225.16x64.00 (off by 32.83px)",
+    +   ".page-header .logo: page 473.00,24.00 64.00x64.00, design 475.00,24.00 64.00x64.00 (off by 2.00px)",
+    +   "[data-action=\"settings\"]: page 737.72,38.00 44.00x44.00, design 735.89,34.00 44.00x44.00 (off by 4.00px)",
+    +   "[data-action=\"rules\"]: page 793.72,38.00 99.28x44.00, design 791.89,34.00 99.11x44.00 (off by 4.00px)",
+    +   "[data-action=\"setup\"]: page 507.00,104.00 352.00x44.00, design 475.00,104.00 416.00x44.00 (off by 32.00px)",
+    +   "[data-board]: page 473.00,160.00 420.00x298.00, design 533.00,164.00 300.00x300.00 (off by 60.00px)",
+    +   "[data-board] [data-cell]:first-child: page 534.00,160.00 48.00x48.00, design 540.00,171.00 44.33x44.33 (off by 11.00px)",
+    +   "[data-board] [data-cell]:last-child: page 784.00,410.00 48.00x48.00, design 781.66,412.66 44.33x44.33 (off by 6.02px)",
+    +   "[data-action=\"hint\"]: page 484.34,474.00 100.63x44.00, design 475.00,480.00 113.66x44.00 (off by 9.34px)",
+    +   "[data-action=\"reset\"]: page 596.97,474.00 97.64x44.00, design 596.66,480.00 101.27x44.00 (off by 6.00px)",
+    +   "[data-action=\"new\"]: page 706.61,474.00 175.05x44.00, design 705.92,480.00 185.08x44.00 (off by 9.34px)",
+    +   ".messages: page 473.00,526.00 420.00x34.00, design 475.00,532.00 416.00x85.25 (off by 57.25px)",
+    +   "[data-message=\"idle\"]: page 473.00,526.00 420.00x34.00, design 475.00,554.33 416.00x40.59 (off by 34.92px)",
+    +   "[data-message=\"win\"]: page 473.00,566.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 893.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-8c9fb-tch-the-design-within-0-5px-layout/error-context.md
+
+  7) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1366-light-eight: the main column's boxes match the design within 0.5px 
+
+    Error: 1366-light-eight: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 473.00,16.00 420.00x88.00, design 475.00,24.00 416.00x64.00 (off by 16.00px)",
+    +   ".page-header h1: page 473.00,24.00 194.33x64.00, design 475.00,24.00 225.16x64.00 (off by 32.83px)",
+    +   ".page-header .logo: page 473.00,24.00 64.00x64.00, design 475.00,24.00 64.00x64.00 (off by 2.00px)",
+    +   "[data-action=\"settings\"]: page 737.72,38.00 44.00x44.00, design 735.89,34.00 44.00x44.00 (off by 4.00px)",
+    +   "[data-action=\"rules\"]: page 793.72,38.00 99.28x44.00, design 791.89,34.00 99.11x44.00 (off by 4.00px)",
+    +   "[data-action=\"setup\"]: page 507.00,104.00 352.00x44.00, design 475.00,104.00 416.00x44.00 (off by 32.00px)",
+    +   "[data-board]: page 473.00,160.00 420.00x398.00, design 534.50,164.00 297.00x297.00 (off by 97.00px)",
+    +   "[data-board] [data-cell]:first-child: page 484.00,160.00 48.00x48.00, design 539.50,169.00 33.25x33.25 (off by 55.50px)",
+    +   "[data-board] [data-cell]:last-child: page 834.00,510.00 48.00x48.00, design 793.25,422.75 33.25x33.25 (off by 102.00px)",
+    +   "[data-action=\"hint\"]: page 484.34,574.00 100.63x44.00, design 475.00,477.00 113.66x44.00 (off by 97.00px)",
+    +   "[data-action=\"reset\"]: page 596.97,574.00 97.64x44.00, design 596.66,477.00 101.27x44.00 (off by 97.00px)",
+    +   "[data-action=\"new\"]: page 706.61,574.00 175.05x44.00, design 705.92,477.00 185.08x44.00 (off by 97.00px)",
+    +   ".messages: page 473.00,626.00 420.00x34.00, design 475.00,529.00 416.00x85.25 (off by 97.00px)",
+    +   "[data-message=\"idle\"]: page 473.00,626.00 420.00x34.00, design 475.00,551.33 416.00x40.59 (off by 74.67px)",
+    +   "[data-message=\"win\"]: page 473.00,666.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 893.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-75514-tch-the-design-within-0-5px-layout/error-context.md
+
+  8) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-default: the main column's boxes match the design within 0.5px 
+
+    Error: 1440-light-default: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 510.00,16.00 420.00x88.00, design 487.00,24.00 466.00x64.00 (off by 23.00px)",
+    +   ".page-header h1: page 510.00,24.00 194.33x64.00, design 487.00,24.00 225.16x64.00 (off by 23.00px)",
+    +   ".page-header .logo: page 510.00,24.00 64.00x64.00, design 487.00,24.00 64.00x64.00 (off by 23.00px)",
+    +   "[data-action=\"settings\"]: page 774.72,38.00 44.00x44.00, design 797.89,34.00 44.00x44.00 (off by 23.17px)",
+    +   "[data-action=\"rules\"]: page 830.72,38.00 99.28x44.00, design 853.89,34.00 99.11x44.00 (off by 23.17px)",
+    +   "[data-action=\"setup\"]: page 544.00,104.00 352.00x44.00, design 487.00,104.00 466.00x44.00 (off by 57.00px)",
+    +   "[data-board]: page 510.00,160.00 420.00x298.00, design 487.00,164.00 466.00x466.00 (off by 172.00px)",
+    +   "[data-board] [data-cell]:first-child: page 571.00,160.00 48.00x48.00, design 494.00,171.00 72.00x72.00 (off by 77.00px)",
+    +   "[data-board] [data-cell]:last-child: page 821.00,410.00 48.00x48.00, design 874.00,551.00 72.00x72.00 (off by 165.00px)",
+    +   "[data-action=\"hint\"]: page 521.34,474.00 100.63x44.00, design 487.00,646.00 138.66x44.00 (off by 172.00px)",
+    +   "[data-action=\"reset\"]: page 633.97,474.00 97.64x44.00, design 633.66,646.00 101.27x44.00 (off by 172.00px)",
+    +   "[data-action=\"new\"]: page 743.61,474.00 175.05x44.00, design 742.92,646.00 210.08x44.00 (off by 172.00px)",
+    +   ".messages: page 510.00,526.00 420.00x34.00, design 487.00,698.00 466.00x85.25 (off by 223.25px)",
+    +   "[data-message=\"idle\"]: page 510.00,526.00 420.00x34.00, design 487.00,720.33 466.00x40.59 (off by 200.92px)",
+    +   "[data-message=\"win\"]: page 510.00,566.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 930.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-478cc-tch-the-design-within-0-5px-layout/error-context.md
+
+  9) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-eight: the main column's boxes match the design within 0.5px 
+
+    Error: 1440-light-eight: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 510.00,16.00 420.00x88.00, design 487.00,24.00 466.00x64.00 (off by 23.00px)",
+    +   ".page-header h1: page 510.00,24.00 194.33x64.00, design 487.00,24.00 225.16x64.00 (off by 23.00px)",
+    +   ".page-header .logo: page 510.00,24.00 64.00x64.00, design 487.00,24.00 64.00x64.00 (off by 23.00px)",
+    +   "[data-action=\"settings\"]: page 774.72,38.00 44.00x44.00, design 797.89,34.00 44.00x44.00 (off by 23.17px)",
+    +   "[data-action=\"rules\"]: page 830.72,38.00 99.28x44.00, design 853.89,34.00 99.11x44.00 (off by 23.17px)",
+    +   "[data-action=\"setup\"]: page 544.00,104.00 352.00x44.00, design 487.00,104.00 466.00x44.00 (off by 57.00px)",
+    +   "[data-board]: page 510.00,160.00 420.00x398.00, design 487.00,164.00 466.00x466.00 (off by 72.00px)",
+    +   "[data-board] [data-cell]:first-child: page 521.00,160.00 48.00x48.00, design 492.00,169.00 54.38x54.38 (off by 29.00px)",
+    +   "[data-board] [data-cell]:last-child: page 871.00,510.00 48.00x48.00, design 893.63,570.63 54.38x54.38 (off by 67.00px)",
+    +   "[data-action=\"hint\"]: page 521.34,574.00 100.63x44.00, design 487.00,646.00 138.66x44.00 (off by 72.00px)",
+    +   "[data-action=\"reset\"]: page 633.97,574.00 97.64x44.00, design 633.66,646.00 101.27x44.00 (off by 72.00px)",
+    +   "[data-action=\"new\"]: page 743.61,574.00 175.05x44.00, design 742.92,646.00 210.08x44.00 (off by 72.00px)",
+    +   ".messages: page 510.00,626.00 420.00x34.00, design 487.00,698.00 466.00x85.25 (off by 123.25px)",
+    +   "[data-message=\"idle\"]: page 510.00,626.00 420.00x34.00, design 487.00,720.33 466.00x40.59 (off by 100.92px)",
+    +   "[data-message=\"win\"]: page 510.00,666.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 930.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-995ff-tch-the-design-within-0-5px-layout/error-context.md
+
+  10) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-four: the main column's boxes match the design within 0.5px 
+
+    Error: 1440-light-four: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 510.00,16.00 420.00x88.00, design 487.00,24.00 466.00x64.00 (off by 23.00px)",
+    +   ".page-header h1: page 510.00,24.00 194.33x64.00, design 487.00,24.00 225.16x64.00 (off by 23.00px)",
+    +   ".page-header .logo: page 510.00,24.00 64.00x64.00, design 487.00,24.00 64.00x64.00 (off by 23.00px)",
+    +   "[data-action=\"settings\"]: page 774.72,38.00 44.00x44.00, design 797.89,34.00 44.00x44.00 (off by 23.17px)",
+    +   "[data-action=\"rules\"]: page 830.72,38.00 99.28x44.00, design 853.89,34.00 99.11x44.00 (off by 23.17px)",
+    +   "[data-action=\"setup\"]: page 544.00,104.00 352.00x44.00, design 487.00,104.00 466.00x44.00 (off by 57.00px)",
+    +   "[data-board]: page 510.00,160.00 420.00x198.00, design 563.00,164.00 314.00x314.00 (off by 120.00px)",
+    +   "[data-board] [data-cell]:first-child: page 621.00,160.00 48.00x48.00, design 570.00,171.00 72.00x72.00 (off by 51.00px)",
+    +   "[data-board] [data-cell]:last-child: page 771.00,310.00 48.00x48.00, design 798.00,399.00 72.00x72.00 (off by 113.00px)",
+    +   "[data-action=\"hint\"]: page 521.34,374.00 100.63x44.00, design 487.00,494.00 138.66x44.00 (off by 120.00px)",
+    +   "[data-action=\"reset\"]: page 633.97,374.00 97.64x44.00, design 633.66,494.00 101.27x44.00 (off by 120.00px)",
+    +   "[data-action=\"new\"]: page 743.61,374.00 175.05x44.00, design 742.92,494.00 210.08x44.00 (off by 120.00px)",
+    +   ".messages: page 510.00,426.00 420.00x34.00, design 487.00,546.00 466.00x85.25 (off by 171.25px)",
+    +   "[data-message=\"idle\"]: page 510.00,426.00 420.00x34.00, design 487.00,568.33 466.00x40.59 (off by 148.92px)",
+    +   "[data-message=\"win\"]: page 510.00,466.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 930.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-4e6c7-tch-the-design-within-0-5px-layout/error-context.md
+
+  11) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-level: the main column's boxes match the design within 0.5px 
+
+    Error: 1440-light-level: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 510.00,16.00 420.00x88.00, design 487.00,24.00 466.00x64.00 (off by 23.00px)",
+    +   ".page-header h1: page 510.00,24.00 194.33x64.00, design 487.00,24.00 225.16x64.00 (off by 23.00px)",
+    +   ".page-header .logo: page 510.00,24.00 64.00x64.00, design 487.00,24.00 64.00x64.00 (off by 23.00px)",
+    +   "[data-action=\"settings\"]: page 774.72,38.00 44.00x44.00, design 797.89,34.00 44.00x44.00 (off by 23.17px)",
+    +   "[data-action=\"rules\"]: page 830.72,38.00 99.28x44.00, design 853.89,34.00 99.11x44.00 (off by 23.17px)",
+    +   "[data-action=\"setup\"]: page 544.00,104.00 352.00x44.00, design 487.00,104.00 466.00x44.00 (off by 57.00px)",
+    +   "[data-board]: page 510.00,160.00 420.00x398.00, design 487.00,164.00 466.00x466.00 (off by 72.00px)",
+    +   "[data-board] [data-cell]:first-child: page 521.00,160.00 48.00x48.00, design 492.00,169.00 54.38x54.38 (off by 29.00px)",
+    +   "[data-board] [data-cell]:last-child: page 871.00,510.00 48.00x48.00, design 893.63,570.63 54.38x54.38 (off by 67.00px)",
+    +   "[data-action=\"hint\"]: page 521.34,574.00 100.63x44.00, design 487.00,646.00 138.66x44.00 (off by 72.00px)",
+    +   "[data-action=\"reset\"]: page 633.97,574.00 97.64x44.00, design 633.66,646.00 101.27x44.00 (off by 72.00px)",
+    +   "[data-action=\"new\"]: page 743.61,574.00 175.05x44.00, design 742.92,646.00 210.08x44.00 (off by 72.00px)",
+    +   ".messages: page 510.00,626.00 420.00x34.00, design 487.00,698.00 466.00x85.25 (off by 123.25px)",
+    +   "[data-message=\"idle\"]: page 510.00,626.00 420.00x34.00, design 487.00,720.33 466.00x40.59 (off by 100.92px)",
+    +   "[data-message=\"win\"]: page 510.00,666.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 930.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-9980c-tch-the-design-within-0-5px-layout/error-context.md
+
+  12) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-win: the main column's boxes match the design within 0.5px 
+
+    Error: 1440-light-win: 14 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 16
+
+    - Array []
+    + Array [
+    +   ".page-header: page 510.00,16.00 420.00x88.00, design 487.00,24.00 466.00x64.00 (off by 23.00px)",
+    +   ".page-header h1: page 510.00,24.00 194.33x64.00, design 487.00,24.00 225.16x64.00 (off by 23.00px)",
+    +   ".page-header .logo: page 510.00,24.00 64.00x64.00, design 487.00,24.00 64.00x64.00 (off by 23.00px)",
+    +   "[data-action=\"settings\"]: page 774.72,38.00 44.00x44.00, design 797.89,34.00 44.00x44.00 (off by 23.17px)",
+    +   "[data-action=\"rules\"]: page 830.72,38.00 99.28x44.00, design 853.89,34.00 99.11x44.00 (off by 23.17px)",
+    +   "[data-action=\"setup\"]: page 544.00,104.00 352.00x44.00, design 487.00,104.00 466.00x44.00 (off by 57.00px)",
+    +   "[data-board]: page 510.00,160.00 420.00x298.00, design 487.00,164.00 466.00x466.00 (off by 172.00px)",
+    +   "[data-board] [data-cell]:first-child: page 571.00,160.00 48.00x48.00, design 494.00,171.00 72.00x72.00 (off by 77.00px)",
+    +   "[data-board] [data-cell]:last-child: page 821.00,410.00 48.00x48.00, design 874.00,551.00 72.00x72.00 (off by 165.00px)",
+    +   "[data-action=\"hint\"]: page 521.34,474.00 100.63x44.00, design 487.00,646.00 133.61x44.00 (off by 172.00px)",
+    +   "[data-action=\"reset\"]: page 633.97,474.00 97.64x44.00, design 628.61,646.00 101.27x44.00 (off by 172.00px)",
+    +   "[data-action=\"new\"]: page 743.61,474.00 175.05x44.00, design 737.88,646.00 215.13x44.00 (off by 172.00px)",
+    +   ".messages: page 510.00,526.00 420.00x22.39, design 487.00,698.00 466.00x85.25 (off by 234.86px)",
+    +   "[data-message=\"win\"]: page 510.00,526.00 420.00x22.39, design 487.00,698.00 466.00x44.64 (off by 194.25px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-f7451-tch-the-design-within-0-5px-layout/error-context.md
+
+  13) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-default: the main column's boxes match the design within 0.5px 
+
+    Error: 320-light-default: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 288.00x68.00, design 12.00,16.00 296.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 141.50x44.00, design 12.00,16.00 141.83x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 12.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 166.72,28.00 44.00x44.00, design 168.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 216.72,28.00 87.28x44.00, design 220.89,16.00 87.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 288.00x44.00, design 12.00,72.00 296.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 288.00x288.06, design 15.50,128.00 289.00x289.00 (off by 12.00px)",
+    +   "[data-board] [data-cell]:first-child: page 16.00,140.00 46.33x46.33, design 20.50,133.00 44.00x44.00 (off by 9.33px)",
+    +   "[data-board] [data-cell]:last-child: page 257.66,381.72 46.34x46.34, design 255.50,368.00 44.00x44.00 (off by 16.06px)",
+    +   "[data-action=\"hint\"]: page 54.86,444.06 100.63x44.00, design 12.00,429.00 296.00x44.00 (off by 152.52px)",
+    +   "[data-action=\"reset\"]: page 167.48,444.06 97.64x44.00, design 12.00,481.00 93.27x44.00 (off by 159.86px)",
+    +   "[data-action=\"new\"]: page 72.47,500.06 175.05x44.00, design 113.27,481.00 194.73x44.00 (off by 60.48px)",
+    +   ".messages: page 16.00,552.06 288.00x34.00, design 12.00,533.00 296.00x85.25 (off by 32.19px)",
+    +   "[data-message=\"idle\"]: page 16.00,552.06 288.00x34.00, design 12.00,555.33 296.00x40.59 (off by 9.86px)",
+    +   "[data-message=\"win\"]: page 16.00,592.06 288.00x0.00, design 0.00,0.00 0.00x0.00 (off by 592.06px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-32b79-tch-the-design-within-0-5px-layout/error-context.md
+
+  14) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-eight: the main column's boxes match the design within 0.5px 
+
+    Error: 320-light-eight: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 288.00x68.00, design 12.00,16.00 296.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 141.50x44.00, design 12.00,16.00 141.83x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 12.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 166.72,28.00 44.00x44.00, design 168.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 216.72,28.00 87.28x44.00, design 220.89,16.00 87.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 288.00x44.00, design 12.00,72.00 296.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 288.00x288.00, design 8.00,128.00 304.00x304.00 (off by 12.00px)",
+    +   "[data-board] [data-cell]:first-child: page 16.00,140.00 34.25x34.25, design 12.00,132.00 35.25x35.25 (off by 8.00px)",
+    +   "[data-board] [data-cell]:last-child: page 269.75,393.75 34.25x34.25, design 272.75,392.75 35.25x35.25 (off by 4.00px)",
+    +   "[data-action=\"hint\"]: page 54.86,444.00 100.63x44.00, design 12.00,444.00 296.00x44.00 (off by 152.52px)",
+    +   "[data-action=\"reset\"]: page 167.48,444.00 97.64x44.00, design 12.00,496.00 93.27x44.00 (off by 159.86px)",
+    +   "[data-action=\"new\"]: page 72.47,500.00 175.05x44.00, design 113.27,496.00 194.73x44.00 (off by 60.48px)",
+    +   ".messages: page 16.00,552.00 288.00x34.00, design 12.00,548.00 296.00x85.25 (off by 47.25px)",
+    +   "[data-message=\"idle\"]: page 16.00,552.00 288.00x34.00, design 12.00,570.33 296.00x40.59 (off by 24.92px)",
+    +   "[data-message=\"win\"]: page 16.00,592.00 288.00x0.00, design 0.00,0.00 0.00x0.00 (off by 592.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-3ce55-tch-the-design-within-0-5px-layout/error-context.md
+
+  15) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-four: the main column's boxes match the design within 0.5px 
+
+    Error: 320-light-four: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 288.00x68.00, design 12.00,16.00 296.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 141.50x44.00, design 12.00,16.00 141.83x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 12.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 166.72,28.00 44.00x44.00, design 168.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 216.72,28.00 87.28x44.00, design 220.89,16.00 87.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 288.00x44.00, design 12.00,72.00 296.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 288.00x198.00, design 21.00,128.00 278.00x278.00 (off by 68.00px)",
+    +   "[data-board] [data-cell]:first-child: page 61.00,140.00 48.00x48.00, design 28.00,135.00 63.00x63.00 (off by 33.00px)",
+    +   "[data-board] [data-cell]:last-child: page 211.00,290.00 48.00x48.00, design 229.00,336.00 63.00x63.00 (off by 61.00px)",
+    +   "[data-action=\"hint\"]: page 54.86,354.00 100.63x44.00, design 12.00,418.00 296.00x44.00 (off by 152.52px)",
+    +   "[data-action=\"reset\"]: page 167.48,354.00 97.64x44.00, design 12.00,470.00 93.27x44.00 (off by 159.86px)",
+    +   "[data-action=\"new\"]: page 72.47,410.00 175.05x44.00, design 113.27,470.00 194.73x44.00 (off by 60.48px)",
+    +   ".messages: page 16.00,462.00 288.00x34.00, design 12.00,522.00 296.00x85.25 (off by 111.25px)",
+    +   "[data-message=\"idle\"]: page 16.00,462.00 288.00x34.00, design 12.00,544.33 296.00x40.59 (off by 88.92px)",
+    +   "[data-message=\"win\"]: page 16.00,502.00 288.00x0.00, design 0.00,0.00 0.00x0.00 (off by 502.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-ef768-tch-the-design-within-0-5px-layout/error-context.md
+
+  16) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-level: the main column's boxes match the design within 0.5px 
+
+    Error: 320-light-level: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 288.00x68.00, design 12.00,16.00 296.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 141.50x44.00, design 12.00,16.00 141.83x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 12.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 166.72,28.00 44.00x44.00, design 168.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 216.72,28.00 87.28x44.00, design 220.89,16.00 87.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 288.00x44.00, design 12.00,72.00 296.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 288.00x288.00, design 8.00,128.00 304.00x304.00 (off by 12.00px)",
+    +   "[data-board] [data-cell]:first-child: page 16.00,140.00 34.25x34.25, design 12.00,132.00 35.25x35.25 (off by 8.00px)",
+    +   "[data-board] [data-cell]:last-child: page 269.75,393.75 34.25x34.25, design 272.75,392.75 35.25x35.25 (off by 4.00px)",
+    +   "[data-action=\"hint\"]: page 54.86,444.00 100.63x44.00, design 12.00,444.00 296.00x44.00 (off by 152.52px)",
+    +   "[data-action=\"reset\"]: page 167.48,444.00 97.64x44.00, design 12.00,496.00 93.27x44.00 (off by 159.86px)",
+    +   "[data-action=\"new\"]: page 72.47,500.00 175.05x44.00, design 113.27,496.00 194.73x44.00 (off by 60.48px)",
+    +   ".messages: page 16.00,552.00 288.00x34.00, design 12.00,548.00 296.00x85.25 (off by 47.25px)",
+    +   "[data-message=\"idle\"]: page 16.00,552.00 288.00x34.00, design 12.00,570.33 296.00x40.59 (off by 24.92px)",
+    +   "[data-message=\"win\"]: page 16.00,592.00 288.00x0.00, design 0.00,0.00 0.00x0.00 (off by 592.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-3b5d6-tch-the-design-within-0-5px-layout/error-context.md
+
+  17) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-win: the main column's boxes match the design within 0.5px 
+
+    Error: 320-light-win: 14 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 16
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 288.00x68.00, design 12.00,16.00 296.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 141.50x44.00, design 12.00,16.00 141.83x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 12.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 166.72,28.00 44.00x44.00, design 168.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 216.72,28.00 87.28x44.00, design 220.89,16.00 87.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 288.00x44.00, design 12.00,72.00 296.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 288.00x288.06, design 15.50,128.00 289.00x289.00 (off by 12.00px)",
+    +   "[data-board] [data-cell]:first-child: page 16.00,140.00 46.33x46.33, design 20.50,133.00 44.00x44.00 (off by 9.33px)",
+    +   "[data-board] [data-cell]:last-child: page 257.66,381.72 46.34x46.34, design 255.50,368.00 44.00x44.00 (off by 16.06px)",
+    +   "[data-action=\"hint\"]: page 54.86,444.06 100.63x44.00, design 12.00,429.00 296.00x44.00 (off by 152.52px)",
+    +   "[data-action=\"reset\"]: page 167.48,444.06 97.64x44.00, design 12.00,481.00 93.27x44.00 (off by 159.86px)",
+    +   "[data-action=\"new\"]: page 72.47,500.06 175.05x44.00, design 113.27,481.00 194.73x44.00 (off by 60.48px)",
+    +   ".messages: page 16.00,552.06 288.00x22.39, design 12.00,533.00 296.00x85.25 (off by 43.80px)",
+    +   "[data-message=\"win\"]: page 16.00,552.06 288.00x22.39, design 12.00,533.00 296.00x69.28 (off by 27.83px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-727ff-tch-the-design-within-0-5px-layout/error-context.md
+
+  18) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-default: the main column's boxes match the design within 0.5px 
+
+    Error: 375-light-default: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 343.00x68.00, design 16.00,16.00 343.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 159.23x44.00, design 16.00,16.00 161.28x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 16.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 203.72,28.00 44.00x44.00, design 203.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 259.72,28.00 99.28x44.00, design 259.89,16.00 99.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 343.00x44.00, design 16.00,72.00 343.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 343.00x298.00, design 16.00,128.00 343.00x343.00 (off by 33.00px)",
+    +   "[data-board] [data-cell]:first-child: page 38.50,140.00 48.00x48.00, design 23.00,135.00 51.50x51.50 (off by 15.50px)",
+    +   "[data-board] [data-cell]:last-child: page 288.50,390.00 48.00x48.00, design 300.50,412.50 51.50x51.50 (off by 26.00px)",
+    +   "[data-action=\"hint\"]: page 82.36,454.00 100.63x44.00, design 16.00,483.00 343.00x44.00 (off by 176.02px)",
+    +   "[data-action=\"reset\"]: page 194.98,454.00 97.64x44.00, design 16.00,535.00 101.27x44.00 (off by 178.98px)",
+    +   "[data-action=\"new\"]: page 99.97,510.00 175.05x44.00, design 125.27,535.00 233.73x44.00 (off by 83.98px)",
+    +   ".messages: page 16.00,562.00 343.00x34.00, design 16.00,587.00 343.00x85.25 (off by 76.25px)",
+    +   "[data-message=\"idle\"]: page 16.00,562.00 343.00x34.00, design 16.00,609.33 343.00x40.59 (off by 53.92px)",
+    +   "[data-message=\"win\"]: page 16.00,602.00 343.00x0.00, design 0.00,0.00 0.00x0.00 (off by 602.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-bd244-tch-the-design-within-0-5px-layout/error-context.md
+
+  19) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-eight: the main column's boxes match the design within 0.5px 
+
+    Error: 375-light-eight: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 343.00x68.00, design 16.00,16.00 343.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 159.23x44.00, design 16.00,16.00 161.28x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 16.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 203.72,28.00 44.00x44.00, design 203.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 259.72,28.00 99.28x44.00, design 259.89,16.00 99.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 343.00x44.00, design 16.00,72.00 343.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 343.00x343.00, design 8.00,128.00 359.00x359.00 (off by 12.00px)",
+    +   "[data-board] [data-cell]:first-child: page 16.00,140.00 41.13x41.13, design 12.00,132.00 42.13x42.13 (off by 8.00px)",
+    +   "[data-board] [data-cell]:last-child: page 317.88,441.88 41.13x41.13, design 320.88,440.88 42.13x42.13 (off by 4.00px)",
+    +   "[data-action=\"hint\"]: page 82.36,499.00 100.63x44.00, design 16.00,499.00 343.00x44.00 (off by 176.02px)",
+    +   "[data-action=\"reset\"]: page 194.98,499.00 97.64x44.00, design 16.00,551.00 101.27x44.00 (off by 178.98px)",
+    +   "[data-action=\"new\"]: page 99.97,555.00 175.05x44.00, design 125.27,551.00 233.73x44.00 (off by 83.98px)",
+    +   ".messages: page 16.00,607.00 343.00x34.00, design 16.00,603.00 343.00x85.25 (off by 47.25px)",
+    +   "[data-message=\"idle\"]: page 16.00,607.00 343.00x34.00, design 16.00,625.33 343.00x40.59 (off by 24.92px)",
+    +   "[data-message=\"win\"]: page 16.00,647.00 343.00x0.00, design 0.00,0.00 0.00x0.00 (off by 647.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-2bda8-tch-the-design-within-0-5px-layout/error-context.md
+
+  20) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-four: the main column's boxes match the design within 0.5px 
+
+    Error: 375-light-four: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 343.00x68.00, design 16.00,16.00 343.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 159.23x44.00, design 16.00,16.00 161.28x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 16.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 203.72,28.00 44.00x44.00, design 203.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 259.72,28.00 99.28x44.00, design 259.89,16.00 99.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 343.00x44.00, design 16.00,72.00 343.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 343.00x198.00, design 46.50,128.00 282.00x282.00 (off by 72.00px)",
+    +   "[data-board] [data-cell]:first-child: page 88.50,140.00 48.00x48.00, design 53.50,135.00 64.00x64.00 (off by 35.00px)",
+    +   "[data-board] [data-cell]:last-child: page 238.50,290.00 48.00x48.00, design 257.50,339.00 64.00x64.00 (off by 65.00px)",
+    +   "[data-action=\"hint\"]: page 82.36,354.00 100.63x44.00, design 16.00,422.00 343.00x44.00 (off by 176.02px)",
+    +   "[data-action=\"reset\"]: page 194.98,354.00 97.64x44.00, design 16.00,474.00 101.27x44.00 (off by 178.98px)",
+    +   "[data-action=\"new\"]: page 99.97,410.00 175.05x44.00, design 125.27,474.00 233.73x44.00 (off by 83.98px)",
+    +   ".messages: page 16.00,462.00 343.00x34.00, design 16.00,526.00 343.00x85.25 (off by 115.25px)",
+    +   "[data-message=\"idle\"]: page 16.00,462.00 343.00x34.00, design 16.00,548.33 343.00x40.59 (off by 92.92px)",
+    +   "[data-message=\"win\"]: page 16.00,502.00 343.00x0.00, design 0.00,0.00 0.00x0.00 (off by 502.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-23071-tch-the-design-within-0-5px-layout/error-context.md
+
+  21) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-level: the main column's boxes match the design within 0.5px 
+
+    Error: 375-light-level: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 343.00x68.00, design 16.00,16.00 343.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 159.23x44.00, design 16.00,16.00 161.28x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 16.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 203.72,28.00 44.00x44.00, design 203.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 259.72,28.00 99.28x44.00, design 259.89,16.00 99.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 343.00x44.00, design 16.00,72.00 343.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 343.00x343.00, design 8.00,128.00 359.00x359.00 (off by 12.00px)",
+    +   "[data-board] [data-cell]:first-child: page 16.00,140.00 41.13x41.13, design 12.00,132.00 42.13x42.13 (off by 8.00px)",
+    +   "[data-board] [data-cell]:last-child: page 317.88,441.88 41.13x41.13, design 320.88,440.88 42.13x42.13 (off by 4.00px)",
+    +   "[data-action=\"hint\"]: page 82.36,499.00 100.63x44.00, design 16.00,499.00 343.00x44.00 (off by 176.02px)",
+    +   "[data-action=\"reset\"]: page 194.98,499.00 97.64x44.00, design 16.00,551.00 101.27x44.00 (off by 178.98px)",
+    +   "[data-action=\"new\"]: page 99.97,555.00 175.05x44.00, design 125.27,551.00 233.73x44.00 (off by 83.98px)",
+    +   ".messages: page 16.00,607.00 343.00x34.00, design 16.00,603.00 343.00x85.25 (off by 47.25px)",
+    +   "[data-message=\"idle\"]: page 16.00,607.00 343.00x34.00, design 16.00,625.33 343.00x40.59 (off by 24.92px)",
+    +   "[data-message=\"win\"]: page 16.00,647.00 343.00x0.00, design 0.00,0.00 0.00x0.00 (off by 647.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-58b13-tch-the-design-within-0-5px-layout/error-context.md
+
+  22) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-win: the main column's boxes match the design within 0.5px 
+
+    Error: 375-light-win: 14 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 16
+
+    - Array []
+    + Array [
+    +   ".page-header: page 16.00,16.00 343.00x68.00, design 16.00,16.00 343.00x44.00 (off by 24.00px)",
+    +   ".page-header h1: page 16.00,24.00 159.23x44.00, design 16.00,16.00 161.28x44.00 (off by 8.00px)",
+    +   ".page-header .logo: page 16.00,24.00 44.00x44.00, design 16.00,16.00 44.00x44.00 (off by 8.00px)",
+    +   "[data-action=\"settings\"]: page 203.72,28.00 44.00x44.00, design 203.89,16.00 44.00x44.00 (off by 12.00px)",
+    +   "[data-action=\"rules\"]: page 259.72,28.00 99.28x44.00, design 259.89,16.00 99.11x44.00 (off by 12.00px)",
+    +   "[data-action=\"setup\"]: page 16.00,84.00 343.00x44.00, design 16.00,72.00 343.00x44.00 (off by 12.00px)",
+    +   "[data-board]: page 16.00,140.00 343.00x298.00, design 16.00,128.00 343.00x343.00 (off by 33.00px)",
+    +   "[data-board] [data-cell]:first-child: page 38.50,140.00 48.00x48.00, design 23.00,135.00 51.50x51.50 (off by 15.50px)",
+    +   "[data-board] [data-cell]:last-child: page 288.50,390.00 48.00x48.00, design 300.50,412.50 51.50x51.50 (off by 26.00px)",
+    +   "[data-action=\"hint\"]: page 82.36,454.00 100.63x44.00, design 16.00,483.00 343.00x44.00 (off by 176.02px)",
+    +   "[data-action=\"reset\"]: page 194.98,454.00 97.64x44.00, design 16.00,535.00 101.27x44.00 (off by 178.98px)",
+    +   "[data-action=\"new\"]: page 99.97,510.00 175.05x44.00, design 125.27,535.00 233.73x44.00 (off by 83.98px)",
+    +   ".messages: page 16.00,562.00 343.00x22.39, design 16.00,587.00 343.00x85.25 (off by 87.86px)",
+    +   "[data-message=\"win\"]: page 16.00,562.00 343.00x22.39, design 16.00,587.00 343.00x44.64 (off by 47.25px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-67bbe-tch-the-design-within-0-5px-layout/error-context.md
+
+  23) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-default: the main column's boxes match the design within 0.5px 
+
+    Error: 768-light-default: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 174.00,16.00 420.00x88.00, design 127.00,24.00 514.00x64.00 (off by 47.00px)",
+    +   ".page-header h1: page 174.00,24.00 194.33x64.00, design 127.00,24.00 225.16x64.00 (off by 47.00px)",
+    +   ".page-header .logo: page 174.00,24.00 64.00x64.00, design 127.00,24.00 64.00x64.00 (off by 47.00px)",
+    +   "[data-action=\"settings\"]: page 438.72,38.00 44.00x44.00, design 485.89,34.00 44.00x44.00 (off by 47.17px)",
+    +   "[data-action=\"rules\"]: page 494.72,38.00 99.28x44.00, design 541.89,34.00 99.11x44.00 (off by 47.17px)",
+    +   "[data-action=\"setup\"]: page 208.00,104.00 352.00x44.00, design 127.00,104.00 514.00x44.00 (off by 81.00px)",
+    +   "[data-board]: page 174.00,160.00 420.00x298.00, design 127.00,164.00 514.00x514.00 (off by 220.00px)",
+    +   "[data-board] [data-cell]:first-child: page 235.00,160.00 48.00x48.00, design 134.00,171.00 80.00x80.00 (off by 101.00px)",
+    +   "[data-board] [data-cell]:last-child: page 485.00,410.00 48.00x48.00, design 554.00,591.00 80.00x80.00 (off by 213.00px)",
+    +   "[data-action=\"hint\"]: page 185.34,474.00 100.63x44.00, design 127.00,694.00 162.66x44.00 (off by 220.00px)",
+    +   "[data-action=\"reset\"]: page 297.97,474.00 97.64x44.00, design 297.66,694.00 101.27x44.00 (off by 220.00px)",
+    +   "[data-action=\"new\"]: page 407.61,474.00 175.05x44.00, design 406.92,694.00 234.08x44.00 (off by 220.00px)",
+    +   ".messages: page 174.00,526.00 420.00x34.00, design 127.00,746.00 514.00x85.25 (off by 271.25px)",
+    +   "[data-message=\"idle\"]: page 174.00,526.00 420.00x34.00, design 127.00,768.33 514.00x40.59 (off by 248.92px)",
+    +   "[data-message=\"win\"]: page 174.00,566.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 594.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-53f99-tch-the-design-within-0-5px-layout/error-context.md
+
+  24) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-eight: the main column's boxes match the design within 0.5px 
+
+    Error: 768-light-eight: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 174.00,16.00 420.00x88.00, design 127.00,24.00 514.00x64.00 (off by 47.00px)",
+    +   ".page-header h1: page 174.00,24.00 194.33x64.00, design 127.00,24.00 225.16x64.00 (off by 47.00px)",
+    +   ".page-header .logo: page 174.00,24.00 64.00x64.00, design 127.00,24.00 64.00x64.00 (off by 47.00px)",
+    +   "[data-action=\"settings\"]: page 438.72,38.00 44.00x44.00, design 485.89,34.00 44.00x44.00 (off by 47.17px)",
+    +   "[data-action=\"rules\"]: page 494.72,38.00 99.28x44.00, design 541.89,34.00 99.11x44.00 (off by 47.17px)",
+    +   "[data-action=\"setup\"]: page 208.00,104.00 352.00x44.00, design 127.00,104.00 514.00x44.00 (off by 81.00px)",
+    +   "[data-board]: page 174.00,160.00 420.00x398.00, design 127.00,164.00 514.00x514.00 (off by 120.00px)",
+    +   "[data-board] [data-cell]:first-child: page 185.00,160.00 48.00x48.00, design 132.00,169.00 60.38x60.38 (off by 53.00px)",
+    +   "[data-board] [data-cell]:last-child: page 535.00,510.00 48.00x48.00, design 575.63,612.63 60.38x60.38 (off by 115.00px)",
+    +   "[data-action=\"hint\"]: page 185.34,574.00 100.63x44.00, design 127.00,694.00 162.66x44.00 (off by 120.00px)",
+    +   "[data-action=\"reset\"]: page 297.97,574.00 97.64x44.00, design 297.66,694.00 101.27x44.00 (off by 120.00px)",
+    +   "[data-action=\"new\"]: page 407.61,574.00 175.05x44.00, design 406.92,694.00 234.08x44.00 (off by 120.00px)",
+    +   ".messages: page 174.00,626.00 420.00x34.00, design 127.00,746.00 514.00x85.25 (off by 171.25px)",
+    +   "[data-message=\"idle\"]: page 174.00,626.00 420.00x34.00, design 127.00,768.33 514.00x40.59 (off by 148.92px)",
+    +   "[data-message=\"win\"]: page 174.00,666.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 666.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-ed503-tch-the-design-within-0-5px-layout/error-context.md
+
+  25) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-four: the main column's boxes match the design within 0.5px 
+
+    Error: 768-light-four: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 174.00,16.00 420.00x88.00, design 127.00,24.00 514.00x64.00 (off by 47.00px)",
+    +   ".page-header h1: page 174.00,24.00 194.33x64.00, design 127.00,24.00 225.16x64.00 (off by 47.00px)",
+    +   ".page-header .logo: page 174.00,24.00 64.00x64.00, design 127.00,24.00 64.00x64.00 (off by 47.00px)",
+    +   "[data-action=\"settings\"]: page 438.72,38.00 44.00x44.00, design 485.89,34.00 44.00x44.00 (off by 47.17px)",
+    +   "[data-action=\"rules\"]: page 494.72,38.00 99.28x44.00, design 541.89,34.00 99.11x44.00 (off by 47.17px)",
+    +   "[data-action=\"setup\"]: page 208.00,104.00 352.00x44.00, design 127.00,104.00 514.00x44.00 (off by 81.00px)",
+    +   "[data-board]: page 174.00,160.00 420.00x198.00, design 211.00,164.00 346.00x346.00 (off by 152.00px)",
+    +   "[data-board] [data-cell]:first-child: page 285.00,160.00 48.00x48.00, design 218.00,171.00 80.00x80.00 (off by 67.00px)",
+    +   "[data-board] [data-cell]:last-child: page 435.00,310.00 48.00x48.00, design 470.00,423.00 80.00x80.00 (off by 145.00px)",
+    +   "[data-action=\"hint\"]: page 185.34,374.00 100.63x44.00, design 127.00,526.00 162.66x44.00 (off by 152.00px)",
+    +   "[data-action=\"reset\"]: page 297.97,374.00 97.64x44.00, design 297.66,526.00 101.27x44.00 (off by 152.00px)",
+    +   "[data-action=\"new\"]: page 407.61,374.00 175.05x44.00, design 406.92,526.00 234.08x44.00 (off by 152.00px)",
+    +   ".messages: page 174.00,426.00 420.00x34.00, design 127.00,578.00 514.00x85.25 (off by 203.25px)",
+    +   "[data-message=\"idle\"]: page 174.00,426.00 420.00x34.00, design 127.00,600.33 514.00x40.59 (off by 180.92px)",
+    +   "[data-message=\"win\"]: page 174.00,466.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 594.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-95b5c-tch-the-design-within-0-5px-layout/error-context.md
+
+  26) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-level: the main column's boxes match the design within 0.5px 
+
+    Error: 768-light-level: 15 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 17
+
+    - Array []
+    + Array [
+    +   ".page-header: page 174.00,16.00 420.00x88.00, design 127.00,24.00 514.00x64.00 (off by 47.00px)",
+    +   ".page-header h1: page 174.00,24.00 194.33x64.00, design 127.00,24.00 225.16x64.00 (off by 47.00px)",
+    +   ".page-header .logo: page 174.00,24.00 64.00x64.00, design 127.00,24.00 64.00x64.00 (off by 47.00px)",
+    +   "[data-action=\"settings\"]: page 438.72,38.00 44.00x44.00, design 485.89,34.00 44.00x44.00 (off by 47.17px)",
+    +   "[data-action=\"rules\"]: page 494.72,38.00 99.28x44.00, design 541.89,34.00 99.11x44.00 (off by 47.17px)",
+    +   "[data-action=\"setup\"]: page 208.00,104.00 352.00x44.00, design 127.00,104.00 514.00x44.00 (off by 81.00px)",
+    +   "[data-board]: page 174.00,160.00 420.00x398.00, design 127.00,164.00 514.00x514.00 (off by 120.00px)",
+    +   "[data-board] [data-cell]:first-child: page 185.00,160.00 48.00x48.00, design 132.00,169.00 60.38x60.38 (off by 53.00px)",
+    +   "[data-board] [data-cell]:last-child: page 535.00,510.00 48.00x48.00, design 575.63,612.63 60.38x60.38 (off by 115.00px)",
+    +   "[data-action=\"hint\"]: page 185.34,574.00 100.63x44.00, design 127.00,694.00 162.66x44.00 (off by 120.00px)",
+    +   "[data-action=\"reset\"]: page 297.97,574.00 97.64x44.00, design 297.66,694.00 101.27x44.00 (off by 120.00px)",
+    +   "[data-action=\"new\"]: page 407.61,574.00 175.05x44.00, design 406.92,694.00 234.08x44.00 (off by 120.00px)",
+    +   ".messages: page 174.00,626.00 420.00x34.00, design 127.00,746.00 514.00x85.25 (off by 171.25px)",
+    +   "[data-message=\"idle\"]: page 174.00,626.00 420.00x34.00, design 127.00,768.33 514.00x40.59 (off by 148.92px)",
+    +   "[data-message=\"win\"]: page 174.00,666.00 420.00x0.00, design 0.00,0.00 0.00x0.00 (off by 666.00px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-83007-tch-the-design-within-0-5px-layout/error-context.md
+
+  27) [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-win: the main column's boxes match the design within 0.5px 
+
+    Error: 768-light-win: 14 of 15 boxes off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 16
+
+    - Array []
+    + Array [
+    +   ".page-header: page 174.00,16.00 420.00x88.00, design 127.00,24.00 514.00x64.00 (off by 47.00px)",
+    +   ".page-header h1: page 174.00,24.00 194.33x64.00, design 127.00,24.00 225.16x64.00 (off by 47.00px)",
+    +   ".page-header .logo: page 174.00,24.00 64.00x64.00, design 127.00,24.00 64.00x64.00 (off by 47.00px)",
+    +   "[data-action=\"settings\"]: page 438.72,38.00 44.00x44.00, design 485.89,34.00 44.00x44.00 (off by 47.17px)",
+    +   "[data-action=\"rules\"]: page 494.72,38.00 99.28x44.00, design 541.89,34.00 99.11x44.00 (off by 47.17px)",
+    +   "[data-action=\"setup\"]: page 208.00,104.00 352.00x44.00, design 127.00,104.00 514.00x44.00 (off by 81.00px)",
+    +   "[data-board]: page 174.00,160.00 420.00x298.00, design 127.00,164.00 514.00x514.00 (off by 220.00px)",
+    +   "[data-board] [data-cell]:first-child: page 235.00,160.00 48.00x48.00, design 134.00,171.00 80.00x80.00 (off by 101.00px)",
+    +   "[data-board] [data-cell]:last-child: page 485.00,410.00 48.00x48.00, design 554.00,591.00 80.00x80.00 (off by 213.00px)",
+    +   "[data-action=\"hint\"]: page 185.34,474.00 100.63x44.00, design 127.00,694.00 157.61x44.00 (off by 220.00px)",
+    +   "[data-action=\"reset\"]: page 297.97,474.00 97.64x44.00, design 292.61,694.00 101.27x44.00 (off by 220.00px)",
+    +   "[data-action=\"new\"]: page 407.61,474.00 175.05x44.00, design 401.88,694.00 239.13x44.00 (off by 220.00px)",
+    +   ".messages: page 174.00,526.00 420.00x22.39, design 127.00,746.00 514.00x85.25 (off by 282.86px)",
+    +   "[data-message=\"win\"]: page 174.00,526.00 420.00x22.39, design 127.00,746.00 514.00x44.64 (off by 242.25px)",
+    + ]
+
+      66 |       }
+      67 |     });
+    > 68 |     expect(misses, `${c.shot}: ${misses.length} of ${fixture.selectors.length} boxes off`).toEqual([]);
+         |                                                                                            ^
+      69 |   });
+      70 | }
+      71 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/upbeat-driscoll-079f1a/e2e/nfr-14-layout-geometry.spec.ts:68:92
+
+    Error Context: test-results/nfr-14-layout-geometry--tr-9ff63-tch-the-design-within-0-5px-layout/error-context.md
+
+  27 failed
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-default: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-eight: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-four: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-level: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1024-light-win: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1366-light-default: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1366-light-eight: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-default: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-eight: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-four: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-level: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 1440-light-win: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-default: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-eight: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-four: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-level: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 320-light-win: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-default: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-eight: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-four: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-level: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 375-light-win: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-default: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-eight: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-four: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-level: the main column's boxes match the design within 0.5px 
+    [layout] › e2e/nfr-14-layout-geometry.spec.ts:41:3 › @trace NFR-14 768-light-win: the main column's boxes match the design within 0.5px 
+  1 passed (9.1s)

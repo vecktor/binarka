@@ -1240,7 +1240,8 @@
     {
       "id": "FR-68",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-page-layout-geometry/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1825,7 +1826,8 @@
     {
       "id": "FR-119",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-page-layout-geometry/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -2315,6 +2317,10 @@
     {
       "check": "recording-evidence",
       "msg": "FR-55 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"update-page-layout-geometry\" is not archived"
     }
   ]
 }
