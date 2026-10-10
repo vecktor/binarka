@@ -146,6 +146,15 @@
       "processComplete": true
     },
     {
+      "slice": "2026-10-10-add-theme-switch",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 16,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
       "slice": "2026-10-10-update-setup-sheet-start",
       "reviewEvidence": "unclean",
       "trailerCommits": 22,
@@ -211,6 +220,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-09-fix-action-button-targets: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-10-add-theme-switch: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "review-evidence",

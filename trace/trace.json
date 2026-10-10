@@ -535,8 +535,7 @@
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -551,8 +550,7 @@
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -831,8 +829,7 @@
       "id": "FR-33",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -912,8 +909,7 @@
       "id": "FR-39",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -976,8 +972,7 @@
       "id": "FR-43",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1011,8 +1006,7 @@
       "id": "FR-57",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1052,8 +1046,7 @@
       "id": "FR-59",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1077,8 +1070,7 @@
       "id": "FR-60",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1095,8 +1087,7 @@
       "id": "FR-61",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1129,8 +1120,7 @@
       "id": "FR-62",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1145,8 +1135,7 @@
       "id": "FR-63",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1163,8 +1152,7 @@
       "id": "FR-64",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1179,8 +1167,7 @@
       "id": "FR-65",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1221,8 +1208,7 @@
       "id": "FR-66",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1247,8 +1233,7 @@
       "id": "FR-67",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1278,8 +1263,7 @@
       "id": "FR-68",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1298,8 +1282,7 @@
       "id": "FR-69",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1313,8 +1296,7 @@
       "id": "FR-70",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1329,8 +1311,7 @@
       "id": "FR-71",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1343,8 +1324,7 @@
     {
       "id": "FR-72",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1358,8 +1338,7 @@
       "id": "FR-73",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1381,8 +1360,7 @@
       "id": "FR-87",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1399,8 +1377,7 @@
         "openspec/specs/play-page/spec.md",
         "openspec/specs/puzzle-engine/spec.md",
         "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1448,8 +1425,7 @@
       "id": "FR-91",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1496,8 +1472,7 @@
       "id": "FR-94",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1528,8 +1503,7 @@
       "id": "FR-95",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1544,8 +1518,7 @@
       "id": "FR-96",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1562,8 +1535,7 @@
       "id": "FR-97",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1582,8 +1554,7 @@
       "id": "FR-98",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1599,8 +1570,7 @@
       "id": "FR-99",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1613,8 +1583,7 @@
       "id": "FR-100",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1647,8 +1616,7 @@
       "id": "FR-101",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1681,8 +1649,8 @@
     {
       "id": "FR-102",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1696,8 +1664,8 @@
     {
       "id": "FR-103",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1710,8 +1678,8 @@
     {
       "id": "FR-104",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1724,7 +1692,7 @@
     {
       "id": "FR-105",
       "specs": [
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1736,8 +1704,8 @@
     {
       "id": "FR-106",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1795,8 +1763,8 @@
     {
       "id": "FR-113",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1808,8 +1776,8 @@
     {
       "id": "FR-114",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1821,8 +1789,8 @@
     {
       "id": "FR-115",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1834,8 +1802,8 @@
     {
       "id": "FR-116",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1846,8 +1814,8 @@
     {
       "id": "FR-117",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1868,8 +1836,8 @@
     {
       "id": "FR-118",
       "specs": [
-        "openspec/changes/add-english-version/specs/play-page/spec.md",
-        "openspec/changes/add-theme-switch/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-english-version/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -2377,10 +2345,6 @@
     {
       "check": "active-changes",
       "msg": "active change \"add-english-version\" is not archived"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"add-theme-switch\" is not archived"
     }
   ]
 }

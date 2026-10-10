@@ -47,7 +47,9 @@ Evidence of 4.1 to 4.6 after the second review fix round (`1446856`, autonomy-lo
 
 ## 5. Review-gate
 
-- [ ] 5.1 Run the review-gate with `change: add-theme-switch`: one run, one fix round for confirmed defects (tests first), one confirming run (a confirming run with a confirmed code defect stops the session, row 119). Record the report path in `docs/current-state.md`. Do not archive before it passes.
+- [x] 5.1 Run the review-gate with `change: add-theme-switch`: one run, one fix round for confirmed defects (tests first), one confirming run (a confirming run with a confirmed code defect stops the session, row 119). Record the report path in `docs/current-state.md`. Do not archive before it passes.
+
+Evidence of 5.1: `openspec/changes/add-theme-switch/review-findings.json` (four runs; runs 2 and 3 confirmed code defects and stopped the session by row 119, the user approved fix rounds 2 and 3, row 130; run 4 `wf_19ff9129-b85` has no code defect, its minor findings fixed after the run in `8199682`).
 
 ## 6. Browser check (the smoke test)
 
@@ -57,5 +59,5 @@ Evidence of 6.1: `docs/qa/add-theme-switch/README.md`, `browser-check-run.txt` (
 
 ## 7. Docs and archive
 
-- [ ] 7.1 Update `README.md` (the settings panel and the theme control) and `docs/current-state.md` (last update in UTC+5:30, phase, slice status, evidence paths: red runs, NFR-18 red run, green run, review report, browser check; a "Scope NOT delivered" line naming held NFR-14, the language switch and the full palette). Confirm `docs/requirements.md` has NFR-18 moved only with the red-run evidence. Add a row to `docs/autonomy-log.md` at the hand-off.
-- [ ] 7.2 Archive only after 4.1 to 4.6, 5.1 and the smoke test 6.1 passed: check the 17 ADDED names against the baseline, rebase the 10 MODIFIED blocks, run `npx openspec archive add-theme-switch --yes` (a normal merge, NOT `--skip-specs`), make the baseline text edits of `design.md` in the same commit, then `npx openspec validate --all --strict` and `node scripts/check-traceability.mjs`. Hand the archived spec to `add-english-version`.
+- [x] 7.1 Update `README.md` (the settings panel and the theme control) and `docs/current-state.md` (last update in UTC+5:30, phase, slice status, evidence paths: red runs, NFR-18 red run, green run, review report, browser check; a "Scope NOT delivered" line naming held NFR-14, the language switch and the full palette). Confirm `docs/requirements.md` has NFR-18 moved only with the red-run evidence. Add a row to `docs/autonomy-log.md` at the hand-off.
+- [x] 7.2 Archive only after 4.1 to 4.6, 5.1 and the smoke test 6.1 passed: check the 17 ADDED names against the baseline, rebase the 10 MODIFIED blocks, run `npx openspec archive add-theme-switch --yes` (a normal merge, NOT `--skip-specs`), make the baseline text edits of `design.md` in the same commit, then `npx openspec validate --all --strict` and `node scripts/check-traceability.mjs`. Hand the archived spec to `add-english-version`.

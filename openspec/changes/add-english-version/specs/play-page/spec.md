@@ -1612,6 +1612,13 @@ Traces: FR-68, FR-102, FR-117, NFR-9, FR-107, FR-111
 - **AND** the panel has the `popover` attribute, `role="dialog"`, `aria-label` equal to «Налаштування», no `aria-labelledby`, a non-empty `id`, is not inside the `header`, `[data-board]` or the message area, follows the message area and precedes `[data-dialog="confirm"]`
 - **AND** its element children, in order, are a plain-text element with the text «Тема», `[data-control="theme"]`, a plain-text element with the text «Мова», `[data-control="language"]` and `[data-action="settings-close"]`
 
+#### Scenario: The header fits its column on phones
+
+- **GIVEN** the built page open in Chromium at each sampled width 320, 322, 334, 361, 369, 375, 385, 768 and 1280 px, 812 px high (the check lives in `e2e/nfr-10-header-fit.spec.ts`, project `layout`; added in the second review-gate fix round, autonomy-log row 130, after the gear made the header overflow at 320 to 334 and 361 to 385 px)
+- **WHEN** the check reads the boxes of the header and of its three children (the heading, the settings button, «Правила») and the page's scroll width
+- **THEN** every child lies inside the header (within 0.5 px) and the scroll width is at most the viewport width (no sideways scroll, `docs/frontend-conventions.md` rule 18, A-14)
+- **AND** coverage is sampled; the stricter instrument is the 1 px sweep of 320 to 800 px (`docs/qa/add-theme-switch/header-sweep-run.txt`). Up to 30rem the title is 1.75rem and the logo 2.75rem (the design's phone rule); up to 22.5rem the title is 1.5rem, the «Правила» padding `0 0.625rem` (both the design's small-phone rule) and the gaps 0.375rem, a deliberate step under the design's 0.5rem: with 0.5rem gaps «Правила» still overflowed by up to 2.8 px at 320 to 322 px
+
 #### Scenario: The close button
 
 - **GIVEN** the page has just been mounted
@@ -1724,9 +1731,10 @@ Traces: FR-113, FR-100, TC-12, FR-108
 
 #### Scenario: The stored choice survives a remount
 
-- **GIVEN** a page on which the player pressed «Темна», and a new root
-- **WHEN** the page is mounted again on the new root
-- **THEN** `aria-checked="true"` is on «Темна» only and `data-theme` is `dark`
+- **GIVEN** a page on which the player pressed «Темна», whose root is then removed, and a new root
+- **WHEN** the page is mounted again on the new root; then `binarka.theme` = `light` is stored directly and the page is mounted on a third root
+- **THEN** after the first remount `aria-checked="true"` is on «Темна» only and `data-theme` is `dark`
+- **AND** after the third mount `data-theme` is `light` and `aria-checked="true"` is on «Світла» only on the second and the third root (a mount reads the stored value; amended in the third review-gate fix round, autonomy-log row 130, because with the first mount alive the shared choice answered instead of storage)
 
 #### Scenario: The stored language survives a remount
 
@@ -1776,7 +1784,7 @@ Traces: FR-114, FR-113, FR-107
 
 ### Requirement: Failing storage does not stop the page
 
-When reading or writing `localStorage` throws (the access to `window.localStorage` throws, as in some private modes or with storage blocked, or `getItem` or `setItem` throws, for example on a quota error), the page SHALL still mount and play with no uncaught error and no message (FR-115): at load it uses the defaults of «Invalid or missing stored values fall back»; a press still applies the chosen theme or language for the rest of the session; nothing is retried.
+When reading or writing `localStorage` throws (the access to `window.localStorage` throws, as in some private modes or with storage blocked, or `getItem` or `setItem` throws, for example on a quota error), the page SHALL still mount and play with no uncaught error and no message (FR-115): at load it uses the defaults of «Invalid or missing stored values fall back»; a press still applies the chosen theme or language for the rest of the session, on every later mount too, until the page is reloaded; nothing is retried.
 
 Traces: FR-115, FR-113, FR-107
 
@@ -1797,6 +1805,18 @@ Traces: FR-115, FR-113, FR-107
 - **GIVEN** `Storage.prototype.setItem` throws, counted by a spy
 - **WHEN** the player presses «Темна»
 - **THEN** `setItem` was called once, no error reached the page, `data-theme` is `dark`, and a second press on the same option does not call `setItem` again
+
+#### Scenario: A later mount keeps a session-only choice
+
+- **GIVEN** `Storage.prototype.setItem` throws, counted by a spy, a mounted page on which the player pressed «Темна», and `localStorage` holding no `binarka.theme` (added in the second review-gate fix round, autonomy-log row 130)
+- **WHEN** the page is mounted on a second root in the same document while the first is still mounted
+- **THEN** no error reached the page, `aria-checked="true"` is on «Темна» only on the second root, `data-theme` is still `dark`, and `setItem` was still called once
+
+#### Scenario: A remount on the same root keeps a session-only choice
+
+- **GIVEN** `Storage.prototype.setItem` throws, counted by a spy, and a mounted page on which the player pressed «Темна» (added in the third review-gate fix round, autonomy-log row 130)
+- **WHEN** the page is mounted again on the same root, then that root is removed and the page is mounted on a new root
+- **THEN** after each mount `aria-checked="true"` is on «Темна» only and `data-theme` is `dark`, and `setItem` was still called once
 
 #### Scenario: A language press still applies when storage throws
 
