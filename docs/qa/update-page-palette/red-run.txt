@@ -1,0 +1,2413 @@
+RED RUN: update-page-palette, tasks 1.1 to 1.6 (tests written FIRST, before any change to src/, index.html or the stylesheet)
+Date:    Sun Oct 11 00:26:03 +0530 2026
+Commit:  893595c (working tree with the uncommitted tests of this change; src/, index.html and playwright.config.ts untouched)
+Commands:
+  node scripts/freeze-design-paint.mjs            (twice; the two outputs byte-identical, section A)
+  npm run test:run                                (vitest, section C)
+  npm run build && npx playwright test --project=layout e2e/nfr-14-palette.spec.ts   (section D)
+
+RESULT
+  vitest: 33 failed / 1757 tests (5 of 71 files red); every failure is an AssertionError, none is an import, syntax or type error.
+  e2e (layout project, e2e/nfr-14-palette.spec.ts): 24 failed / 27 tests (3 passed, the guards of section B).
+  The new and changed tests that pass today are exactly the GUARDS of section B, each with its reason; every other new or changed test is red on an
+  assertion against today's page.
+  Satisfiability check (not part of the repo): a scratch copy of the worktree outside the repository, with a quick port of the spec's palette into
+  its style.css, index.html and preferences.ts, passed vitest 1757/1757 and this e2e file 27/27. So no test is red for a reason a faithful port cannot cure.
+
+A. TASK 1.1 EVIDENCE: the freeze script is deterministic
+  Two runs of `node scripts/freeze-design-paint.mjs` produced a byte-identical quality/design-paint.json (cmp: identical):
+    4320715b2ecb745ca745c9dda4decca43f0a6232  quality/design-paint.json
+    4320715b2ecb745ca745c9dda4decca43f0a6232  quality/design-paint.json
+  Each run also measures every case twice in two fresh browser contexts and refuses to write unless the two measurements are identical.
+  A busy port 4177 fails loudly ("port 4177 is busy: stop whatever answers there, then run again") and writes nothing.
+  Fixture: quality/design-paint.json, 10 cases (light and dark x default, hint, win, four, eight at 1024x768), 26 elements, 3 deviation groups.
+
+B. GUARDS: tests that pass today by design (each is listed here and marked GUARD in its title or comment)
+  e2e/nfr-14-palette.spec.ts (3 of 27)
+    1. "the fixture covers exactly the 10 sampled paint cases of the spec, with its provenance"
+    2. "the fixture records the three deviation groups with the design value, the expected product value and the A-57 reason"
+    3. "the sampling is declared: schemes, states and the viewport; coverage sampled, ..."
+       Why: they read quality/design-paint.json, which task 1.1 froze from the design build; they describe the fixture, not the page, so they are
+       green by construction (they were red before 1.1, the file did not exist). They pin the fixture's shape against a silent regeneration.
+  tests/play-page-palette-stylesheet.test.ts (6 of 19)
+    4. GUARD .cell-hinted declares a 2px dashed border and italic ...: true of today's .cell-hinted; it is the declaration half of «The hinted cue and
+       the primary colour have 3:1» (cues that are not colour) and must stay true through the port.
+    5. GUARD The shipped stylesheet has exactly the two value sets and no conditional :root block: true today (light and dark only); the port must keep it.
+    6. GUARD The raw text has :has( exactly once ... and no selector contains .board[data-solved: true today; block 2 must not add a second :has( or key
+       the solved paint on the design's hook (the red half of the same scenario is the test "The solved paint and the win swap are keyed on the host hook").
+    7. GUARD Non-colour variables are not declared in the root: :root holds only --color-* and color-scheme today and the file declares no --hover-filter
+       (block 2 does not port the hover filter, design.md decision 8); the test guards the place if a later block ports it.
+    8. GUARD The colour scan still holds on the palette stylesheet: today's file passes the scan (tokens only, no literal, no named colour); the port must
+       keep it so, keyframes and gradients included.
+    9. GUARD The fixture has no hover case: green by construction once 1.1 has frozen the fixture (hover is not captured).
+  tests/play-page-helpers.test.ts (helper self-checks, no @trace on purpose, as the file's own convention)
+    10. The changed and new self-tests of css.ts (the fixture of 25 tokens, CONTRAST_PAIRS of 34 pairs, the groups, the translucent reader and
+        TRANSLUCENT_TOKENS, tokenFormatProblems, the signed palettes meeting every pair) test the TEST HELPER on literal samples, never the page, so they pass
+        once task 1.3 has changed the helper. They were written first and seen red against the old helper: 10 failed / 119 in that file (section E), then
+        green (119/119) after the helper change. Every other test of the file is unchanged and green.
+  Unchanged tests that must stay green and are: tests/index-html.test.ts, tests/play-page-theme.test.ts, tests/main-entry.test.ts and the rest of the suite
+  (1724 pass). They read the page colour dynamically; no failure there, so no finding.
+
+C. TASK 1.6, VITEST (npm run test:run), failing tests by file
+     17 / 37  tests/play-page-stylesheet.test.ts           (changed on purpose: tokens, bindings, cell borders, given cue is weight, violation cue, focus ring,
+                                                             control border and text, every pair, border widths 1/1/2/2 x3, weights x3, cascade x3)
+     13 / 19  tests/play-page-palette-stylesheet.test.ts   (new)
+      1 /  7  tests/play-page-level-stylesheet.test.ts     (changed on purpose: 25 tokens in both sets, no 26th)
+      1 /  8  tests/play-page-theme-stylesheet.test.ts     (changed on purpose: the dark block, 25 names with the dark values)
+      1 /  9  tests/play-page-layout-geometry.test.ts      (changed on purpose: «Colours are the G2 palette»)
+     tests/play-page-helpers.test.ts 119/119 green (section B, 10)
+  Failure reasons (all assertions): the 12 new tokens are not declared (--color-text-muted, -line, -given-text, -entry-text, -primary*, -hover-ring,
+  -violation-stripe, -success*, ...), today's values are the old ones (#f9fafb ...), .cell-given is 700 with a 2px border, .cell-violation is 3px
+  with no weight or underline, .cell takes `color: inherit`, there is no board plate, solved-board, hover-ring, glow or transparent-row rule, `.message-idle`
+  uses the control border as a text colour, and the three copies of the light page colour are #f9fafb.
+
+D. TASK 1.6, E2E (npx playwright test --project=layout e2e/nfr-14-palette.spec.ts): 24 failed / 27
+  Red: all 10 paint cases (each lists every property off, 64 to 97 values per case), all 10 focus-ring cases (today's ring is #1d4ed8 in light and #f39a5b in
+  dark; the design's is the ink), both deviation tests (the page has #6b7280 and #991b1b, not #847b6d and #8f1d17), both action-row tests («Скинути» has a fill and a border).
+  Green: the 3 guards of section B.
+
+E. RAW OUTPUTS
+
+----- E1. vitest: tests/play-page-helpers.test.ts BEFORE the helper change (task 1.3 written test-first; 10 failed / 119) -----
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0
+
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+ ❯ tests/play-page-helpers.test.ts (119 tests | 10 failed) 201ms
+   ❯ css helper: contrastRatio and rgbOf (7)
+     × the design token values meet every pair (3 for borders, cues and rings, 4.5 for text) 2ms
+     × CONTRAST_PAIRS has the groups of the new list, no given-cue group and no (cell-border, given-bg) pair 1ms
+     × a translucent token is the foreground or the background of no pair, and contrastProblems reports one that a pair names as not #rrggbb 0ms
+   ❯ css helper: parseStyles walks the CSSOM (8)
+     × a token redefined in @media that fails contrast is found in its own set only 1ms
+   ❯ css helper: the token reader and the translucent token (update-page-palette) (5)
+     × reads --color-success-glow: #2f6b3a73 as a translucent token that no contrast pair uses 0ms
+     × rejects #rrggbbaa for a token the list does not mark translucent, and #rrggbb for the translucent one 0ms
+     × rejects an rgb(), rgba() or short hex value in either kind of token; accepts upper case 0ms
+     × judges only --color-* names, so the layout variables are never read as colours 0ms
+   ❯ css helper: the dark attribute block is a token set (add-theme-switch, TD finding 8) (8)
+     × the signed light and dark palettes meet every pair, and the focus ring keeps its recorded ratios against the accepted neighbours 1ms
+     × a dark set with a failing pair is found in its own set only 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: contrastRatio and rgbOf > the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)
+AssertionError: expected [ '--color-page', …(12) ] to have a length of 25 but got 13
+
+- Expected
++ Received
+
+- 25
++ 13
+
+ ❯ tests/play-page-helpers.test.ts:441:25
+    439|   // pair of the palette (the cell border on the board plate) and the …
+    440|   it('the design token values meet every pair (3 for borders, cues and…
+    441|     expect(TOKEN_NAMES).toHaveLength(25);
+       |                         ^
+    442|     expect(Object.keys(DESIGN_TOKENS).sort()).toEqual([...TOKEN_NAMES]…
+    443|     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: contrastRatio and rgbOf > CONTRAST_PAIRS has the groups of the new list, no given-cue group and no (cell-border, given-bg) pair
+AssertionError: expected [ 'cell-border', …(5) ] to deeply equal [ 'cell-border', …(5) ]
+
+- Expected
++ Received
+
+  [
+    "cell-border",
+    "control-border",
+    "focus-ring",
+-   "hinted-cue",
++   "given-cue",
+    "text",
+    "violation-cue",
+  ]
+
+ ❯ tests/play-page-helpers.test.ts:452:75
+    450|   // border against the given fill is gone (a given cell is inactive, …
+    451|   it('CONTRAST_PAIRS has the groups of the new list, no given-cue grou…
+    452|     expect([...new Set(CONTRAST_PAIRS.map((pair) => pair.group))].sort…
+       |                                                                           ^
+    453|       ['cell-border', 'control-border', 'focus-ring', 'hinted-cue', 't…
+    454|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: contrastRatio and rgbOf > a translucent token is the foreground or the background of no pair, and contrastProblems reports one that a pair names as not #rrggbb
+TypeError: TRANSLUCENT_TOKENS is not iterable
+ ❯ tests/play-page-helpers.test.ts:480:16
+    478|
+    479|   it('a translucent token is the foreground or the background of no pa…
+    480|     expect([...TRANSLUCENT_TOKENS]).toEqual(['--color-success-glow']);
+       |                ^
+    481|     for (const pair of CONTRAST_PAIRS) {
+    482|       expect(TRANSLUCENT_TOKENS.has(pair.fg), `${pair.group}: ${pair.f…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: parseStyles walks the CSSOM > a token redefined in @media that fails contrast is found in its own set only
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "cell-border: --color-cell-border #847b6d on --color-given-bg #ddd3be is 2.81:1, needs 3:1",
++   "given-cue: --color-given-border #847b6d on --color-given-bg #ddd3be is 2.81:1, needs 3:1",
++ ]
+
+ ❯ tests/play-page-helpers.test.ts:563:53
+    561|     const sets = parseStyles(css).tokenSets;
+    562|     expect(sets).toHaveLength(2);
+    563|     expect(contrastProblems(sets[0]?.tokens ?? {})).toEqual([]);
+       |                                                     ^
+    564|     expect(contrastProblems(sets[1]?.tokens ?? {}).join('\n')).toMatch…
+    565|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: the token reader and the translucent token (update-page-palette) > reads --color-success-glow: #2f6b3a73 as a translucent token that no contrast pair uses
+TypeError: tokenFormatProblems is not a function
+ ❯ tests/play-page-helpers.test.ts:599:12
+    597|     const parsed = parseStyles(':root { --color-success-glow: #2f6b3a7…
+    598|     expect(parsed.tokens).toEqual({ '--color-success-glow': '#2f6b3a73…
+    599|     expect(tokenFormatProblems(parsed.tokens)).toEqual([]);
+       |            ^
+    600|     expect(TRANSLUCENT_TOKENS.has('--color-success-glow')).toBe(true);
+    601|     // in a full set it adds no problem and no pair mentions it
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: the token reader and the translucent token (update-page-palette) > rejects #rrggbbaa for a token the list does not mark translucent, and #rrggbb for the translucent one
+TypeError: tokenFormatProblems is not a function
+ ❯ tests/play-page-helpers.test.ts:608:12
+    606|   it('rejects #rrggbbaa for a token the list does not mark translucent…
+    607|     const alpha = parseStyles(':root { --color-page: #f7f3ea80; }');
+    608|     expect(tokenFormatProblems(alpha.tokens).join('\n')).toMatch(/--co…
+       |            ^
+    609|     const opaqueGlow = parseStyles(':root { --color-success-glow: #2f6…
+    610|     expect(tokenFormatProblems(opaqueGlow.tokens).join('\n')).toMatch(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: the token reader and the translucent token (update-page-palette) > rejects an rgb(), rgba() or short hex value in either kind of token; accepts upper case
+TypeError: tokenFormatProblems is not a function
+ ❯ tests/play-page-helpers.test.ts:617:16
+    615|       for (const name of ['--color-page', '--color-success-glow']) {
+    616|         const parsed = parseStyles(`:root { ${name}: ${value}; }`);
+    617|         expect(tokenFormatProblems(parsed.tokens).join('\n'), `${name}…
+       |                ^
+    618|       }
+    619|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: the token reader and the translucent token (update-page-palette) > judges only --color-* names, so the layout variables are never read as colours
+TypeError: tokenFormatProblems is not a function
+ ❯ tests/play-page-helpers.test.ts:624:12
+    622|
+    623|   it('judges only --color-* names, so the layout variables are never r…
+    624|     expect(tokenFormatProblems({ '--n': '6', '--cell-max': '4rem' })).…
+       |            ^
+    625|   });
+    626|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: the dark attribute block is a token set (add-theme-switch, TD finding 8) > the signed light and dark palettes meet every pair, and the focus ring keeps its recorded ratios against the accepted neighbours
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "cell-border: --color-cell-border #847b6d on --color-given-bg #ddd3be is 2.81:1, needs 3:1",
++   "given-cue: --color-given-border #847b6d on --color-given-bg #ddd3be is 2.81:1, needs 3:1",
++ ]
+
+ ❯ tests/play-page-helpers.test.ts:1238:45
+    1236|   // A-57 (PA-Q8) are the recorded ratios.
+    1237|   it('the signed light and dark palettes meet every pair, and the focu…
+    1238|     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
+       |                                             ^
+    1239|     expect(contrastProblems(DARK_SAMPLE)).toEqual([]);
+    1240|     const ring = (set: Record<string, string>, other: string): number …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  tests/play-page-helpers.test.ts > css helper: the dark attribute block is a token set (add-theme-switch, TD finding 8) > a dark set with a failing pair is found in its own set only
+AssertionError: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "cell-border: --color-cell-border #847b6d on --color-given-bg #ddd3be is 2.81:1, needs 3:1",
++   "given-cue: --color-given-border #847b6d on --color-given-bg #ddd3be is 2.81:1, needs 3:1",
++ ]
+
+ ❯ tests/play-page-helpers.test.ts:1249:51
+    1247|     const weak = { ...DARK_SAMPLE, '--color-cell-border': '#1f2937' };
+    1248|     const [light, dark] = themeTokenSets(parseStyles(`${tokenCss(DESIG…
+    1249|     expect(contrastProblems(light?.tokens ?? {})).toEqual([]);
+       |                                                   ^
+    1250|     expect(contrastProblems(dark?.tokens ?? {}).join('\n')).toMatch(/-…
+    1251|     expect(contrastProblems(themeTokenSets(parseStyles(`${tokenCss(DES…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 109 passed (119)
+   Start at  00:07:02
+   Duration  986ms (environment 41%, tests 23%, import 20%, transform 16%)
+
+
+
+----- E2. npm run test:run (full, final) -----
+
+> binarka@0.1.0 test:run
+> vitest run
+
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0
+
+ ❯ tests/play-page-stylesheet.test.ts (37 tests | 17 failed) 653ms
+   ❯ the colours are tokens (FR-65) (8)
+     × @trace FR-65 Tokens exist and are literal: the 25 names of the G2 palette, each declared once in the top-level :root with the light value of the list 75ms
+     × @trace FR-65 The named rules take their colours from the named tokens, written with the longhands 7ms
+   ❯ contrast (FR-65, NFR-9) (6)
+     × @trace FR-65 Cell borders have 3:1 against the page, the cell, the board plate and the solved plate, in the light and in the dark token set 8ms
+     × @trace FR-65 @trace FR-64 The given cue is weight: .cell-given declares weight 800 and a 1px border in the cell border colour, the digit has 4.5:1 (light and dark) 7ms
+     × @trace FR-65 @trace FR-64 The violation cue has 3:1 against the page, the cell and the violation fill (light and dark) 8ms
+     × @trace FR-65 The focus ring has 3:1 against the page and every cell background (light and dark) 8ms
+     × @trace FR-65 @trace NFR-9 The control border has 3:1 and the text pairs have 4.5:1 (light and dark) 6ms
+     × @trace FR-65 @trace NFR-9 Every pair holds for the top-level token set, the dark set and every set a conditional :root block makes 7ms
+   ❯ the cascade gives each cell state its border and the colours whose contrast is checked (9)
+     × @trace FR-64 The computed border is heavier for a violation at 4x4: 1px, 1px, 2px and 2px 39ms
+     × @trace FR-64 The computed border is heavier for a violation at 6x6: 1px, 1px, 2px and 2px 37ms
+     × @trace FR-64 The computed border is heavier for a violation at 8x8: 1px, 1px, 2px and 2px 33ms
+     × @trace FR-65 @trace FR-64 The given cue is weight at 4x4: the computed weights are 500, 800, 700 and 800, the given border is 1px and the cell border colour 31ms
+     × @trace FR-65 @trace FR-64 The given cue is weight at 6x6: the computed weights are 500, 800, 700 and 800, the given border is 1px and the cell border colour 29ms
+     × @trace FR-65 @trace FR-64 The given cue is weight at 8x8: the computed weights are 500, 800, 700 and 800, the given border is 1px and the cell border colour 38ms
+     × @trace FR-65 The cascade gives each cell kind the token colours at 4x4, and the page the page colour (light and dark values) 26ms
+     × @trace FR-65 The cascade gives each cell kind the token colours at 6x6, and the page the page colour (light and dark values) 22ms
+     × @trace FR-65 The cascade gives each cell kind the token colours at 8x8, and the page the page colour (light and dark values) 26ms
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+ ❯ tests/play-page-palette-stylesheet.test.ts (19 tests | 13 failed) 242ms
+   ❯ Borders, cues and focus rings have enough contrast (the G2 palette) (8)
+     × Every declared token is bound by a rule: each of the 25 tokens is referenced by a declaration outside :root 72ms
+     × No declaration of color has the value var(--color-control-border); the idle line takes --color-text-muted 19ms
+     × The ring keeps its accepted adjacencies: --color-focus against the plate, the violation border, the primary and the success border (light and dark) 16ms
+     × The hinted cue and the primary colour have 3:1 against the soft fill, the plate and the page (light and dark) 8ms
+     × Violation text has 4.5:1 on the violation fill and on the darkest band of the stripe, and the stripe is below 3:1 against the fill (light and dark) 7ms
+     × The light page colour of the palette is the page colour of the spec: #f7f3ea (light) and #1a1714 (dark) 10ms
+   ❯ A violation shows a cue besides colour (longhands and the stripe) (2)
+     × The violating digit is underlined with longhands: text-decoration-line underline and thickness 2px; the reset button underlined; no shorthand 8ms
+     × The stripe is a gradient of the stripe token and transparent: a repeating linear gradient whose colour stops are --color-violation-stripe and transparent 7ms
+   ❯ The main column takes the design palette (the stylesheet scenarios) (8)
+     × The solved paint and the win swap are keyed on the host hook: the plate, the ring, the cells and the two buttons, and no second :has( 8ms
+     × The action row states its transparent fills and borders: .buttons button and the «Скинути» rule declare border-color and background-color transparent 10ms
+     × The hover ring comes from the hover token: inset 0 0 0 2px var(--color-hover-ring) on a non-given cell of an unsolved board, and no color-mix( 6ms
+     × The win glow comes from the glow token: keyframes glow from success and the glow token to transparent, applied under prefers-reduced-motion: no-preference 6ms
+   ❯ The light page colour has three copies that agree (1)
+     × The theme-color meta, the head step and THEME_COLOR_LIGHT all equal #f7f3ea, which is the light --color-page; the dark copies stay #1a1714 10ms
+ ❯ tests/play-page-theme-stylesheet.test.ts (8 tests | 1 failed) 160ms
+   ❯ Borders, cues and focus rings have enough contrast (the dark set) (2)
+     × Tokens exist and are literal: the dark block declares each of the 25 names once with the dark value of the list, so each token has exactly two value sets 19ms
+ ❯ tests/play-page-level-stylesheet.test.ts (7 tests | 1 failed) 168ms
+   ❯ @trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements and the buttons are buttons (2)
+     × The existing stylesheet scans still pass 13ms
+ ❯ tests/play-page-layout-geometry.test.ts (9 tests | 1 failed) 177ms
+   ❯ @trace NFR-14 @trace FR-65 the main column takes the G2 palette (1)
+     × Colours are the G2 palette: the light and dark token sets equal the 25 block-2 tokens and values of the appendix to A-57, and no other --color-* is declared 73ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 33 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-layout-geometry.test.ts > @trace NFR-14 @trace FR-65 the main column takes the G2 palette > Colours are the G2 palette: the light and dark token sets equal the 25 block-2 tokens and values of the appendix to A-57, and no other --color-* is declared
+AssertionError: expected { '--color-page': '#f9fafb', …(12) } to deeply equal { '--color-page': '#f7f3ea', …(24) }
+
+- Expected
++ Received
+
+  {
+-   "--color-cell-bg": "#fffdf8",
+-   "--color-cell-border": "#847b6d",
+-   "--color-control-bg": "#fffdf8",
+-   "--color-control-border": "#8c8374",
+-   "--color-entry-text": "#a8400c",
+-   "--color-focus": "#1e2126",
+-   "--color-given-bg": "#ddd3be",
+-   "--color-given-border": "#847b6d",
+-   "--color-given-text": "#1e2126",
+-   "--color-hover-ring": "#d28f6b",
+-   "--color-line": "#e2dbcc",
+-   "--color-page": "#f7f3ea",
+-   "--color-primary": "#b4460d",
+-   "--color-primary-soft": "#f6e3d4",
+-   "--color-primary-text": "#fffdf8",
+-   "--color-success": "#2f6b3a",
+-   "--color-success-bg": "#e2efdf",
+-   "--color-success-glow": "#2f6b3a73",
+-   "--color-text": "#1e2126",
+-   "--color-text-muted": "#5f5549",
+-   "--color-violation-bg": "#fbe4e1",
+-   "--color-violation-border": "#b3261e",
+-   "--color-violation-stripe": "#f1c9c6",
+-   "--color-violation-text": "#8f1d17",
+-   "--color-win-text": "#1e2126",
++   "--color-cell-bg": "#ffffff",
++   "--color-cell-border": "#6b7280",
++   "--color-control-bg": "#ffffff",
++   "--color-control-border": "#6b7280",
++   "--color-focus": "#1d4ed8",
++   "--color-given-bg": "#e5e7eb",
++   "--color-given-border": "#374151",
++   "--color-page": "#f9fafb",
++   "--color-text": "#1f2937",
++   "--color-violation-bg": "#fecaca",
++   "--color-violation-border": "#b91c1c",
++   "--color-violation-text": "#991b1b",
++   "--color-win-text": "#166534",
+  }
+
+ ❯ tests/play-page-layout-geometry.test.ts:71:27
+     69|   it('Colours are the G2 palette: the light and dark token sets equal …
+     70|     const [light, dark] = themeTokenSets(readStyles());
+     71|     expect(light?.tokens).toEqual(LIGHT);
+       |                           ^
+     72|     expect(dark?.tokens).toEqual(DARK);
+     73|     expect(Object.keys(LIGHT)).toHaveLength(25);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/33]⎯
+
+ FAIL  tests/play-page-level-stylesheet.test.ts > @trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements and the buttons are buttons > The existing stylesheet scans still pass
+AssertionError: --color-text-muted is declared once in :root: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/play-page-level-stylesheet.test.ts:215:112
+    213|     expect(TOKEN_NAMES, 'the 25 tokens of the list').toHaveLength(25);
+    214|     for (const name of TOKEN_NAMES) {
+    215|       expect(parsed.tokenDeclarations.filter((d) => d.property === nam…
+       |                                                                                                                ^
+    216|       expect(parsed.darkTokenDeclarations.filter((d) => d.property ===…
+    217|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the G2 palette) > Every declared token is bound by a rule: each of the 25 tokens is referenced by a declaration outside :root
+AssertionError: tokens no declaration outside :root references: expected [ '--color-text-muted', …(11) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "--color-text-muted",
++   "--color-line",
++   "--color-given-text",
++   "--color-entry-text",
++   "--color-primary",
++   "--color-primary-text",
++   "--color-primary-soft",
++   "--color-hover-ring",
++   "--color-violation-stripe",
++   "--color-success",
++   "--color-success-bg",
++   "--color-success-glow",
++ ]
+
+ ❯ tests/play-page-palette-stylesheet.test.ts:75:71
+     73|       return !declarations.some((d) => reference.test(d.value));
+     74|     });
+     75|     expect(unbound, 'tokens no declaration outside :root references').…
+       |                                                                       ^
+     76|   });
+     77|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the G2 palette) > No declaration of color has the value var(--color-control-border); the idle line takes --color-text-muted
+AssertionError: rules that use the control border as a text colour: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".message-idle { color: var(--color-control-border) }",
++   ".mini-sep { color: var(--color-control-border) }",
++ ]
+
+ ❯ tests/play-page-palette-stylesheet.test.ts:85:77
+     83|       r.declarations.filter((d) => d.property === 'color' && /^var\(\s…
+     84|     );
+     85|     expect(offending, 'rules that use the control border as a text col…
+       |                                                                             ^
+     86|     expect(declared(parsed, '.message-idle').get('color'), '.message-i…
+     87|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the G2 palette) > The ring keeps its accepted adjacencies: --color-focus against the plate, the violation border, the primary and the success border (light and dark)
+AssertionError: --color-line is #rrggbb in the light token set
+ ❯ tokenIn tests/play-page-palette-stylesheet.test.ts:50:10
+     48| function tokenIn(set: TokenSet, name: string): string {
+     49|   const value = set.tokens[name];
+     50|   expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), …
+       |          ^
+     51|   return value;
+     52| }
+ ❯ tests/play-page-palette-stylesheet.test.ts:94:133
+ ❯ tests/play-page-palette-stylesheet.test.ts:94:105
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the G2 palette) > The hinted cue and the primary colour have 3:1 against the soft fill, the plate and the page (light and dark)
+AssertionError: --color-primary is #rrggbb in the light token set
+ ❯ tokenIn tests/play-page-palette-stylesheet.test.ts:50:10
+     48| function tokenIn(set: TokenSet, name: string): string {
+     49|   const value = set.tokens[name];
+     50|   expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), …
+       |          ^
+     51|   return value;
+     52| }
+ ❯ tests/play-page-palette-stylesheet.test.ts:109:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the G2 palette) > Violation text has 4.5:1 on the violation fill and on the darkest band of the stripe, and the stripe is below 3:1 against the fill (light and dark)
+AssertionError: --color-violation-stripe is #rrggbb in the light token set
+ ❯ tokenIn tests/play-page-palette-stylesheet.test.ts:50:10
+     48| function tokenIn(set: TokenSet, name: string): string {
+     49|   const value = set.tokens[name];
+     50|   expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), …
+       |          ^
+     51|   return value;
+     52| }
+ ❯ tests/play-page-palette-stylesheet.test.ts:133:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the G2 palette) > The light page colour of the palette is the page colour of the spec: #f7f3ea (light) and #1a1714 (dark)
+AssertionError: expected '#f9fafb' to be '#f7f3ea' // Object.is equality
+
+Expected: "#f7f3ea"
+Received: "#f9fafb"
+
+ ❯ tests/play-page-palette-stylesheet.test.ts:148:58
+    146|   it('The light page colour of the palette is the page colour of the s…
+    147|     const [light, dark] = themeTokenSets(readStyles());
+    148|     expect(light?.tokens['--color-page']?.toLowerCase()).toBe(PALETTE_…
+       |                                                          ^
+    149|     expect(dark?.tokens['--color-page']?.toLowerCase()).toBe('#1a1714'…
+    150|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > A violation shows a cue besides colour (longhands and the stripe) > The violating digit is underlined with longhands: text-decoration-line underline and thickness 2px; the reset button underlined; no shorthand
+AssertionError: .cell-violation { text-decoration-line }: expected undefined to be 'underline' // Object.is equality
+
+- Expected:
+"underline"
+
++ Received:
+undefined
+
+ ❯ tests/play-page-palette-stylesheet.test.ts:162:95
+    160|     const violation = declared(parsed, '.cell-violation');
+    161|     const reset = declared(parsed, ".buttons button[data-action='reset…
+    162|     expect(violation.get('text-decoration-line'), '.cell-violation { t…
+       |                                                                                               ^
+    163|     expect(violation.get('text-decoration-thickness'), '.cell-violatio…
+    164|     expect(reset.get('text-decoration-line'), "the «Скинути» rule { te…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > A violation shows a cue besides colour (longhands and the stripe) > The stripe is a gradient of the stripe token and transparent: a repeating linear gradient whose colour stops are --color-violation-stripe and transparent
+AssertionError: .cell-violation declares background-image
+ ❯ tests/play-page-palette-stylesheet.test.ts:171:12
+    169|   it('The stripe is a gradient of the stripe token and transparent: a …
+    170|     const value = declared(readStyles(), '.cell-violation').get('backg…
+    171|     expect.assert(value !== undefined, '.cell-violation declares backg…
+       |            ^
+    172|     expect(value, 'a repeating linear gradient').toMatch(/^repeating-l…
+    173|     const inner = value.slice(value.indexOf('(') + 1, value.lastIndexO…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > The main column takes the design palette (the stylesheet scenarios) > The solved paint and the win swap are keyed on the host hook: the plate, the ring, the cells and the two buttons, and no second :has(
+AssertionError: solved board border: expected undefined to be 'var(--color-success)' // Object.is equality
+
+- Expected:
+"var(--color-success)"
+
++ Received:
+undefined
+
+ ❯ tests/play-page-palette-stylesheet.test.ts:202:63
+    200|     const parsed = readStyles();
+    201|     const solved = declared(parsed, `${SOLVED} .board`);
+    202|     expect(solved.get('border-color'), 'solved board border').toBe('va…
+       |                                                               ^
+    203|     expect(solved.get('background-color'), 'solved board plate').toBe(…
+    204|     expect(solved.get('box-shadow'), 'solved board ring: a 1px ring of…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > The main column takes the design palette (the stylesheet scenarios) > The action row states its transparent fills and borders: .buttons button and the «Скинути» rule declare border-color and background-color transparent
+AssertionError: .buttons button { border-color }: expected undefined to be 'transparent' // Object.is equality
+
+- Expected:
+"transparent"
+
++ Received:
+undefined
+
+ ❯ tests/play-page-palette-stylesheet.test.ts:236:73
+    234|     const parsed = readStyles();
+    235|     const row = declared(parsed, '.buttons button');
+    236|     expect(row.get('border-color'), '.buttons button { border-color }'…
+       |                                                                         ^
+    237|     expect(row.get('background-color'), '.buttons button { background-…
+    238|     const reset = declared(parsed, ".buttons button[data-action='reset…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > The main column takes the design palette (the stylesheet scenarios) > The hover ring comes from the hover token: inset 0 0 0 2px var(--color-hover-ring) on a non-given cell of an unsolved board, and no color-mix(
+AssertionError: a rule whose selector ends with .cell:not(.cell-given):hover: expected 0 to be greater than 0
+ ❯ tests/play-page-palette-stylesheet.test.ts:250:90
+    248|     const parsed = readStyles();
+    249|     const hover = parsed.rules.filter((r) => r.selectors.some((s) => n…
+    250|     expect(hover.length, 'a rule whose selector ends with .cell:not(.c…
+       |                                                                                          ^
+    251|     for (const rule of hover) {
+    252|       expect(rule.selectors.every((s) => norm(s).includes(":not([data-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > The main column takes the design palette (the stylesheet scenarios) > The win glow comes from the glow token: keyframes glow from success and the glow token to transparent, applied under prefers-reduced-motion: no-preference
+AssertionError: @keyframes glow has a first keyframe
+ ❯ tests/play-page-palette-stylesheet.test.ts:273:12
+    271|     const first = frame('0%');
+    272|     const last = frame('100%');
+    273|     expect.assert(first !== undefined, '@keyframes glow has a first ke…
+       |            ^
+    274|     expect.assert(last !== undefined, '@keyframes glow has a last keyf…
+    275|     const from = first.declarations.find((d) => d.property === 'box-sh…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/33]⎯
+
+ FAIL  tests/play-page-palette-stylesheet.test.ts > The light page colour has three copies that agree > The theme-color meta, the head step and THEME_COLOR_LIGHT all equal #f7f3ea, which is the light --color-page; the dark copies stay #1a1714
+AssertionError: the light --color-page of the stylesheet: expected '#f9fafb' to be '#f7f3ea' // Object.is equality
+
+Expected: "#f7f3ea"
+Received: "#f9fafb"
+
+ ❯ tests/play-page-palette-stylesheet.test.ts:329:68
+    327|     const [stepDark, stepLight] = [step[1]?.toLowerCase(), step[2]?.to…
+    328|     const [sheetLight] = themeTokenSets(readStyles()).map((set) => set…
+    329|     expect(sheetLight, 'the light --color-page of the stylesheet').toB…
+       |                                                                    ^
+    330|     expect(meta, 'the theme-color meta').toBe('#f7f3ea');
+    331|     expect(stepLight, "the head step's light value").toBe('#f7f3ea');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 Tokens exist and are literal: the 25 names of the G2 palette, each declared once in the top-level :root with the light value of the list
+AssertionError: --color-page has the light value of the list: expected '#f9fafb' to be '#f7f3ea' // Object.is equality
+
+Expected: "#f7f3ea"
+Received: "#f9fafb"
+
+ ❯ tests/play-page-stylesheet.test.ts:94:95
+     92|       const declarations = parsed.tokenDeclarations.filter((d) => d.pr…
+     93|       expect(declarations, `${name} is declared once in the top-level …
+     94|       expect(declarations[0]?.value.toLowerCase(), `${name} has the li…
+       |                                                                                               ^
+     95|       expect(declarations[0]?.value, `${name} is ${TRANSLUCENT_TOKENS.…
+     96|         TRANSLUCENT_TOKENS.has(name) ? /^#[0-9a-f]{8}$/i : /^#[0-9a-f]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 The named rules take their colours from the named tokens, written with the longhands
+AssertionError: .cell { color: var(--color-entry-text) }: expected 'inherit' to be 'var(--color-entry-text)' // Object.is equality
+
+Expected: "var(--color-entry-text)"
+Received: "inherit"
+
+ ❯ expectDecl tests/play-page-stylesheet.test.ts:46:118
+     44| /** Assert the merged declaration `property` of the rules for `selecto…
+     45| function expectDecl(parsed: ParsedStyles, selector: string, property: …
+     46|   expect(declarationsFor(parsed, selector).get(property)?.toLowerCase(…
+       |                                                                                                                      ^
+     47| }
+     48|
+ ❯ tests/play-page-stylesheet.test.ts:142:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > contrast (FR-65, NFR-9) > @trace FR-65 Cell borders have 3:1 against the page, the cell, the board plate and the solved plate, in the light and in the dark token set
+AssertionError: --color-line is #rrggbb in the light token set
+ ❯ tokenIn tests/play-page-stylesheet.test.ts:56:10
+     54| function tokenIn(set: TokenSet, name: string): string {
+     55|   const value = set.tokens[name];
+     56|   expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), …
+       |          ^
+     57|   return value;
+     58| }
+ ❯ tests/play-page-stylesheet.test.ts:184:38
+ ❯ tests/play-page-stylesheet.test.ts:183:96
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > contrast (FR-65, NFR-9) > @trace FR-65 @trace FR-64 The given cue is weight: .cell-given declares weight 800 and a 1px border in the cell border colour, the digit has 4.5:1 (light and dark)
+AssertionError: .cell-given { font-weight: 800 }: expected '700' to be '800' // Object.is equality
+
+Expected: "800"
+Received: "700"
+
+ ❯ expectDecl tests/play-page-stylesheet.test.ts:46:118
+     44| /** Assert the merged declaration `property` of the rules for `selecto…
+     45| function expectDecl(parsed: ParsedStyles, selector: string, property: …
+     46|   expect(declarationsFor(parsed, selector).get(property)?.toLowerCase(…
+       |                                                                                                                      ^
+     47| }
+     48|
+ ❯ tests/play-page-stylesheet.test.ts:199:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > contrast (FR-65, NFR-9) > @trace FR-65 @trace FR-64 The violation cue has 3:1 against the page, the cell and the violation fill (light and dark)
+AssertionError: light token set: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "violation-cue: --color-line is missing or not #rrggbb",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:218:89
+    216|     for (const set of themeTokenSets(parsed)) {
+    217|       tokenIn(set, '--color-violation-border');
+    218|       expect(contrastProblems(set.tokens, ['violation-cue']), `${set.l…
+       |                                                                                         ^
+    219|     }
+    220|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > contrast (FR-65, NFR-9) > @trace FR-65 The focus ring has 3:1 against the page and every cell background (light and dark)
+AssertionError: light token set: expected [ …(4) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "focus-ring: --color-line is missing or not #rrggbb",
++   "focus-ring: --color-primary-soft is missing or not #rrggbb",
++   "focus-ring: --color-success-bg is missing or not #rrggbb",
++   "focus-ring: --color-focus #1d4ed8 on --color-cell-border #6b7280 is 1.39:1, needs 3:1",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:226:86
+    224|     for (const set of themeTokenSets(parsed)) {
+    225|       tokenIn(set, '--color-focus');
+    226|       expect(contrastProblems(set.tokens, ['focus-ring']), `${set.labe…
+       |                                                                                      ^
+    227|     }
+    228|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > contrast (FR-65, NFR-9) > @trace FR-65 @trace NFR-9 The control border has 3:1 and the text pairs have 4.5:1 (light and dark)
+AssertionError: light token set: expected [ …(7) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "text: --color-primary-soft is missing or not #rrggbb",
++   "text: --color-given-text is missing or not #rrggbb",
++   "text: --color-entry-text is missing or not #rrggbb",
++   "text: --color-text-muted is missing or not #rrggbb",
++   "text: --color-violation-stripe is missing or not #rrggbb",
++   "text: --color-primary-text and --color-primary is missing or not #rrggbb",
++   "text: --color-success-bg is missing or not #rrggbb",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:235:98
+    233|       tokenIn(set, '--color-control-border');
+    234|       tokenIn(set, '--color-text');
+    235|       expect(contrastProblems(set.tokens, ['control-border', 'text']),…
+       |                                                                                                  ^
+    236|     }
+    237|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > contrast (FR-65, NFR-9) > @trace FR-65 @trace NFR-9 Every pair holds for the top-level token set, the dark set and every set a conditional :root block makes
+AssertionError: token set "top-level": expected [ …(17) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "cell-border: --color-line is missing or not #rrggbb",
++   "cell-border: --color-success-bg is missing or not #rrggbb",
++   "violation-cue: --color-line is missing or not #rrggbb",
++   "hinted-cue: --color-primary and --color-primary-soft is missing or not #rrggbb",
++   "hinted-cue: --color-primary and --color-line is missing or not #rrggbb",
++   "hinted-cue: --color-primary is missing or not #rrggbb",
++   "focus-ring: --color-line is missing or not #rrggbb",
++   "focus-ring: --color-primary-soft is missing or not #rrggbb",
++   "focus-ring: --color-success-bg is missing or not #rrggbb",
++   "focus-ring: --color-focus #1d4ed8 on --color-cell-border #6b7280 is 1.39:1, needs 3:1",
++   "text: --color-primary-soft is missing or not #rrggbb",
++   "text: --color-given-text is missing or not #rrggbb",
++   "text: --color-entry-text is missing or not #rrggbb",
++   "text: --color-text-muted is missing or not #rrggbb",
++   "text: --color-violation-stripe is missing or not #rrggbb",
++   "text: --color-primary-text and --color-primary is missing or not #rrggbb",
++   "text: --color-success-bg is missing or not #rrggbb",
++ ]
+
+ ❯ tests/play-page-stylesheet.test.ts:246:72
+    244|     expect(themeTokenSets(parsed).map((set) => set.label)).toEqual(['l…
+    245|     for (const set of parsed.tokenSets) {
+    246|       expect(contrastProblems(set.tokens), `token set "${set.label}"`)…
+       |                                                                        ^
+    247|     }
+    248|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-64 The computed border is heavier for a violation at 4x4: 1px, 1px, 2px and 2px
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-64 The computed border is heavier for a violation at 6x6: 1px, 1px, 2px and 2px
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-64 The computed border is heavier for a violation at 8x8: 1px, 1px, 2px and 2px
+AssertionError: expected [ '1px', '2px', '3px', '3px' ] to deeply equal [ '1px', '1px', '2px', '2px' ]
+
+- Expected
++ Received
+
+  [
+    "1px",
+-   "1px",
+-   "2px",
+    "2px",
++   "3px",
++   "3px",
+  ]
+
+ ❯ tests/play-page-stylesheet.test.ts:496:22
+    494|       const kinds = fourKinds(puzzle);
+    495|       const widths = [kinds.ordinary, kinds.given, kinds.violating, ki…
+    496|       expect(widths).toEqual(['1px', '1px', '2px', '2px']);
+       |                      ^
+    497|       const [ordinary, given, violating, givenViolating] = widths.map(…
+    498|       expect(violating, 'the violating width is greater than the ordin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-65 @trace FR-64 The given cue is weight at 4x4: the computed weights are 500, 800, 700 and 800, the given border is 1px and the cell border colour
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-65 @trace FR-64 The given cue is weight at 6x6: the computed weights are 500, 800, 700 and 800, the given border is 1px and the cell border colour
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-65 @trace FR-64 The given cue is weight at 8x8: the computed weights are 500, 800, 700 and 800, the given border is 1px and the cell border colour
+AssertionError: light: ordinary, given, violating, given in a violation: expected [ '500', '700', '500', '700' ] to deeply equal [ '500', '800', '700', '800' ]
+
+- Expected
++ Received
+
+  [
+    "500",
+-   "800",
+    "700",
+-   "800",
++   "500",
++   "700",
+  ]
+
+ ❯ tests/play-page-stylesheet.test.ts:523:91
+    521|         const kinds = fourKinds(puzzle);
+    522|         const weights = [kinds.ordinary, kinds.given, kinds.violating,…
+    523|         expect(weights, `${set.label}: ordinary, given, violating, giv…
+       |                                                                                           ^
+    524|         expect(getComputedStyle(kinds.given).borderTopWidth, `${set.la…
+    525|         expect(getComputedStyle(kinds.given).borderTopColor, `${set.la…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/33]⎯
+
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-65 The cascade gives each cell kind the token colours at 4x4, and the page the page colour (light and dark values)
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-65 The cascade gives each cell kind the token colours at 6x6, and the page the page colour (light and dark values)
+ FAIL  tests/play-page-stylesheet.test.ts > the cascade gives each cell state its border and the colours whose contrast is checked > @trace FR-65 The cascade gives each cell kind the token colours at 8x8, and the page the page colour (light and dark values)
+AssertionError: --color-entry-text is #rrggbb in the light token set
+ ❯ tokenIn tests/play-page-stylesheet.test.ts:56:10
+     54| function tokenIn(set: TokenSet, name: string): string {
+     55|   const value = set.tokens[name];
+     56|   expect.assert(value !== undefined && /^#[0-9a-f]{6}$/i.test(value), …
+       |          ^
+     57|   return value;
+     58| }
+ ❯ tests/play-page-stylesheet.test.ts:560:75
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/33]⎯
+
+ FAIL  tests/play-page-theme-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the dark set) > Tokens exist and are literal: the dark block declares each of the 25 names once with the dark value of the list, so each token has exactly two value sets
+AssertionError: --color-text-muted is declared once in :root[data-theme="dark"]: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/play-page-theme-stylesheet.test.ts:101:84
+     99|     for (const name of TOKEN_NAMES) {
+    100|       const declarations = parsed.darkTokenDeclarations.filter((d) => …
+    101|       expect(declarations, `${name} is declared once in :root[data-the…
+       |                                                                                    ^
+    102|       expect(declarations[0]?.value.toLowerCase(), `${name} has the da…
+    103|       expect(declarations[0]?.value, `${name} is ${TRANSLUCENT_TOKENS.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/33]⎯
+
+
+ Test Files  5 failed | 66 passed (71)
+      Tests  33 failed | 1724 passed (1757)
+   Start at  00:20:54
+   Duration  60.50s (tests 78%, environment 16%, import 5%, transform 1%)
+
+    Isolate  71 workers spawned · ~864ms startup each (spawn + environment, per file)
+             at least ~5.95s faster with isolate: false — reuses workers across files instead of one per file
+
+
+
+----- E3. npm run build (exit 0) -----
+
+> binarka@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 23 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-C90rGiB1.css  16.54 kB │ gzip:  3.59 kB
+dist/assets/index-BKEYkX0B.js   34.61 kB │ gzip: 12.60 kB
+
+✓ built in 34ms
+
+
+----- E4. npx playwright test --project=layout e2e/nfr-14-palette.spec.ts (exit 1) -----
+
+Running 27 tests using 5 workers
+
+  ✓   2 [layout] › e2e/nfr-14-palette.spec.ts:105:1 › @trace NFR-14 the sampling is declared: schemes, states and the viewport; coverage sampled, no claim of every width, every state or a pixel floor (5ms)
+  ✓   1 [layout] › e2e/nfr-14-palette.spec.ts:81:1 › @trace NFR-14 the fixture records the three deviation groups with the design value, the expected product value and the A-57 reason (11ms)
+  ✓   5 [layout] › e2e/nfr-14-palette.spec.ts:69:1 › @trace NFR-14 the fixture covers exactly the 10 sampled paint cases of the spec, with its provenance (10ms)
+  ✘   4 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-default: the main column's computed paint equals the design's, except the recorded deviations (277ms)
+  ✘   6 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-hint: the main column's computed paint equals the design's, except the recorded deviations (296ms)
+  ✘   7 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-hint: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (298ms)
+  ✘   3 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-default: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (303ms)
+  ✘   8 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-win: the main column's computed paint equals the design's, except the recorded deviations (257ms)
+  ✘  11 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-four: the main column's computed paint equals the design's, except the recorded deviations (258ms)
+  ✘  12 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-eight: the main column's computed paint equals the design's, except the recorded deviations (254ms)
+  ✘   9 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-win: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (266ms)
+  ✘  10 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-four: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (281ms)
+  ✘  13 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-eight: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (190ms)
+  ✘  16 [layout] › e2e/nfr-14-palette.spec.ts:249:5 › light scheme › @trace NFR-14 @trace FR-65 the light deviations are the page's expected values: cell and given borders, and the violating digit (230ms)
+  ✘  17 [layout] › e2e/nfr-14-palette.spec.ts:271:5 › light scheme › @trace NFR-14 @trace FR-65 the light action row states its transparent fills and borders: «Скинути» has no fill and no border colour (234ms)
+  ✘  15 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-default: the main column's computed paint equals the design's, except the recorded deviations (233ms)
+  ✘  14 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-default: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (261ms)
+  ✘  18 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-hint: the main column's computed paint equals the design's, except the recorded deviations (181ms)
+  ✘  20 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-win: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (213ms)
+  ✘  21 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-four: the main column's computed paint equals the design's, except the recorded deviations (203ms)
+  ✘  19 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-win: the main column's computed paint equals the design's, except the recorded deviations (195ms)
+  ✘  22 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-hint: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (225ms)
+  ✘  23 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-four: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (183ms)
+  ✘  27 [layout] › e2e/nfr-14-palette.spec.ts:249:5 › dark scheme › @trace NFR-14 @trace FR-65 the dark deviations are the page's expected values: cell and given borders, and the violating digit (193ms)
+  ✘  24 [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-eight: the main column's computed paint equals the design's, except the recorded deviations (195ms)
+  ✘  25 [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-eight: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour (210ms)
+  ✘  26 [layout] › e2e/nfr-14-palette.spec.ts:271:5 › dark scheme › @trace NFR-14 @trace FR-65 the dark action row states its transparent fills and borders: «Скинути» has no fill and no border colour (205ms)
+
+
+  1) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-default: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-light-default: 95 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 97
+
+    - Array []
+    + Array [
+    +   "body color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "body background-color: page rgb(249, 250, 251), design rgb(247, 243, 234)",
+    +   "title color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "logo color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-tooth fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-disc fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-cell fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "logo-digit fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-ring stroke: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "settings-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "settings-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "settings-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "gear-tooth fill: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "gear-hole fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "rules-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "summary-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "summary-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-cue color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "board color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "cell-ordinary color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-ordinary background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-ordinary border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-entry color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-entry background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-entry border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-given color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "cell-given background-color: page rgb(229, 231, 235), design rgb(221, 211, 190)",
+    +   "cell-given border-top-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "cell-violation color: page rgb(153, 27, 27), expected (light-violating-digit; the design has rgb(179, 38, 30)) rgb(143, 29, 23)",
+    +   "cell-violation background-color: page rgb(254, 202, 202), design rgb(251, 228, 225)",
+    +   "cell-violation background-image: page none, design gradient",
+    +   "cell-violation border-top-color: page rgb(185, 28, 28), design rgb(179, 38, 30)",
+    +   "cell-violation border-top-width: page 3px, design 2px",
+    +   "cell-violation border-right-color: page rgb(185, 28, 28), design rgb(179, 38, 30)",
+    +   "cell-violation border-right-width: page 3px, design 2px",
+    +   "cell-violation border-bottom-color: page rgb(185, 28, 28), design rgb(179, 38, 30)",
+    +   "cell-violation border-bottom-width: page 3px, design 2px",
+    +   "cell-violation border-left-color: page rgb(185, 28, 28), design rgb(179, 38, 30)",
+    +   "cell-violation border-left-width: page 3px, design 2px",
+    +   "cell-violation box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-violation font-weight: page 500, design 700",
+    +   "cell-violation text-decoration-line: page none, design underline",
+    +   "hint-button color: page rgb(31, 41, 55), design rgb(255, 253, 248)",
+    +   "hint-button background-color: page rgb(255, 255, 255), design rgb(180, 70, 13)",
+    +   "hint-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "reset-button color: page rgb(31, 41, 55), design rgb(95, 85, 73)",
+    +   "reset-button background-color: page rgb(255, 255, 255), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "new-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "new-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "message-idle color: page rgb(107, 114, 128), design rgb(95, 85, 73)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-light-schem-03027-ept-the-recorded-deviations-layout/error-context.md
+
+  2) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-default: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-light-default: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(30, 33, 38)",
+    +     "outline-color": "rgb(29, 78, 216)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-light-schem-b917e-offset-2px-the-focus-colour-layout/error-context.md
+
+  3) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-hint: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-light-hint: 89 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 91
+
+    - Array []
+    + Array [
+    +   "body color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "body background-color: page rgb(249, 250, 251), design rgb(247, 243, 234)",
+    +   "title color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "logo color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-tooth fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-disc fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-cell fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "logo-digit fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-ring stroke: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "settings-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "settings-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "settings-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "gear-tooth fill: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "gear-hole fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "rules-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "summary-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "summary-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-cue color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "board color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "cell-ordinary color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-ordinary background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-ordinary border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-entry color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-entry background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-entry border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-given color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "cell-given background-color: page rgb(229, 231, 235), design rgb(221, 211, 190)",
+    +   "cell-given border-top-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "cell-hinted color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "cell-hinted background-color: page rgb(255, 255, 255), design rgb(246, 227, 212)",
+    +   "cell-hinted border-top-color: page rgb(55, 65, 81), design rgb(180, 70, 13)",
+    +   "cell-hinted border-right-color: page rgb(55, 65, 81), design rgb(180, 70, 13)",
+    +   "cell-hinted border-bottom-color: page rgb(55, 65, 81), design rgb(180, 70, 13)",
+    +   "cell-hinted border-left-color: page rgb(55, 65, 81), design rgb(180, 70, 13)",
+    +   "hint-button color: page rgb(31, 41, 55), design rgb(255, 253, 248)",
+    +   "hint-button background-color: page rgb(255, 255, 255), design rgb(180, 70, 13)",
+    +   "hint-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "reset-button color: page rgb(31, 41, 55), design rgb(95, 85, 73)",
+    +   "reset-button background-color: page rgb(255, 255, 255), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "new-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "new-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "message-hint color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "message-hint background-color: page rgba(0, 0, 0, 0), design rgb(246, 227, 212)",
+    +   "message-hint border-left-color: page rgba(0, 0, 0, 0), design rgb(180, 70, 13)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-light-schem-a032e-ept-the-recorded-deviations-layout/error-context.md
+
+  4) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-hint: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-light-hint: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(30, 33, 38)",
+    +     "outline-color": "rgb(29, 78, 216)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-light-schem-3723d-offset-2px-the-focus-colour-layout/error-context.md
+
+  5) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-win: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-light-win: 79 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 81
+
+    - Array []
+    + Array [
+    +   "body color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "body background-color: page rgb(249, 250, 251), design rgb(247, 243, 234)",
+    +   "title color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "logo color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-tooth fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-disc fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-cell fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "logo-digit fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-ring stroke: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "settings-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "settings-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "settings-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "gear-tooth fill: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "gear-hole fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "rules-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "summary-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "summary-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-cue color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "board color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(226, 239, 223)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(47, 107, 58)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(47, 107, 58)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(47, 107, 58)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(47, 107, 58)",
+    +   "board box-shadow: page none, design rgb(47, 107, 58) 0px 0px 0px 1px",
+    +   "cell-entry color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-entry background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-entry border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "cell-given background-color: page rgb(229, 231, 235), design rgb(221, 211, 190)",
+    +   "cell-given border-top-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "hint-button color: page rgb(31, 41, 55), design rgb(95, 85, 73)",
+    +   "hint-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "hint-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "hint-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "hint-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "hint-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "reset-button color: page rgb(31, 41, 55), design rgb(95, 85, 73)",
+    +   "reset-button background-color: page rgb(255, 255, 255), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button color: page rgb(31, 41, 55), design rgb(255, 253, 248)",
+    +   "new-button background-color: page rgb(255, 255, 255), design rgb(180, 70, 13)",
+    +   "new-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "message-win color: page rgb(22, 101, 52), design rgb(30, 33, 38)",
+    +   "message-win background-color: page rgba(0, 0, 0, 0), design rgb(226, 239, 223)",
+    +   "message-win border-top-color: page rgba(0, 0, 0, 0), design rgb(47, 107, 58)",
+    +   "message-win border-right-color: page rgba(0, 0, 0, 0), design rgb(47, 107, 58)",
+    +   "message-win border-bottom-color: page rgba(0, 0, 0, 0), design rgb(47, 107, 58)",
+    +   "message-win border-left-color: page rgba(0, 0, 0, 0), design rgb(47, 107, 58)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-light-schem-de350-ept-the-recorded-deviations-layout/error-context.md
+
+  6) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-win: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-light-win: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(30, 33, 38)",
+    +     "outline-color": "rgb(29, 78, 216)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-light-schem-52e95-offset-2px-the-focus-colour-layout/error-context.md
+
+  7) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-four: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-light-four: 81 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 83
+
+    - Array []
+    + Array [
+    +   "body color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "body background-color: page rgb(249, 250, 251), design rgb(247, 243, 234)",
+    +   "title color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "logo color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-tooth fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-disc fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-cell fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "logo-digit fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-ring stroke: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "settings-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "settings-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "settings-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "gear-tooth fill: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "gear-hole fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "rules-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "summary-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "summary-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-cue color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "board color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "cell-ordinary color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-ordinary background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-ordinary border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-entry color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-entry background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-entry border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-given color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "cell-given background-color: page rgb(229, 231, 235), design rgb(221, 211, 190)",
+    +   "cell-given border-top-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "hint-button color: page rgb(31, 41, 55), design rgb(255, 253, 248)",
+    +   "hint-button background-color: page rgb(255, 255, 255), design rgb(180, 70, 13)",
+    +   "hint-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "reset-button color: page rgb(31, 41, 55), design rgb(95, 85, 73)",
+    +   "reset-button background-color: page rgb(255, 255, 255), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "new-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "new-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "message-idle color: page rgb(107, 114, 128), design rgb(95, 85, 73)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-light-schem-89852-ept-the-recorded-deviations-layout/error-context.md
+
+  8) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-four: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-light-four: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(30, 33, 38)",
+    +     "outline-color": "rgb(29, 78, 216)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-light-schem-66dbe-offset-2px-the-focus-colour-layout/error-context.md
+
+  9) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-eight: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-light-eight: 81 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 83
+
+    - Array []
+    + Array [
+    +   "body color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "body background-color: page rgb(249, 250, 251), design rgb(247, 243, 234)",
+    +   "title color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "logo color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-tooth fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-disc fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-cell fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "logo-digit fill: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "logo-ring stroke: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "settings-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "settings-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "settings-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "settings-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "gear-tooth fill: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "gear-hole fill: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "rules-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "rules-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "rules-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "summary-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "summary-button border-top-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-right-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-bottom-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-button border-left-color: page rgb(107, 114, 128), design rgb(140, 131, 116)",
+    +   "summary-cue color: page rgb(31, 41, 55), design rgb(180, 70, 13)",
+    +   "board color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(226, 219, 204)",
+    +   "cell-ordinary color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-ordinary background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-ordinary border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-ordinary box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-entry color: page rgb(31, 41, 55), design rgb(168, 64, 12)",
+    +   "cell-entry background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "cell-entry border-top-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-right-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-bottom-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry border-left-color: page rgb(107, 114, 128), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-entry box-shadow: page none, design rgb(226, 219, 204) 0px -2px 0px 0px inset",
+    +   "cell-given color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "cell-given background-color: page rgb(229, 231, 235), design rgb(221, 211, 190)",
+    +   "cell-given border-top-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(55, 65, 81), expected (light-cell-border; the design has rgb(140, 131, 116)) rgb(132, 123, 109)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "hint-button color: page rgb(31, 41, 55), design rgb(255, 253, 248)",
+    +   "hint-button background-color: page rgb(255, 255, 255), design rgb(180, 70, 13)",
+    +   "hint-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "hint-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "reset-button color: page rgb(31, 41, 55), design rgb(95, 85, 73)",
+    +   "reset-button background-color: page rgb(255, 255, 255), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(107, 114, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button color: page rgb(31, 41, 55), design rgb(30, 33, 38)",
+    +   "new-button background-color: page rgb(255, 255, 255), design rgb(255, 253, 248)",
+    +   "new-button border-top-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-right-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-bottom-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "new-button border-left-color: page rgb(107, 114, 128), design rgb(180, 70, 13)",
+    +   "message-idle color: page rgb(107, 114, 128), design rgb(95, 85, 73)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-light-schem-9e8b8-ept-the-recorded-deviations-layout/error-context.md
+
+  10) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-eight: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-light-eight: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(30, 33, 38)",
+    +     "outline-color": "rgb(29, 78, 216)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-light-schem-16960-offset-2px-the-focus-colour-layout/error-context.md
+
+  11) [layout] › e2e/nfr-14-palette.spec.ts:249:5 › light scheme › @trace NFR-14 @trace FR-65 the light deviations are the page's expected values: cell and given borders, and the violating digit 
+
+    Error: an ordinary cell border
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "rgb(132, 123, 109)"
+    Received: "rgb(107, 114, 128)"
+
+      260 |       const border = scheme === 'light' ? 'rgb(132, 123, 109)' : 'rgb(138, 127, 113)';
+      261 |       const digit = scheme === 'light' ? 'rgb(143, 29, 23)' : 'rgb(255, 138, 125)';
+    > 262 |       expect(colour('cell-ordinary', 'border-top-color'), 'an ordinary cell border').toBe(border);
+          |                                                                                      ^
+      263 |       expect(colour('cell-given', 'border-top-color'), 'a given cell border (equal to the cell border, PA-Q1 A)').toBe(border);
+      264 |       expect(colour('cell-violation', 'color'), 'the violating digit').toBe(digit);
+      265 |       if (scheme === 'light') {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:262:86
+
+    Error Context: test-results/nfr-14-palette-light-schem-cd691-ers-and-the-violating-digit-layout/error-context.md
+
+  12) [layout] › e2e/nfr-14-palette.spec.ts:271:5 › light scheme › @trace NFR-14 @trace FR-65 the light action row states its transparent fills and borders: «Скинути» has no fill and no border colour 
+
+    Error: «Скинути»: background and the four border colours transparent, underlined
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 6
+    + Received  + 6
+
+      Array [
+    -   "rgba(0, 0, 0, 0)",
+    -   "rgba(0, 0, 0, 0)",
+    -   "rgba(0, 0, 0, 0)",
+    -   "rgba(0, 0, 0, 0)",
+    -   "rgba(0, 0, 0, 0)",
+    -   "underline",
+    +   "rgb(255, 255, 255)",
+    +   "rgb(107, 114, 128)",
+    +   "rgb(107, 114, 128)",
+    +   "rgb(107, 114, 128)",
+    +   "rgb(107, 114, 128)",
+    +   "none",
+      ]
+
+      278 |         return [s.backgroundColor, s.borderTopColor, s.borderRightColor, s.borderBottomColor, s.borderLeftColor, s.textDecorationLine];
+      279 |       });
+    > 280 |       expect(reset, '«Скинути»: background and the four border colours transparent, underlined').toEqual([
+          |                                                                                                  ^
+      281 |         'rgba(0, 0, 0, 0)',
+      282 |         'rgba(0, 0, 0, 0)',
+      283 |         'rgba(0, 0, 0, 0)',
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:280:98
+
+    Error Context: test-results/nfr-14-palette-light-schem-5b951-o-fill-and-no-border-colour-layout/error-context.md
+
+  13) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-default: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-dark-default: 73 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 75
+
+    - Array []
+    + Array [
+    +   "logo color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-tooth fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-disc fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-cell fill: page rgb(36, 32, 27), design rgb(26, 16, 7)",
+    +   "logo-digit fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-ring stroke: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "settings-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-cue color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "cell-ordinary color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-ordinary border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-entry color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-entry border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-given color: page rgb(241, 237, 228), design rgb(247, 243, 234)",
+    +   "cell-given border-top-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "cell-violation color: page rgb(255, 180, 171), design rgb(255, 138, 125)",
+    +   "cell-violation background-image: page none, design gradient",
+    +   "cell-violation border-top-width: page 3px, design 2px",
+    +   "cell-violation border-right-width: page 3px, design 2px",
+    +   "cell-violation border-bottom-width: page 3px, design 2px",
+    +   "cell-violation border-left-width: page 3px, design 2px",
+    +   "cell-violation box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-violation font-weight: page 500, design 700",
+    +   "cell-violation text-decoration-line: page none, design underline",
+    +   "hint-button color: page rgb(241, 237, 228), design rgb(26, 16, 7)",
+    +   "hint-button background-color: page rgb(36, 32, 27), design rgb(243, 154, 91)",
+    +   "hint-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "reset-button color: page rgb(241, 237, 228), design rgb(184, 176, 164)",
+    +   "reset-button background-color: page rgb(36, 32, 27), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "message-idle color: page rgb(154, 143, 128), design rgb(184, 176, 164)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-d6fb7-ept-the-recorded-deviations-layout/error-context.md
+
+  14) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-default: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-dark-default: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(241, 237, 228)",
+    +     "outline-color": "rgb(243, 154, 91)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-a2fc4-offset-2px-the-focus-colour-layout/error-context.md
+
+  15) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-hint: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-dark-hint: 70 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 72
+
+    - Array []
+    + Array [
+    +   "logo color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-tooth fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-disc fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-cell fill: page rgb(36, 32, 27), design rgb(26, 16, 7)",
+    +   "logo-digit fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-ring stroke: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "settings-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-cue color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "cell-ordinary color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-ordinary border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-entry color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-entry border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-given color: page rgb(241, 237, 228), design rgb(247, 243, 234)",
+    +   "cell-given border-top-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "cell-hinted background-color: page rgb(36, 32, 27), design rgb(61, 43, 30)",
+    +   "cell-hinted border-top-color: page rgb(224, 214, 196), design rgb(243, 154, 91)",
+    +   "cell-hinted border-right-color: page rgb(224, 214, 196), design rgb(243, 154, 91)",
+    +   "cell-hinted border-bottom-color: page rgb(224, 214, 196), design rgb(243, 154, 91)",
+    +   "cell-hinted border-left-color: page rgb(224, 214, 196), design rgb(243, 154, 91)",
+    +   "hint-button color: page rgb(241, 237, 228), design rgb(26, 16, 7)",
+    +   "hint-button background-color: page rgb(36, 32, 27), design rgb(243, 154, 91)",
+    +   "hint-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "reset-button color: page rgb(241, 237, 228), design rgb(184, 176, 164)",
+    +   "reset-button background-color: page rgb(36, 32, 27), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "message-hint background-color: page rgba(0, 0, 0, 0), design rgb(61, 43, 30)",
+    +   "message-hint border-left-color: page rgba(0, 0, 0, 0), design rgb(243, 154, 91)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-b1dfe-ept-the-recorded-deviations-layout/error-context.md
+
+  16) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-hint: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-dark-hint: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(241, 237, 228)",
+    +     "outline-color": "rgb(243, 154, 91)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-41242-offset-2px-the-focus-colour-layout/error-context.md
+
+  17) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-win: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-dark-win: 64 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 66
+
+    - Array []
+    + Array [
+    +   "logo color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-tooth fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-disc fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-cell fill: page rgb(36, 32, 27), design rgb(26, 16, 7)",
+    +   "logo-digit fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-ring stroke: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "settings-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-cue color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(31, 51, 36)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(143, 209, 154)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(143, 209, 154)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(143, 209, 154)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(143, 209, 154)",
+    +   "board box-shadow: page none, design rgb(143, 209, 154) 0px 0px 0px 1px",
+    +   "cell-entry color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-entry border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-given color: page rgb(241, 237, 228), design rgb(247, 243, 234)",
+    +   "cell-given border-top-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "hint-button color: page rgb(241, 237, 228), design rgb(184, 176, 164)",
+    +   "hint-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "hint-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "hint-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "hint-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "reset-button color: page rgb(241, 237, 228), design rgb(184, 176, 164)",
+    +   "reset-button background-color: page rgb(36, 32, 27), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button color: page rgb(241, 237, 228), design rgb(26, 16, 7)",
+    +   "new-button background-color: page rgb(36, 32, 27), design rgb(243, 154, 91)",
+    +   "new-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "message-win color: page rgb(143, 209, 154), design rgb(241, 237, 228)",
+    +   "message-win background-color: page rgba(0, 0, 0, 0), design rgb(31, 51, 36)",
+    +   "message-win border-top-color: page rgba(0, 0, 0, 0), design rgb(143, 209, 154)",
+    +   "message-win border-right-color: page rgba(0, 0, 0, 0), design rgb(143, 209, 154)",
+    +   "message-win border-bottom-color: page rgba(0, 0, 0, 0), design rgb(143, 209, 154)",
+    +   "message-win border-left-color: page rgba(0, 0, 0, 0), design rgb(143, 209, 154)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-66645-ept-the-recorded-deviations-layout/error-context.md
+
+  18) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-win: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-dark-win: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(241, 237, 228)",
+    +     "outline-color": "rgb(243, 154, 91)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-4014a-offset-2px-the-focus-colour-layout/error-context.md
+
+  19) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-four: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-dark-four: 64 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 66
+
+    - Array []
+    + Array [
+    +   "logo color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-tooth fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-disc fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-cell fill: page rgb(36, 32, 27), design rgb(26, 16, 7)",
+    +   "logo-digit fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-ring stroke: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "settings-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-cue color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "cell-ordinary color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-ordinary border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-entry color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-entry border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-given color: page rgb(241, 237, 228), design rgb(247, 243, 234)",
+    +   "cell-given border-top-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "hint-button color: page rgb(241, 237, 228), design rgb(26, 16, 7)",
+    +   "hint-button background-color: page rgb(36, 32, 27), design rgb(243, 154, 91)",
+    +   "hint-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "reset-button color: page rgb(241, 237, 228), design rgb(184, 176, 164)",
+    +   "reset-button background-color: page rgb(36, 32, 27), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "message-idle color: page rgb(154, 143, 128), design rgb(184, 176, 164)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-89933-ept-the-recorded-deviations-layout/error-context.md
+
+  20) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-four: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-dark-four: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(241, 237, 228)",
+    +     "outline-color": "rgb(243, 154, 91)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-323a4-offset-2px-the-focus-colour-layout/error-context.md
+
+  21) [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-eight: the main column's computed paint equals the design's, except the recorded deviations 
+
+    Error: 1024-dark-eight: 64 paint values off
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 66
+
+    - Array []
+    + Array [
+    +   "logo color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-tooth fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-disc fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-cell fill: page rgb(36, 32, 27), design rgb(26, 16, 7)",
+    +   "logo-digit fill: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "logo-ring stroke: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "settings-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "settings-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "rules-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-button border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "summary-cue color: page rgb(241, 237, 228), design rgb(243, 154, 91)",
+    +   "board background-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-top-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-right-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-bottom-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "board border-left-color: page rgba(0, 0, 0, 0), design rgb(58, 51, 43)",
+    +   "cell-ordinary color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-ordinary border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-ordinary box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-entry color: page rgb(241, 237, 228), design rgb(247, 164, 106)",
+    +   "cell-entry border-top-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-right-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-bottom-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry border-left-color: page rgb(154, 143, 128), design rgb(138, 127, 113)",
+    +   "cell-entry box-shadow: page none, design rgb(58, 51, 43) 0px -2px 0px 0px inset",
+    +   "cell-given color: page rgb(241, 237, 228), design rgb(247, 243, 234)",
+    +   "cell-given border-top-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-top-width: page 2px, design 1px",
+    +   "cell-given border-right-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-right-width: page 2px, design 1px",
+    +   "cell-given border-bottom-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-bottom-width: page 2px, design 1px",
+    +   "cell-given border-left-color: page rgb(224, 214, 196), design rgb(138, 127, 113)",
+    +   "cell-given border-left-width: page 2px, design 1px",
+    +   "cell-given font-weight: page 700, design 800",
+    +   "hint-button color: page rgb(241, 237, 228), design rgb(26, 16, 7)",
+    +   "hint-button background-color: page rgb(36, 32, 27), design rgb(243, 154, 91)",
+    +   "hint-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "hint-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "reset-button color: page rgb(241, 237, 228), design rgb(184, 176, 164)",
+    +   "reset-button background-color: page rgb(36, 32, 27), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-top-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-right-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-bottom-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button border-left-color: page rgb(154, 143, 128), design rgba(0, 0, 0, 0)",
+    +   "reset-button text-decoration-line: page none, design underline",
+    +   "new-button border-top-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-right-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-bottom-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "new-button border-left-color: page rgb(154, 143, 128), design rgb(243, 154, 91)",
+    +   "message-idle color: page rgb(154, 143, 128), design rgb(184, 176, 164)",
+    + ]
+
+      218 |           }
+      219 |         }
+    > 220 |         expect(misses, `${c.shot}: ${misses.length} paint values off`).toEqual([]);
+          |                                                                        ^
+      221 |       });
+      222 |
+      223 |       test(`@trace NFR-14 @trace FR-65 ${c.shot}: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour`, async ({ page }) => {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:220:72
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-a9c7e-ept-the-recorded-deviations-layout/error-context.md
+
+  22) [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-eight: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+
+    Error: 1024-dark-eight: the cell ring equals the design's
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "focused": true,
+        "values": Object {
+    -     "outline-color": "rgb(241, 237, 228)",
+    +     "outline-color": "rgb(243, 154, 91)",
+          "outline-offset": "2px",
+          "outline-style": "solid",
+          "outline-width": "3px",
+        },
+      }
+
+      237 |             { sel: selector, properties: fixture.focus.properties },
+      238 |           );
+    > 239 |           expect(have, `${c.shot}: the ${name} ring equals the design's`).toEqual(c.focus[name]);
+          |                                                                           ^
+      240 |           // the values the spec names, independent of the fixture
+      241 |           expect(have, `${c.shot}: the ${name} ring is solid, 3px wide, 2px offset, in the focus colour`).toEqual({
+      242 |             focused: true,
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:239:75
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-a7047-offset-2px-the-focus-colour-layout/error-context.md
+
+  23) [layout] › e2e/nfr-14-palette.spec.ts:249:5 › dark scheme › @trace NFR-14 @trace FR-65 the dark deviations are the page's expected values: cell and given borders, and the violating digit 
+
+    Error: an ordinary cell border
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "rgb(138, 127, 113)"
+    Received: "rgb(154, 143, 128)"
+
+      260 |       const border = scheme === 'light' ? 'rgb(132, 123, 109)' : 'rgb(138, 127, 113)';
+      261 |       const digit = scheme === 'light' ? 'rgb(143, 29, 23)' : 'rgb(255, 138, 125)';
+    > 262 |       expect(colour('cell-ordinary', 'border-top-color'), 'an ordinary cell border').toBe(border);
+          |                                                                                      ^
+      263 |       expect(colour('cell-given', 'border-top-color'), 'a given cell border (equal to the cell border, PA-Q1 A)').toBe(border);
+      264 |       expect(colour('cell-violation', 'color'), 'the violating digit').toBe(digit);
+      265 |       if (scheme === 'light') {
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:262:86
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-87563-ers-and-the-violating-digit-layout/error-context.md
+
+  24) [layout] › e2e/nfr-14-palette.spec.ts:271:5 › dark scheme › @trace NFR-14 @trace FR-65 the dark action row states its transparent fills and borders: «Скинути» has no fill and no border colour 
+
+    Error: «Скинути»: background and the four border colours transparent, underlined
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 6
+    + Received  + 6
+
+      Array [
+    -   "rgba(0, 0, 0, 0)",
+    -   "rgba(0, 0, 0, 0)",
+    -   "rgba(0, 0, 0, 0)",
+    -   "rgba(0, 0, 0, 0)",
+    -   "rgba(0, 0, 0, 0)",
+    -   "underline",
+    +   "rgb(36, 32, 27)",
+    +   "rgb(154, 143, 128)",
+    +   "rgb(154, 143, 128)",
+    +   "rgb(154, 143, 128)",
+    +   "rgb(154, 143, 128)",
+    +   "none",
+      ]
+
+      278 |         return [s.backgroundColor, s.borderTopColor, s.borderRightColor, s.borderBottomColor, s.borderLeftColor, s.textDecorationLine];
+      279 |       });
+    > 280 |       expect(reset, '«Скинути»: background and the four border colours transparent, underlined').toEqual([
+          |                                                                                                  ^
+      281 |         'rgba(0, 0, 0, 0)',
+      282 |         'rgba(0, 0, 0, 0)',
+      283 |         'rgba(0, 0, 0, 0)',
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/admiring-chandrasekhar-34afb0/e2e/nfr-14-palette.spec.ts:280:98
+
+    Error Context: test-results/nfr-14-palette-dark-scheme-85c59-o-fill-and-no-border-colour-layout/error-context.md
+
+  24 failed
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-default: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-default: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-hint: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-hint: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-win: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-win: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-four: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-four: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › light scheme › @trace NFR-14 1024-light-eight: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › light scheme › @trace NFR-14 @trace FR-65 1024-light-eight: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:249:5 › light scheme › @trace NFR-14 @trace FR-65 the light deviations are the page's expected values: cell and given borders, and the violating digit 
+    [layout] › e2e/nfr-14-palette.spec.ts:271:5 › light scheme › @trace NFR-14 @trace FR-65 the light action row states its transparent fills and borders: «Скинути» has no fill and no border colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-default: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-default: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-hint: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-hint: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-win: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-win: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-four: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-four: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:191:7 › dark scheme › @trace NFR-14 1024-dark-eight: the main column's computed paint equals the design's, except the recorded deviations 
+    [layout] › e2e/nfr-14-palette.spec.ts:223:7 › dark scheme › @trace NFR-14 @trace FR-65 1024-dark-eight: the focus rings of the first non-given cell and of «Підказка» equal the design's: solid, 3px, offset 2px, the focus colour 
+    [layout] › e2e/nfr-14-palette.spec.ts:249:5 › dark scheme › @trace NFR-14 @trace FR-65 the dark deviations are the page's expected values: cell and given borders, and the violating digit 
+    [layout] › e2e/nfr-14-palette.spec.ts:271:5 › dark scheme › @trace NFR-14 @trace FR-65 the dark action row states its transparent fills and borders: «Скинути» has no fill and no border colour 
+  3 passed (8.7s)

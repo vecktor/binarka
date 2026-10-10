@@ -20,7 +20,9 @@
 import { describe, expect, it } from 'vitest';
 import { BLANK, installPageLifecycle, mountFixture, q } from './helpers/play-page';
 import {
+  PALETTE_DARK,
   TOKEN_NAMES,
+  TRANSLUCENT_TOKENS,
   contrastRatio,
   darkRootRules,
   declarationsFor,
@@ -87,15 +89,22 @@ describe('Effective theme on the document (the backdrops)', () => {
 });
 
 describe('Borders, cues and focus rings have enough contrast (the dark set)', () => {
-  it('Tokens exist and are literal: the dark block declares each of the 13 names once as #rrggbb, so each token has exactly two value sets', () => {
+  // update-page-palette DELIBERATE CHANGE (FR-65, A-51, A-57; delta «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and
+  // are literal», proposal.md Impact row `tests/play-page-theme-stylesheet.test.ts:90-100`): "the dark block redefines the 13 tokens and adds none"
+  // becomes every token of the list of 25, each once, with the dark value of the list, `#rrggbbaa` for the translucent one only.
+  it('Tokens exist and are literal: the dark block declares each of the 25 names once with the dark value of the list, so each token has exactly two value sets', () => {
     const parsed = readStyles();
     expect(darkRootRules(parsed).length, 'a top-level :root[data-theme="dark"] rule exists').toBe(1);
+    expect(TOKEN_NAMES).toHaveLength(25);
     for (const name of TOKEN_NAMES) {
       const declarations = parsed.darkTokenDeclarations.filter((d) => d.property === name);
       expect(declarations, `${name} is declared once in :root[data-theme="dark"]`).toHaveLength(1);
-      expect(declarations[0]?.value, `${name} is #rrggbb in the dark block`).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(declarations[0]?.value.toLowerCase(), `${name} has the dark value of the list`).toBe(PALETTE_DARK[name]);
+      expect(declarations[0]?.value, `${name} is ${TRANSLUCENT_TOKENS.has(name) ? '#rrggbbaa' : '#rrggbb'} in the dark block`).toMatch(
+        TRANSLUCENT_TOKENS.has(name) ? /^#[0-9a-f]{8}$/i : /^#[0-9a-f]{6}$/i,
+      );
     }
-    expect(parsed.darkTokenDeclarations, 'the dark block redefines the 13 tokens and adds none').toHaveLength(13);
+    expect(parsed.darkTokenDeclarations.map((d) => d.property).sort(), 'the dark block redefines the 25 tokens and adds none').toEqual([...TOKEN_NAMES].sort());
     expect(themeTokenSets(parsed).map((set) => set.label), 'two value sets').toEqual(['light', 'dark']);
   });
 

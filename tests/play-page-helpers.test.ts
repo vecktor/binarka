@@ -83,6 +83,7 @@ import {
   CONTRAST_PAIRS,
   DARK_LABEL,
   TOKEN_NAMES,
+  TRANSLUCENT_TOKENS,
   contrastProblems,
   contrastRatio,
   darkRootRules,
@@ -96,6 +97,7 @@ import {
   injectPageStyles,
   scanColours,
   themeTokenSets,
+  tokenFormatProblems,
   withTokensInlined,
 } from './helpers/css';
 
@@ -374,21 +376,38 @@ describe('play-page seed helpers and constants', () => {
 // literal samples, never on src/ui/style.css or the page, so they pass at the red stage (no @trace on purpose).
 // ---------------------------------------------------------------------------------------------------------
 
-/** The design's token values (design.md decision 7); the self-check below proves they meet the thresholds. */
+/**
+ * The light token values of the G2 palette (A-57 appendix, block 2; the table of the spec delta of update-page-palette); the self-check below
+ * proves they meet the thresholds.
+ * DELIBERATE CHANGE (update-page-palette, delta «Borders, cues and focus rings have enough contrast», proposal.md Impact row
+ * `tests/play-page-helpers.test.ts:378-418`): the fixture follows `TOKEN_NAMES`, which grows from the 13 baseline names to the 25 of block 2.
+ */
 const DESIGN_TOKENS: Record<string, string> = {
-  '--color-page': '#f9fafb',
-  '--color-text': '#1f2937',
-  '--color-cell-bg': '#ffffff',
-  '--color-cell-border': '#6b7280',
-  '--color-given-bg': '#e5e7eb',
-  '--color-given-border': '#374151',
-  '--color-violation-bg': '#fecaca',
-  '--color-violation-border': '#b91c1c',
-  '--color-violation-text': '#991b1b',
-  '--color-focus': '#1d4ed8',
-  '--color-control-bg': '#ffffff',
-  '--color-control-border': '#6b7280',
-  '--color-win-text': '#166534',
+  '--color-page': '#f7f3ea',
+  '--color-text': '#1e2126',
+  '--color-text-muted': '#5f5549',
+  '--color-cell-bg': '#fffdf8',
+  '--color-control-bg': '#fffdf8',
+  '--color-line': '#e2dbcc',
+  '--color-cell-border': '#847b6d',
+  '--color-control-border': '#8c8374',
+  '--color-given-bg': '#ddd3be',
+  '--color-given-border': '#847b6d',
+  '--color-given-text': '#1e2126',
+  '--color-entry-text': '#a8400c',
+  '--color-primary': '#b4460d',
+  '--color-primary-text': '#fffdf8',
+  '--color-primary-soft': '#f6e3d4',
+  '--color-hover-ring': '#d28f6b',
+  '--color-violation-bg': '#fbe4e1',
+  '--color-violation-border': '#b3261e',
+  '--color-violation-stripe': '#f1c9c6',
+  '--color-violation-text': '#8f1d17',
+  '--color-success': '#2f6b3a',
+  '--color-success-bg': '#e2efdf',
+  '--color-success-glow': '#2f6b3a73',
+  '--color-win-text': '#1e2126',
+  '--color-focus': '#1e2126',
 };
 
 const tokenCss = (tokens: Record<string, string>): string =>
@@ -414,17 +433,65 @@ describe('css helper: contrastRatio and rgbOf', () => {
     expect(rgbOf('#FFFFFF')).toBe('rgb(255, 255, 255)');
   });
 
+  // DELIBERATE CHANGE (update-page-palette, delta «Borders, cues and focus rings have enough contrast»; proposal.md Impact rows
+  // `tests/play-page-helpers.test.ts:378-418`, `:422` and `:425-428`): the fixture is the 25 names; CONTRAST_PAIRS is the new list
+  // (4 cell border + 4 violation cue + 3 hinted cue + 8 focus ring + 1 control border + 14 text = 34); the two spot ratios are the tightest
+  // pair of the palette (the cell border on the board plate) and the ring on the cell border.
   it('the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)', () => {
+    expect(TOKEN_NAMES).toHaveLength(25);
     expect(Object.keys(DESIGN_TOKENS).sort()).toEqual([...TOKEN_NAMES].sort());
     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
-    expect(contrastRatio('#6b7280', '#f9fafb')).toBeGreaterThan(4.5);
-    expect(contrastRatio('#1d4ed8', '#fecaca')).toBeGreaterThan(4.5);
-    expect(CONTRAST_PAIRS).toHaveLength(3 + 3 + 3 + 4 + 1 + 4 + 1 + 1);
+    expect(contrastRatio('#847b6d', '#e2dbcc')).toBeCloseTo(3.03, 2);
+    expect(contrastRatio('#1e2126', '#847b6d')).toBeCloseTo(3.87, 2);
+    expect(CONTRAST_PAIRS).toHaveLength(4 + 4 + 3 + 8 + 1 + 14);
+  });
+
+  // update-page-palette (delta «Borders, cues and focus rings have enough contrast», scenario «Cell borders have 3:1»): the pair of the cell
+  // border against the given fill is gone (a given cell is inactive, A-57), the given-cue group with it, and the hinted cue is a group.
+  it('CONTRAST_PAIRS has the groups of the new list, no given-cue group and no (cell-border, given-bg) pair', () => {
+    expect([...new Set(CONTRAST_PAIRS.map((pair) => pair.group))].sort()).toEqual(
+      ['cell-border', 'control-border', 'focus-ring', 'hinted-cue', 'text', 'violation-cue'].sort(),
+    );
+    expect(CONTRAST_PAIRS.filter((pair) => pair.fg === '--color-cell-border' && pair.bg === '--color-given-bg')).toEqual([]);
+    expect(CONTRAST_PAIRS.filter((pair) => pair.group === 'cell-border').map((pair) => pair.bg)).toEqual([
+      '--color-page',
+      '--color-cell-bg',
+      '--color-line',
+      '--color-success-bg',
+    ]);
+    expect(CONTRAST_PAIRS.filter((pair) => pair.group === 'hinted-cue').map((pair) => `${pair.fg} on ${pair.bg}`)).toEqual([
+      '--color-primary on --color-primary-soft',
+      '--color-primary on --color-line',
+      '--color-primary on --color-page',
+    ]);
+    expect(CONTRAST_PAIRS.filter((pair) => pair.group === 'focus-ring').map((pair) => pair.bg)).toEqual([
+      '--color-page',
+      '--color-cell-bg',
+      '--color-given-bg',
+      '--color-violation-bg',
+      '--color-line',
+      '--color-primary-soft',
+      '--color-success-bg',
+      '--color-cell-border',
+    ]);
+  });
+
+  it('a translucent token is the foreground or the background of no pair, and contrastProblems reports one that a pair names as not #rrggbb', () => {
+    expect([...TRANSLUCENT_TOKENS]).toEqual(['--color-success-glow']);
+    for (const pair of CONTRAST_PAIRS) {
+      expect(TRANSLUCENT_TOKENS.has(pair.fg), `${pair.group}: ${pair.fg}`).toBe(false);
+      expect(TRANSLUCENT_TOKENS.has(pair.bg), `${pair.group}: ${pair.bg}`).toBe(false);
+    }
+    // the contrast function rejects #rrggbbaa, so a translucent token that slipped into a pair would be reported, never computed
+    expect(() => contrastRatio('#2f6b3a73', '#ffffff')).toThrow(/rrggbb/);
+    expect(contrastProblems({ ...DESIGN_TOKENS, '--color-focus': '#1e212673' }).join('\n')).toMatch(/--color-focus is missing or not #rrggbb/);
   });
 
   it('contrastProblems names a weak pair, a missing token and a token that is not #rrggbb', () => {
-    const old = { ...DESIGN_TOKENS, '--color-cell-border': '#9ca3af' }; // the slice-3 border, 2.43:1 on the page
-    expect(contrastProblems(old).join('\n')).toMatch(/cell-border.*2\.43/);
+    // DELIBERATE CHANGE (update-page-palette, proposal.md Impact row `:425-428`): the ratio of the slice-3 border `#9ca3af` depends on the
+    // fixture's page, 2.29:1 on `#f7f3ea` (it was 2.43:1 on `#f9fafb`)
+    const old = { ...DESIGN_TOKENS, '--color-cell-border': '#9ca3af' };
+    expect(contrastProblems(old).join('\n')).toMatch(/cell-border.*2\.29/);
     expect(contrastProblems(old, ['text'])).toEqual([]); // restricted to the text pairs
     const withoutFocus = Object.fromEntries(Object.entries(DESIGN_TOKENS).filter(([name]) => name !== '--color-focus'));
     expect(contrastProblems(withoutFocus).join('\n')).toMatch(/--color-focus is missing/);
@@ -519,6 +586,47 @@ describe('css helper: parseStyles walks the CSSOM', () => {
     const before = document.head.querySelectorAll('style').length;
     parseStyles(SAMPLE);
     expect(document.head.querySelectorAll('style')).toHaveLength(before);
+  });
+});
+
+// update-page-palette (delta «Borders, cues and focus rings have enough contrast», scenario «The token reader accepts a translucent value only
+// for a translucent token»; proposal.md Impact row `tests/helpers/css.ts`): `#rrggbbaa` is read for the one token the list marks translucent and
+// nowhere else. Literal samples only, so these are GUARDS of the helper (green once the helper is changed in task 1.3).
+describe('css helper: the token reader and the translucent token (update-page-palette)', () => {
+  it('reads --color-success-glow: #2f6b3a73 as a translucent token that no contrast pair uses', () => {
+    const parsed = parseStyles(':root { --color-success-glow: #2f6b3a73; }');
+    expect(parsed.tokens).toEqual({ '--color-success-glow': '#2f6b3a73' });
+    expect(tokenFormatProblems(parsed.tokens)).toEqual([]);
+    expect(TRANSLUCENT_TOKENS.has('--color-success-glow')).toBe(true);
+    // in a full set it adds no problem and no pair mentions it
+    expect(contrastProblems(parseStyles(tokenCss(DESIGN_TOKENS)).tokens)).toEqual([]);
+    expect(CONTRAST_PAIRS.some((pair) => pair.fg === '--color-success-glow' || pair.bg === '--color-success-glow')).toBe(false);
+  });
+
+  it('rejects #rrggbbaa for a token the list does not mark translucent, and #rrggbb for the translucent one', () => {
+    const alpha = parseStyles(':root { --color-page: #f7f3ea80; }');
+    expect(tokenFormatProblems(alpha.tokens).join('\n')).toMatch(/--color-page.*#f7f3ea80/);
+    const opaqueGlow = parseStyles(':root { --color-success-glow: #2f6b3a; }');
+    expect(tokenFormatProblems(opaqueGlow.tokens).join('\n')).toMatch(/--color-success-glow.*#2f6b3a/);
+  });
+
+  it('rejects an rgb(), rgba() or short hex value in either kind of token; accepts upper case', () => {
+    for (const value of ['rgb(47, 107, 58)', 'rgba(47, 107, 58, 0.45)', '#2f6', 'red']) {
+      for (const name of ['--color-page', '--color-success-glow']) {
+        const parsed = parseStyles(`:root { ${name}: ${value}; }`);
+        expect(tokenFormatProblems(parsed.tokens).join('\n'), `${name}: ${value}`).toContain(name);
+      }
+    }
+    expect(tokenFormatProblems({ '--color-page': '#F7F3EA', '--color-success-glow': '#2F6B3A73' })).toEqual([]);
+  });
+
+  it('judges only --color-* names, so the layout variables are never read as colours', () => {
+    expect(tokenFormatProblems({ '--n': '6', '--cell-max': '4rem' })).toEqual([]);
+  });
+
+  it('rgbOf and contrastRatio still refuse #rrggbbaa, so a translucent value can never be computed by mistake', () => {
+    expect(() => rgbOf('#2f6b3a73')).toThrow(/rrggbb/);
+    expect(() => contrastRatio('#2f6b3a73', '#f7f3ea')).toThrow(/rrggbb/);
   });
 });
 
@@ -1038,21 +1146,38 @@ describe('the generator spies record the level in a parallel array', () => {
 // on src/ui/style.css, so they are GUARDS (green before the implementation; no @trace on purpose, like the rest of this file).
 // ---------------------------------------------------------------------------------------------------------
 
-/** An arbitrary dark palette for the samples (the product values are the stylesheet's; here only the shape matters). */
+/**
+ * The dark values of the G2 palette (A-57 appendix, block 2), used as the dark sample (the shape of a dark block is what these tests check; the
+ * product values are the stylesheet's).
+ * DELIBERATE CHANGE (update-page-palette, delta «Borders, cues and focus rings have enough contrast»): a sample of 13 arbitrary colours cannot
+ * meet the new pairs (they name 17 more tokens), so the sample is the dark half of the signed palette, which does.
+ */
 const DARK_SAMPLE: Record<string, string> = {
-  '--color-page': '#111827',
-  '--color-text': '#f3f4f6',
-  '--color-cell-bg': '#1f2937',
-  '--color-cell-border': '#9ca3af',
-  '--color-given-bg': '#374151',
-  '--color-given-border': '#e5e7eb',
-  '--color-violation-bg': '#7f1d1d',
-  '--color-violation-border': '#fca5a5',
-  '--color-violation-text': '#fee2e2',
-  '--color-focus': '#93c5fd',
-  '--color-control-bg': '#1f2937',
-  '--color-control-border': '#9ca3af',
-  '--color-win-text': '#86efac',
+  '--color-page': '#1a1714',
+  '--color-text': '#f1ede4',
+  '--color-text-muted': '#b8b0a4',
+  '--color-cell-bg': '#24201b',
+  '--color-control-bg': '#24201b',
+  '--color-line': '#3a332b',
+  '--color-cell-border': '#8a7f71',
+  '--color-control-border': '#8a7f71',
+  '--color-given-bg': '#4d4438',
+  '--color-given-border': '#8a7f71',
+  '--color-given-text': '#f7f3ea',
+  '--color-entry-text': '#f7a46a',
+  '--color-primary': '#f39a5b',
+  '--color-primary-text': '#1a1007',
+  '--color-primary-soft': '#3d2b1e',
+  '--color-hover-ring': '#a06941',
+  '--color-violation-bg': '#3f2320',
+  '--color-violation-border': '#ff8a7d',
+  '--color-violation-stripe': '#5e332f',
+  '--color-violation-text': '#ff8a7d',
+  '--color-success': '#8fd19a',
+  '--color-success-bg': '#1f3324',
+  '--color-success-glow': '#8fd19a73',
+  '--color-win-text': '#f1ede4',
+  '--color-focus': '#f1ede4',
 };
 const darkBlock = (tokens: Record<string, string>, quote = '"'): string =>
   `:root[data-theme=${quote}dark${quote}] { color-scheme: dark; ${Object.entries(tokens).map(([k, v]) => `${k}: ${v};`).join(' ')} }`;
@@ -1063,9 +1188,9 @@ describe('css helper: the dark attribute block is a token set (add-theme-switch,
     expect(parsed.tokenSets.map((set) => set.label)).toEqual(['top-level', DARK_LABEL]);
     expect(parsed.tokenSets[1]?.tokens['--color-page']).toBe('#000000');
     expect(parsed.tokenSets[1]?.tokens['--color-text']).toBe('#ffffff');
-    expect(parsed.tokenSets[1]?.tokens['--color-focus'], 'a token the block does not redefine keeps its top-level value').toBe('#1d4ed8');
+    expect(parsed.tokenSets[1]?.tokens['--color-focus'], 'a token the block does not redefine keeps its top-level value').toBe('#1e2126');
     expect(parsed.tokens).toEqual(DESIGN_TOKENS);
-    expect(parsed.tokenDeclarations).toHaveLength(13);
+    expect(parsed.tokenDeclarations, 'the 25 tokens of the G2 palette').toHaveLength(25); // was 13 (update-page-palette, proposal.md Impact row `:1068`)
     expect(parsed.darkTokenDeclarations.map((d) => d.property)).toEqual(['--color-page', '--color-text']);
     expect(darkRootRules(parsed)).toHaveLength(1);
     expect(darkRootRules(parsed)[0]?.declarations.find((d) => d.property === 'color-scheme')?.value).toBe('dark');
@@ -1100,11 +1225,22 @@ describe('css helper: the dark attribute block is a token set (add-theme-switch,
     expect(parsed.tokenSets[0]?.label).toBe('top-level');
     expect(parsed.tokenSets[1]?.label).toBe(DARK_LABEL);
     expect(parsed.tokenSets[2]?.label).toContain('@media');
-    expect(parsed.tokenSets[2]?.tokens['--color-page'], 'the conditional set is built from the LIGHT set').toBe('#f9fafb');
+    expect(parsed.tokenSets[2]?.tokens['--color-page'], 'the conditional set is built from the LIGHT set').toBe('#f7f3ea');
     const [light, dark] = themeTokenSets(parsed);
     expect([light?.label, dark?.label]).toEqual(['light', 'dark']);
     expect(light?.tokens).toEqual(DESIGN_TOKENS);
     expect(dark?.tokens).toEqual(DARK_SAMPLE);
+  });
+
+  // update-page-palette: the signed light and dark values are one consistent palette: every pair holds for each, and the accepted adjacencies of
+  // A-57 (PA-Q8) are the recorded ratios.
+  it('the signed light and dark palettes meet every pair, and the focus ring keeps its recorded ratios against the accepted neighbours', () => {
+    expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
+    expect(contrastProblems(DARK_SAMPLE)).toEqual([]);
+    const ring = (set: Record<string, string>, other: string): number =>
+      Number(contrastRatio(set['--color-focus'] ?? '', set[other] ?? '').toFixed(2));
+    expect(['--color-line', '--color-violation-border', '--color-primary', '--color-success'].map((n) => ring(DESIGN_TOKENS, n))).toEqual([11.72, 2.47, 2.94, 2.53]);
+    expect(['--color-line', '--color-violation-border', '--color-primary', '--color-success'].map((n) => ring(DARK_SAMPLE, n))).toEqual([10.65, 1.96, 1.88, 1.53]);
   });
 
   it('a dark set with a failing pair is found in its own set only', () => {
@@ -1126,8 +1262,8 @@ describe('css helper: the dark attribute block is a token set (add-theme-switch,
 
   it('withTokensInlined(text, tokens) and injectPageStyles(tokens) use the given set and default to the top-level one', () => {
     const css = `${tokenCss(DESIGN_TOKENS)} ${darkBlock(DARK_SAMPLE)} .x { color: var(--color-text); }`;
-    expect(withTokensInlined(css)).toContain('.x { color: #1f2937; }');
-    expect(withTokensInlined(css, DARK_SAMPLE)).toContain('.x { color: #f3f4f6; }');
+    expect(withTokensInlined(css)).toContain('.x { color: #1e2126; }');
+    expect(withTokensInlined(css, DARK_SAMPLE)).toContain('.x { color: #f1ede4; }');
     // injectPageStyles reads src/ui/style.css: here only that the argument is accepted and the sheet is injected and removable
     const style = injectPageStyles(DARK_SAMPLE);
     expect(style.isConnected).toBe(true);

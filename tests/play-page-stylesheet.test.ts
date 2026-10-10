@@ -19,11 +19,15 @@ import {
   rulesPanel,
 } from './helpers/play-page';
 import {
+  PALETTE_LIGHT,
   TOKEN_NAMES,
+  TRANSLUCENT_TOKENS,
   contrastProblems,
   contrastRatio,
   declarationsFor,
   injectPageStyles,
+  injectStyles,
+  lightRootRules,
   px,
   readStyleText,
   readStyles,
@@ -31,6 +35,7 @@ import {
   rulesWithSelector,
   scanColours,
   themeTokenSets,
+  withTokensInlined,
 } from './helpers/css';
 import type { ParsedStyles, TokenSet } from './helpers/css';
 
@@ -76,14 +81,30 @@ function tokenOf(parsed: ParsedStyles, value: string | undefined): string | unde
 // ---------------------------------------------------------------------------------------------------------
 
 describe('the colours are tokens (FR-65)', () => {
-  it('@trace FR-65 Tokens exist and are literal: 13 names, each declared once in the top-level :root as #rrggbb', () => {
+  // update-page-palette DELIBERATE CHANGE (FR-65, A-57; delta «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and are
+  // literal», proposal.md Impact row `tests/play-page-stylesheet.test.ts:79-86`): the count of 13 becomes the list of 25 with the light value of
+  // the spec's table, `#rrggbb` for 24 and `#rrggbbaa` for `--color-success-glow` only, and the top-level `:root` holds nothing else but
+  // `color-scheme`.
+  it('@trace FR-65 Tokens exist and are literal: the 25 names of the G2 palette, each declared once in the top-level :root with the light value of the list', () => {
     const parsed = readStyles();
-    expect(TOKEN_NAMES).toHaveLength(13);
+    expect(TOKEN_NAMES).toHaveLength(25);
     for (const name of TOKEN_NAMES) {
       const declarations = parsed.tokenDeclarations.filter((d) => d.property === name);
       expect(declarations, `${name} is declared once in the top-level :root`).toHaveLength(1);
-      expect(declarations[0]?.value, `${name} is #rrggbb`).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(declarations[0]?.value.toLowerCase(), `${name} has the light value of the list`).toBe(PALETTE_LIGHT[name]);
+      expect(declarations[0]?.value, `${name} is ${TRANSLUCENT_TOKENS.has(name) ? '#rrggbbaa' : '#rrggbb'}`).toMatch(
+        TRANSLUCENT_TOKENS.has(name) ? /^#[0-9a-f]{8}$/i : /^#[0-9a-f]{6}$/i,
+      );
     }
+    expect(
+      parsed.tokenDeclarations.map((d) => d.property).sort(),
+      'the top-level :root declares the 25 tokens and no other --color-*',
+    ).toEqual([...TOKEN_NAMES].sort());
+    const rootProperties = lightRootRules(parsed).flatMap((r) => r.declarations.map((d) => d.property));
+    expect(
+      rootProperties.filter((property) => !property.startsWith('--color-')),
+      'the top-level :root declares color-scheme and nothing else besides the tokens',
+    ).toEqual(['color-scheme']);
   });
 
   it('@trace FR-65 No colour literal is left: no hex, rgb(), hsl() ... outside :root, wherever the rule is in the file', () => {
@@ -108,14 +129,25 @@ describe('the colours are tokens (FR-65)', () => {
     expect(scanColours(readStyles()).tokensOutsideRoot).toEqual([]);
   });
 
+  // update-page-palette DELIBERATE CHANGE (FR-65, A-57; delta «Borders, cues and focus rings have enough contrast», scenario «Rules use the tokens
+  // and no colour literal is left», proposal.md Impact row `tests/play-page-stylesheet.test.ts:111-125`): `.cell` takes its text from
+  // `--color-entry-text`, `.cell-given` its text from `--color-given-text`, its border at 1px and its weight at 800, and `.cell-hinted` has its
+  // own binding.
   it('@trace FR-65 The named rules take their colours from the named tokens, written with the longhands', () => {
     const parsed = readStyles();
     expectDecl(parsed, 'body', 'background-color', 'var(--color-page)');
     expectDecl(parsed, 'body', 'color', 'var(--color-text)');
     expectDecl(parsed, '.cell', 'border-color', 'var(--color-cell-border)');
     expectDecl(parsed, '.cell', 'background-color', 'var(--color-cell-bg)');
+    expectDecl(parsed, '.cell', 'color', 'var(--color-entry-text)');
     expectDecl(parsed, '.cell-given', 'border-color', 'var(--color-given-border)');
+    expectDecl(parsed, '.cell-given', 'border-width', '1px');
     expectDecl(parsed, '.cell-given', 'background-color', 'var(--color-given-bg)');
+    expectDecl(parsed, '.cell-given', 'color', 'var(--color-given-text)');
+    expectDecl(parsed, '.cell-given', 'font-weight', '800');
+    expectDecl(parsed, '.cell-hinted', 'border-color', 'var(--color-primary)');
+    expectDecl(parsed, '.cell-hinted', 'background-color', 'var(--color-primary-soft)');
+    expectDecl(parsed, '.cell-hinted', 'color', 'var(--color-text)');
     expectDecl(parsed, '.cell-violation', 'border-color', 'var(--color-violation-border)');
     expectDecl(parsed, '.cell-violation', 'background-color', 'var(--color-violation-bg)');
     expectDecl(parsed, '.cell-violation', 'color', 'var(--color-violation-text)');
@@ -140,27 +172,40 @@ describe('the colours are tokens (FR-65)', () => {
 // control border has 3:1 and the text has 4.5:1» now say "the resolved colours of the tokens of each token set (light, then dark)": each
 // loops over `themeTokenSets(parsed)` (the dark set is asserted to exist). The declarations are asserted once; no threshold changed.
 describe('contrast (FR-65, NFR-9)', () => {
-  it('@trace FR-65 Cell borders have 3:1 against the page, the cell and the given fill, in the light and in the dark token set', () => {
+  // update-page-palette DELIBERATE CHANGE (FR-65, A-57; delta «Borders, cues and focus rings have enough contrast», scenario «Cell borders have 3:1»,
+  // proposal.md Impact row `tests/play-page-stylesheet.test.ts:143`): the pairs are the page, the cell, the board plate and the solved plate; the
+  // pair against the given fill is out (a given cell is inactive, FR-69, A-57), and the ratios are the ones the spec lists.
+  it('@trace FR-65 Cell borders have 3:1 against the page, the cell, the board plate and the solved plate, in the light and in the dark token set', () => {
     const parsed = readStyles();
+    const listed: Record<string, number[]> = { light: [3.77, 4.1, 3.03, 3.5], dark: [4.55, 4.13, 3.17, 3.44] };
     for (const set of themeTokenSets(parsed)) {
-      tokenIn(set, '--color-cell-border');
+      const border = tokenIn(set, '--color-cell-border');
+      const ratios = ['--color-page', '--color-cell-bg', '--color-line', '--color-success-bg'].map((name) =>
+        Number(contrastRatio(border, tokenIn(set, name)).toFixed(2)),
+      );
+      expect(ratios, `${set.label}: the ratios of the cell border against the page, the cell, the plate and the solved plate`).toEqual(listed[set.label]);
       expect(contrastProblems(set.tokens, ['cell-border']), `${set.label} token set`).toEqual([]);
     }
   });
 
-  it('@trace FR-65 @trace FR-64 The given cue has 3:1 and is not the fill: 2px border in its own colour, bold digits (light and dark)', () => {
+  // update-page-palette DELIBERATE CHANGE (FR-65, FR-64, A-57; delta «Borders, cues and focus rings have enough contrast», scenario «The given cue is
+  // weight», proposal.md Impact row `tests/play-page-stylesheet.test.ts:151-166`; the signature of PA-Q1 A overrides the row-148 clause): the test
+  // «The given cue has 3:1 and is not the fill: 2px border in its own colour, bold digits» is replaced. A given cell is told from an ordinary one by
+  // weight 800 against 500 (in a violation too), its border is 1px in the cell border's colour, its digit keeps 4.5:1. The computed half is in the
+  // cascade block below.
+  it('@trace FR-65 @trace FR-64 The given cue is weight: .cell-given declares weight 800 and a 1px border in the cell border colour, the digit has 4.5:1 (light and dark)', () => {
     const parsed = readStyles();
-    expectDecl(parsed, '.cell-given', 'border-width', '2px');
+    expectDecl(parsed, '.cell', 'font-weight', '500');
+    expectDecl(parsed, '.cell-given', 'font-weight', '800');
+    expectDecl(parsed, '.cell-given', 'border-width', '1px');
     expectDecl(parsed, '.cell-given', 'border-color', 'var(--color-given-border)');
-    expectDecl(parsed, '.cell-given', 'font-weight', '700');
-    expect(px(declarationsFor(parsed, '.cell-given').get('border-width'))).toBeGreaterThan(
-      px(declarationsFor(parsed, '.cell').get('border-width')),
-    );
+    expectDecl(parsed, '.cell-given.cell-violation', 'font-weight', '800');
+    const listed: Record<string, number> = { light: 10.87, dark: 8.62 };
     for (const set of themeTokenSets(parsed)) {
-      tokenIn(set, '--color-given-border');
-      expect(contrastProblems(set.tokens, ['given-cue']), `${set.label} token set`).toEqual([]);
-      // the cue tells a given from an ordinary cell without the fill: another colour (and a wider border, above)
-      expect(tokenIn(set, '--color-given-border').toLowerCase(), `${set.label}: the given border differs from the cell border`).not.toBe(
+      const text = tokenIn(set, '--color-given-text');
+      const fill = tokenIn(set, '--color-given-bg');
+      expect(Number(contrastRatio(text, fill).toFixed(2)), `${set.label}: the given digit on the given fill`).toBe(listed[set.label]);
+      expect(tokenIn(set, '--color-given-border').toLowerCase(), `${set.label}: the given border equals the cell border (deliberate, PA-Q1 A)`).toBe(
         tokenIn(set, '--color-cell-border').toLowerCase(),
       );
     }
@@ -440,28 +485,73 @@ describe('the cascade gives each cell state its border and the colours whose con
     return kinds;
   }
 
+  // update-page-palette DELIBERATE CHANGE (FR-64, A-57; delta «A violation shows a cue besides colour», proposal.md Impact row
+  // `tests/play-page-stylesheet.test.ts:444-450`; the signature of PA-Q1 A overrides the border-widths test): the widths are 1px, 1px, 2px and 2px
+  // (was 1, 2, 3 and 3): the given cell is told by weight, not by width, and a violation is wider than both.
   for (const [n, puzzle] of sizes) {
-    it(`@trace FR-64 The computed border is heavier for a violation at ${n}x${n}: 1px, 2px, 3px and 3px`, () => {
+    it(`@trace FR-64 The computed border is heavier for a violation at ${n}x${n}: 1px, 1px, 2px and 2px`, () => {
       injectPageStyles();
       const kinds = fourKinds(puzzle);
       const widths = [kinds.ordinary, kinds.given, kinds.violating, kinds.givenViolating].map((el) => getComputedStyle(el).borderTopWidth);
-      expect(widths).toEqual(['1px', '2px', '3px', '3px']);
+      expect(widths).toEqual(['1px', '1px', '2px', '2px']);
+      const [ordinary, given, violating, givenViolating] = widths.map((w) => px(w));
+      expect(violating, 'the violating width is greater than the ordinary one').toBeGreaterThan(ordinary ?? Number.NaN);
+      expect(violating, 'and than the given one').toBeGreaterThan(given ?? Number.NaN);
+      expect(givenViolating, 'a given cell in a violation has the violation width').toBe(violating);
+    });
+  }
+
+  // update-page-palette (FR-64, FR-65, A-57; delta «Borders, cues and focus rings have enough contrast», scenario «The given cue is weight»): the
+  // computed weights are 500, 800, 700 and 800, and the given border is 1px; in each token set (the weights do not depend on it, the border colour
+  // does).
+  /**
+   * The page stylesheet with the values of `tokens` inlined and the `font: inherit` resets removed. jsdom applies a `font` shorthand that comes
+   * later in the file over the `font-weight` longhand of a rule with higher specificity (the `button { font: inherit }` rule follows `.cell`), which
+   * a browser does not (the cascade is per longhand), so the weights would read `normal` for every kind. Dropping the reset leaves the cascade of
+   * the weight declarations, specificity included, to jsdom.
+   */
+  const injectForWeights = (tokens: Record<string, string>): HTMLStyleElement =>
+    injectStyles(withTokensInlined(readStyleText(), tokens).replace(/(^|[;{\s])font\s*:\s*inherit\s*;/g, '$1'));
+
+  for (const [n, puzzle] of sizes) {
+    it(`@trace FR-65 @trace FR-64 The given cue is weight at ${n}x${n}: the computed weights are 500, 800, 700 and 800, the given border is 1px and the cell border colour`, () => {
+      const parsed = readStyles();
+      for (const set of themeTokenSets(parsed)) {
+        const style = injectForWeights(set.tokens);
+        const kinds = fourKinds(puzzle);
+        const weights = [kinds.ordinary, kinds.given, kinds.violating, kinds.givenViolating].map((el) => getComputedStyle(el).fontWeight);
+        expect(weights, `${set.label}: ordinary, given, violating, given in a violation`).toEqual(['500', '800', '700', '800']);
+        expect(getComputedStyle(kinds.given).borderTopWidth, `${set.label}: the given border width`).toBe('1px');
+        expect(getComputedStyle(kinds.given).borderTopColor, `${set.label}: the given border colour equals the ordinary cell's`).toBe(
+          getComputedStyle(kinds.ordinary).borderTopColor,
+        );
+        style.remove();
+        document.body.replaceChildren();
+      }
     });
   }
 
   // add-theme-switch DELIBERATE CHANGE (FR-65, A-51; delta «The cascade gives each cell state the colours whose contrast is checked»): the test
   // injects the stylesheet once with the light values and once with the dark values substituted (`injectPageStyles(set.tokens)`).
+  // update-page-palette DELIBERATE CHANGE (FR-65, A-57; same scenario, proposal.md Impact row `tests/play-page-stylesheet.test.ts:455-475`): an
+  // ordinary cell takes its text from `--color-entry-text`, a given cell from `--color-given-text`, the violating kinds from
+  // `--color-violation-text` (the given in a violation too), and a cell with the class `cell-hinted` joins the kinds with `--color-primary`,
+  // `--color-primary-soft` and `--color-text`.
   for (const [n, puzzle] of sizes) {
     it(`@trace FR-65 The cascade gives each cell kind the token colours at ${n}x${n}, and the page the page colour (light and dark values)`, () => {
       const parsed = readStyles();
       for (const set of themeTokenSets(parsed)) {
         const style = injectPageStyles(set.tokens);
         const kinds = fourKinds(puzzle);
+        const hinted = document.createElement('button');
+        hinted.className = 'cell cell-hinted';
+        q(document.body, '[data-board]').append(hinted);
         const expected: [HTMLElement, string, string, string, string][] = [
-          [kinds.ordinary, '--color-cell-border', '--color-cell-bg', '--color-text', 'ordinary cell'],
-          [kinds.given, '--color-given-border', '--color-given-bg', '--color-text', 'given cell'],
+          [kinds.ordinary, '--color-cell-border', '--color-cell-bg', '--color-entry-text', 'ordinary cell'],
+          [kinds.given, '--color-given-border', '--color-given-bg', '--color-given-text', 'given cell'],
           [kinds.violating, '--color-violation-border', '--color-violation-bg', '--color-violation-text', 'violating cell'],
           [kinds.givenViolating, '--color-violation-border', '--color-violation-bg', '--color-violation-text', 'given in violation'],
+          [hinted, '--color-primary', '--color-primary-soft', '--color-text', 'hinted cell'],
         ];
         for (const [el, border, fill, text, what] of expected) {
           const computed = getComputedStyle(el);

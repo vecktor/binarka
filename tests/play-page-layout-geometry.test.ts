@@ -4,45 +4,73 @@ import type { Cell, Grid } from '../src/engine/index';
 import { readStyles, themeTokenSets } from './helpers/css';
 import { BLANK_4, PAIR_ROW, WIN_MESSAGE, bySize, clickCell, generateSpy, installPageLifecycle, mountPage, pressHint, q, resetBoard, seedQueue, selectSize, startNewPuzzle, winMessage } from './helpers/play-page';
 
-// update-page-layout-geometry (NFR-14, G2 block 1), scenario «Colours are unchanged»: the layout port changes geometry only. The 13 colour
-// tokens of A-51 keep their names and their values in both token sets; the palette is a later block. The geometry itself is checked in a real
+// update-page-palette DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta «Main column layout geometry follows the design reference», scenario «Colours are
+// the G2 palette», proposal.md Impact row `tests/play-page-layout-geometry.test.ts:10-46`): block 1's scenario «Colours are unchanged» (the 13 colour
+// tokens of A-51 keep their names and values in both token sets) became «Colours are the G2 palette»: both sets equal the 25 block-2 tokens and values
+// of the appendix to A-57, and no other `--color-*` token is declared (toEqual on the whole set). The values are written out here on purpose, a
+// second copy of the table that `tests/helpers/css.ts` (PALETTE_LIGHT, PALETTE_DARK) and the spec hold. The geometry itself is checked in a real
 // browser by e2e/nfr-14-layout-geometry.spec.ts (jsdom does not lay out).
 const LIGHT: Record<string, string> = {
-  '--color-page': '#f9fafb',
-  '--color-text': '#1f2937',
-  '--color-cell-bg': '#ffffff',
-  '--color-cell-border': '#6b7280',
-  '--color-given-bg': '#e5e7eb',
-  '--color-given-border': '#374151',
-  '--color-violation-bg': '#fecaca',
-  '--color-violation-border': '#b91c1c',
-  '--color-violation-text': '#991b1b',
-  '--color-focus': '#1d4ed8',
-  '--color-control-bg': '#ffffff',
-  '--color-control-border': '#6b7280',
-  '--color-win-text': '#166534',
+  '--color-page': '#f7f3ea',
+  '--color-text': '#1e2126',
+  '--color-text-muted': '#5f5549',
+  '--color-cell-bg': '#fffdf8',
+  '--color-control-bg': '#fffdf8',
+  '--color-line': '#e2dbcc',
+  '--color-cell-border': '#847b6d',
+  '--color-control-border': '#8c8374',
+  '--color-given-bg': '#ddd3be',
+  '--color-given-border': '#847b6d',
+  '--color-given-text': '#1e2126',
+  '--color-entry-text': '#a8400c',
+  '--color-primary': '#b4460d',
+  '--color-primary-text': '#fffdf8',
+  '--color-primary-soft': '#f6e3d4',
+  '--color-hover-ring': '#d28f6b',
+  '--color-violation-bg': '#fbe4e1',
+  '--color-violation-border': '#b3261e',
+  '--color-violation-stripe': '#f1c9c6',
+  '--color-violation-text': '#8f1d17',
+  '--color-success': '#2f6b3a',
+  '--color-success-bg': '#e2efdf',
+  '--color-success-glow': '#2f6b3a73',
+  '--color-win-text': '#1e2126',
+  '--color-focus': '#1e2126',
 };
 const DARK: Record<string, string> = {
   '--color-page': '#1a1714',
   '--color-text': '#f1ede4',
+  '--color-text-muted': '#b8b0a4',
   '--color-cell-bg': '#24201b',
-  '--color-cell-border': '#9a8f80',
+  '--color-control-bg': '#24201b',
+  '--color-line': '#3a332b',
+  '--color-cell-border': '#8a7f71',
+  '--color-control-border': '#8a7f71',
   '--color-given-bg': '#4d4438',
-  '--color-given-border': '#e0d6c4',
+  '--color-given-border': '#8a7f71',
+  '--color-given-text': '#f7f3ea',
+  '--color-entry-text': '#f7a46a',
+  '--color-primary': '#f39a5b',
+  '--color-primary-text': '#1a1007',
+  '--color-primary-soft': '#3d2b1e',
+  '--color-hover-ring': '#a06941',
   '--color-violation-bg': '#3f2320',
   '--color-violation-border': '#ff8a7d',
-  '--color-violation-text': '#ffb4ab',
-  '--color-focus': '#f39a5b',
-  '--color-control-bg': '#24201b',
-  '--color-control-border': '#9a8f80',
-  '--color-win-text': '#8fd19a',
+  '--color-violation-stripe': '#5e332f',
+  '--color-violation-text': '#ff8a7d',
+  '--color-success': '#8fd19a',
+  '--color-success-bg': '#1f3324',
+  '--color-success-glow': '#8fd19a73',
+  '--color-win-text': '#f1ede4',
+  '--color-focus': '#f1ede4',
 };
 
-describe('@trace NFR-14 the layout geometry port leaves the colours unchanged', () => {
-  it('the light and dark token sets keep the 13 names and values of A-51', () => {
+describe('@trace NFR-14 @trace FR-65 the main column takes the G2 palette', () => {
+  it('Colours are the G2 palette: the light and dark token sets equal the 25 block-2 tokens and values of the appendix to A-57, and no other --color-* is declared', () => {
     const [light, dark] = themeTokenSets(readStyles());
     expect(light?.tokens).toEqual(LIGHT);
     expect(dark?.tokens).toEqual(DARK);
+    expect(Object.keys(LIGHT)).toHaveLength(25);
   });
 });
 

@@ -362,21 +362,123 @@ export function scanColours(parsed: ParsedStyles): ColourScan {
 // Tokens and contrast (FR-65)
 // ---------------------------------------------------------------------------------------------------------
 
+/**
+ * The 25 colour tokens of the main column in the G2 palette (A-57 appendix, block 2; the table of the spec delta of update-page-palette),
+ * in the order of that table. update-page-palette (delta «Borders, cues and focus rings have enough contrast»): this was the 13 baseline names.
+ * A later block adds its rows from the appendix.
+ */
 export const TOKEN_NAMES = [
   '--color-page',
   '--color-text',
+  '--color-text-muted',
   '--color-cell-bg',
+  '--color-control-bg',
+  '--color-line',
   '--color-cell-border',
+  '--color-control-border',
   '--color-given-bg',
   '--color-given-border',
+  '--color-given-text',
+  '--color-entry-text',
+  '--color-primary',
+  '--color-primary-text',
+  '--color-primary-soft',
+  '--color-hover-ring',
   '--color-violation-bg',
   '--color-violation-border',
+  '--color-violation-stripe',
   '--color-violation-text',
-  '--color-focus',
-  '--color-control-bg',
-  '--color-control-border',
+  '--color-success',
+  '--color-success-bg',
+  '--color-success-glow',
   '--color-win-text',
+  '--color-focus',
 ] as const;
+
+/**
+ * The values of the 25 tokens, light (the top-level `:root`) and dark (`:root[data-theme="dark"]`), written out of the table of the spec delta
+ * of update-page-palette and of the appendix to A-57 in docs/requirements.md. The stylesheet tests compare the file with them; the contrast
+ * ratios are computed from the stylesheet, never from these (they are expectations, not inputs).
+ */
+export const PALETTE_LIGHT: Record<(typeof TOKEN_NAMES)[number], string> = {
+  '--color-page': '#f7f3ea',
+  '--color-text': '#1e2126',
+  '--color-text-muted': '#5f5549',
+  '--color-cell-bg': '#fffdf8',
+  '--color-control-bg': '#fffdf8',
+  '--color-line': '#e2dbcc',
+  '--color-cell-border': '#847b6d',
+  '--color-control-border': '#8c8374',
+  '--color-given-bg': '#ddd3be',
+  '--color-given-border': '#847b6d',
+  '--color-given-text': '#1e2126',
+  '--color-entry-text': '#a8400c',
+  '--color-primary': '#b4460d',
+  '--color-primary-text': '#fffdf8',
+  '--color-primary-soft': '#f6e3d4',
+  '--color-hover-ring': '#d28f6b',
+  '--color-violation-bg': '#fbe4e1',
+  '--color-violation-border': '#b3261e',
+  '--color-violation-stripe': '#f1c9c6',
+  '--color-violation-text': '#8f1d17',
+  '--color-success': '#2f6b3a',
+  '--color-success-bg': '#e2efdf',
+  '--color-success-glow': '#2f6b3a73',
+  '--color-win-text': '#1e2126',
+  '--color-focus': '#1e2126',
+};
+
+export const PALETTE_DARK: Record<(typeof TOKEN_NAMES)[number], string> = {
+  '--color-page': '#1a1714',
+  '--color-text': '#f1ede4',
+  '--color-text-muted': '#b8b0a4',
+  '--color-cell-bg': '#24201b',
+  '--color-control-bg': '#24201b',
+  '--color-line': '#3a332b',
+  '--color-cell-border': '#8a7f71',
+  '--color-control-border': '#8a7f71',
+  '--color-given-bg': '#4d4438',
+  '--color-given-border': '#8a7f71',
+  '--color-given-text': '#f7f3ea',
+  '--color-entry-text': '#f7a46a',
+  '--color-primary': '#f39a5b',
+  '--color-primary-text': '#1a1007',
+  '--color-primary-soft': '#3d2b1e',
+  '--color-hover-ring': '#a06941',
+  '--color-violation-bg': '#3f2320',
+  '--color-violation-border': '#ff8a7d',
+  '--color-violation-stripe': '#5e332f',
+  '--color-violation-text': '#ff8a7d',
+  '--color-success': '#8fd19a',
+  '--color-success-bg': '#1f3324',
+  '--color-success-glow': '#8fd19a73',
+  '--color-win-text': '#f1ede4',
+  '--color-focus': '#f1ede4',
+};
+
+/**
+ * The tokens the list marks translucent: their value is `#rrggbbaa` and they are never the foreground or the background of a contrast pair
+ * (a backdrop would be checked composited over the page, a later block). Block 2 has one, the win glow keyframes.
+ */
+export const TRANSLUCENT_TOKENS: ReadonlySet<string> = new Set(['--color-success-glow']);
+
+/**
+ * What is wrong with the FORMAT of the `--color-*` values of a token map: an opaque token must be `#rrggbb`, a translucent one `#rrggbbaa`;
+ * `rgb()`, a short hex, a keyword or `#rrggbbaa` on an opaque token are reported. Other names (`--n`, `--cell-max`) are not colours and not judged.
+ * Reads the format only; `contrastProblems` judges the ratios.
+ */
+export function tokenFormatProblems(tokens: Record<string, string>): string[] {
+  const problems: string[] = [];
+  for (const [name, value] of Object.entries(tokens)) {
+    if (!isColourToken(name)) continue;
+    const translucent = TRANSLUCENT_TOKENS.has(name);
+    const pattern = translucent ? /^#[0-9a-f]{8}$/i : /^#[0-9a-f]{6}$/i;
+    if (!pattern.test(value.trim())) {
+      problems.push(`${name}: "${value}" is not ${translucent ? '#rrggbbaa (a translucent token)' : '#rrggbb (an opaque token)'}`);
+    }
+  }
+  return problems;
+}
 
 /** WCAG 2 relative luminance of `#rrggbb`. */
 function luminance(hex: string): number {
@@ -410,7 +512,7 @@ export function withTokensInlined(text: string, tokens: Record<string, string> =
   return text.replace(/var\(\s*(--color-[\w-]+)\s*\)/g, (whole, name: string) => tokens[name] ?? whole);
 }
 
-export type PairGroup = 'cell-border' | 'given-cue' | 'violation-cue' | 'focus-ring' | 'control-border' | 'text';
+export type PairGroup = 'cell-border' | 'violation-cue' | 'hinted-cue' | 'focus-ring' | 'control-border' | 'text';
 
 export interface ContrastPair {
   group: PairGroup;
@@ -422,16 +524,25 @@ export interface ContrastPair {
 const pairs = (group: PairGroup, fg: string, bgs: string[], min: number): ContrastPair[] =>
   bgs.map((bg) => ({ group, fg: `--color-${fg}`, bg: `--color-${bg}`, min }));
 
-/** Every pair of FR-65: 3 for borders, cues and rings, 4.5 for text. */
+/**
+ * Every pair of FR-65 in the G2 palette: 3 for borders, cues and rings, 4.5 for text (34 pairs). update-page-palette (delta «Borders, cues and
+ * focus rings have enough contrast»): the given-cue group and the cell-border pair against the given fill go (a given cell is inactive, A-57),
+ * the board plate, the solved plate, the hinted cue, the violation text on the stripe, the focus ring on the cell border and the win text on the
+ * success plate come in. No pair names a translucent token.
+ */
 export const CONTRAST_PAIRS: ContrastPair[] = [
-  ...pairs('cell-border', 'cell-border', ['page', 'cell-bg', 'given-bg'], 3),
-  ...pairs('violation-cue', 'violation-border', ['page', 'cell-bg', 'violation-bg'], 3),
-  ...pairs('given-cue', 'given-border', ['page', 'cell-bg', 'given-bg'], 3),
-  ...pairs('focus-ring', 'focus', ['page', 'cell-bg', 'given-bg', 'violation-bg'], 3),
+  ...pairs('cell-border', 'cell-border', ['page', 'cell-bg', 'line', 'success-bg'], 3),
+  ...pairs('violation-cue', 'violation-border', ['page', 'cell-bg', 'violation-bg', 'line'], 3),
+  ...pairs('hinted-cue', 'primary', ['primary-soft', 'line', 'page'], 3),
+  ...pairs('focus-ring', 'focus', ['page', 'cell-bg', 'given-bg', 'violation-bg', 'line', 'primary-soft', 'success-bg', 'cell-border'], 3),
   ...pairs('control-border', 'control-border', ['page'], 3),
-  ...pairs('text', 'text', ['page', 'cell-bg', 'given-bg', 'control-bg'], 4.5),
-  ...pairs('text', 'violation-text', ['violation-bg'], 4.5),
-  ...pairs('text', 'win-text', ['page'], 4.5),
+  ...pairs('text', 'text', ['page', 'cell-bg', 'given-bg', 'control-bg', 'primary-soft'], 4.5),
+  ...pairs('text', 'given-text', ['given-bg'], 4.5),
+  ...pairs('text', 'entry-text', ['cell-bg'], 4.5),
+  ...pairs('text', 'text-muted', ['page', 'cell-bg', 'control-bg'], 4.5),
+  ...pairs('text', 'violation-text', ['violation-bg', 'violation-stripe'], 4.5),
+  ...pairs('text', 'primary-text', ['primary'], 4.5),
+  ...pairs('text', 'win-text', ['success-bg'], 4.5),
 ];
 
 /**
