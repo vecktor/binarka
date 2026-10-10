@@ -1,0 +1,286 @@
+{
+  "generatedBy": "review-gate",
+  "persistedBy": "orchestrator by hand from the run's task output (the workflow's persist step wrote no file)",
+  "change": "update-page-layout-geometry",
+  "clean": false,
+  "runs": [
+    {
+      "runId": "wf_1c7326da-0c4",
+      "kind": "first run",
+      "baseRef": "6ccaf8c",
+      "headRef": "b883f36",
+      "confirmed": 14,
+      "contested": 0,
+      "rejected": 5,
+      "confirmedTitles": [
+        "An empty hint line is 4px x 0, not 0x0: the hint rule's border-left-width overrides .message:empty (minor, correctness)",
+        "The data-solved unit tests skip the click-solve path and the size/level-change path that the spec scenario names (minor, correctness)",
+        "The --column formula repeats the 6x6 gap and padding as literals, and the #app copies of --board-gap/--board-pad are never read (minor, correctness)",
+        "design.md says the 8x8 phone bleed is on .board-host, but the code puts it on .board (minor, correctness)",
+        "The freeze script's provenance does not identify the build it measures (minor, correctness)",
+        "Dev-only static server in freeze script decodes the URL path and joins it without a root check (path traversal) (minor, security)",
+        "Scenario 'The board host marks the solved state' is only partly tested: the click solve, the new size and level, and the click that un-solves are not tested (major, spec-compliance)",
+        "The settings panel placement clause (SHALL) has no scenario and no check (major, spec-compliance)",
+        "Task 3.4 was ticked at the reviewed commit, but its artifact landed in a later commit (minor, spec-compliance)",
+        "The sheet margin change (24 -> 28 px) and the global box-sizing/line-height side effects on the panels are not in the proposal or design (minor, spec-compliance)",
+        "Properties outside design.md decision 2's 'geometry only' list were ported (minor, spec-compliance)",
+        "The fixture coverage test does not pin the per-state viewport matrix the spec lists (minor, spec-compliance)",
+        "Setup sheet at 375 px got taller and covers most of the board; level descriptions lost their indent next to the radio (minor, visual)",
+        "No rendered stills of the page after the change; the only visual evidence is difference masks (minor, visual)"
+      ],
+      "contestedTitles": [],
+      "rejectedTitles": [
+        "text-wrap: balance is outside the stated build target",
+        "Capture-board hook (window.__binarkaCaptureBoard) is read by production page code",
+        "Coverage summary: 5 scenarios: 4 implemented, 1 partial, 0 missing, 0 contradicted",
+        "The stricter instrument (1 px width sweep) is declared but no task schedules it before archive",
+        "The requirement's Traces line omits FR-63 and FR-38, which it relies on"
+      ]
+    }
+  ],
+  "codeDefects": [
+    "The empty hint line keeps a 4px left border (box 4px x 0, not 0x0): `.message[data-message='hint']` overrides `.message:empty` by source order (minor, no visible effect: zero height, transparent border)"
+  ],
+  "dispositions": {
+    "approval": "the user approved the full fix round in chat on 2026-10-10 (evening): «yes, approve the full fix round» (autonomy-log row 152)",
+    "An empty hint line is 4px x 0": "fixed: the accent only on a shown hint (`:not(:empty)`); the hint line added to the fixture, red at 4x0 first (fix-round-1-hint-red.txt)",
+    "The data-solved unit tests skip the click-solve path": "fixed: three tests added; mutation check 3 of 3 killed (fix-round-1-mutation.txt)",
+    "The --column formula repeats": "fixed: --board-gap-6/--board-pad-6 on #app feed the board default and both column formulas; the unused #app copies removed",
+    "design.md says the 8x8 phone bleed": "fixed in design.md",
+    "The freeze script's provenance": "fixed: designBuildSha1 and designBuild in the fixture's provenance",
+    "Dev-only static server": "fixed in both dev servers (freeze script and visual-block): a resolved-path guard, 403 outside the build (fix-round-1-path-guard.txt)",
+    "Scenario 'The board host marks the solved state'": "fixed: the click solve, the click that un-solves and the new size and level are tested (see above)",
+    "The settings panel placement clause": "fixed: a scenario and an e2e check at 768, 1024, 1366, 1440; red against the old placement (fix-round-1-settings-red.txt)",
+    "Task 3.4 was ticked": "noted in tasks.md (the evidence landed in b342d87)",
+    "The sheet margin change": "fixed: proposal and design.md list the side effects",
+    "Properties outside design.md decision 2": "fixed: decision 2 lists every ported property",
+    "The fixture coverage test does not pin": "fixed: the per-state shot list is pinned",
+    "Setup sheet at 375 px got taller": "fixed beyond recording: the vision judge also found the fourth level under the footer at 1366x650 (a regression, checked against 6ccaf8c); `.setup-sheet { line-height: normal }` until the sheet block; run 6 puts the setup shots above run 4 (fix-round-1-sheet.txt, check-visual-run-6.txt). The level-description indent stays for the sheet block.",
+    "No rendered stills": "fixed: stills in docs/qa/update-page-layout-geometry/stills/, judged by a fresh vision judge (no main-column regression)"
+  },
+  "findings": [
+    {
+      "title": "An empty hint line is 4px x 0, not 0x0: the hint rule's border-left-width overrides .message:empty",
+      "file": "src/ui/style.css",
+      "line": 397,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`.message:empty { position: absolute; padding: 0; border-width: 0; }` (line 380) and `.message[data-message='hint'] { border-left-width: 4px; ... }` (line 397) have the same specificity (0,2,0). The hint rule comes later, so it wins, and an empty hint keeps a 4px left border. design.md decision 6 says the empty lines 'leave the flow instead (position: absolute, no padding or border, so 0×0)'. Nothing shows today because the box has zero height and a transparent border colour. But the claim is false for the hint line, and the hint line is not in the geometry selectors, so the e2e check cannot catch it.",
+      "suggestion": "Scope the hint border to non-empty lines (`.message[data-message='hint']:not(:empty)`), or move `.message:empty` after the hint rule. Alternatively, reword decision 6 so it does not claim 0x0 for the hint line.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed in src/ui/style.css. `.message:empty` (line 380) and `.message[data-message='hint']` (line 397) both have specificity (0,2,0), and the hint rule comes later. It therefore overrides `border-width: 0` with `border-left-width: 4px` on an empty hint line. The empty hint is absolutely positioned with padding 0, so its width shrinks to fit and is 4px from the left border. Its height is 0. The box is 4px x 0, not the 0x0 that design decision 6 claims. The visible effect is nil, because the height is zero and the border is transparent, so the severity stays minor. The suggested fix of scoping the hint border to `:not(:empty)` or reordering the rules is correct.",
+        "In src/ui/style.css, `.message:empty` (line 380) and `.message[data-message='hint']` (line 397) both have specificity (0,2,0). The hint rule comes later, so its `border-left-width: 4px` overrides `border-width: 0`. `.message` already sets `border-style: solid` (line 370), so an empty hint keeps a 4px left border and its box is 4px x 0, contradicting the 0x0 claim in design decision 6. The win line has no such override and is unaffected. The effect is not visible (zero height, transparent border), so the minor severity is right. I did not check whether the e2e geometry selectors include the hint line."
+      ]
+    },
+    {
+      "title": "The data-solved unit tests skip the click-solve path and the size/level-change path that the spec scenario names",
+      "file": "tests/play-page-layout-geometry.test.ts",
+      "line": 87,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The scenario «The board host marks the solved state» says the attribute appears when 'the last move solves it (a hint or a click)' and is removed 'after «Нова головоломка», «Скинути» or a new size and level'. The suite tests mount, hint, new puzzle and reset. It does not test onBoardClick → updateWin, and it does not test changeTo → clearWin (play-page.ts:398-403). Today's code handles both paths correctly, but a regression in either one would pass the tests.",
+      "suggestion": "Add two cases: (1) one cell short of solved, click the empty cell until it holds the solution digit, and expect data-solved='true'; (2) after a win, start a new size or level through the setup sheet («Почати» → confirm) and expect no data-solved.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The spec scenario in openspec/changes/update-page-layout-geometry/specs/play-page/spec.md (lines 32-37) names \"a hint or a click\" and \"a new size and level\". The suite in tests/play-page-layout-geometry.test.ts (lines 87-123) has five cases: unsolved, solved at mount, hint, new puzzle, reset. None of them clicks a cell to solve, and none starts a new size or level. The only other file mentioning data-solved is src/ui/play-page.ts and style.css, so no other test covers those paths. The code is fine today, as the finding says (updateWin at play-page.ts:271-277, clearWin at 280-282). The click path, onBoardClick calling updateWin, is untested. The size/level path, changeTo calling clearWin, is untested too. This is a real but minor test-coverage gap against the spec, not a code defect.",
+        "Confirmed. tests/play-page-layout-geometry.test.ts only covers unsolved, mount-solved, hint-solve, new puzzle and reset for data-solved. No test drives onBoardClick -> updateWin (play-page.ts line 299 or 358) or changeTo -> clearWin (lines 398-403). No other test file references data-solved. The spec scenario names a click solve and a new size or level. Current code is correct on both paths, so this is only a coverage gap that would let a regression through. The severity is minor."
+      ]
+    },
+    {
+      "title": "The --column formula repeats the 6x6 gap and padding as literals, and the #app copies of --board-gap/--board-pad are never read",
+      "file": "src/ui/style.css",
+      "line": 890,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`--column: max(26rem, calc(6 * clamp(...) + 5 * 0.25rem + 2 * 0.375rem + 2px))` is written out at line 890 and again at line 919. It repeats the 6x6 `--board-gap: 0.25rem` / `--board-pad: 0.375rem` that `.board` declares at lines 171-172. `#app` also declares `--board-gap`/`--board-pad` (lines 78-79), but `.board` always sets its own, so nothing reads the #app copies. If the 6x6 gap or padding changes, the column silently stops matching the 6x6 board width.",
+      "suggestion": "Delete the #app copies. In #app, add named 6x6 variables (for example `--board6-gap`/`--board6-pad`) and use them in both --column formulas and in the .board default, or at least add a comment that ties the literals to the .board values.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism is real. Lines 890 and 919 hardcode `5 * 0.25rem + 2 * 0.375rem + 2px`, which are the 6x6 defaults `.board` declares at lines 171-172. The only var(--board-gap/--board-pad) reads are at lines 173, 177 and 181, all inside `.board`, which always declares its own values, so the #app copies at lines 78-79 are dead. No TS code reads them either. If the 6x6 gap or padding changed, --column would silently drift from the board width. This is a maintainability and duplication issue, not a current wrong output, so the severity is minor and I downgrade it.",
+        "The facts check out in src/ui/style.css. The --column formula repeats the literals 5 * 0.25rem + 2 * 0.375rem + 2px at lines 890 and 919. Those match the .board defaults at lines 171-172 (--board-gap: 0.25rem, --board-pad: 0.375rem). #app declares --board-gap and --board-pad at lines 78-79, but .board always redeclares both (line 171), so descendants never inherit the #app values. Nothing reads the #app copies. The 6x6 board width is a separate formula at line 173, and --column is a second hand-synced copy of it. This is a latent maintenance coupling, not a live bug. Today the values agree, so no user sees a wrong result. It would only show up if someone edited the 6x6 gap or padding in one place and not the others. The other size-specific overrides (lines 195-218) apply to other sizes and do not affect the 6x6 column formula. The finding's own claim is only that the column would silently stop matching, which is true but needs a future edit. I downgrade it to a nit."
+      ]
+    },
+    {
+      "title": "design.md says the 8x8 phone bleed is on .board-host, but the code puts it on .board",
+      "file": "openspec/changes/update-page-layout-geometry/design.md",
+      "line": 26,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The Risks section says 'The 8×8 board bleeds into the page padding on phones (`.board-host` with `--bleed`)'. Decision 5 in the same file, and style.css (`.board[data-size='8'] { --bleed: ...; margin-inline: calc(-1 * var(--bleed)); }` in the 30rem block), put the bleed on the board itself, because `#app:has(...) .board-host` is not allowed (FR-65). The change folder contradicts itself.",
+      "suggestion": "Change the Risks line to say the bleed is on `.board[data-size='8']` (negative inline margins), as decision 5 says.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. design.md line 26 says the bleed is on `.board-host` with `--bleed`. Decision 5 (line 13) in the same file says the 8x8 bleed moves onto the board using negative inline margins. src/ui/style.css lines 219-221 set `--bleed` and `margin-inline: calc(-1 * var(--bleed))` on the board rule, not on `.board-host`. The doc contradicts itself and the code. This is a minor doc inconsistency.",
+        "Confirmed. design.md line 13 (decision 5) says the 8x8 bleed moves onto the board with negative inline margins. style.css lines 219-221 put --bleed and margin-inline on the board. design.md line 26 (Risks) still says the bleed is on `.board-host` with `--bleed`, so the file contradicts itself. This is a documentation inconsistency only and has no runtime effect, so it is minor."
+      ]
+    },
+    {
+      "title": "The freeze script's provenance does not identify the build it measures",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 84,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "The boxes are measured from `design/v0/out` (the build output). The provenance records `designCssSha1` of the source `design/v0/app/binarka.css` (line 84) and `git log -1 -- design/v0` (line 88). If `out/` is stale (built before the last CSS edit), the fixture records the new source hash next to geometry measured from the old build, and nothing reports the mismatch.",
+      "suggestion": "Hash the CSS that `design/v0/out` actually ships (or record the mtime or hash of the out bundle). Alternatively, fail when any file under design/v0/app is newer than design/v0/out/index.html.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed at scripts/freeze-design-geometry.mjs. Boxes are measured from the gitignored build output design/v0/out. The provenance hashes the source design/v0/app/binarka.css and records the last git commit touching design/v0. The script only checks that out/index.html exists. It never compares the build with the source, by mtime or by hash. A stale out/ would therefore get the current source hash recorded next to geometry measured from the old build, and nothing would report the mismatch. The hash also covers only binarka.css, not components or other sources that affect layout. The impact is low because this is a manual, non-gate freeze script, so the finding stays minor.",
+        "Confirmed by reading scripts/freeze-design-geometry.mjs. Boxes are measured from the served design/v0/out (root at line ~41). Provenance hashes the source design/v0/app/binarka.css (line 84) and uses git log on design/v0 (line 88), not the built output. design/v0/out is gitignored (git check-ignore confirmed), so it is a local build that can be stale. The script only checks that index.html exists and has no freshness or mtime check. A CSS edit without a rebuild therefore yields a fixture with the new source hash and old-build geometry, with no warning. Impact is limited: this is a developer-run script (\"Not a gate\"), and the e2e test reading the fixture would likely surface the mismatch later. Keep it minor."
+      ]
+    },
+    {
+      "title": "Dev-only static server in freeze script decodes the URL path and joins it without a root check (path traversal)",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 55,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The server does join(root, decodeURIComponent(pathname)) and then readFileSync. `new URL()` normalises plain `../`, but a request with encoded dot-segments or a path that resolves outside design/v0/out after decoding (for example `%2e%2e%2f` combined with an encoded slash) can reach files outside the root. It binds to 127.0.0.1 and runs for seconds on a developer machine, so only a local process or a malicious page that can reach localhost:4177 could exploit it. It is not shipped code.",
+      "suggestion": "Resolve the path and reject it unless it starts with the resolved root plus a path separator. A static file server such as `sirv` or `vite preview` would also do, but AGENTS.md requires asking before adding a dependency.",
+      "dimension": "security",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism holds. In scripts/freeze-design-geometry.mjs the server runs join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname)) and then readFileSync. There is no check that the result stays under the root. I ran the same expression in Node. A request for `/..%2f..%2f..%2fetc/passwd` keeps its `..%2f` segments through URL parsing, because the URL parser does not treat %2f as a separator. After decodeURIComponent the path is `/../../../etc/passwd`, and join() resolves it outside design/v0/out. With fewer `..%2f` segments it lands in other files in the repo. The finding's literal `%2e%2e%2f` example is partly wrong. URL parsing normalizes a bare `%2e%2e/` segment, so that form stays inside the root. The `..%2f` form is what escapes. The server binds only to 127.0.0.1, runs for a few seconds, and is dev-only. That is why the severity is minor.",
+        "The mechanism is real. In scripts/freeze-design-geometry.mjs (about lines 49-58) the server does join(root, decodeURIComponent(new URL(req.url,'http://x').pathname)) and there is no root check. I ran the path logic in node. A request for `/..%2f..%2f..%2fetc/passwd` is not normalised by `new URL`, because the encoded slash hides the dot segments, so the pathname stays `/..%2f..%2f..%2fetc/passwd`. After decodeURIComponent, join() resolves it to `etc/passwd`, which is outside design/v0/out. Plain `%2e%2e/` is normalised by URL, so the finding's wording on that is imprecise, but the encoded-slash variant works. Exploitability is very limited. The server binds to 127.0.0.1 and runs only for the few seconds of a dev freeze script. A local process could read those files directly anyway. A malicious web page could send the request, but it could not read the response cross-origin because the server sends no CORS headers. The finding is therefore a valid but minor, dev-only hardening issue, and I am keeping its severity as is."
+      ]
+    },
+    {
+      "title": "Scenario 'The board host marks the solved state' is only partly tested: the click solve, the new size and level, and the click that un-solves are not tested",
+      "file": "tests/play-page-layout-geometry.test.ts",
+      "line": 86,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "Scenario: 'WHEN the last move solves it (a hint or a click) ... THEN .board-host carries data-solved=\"true\"' and 'after «Нова головоломка», «Скинути» or a new size and level the attribute is gone'. The requirement also says 'and at no other time'. Tests cover: unsolved at mount, solved at mount, a hint solves, a new puzzle clears, a reset clears. Not covered: a click solves (onBoardClick -> updateWin, src/ui/play-page.ts:299); a new size and level through «Почати» (changeTo -> clearWin, play-page.ts:402); a click on a solved board that un-solves it must remove the flag (updateWin else-branch, play-page.ts:277). The code is correct on these paths, but no test pins them.",
+      "suggestion": "Add three unit tests: (1) solvedBoard(1), click the last empty cell into the right value, expect data-solved='true'; (2) solved board, «Почати» with another size or level (through the confirmation), expect no attribute; (3) solved board, click a non-given cell, expect the attribute gone together with the win line.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The gap is real. Only tests/play-page-layout-geometry.test.ts references data-solved, and it covers just five cases: unsolved at mount, solved at mount, a hint solves, a new puzzle clears, a reset clears. It never clicks a cell, so these paths are untested: the click solve (onBoardClick calling updateWin at play-page.ts:299), the new size and level clear (clearWin at 402), and the else-branch of updateWin (line 277) that un-solves on click. The spec says the flag appears \"and at no other time\", so these paths belong to the scenario. The production code is correct on all three, so this is a coverage gap and not a defect. I would downgrade it from major.",
+        "Confirmed. tests/play-page-layout-geometry.test.ts has only five data-solved tests: unsolved at mount, solved at mount, a hint solves, a new puzzle clears, a reset clears. No other test file references data-solved. In src/ui/play-page.ts, the click path (onBoardClick calls updateWin, line 299), the changeTo clearWin at line 402, and the updateWin else-branch that removes the attribute (line 277) have no test pinning the attribute. The code is correct on these paths, so this is a test-coverage gap with no runtime defect. Severity should drop from major to minor or moderate."
+      ]
+    },
+    {
+      "title": "The settings panel placement clause (SHALL) has no scenario and no check",
+      "file": "src/ui/style.css",
+      "line": 970,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "Spec: 'The settings panel stays under the header, its right edge on the column's right edge from 48rem, as the column changes.' Implemented: '.settings { width: min(22rem, var(--column)); margin: 6rem 0 auto calc(50% + var(--column) / 2 - min(22rem, var(--column))); }' in @media (min-width: 48rem). No #### Scenario covers it. .settings is not among the 15 fixture selectors in quality/design-geometry.json, and no e2e test measures it (grep of e2e/ finds no settings right-edge or top assertion). This replaces the old 420 px-tied placement 'calc(50% + 210px - 22rem)'.",
+      "suggestion": "Add a scenario. Add an e2e check that opens the settings panel at 768, 1024 and 1440 and asserts that panel.right equals .page-header.right within 0.5 px and that panel.top is at or below header.bottom. Or freeze the panel's box from the design into the fixture.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The change spec (openspec/changes/update-page-layout-geometry/specs/play-page/spec.md, line 9) says \"The settings panel stays under the header, its right edge on the column's right edge from 48rem, as the column changes.\" The requirement has five scenarios and none mentions the settings panel. src/ui/style.css (~line 970) implements the placement in the 48rem media query with `margin: 6rem 0 auto calc(50% + var(--column) / 2 - min(22rem, var(--column)))`. The existing e2e specs that mention the settings panel (nfr-12-targets, nfr-10-header-fit) only check target sizes and header fit, not the panel's position. I found no geometry assertion on `.settings` in tests/ or e2e/, and the finding says it is not among the fixture selectors. So the SHALL clause has no scenario and no check. The finding is about missing coverage, not wrong CSS; the CSS itself looks plausible. I did not open quality/design-geometry.json to verify that `.settings` is absent from it.",
+        "Confirmed. The spec's last sentence says the settings panel stays under the header with its right edge on the column's right edge from 48rem. The change has four scenarios (default page, 4x4/8x8, solved board, colours). None covers the panel. style.css lines 967-981 implement the placement through a margin calc. Nothing measures the panel's position: no match in e2e/ or tests/ for its right edge or top, and tests/ has only a theme-stylesheet backdrop reference to .settings. So a SHALL clause has neither a scenario nor an automated check. This is a traceability gap rather than a user-facing defect, and the CSS looks plausibly correct, so the severity is arguably moderate. The finding is accurate about the gap."
+      ]
+    },
+    {
+      "title": "Task 3.4 was ticked at the reviewed commit, but its artifact landed in a later commit",
+      "file": "openspec/changes/update-page-layout-geometry/tasks.md",
+      "line": 24,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "At b883f36, tasks.md line 24 reads '- [x] 3.4 Run 5 of `npm run check:visual` -> `docs/qa/g2/check-visual-run-5.txt`; update `docs/qa/visual-diff/README.md`.' But `git show b883f36:docs/qa/g2/check-visual-run-5.txt` fails (missing), and the README was last touched in b342d87. Both artifacts exist at HEAD (b342d87), so this is fixed at the tip, but the ticked box ran ahead of its evidence within the reviewed range.",
+      "suggestion": "Tick a task only in the commit that adds its artifact. No change is needed at HEAD; note it in the review record.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. At b883f36, tasks.md line 24 shows \"- [x] 3.4 Run 5 of check:visual -> docs/qa/g2/check-visual-run-5.txt\". Git reports that docs/qa/g2/check-visual-run-5.txt is not in b883f36. The commit's file list also does not include the file or docs/qa/visual-diff/README.md. The artifact was first added in b342d87, so the box was ticked one commit before its evidence existed. The finding is accurate and minor, and the conflict with the evidence-before-done rule is real. It is fixed at HEAD, as the finding itself says.",
+        "Confirmed. At b883f36, tasks.md line 24 has task 3.4 ticked [x]. The artifact docs/qa/g2/check-visual-run-5.txt does not exist in that commit; git reports it exists on disk but not in b883f36. The b883f36 stat does not touch docs/qa/visual-diff/README.md. The README changed in b342d87, which also adds the run-5 artifact. So the box was ticked one commit ahead of its evidence. The finding already says it is fixed at HEAD and is minor, and the claim holds as stated."
+      ]
+    },
+    {
+      "title": "The sheet margin change (24 -> 28 px) and the global box-sizing/line-height side effects on the panels are not in the proposal or design",
+      "file": "src/ui/style.css",
+      "line": 797,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The spec says 'the panels' and the dialog's own geometry ... are outside it', yet '.setup-sheet > [data-control=level] { margin-bottom: 28px; }' (was 24px) changes the sheet. Its only record is tasks.md 2.4 and a CSS comment, backed by docs/qa/update-page-layout-geometry/nfr-13-red-after-port.txt (4 NFR-13 failures up to 1.8 px, then green). The proposal's What Changes list does not include it. The global '* { box-sizing: border-box }' and 'body { line-height: 1.5 }' reshape the sheet, rules panel, settings panel and dialog; design.md mentions this only under Risks.",
+      "suggestion": "Amend the proposal's What Changes and design.md (for example a decision 8): the sheet's level-group margin is 28 px under the new box model (NFR-13, FR-65 WCAG 2.4.11), and the global box model and line height deliberately change the panels' geometry. Their parity is left to later blocks.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The margin-bottom of the level group changed from 24px to 28px in style.css, as the finding says. The spec at specs/play-page/spec.md line 9 puts the panels' own geometry outside this change. The proposal's What Changes list and design.md do not mention the sheet margin change. design.md only mentions the global box-model and line-height risk (line 25). The only record is tasks.md 2.4 and the CSS comment. The evidence file nfr-13-red-after-port.txt exists. This is a documentation gap against the spec, with no functional bug, so minor severity fits.",
+        "Confirmed by reading the code and the change folder. style.css:797 sets `.setup-sheet > [data-control='level'] { margin-bottom: 28px; }`, and its comment says it was 24px before. The proposal's \"What Changes\" list has no sheet item. The spec in specs/play-page/spec.md says the panels' and dialog's own geometry are outside the change. design.md covers the global border-box and line-height side effects only under Risks (line 25), not as a decision. The margin change is recorded only in tasks.md 2.4, the CSS comment and the nfr-13 red-after-port evidence file, so the gap is real. The impact is documentation and traceability only, with no user-facing defect, and the change is partly documented in tasks.md. I recommend downgrading the severity."
+      ]
+    },
+    {
+      "title": "Properties outside design.md decision 2's 'geometry only' list were ported",
+      "file": "src/ui/style.css",
+      "line": 57,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Decision 2 lists the ported properties and says 'Not ported: colours, backgrounds, shadows, backdrops, text decoration and hover/active feedback.' The diff adds '-webkit-font-smoothing: antialiased' (pure paint), 'text-size-adjust: 100%', 'font-variant-numeric: tabular-nums', 'text-wrap: balance' on .message-idle, 'white-space: nowrap' on .setup-button, and '.setup-summary { overflow: hidden; text-overflow: ellipsis }'. That last one is a behaviour change: the summary text can now be cut with an ellipsis, and no requirement backs it.",
+      "suggestion": "Either extend decision 2 with these properties and the reasons (several affect text metrics and so geometry), or drop font-smoothing until the paint block. Note in the spec that the summary may truncate visually while its accessible name stays complete.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. design.md decision 2 lists the ported properties and says colours, backgrounds, shadows and similar are not ported. src/ui/style.css contains -webkit-font-smoothing, text-size-adjust, font-variant-numeric: tabular-nums and text-wrap: balance, plus white-space: nowrap and .setup-summary overflow:hidden with text-overflow:ellipsis. None of these appear in the list, and the change's openspec directory has no mention of them. git log -S shows commit b883f36 introduced the ellipsis and font-smoothing lines. The ellipsis can truncate the summary visually, and font-smoothing is paint-only. The mismatch with the stated spec is real, so this is a minor spec-compliance finding.",
+        "Confirmed. The commit b883f36 added all six properties to src/ui/style.css: -webkit-font-smoothing at line 57, text-size-adjust at 48, tabular-nums at 235, text-wrap: balance at 394, white-space: nowrap on .setup-button at 439, and overflow: hidden with text-overflow: ellipsis on .setup-summary at 606 and 634-635. Decision 2 in openspec/changes/update-page-layout-geometry/design.md lists the ported properties and excludes colours, backgrounds, shadows, backdrops, text decoration and hover/active feedback. None of the six is in that list. A grep of the change directory finds no mention of smoothing, tabular, text-wrap, nowrap, ellipsis or text-size-adjust. The ellipsis does let the summary text be visually truncated, with no requirement behind it. The finding is accurate but minor: it is a spec-compliance gap, not a user-facing defect, because several of these properties affect text metrics and so plausibly serve the geometry goal."
+      ]
+    },
+    {
+      "title": "The fixture coverage test does not pin the per-state viewport matrix the spec lists",
+      "file": "e2e/nfr-14-layout-geometry.spec.ts",
+      "line": 40,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The spec lists the cases: default and eight at 320x700, 375x812, 768x1024, 1024x768, 1366x650 and 1440x900; four, level and win at the same viewports except 1366x650. The test asserts only 'fixture.cases.length >= 27', the set of states and tolerancePx 0.5. The current fixture does match the matrix (checked), but a re-freeze that drops 320-light-win and adds a duplicate would still pass.",
+      "suggestion": "Assert the exact set of shot ids (or the state x viewport pairs) the spec enumerates, and that the selectors equal the spec's 15 elements.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "I read e2e/nfr-14-layout-geometry.spec.ts, and the finding's description is accurate. The coverage test at lines 34-38 only checks cases.length >= 27, the Set of states, and tolerancePx === 0.5. It never checks the shot ids, the state-by-viewport pairs, or the selectors list. A re-freeze that dropped 320-light-win and added a duplicate case would still pass: the count would stay at 27, all five states would still appear, and nothing checks the selectors. The per-case loop only covers whatever is in the fixture. The claimed gap therefore exists. The severity is minor, because the current fixture matches the matrix as the finding says, and I did not check the fixture file myself.",
+        "I read e2e/nfr-14-layout-geometry.spec.ts. The coverage test at line 40 checks only three things: cases.length >= 27, the set of state names, and tolerancePx === 0.5. It does not check shot ids, state-by-viewport pairs or the selector list. The per-case loop is generated from whatever the fixture contains, so a fixture that dropped 320-light-win and added a duplicate case would still pass every test. Nothing in the spec file guards the matrix, so the gap is real. It is a latent weakness in test strictness, and the current fixture reportedly matches the spec. That makes it a minor finding, not a live defect."
+      ]
+    },
+    {
+      "title": "Setup sheet at 375 px got taller and covers most of the board; level descriptions lost their indent next to the radio",
+      "file": "docs/qa/visual-diff/375-light-setup/diff.png",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Run 5 (docs/qa/g2/check-visual-run-5.txt) was run on the block-1 port before it was committed. In the 375-light-setup diff, two copies of the sheet are drawn about 95 CSS px apart. The design's sheet (design/v0-screenshots/review-set-14/375-light-setup.png) starts about 277 CSS px down, below row 3 of the board. The local sheet starts about 182 CSS px down, so it covers rows 2 and 3 of the board as well. Its size buttons sit about 100 px higher. Its level-option descriptions start at the left edge of the option (x about 36 CSS px) and use a larger font, while the design indents them to the title column (x about 53 px). Only the setup shots lost score between run 4 and run 5: 375-light-setup 0.8087 to 0.724, 375-light-setup-marked 0.8039 to 0.7291, 375-light-setup-four 0.8273 to 0.7846, 375-dark-setup-four 0.7636 to 0.7311, and 1024/1366/1440 setup about 0.003 to 0.005 lower. Every block-1 state (default, hint, win at 375) lines up box for box in its diff. The setup slip matches design.md Risks: `line-height: 1.5` on body and `box-sizing: border-box` on every element now apply to the sheet as well. design.md says some shots may dip, and the commit says the setup sheet is its own block. Still, this change made the sheet visibly further from the design: taller, covering more of the board, descriptions not indented.",
+      "suggestion": "Record the setup-sheet slip as a known regression caused by G2 block 1. Give it an evidence pointer (the run 4 vs run 5 deltas above) in current-state or the change's README, so the 'every state up except the setup sheet' line comes with numbers. Either keep the sheet's line-height and font-size where they were until the sheet block is ported, or make the setup sheet the next block. Before the sheet block is called done, check the description indent (text in the title column next to the radio) and the sheet's top edge at 320 and 375.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "I checked the score claims in docs/qa/g2/check-visual-run-4.txt and check-visual-run-5.txt. They match the finding: 375-light-setup went 0.8087 to 0.724, 375-light-setup-marked 0.8039 to 0.7291, 375-light-setup-four 0.8273 to 0.7846, and 375-dark-setup-four 0.7636 to 0.7311. The 1024, 1366 and 1440 setup shots are also slightly lower. Commit b883f36 added `box-sizing: border-box` and `line-height: 1.5` on the body, which would apply to the sheet. That fits the proposed mechanism for a taller sheet. I did not measure the diff.png pixel offsets or the description indent. The regression is real and was caused by block 1. It is minor, because the commit message and design.md Risks already expect the setup sheet to slip until it is ported as its own block.",
+        "The score deltas can be reproduced from the committed run logs. In docs/qa/g2/check-visual-run-4.txt and check-visual-run-5.txt, 375-light-setup falls from 0.8087 to 0.724. 375-light-setup-marked falls from 0.8039 to 0.7291. 375-light-setup-four falls from 0.8273 to 0.7846. 375-dark-setup-four falls from 0.7636 to 0.7311. The diff artifact docs/qa/visual-diff/375-light-setup/diff.png exists. Commit b883f36 introduced the border-box and line-height 1.5 port, so a plausible mechanism is in place. I did not inspect the diff image or the sheet CSS, so the geometry numbers (95 px offset, the missing description indent) are unchecked. The finding's severity of minor and its medium confidence both fit that. One imprecision: the dark 375-setup and dark 375-setup-marked scores rose slightly in run 5, so \"only the setup shots lost score\" is not true for every setup shot. The regression itself is real and reproducible, and it is already anticipated in design.md Risks."
+      ]
+    },
+    {
+      "title": "No rendered stills of the page after the change; the only visual evidence is difference masks",
+      "file": "docs/qa/update-page-layout-geometry/block-layout.txt",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`git diff --stat 6ccaf8c..b883f36` adds no PNG files. docs/qa/update-page-layout-geometry/ holds only text and JSON (block-layout.txt, block-layout-summary.json, red and green runs). docs/qa/visual-diff/*/ holds only diff.png and report.json, i.e. masks. A mask shows where the page and the design differ, but not what the page looks like: text legibility, contrast after the line-height and border-box change, and whether the 0x0 live regions (FR-63) leave stray borders or gaps cannot be judged from it. The design notes 'Not ported: colours…', so paint is expected to differ, but nobody has looked at the page itself after a change that alters every text box (body line-height 1.5).",
+      "suggestion": "Save a few settled stills of the page after the port (e.g. 375 default, hint, win and 375 setup, 1366 default and setup, light and dark) under docs/qa/update-page-layout-geometry/ and run vision-verify on them. If the check:visual harness already captures the page, keep its local screenshot next to diff.png so later reviews can look at the page itself.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The facts hold. The diff 6ccaf8c..b883f36 adds no PNG or other image files, only text, JSON and code. docs/qa/update-page-layout-geometry/ holds only block-layout.txt, block-layout-summary.json and the red and green run logs. docs/qa/visual-diff/*/ holds only diff.png and report.json, and diff.png is a difference mask. The visual-diff README says the diff.png files are not committed (.gitignore), so even the masks are local only. The change rewrites src/ui/style.css (336 lines) and play-page.ts, which affects every text box. No still of the rendered page accompanies it, although earlier slices such as add-english-version do commit stills. This is an evidence gap rather than a code defect, which fits its minor severity.",
+        "Verified. The diff 6ccaf8c..b883f36 adds no image files. docs/qa/update-page-layout-geometry/ holds only txt and json. docs/qa/visual-diff/*/ holds only diff.png and report.json, and diff.png is gitignored, so even those masks are not committed. Earlier changes (add-english-version, add-theme-switch) did commit settled page stills in docs/qa, so the convention exists and this change breaks it. It is a process and evidence gap, not a defect that a user or attacker can trigger. The minor severity fits and the finding is accurate."
+      ]
+    }
+  ],
+  "fixRound1": {
+    "approvedBy": "user",
+    "evidence": [
+      "docs/qa/update-page-layout-geometry/fix-round-1-mutation.txt",
+      "docs/qa/update-page-layout-geometry/fix-round-1-settings-red.txt",
+      "docs/qa/update-page-layout-geometry/fix-round-1-hint-red.txt",
+      "docs/qa/update-page-layout-geometry/fix-round-1-path-guard.txt",
+      "docs/qa/update-page-layout-geometry/fix-round-1-sheet.txt",
+      "docs/qa/update-page-layout-geometry/fix-round-1-green-run.txt",
+      "docs/qa/update-page-layout-geometry/fix-round-1-block-layout.txt",
+      "docs/qa/g2/check-visual-run-6.txt"
+    ]
+  }
+}

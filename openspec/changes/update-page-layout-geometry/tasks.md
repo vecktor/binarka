@@ -21,9 +21,18 @@ Order of work: section 1 (the failing test) is written FIRST and seen red before
 - [x] 3.1 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
 - [x] 3.2 `npm run test:e2e` (NFR-10, NFR-12, NFR-14 geometry, NFR-18) and `npm run check:a11y` (NFR-13).
 - [x] 3.3 `node scripts/visual-block.mjs --block layout --states default,four,eight,level,win`: geometry off 0 and unpaired 0; save the output in `docs/qa/update-page-layout-geometry/`.
-- [x] 3.4 Run 5 of `npm run check:visual` → `docs/qa/g2/check-visual-run-5.txt`; update `docs/qa/visual-diff/README.md`.
+- [x] 3.4 Run 5 of `npm run check:visual` → `docs/qa/g2/check-visual-run-5.txt`; update `docs/qa/visual-diff/README.md`. (Run against the uncommitted port; the evidence landed in `b342d87`, one commit after the ticked task at `b883f36`: review run 1.)
 
-## 4. Review and archive
+## 4. Fix round 1 (review run `wf_1c7326da-0c4`, approved by the user: autonomy-log row 152)
 
-- [ ] 4.1 Review gate on the slice's commits; fix rounds need the user's approval.
-- [ ] 4.2 Archive the change; update `docs/current-state.md`, `docs/handoff/next-session.md` and the autonomy log.
+- [x] 4.1 Tests: the click solve, the click that un-solves and the new size and level clear `data-solved` (mutation check, 3 of 3 killed: `fix-round-1-mutation.txt`); the settings placement check (red against the old 420 px placement: `fix-round-1-settings-red.txt`); the fixture's case list pinned; the hint line as a 16th fixture element (red at 4×0: `fix-round-1-hint-red.txt`).
+- [x] 4.2 Fixes: the hint's 4px accent only on a shown hint; the column formula reads `--board-gap-6`/`--board-pad-6` (the unused `#app` copies removed); a path guard in the dev-only servers of `scripts/freeze-design-geometry.mjs` and `scripts/visual-block.mjs` (`fix-round-1-path-guard.txt`); the fixture's provenance names the build (`designBuildSha1`).
+- [x] 4.3 Docs: design.md (the bleed on the board, the full list of ported properties, the side effects and the setup-sheet regression with numbers), proposal.md, this file.
+- [x] 4.4 Rendered stills of the page after the change, light and dark (`docs/qa/update-page-layout-geometry/stills/`), looked at by a fresh vision judge: no regression in the main column; it found the setup sheet's fourth level under the footer at 1366×650, a regression from block 1 (checked against `6ccaf8c`), fixed with `line-height: normal` on the sheet (`fix-round-1-sheet.txt`).
+- [x] 4.5 Battery again (`fix-round-1-green-run.txt`: lint, 1727 tests, build, strict, ratchet, e2e 148, a11y 67); per-block tool 54 of 54 shots with 0 boxes off (`fix-round-1-block-layout.txt`); run 6 `docs/qa/g2/check-visual-run-6.txt` (1 of 170; the setup sheet above run 4).
+- [ ] 4.6 A confirming review run.
+
+## 5. Review and archive
+
+- [x] 5.1 Review gate on the slice's commits; fix rounds need the user's approval (run 1: 14 confirmed, one minor code defect; fix round 1 above).
+- [ ] 5.2 Archive the change; update `docs/current-state.md`, `docs/handoff/next-session.md` and the autonomy log.

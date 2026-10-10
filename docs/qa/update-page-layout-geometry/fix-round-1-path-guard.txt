@@ -1,0 +1,8 @@
+# Fix round 1 (review finding: path traversal in the dev-only static servers of scripts/freeze-design-geometry.mjs and scripts/visual-block.mjs), 2026-10-10 22:13 +0530.
+# The guard's resolution (as in both servers) against the old join, on hostile request paths. The old join reached package.json outside design/v0/out; the guard answers 403. The backslash case stays inside the folder on macOS (a literal file name, absent: 404).
+# request | guard | old
+/                                            | served                 | old join: design/v0/out/
+/eight/                                      | served /eight          | old join: design/v0/out/eight/
+/..%2f..%2f..%2fpackage.json                 | refused (403)          | old join: package.json
+/%2e%2e%2f%2e%2e%2f%2e%2e%2fpackage.json     | refused (403)          | old join: package.json
+/..%5c..%5cpackage.json                      | served /..\..\package.json | old join: design/v0/out/..\..\package.json

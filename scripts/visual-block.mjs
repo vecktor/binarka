@@ -23,7 +23,7 @@
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { extname, join } from 'node:path';
+import { extname, join, resolve, sep } from 'node:path';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import { capture, captureBoardFor, close as closeAdapter, parseShot } from './check-visual-parity-adapters.mjs';
@@ -74,8 +74,13 @@ const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css
 function serveDesign() {
   const root = 'design/v0/out';
   if (!existsSync(join(root, 'index.html'))) throw new Error('design/v0/out is missing: build the design first (design/README.md)');
+  const rootAbs = resolve(root);
   const server = createServer((req, res) => {
-    let p = join(root, decodeURIComponent(new URL(req.url, 'http://x').pathname));
+    let p = resolve(rootAbs, `.${decodeURIComponent(new URL(req.url, 'http://x').pathname)}`);
+    if (p !== rootAbs && !p.startsWith(rootAbs + sep)) {
+      res.writeHead(403).end(); // never serve outside the build folder
+      return;
+    }
     if (existsSync(p) && statSync(p).isDirectory()) p = join(p, 'index.html');
     if (!existsSync(p)) {
       res.writeHead(404).end();

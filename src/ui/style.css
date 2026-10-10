@@ -75,8 +75,9 @@ body {
   --radius-l: 1rem;
   --page-pad: 1rem;
   --page-max: 34rem;
-  --board-gap: 0.25rem;
-  --board-pad: 0.375rem;
+  /* The 6×6 board's gap and padding: the board's default, and the column formula from 48rem (the column is the 6×6 board's width). */
+  --board-gap-6: 0.25rem;
+  --board-pad-6: 0.375rem;
   --gap: var(--space-4);
   display: flex;
   flex-direction: column;
@@ -168,8 +169,8 @@ body {
 .board {
   --n: 6;
   --cell-max: 4rem;
-  --board-gap: 0.25rem;
-  --board-pad: 0.375rem;
+  --board-gap: var(--board-gap-6);
+  --board-pad: var(--board-pad-6);
   --board-width: calc(var(--n) * var(--cell-max) + (var(--n) - 1) * var(--board-gap) + 2 * var(--board-pad) + 2px);
   display: grid;
   grid-template-columns: repeat(var(--n), minmax(0, 1fr));
@@ -394,7 +395,8 @@ button:focus-visible {
   text-wrap: balance;
 }
 
-.message[data-message='hint'] {
+/* Only a shown hint takes the 4px accent: on an empty line it would override .message:empty and leave a 4px x 0 box (review run 1). */
+.message[data-message='hint']:not(:empty) {
   border-left-width: 4px;
   border-radius: 0.125rem var(--radius-m) var(--radius-m) 0.125rem;
 }
@@ -641,6 +643,10 @@ button:focus-visible {
 }
 
 .setup-sheet {
+  /* The sheet keeps the browser's normal line height until its own G2 block ports it: with the body's 1.5 (update-page-layout-geometry) the
+     fourth level slid under the sticky footer at 1366x650 and the sheet grew over the board at 375 (review run 1; stills in
+     docs/qa/update-page-layout-geometry/fix-round-1-sheet.txt). */
+  line-height: normal;
   position: fixed;
   inset: auto 0 0 0;
   width: 100%;
@@ -887,7 +893,7 @@ button:focus-visible {
   #app {
     --gap: var(--space-4);
     --reserve: 24rem;
-    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 5rem) + 5 * 0.25rem + 2 * 0.375rem + 2px));
+    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 5rem) + 5 * var(--board-gap-6) + 2 * var(--board-pad-6) + 2px));
     --page-max: calc(var(--column) + max(var(--page-pad), env(safe-area-inset-left)) + max(var(--page-pad), env(safe-area-inset-right)));
     padding-top: var(--space-5);
     padding-bottom: var(--space-4);
@@ -916,7 +922,7 @@ button:focus-visible {
 /* Desktop: the same height-aware size and floors, capped at 4.5rem cells. The 8×8 rule is repeated because it outranks plain .board. */
 @media (min-width: 64rem) {
   #app {
-    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 4.5rem) + 5 * 0.25rem + 2 * 0.375rem + 2px));
+    --column: max(26rem, calc(6 * clamp(2.75rem, calc((100dvh - var(--reserve)) / 6), 4.5rem) + 5 * var(--board-gap-6) + 2 * var(--board-pad-6) + 2px));
   }
 
   .board {

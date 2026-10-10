@@ -20,8 +20,10 @@ The user chose one OpenSpec change folder per G2 block (autonomy-log row 148). T
   - the action buttons row (wrap, gaps, «Підказка» full width below 30rem, «Скинути» not growing);
   - the message area (reserved height, offsets, padding, font sizes and line heights);
   - the settings panel's placement from 48rem, which was tied to the 420 px column.
+- **`src/ui/play-page.ts`:** the board host carries `data-solved="true"` exactly while the board is solved, so the stylesheet can follow a win without a has-selector (FR-65 allows one, in the idle line). Test first, in `tests/play-page-layout-geometry.test.ts`.
+- **Side effects outside the main column, deliberate:** the box model and the body line height also change the setup sheet, the panels and the dialog (their own blocks come later). The sheet's level group `margin-bottom` goes from 24px to 28px to keep the last focus ring above the footer (NFR-13). The setup sheet keeps the browser's normal line height until its own block, because the body's 1.5 slid its fourth level under the footer at 1366×650 (review run 1; design.md has the numbers).
 - **Colours stay as they are.** The 13 colour tokens keep their names and values; no colour, shadow or backdrop is ported here (later blocks). Where a ported border needs a colour, it uses an existing token.
-- **`e2e/nfr-14-layout-geometry.spec.ts`:** the boxes of 15 main-column elements equal the design's within 0.5 px, at the 27 sampled cases of `quality/design-geometry.json`.
+- **`e2e/nfr-14-layout-geometry.spec.ts`:** the boxes of 16 main-column elements equal the design's within 0.5 px, at the 27 sampled cases of `quality/design-geometry.json` (the case list pinned); and the open settings panel's right edge on the column's right edge, under the header, at the four reference viewports from 48rem.
 - **`quality/design-geometry.json`:** the fixture, frozen from the design build by `scripts/freeze-design-geometry.mjs` with the e2e browser setup, with its provenance.
 - **`playwright.config.ts`:** one more `testMatch` pattern in the `layout` project (`nfr-14-*`), approved by the user (autonomy-log row 150).
 

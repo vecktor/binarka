@@ -1,0 +1,7 @@
+# Fix round 1: the setup sheet keeps the browser's normal line height, 2026-10-10 22:22 +0530.
+# Found by the vision judge on the review stills and confirmed against the commit before block 1 (6ccaf8c, a scratch worktree with the PD-3 adapter): with the body's 1.5 the fourth level slid under the sticky footer at 1366x650 (it showed fully before) and the sheet grew over the board at 375.
+# Stills (adapter capture, real device scale 2), in docs/qa/update-page-layout-geometry/stills/:
+#   before-block-1-1366-dark-setup.png, before-block-1-375-light-setup.png   (6ccaf8c)
+#   review-run-1-1366-dark-setup.png, review-run-1-375-light-setup.png       (b883f36, as reviewed: the regression)
+#   1366-dark-setup.png, 375-light-setup.png                                  (after the fix: .setup-sheet { line-height: normal })
+# Looked at side by side: after the fix the 1366 sheet shows all four levels again and the 375 sheet is back to about its height before block 1. The sheet's own geometry (the design's top offset, the level description indent) is a later block.
