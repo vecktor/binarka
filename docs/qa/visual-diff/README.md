@@ -2,7 +2,7 @@
 
 Phase G2. Written by the session `keen-archimedes-c4cd63` on 2026-10-10; run 1 at 13:20 (UTC+5:30), against `main` `a2879b1` plus the uncommitted `fix-size-option-focus-ring` CSS line. That line changes no reference shot, because no shot has a focused size option.
 
-**Latest: run 4** (2026-10-10 16:49, against `review-set-14`, with the PD-3 adapter): **FAIL**, 0 of 170 at 0.98; table below. Every board shot shows the design's fixture board (FR-119, PD-2), and the capture now reproduces the reference's rendering exactly (PD-3: the design build scores 1.0000 on all 170 shots, `docs/qa/g2/harness-calibration.txt`), so what remains is the port itself.
+**Latest: run 5** (2026-10-10 21:15, after G2 block 1, the main column's layout geometry): **FAIL**, **1 of 170** at 0.98 (1440-dark-confirm 0.982, the first shot to pass); table below. Run 4 (16:49, PD-3 adapter): 0 of 170. Every board shot shows the design's fixture board (FR-119, PD-2), and the capture now reproduces the reference's rendering exactly (PD-3: the design build scores 1.0000 on all 170 shots, `docs/qa/g2/harness-calibration.txt`), so what remains is the port itself.
 
 **Verdict of run 1: FAIL.** 0 of 170 shots reach 0.98. 168 were captured and scored (lowest 0.1218, highest 0.9666). 2 failed with no state driver (`logo-*`). Full output: [`docs/qa/g2/check-visual-run-1.txt`](../g2/check-visual-run-1.txt) (exit 1, `Result: FAIL, 1 warning(s)`). Each shot's `report.json` is in its own folder. The `diff.png` files are not committed (about 19 MB per run; `.gitignore`), and `npm run check:visual` writes them again.
 
@@ -57,9 +57,35 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` shows the fixture at level 2 («Задачка») and opens the sheet. `setup-marked` marks 8×8 «Головоломка» on the fixture and puts keyboard focus on «Почати». `hint` shows the hint board without its hinted cell and presses «Підказка» once. `settings-light` and `settings-dark` store the manual theme before load.
 6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits. **Closed by PD-2:** it fails when something already answers on the port, and when its own preview exits before answering (`PD-2-proof.txt`, section 3: before, a stale copy on 4174 was scored 0.9125 without a word; after, "something already answers on http://localhost:4174/").
 
+## Run 5 (after block 1, update-page-layout-geometry): by state
+
+Run 5, 2026-10-10 21:15 to 21:18, after the main column's layout geometry was ported (the change `update-page-layout-geometry`; its geometry test passes at all 27 sampled cases, and the per-block tool reads 0 boxes off in 54 shots at the gate's real scale): **FAIL**, exit 1, **1 of 170 at 0.98** (1440-dark-confirm 0.982). 168 scored 0.1274 to 0.982 (mean 0.8458, telemetry; run 4: 0.8214). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-5.txt`](../g2/check-visual-run-5.txt). The per-shot `report.json` files now hold run 5.
+
+The last column is the mean change against run 4. Every state moves up except the setup sheet (its own block: the box model and line height also changed the sheet; 375-light-setup dropped most, 0.8087 → 0.7240). The palette still dominates the remaining residual.
+
+| State | Shots | Lowest | Highest | Mean change |
+|---|---|---|---|---|
+| confirm | 10 | 0.1274 | 0.9820 | +0.03 |
+| default | 12 | 0.7610 | 0.9634 | +0.04 |
+| eight | 12 | 0.7641 | 0.9673 | +0.03 |
+| four | 10 | 0.7436 | 0.9782 | +0.04 |
+| hint | 10 | 0.7297 | 0.9449 | +0.04 |
+| level | 10 | 0.7641 | 0.9669 | +0.04 |
+| rules | 12 | 0.1340 | 0.9534 | +0.02 |
+| rules-techniques | 8 | 0.1340 | 0.9534 | +0.03 |
+| settings | 12 | 0.8662 | 0.9778 | +0.03 |
+| settings-dark | 5 | 0.8774 | 0.9791 | +0.03 |
+| settings-focus | 4 | 0.8877 | 0.9753 | +0.03 |
+| settings-light | 5 | 0.8682 | 0.9758 | +0.04 |
+| setup | 12 | 0.7240 | 0.9381 | -0.00 |
+| setup-four | 12 | 0.7311 | 0.9413 | -0.00 |
+| setup-marked | 12 | 0.7291 | 0.9371 | -0.00 |
+| setup-marked-four | 12 | 0.7291 | 0.9400 | -0.00 |
+| win | 10 | 0.7843 | 0.9448 | +0.05 |
+
 ## Run 4 (against review-set-14, PD-3 adapter): by state
 
-Run 4, 2026-10-10 16:49 to 16:51, with the real device scale of PD-3: **FAIL**, exit 1, 0 of 170 at 0.98. 168 scored 0.1188 to 0.9662 (mean 0.8214, telemetry). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-4.txt`](../g2/check-visual-run-4.txt). The per-shot `report.json` files now hold run 4. Against run 3, the phone setup-sheet shots drop by up to 0.018 (375-light-setup-marked-four 0.8477 → 0.8292): with a real scale, the page's text lays out a few pixels taller. Every other shot moves by less than 0.004.
+Run 4, 2026-10-10 16:49 to 16:51, with the real device scale of PD-3: **FAIL**, exit 1, 0 of 170 at 0.98. 168 scored 0.1188 to 0.9662 (mean 0.8214, telemetry). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-4.txt`](../g2/check-visual-run-4.txt). Against run 3, the phone setup-sheet shots drop by up to 0.018 (375-light-setup-marked-four 0.8477 → 0.8292): with a real scale, the page's text lays out a few pixels taller. Every other shot moves by less than 0.004.
 
 | State | Shots | Lowest | Highest |
 |---|---|---|---|

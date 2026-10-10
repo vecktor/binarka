@@ -17,7 +17,7 @@ Result: PASS, 21 warning(s)
 | 2026-10-04-update-hint-sentences | clean | 8 | yes | engine |
 | 2026-10-06-add-hinted-cell | **unclean** | 6 | yes | ui |
 | 2026-10-06-update-controls-accessibility | **unclean** | 8 | yes | ui |
-| 2026-10-06-update-page-layout | **unclean** | 13 | yes | ui |
+| 2026-10-06-update-page-layout | **unclean** | 14 | yes | ui |
 | 2026-10-08-add-page-accessibility | clean | 7 | yes | ui |
 | 2026-10-08-reconcile-ux-accessibility | **unclean** | 5 | yes | ui |
 | 2026-10-08-update-win-apostrophe | clean | 2 | yes | ui |

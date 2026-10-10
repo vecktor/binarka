@@ -1,12 +1,12 @@
 {
   "breakpoint": "320-dark-rules-techniques",
-  "score": 0.8141,
+  "score": 0.8771,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 700,
   "localHeight": 700,
   "masked": 0,
   "pass": false,
-  "reason": "pixel score 0.8141 below threshold 0.98",
+  "reason": "pixel score 0.8771 below threshold 0.98",
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }
