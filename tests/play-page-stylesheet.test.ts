@@ -208,6 +208,25 @@ describe('visible, unobscured focus indicators (FR-65)', () => {
     }
   });
 
+  // update-setup-sheet-start, review-gate second fix round (finding 1, FR-65): the sticky footer strip hides a keyboard-focused
+  // level option when the sheet scrolls, unless the scroll container reserves the strip in its scroll padding.
+  it('@trace FR-65 The open sheet reserves the footer in its scroll padding: scroll-padding-bottom of at least calc(2.75rem + 16px) (60px)', () => {
+    const parsed = readStyles();
+    expect(rulesWithSelector(parsed, '.setup-sheet:popover-open').length, 'a rule for .setup-sheet:popover-open').toBeGreaterThan(0);
+    const value = declarationsFor(parsed, '.setup-sheet:popover-open').get('scroll-padding-bottom');
+    expect(value, '.setup-sheet:popover-open declares scroll-padding-bottom').toBeDefined();
+    // 1rem = 16px; accept one length (px or rem) or a calc() sum of such lengths
+    const lengthPx = (term: string): number => {
+      const m = /^(-?\d*\.?\d+)(px|rem)$/.exec(term.trim());
+      return m?.[1] === undefined ? Number.NaN : Number(m[1]) * (m[2] === 'rem' ? 16 : 1);
+    };
+    const inner = /^calc\(\s*(.+)\s*\)$/i.exec((value ?? '').trim())?.[1] ?? (value ?? '').trim();
+    const terms = inner.split(/\s+\+\s+/);
+    const total = terms.reduce((sum, term) => sum + lengthPx(term), 0);
+    expect(Number.isFinite(total), `scroll-padding-bottom «${value}» is a px/rem length or a calc() sum of them`).toBe(true);
+    expect(total, `scroll-padding-bottom «${value}» = ${total}px, at least the strip: 2.75rem + 16px = 60px`).toBeGreaterThanOrEqual(60);
+  });
+
   it('@trace FR-65 Nothing removes the outline (text search and declarations)', () => {
     const text = readStyleText();
     expect(text).not.toMatch(/outline\s*:\s*(none|0(px)?(?![\d.]))/i);

@@ -61,6 +61,16 @@ for (const [width, height] of VIEWPORTS) {
         await expect(page.locator(`${sel.sheet}:popover-open`)).toBeVisible();
         await sweep(page, seen);
         await page.keyboard.press('Escape');
+        // Setup sheet with a marked choice (update-setup-sheet-start, FR-65 «Почати» shows a focus indicator in the marked state; review-gate
+        // second fix round, finding 2): «Поле 8×8» and «Мозколамка» marked by clicks, then Tab from the last level option reaches «Почати».
+        await markSize(page, 8);
+        await markLevel(page, 4);
+        await page.locator(sel.levelOption).nth(3).focus();
+        await page.keyboard.press('Tab');
+        expect(await page.evaluate(() => document.activeElement?.getAttribute('data-action') ?? ''), 'Tab from «Мозколамка» reaches «Почати»').toBe('setup-start');
+        await record(page, seen, ' (sheet with a marked choice)');
+        await page.keyboard.press('Escape');
+        await expect(page.locator(`${sel.sheet}:popover-open`)).toHaveCount(0);
         // Confirmation dialog, opened by the keyboard; it opens on «Скасувати».
         await page.locator(sel.emptyCell).first().focus();
         await page.keyboard.press('Enter');
@@ -78,6 +88,64 @@ for (const [width, height] of VIEWPORTS) {
       });
     });
   }
+}
+
+// update-setup-sheet-start, review-gate second fix round (finding 1, FR-65, WCAG 2.4.11): with «Поле 4×4» marked the sheet scrolls inside
+// itself, and the sticky footer strip (the ::before of the open sheet, calc(2.75rem + 16px) tall, bottom-aligned with «Почати» and
+// «Закрити») must not cover the focus ring of an option the keyboard reaches. Sampled: two viewports, light scheme, Chromium.
+for (const [width, height] of [
+  [320, 700],
+  [1366, 650],
+] as const) {
+  test.describe(`${width}x${height} focus not obscured by the sheet footer`, () => {
+    test.use({ viewport: { width, height } });
+
+    test('NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip', async ({ page }) => {
+      await openPage(page);
+      await markSize(page, 4);
+      // Premise: the sheet scrolls inside itself; without it the check would pass vacuously.
+      const box = await page.locator(sel.sheet).evaluate((el) => ({ scrollHeight: el.scrollHeight, clientHeight: el.clientHeight }));
+      expect(box.scrollHeight, `premise: the sheet scrolls (scrollHeight ${box.scrollHeight} > clientHeight ${box.clientHeight})`).toBeGreaterThan(box.clientHeight);
+
+      // The start is a script focus after a mouse click: ask for the keyboard-style ring (:focus-visible) like record() does; every later stop is a Tab.
+      await page.locator(`${sel.sizeOption}[data-size-option="4"]`).evaluate((el) => {
+        el.blur(); // the click left it focused, so a plain focus() would be a no-op
+        el.focus({ focusVisible: true });
+      });
+      const measureFocus = (): Promise<{ name: string; ringBottom: number; stripTop: number; ringWidth: number; scrollTop: number } | null> =>
+        page.evaluate(() => {
+          const el = document.activeElement;
+          const start = document.querySelector('[data-action="setup-start"]');
+          const sheet = document.querySelector('[data-section="setup"]');
+          if (el === null || start === null || sheet === null || !el.matches('[data-size-option], [data-control="level"] [role="radio"]')) return null;
+          const s = getComputedStyle(el);
+          const ringWidth = s.outlineStyle === 'none' ? 0 : parseFloat(s.outlineWidth);
+          return {
+            name: el.textContent.trim().slice(0, 40),
+            ringBottom: el.getBoundingClientRect().bottom + parseFloat(s.outlineOffset) + ringWidth,
+            stripTop: start.getBoundingClientRect().top - 16,
+            ringWidth,
+            scrollTop: sheet.scrollTop,
+          };
+        });
+
+      const problems: string[] = [];
+      const visited: string[] = [];
+      let levels = 0;
+      for (let i = 0; i < 12 && levels < 4; i++) {
+        const m = await measureFocus();
+        if (m !== null) {
+          visited.push(m.name);
+          if (m.ringWidth <= 0) problems.push(`«${m.name}»: no focus ring was measured (outline width ${m.ringWidth})`);
+          if (m.ringBottom > m.stripTop) problems.push(`«${m.name}»: ring bottom ${m.ringBottom} is below the strip top ${m.stripTop} (scrollTop ${m.scrollTop})`);
+          if (await page.evaluate(() => document.activeElement?.matches('[data-control="level"] [role="radio"]') ?? false)) levels += 1;
+        }
+        await page.keyboard.press('Tab');
+      }
+      expect(levels, `premise: Tab reached the four level options (visited ${visited.join(', ')})`).toBe(4);
+      expect(problems, `${problems.length} option(s) with the focus ring under the footer strip:\n${problems.join('\n')}`).toEqual([]);
+    });
+  });
 }
 
 /**
@@ -124,7 +192,7 @@ interface Look {
 }
 
 /** Record the focused control's look, then compare it with its unfocused look. */
-async function record(page: Page, seen: Map<string, string>): Promise<void> {
+async function record(page: Page, seen: Map<string, string>, context = ''): Promise<void> {
   const handle = (await page.evaluateHandle(() => document.activeElement)).asElement() as ElementHandle<HTMLElement> | null;
   if (handle === null) return;
   const focused = await handle.evaluate(look);
@@ -140,9 +208,9 @@ async function record(page: Page, seen: Map<string, string>): Promise<void> {
 
   const indicator = (focused.outline !== '' || focused.shadow !== 'none') && (focused.outline !== plain.outline || focused.shadow !== plain.shadow);
   const problem = !focused.focusVisible
-    ? `${focused.kind} «${focused.name}»: :focus-visible does not match after a keyboard move`
+    ? `${focused.kind} «${focused.name}»${context}: :focus-visible does not match after a keyboard move`
     : !indicator
-      ? `${focused.kind} «${focused.name}»: no visible change on focus (outline «${focused.outline}», shadow «${focused.shadow}»)`
+      ? `${focused.kind} «${focused.name}»${context}: no visible change on focus (outline «${focused.outline}», shadow «${focused.shadow}»)`
       : '';
   if (!seen.has(focused.kind) || (seen.get(focused.kind) === '' && problem !== '')) seen.set(focused.kind, problem);
 }

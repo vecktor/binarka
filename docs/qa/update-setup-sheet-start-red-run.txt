@@ -5581,3 +5581,80 @@ Running 36 tests using 5 workers
 
 ## Orchestrator confirmation (2026-10-10 02:09 +0530)
 Re-run in a scratch copy (rsync of the worktree, node_modules symlinked, src/ unchanged vs HEAD): Test Files 29 failed | 29 passed (58); Tests 217 failed | 1076 passed (1293). 0 lines matching TypeError|ReferenceError|SyntaxError|Cannot find module. npm run lint exit 0; tsc --noEmit exit 0.
+
+## Second fix round red run (2026-10-10)
+Written before any src/ change (git status: only e2e/nfr-13-a11y.spec.ts and tests/play-page-stylesheet.test.ts changed by this step).
+Sources: review-findings.json run wf_d2edbb2b-4db finding 1 (focus obscured by the sticky footer strip, docs/qa/update-setup-sheet-start/focus-obscured-repro.txt) and finding 2 (NFR-13 focus sweep ran only in the unmarked sheet); scenarios «The open sheet reserves the footer in its scroll padding» and «A focused option in a scrolling sheet is not covered by the footer».
+Expected: 1 jsdom test red, 2 e2e tests red (320x700, 1366x650); the marked-state «Почати» focus check is a coverage fix and is GREEN (the ring already works).
+
+### npx vitest run (exit 1): Test Files 1 failed | 57 passed (58); Tests 1 failed | 1294 passed (1295)
+   FAIL  tests/play-page-stylesheet.test.ts > visible, unobscured focus indicators (FR-65) > @trace FR-65 The open sheet reserves the footer in its scroll padding: scroll-padding-bottom of at least calc(2.75rem + 16px) (60px)
+  AssertionError: .setup-sheet:popover-open declares scroll-padding-bottom: expected undefined to be defined
+   ❯ tests/play-page-stylesheet.test.ts:217:79
+
+### npm run test:e2e (exit 1): 2 failed, 45 passed
+  1) [a11y] › e2e/nfr-13-a11y.spec.ts:103:5 › 320x700 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip 
+    Error: 1 option(s) with the focus ring under the footer strip:
+    «Мозколамка Додатково треба пробувати хід»: ring bottom 690.78125 is below the strip top 624 (scrollTop 0)
+    expect(received).toEqual(expected) // deep equality
+    - Expected  - 1
+    + Received  + 3
+    - Array []
+    + Array [
+    +   "«Мозколамка Додатково треба пробувати хід»: ring bottom 690.78125 is below the strip top 624 (scrollTop 0)",
+    + ]
+      144 |       }
+      145 |       expect(levels, `premise: Tab reached the four level options (visited ${visited.join(', ')})`).toBe(4);
+    > 146 |       expect(problems, `${problems.length} option(s) with the focus ring under the footer strip:\n${problems.join('\n')}`).toEqual([]);
+          |                                                                                                                            ^
+      147 |     });
+      148 |   });
+      149 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-13-a11y.spec.ts:146:124
+    Error Context: test-results/nfr-13-a11y-320x700-focus--bd99b-ring-under-the-footer-strip-a11y/error-context.md
+  2) [a11y] › e2e/nfr-13-a11y.spec.ts:103:5 › 1366x650 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip 
+    Error: 1 option(s) with the focus ring under the footer strip:
+    «Мозколамка Додатково треба пробувати хід»: ring bottom 525.390625 is below the strip top 500 (scrollTop 0)
+    expect(received).toEqual(expected) // deep equality
+    - Expected  - 1
+    + Received  + 3
+    - Array []
+    + Array [
+    +   "«Мозколамка Додатково треба пробувати хід»: ring bottom 525.390625 is below the strip top 500 (scrollTop 0)",
+    + ]
+      144 |       }
+      145 |       expect(levels, `premise: Tab reached the four level options (visited ${visited.join(', ')})`).toBe(4);
+    > 146 |       expect(problems, `${problems.length} option(s) with the focus ring under the footer strip:\n${problems.join('\n')}`).toEqual([]);
+          |                                                                                                                            ^
+      147 |     });
+      148 |   });
+      149 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/cool-blackburn-6a12ef/e2e/nfr-13-a11y.spec.ts:146:124
+    Error Context: test-results/nfr-13-a11y-1366x650-focus-08b41-ring-under-the-footer-strip-a11y/error-context.md
+  2 failed
+    [a11y] › e2e/nfr-13-a11y.spec.ts:103:5 › 320x700 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:103:5 › 1366x650 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip 
+  45 passed (13.8s)
+
+### npm run check:a11y (exit 1): 2 failed, 36 passed
+  ✘  37 [a11y] › e2e/nfr-13-a11y.spec.ts:103:5 › 320x700 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (239ms)
+  ✘  38 [a11y] › e2e/nfr-13-a11y.spec.ts:103:5 › 1366x650 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (216ms)
+    Error: 1 option(s) with the focus ring under the footer strip:
+    «Мозколамка Додатково треба пробувати хід»: ring bottom 690.78125 is below the strip top 624 (scrollTop 0)
+    Error: 1 option(s) with the focus ring under the footer strip:
+    «Мозколамка Додатково треба пробувати хід»: ring bottom 525.390625 is below the strip top 500 (scrollTop 0)
+  2 failed
+    [a11y] › e2e/nfr-13-a11y.spec.ts:103:5 › 320x700 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip 
+    [a11y] › e2e/nfr-13-a11y.spec.ts:103:5 › 1366x650 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip 
+  36 passed (9.5s)
+
+### Marked-state «Почати» focus check (NFR-13 focus sweep, 375x812 and 1280x800, light and dark): GREEN, 4 of 4, as expected (coverage fix, not a red test)
+    ✓  18 [a11y] › e2e/nfr-13-a11y.spec.ts:46:7 › 375x812 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (996ms)
+    ✓  27 [a11y] › e2e/nfr-13-a11y.spec.ts:46:7 › 375x812 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (937ms)
+    ✓  36 [a11y] › e2e/nfr-13-a11y.spec.ts:46:7 › 1280x800 light › NFR-13 focus: every control shows a visible focus indicator from the keyboard (898ms)
+    ✓  45 [a11y] › e2e/nfr-13-a11y.spec.ts:46:7 › 1280x800 dark › NFR-13 focus: every control shows a visible focus indicator from the keyboard (780ms)
+
+Playwright reports docs/qa/e2e-report.json and docs/qa/a11y-report.json restored with git checkout --.
+
+## Orchestrator confirmation of the second fix round red run (2026-10-10 06:16 +0530)
+In the worktree, src/ unchanged against HEAD: npx vitest run 1 failed | 1294 passed (1295), the failing test is «The open sheet reserves the footer in its scroll padding»; npm run check:a11y 2 failed | 36 passed, the two failures are the new 320x700 and 1366x650 focus-not-obscured tests; npm run lint exit 0.
