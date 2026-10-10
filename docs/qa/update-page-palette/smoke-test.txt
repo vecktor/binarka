@@ -1,0 +1,16 @@
+# Smoke test of the built page, update-page-palette task 3.8
+Run by the agent (not a human) in the Claude desktop browser pane, 2026-10-11 about 00:43 to 00:45 (UTC+5:30), commit aedb1ca (port 676ee03).
+Build: `npm run build`, served by `npx vite preview --port 4180 --strictPort`. Viewport 1024x768, Chromium (the pane), system scheme emulated light.
+Interaction: a mix of real clicks and key presses (Tab x6, «Так, почати», «Підказка») and scripted `element.click()` calls; screenshots looked at by the agent.
+
+1. Build and preview: OK.
+2. Default page (light, localStorage cleared): warm page, ink title, orange logo, header buttons with a visible border, summary button, framed plate, bold given digits, idle line in muted ink. OK.
+3. Three equal digits in row 1 (cells 1 to 3 set to 0): class cell-violation and aria-invalid="true" on the three; red border, striped tint, underlined digit. OK.
+4. «Скинути» opens the confirmation (unported, readable); «Так, почати»; «Підказка»: a dashed orange hinted cell with italic digit and a soft fill; the hint line with the orange left accent. OK.
+5. Tab x6 from the document: focus on «Рядок 1, стовпець 1, порожньо»; outline solid 3px rgb(30, 33, 38) (ink) offset 2px, clear of the cell border. OK.
+6. Solved by pressing «Підказка» 26 times on the 6x6 board (deviation from the task's "a 4x4 board": same rules, fewer steps by hint): win line «Вітаємо, головоломку розвʼязано!», .board-host data-solved="true"; green plate border and ring, green win line; «Нова головоломка» filled orange, «Підказка» muted on the control fill. OK.
+7. Settings, «Темна»: data-theme="dark", body rgb(26, 23, 20) = #1a1714; the settings panel (unported) readable. After reload on a new puzzle: striped violating cells, the light-ink ring, the dark hint line. OK.
+8. «Світла», reload: data-theme="light", body rgb(247, 243, 234) = #f7f3ea, meta theme-color #f7f3ea. The no-flash check itself is the NFR-18 e2e test (green in the battery); not observed frame by frame here.
+9. Rules panel and setup sheet (unported): they take only the shared token values; text readable. The rules panel opens scrolled to its bottom (the known open bug, autonomy-log row 137), not new.
+
+Result: no defect found in the ported main column. Not covered: hover (no pointer), the win glow (reduced motion not set, but not observed), 320/375/768/1366/1440 widths (the e2e and the pixel gate cover them, sampled).
