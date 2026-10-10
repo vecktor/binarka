@@ -32,10 +32,10 @@ function readGrid(value: unknown, n: number): Grid | null {
 
 /** The capture board of the window, copied; null when it is absent or invalid (then the page generates as usual). Reads the property once. */
 export function readCaptureBoard(): CaptureBoard | null {
-  const value: unknown = (window as unknown as { __binarkaCaptureBoard?: unknown }).__binarkaCaptureBoard;
-  // A getter, a Proxy or a revoked Proxy inside the value may throw while it is read: that value is invalid too, and is ignored silently.
+  // A getter on the global, or a getter, a Proxy or a revoked Proxy inside the value, may throw while it is read: that value is invalid
+  // too, and is ignored silently. The global is still read once, inside the try.
   try {
-    return validate(value);
+    return validate((window as unknown as { __binarkaCaptureBoard?: unknown }).__binarkaCaptureBoard);
   } catch {
     return null;
   }

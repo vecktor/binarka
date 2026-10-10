@@ -604,8 +604,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     size = capture.size;
     level = capture.level;
     resetMarked();
-    setHinted(capture.hinted);
-    refreshHighlights();
+    setHinted(capture.hinted); // showPuzzle already drew the violations; the hinted marker leaves them as they are
     updateWin();
   }
   root.replaceChildren(header, summaryButton, boardHost, buttons, messages, rulesPanel, sheet, settingsPanel, dialog);

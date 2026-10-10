@@ -64,6 +64,10 @@
     "design build claimed without an artifact": "FIXED: docs/qa/add-capture-board/design-build.txt (exit 0).",
     "fixture mount loop checks only givens and entries": "FIXED: capture-fixtures test 'mounted, the fixtures show their violation, their hinted cell and the win text'.",
     "rejected (6)": "No action.",
-    "run 2 code defect (a throwing getter on window itself: the global is read outside the try/catch)": "OPEN: needs the user's decision (fix round 2 or hand-off)."
+    "run 2 code defect (a throwing getter on window itself: the global is read outside the try/catch)": "FIXED in fix round 2 (approved by the user): the global is read once, inside the try. Red d3dc83c (1 red, fix-round-2-red.txt); green fix-round-2-green-run.txt (1718 tests, e2e 116, a11y 67). Not re-reviewed (the user chose 'fix now, then hand off').",
+    "run 2 contested: duplicate refreshHighlights": "FIXED: the second call removed (showPuzzle already draws the violations; setHinted does not touch them).",
+    "run 2 contested: try/catch also hides an engine bug in countSolutions": "ACCEPTED as is: the spec asks for silence on any invalid value; an engine failure on a copied grid would also show as a generated board. Noted for the next session.",
+    "run 2 contested: hinted read through its own iterator": "ACCEPTED: the pair is destructured once and the same two values are validated and returned, so what is shown equals what was validated.",
+    "run 2 contested: the screenshot has no manifest": "OPEN, minor: the still is named in tasks.md 3.3 and green-run.txt; no vision-verify manifest yet (slice H builds check:vision)."
   }
 }
