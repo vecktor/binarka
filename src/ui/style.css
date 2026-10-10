@@ -263,6 +263,11 @@ button:focus-visible {
   font-weight: 700;
 }
 
+/* Inside the segmented card an outset ring would run into the neighbour: keep it inside. */
+.size-control button:focus-visible {
+  outline-offset: -1px;
+}
+
 /* Confirmation dialog (ported in part from design/v0/app/binarka.css .confirm). */
 .confirm {
   width: min(22rem, calc(100vw - 32px));

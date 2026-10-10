@@ -9,14 +9,14 @@ Order of work: section 1 (the test) is written FIRST and seen red before section
 
 ## 2. Implementation
 
-- [ ] 2.1 In `src/ui/style.css`, after `.size-control button[aria-checked='true']`, add `.size-control button:focus-visible { outline-offset: -1px; }` with the comment of the theme and language rules. Edit no other rule.
-- [ ] 2.2 Mutation check (scratch, never committed): delete the new rule; set it to `2px`. The new test fails each time; restore and confirm green. Save in `docs/qa/fix-size-option-focus-ring/mutation-run.txt`.
+- [x] 2.1 In `src/ui/style.css`, after `.size-control button[aria-checked='true']`, add `.size-control button:focus-visible { outline-offset: -1px; }` with the comment of the theme and language rules. Edit no other rule.
+- [x] 2.2 Mutation check (scratch, never committed): delete the new rule; set it to `2px`. The new test fails each time; restore and confirm green. Save in `docs/qa/fix-size-option-focus-ring/mutation-run.txt`.
 
 ## 3. Battery
 
-- [ ] 3.1 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
-- [ ] 3.2 `npm run check:a11y` (focus rings visible; NFR-13). Restore any rewritten report that is not this change's evidence.
-- [ ] 3.3 A real-browser look: a keyboard-focused size option at 375×812 and 1366×650 in the setup sheet, light and dark, the ring inside the option. Save the shots in `docs/qa/fix-size-option-focus-ring/`.
+- [x] 3.1 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`, `node scripts/check-eval-ratchet.mjs`.
+- [x] 3.2 `npm run check:a11y` (focus rings visible; NFR-13). Restore any rewritten report that is not this change's evidence.
+- [x] 3.3 A real-browser look: a keyboard-focused size option at 375×812 and 1366×650 in the setup sheet, light and dark, the ring inside the option. Save the shots in `docs/qa/fix-size-option-focus-ring/`.
 
 ## 4. Archive
 

@@ -1,0 +1,12 @@
+# fix-size-option-focus-ring mutation run, 2026-10-10 13:16 +0530; each mutation applied to src/ui/style.css, the test file run, the file restored
+## mutation delete-size (diff lines: 3)
+AssertionError: a rule for .size-control button:focus-visible: expected 0 to be greater than 0
+      Tests  1 failed | 32 passed (33)
+## mutation 2px-size (diff lines: 2)
+AssertionError: .size-control button:focus-visible { outline-offset: -1px }: expected '2px' to be '-1px' // Object.is equality
+      Tests  1 failed | 32 passed (33)
+## mutation delete-language (diff lines: 3)
+AssertionError: a rule for .language-control button:focus-visible: expected 0 to be greater than 0
+      Tests  1 failed | 32 passed (33)
+## restored
+      Tests  33 passed (33)
