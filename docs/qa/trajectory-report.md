@@ -26,7 +26,7 @@ Result: PASS, 21 warning(s)
 | 2026-10-09-add-logo | **unclean** | 3 | yes | ui |
 | 2026-10-09-add-rule-solvable-generator | **unclean** | 2 | yes | engine |
 | 2026-10-09-fix-action-button-targets | **unclean** | 5 | yes | ui |
-| 2026-10-10-add-capture-board | **unclean** | 7 | **no** | ui |
+| 2026-10-10-add-capture-board | **unclean** | 8 | **no** | ui |
 | 2026-10-10-add-english-version | **unclean** | 9 | yes | engine, ui |
 | 2026-10-10-add-theme-switch | **unclean** | 18 | yes | ui |
 | 2026-10-10-fix-size-option-focus-ring | **unclean** | 3 | **no** | ui |
