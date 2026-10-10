@@ -43,9 +43,17 @@ Checked by grep in `docs/requirements.md` and `docs/requirements-held.md`. The h
 2. **OpenSpec slice `add-capture-board`:** the ADDED requirement for FR-119, tests first (red), then implementation, the battery and the review gate.
 3. **G2 adapter:** the adapter sets `window.__binarkaCaptureBoard` from the shot's fixture board. Fixtures are copied from `design/v0/lib/boards.ts` into one JSON file that both the design and the adapter read (Q3).
 
+## 3a. Since this draft was written (rows 141 and 142)
+
+- Iteration 16 made the 6×6 fixtures valid (seed 5, kept by the user). The user moved the pixel reference to `review-set-14` (row 142).
+- The design review of set 14 named three capture needs. The draft's FR-119 already allows each; the slice must prove them:
+  - the `setup` shots show the fixture at **level 2**, so the capture value carries `level: 2` and the driver opens the sheet without «Почати»;
+  - a **solved capture board shows the win state at mount**, with a jsdom assertion;
+  - the `hint` shots press «Підказка» once on the fixture without the wrong entry.
+
 ## 4. Open questions, with defaults
 
 - **Q1, the name and shape of the value.** Default: `window.__binarkaCaptureBoard = { size, level, givens: (0|1|null)[][], entries: (0|1|null)[][], hinted?: [row, col] }`.
 - **Q2, an invalid value.** Default: ignore it silently and generate. Alternative: log one English `console.warn` line.
-- **Q3, where the fixtures live.** Default: `design/v0/lib/boards.json`, read by the design's `boards.ts` and by the adapter. It is a design file, so it changes only in the design round.
+- **Q3, where the fixtures live. DECIDED by the user (row 142):** `design/v0/lib/boards.json`, read by the design's `boards.ts` and by the adapter, moved inside the slice `add-capture-board`, with a committed test asserting what `review-set-14/ENGINE-CHECK.txt` records (exactly one solution; exactly one `three` violation on the fixture; the first hint and its sentence on the hint board; the solved board solved).
 - **Q4, the hint and win shots.** Default: the `hint` shot sets the fixture with no hinted cell and presses «Підказка». The design's hint must then be the page's first hint on that board, so the designer chooses the board to make it so. The `win` shot sets the solved fixture: the page shows the win state at mount, because the board is solved.

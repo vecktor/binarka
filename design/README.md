@@ -555,3 +555,12 @@ One design round beyond the budget, approved by the user in chat (about 13:45 UT
   - The second full run, into a scratch directory outside the repository, is byte-identical on 170 of 170.
   - Against set 13: 88 changed and 82 byte-identical, and the prediction matches on all 170. The smallest change is `320-*-setup-marked-four` (AE about 3,300, the sliver); the largest are the 768 board shots (about 299,000).
   - Byte-identical as expected: `four`, `eight`, `level`, `setup-four` and `logo`, plus the covered shots.
+
+
+## Pixel reference: moved to review-set-14 (2026-10-10 about 14:18 UTC+5:30, autonomy-log row 142)
+
+The user moved the NFR-14 pixel reference from `review-set-13/` to `review-set-14/` in chat ("Yes, move to set 14"), after the independent design review of iteration 16 ("ready with polish", no blocking finding). The new set holds 170 shots; `SHA1SUMS` in the set has its own SHA-1 `e89badbf4bdbe29478563e9f2edef91fcc5c853f`, and `run-2.SHA1SUMS` matches 170 of 170. Against set 13, 88 shots change (the 6×6 fixture boards) and 82 are byte-identical, as predicted. The orchestrator ran the scope diff the reviewer could not run: commit `0d5491b` changes only the 6×6 digits, their comment and violation list in `lib/boards.ts`, this README and the new set. `review-set-13/` stays in the repository as history.
+
+Seed 5 is kept (the user's answer, row 142; the reviewer's recommendation): 9 givens, exactly the board `generate(6, 5, 1)` gives at «Розминка», hint sentence unchanged. The fixtures move to `lib/boards.json` with a committed validity test inside the slice `add-capture-board` (amendment Q3, row 142).
+
+Open from the review, for the capture adapter and the slice (not design defects): the `setup` shots show the fixture at level 2 («Задачка»), so the capture value carries `level: 2` and the sheet opens without «Почати»; the `win` shots need the page to show the win state at mount for a solved capture board; the `hint` shots press «Підказка» once with `element.click()`.

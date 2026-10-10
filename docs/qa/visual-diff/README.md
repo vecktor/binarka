@@ -11,7 +11,7 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
 - `npm run check:visual` = `npm run build`, then `scripts/check-visual-fidelity.mjs` (the factory checker, hash-locked in `factory-lock.json`, not edited) with `CHECK_VISUAL_FIDELITY_ADAPTERS=scripts/check-visual-parity-adapters.mjs`.
 - **Config:** [`quality/visual-parity.config.json`](../../../quality/visual-parity.config.json). One "breakpoint" per reference shot (170), named as the shot.
   - Threshold **0.98 per shot** (autonomy-log row 68). The checker warns because 0.98 is below its 0.99 default; row 68 expects that warning.
-- **Reference:** the frozen PNG `design/v0-screenshots/review-set-13/<shot>.png`. Its `SHA1SUMS` has the SHA-1 `532e0b78e801944970a9f3fabf5ba148107dbffb` (autonomy-log row 134). The served design is not fetched.
+- **Reference:** the frozen PNG `design/v0-screenshots/review-set-14/<shot>.png`. Its `SHA1SUMS` has the SHA-1 `e89badbf4bdbe29478563e9f2edef91fcc5c853f`; the user moved the reference from `review-set-13` (`532e0b78…`, row 134) on 2026-10-10 at about 14:18 (autonomy-log row 142). Run 1 was measured against set 13. The served design is not fetched.
 - **Product:** the built page (`vite preview` on `localhost:4174`, started by the adapter), captured in Chromium (Playwright) under the conditions of the reference (`design/README.md`, decision 25):
   - device scale 2;
   - the system scheme from the shot name;
@@ -28,7 +28,7 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
 ## Sampling declaration (sampled, never continuum)
 
 - **Dimensions:** viewport, colour scheme, page state.
-- **Sample points:** the 170 shots of `review-set-13`:
+- **Sample points:** the 170 shots of the reference set (`review-set-14`; run 1 used `review-set-13`, same shot list):
   - 6 viewports: 320×700, 375×812, 768×1024, 1024×768, 1366×650, 1440×900, with not every state at every viewport;
   - 2 system schemes;
   - 17 states plus the logo.
@@ -44,12 +44,36 @@ The mean of the 168 scores is 0.8165. **That number is telemetry, not the gate**
 
 ## Known gaps (open, for the convergence sessions)
 
-1. **Board content.** The design shots use fixture boards (`design/v0/lib/boards.ts`). The page draws its puzzle from the seed, so the givens, entries and violations differ in every board shot. Even a perfect port cannot reach 0.98 on board shots until the capture can show the fixture board. This needs a decision from the user, and probably a spec: for example, a capture-only way to load a given board, or new reference shots of the seeded board. It is the first blocker to convergence.
+1. **Board content.** The design shots use fixture boards (`design/v0/lib/boards.ts`). The page draws its puzzle from the seed, so the givens, entries and violations differ in every board shot. Even a perfect port cannot reach 0.98 on board shots until the capture can show the fixture board. This needs a decision from the user, and probably a spec: for example, a capture-only way to load a given board, or new reference shots of the seeded board. It is the first blocker to convergence. **Decided (rows 140 and 142):** a capture-only board (FR-119, amendment draft unsigned); the 6×6 fixtures were made valid puzzles (iteration 16), and the reference moved to `review-set-14`.
 2. **Logo shots** (`logo-light`, `logo-dark`: the logo at 40, 56 and 64 px on the design's `/logo/` route). The page has no such view, so these fail with "no state driver". They are related to NFR-15 (slice H).
 3. **`qa-verify` runs the checker without the adapter.** `scripts/qa-verify.mjs` (locked) calls `node scripts/check-visual-fidelity.mjs` directly, without `CHECK_VISUAL_FIDELITY_ADAPTERS`. That run uses the default adapters: it captures the two config URLs full page at device scale 1. It fails while the design is not served on `127.0.0.1:4175`. **Do not read a qa-verify result for visual-fidelity as NFR-14.** The fix is a process change to a locked file: let the checker read the adapter path from the config, or have qa-verify set the variable. That needs the user's approval (`Refs: PD-<n>`).
 4. **The adapter is under the lock (closed by PD-1, autonomy-log row 140).** It was renamed to `scripts/check-visual-parity-adapters.mjs`, so the lock pattern `check-*.mjs` covers it, and the lock was re-sealed (`docs/qa/improvements/PD-1-lock-visual-parity-adapters.md`).
 5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` starts a 6×6 «Задачка» puzzle and then opens the sheet. `setup-marked` marks 8×8 «Головоломка» and puts keyboard focus on «Почати». `settings-light` and `settings-dark` store the manual theme before load.
 6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits.
+
+## Run 2 (against review-set-14): by state
+
+Run 2, 2026-10-10 about 14:20, against the new reference (row 142): **FAIL**, exit 1, 0 of 170 at 0.98. 168 scored 0.1178 to 0.9663 (mean 0.8141, telemetry). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-2.txt`](../g2/check-visual-run-2.txt). The per-shot `report.json` files now hold run 2; run 1 is in the tables below and in git history (`cdab28b`).
+
+| State | Shots | Lowest | Highest |
+|---|---|---|---|
+| confirm | 10 | 0.1178 | 0.9663 |
+| default | 12 | 0.7185 | 0.9345 |
+| eight | 12 | 0.7189 | 0.9278 |
+| four | 10 | 0.7131 | 0.9520 |
+| hint | 10 | 0.6182 | 0.9135 |
+| level | 10 | 0.7151 | 0.9205 |
+| rules | 12 | 0.1315 | 0.9497 |
+| rules-techniques | 8 | 0.1315 | 0.9497 |
+| settings | 12 | 0.8168 | 0.9613 |
+| settings-dark | 5 | 0.8356 | 0.9627 |
+| settings-focus | 4 | 0.8210 | 0.9529 |
+| settings-light | 5 | 0.8184 | 0.9493 |
+| setup | 12 | 0.7189 | 0.9355 |
+| setup-four | 12 | 0.7436 | 0.9392 |
+| setup-marked | 12 | 0.7209 | 0.9362 |
+| setup-marked-four | 12 | 0.7517 | 0.9403 |
+| win | 10 | 0.6546 | 0.9300 |
 
 ## Run 1: by state
 
