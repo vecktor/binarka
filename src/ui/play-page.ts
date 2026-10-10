@@ -48,8 +48,12 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const seedSource = options.seedSource ?? defaultSeedSource;
   const makePuzzle = options.generate ?? generate;
 
-  // The language of the document (FR-113): a mount whose control left the document is dropped here, lazily (like the theme mounts).
-  for (const mount of languageMounts) if (!mount.control.isConnected) languageMounts.delete(mount);
+  // A mount is gone when its control left the document, or when it sits in `root`, which this mount replaces (the content is attached
+  // to the root last, so the replaced controls are still connected here).
+  const isGone = (control: HTMLElement): boolean => !control.isConnected || root.contains(control);
+
+  // The language of the document (FR-113): a gone mount is dropped here, lazily (like the theme mounts).
+  for (const mount of languageMounts) if (isGone(mount.control)) languageMounts.delete(mount);
   documentLanguage = readLanguage();
   let texts: PageTexts = textsFor(documentLanguage);
 
@@ -458,10 +462,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
 
   // Theme (FR-102 to FR-106, FR-113 to FR-118): the choice, the effective theme on <html> and the one theme-color meta.
   // The choice belongs to the document (one <html data-theme>), so every mount reads and writes the shared documentTheme. readTheme()
-  // gives the session-only choice when storing it failed (FR-115), else the stored one. A mount whose control left the document is
-  // dropped here, at the next mount (lazily), with its system listener.
+  // gives the session-only choice when storing it failed (FR-115), else the stored one. A gone mount (see isGone) is dropped here, at
+  // the next mount (lazily), with its system listener.
   for (const mount of themeMounts) {
-    if (mount.control.isConnected) continue;
+    if (!isGone(mount.control)) continue;
     themeMounts.delete(mount);
     mount.stop();
   }

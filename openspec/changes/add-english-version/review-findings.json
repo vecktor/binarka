@@ -1,0 +1,77 @@
+{
+  "generatedBy": "review-gate",
+  "persistedBy": "orchestrator from the run result",
+  "change": "add-english-version",
+  "clean": false,
+  "verdict": "Run 1 wf_68de0c7a-b11: 8 confirmed (6 minor, 2 major evidence/spec items), 1 contested, 1 rejected. One minor code defect (a same-root remount keeps the previous mount). One fix round, tests first; confirming run pending.",
+  "runs": [
+    {
+      "runId": "wf_68de0c7a-b11",
+      "kind": "first run",
+      "baseRef": "9f82cd7",
+      "headRef": "e4b13d1",
+      "confirmed": 8,
+      "contested": 1,
+      "rejected": 1,
+      "findings": [
+        {
+          "title": "Moving root.replaceChildren to the end of mount means a remount on the same root no longer drops the previous mount's theme listener",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (code): isGone() also drops a mount whose control sits in the root being remounted; red test «A remount on the same root replaces the previous mount» (fix-round-1-red.txt)"
+        },
+        {
+          "title": "hintSentence requires a full Hint with a sentence, so hint() builds placeholder objects",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (types): hintSentence takes Sentenceless<Hint>; no placeholder objects"
+        },
+        {
+          "title": "Task 6.1 is ticked but the 1280 px stills and the README.md it requires are missing",
+          "severity": "major",
+          "status": "confirmed",
+          "disposition": "fixed (evidence): 1280 and dark stills, README.md, browser-check-run-fix-round-1.txt (108 PASS)"
+        },
+        {
+          "title": "NFR-13 scenario requires valid-lang to pass in the English default and hint states; the e2e checks it only with the settings panel open",
+          "severity": "major",
+          "status": "confirmed",
+          "disposition": "fixed (spec): the scenario now names the panel-open state for valid-lang, with the measured reason; the test is unchanged"
+        },
+        {
+          "title": "English wording differs from the signed appendix in five places; documented as audit refinements but not yet confirmed by the user",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "recorded: the five audit refinements are named in Scope NOT delivered next to A-54 at the hand-off; design.md l.78 updated"
+        },
+        {
+          "title": "tasks.md 2.1 and design.md list four whole-object toEqual files; only three changed",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (docs): tasks 2.1 and design.md say three files; hint-look-ahead l.113 is a guard"
+        },
+        {
+          "title": "Green-run evidence for the post-eval test run is a narrative note, not captured output",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (evidence): captured test:run and ratchet output with exit codes appended"
+        },
+        {
+          "title": "English UI has no screenshots in dark theme or at 1280 width, and no English hint shot at 320",
+          "severity": "minor",
+          "status": "confirmed",
+          "disposition": "fixed (evidence): dark and 1280 stills added; the README says sampled and light/dark at 375, light at 1280"
+        },
+        {
+          "title": "English eval covers only pair, sandwich and count, not the new English technique sentences flagged as awkward",
+          "severity": "minor",
+          "status": "contested",
+          "disposition": "recorded as Scope NOT delivered: task 2.5 names pair, sandwich and count; balance, unique and look-ahead English sentences are not graded"
+        }
+      ],
+      "rejectedTitles": [
+        "Coverage summary: 321 scenarios, about 95 read against code and tests: 93 implemented, 2 partial, 0 missing, 0 contradicted"
+      ]
+    }
+  ]
+}

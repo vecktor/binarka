@@ -2,10 +2,9 @@ import { findViolations } from './rules';
 import { nextFill } from './techniques';
 import { hintSentence } from './sentences';
 import type { Fill } from './techniques';
-import type { Grid, Hint, HintLanguage } from './types';
+import type { Grid, Hint, HintLanguage, Sentenceless } from './types';
 
 /** The fill with the data its sentence is built from, minus the sentence (ADR-0005); absent fields stay absent. */
-type Sentenceless<T> = T extends unknown ? Omit<T, 'sentence'> : never;
 
 function withData(f: Fill, n: number): Sentenceless<Extract<Hint, { kind: 'fill' }>> {
   const base = { kind: 'fill' as const, row: f.row, col: f.col, value: f.value };
@@ -32,9 +31,9 @@ function withData(f: Fill, n: number): Sentenceless<Extract<Hint, { kind: 'fill'
  * (default Ukrainian); the result also carries the data to rebuild it in the other language with `hintSentence` (ADR-0005).
  */
 export function hint(board: Grid, ceiling = 1, language: HintLanguage = 'uk'): Hint {
-  if (findViolations(board).length > 0) return { kind: 'broken', sentence: hintSentence({ kind: 'broken', sentence: '' }, language) };
+  if (findViolations(board).length > 0) return { kind: 'broken', sentence: hintSentence({ kind: 'broken' }, language) };
   const f = nextFill(board, ceiling);
-  if (f === null) return { kind: 'none', sentence: hintSentence({ kind: 'none', sentence: '' }, language) };
+  if (f === null) return { kind: 'none', sentence: hintSentence({ kind: 'none' }, language) };
   const data = withData(f, board.length);
-  return { ...data, sentence: hintSentence({ ...data, sentence: '' }, language) };
+  return { ...data, sentence: hintSentence(data, language) };
 }

@@ -1,5 +1,6 @@
 // Real-browser smoke test for add-english-version, task 6.1 (a) to (l). Chromium (Playwright), the built page via vite preview.
-// Run: node <copy as .mjs> <port> <out dir>. Sampled: 375x812 and 1280x800 (and 320 for observation), light system scheme.
+// Run: node <copy as .mjs> <port> <out dir>. Sampled: 375x812 and 1280x800 in a light system scheme, 375x812 in a dark one (theme auto), and 320
+// for observation. Stills of every state at each run (first review run of the slice: the 1280 and dark stills were missing).
 import { chromium } from '@playwright/test';
 const [port, OUT] = process.argv.slice(2);
 const URL = `http://localhost:${port}/`;
@@ -15,11 +16,11 @@ const S = {
 const text = (p, q) => p.locator(q).first().evaluate((e) => e.textContent.trim());
 const boardState = (p) => p.evaluate(() => [...document.querySelectorAll('[data-board] [data-cell]')].map((c) => c.textContent + (c.classList.contains('cell-hinted') ? 'h' : '')).join(''));
 
-async function run(width, height, tag) {
+async function run(width, height, tag, scheme = 'light') {
   const b = await chromium.launch();
-  const ctx = await b.newContext({ viewport: { width, height }, colorScheme: 'light', reducedMotion: 'reduce' });
+  const ctx = await b.newContext({ viewport: { width, height }, colorScheme: scheme, reducedMotion: 'reduce' });
   const p = await ctx.newPage();
-  log.push(`\n## ${tag} ${width}x${height}`);
+  log.push(`\n## ${tag} ${width}x${height} (${scheme} system scheme, theme auto)`);
   const shot = (name) => p.screenshot({ path: `${OUT}/${tag}-${name}.png` });
   await p.goto(URL); await p.locator('[data-cell]').first().waitFor();
   await p.evaluate(() => localStorage.clear()); await p.reload(); await p.locator('[data-cell]').first().waitFor();
@@ -29,7 +30,7 @@ async function run(width, height, tag) {
   const labels = await p.locator(`${S.panel} > *`).evaluateAll((els) => els.map((e) => e.getAttribute('data-control') ?? e.getAttribute('data-action') ?? e.textContent.trim()));
   ok(JSON.stringify(labels) === JSON.stringify(['Тема', 'theme', 'Мова', 'language', 'settings-close']), `(b) panel order «Тема», theme, «Мова», language, «Закрити»: ${JSON.stringify(labels)}`);
   ok((await p.locator(S.lang('uk')).getAttribute('aria-checked')) === 'true', '(b) «Українська» is checked');
-  if (tag === '375') await shot('panel-uk');
+  await shot('panel-uk');
   // (c)
   const before = await boardState(p);
   await p.locator(S.lang('en')).focus(); await p.keyboard.press('Enter');
@@ -43,16 +44,16 @@ async function run(width, height, tag) {
   ok((await text(p, '.setup-summary')) === '6×6 · Warm-up', `(c) summary 6×6 · Warm-up (${await text(p, '.setup-summary')})`);
   ok((await text(p, S.idle)).startsWith('Press the cells'), '(c) the idle line is English');
   ok((await p.evaluate(() => /[Ѐ-ӿ]/.test(document.body.innerText.replace(/Українська/g, '')))) === false, '(c) no Cyrillic text left on the page besides «Українська»');
-  if (tag === '375') await shot('panel-en');
+  await shot('panel-en');
   await p.click(S.close);
-  if (tag === '375') await shot('default-en');
+  await shot('default-en');
   // (d)
   await p.click(S.hint);
   const enHint = await text(p, S.hintMsg);
   ok(/^[^Ѐ-ӿ]+$/.test(enHint) && enHint.length > 10, `(d) an English hint: "${enHint}"`);
   const afterHint = await boardState(p);
   ok(afterHint !== before && (afterHint.match(/h/g) ?? []).length === 1, '(d) one cell was filled and marked hinted');
-  if (tag === '375') await shot('hint-en');
+  await shot('hint-en');
   await p.click(S.gear); await p.click(S.lang('uk'));
   const ukHint = await text(p, S.hintMsg);
   ok(/[Ѐ-ӿ]/.test(ukHint), `(d) the same hint in Ukrainian: "${ukHint}"`);
@@ -76,7 +77,7 @@ async function run(width, height, tag) {
   ok((await text(p, S.start)) === 'Start' && (await text(p, '[data-action="setup-close"]')) === 'Close', '(f) Start and Close');
   await p.locator('[data-size-option]').first().click();
   ok((await text(p, '[data-level-reason]')) === 'The 4×4 grid has only the “Warm-up” level.', `(f) the 4x4 reason: ${await text(p, '[data-level-reason]')}`);
-  if (tag === '375') await shot('sheet-en');
+  await shot('sheet-en');
   await p.click(S.start);
   await p.locator(S.dialog).waitFor({ state: 'visible' });
   ok((await text(p, `${S.dialog} [data-confirm="yes"]`)) === 'Yes, start over' && (await text(p, `${S.dialog} [data-confirm="no"]`)) === 'Cancel', '(f) dialog buttons Yes, start over / Cancel');
@@ -111,6 +112,7 @@ async function run(width, height, tag) {
 
 await run(375, 812, '375');
 await run(1280, 800, '1280');
+await run(375, 812, '375-dark', 'dark'); // first review run: English stills in the dark theme too
 // (k) observe at 320 in English
 {
   const b = await chromium.launch();

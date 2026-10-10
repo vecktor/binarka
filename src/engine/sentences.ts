@@ -1,4 +1,4 @@
-import type { Hint, HintLanguage } from './types';
+import type { Hint, HintLanguage, Sentenceless } from './types';
 
 /**
  * The hint sentences in both languages (ADR-0005). Pure: a result in, text out; no DOM, no storage, no random numbers.
@@ -114,7 +114,7 @@ function enLookAhead(row: number, col: number, value: Digit): string {
 }
 
 /** The sentence of a hint result in `language`. A pure function of the result; the default is Ukrainian. */
-export function hintSentence(h: Hint, language: HintLanguage = 'uk'): string {
+export function hintSentence(h: Sentenceless<Hint>, language: HintLanguage = 'uk'): string {
   const en = language === 'en';
   if (h.kind !== 'fill') return h.kind === 'none' ? NO_RULE[language] : BROKEN[language];
   switch (h.rule) {

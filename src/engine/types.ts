@@ -84,3 +84,6 @@ export class GenerationRunOutError extends Error {
     this.name = 'GenerationRunOutError';
   }
 }
+
+/** A hint without its sentence: the data `hintSentence` builds the sentence from. A full `Hint` is one too. */
+export type Sentenceless<T> = T extends unknown ? Omit<T, 'sentence'> : never;
