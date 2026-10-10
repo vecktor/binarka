@@ -447,6 +447,75 @@ describe('@trace FR-119 each invalid value falls back to generation silently', (
     { name: 'hinted that is not an array', valid: () => withHinted(sixBase()), make: (v) => ({ ...v, hinted: 'a1' }) },
     { name: 'the entries are missing', valid: sixBase, make: (v) => ({ size: v.size, level: v.level, givens: v.givens }) },
     { name: 'the givens are missing', valid: sixBase, make: (v) => ({ size: v.size, level: v.level, entries: v.entries }) },
+    // Fix round 1 (review wf_551a83f7-f44, the code defect): hostile values. Only a script on the page can set the value, but the spec
+    // says an invalid value is ignored silently, so none of these may throw out of the mount.
+    {
+      name: 'hostile: the givens array has an iterator that yields no rows (length still 6)',
+      valid: sixBase,
+      make: (v) => {
+        const out = clone(v);
+        Reflect.set(out.givens, Symbol.iterator, function* noRows() {
+          yield* [];
+        });
+        Reflect.set(out.entries, Symbol.iterator, function* noRows() {
+          yield* [];
+        });
+        return out;
+      },
+    },
+    {
+      name: 'hostile: an entries row has an iterator that yields one cell (length still 6)',
+      valid: sixBase,
+      make: (v) => {
+        const out = clone(v);
+        Reflect.set(out.entries[0] ?? [], Symbol.iterator, function* oneCell() {
+          yield null;
+        });
+        return out;
+      },
+    },
+    {
+      name: 'hostile: a sparse givens row (new Array(6), holes only)',
+      valid: sixBase,
+      make: (v) => {
+        const out = clone(v);
+        Reflect.set(out.givens, 2, new Array(6));
+        return out;
+      },
+    },
+    {
+      name: 'hostile: a getter on size that throws',
+      valid: sixBase,
+      make: (v) => {
+        const out: Record<string, unknown> = { ...clone(v) };
+        Object.defineProperty(out, 'size', {
+          enumerable: true,
+          get: () => {
+            throw new Error('hostile size');
+          },
+        });
+        return out;
+      },
+    },
+    {
+      name: 'hostile: a Proxy whose every read throws',
+      valid: sixBase,
+      make: (v) =>
+        new Proxy(clone(v), {
+          get: () => {
+            throw new Error('hostile read');
+          },
+        }),
+    },
+    {
+      name: 'hostile: a revoked Proxy',
+      valid: sixBase,
+      make: (v) => {
+        const { proxy, revoke } = Proxy.revocable(clone(v), {});
+        revoke();
+        return proxy;
+      },
+    },
   ];
 
   it.each(cases)('$name', ({ valid, make }) => {

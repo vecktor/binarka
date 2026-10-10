@@ -1,0 +1,43 @@
+{
+  "generatedBy": "review-gate",
+  "persistedBy": "orchestrator by hand from the run's task output",
+  "change": "add-capture-board",
+  "clean": false,
+  "runs": [
+    {
+      "runId": "wf_551a83f7-f44",
+      "kind": "first run",
+      "baseRef": "b035cf8",
+      "headRef": "2aa39ac",
+      "confirmed": 4,
+      "contested": 4,
+      "rejected": 6,
+      "confirmedTitles": [
+        "readGrid checks `row.length` but builds the grid from the row's iterator, so a crafted row passes validation with the wrong number of cells (minor, correctness)",
+        "Validator accepts a structurally invalid grid via an overridden iterator, then mount throws (contradicts 'invalid value ignored silently, no uncaught error') (major, spec-compliance)",
+        "A throwing getter or Proxy in the capture value escapes the mount as an uncaught error (minor, spec-compliance)",
+        "Design build claimed as passed with no evidence artifact (minor, spec-compliance)"
+      ],
+      "contestedTitles": [
+        "A hostile capture value (a throwing getter, a Proxy, or a throwing row iterator) causes an uncaught error at mount and leaves the page blank (minor, correctness)",
+        "Hostile capture value can throw uncaught at mount (getter/Proxy), contradicting 'ignored silently' (minor, security)",
+        "Fixture-based scenarios check givens and entries, not the violation, hinted marker or win state of the actual fixtures (minor, spec-compliance)",
+        "No hostile-value cases in the invalid-value test table (minor, spec-compliance)"
+      ],
+      "rejectedTitles": [
+        "The capture branch repeats the newPuzzle bookkeeping and gives showPuzzle a fake `solution: []` (minor, correctness)",
+        "`hinted: null` makes the whole value invalid, while the CaptureBoard type uses null for \"no hint\" (minor, correctness)",
+        "countSolutions on unvalidated givens runs with an unbounded node budget (minor, security)",
+        "hinted: null is treated as invalid, and size/level numeric checks are loose on non-integer size (minor, security)",
+        "Placeholder `solution: []` passed as a Puzzle is a latent contract hazard (minor, spec-compliance)",
+        "Scope drift: validator accepts and tests cover cases beyond the spec text (no amendment needed, informational) (minor, spec-compliance)"
+      ]
+    }
+  ],
+  "codeDefects": 1,
+  "dispositions": {
+    "code defect (hostile value: an overridden Symbol.iterator, a throwing getter or a Proxy makes mount throw instead of falling back silently)": "OPEN: needs a fix round approved by the user (row 119 rule): index-based copy with a length re-check, try/catch around the read returning null, new invalid cases (custom iterator, sparse row, throwing getter, Proxy) red first.",
+    "design build claimed without an artifact": "OPEN: save docs/qa/add-capture-board/design-build.txt in the fix round.",
+    "fixture mount loop checks only givens and entries": "OPEN (contested): extend in the fix round with violations, the hinted marker and the win text of the real fixtures."
+  }
+}

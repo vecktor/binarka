@@ -34,9 +34,12 @@ import {
   BLANK,
   BLANK_4,
   BLANK_8,
+  WIN_MESSAGE,
   boardSize,
   bySize,
   generateSpy,
+  hintMessage,
+  hintedCells,
   installPageLifecycle,
   mountPage,
   readBoard,
@@ -44,6 +47,8 @@ import {
   seedQueue,
   summaryLabel,
   summaryText,
+  violationCells,
+  winMessage,
 } from './helpers/play-page';
 
 installPageLifecycle();
@@ -245,5 +250,27 @@ describe('@trace FR-119 the fixture boards are valid capture values', () => {
       Reflect.deleteProperty(window, CAPTURE_KEY);
       root.remove();
     }
+  });
+
+  // Fix round 1 (review wf_551a83f7-f44, contested coverage finding): the real fixtures, mounted, show what the pixel shots need:
+  // the fixture's violation cells, the hint board's hinted cell with an empty hint message, and the solved board's win text.
+  it('mounted, the fixtures show their violation, their hinted cell and the win text', () => {
+    const boards = loadBoards();
+    const mounted = (name: (typeof NAMES)[number]): ParentNode => {
+      Reflect.set(window, CAPTURE_KEY, toCaptureValue(boards[name]));
+      const root = mountPage({ seedSource: seedQueue([1]).source, generate: generateSpy(bySize({ 4: BLANK_4, 6: BLANK, 8: BLANK_8 })).generate });
+      Reflect.deleteProperty(window, CAPTURE_KEY);
+      return root;
+    };
+    const fixture = mounted('fixtureBoard');
+    expect(violationCells(fixture), 'fixtureBoard: the violation cells are its 1-based violations').toEqual(boards.fixtureBoard.violations);
+    expect(hintedCells(fixture), 'fixtureBoard: no hinted cell').toEqual([]);
+    const hintBoard = mounted('hintBoard');
+    expect(hintedCells(hintBoard), 'hintBoard: the hinted cell is row 3, column 3 (1-based)').toEqual([[3, 3]]);
+    expect(hintMessage(hintBoard), 'hintBoard: the hint message is empty').toBe('');
+    expect(violationCells(hintBoard), 'hintBoard: no violation').toEqual([]);
+    const solved = mounted('solvedBoard');
+    expect(winMessage(solved), 'solvedBoard: the win text shows at mount').toBe(WIN_MESSAGE);
+    expect(winMessage(fixture), 'fixtureBoard: no win text').toBe('');
   });
 });

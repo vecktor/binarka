@@ -1,0 +1,13 @@
+# add-capture-board fix round 1 red run, 2026-10-10 14:58 +0530 (review wf_551a83f7-f44, code defect; the user approved the round in chat)
+# 6 new hostile invalid cases + 1 fixture mount test; 5 red (the sparse row is already rejected), the fixture test green (coverage)
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: the givens array has an iterat…
+AssertionError: the mount does not throw: expected [Function] to not throw an error but 'Error: puzzle is not 6x6' was thrown
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: an entries row has an iterator…
+AssertionError: exactly one seed is taken: expected +0 to be 1
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a getter on size that throws
+AssertionError: the mount does not throw: expected [Function] to not throw an error but 'Error: hostile size' was thrown
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a Proxy whose every read throws
+AssertionError: the mount does not throw: expected [Function] to not throw an error but 'Error: hostile read' was thrown
+ FAIL  tests/play-page-capture-board.test.ts > @trace FR-119 each invalid value falls back to generation silently > hostile: a revoked Proxy
+AssertionError: the mount does not throw: expected [Function] to not throw an error but 'TypeError: Cannot perform \'get\' on …' was thrown
+      Tests  5 failed | 48 passed (53)
