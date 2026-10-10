@@ -325,3 +325,15 @@ Re-run by the orchestrator after the archive of `update-setup-sheet-start` (`c0c
 | 1.2 | the confirmed list | sections 4 to 8 of this file; every changed assertion in the red commit `1c34ddb` carries its source row |
 | 1.3 | the design gate | the confirming design review of `review-set-13` has no blocking finding (autonomy-log row 123); `update-setup-sheet-start` added no token, so FR-65 reads 13 and no TD-Q15 edit is needed |
 | 1.4 | hooks against the signed wireframe and the review set | section 9 above; the divergences F1 to F3 decided in autonomy-log row 124, F4 to F12 resolved as proposed; `git diff c0ce96f..HEAD -- openspec/specs/play-page/spec.md` is empty (no drift of the baseline under the 10 MODIFIED blocks) |
+
+## 13. Second review-gate fix round (2026-10-10 about 09:45 UTC+5:30, confirming run `wf_6e154572-16a`, autonomy-log row 130)
+
+Approved by the user in chat at about 09:37 (row 119 needs it). No existing test changes; three tests are new, each with its source.
+
+| File | Test | Kind | Source |
+|---|---|---|---|
+| `tests/play-page-theme.test.ts` | «Two mounts show one choice» (in «A theme press acts at once and changes nothing else») | N | the confirmed code defect of run 2 (FR-103: a press moves `aria-checked`); new delta scenario of the same name |
+| `tests/play-page-preferences.test.ts` | «A later mount keeps a session-only choice» (in «Failing storage does not stop the page») | N | the confirmed code defect of run 2 (FR-115: «a press still applies the choice for the rest of the session»); new delta scenario of the same name |
+| `e2e/nfr-10-header-fit.spec.ts` | «header sampled at <w> px: every header child inside the header, no sideways scroll», 9 widths | N | FR-68 (the header holds the title, the gear and «Правила»), `docs/frontend-conventions.md` rule 18 (no horizontal scroll), A-14 (phones from 320 px); the observation in `docs/qa/add-theme-switch/README.md`. Not an NFR-10 mechanism; sampled, the 1 px sweep is the stricter instrument |
+
+Red evidence: `docs/qa/add-theme-switch/fix-round-2-red.txt` (Vitest 2 red of 1378, both on assertions; e2e 7 red at the widths inside the overflow bands, 2 green controls).

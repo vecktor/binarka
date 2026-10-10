@@ -1,0 +1,36 @@
+add-theme-switch, second review-gate fix round: red run before the fix (2026-10-10 09:44 UTC+5:30, on a0c3adb plus the uncommitted red tests).
+Source: confirming run wf_6e154572-16a (openspec/changes/add-theme-switch/review-findings.json) and docs/qa/add-theme-switch/header-sweep-run.txt.
+
+== npm run test:run (Vitest) ==
+     × Two mounts show one choice 39ms
+     × A later mount keeps a session-only choice 12ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the later mount shows the session choice: expected 'auto' to be 'dark' // Object.is equality
+AssertionError: the press on the first mount shows on the second: expected 'auto' to be 'dark' // Object.is equality
+ Test Files  2 failed | 61 passed (63)
+      Tests  2 failed | 1376 passed (1378)
+
+Both new tests are red on an assertion (not on a crash): the second mount keeps «Як у системі» checked after a press on the first;
+a later mount after a failing setItem re-reads storage and falls back to auto. Every other test passes (1376).
+
+== npx playwright test e2e/nfr-10-header-fit.spec.ts --project=layout ==
+  ✘  4 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 369 px: every header child inside the header, no sideways scroll (505ms)
+  ✘  5 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 322 px: every header child inside the header, no sideways scroll (507ms)
+  ✘  3 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 361 px: every header child inside the header, no sideways scroll (505ms)
+  ✘  1 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 320 px: every header child inside the header, no sideways scroll (504ms)
+  ✘  2 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 334 px: every header child inside the header, no sideways scroll (504ms)
+  ✓  8 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 768 px: every header child inside the header, no sideways scroll (155ms)
+  ✓  9 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 1280 px: every header child inside the header, no sideways scroll (160ms)
+  ✘  6 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 385 px: every header child inside the header, no sideways scroll (165ms)
+  ✘  7 [layout] › e2e/nfr-10-header-fit.spec.ts:21:3 › header sampled at 375 px: every header child inside the header, no sideways scroll (172ms)
+    Error: rules ends 14.8 px right of the header
+    Error: rules ends 12.8 px right of the header
+    Error: rules ends 0.8 px right of the header
+    Error: rules ends 24.6 px right of the header
+    Error: rules ends 16.6 px right of the header
+    Error: rules ends 10.6 px right of the header
+    Error: rules ends 0.6 px right of the header
+  7 failed
+  2 passed (5.1s)
+
+Red at the seven sampled widths inside the overflow bands, green at 768 and 1280 (controls). The overflow values match the 1 px sweep.

@@ -101,6 +101,13 @@ Traces: FR-103, FR-118, FR-100
 - **WHEN** the player presses «Темна»
 - **THEN** `setItem` was not called, `aria-checked="true"` is still on «Темна» only and `data-theme` is still `dark`
 
+#### Scenario: Two mounts show one choice
+
+- **GIVEN** the page mounted on two roots in the same document, with `localStorage` empty and a `matchMedia` stub that does not match (added in the second review-gate fix round, autonomy-log row 130: the document has one `data-theme`, so it has one choice)
+- **WHEN** the player presses «Темна» on the first root, then «Світла» on the second root
+- **THEN** after the first press `aria-checked="true"` is on «Темна» only on both roots
+- **AND** after the second press `data-theme` is `light` and `aria-checked="true"` is on «Світла» only on both roots
+
 ### Requirement: Effective theme on the document
 
 The document element `<html>` SHALL always carry the attribute `data-theme` with the effective theme, `light` or `dark`: the manual choice when it is `light` or `dark`, and the system theme while the choice is `auto` (FR-104, see «Auto follows the system»). The CSS property `color-scheme` of the root SHALL equal the effective theme (`light` or `dark`), so that native parts of the page (the dialog backdrop, scrollbars, form controls) match it; the stylesheet owns it (`:root { color-scheme: light }` and `:root[data-theme="dark"] { color-scheme: dark }`) and no script writes `color-scheme`. The palette of each theme is the stylesheet's (see «Borders, cues and focus rings have enough contrast», A-51). A press on a theme option, a change of the system theme while the choice is `auto`, and the head step before the first paint (see «Preferences are applied before the first paint») are the only things that change `data-theme`.
@@ -285,6 +292,12 @@ Traces: FR-115, FR-113
 - **GIVEN** `Storage.prototype.setItem` throws, counted by a spy
 - **WHEN** the player presses «Темна»
 - **THEN** `setItem` was called once, no error reached the page, `data-theme` is `dark`, and a second press on the same option does not call `setItem` again
+
+#### Scenario: A later mount keeps a session-only choice
+
+- **GIVEN** `Storage.prototype.setItem` throws, counted by a spy, a mounted page on which the player pressed «Темна», and `localStorage` holding no `binarka.theme` (added in the second review-gate fix round, autonomy-log row 130)
+- **WHEN** the page is mounted on a second root in the same document while the first is still mounted
+- **THEN** no error reached the page, `aria-checked="true"` is on «Темна» only on the second root, `data-theme` is still `dark`, and `setItem` was still called once
 
 ### Requirement: Preferences are applied before the first paint
 

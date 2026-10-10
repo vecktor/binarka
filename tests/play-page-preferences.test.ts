@@ -216,6 +216,31 @@ describe('Failing storage does not stop the page', () => {
     expect(documentTheme()).toBe('dark');
     expect(setItem, 'a second press on the same option does not call setItem again').toHaveBeenCalledTimes(1);
   });
+
+  // Review-gate fix round 2 (confirming run wf_6e154572-16a, autonomy-log row 130): «a press still applies the chosen theme for the rest of
+  // the session» (FR-115) holds for the document, so a mount made later in the same session does not fall back to the default.
+  it('A later mount keeps a session-only choice', () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError');
+    });
+    const first = mountFixture(PAIR_ROW);
+    pressTheme(first, 'dark');
+    expect(setItem, 'premise: the press tried to store the choice').toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem(THEME_KEY), 'premise: the storage does not hold it').toBeNull();
+
+    const tracker = trackErrors();
+    let second: HTMLElement;
+    try {
+      second = mountFixture(PAIR_ROW);
+    } finally {
+      tracker.stop();
+    }
+
+    expect(tracker.errors).toEqual([]);
+    expect(checkedTheme(second), 'the later mount shows the session choice').toBe('dark');
+    expect(documentTheme(), 'and keeps it on the document').toBe('dark');
+    expect(setItem, 'nothing is retried').toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('Auto follows the system theme live (storage part)', () => {

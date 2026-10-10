@@ -135,6 +135,23 @@ describe('A theme press acts at once and changes nothing else', () => {
     expect(checkedTheme(root)).toBe('dark');
     expect(documentTheme()).toBe('dark');
   });
+
+  // Review-gate fix round 2 (confirming run wf_6e154572-16a, autonomy-log row 130): the one choice of the document shows on every mount.
+  // A press on one mount moves aria-checked on the other too, and a press on the other mount acts (it is not dropped as "already chosen").
+  it('Two mounts show one choice', () => {
+    installMatchMedia(false);
+    const first = mountFixture(PAIR_ROW);
+    const second = mountFixture(PAIR_ROW);
+    expect(checkedTheme(second), 'premise: both mounts start on «Як у системі»').toBe('auto');
+
+    pressTheme(first, 'dark');
+    expect(checkedTheme(second), 'the press on the first mount shows on the second').toBe('dark');
+
+    pressTheme(second, 'light');
+    expect(documentTheme(), 'the press on the second mount acts').toBe('light');
+    expect(checkedTheme(first), 'and shows on the first').toBe('light');
+    expect(checkedTheme(second)).toBe('light');
+  });
 });
 
 describe('Effective theme on the document', () => {
