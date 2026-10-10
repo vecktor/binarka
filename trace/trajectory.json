@@ -146,6 +146,15 @@
       "processComplete": true
     },
     {
+      "slice": "2026-10-10-add-capture-board",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 7,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": false
+    },
+    {
       "slice": "2026-10-10-add-english-version",
       "reviewEvidence": "unclean",
       "trailerCommits": 9,
@@ -247,6 +256,14 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-09-fix-action-button-targets: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-10-add-capture-board: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "process",
+      "msg": "2026-10-10-add-capture-board: archived change is missing design.md and/or tasks.md"
     },
     {
       "check": "review-evidence",

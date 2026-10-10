@@ -5,8 +5,8 @@ archived slice took: review evidence, `Slice:` trailers, and module scope.
 It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
-Scope: 21 archived slice(s).
-Result: PASS, 19 warning(s)
+Scope: 22 archived slice(s).
+Result: PASS, 21 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
 |---|---|---|---|---|
@@ -26,6 +26,7 @@ Result: PASS, 19 warning(s)
 | 2026-10-09-add-logo | **unclean** | 3 | yes | ui |
 | 2026-10-09-add-rule-solvable-generator | **unclean** | 2 | yes | engine |
 | 2026-10-09-fix-action-button-targets | **unclean** | 5 | yes | ui |
+| 2026-10-10-add-capture-board | **unclean** | 7 | **no** | ui |
 | 2026-10-10-add-english-version | **unclean** | 9 | yes | engine, ui |
 | 2026-10-10-add-theme-switch | **unclean** | 18 | yes | ui |
 | 2026-10-10-fix-size-option-focus-ring | **unclean** | 3 | **no** | ui |
@@ -53,6 +54,8 @@ None.
 - **review-evidence**: 2026-10-09-add-logo: review-findings.json is unclean (review must have run clean before archive)
 - **review-evidence**: 2026-10-09-add-rule-solvable-generator: review-findings.json is unclean (review must have run clean before archive)
 - **review-evidence**: 2026-10-09-fix-action-button-targets: review-findings.json is unclean (review must have run clean before archive)
+- **review-evidence**: 2026-10-10-add-capture-board: review-findings.json is unclean (review must have run clean before archive)
+- **process**: 2026-10-10-add-capture-board: archived change is missing design.md and/or tasks.md
 - **review-evidence**: 2026-10-10-add-english-version: review-findings.json is unclean (review must have run clean before archive)
 - **review-evidence**: 2026-10-10-add-theme-switch: review-findings.json is unclean (review must have run clean before archive)
 - **review-evidence**: 2026-10-10-fix-size-option-focus-ring: review-findings.json is unclean (review must have run clean before archive)

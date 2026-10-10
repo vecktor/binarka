@@ -34,5 +34,5 @@ Order of work: section 1 (tests) is written FIRST and seen red before section 2.
 
 ## 4. Review and archive
 
-- [ ] 4.1 Run the review gate (`review-gate` workflow) on the slice's commits. Fix confirmed code defects in a fix round, with the user's approval.
-- [ ] 4.2 Archive (`npx openspec archive add-capture-board --yes`), validate, then update `docs/current-state.md`, `docs/handoff/next-session.md` and an autonomy-log row.
+- [x] 4.1 Run the review gate (`review-gate` workflow) on the slice's commits. Fix confirmed code defects in a fix round, with the user's approval.
+- [x] 4.2 Archive (`npx openspec archive add-capture-board --yes`), validate, then update `docs/current-state.md`, `docs/handoff/next-session.md` and an autonomy-log row.
