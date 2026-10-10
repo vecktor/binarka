@@ -1,0 +1,125 @@
+RED RUN of section 1 (add-capture-board): 2026-10-10 14:36 +0530
+Command: npm run test:run   (plus npx tsc --noEmit, npm run lint: both pass)
+Whole suite: Test Files 2 failed | 67 passed (69); Tests 54 failed | 1656 passed (1710).
+Pre-existing tests: 1654 of 1654 pass (1656 passed minus the 2 new green tests). No pre-existing test changed or failed.
+New files: tests/capture-fixtures.test.ts (9 tests: 9 red), tests/play-page-capture-board.test.ts (47 tests: 45 red, 2 green).
+Green on purpose (behaviour that must not change): the absent-value test, and the guard test on the base values of the invalid cases.
+
+Red tests, with the first assertion message (no import, type or crash error among them):
+1. tests/capture-fixtures.test.ts > boards.json exists and holds the five fixture boards in the data notation
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+2. tests/capture-fixtures.test.ts > the givens of the three 6x6 boards are equal and have exactly one solution
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+3. tests/capture-fixtures.test.ts > the shared givens are the engine puzzle generate(6, 5, 1) (ENGINE-CHECK of review-set-14)
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+4. tests/capture-fixtures.test.ts > the fixture board has exactly one violation: rule three, row 3 (1-based), cells 1 to 3
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+5. tests/capture-fixtures.test.ts > on the hint board without its hinted cell the first hint fills row 3, column 3 (1-based) with 1, with the exact sentence
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+6. tests/capture-fixtures.test.ts > the solved board is solved and is the solution of the shared givens
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+7. tests/capture-fixtures.test.ts > the 4x4 and 8x8 fixtures have exactly one solution
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+8. tests/capture-fixtures.test.ts > the hint board, the 4x4 board and the 8x8 board hold no rule violation
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+9. tests/capture-fixtures.test.ts > every fixture, converted to a capture value, is valid: the page takes no seed and calls no generator
+     -> AssertionError: design/v0/lib/boards.json exists: expected false to be true
+10. tests/play-page-capture-board.test.ts > a 6x6 value at level 1: no seed, no generator call, the givens, the entries and the empty cells exactly, the summary and the label
+     -> AssertionError: no seed was taken: expected 1 to be +0
+11. tests/play-page-capture-board.test.ts > a 4x4 value (level 1) and an 8x8 value (level 3) are shown with their own size, label and summary
+     -> AssertionError: no seed was taken: expected 1 to be +0
+12. tests/play-page-capture-board.test.ts > level 4 at 6x6 is valid (the upper boundary of the level)
+     -> AssertionError: no seed was taken: expected 1 to be +0
+13. tests/play-page-capture-board.test.ts > a value with entries that disagree with the solution is still valid (wrong entries are the player’s)
+     -> AssertionError: no seed was taken: expected 1 to be +0
+14. tests/play-page-capture-board.test.ts > a 6x6 value at level 2: the summary «6×6 · Задачка», and aria-checked on «Поле 6×6» and on «Задачка» once the sheet is open
+     -> AssertionError: no seed was taken: expected 1 to be +0
+15. tests/play-page-capture-board.test.ts > three equal digits in a row: the three cells carry cell-violation (1-based 3,1 3,2 3,3)
+     -> AssertionError: no seed was taken: expected 1 to be +0
+16. tests/play-page-capture-board.test.ts > hinted naming an entered cell: exactly that cell carries cell-hinted, the hint message is empty
+     -> AssertionError: no seed was taken: expected 1 to be +0
+17. tests/play-page-capture-board.test.ts > the win message shows the win text at once, with no click
+     -> AssertionError: no seed was taken: expected 1 to be +0
+18. tests/play-page-capture-board.test.ts > a non-object: null
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+19. tests/play-page-capture-board.test.ts > a non-object: a string
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+20. tests/play-page-capture-board.test.ts > a non-object: a number
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+21. tests/play-page-capture-board.test.ts > a non-object: an array
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+22. tests/play-page-capture-board.test.ts > size 5 (5x5 arrays)
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+23. tests/play-page-capture-board.test.ts > size as a string "6"
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+24. tests/play-page-capture-board.test.ts > level 0
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+25. tests/play-page-capture-board.test.ts > level 5
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+26. tests/play-page-capture-board.test.ts > level 1.5 (not an integer)
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+27. tests/play-page-capture-board.test.ts > level 2 at size 4
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+28. tests/play-page-capture-board.test.ts > a givens row of the wrong length (too l…
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+29. tests/play-page-capture-board.test.ts > an entries row of the wrong length (too…
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+30. tests/play-page-capture-board.test.ts > the wrong number of givens rows (5 rows…
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+31. tests/play-page-capture-board.test.ts > a cell value of 2 in the entries
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+32. tests/play-page-capture-board.test.ts > a cell value of 2 in the givens
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+33. tests/play-page-capture-board.test.ts > a cell value "1" (a string) in the entr…
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+34. tests/play-page-capture-board.test.ts > givens with two or more solutions (empt…
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+35. tests/play-page-capture-board.test.ts > givens with two or more solutions (one …
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+36. tests/play-page-capture-board.test.ts > givens with no solution (three zeros in…
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+37. tests/play-page-capture-board.test.ts > an entry on a given (the same digit)
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+38. tests/play-page-capture-board.test.ts > an entry on a given (the other digit)
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+39. tests/play-page-capture-board.test.ts > hinted on an empty cell
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+40. tests/play-page-capture-board.test.ts > hinted on a given cell (it has no entry)
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+41. tests/play-page-capture-board.test.ts > hinted outside the board: row 6
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+42. tests/play-page-capture-board.test.ts > hinted outside the board: column 6
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+43. tests/play-page-capture-board.test.ts > hinted outside the board: row -1
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+44. tests/play-page-capture-board.test.ts > hinted outside the board: column -1
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+45. tests/play-page-capture-board.test.ts > hinted outside the board: [4, 4] on a 4…
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+46. tests/play-page-capture-board.test.ts > hinted that is not a pair of integers: …
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+47. tests/play-page-capture-board.test.ts > hinted that is not a pair: one number
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+48. tests/play-page-capture-board.test.ts > hinted that is not an array
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+49. tests/play-page-capture-board.test.ts > the entries are missing
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+50. tests/play-page-capture-board.test.ts > the givens are missing
+     -> AssertionError: control: the valid base takes no seed: expected 1 to be +0
+51. tests/play-page-capture-board.test.ts > after a capture board, a change of the global is not read; «Нова головоломка» takes a seed and generates; nothing is written
+     -> AssertionError: the capture board takes no seed: expected 1 to be +0
+52. tests/play-page-capture-board.test.ts > a hint works on the capture board: no seed, the engine hint sentence, the hinted cell marked
+     -> AssertionError: no seed was taken: expected 1 to be +0
+53. tests/play-page-capture-board.test.ts > «Скинути» returns to the givens of the capture board, with no seed and no generator call
+     -> AssertionError: no seed was taken: expected 1 to be +0
+54. tests/play-page-capture-board.test.ts > «Почати» after a capture board takes a seed and generates at the chosen level
+     -> AssertionError: no seed was taken: expected 1 to be +0
+
+Why red: tests/capture-fixtures.test.ts reads design/v0/lib/boards.json, which does not exist (task 2.1); tests/play-page-capture-board.test.ts
+fails because the page has no loader for window.__binarkaCaptureBoard (task 2.2): a valid value takes a seed ("expected 1 to be +0"), and each
+invalid case fails on its CONTROL (the valid base of the case is not accepted yet), so it cannot pass on a page that ignores the global.
+
+Checks done in a scratch copy outside the repository (not committed, src/ and design/ untouched here):
+- a boards.json built from design/v0/lib/boards.ts at the current commit: 8 of 9 tests of capture-fixtures pass, the 9th (mount) stays red until 2.2;
+- a throwaway loader in the scratch copy of src/ui/play-page.ts: all 56 new tests pass;
+- five mutations of that loader (no countSolutions, no entry-on-given check, no hinted-has-entry check, level 2 at 4x4 allowed, hinted marker dropped) each turn the matching tests red.

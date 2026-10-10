@@ -1358,6 +1358,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-capture-board.test.ts",
         "tests/play-page-level-control.test.ts",
         "tests/play-page-level-seed.test.ts",
         "tests/play-page-level-seed.test.ts",
@@ -1834,7 +1835,19 @@
         "openspec/changes/add-capture-board/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/capture-fixtures.test.ts",
+        "tests/capture-fixtures.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1852,10 +1865,6 @@
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-119 has no test annotated \"@trace FR-119\""
-    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"

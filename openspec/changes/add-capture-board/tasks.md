@@ -4,15 +4,15 @@ Order of work: section 1 (tests) is written FIRST and seen red before section 2.
 
 ## 1. Failing tests first (red)
 
-- [ ] 1.1 Create `tests/capture-fixtures.test.ts`, for the scenario «The fixture boards are valid capture values».
+- [x] 1.1 Create `tests/capture-fixtures.test.ts`, for the scenario «The fixture boards are valid capture values».
   - It reads `design/v0/lib/boards.json`, which does not exist yet: the red is a clear assertion that the file exists, never a crash in an import.
   - Data notation: each board is `{ "size": n, "rows": ["g1 .  .", ...], "violations"?: [[r, c], ...] }` (1-based violations; cells `gD` given, `pD` entry, `hD` hinted entry, `.` empty), as in `boards.ts` today.
   - The test owns the conversion to a capture value and asserts the claims of `review-set-14/ENGINE-CHECK.txt`.
-- [ ] 1.2 Create `tests/play-page-capture-board.test.ts`, one test or more per remaining scenario of «Capture-only board».
+- [x] 1.2 Create `tests/play-page-capture-board.test.ts`, one test or more per remaining scenario of «Capture-only board».
   - Mount with a counting seed source and generator (helpers of `tests/helpers/play-page.ts`).
   - Set and delete `window.__binarkaCaptureBoard` around each test.
   - Assert no console output with a spy for the invalid cases.
-- [ ] 1.3 Run `npm run test:run` and confirm the new tests fail on assertions, for the right reason. Save the output in `docs/qa/add-capture-board/red-run.txt`.
+- [x] 1.3 Run `npm run test:run` and confirm the new tests fail on assertions, for the right reason. Save the output in `docs/qa/add-capture-board/red-run.txt`.
 
 ## 2. Implementation
 
