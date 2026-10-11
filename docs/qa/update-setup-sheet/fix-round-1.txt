@@ -1,0 +1,57 @@
+# Review gate fix round 1: update-setup-sheet (task 8.1)
+
+Approved by the user on 2026-10-11 ~21:14 (UTC+5:30), «Approve all (Recommended)» (session-log row 25). The 12 non-rejected findings of run `wf_96f2007e-603` (`review-findings.json`), all minor, no product-code defect:
+
+| Fix | Findings | Change |
+|---|---|---|
+| (a) | visual-block always exits 1 (confirmed); its header comment (confirmed); setup geometry vs the design's own boxes (contested) | `scripts/visual-block.mjs`: for the block `setup` the design page gets the recorded deviation `.setup .level-control { margin-bottom: 28px }` injected before it is measured (as the freeze script's `expected`), so geometry 0 is reachable; the pixel channel still scores against the frozen reference. The header comment now says where the deviation shows (bottom from 48rem; top and description on phones; never past max-height). |
+| (b) | provenance kept over re-measured cases (confirmed ×2, contested ×1); `decidedBy` design-side only (confirmed); dead helper and unused export (confirmed) | `scripts/freeze-design-geometry.mjs`: throws when the 32 top-level cases differ from the recorded ones under the same `designCommit`/`designCssSha1` (so the kept provenance stays true); records `layout.expectedDecidedBy`; the dead `box` helper and the unused `export` removed. `e2e/nfr-14-setup-sheet.spec.ts` checks `expectedDecidedBy` (the cap decides the expected box exactly when the growth is capped). |
+| (c) | spec says every content-decided case is 4px (12px) taller (confirmed) | The ADDED requirement and design.md decision 9: "never past its `max-height` (at 320×700 in the 6×6 state the expected sheet meets the cap, 2.31px taller)"; the fixture scenario names `expectedDecidedBy`. |
+| (d) | FR-99 traced but untagged (confirmed) | `@trace FR-99` on `tests/play-page-setup-sheet-stylesheet.test.ts` (the description's indent, colour and metrics). |
+| (e) | tasks 0.1-0.3 unticked (confirmed) | Ticked (evidence: session-log rows 1-2, the lock rows, the log itself). |
+| (f) | the reason-line accent also matches any `<p>` (contested) | Test first: an assertion in «The reason line has its accent» that every selector of the accent rule names `[data-level-reason]`, seen red (`expected [ '.level-control p' ] to deeply equal []`); then `src/ui/style.css` drops the bare `.level-control p` from the selector list. |
+
+## Runs after the fixes
+
+```
+$ npx vitest run            → Test Files 77 passed (77), Tests 1900 passed (1900)
+$ npm run lint              → exit 0
+$ npx openspec validate update-setup-sheet --strict → valid
+== 2026-10-11 21:22:22 +0530 lock taken: session B (update-setup-sheet, magical-nash-setup) 2026-10-11 21:22:22 +0530
+$ node scripts/freeze-design-geometry.mjs; echo freeze_exit=$?; npx playwright test --project=layout --reporter=list > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/fix1-layout.txt 2>&1; echo layout_exit=$?; npm run check:a11y > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/fix1-a11y.txt 2>&1; echo a11y_exit=$?; node scripts/visual-block.mjs --block setup --states setup,setup-four --out /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/fix1-vb > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/fix1-vb.txt 2>&1; echo vb_exit=$?
+wrote quality/design-geometry.json: 32 cases x 16 selectors; setupSheet 12 cases (content-decided: 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four); top-level provenance kept
+freeze_exit=0
+layout_exit=0
+a11y_exit=0
+vb_exit=0
+== lock released 2026-10-11 21:23:34 +0530
+fix1-a11y.txt:  67 passed (12.8s)
+fix1-layout.txt:  178 passed (14.8s)
+1024-dark-setup-four           pixel 0.9765 geometry off 0/2, unpaired 0, max delta 0px
+1024-dark-setup                pixel 0.9749 geometry off 0/2, unpaired 0, max delta 0px
+1024-light-setup-four          pixel 0.9766 geometry off 0/2, unpaired 0, max delta 0px
+1024-light-setup               pixel 0.975 geometry off 0/2, unpaired 0, max delta 0px
+1366-dark-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-dark-setup                pixel 0.9749 geometry off 0/2, unpaired 0, max delta 0px
+1366-light-setup-four          pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-light-setup               pixel 0.975 geometry off 0/2, unpaired 0, max delta 0px
+1440-dark-setup-four           pixel 0.9765 geometry off 0/2, unpaired 0, max delta 0px
+1440-dark-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1440-light-setup-four          pixel 0.9766 geometry off 0/2, unpaired 0, max delta 0px
+1440-light-setup               pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-setup-four            pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-setup                 pixel 0.904 geometry off 0/2, unpaired 0, max delta 0px
+320-light-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-light-setup                pixel 0.9016 geometry off 0/2, unpaired 0, max delta 0px
+375-dark-setup-four            pixel 0.9134 geometry off 0/2, unpaired 0, max delta 0px
+375-dark-setup                 pixel 0.8969 geometry off 0/2, unpaired 0, max delta 0px
+375-light-setup-four           pixel 0.9018 geometry off 0/2, unpaired 0, max delta 0px
+375-light-setup                pixel 0.884 geometry off 0/2, unpaired 0, max delta 0px
+768-dark-setup-four            pixel 0.9765 geometry off 0/2, unpaired 0, max delta 0px
+768-dark-setup                 pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup-four           pixel 0.9766 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+Block setup: 24 shot(s), geometry within 0.5px (coverage: sampled)
+```
+
+The refreeze: every top-level key and every setupSheet value byte-identical except the added `layout.expectedDecidedBy` (320-light-setup: design `content`, expected `max-height`; every other case the same bound on both sides); `git diff --stat quality/design-geometry.json`: 24 insertions, 12 deletions (the new field and its preceding comma). The per-block tool over the 24 sheet geometry shots: geometry within 0.5px, exit 0 (before: 28 of 48 off by the recorded deviation, exit 1).

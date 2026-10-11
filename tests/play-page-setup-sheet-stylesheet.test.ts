@@ -6,6 +6,7 @@
 //
 // @trace FR-96
 // @trace FR-65
+// @trace FR-99
 // @trace NFR-14
 //
 // Why the stylesheet is read from the raw text here (and not only through `readStyles`): jsdom's CSSOM is lossy for several values this requirement pins
@@ -574,6 +575,10 @@ describe('The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-
     declares('[data-level-reason]', have, 'color', 'var(--color-text)');
     declares('[data-level-reason]', have, 'font-size', '0.875rem');
     declares('[data-level-reason]', have, 'line-height', '1.35');
+    // Review gate, fix round 1: the accent belongs to the reason line only, so no rule that declares it may also match every paragraph of the group
+    // (a bare `.level-control p` in the selector list would paint any future paragraph there).
+    const accent = rules.filter((r) => r.declarations.some((d) => d.property === 'border-left'));
+    expect(accent.flatMap((r) => r.selectors).filter((s) => !s.includes('[data-level-reason]')), 'selectors of the accent rule that do not name [data-level-reason]').toEqual([]);
   });
 
   // Scenario «Only the size options in the sheet take the primary paint», first clause. Red today: checked is --color-focus on --color-given-bg; unchecked has no muted ink or weight.

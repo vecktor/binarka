@@ -8362,7 +8362,8 @@
           "clientHeight": 553,
           "minHeightPx": 0,
           "maxHeightPx": 556,
-          "decidedBy": "content"
+          "decidedBy": "content",
+          "expectedDecidedBy": "max-height"
         }
       },
       {
@@ -8508,7 +8509,8 @@
           "clientHeight": 534,
           "minHeightPx": 0,
           "maxHeightPx": 714.56,
-          "decidedBy": "content"
+          "decidedBy": "content",
+          "expectedDecidedBy": "content"
         }
       },
       {
@@ -8654,7 +8656,8 @@
           "clientHeight": 588,
           "minHeightPx": 590,
           "maxHeightPx": 852,
-          "decidedBy": "min-height"
+          "decidedBy": "min-height",
+          "expectedDecidedBy": "min-height"
         }
       },
       {
@@ -8800,7 +8803,8 @@
           "clientHeight": 515,
           "minHeightPx": 494,
           "maxHeightPx": 596,
-          "decidedBy": "content"
+          "decidedBy": "content",
+          "expectedDecidedBy": "content"
         }
       },
       {
@@ -8946,7 +8950,8 @@
           "clientHeight": 515,
           "minHeightPx": 436,
           "maxHeightPx": 538,
-          "decidedBy": "content"
+          "decidedBy": "content",
+          "expectedDecidedBy": "content"
         }
       },
       {
@@ -9092,7 +9097,8 @@
           "clientHeight": 540,
           "minHeightPx": 542,
           "maxHeightPx": 728,
-          "decidedBy": "min-height"
+          "decidedBy": "min-height",
+          "expectedDecidedBy": "min-height"
         }
       },
       {
@@ -9190,7 +9196,8 @@
           "clientHeight": 555,
           "minHeightPx": 0,
           "maxHeightPx": 556,
-          "decidedBy": "max-height"
+          "decidedBy": "max-height",
+          "expectedDecidedBy": "max-height"
         }
       },
       {
@@ -9288,7 +9295,8 @@
           "clientHeight": 569,
           "minHeightPx": 0,
           "maxHeightPx": 714.56,
-          "decidedBy": "content"
+          "decidedBy": "content",
+          "expectedDecidedBy": "content"
         }
       },
       {
@@ -9386,7 +9394,8 @@
           "clientHeight": 550,
           "minHeightPx": 422,
           "maxHeightPx": 852,
-          "decidedBy": "content"
+          "decidedBy": "content",
+          "expectedDecidedBy": "content"
         }
       },
       {
@@ -9484,7 +9493,8 @@
           "clientHeight": 550,
           "minHeightPx": 390,
           "maxHeightPx": 596,
-          "decidedBy": "content"
+          "decidedBy": "content",
+          "expectedDecidedBy": "content"
         }
       },
       {
@@ -9582,7 +9592,8 @@
           "clientHeight": 536,
           "minHeightPx": 428,
           "maxHeightPx": 538,
-          "decidedBy": "max-height"
+          "decidedBy": "max-height",
+          "expectedDecidedBy": "max-height"
         }
       },
       {
@@ -9680,7 +9691,8 @@
           "clientHeight": 550,
           "minHeightPx": 390,
           "maxHeightPx": 728,
-          "decidedBy": "content"
+          "decidedBy": "content",
+          "expectedDecidedBy": "content"
         }
       }
     ]

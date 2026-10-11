@@ -101,7 +101,7 @@ Result: PASS, 116 warning(s)
 | FR-96 | yes | yes | 8 | - |
 | FR-97 | yes | yes | 8 | - |
 | FR-98 | yes | yes | 5 | - |
-| FR-99 | yes | yes | 2 | - |
+| FR-99 | yes | yes | 3 | - |
 | FR-100 | yes | yes | 23 | - |
 | FR-101 | yes | yes | 23 | - |
 | FR-102 | yes | yes | 4 | - |

@@ -44,6 +44,8 @@ interface Layout {
   minHeightPx: number;
   maxHeightPx: number;
   decidedBy: Decided;
+  /** Which bound decides the expected (product) box (review gate fix round 1): the margin's growth stops at max-height. */
+  expectedDecidedBy: Decided;
 }
 interface SetupCase {
   shot: string;
@@ -187,6 +189,7 @@ test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors
     // The phone regimes declare no min-height (computed `auto`), recorded as 0 (refreeze, docs/qa/update-setup-sheet/refreeze.txt).
     expect(Number.isFinite(l.minHeightPx) && l.minHeightPx >= 0, `${shot}: layout.minHeightPx is a number >= 0 (got ${JSON.stringify(l.minHeightPx)})`).toBe(true);
     expect(['min-height', 'max-height', 'content'], `${shot}: layout.decidedBy (got ${JSON.stringify(l.decidedBy)})`).toContain(l.decidedBy);
+    expect(['min-height', 'max-height', 'content'], `${shot}: layout.expectedDecidedBy (got ${JSON.stringify(l.expectedDecidedBy)})`).toContain(l.expectedDecidedBy);
 
     // The expected box is the design's with the 28px margin: identical where the floor or the cap decides, taller by 4px (12px where the
     // design has 1rem, at 22.5rem and narrower) where the content decides, but never past the cap: at 320x700 (6x6) the design's content-decided
@@ -198,6 +201,7 @@ test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors
       if (l.decidedBy === 'content') {
         const grow = Math.min(c.width <= 360 ? 12 : 4, l.maxHeightPx - design.h);
         expect(Math.abs(want.h - design.h - grow), `${shot}: content-decided, expected height ${want.h} should be the design's ${design.h} + ${grow} (the margin's growth, capped by max-height ${l.maxHeightPx})`).toBeLessThanOrEqual(0.5);
+        expect(l.expectedDecidedBy, `${shot}: the expected box is decided by the cap exactly when the growth is capped`).toBe(grow < (c.width <= 360 ? 12 : 4) - 0.5 ? 'max-height' : 'content');
       } else {
         const delta = Math.max(Math.abs(want.x - design.x), Math.abs(want.y - design.y), Math.abs(bottomOf(want) - bottomOf(design)));
         expect(delta, `${shot}: decided by ${l.decidedBy}, expected ${fmt(want)} should equal the design's ${fmt(design)}`).toBeLessThanOrEqual(0.5);

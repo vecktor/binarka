@@ -16,8 +16,11 @@
 // The product side shows the design's fixture board through FR-119 (captureBoardFor, exported by the adapter). Geometry is
 // measured only for states whose look is reached at mount (GEOMETRY_STATES) or by opening the setup sheet (SHEET_STATES: the design routes
 // /setup/ and /setup-four/ are open at load, the page side presses the summary button, as e2e/nfr-14-setup-sheet.spec.ts replays
-// afterLoad "open-setup"); other states have the pixel channel only. The setup block's geometry compares with the design's own boxes, so in the
-// content-decided cases the sheet's bottom differs by the recorded 28px-margin deviation (4px, 12px at 320; quality/design-geometry.json setupSheet).
+// afterLoad "open-setup"); other states have the pixel channel only. For the sheet states the design page gets the one recorded deviation of
+// quality/design-geometry.json setupSheet injected before it is measured (the level group's 28px margin, A-60/SQ-5, as the freeze script's
+// `expected` boxes), so geometry 0 is reachable; without it the content-decided cases would always be off by the margin (4 px from 48rem at the
+// bottom; on phones the bottom sheet grows upward, moving the top and the description; never past max-height, e.g. 2.31 px at 320x700).
+// The pixel channel still scores against the frozen reference (the unmodified design), so that residual stays visible there.
 // Sampling: the shots given (default: the default state at every reference viewport and scheme); coverage is `sampled`.
 //
 // Blocks: layout (16 elements, states reached at mount) and rules (the open rules panel and «Зрозуміло», state `rules`: geometry
@@ -74,6 +77,8 @@ const BLOCKS = {
 // /rules/ is open at load (a press would close it), the product presses «Правила» and waits for :popover-open.
 // `rules-techniques` stays pixel-only: its design route is scrolled to the end by a script.
 const SHEET_STATES = new Set(['setup', 'setup-four']);
+// The one recorded deviation of the setup sheet (quality/design-geometry.json setupSheet.deviations, A-60/SQ-5), injected into the design page.
+const SETUP_DEVIATION_CSS = '.setup .level-control { margin-bottom: 28px }';
 const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules', ...SHEET_STATES]);
 
 const args = process.argv.slice(2);
@@ -160,7 +165,16 @@ async function designBoxes(shot) {
     await page.goto(`http://127.0.0.1:${DESIGN_PORT}${designRoute(parseShot(shot.name).state)}`, { waitUntil: 'load' });
     await page.locator('[data-board]').waitFor();
     if (blockName === 'rules') await page.waitForSelector('[data-section="rules"]:popover-open'); // open at load on /rules/; never press
-    if (SHEET_STATES.has(parseShot(shot.name).state)) await page.locator('[data-section="setup"]:popover-open').waitFor();
+    if (SHEET_STATES.has(parseShot(shot.name).state)) {
+      await page.locator('[data-section="setup"]:popover-open').waitFor();
+      if (blockName === 'setup') {
+        await page.evaluate((css) => {
+          const el = document.createElement('style');
+          el.textContent = css;
+          document.head.append(el);
+        }, SETUP_DEVIATION_CSS);
+      }
+    }
     return { boxes: await boxes(page), png: calibrate ? await page.screenshot({ animations: 'disabled', caret: 'hide' }) : null };
   } finally {
     await ctx.close();

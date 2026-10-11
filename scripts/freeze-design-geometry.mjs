@@ -70,7 +70,7 @@ const bp = (name) => {
 const PORT = capturePorts().design;
 const OUT = 'quality/design-geometry.json';
 
-export const SETUP_SELECTORS = ['[data-section="setup"]', '[data-section="setup"] [data-control="level"] button:first-of-type .level-text'];
+const SETUP_SELECTORS = ['[data-section="setup"]', '[data-section="setup"] [data-control="level"] button:first-of-type .level-text'];
 const SETUP_WIDTHS = [320, 375, 768, 1024, 1366, 1440];
 const SETUP_STATES = ['setup', 'setup-four'];
 // The one recorded deviation of the sheet (A-60, SQ-5): the product keeps the level group's 28px bottom margin. Appended after the design's
@@ -212,7 +212,11 @@ try {
       const sheetH = design.boxes[SETUP_SELECTORS[0]].h;
       const minHeightPx = Number.parseFloat(design.minHeight) || 0;
       const maxHeightPx = design.maxHeight === 'none' ? null : Number.parseFloat(design.maxHeight);
-      const decidedBy = maxHeightPx !== null && Math.abs(sheetH - maxHeightPx) <= 0.5 ? 'max-height' : Math.abs(sheetH - minHeightPx) <= 0.5 ? 'min-height' : 'content';
+      const decide = (h) => (maxHeightPx !== null && Math.abs(h - maxHeightPx) <= 0.5 ? 'max-height' : Math.abs(h - minHeightPx) <= 0.5 ? 'min-height' : 'content');
+      const decidedBy = decide(sheetH);
+      // Which bound decides the expected (product) box: the margin's growth stops at max-height (320x700, 6x6: content in the design, the cap
+      // in the expected box; review gate fix round 1).
+      const expectedDecidedBy = decide(product.boxes[SETUP_SELECTORS[0]].h);
       setupOut.push({
         shot: name,
         width: bp.width,
@@ -222,7 +226,7 @@ try {
         afterLoad: 'open-setup',
         boxes: design.boxes,
         expected: product.boxes,
-        layout: { scrollHeight: design.scrollHeight, clientHeight: design.clientHeight, minHeightPx, maxHeightPx, decidedBy },
+        layout: { scrollHeight: design.scrollHeight, clientHeight: design.clientHeight, minHeightPx, maxHeightPx, decidedBy, expectedDecidedBy },
       });
       await ctx.close();
     }
@@ -260,6 +264,12 @@ if (existsSync(OUT)) {
   const recorded = JSON.parse(readFileSync(OUT, 'utf8')).provenance;
   if (recorded?.designCommit === freshProvenance.designCommit && recorded?.designCssSha1 === freshProvenance.designCssSha1) {
     provenance = recorded;
+    // Keeping the recorded provenance is honest only if this run measured the same top-level boxes (update-setup-sheet review gate fix round 1):
+    // a different local build or browser that moved a box must not be written under the old provenance.
+    const recordedCases = JSON.parse(readFileSync(OUT, 'utf8')).cases;
+    if (JSON.stringify(recordedCases) !== JSON.stringify(out)) {
+      throw new Error(`the top-level cases differ from the recorded ones under the same designCommit and designCssSha1 (this run: ${freshProvenance.browser}; recorded: ${recorded.browser}); check the build (design/README.md) and the browser before refreezing`);
+    }
     // The layout cases are measured again on every run, so a different browser is said out loud (review finding 3); the box values
     // of `cases` then come from this run's browser, which rulesPanel.provenance records.
     if (recorded.browser !== freshProvenance.browser) console.warn(`WARNING: the recorded provenance names "${recorded.browser}", this run used "${freshProvenance.browser}"; check that \`cases\` did not change before committing`);

@@ -927,7 +927,6 @@ button:focus-visible {
   margin: 0.75rem 0 0;
 }
 
-.level-control p,
 .level-control [data-level-reason] {
   margin: 0;
   padding: 0.25rem 0 0.25rem 0.75rem;
