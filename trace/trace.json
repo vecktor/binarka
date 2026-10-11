@@ -115,6 +115,7 @@
     "FR-117": "MVP",
     "FR-118": "MVP",
     "FR-119": "MVP",
+    "FR-120": "MVP",
     "FR-45": "Future",
     "FR-46": "Future",
     "FR-47": "Future",
@@ -526,7 +527,8 @@
       "id": "FR-25",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -539,7 +541,8 @@
       "id": "FR-26",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -822,7 +825,8 @@
     {
       "id": "FR-33",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -836,7 +840,8 @@
     {
       "id": "FR-34",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -848,7 +853,8 @@
     {
       "id": "FR-35",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -860,7 +866,8 @@
     {
       "id": "FR-36",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -872,7 +879,8 @@
     {
       "id": "FR-37",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -885,6 +893,7 @@
       "id": "FR-38",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
         "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -898,7 +907,8 @@
     {
       "id": "FR-39",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -927,7 +937,8 @@
     {
       "id": "FR-41",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -958,7 +969,8 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -991,7 +1003,8 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1053,7 +1066,8 @@
     {
       "id": "FR-60",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1069,7 +1083,8 @@
     {
       "id": "FR-61",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1134,6 +1149,7 @@
       "id": "FR-64",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
         "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1151,6 +1167,7 @@
       "id": "FR-65",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
         "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1204,7 +1221,8 @@
     {
       "id": "FR-66",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1230,6 +1248,7 @@
       "id": "FR-67",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
         "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1279,6 +1298,7 @@
       "id": "FR-69",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
         "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1292,7 +1312,8 @@
     {
       "id": "FR-70",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1307,7 +1328,8 @@
     {
       "id": "FR-71",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1334,7 +1356,8 @@
     {
       "id": "FR-73",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1370,7 +1393,8 @@
       "id": "FR-88",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md"
+        "openspec/specs/puzzle-engine/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1461,7 +1485,8 @@
     {
       "id": "FR-94",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1507,7 +1532,8 @@
     {
       "id": "FR-96",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1569,7 +1595,8 @@
     {
       "id": "FR-100",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1635,7 +1662,8 @@
     {
       "id": "FR-102",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1649,7 +1677,8 @@
     {
       "id": "FR-103",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1663,6 +1692,7 @@
       "id": "FR-104",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
         "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1701,7 +1731,8 @@
     {
       "id": "FR-107",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1715,7 +1746,8 @@
     {
       "id": "FR-108",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1726,7 +1758,8 @@
     {
       "id": "FR-109",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1752,7 +1785,8 @@
     {
       "id": "FR-111",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1803,6 +1837,7 @@
       "id": "FR-116",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
         "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1850,6 +1885,7 @@
       "id": "FR-119",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
         "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1871,9 +1907,19 @@
       "recordings": []
     },
     {
+      "id": "FR-120",
+      "specs": [
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
+      ],
+      "planned": true,
+      "tests": [],
+      "recordings": []
+    },
+    {
       "id": "FR-55",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1885,6 +1931,10 @@
   ],
   "failures": [],
   "warnings": [
+    {
+      "check": "test-trace",
+      "msg": "FR-120 has no test annotated \"@trace FR-120\""
+    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"
@@ -2339,7 +2389,15 @@
     },
     {
       "check": "recording-evidence",
+      "msg": "FR-120 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "recording-evidence",
       "msg": "FR-55 is not referenced by any recording manifest under docs/qa/"
+    },
+    {
+      "check": "active-changes",
+      "msg": "active change \"add-violation-cause\" is not archived"
     },
     {
       "check": "active-changes",

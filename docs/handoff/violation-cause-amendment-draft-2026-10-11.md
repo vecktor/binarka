@@ -1,6 +1,6 @@
 # Requirements amendment draft: mark the cell that caused a violation (2026-10-11)
 
-Status: **DRAFT, audited, not signed.** Written by the session `jolly-gauss-eb0bb7` on 2026-10-11 from about 07:20 (UTC+5:30). A fresh independent auditor read it from about 07:29 to 07:41; every finding is folded in (section 10). Nothing under `src/` changes before the signature.
+Status: **SIGNED** by the user in chat on 2026-10-11 at about 09:44 (UTC+5:30): «1. A», CQ-1 A (the name suffix), and the defaults for CQ-2 to CQ-7, as the question put to the user said (autonomy-log row 163). FR-120, A-58 and the amended FR-64, FR-65 and FR-70 are in `docs/requirements.md`. The text below is kept as the record of what was signed; it was written by the session `jolly-gauss-eb0bb7` from about 07:20 and read by a fresh independent auditor from about 07:29 to 07:41 (section 10).
 
 ## Basis
 
