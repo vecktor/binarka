@@ -1,0 +1,65 @@
+# Refreeze: the key setupSheet of quality/design-geometry.json (task 3.1)
+
+Session B (`claude/magical-nash-setup`), 2026-10-11 18:30-18:31 (UTC+5:30). Block A had not merged (`ls openspec/changes/archive | grep -c rules-panel` → 0; `origin/main` = `ebaf49b` after `git fetch`), so no rebase. `scripts/freeze-design-geometry.mjs` is not locked (`grep -c freeze-design-geometry factory-lock.json` → 0). The script edit: an explicit case list (6 widths × `setup`, `setup-four`), the design routes `/setup/` and `/setup-four/` waited to `:popover-open` (no press), `afterLoad: "open-setup"` recorded for the page side, `captureBoard` = `captureBoardFor(state)`, `boxes` (the design) and `expected` (the same page after `.setup .level-control { margin-bottom: 28px }` is appended in the browser), the guard (the design's computed level `margin-bottom` must be 24px, 16px at width ≤ 360, before injecting; the injected value must read 28px), `layout` per case, the deviation with `contentDecidedCases`, `setupSheet.provenance` fresh, the top-level `provenance` kept when `designCommit` and `designCssSha1` are unchanged, other top-level keys kept.
+
+## The run (under the capture lock)
+
+```
+== 2026-10-11 18:30:51 +0530 lock taken: session B magical-nash-setup 2026-10-11 18:30:51 +0530
+== lsof before
+port 4173:
+port 4174:
+port 4176:
+port 4177:
+$ ls design/v0/out/index.html
+design/v0/out/index.html
+$ node scripts/freeze-design-geometry.mjs
+wrote quality/design-geometry.json: 32 cases x 16 selectors; setupSheet 12 cases (content-decided: 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four); top-level provenance kept
+exit=0
+== lsof after 2026-10-11 18:31:01 +0530
+port 4173:
+port 4174:
+port 4176:
+port 4177:
+== lock released 2026-10-11 18:31:01 +0530
+```
+
+## The filter (before = the committed fixture at `ebaf49b`; after = the refrozen one)
+
+`node <scratch>/filter.mjs before.json quality/design-geometry.json` (exit 0): every top-level key byte-identical, `setupSheet` the only key added; per case the design box, the expected height, the layout and the description's left edge.
+
+```
+OK   keys: $comment, provenance, tolerancePx, selectors, coverage, cases, setupSheet (added: setupSheet only)
+OK   top-level "$comment" byte-identical
+OK   top-level "provenance" byte-identical
+OK   top-level "tolerancePx" byte-identical
+OK   top-level "selectors" byte-identical
+OK   top-level "coverage" byte-identical
+OK   top-level "cases" byte-identical
+OK   setupSheet: 12 cases
+OK   setupSheet.provenance designCommit/designCssSha1 equal the top-level ones (5e61bfd1, d1b1255f); designBuildSha1 d1193198 vs top-level feb08415 (not compared)
+OK   320-light-setup        content    design 0.00,146.31 320.00x553.69  expected h 556.00 (Δh 2.31, Δy -2.31)  min 0 max 556 scroll 553/553  desc.x 29.00
+OK   375-light-setup        content    design 0.00,276.98 375.00x535.02  expected h 539.02 (Δh 4.00, Δy -4.00)  min 0 max 714.56 scroll 534/534  desc.x 31.00
+OK   768-light-setup        min-height design 127.00,156.00 514.00x590.00  expected h 590.00 (Δh 0.00, Δy 0.00)  min 590 max 852 scroll 588/588  desc.x 158.00
+OK   1024-light-setup       content    design 303.00,156.00 418.00x517.13  expected h 521.13 (Δh 4.00, Δy 0.00)  min 494 max 596 scroll 515/515  desc.x 334.00
+OK   1366-light-setup       content    design 467.00,96.00 432.00x517.13  expected h 521.13 (Δh 4.00, Δy 0.00)  min 436 max 538 scroll 515/515  desc.x 498.00
+OK   1440-light-setup       min-height design 487.00,156.00 466.00x542.00  expected h 542.00 (Δh 0.00, Δy 0.00)  min 542 max 728 scroll 540/540  desc.x 518.00
+OK   320-light-setup-four   max-height design 0.00,144.00 320.00x556.00  expected h 556.00 (Δh 0.00, Δy 0.00)  min 0 max 556 scroll 604/555  desc.x 29.00
+OK   375-light-setup-four   content    design 0.00,242.09 375.00x569.91  expected h 573.91 (Δh 4.00, Δy -4.00)  min 0 max 714.56 scroll 569/569  desc.x 31.00
+OK   768-light-setup-four   content    design 127.00,156.00 514.00x552.02  expected h 556.02 (Δh 4.00, Δy 0.00)  min 422 max 852 scroll 550/550  desc.x 158.00
+OK   1024-light-setup-four  content    design 303.00,156.00 418.00x552.02  expected h 556.02 (Δh 4.00, Δy 0.00)  min 390 max 596 scroll 550/550  desc.x 334.00
+OK   1366-light-setup-four  max-height design 467.00,96.00 432.00x538.00  expected h 538.00 (Δh 0.00, Δy 0.00)  min 428 max 538 scroll 550/536  desc.x 498.00
+OK   1440-light-setup-four  content    design 487.00,156.00 466.00x552.02  expected h 556.02 (Δh 4.00, Δy 0.00)  min 390 max 728 scroll 550/550  desc.x 518.00
+OK   deviation.contentDecidedCases = 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four
+$ git diff --stat quality/design-geometry.json
+ quality/design-geometry.json | 1499 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 1498 insertions(+), 1 deletion(-)
+```
+
+## Reading
+
+- The 32 top-level cases, `selectors`, `tolerancePx`, `coverage`, `$comment` and `provenance` (with its recorded `designBuildSha1` `feb08415…` and browser) are byte-identical. `setupSheet.provenance` has the same `designCommit` (`5e61bfd1…`) and `designCssSha1` (`d1b1255f…`) and this worktree's build hash `d1193198…` (not compared: it differs between worktrees).
+- `expected` equals `boxes` in the 4 cases the floor or the cap decides (768 and 1440 default: `min-height`; 320 and 1366 `four`: `max-height`). In the 8 content-decided cases it is 4px taller (the anchored and full-cover sheets grow down; the phone sheets grow up), the width and the description's left edge unchanged.
+- **One case is cap-limited, a refinement of tasks 3.1's "12px at 320":** `320-light-setup` is content-decided in the design (553.69px, the cap 556px), so with the 12px margin the expected sheet meets the cap: Δh = 2.31 = min(12, 556 − 553.69). The filter and the e2e relation check (`e2e/nfr-14-setup-sheet.spec.ts`, the fixture test) use `min(4 or 12, maxHeightPx − design h)`; changed after the red run, before the port (red-run.txt section F).
+- On phones the design declares no `min-height` (computed `auto`), recorded as `minHeightPx: 0`; the e2e's fixture test reads `minHeightPx >= 0` (it had asked for a positive number; changed with the above).
+- The sampling is 12 cases, `coverage: sampled`.

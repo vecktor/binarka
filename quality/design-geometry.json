@@ -8187,5 +8187,1502 @@
         }
       }
     ]
+  },
+  "setupSheet": {
+    "selectors": [
+      "[data-section=\"setup\"]",
+      "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text"
+    ],
+    "coverage": "sampled",
+    "provenance": {
+      "designCommit": "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04",
+      "designCssSha1": "d1b1255f4dff205d15d64850096429cd377e5fbf",
+      "designBuildSha1": "d1193198f7b4e58f412f0ad576ca32683f99e1c4",
+      "browser": "Playwright chromium 156.0.8078.4, devices[\"Desktop Chrome\"], reducedMotion reduce, colorScheme light"
+    },
+    "deviations": [
+      {
+        "rule": ".setup .level-control { margin-bottom }",
+        "design": "24px; 1rem at 22.5rem and narrower",
+        "product": "28px",
+        "reason": "A-60, SQ-5: the focus ring of the last option under the footer strip",
+        "contentDecidedCases": [
+          "320-light-setup",
+          "375-light-setup",
+          "1024-light-setup",
+          "1366-light-setup",
+          "375-light-setup-four",
+          "768-light-setup-four",
+          "1024-light-setup-four",
+          "1440-light-setup-four"
+        ]
+      }
+    ],
+    "cases": [
+      {
+        "shot": "320-light-setup",
+        "width": 320,
+        "height": 700,
+        "state": "setup",
+        "captureBoard": {
+          "size": 6,
+          "level": 2,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 0,
+            "y": 146.3125,
+            "w": 320,
+            "h": 553.6875
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 29,
+            "y": 257.3125,
+            "w": 261.984375,
+            "h": 56.671875
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 0,
+            "y": 144,
+            "w": 320,
+            "h": 556
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 29,
+            "y": 255,
+            "w": 261.984375,
+            "h": 56.671875
+          }
+        },
+        "layout": {
+          "scrollHeight": 553,
+          "clientHeight": 553,
+          "minHeightPx": 0,
+          "maxHeightPx": 556,
+          "decidedBy": "content"
+        }
+      },
+      {
+        "shot": "375-light-setup",
+        "width": 375,
+        "height": 812,
+        "state": "setup",
+        "captureBoard": {
+          "size": 6,
+          "level": 2,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 0,
+            "y": 276.984375,
+            "w": 375,
+            "h": 535.015625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 31,
+            "y": 397.984375,
+            "w": 313,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 0,
+            "y": 272.984375,
+            "w": 375,
+            "h": 539.015625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 31,
+            "y": 393.984375,
+            "w": 313,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 534,
+          "clientHeight": 534,
+          "minHeightPx": 0,
+          "maxHeightPx": 714.56,
+          "decidedBy": "content"
+        }
+      },
+      {
+        "shot": "768-light-setup",
+        "width": 768,
+        "height": 1024,
+        "state": "setup",
+        "captureBoard": {
+          "size": 6,
+          "level": 2,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 127,
+            "y": 156,
+            "w": 514,
+            "h": 590
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 158,
+            "y": 277,
+            "w": 451.984375,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 127,
+            "y": 156,
+            "w": 514,
+            "h": 590
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 158,
+            "y": 277,
+            "w": 451.984375,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 588,
+          "clientHeight": 588,
+          "minHeightPx": 590,
+          "maxHeightPx": 852,
+          "decidedBy": "min-height"
+        }
+      },
+      {
+        "shot": "1024-light-setup",
+        "width": 1024,
+        "height": 768,
+        "state": "setup",
+        "captureBoard": {
+          "size": 6,
+          "level": 2,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 303,
+            "y": 156,
+            "w": 418,
+            "h": 517.125
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 334,
+            "y": 277,
+            "w": 356,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 303,
+            "y": 156,
+            "w": 418,
+            "h": 521.125
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 334,
+            "y": 277,
+            "w": 356,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 515,
+          "clientHeight": 515,
+          "minHeightPx": 494,
+          "maxHeightPx": 596,
+          "decidedBy": "content"
+        }
+      },
+      {
+        "shot": "1366-light-setup",
+        "width": 1366,
+        "height": 650,
+        "state": "setup",
+        "captureBoard": {
+          "size": 6,
+          "level": 2,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 467,
+            "y": 96,
+            "w": 432,
+            "h": 517.125
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 498,
+            "y": 217,
+            "w": 370,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 467,
+            "y": 96,
+            "w": 432,
+            "h": 521.125
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 498,
+            "y": 217,
+            "w": 370,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 515,
+          "clientHeight": 515,
+          "minHeightPx": 436,
+          "maxHeightPx": 538,
+          "decidedBy": "content"
+        }
+      },
+      {
+        "shot": "1440-light-setup",
+        "width": 1440,
+        "height": 900,
+        "state": "setup",
+        "captureBoard": {
+          "size": 6,
+          "level": 2,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 487,
+            "y": 156,
+            "w": 466,
+            "h": 542
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 518,
+            "y": 277,
+            "w": 403.984375,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 487,
+            "y": 156,
+            "w": 466,
+            "h": 542
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 518,
+            "y": 277,
+            "w": 403.984375,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 540,
+          "clientHeight": 540,
+          "minHeightPx": 542,
+          "maxHeightPx": 728,
+          "decidedBy": "min-height"
+        }
+      },
+      {
+        "shot": "320-light-setup-four",
+        "width": 320,
+        "height": 700,
+        "state": "setup-four",
+        "captureBoard": {
+          "size": 4,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              1,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              1
+            ],
+            [
+              null,
+              1,
+              null,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              0,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              null,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 0,
+            "y": 144,
+            "w": 320,
+            "h": 556
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 29,
+            "y": 306.78125,
+            "w": 261.984375,
+            "h": 56.671875
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 0,
+            "y": 144,
+            "w": 320,
+            "h": 556
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 29,
+            "y": 306.78125,
+            "w": 261.984375,
+            "h": 56.671875
+          }
+        },
+        "layout": {
+          "scrollHeight": 604,
+          "clientHeight": 555,
+          "minHeightPx": 0,
+          "maxHeightPx": 556,
+          "decidedBy": "max-height"
+        }
+      },
+      {
+        "shot": "375-light-setup-four",
+        "width": 375,
+        "height": 812,
+        "state": "setup-four",
+        "captureBoard": {
+          "size": 4,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              1,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              1
+            ],
+            [
+              null,
+              1,
+              null,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              0,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              null,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 0,
+            "y": 242.09375,
+            "w": 375,
+            "h": 569.90625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 31,
+            "y": 397.984375,
+            "w": 313,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 0,
+            "y": 238.09375,
+            "w": 375,
+            "h": 573.90625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 31,
+            "y": 393.984375,
+            "w": 313,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 569,
+          "clientHeight": 569,
+          "minHeightPx": 0,
+          "maxHeightPx": 714.56,
+          "decidedBy": "content"
+        }
+      },
+      {
+        "shot": "768-light-setup-four",
+        "width": 768,
+        "height": 1024,
+        "state": "setup-four",
+        "captureBoard": {
+          "size": 4,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              1,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              1
+            ],
+            [
+              null,
+              1,
+              null,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              0,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              null,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 127,
+            "y": 156,
+            "w": 514,
+            "h": 552.015625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 158,
+            "y": 311.890625,
+            "w": 451.984375,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 127,
+            "y": 156,
+            "w": 514,
+            "h": 556.015625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 158,
+            "y": 311.890625,
+            "w": 451.984375,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 550,
+          "clientHeight": 550,
+          "minHeightPx": 422,
+          "maxHeightPx": 852,
+          "decidedBy": "content"
+        }
+      },
+      {
+        "shot": "1024-light-setup-four",
+        "width": 1024,
+        "height": 768,
+        "state": "setup-four",
+        "captureBoard": {
+          "size": 4,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              1,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              1
+            ],
+            [
+              null,
+              1,
+              null,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              0,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              null,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 303,
+            "y": 156,
+            "w": 418,
+            "h": 552.015625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 334,
+            "y": 311.890625,
+            "w": 356,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 303,
+            "y": 156,
+            "w": 418,
+            "h": 556.015625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 334,
+            "y": 311.890625,
+            "w": 356,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 550,
+          "clientHeight": 550,
+          "minHeightPx": 390,
+          "maxHeightPx": 596,
+          "decidedBy": "content"
+        }
+      },
+      {
+        "shot": "1366-light-setup-four",
+        "width": 1366,
+        "height": 650,
+        "state": "setup-four",
+        "captureBoard": {
+          "size": 4,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              1,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              1
+            ],
+            [
+              null,
+              1,
+              null,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              0,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              null,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 467,
+            "y": 96,
+            "w": 432,
+            "h": 538
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 498,
+            "y": 251.890625,
+            "w": 370,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 467,
+            "y": 96,
+            "w": 432,
+            "h": 538
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 498,
+            "y": 251.890625,
+            "w": 370,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 550,
+          "clientHeight": 536,
+          "minHeightPx": 428,
+          "maxHeightPx": 538,
+          "decidedBy": "max-height"
+        }
+      },
+      {
+        "shot": "1440-light-setup-four",
+        "width": 1440,
+        "height": 900,
+        "state": "setup-four",
+        "captureBoard": {
+          "size": 4,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              1,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              1
+            ],
+            [
+              null,
+              1,
+              null,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              0,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              null,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-setup",
+        "boxes": {
+          "[data-section=\"setup\"]": {
+            "x": 487,
+            "y": 156,
+            "w": 466,
+            "h": 552.015625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 518,
+            "y": 311.890625,
+            "w": 403.984375,
+            "h": 37.78125
+          }
+        },
+        "expected": {
+          "[data-section=\"setup\"]": {
+            "x": 487,
+            "y": 156,
+            "w": 466,
+            "h": 556.015625
+          },
+          "[data-section=\"setup\"] [data-control=\"level\"] button:first-of-type .level-text": {
+            "x": 518,
+            "y": 311.890625,
+            "w": 403.984375,
+            "h": 37.78125
+          }
+        },
+        "layout": {
+          "scrollHeight": 550,
+          "clientHeight": 550,
+          "minHeightPx": 390,
+          "maxHeightPx": 728,
+          "decidedBy": "content"
+        }
+      }
+    ]
   }
 }

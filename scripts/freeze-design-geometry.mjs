@@ -22,6 +22,13 @@
 // with both bounds lifted, recorded as contentHeightPx; ties go max-height, min-height, content; no match fails the freeze). rulesPanel.provenance is this run's; the top-level `provenance` is kept as
 // recorded while designCommit and designCssSha1 are unchanged (designBuildSha1 differs between worktrees).
 //
+// The key setupSheet (update-setup-sheet, G2 setup-sheet block): the open setup sheet's box and the left edge of its first level description,
+// at the six reference viewports, in the states setup (6×6 fixture) and setup-four (4×4 fixture, which checks the board side B); read by
+// e2e/nfr-14-setup-sheet.spec.ts. The design's /setup/ and /setup-four/ routes are open at load (a press would close them); the page side replays
+// the recorded afterLoad "open-setup" (press the summary button, wait for :popover-open). Each case records the design's own boxes (`boxes`) and
+// the expected product boxes (`expected`): the same design page with the one recorded deviation injected in the browser, the level group's 28px
+// bottom margin of A-60 and SQ-5 (nothing is written to design/v0). Sampling: 12 cases, coverage sampled, never continuum.
+//
 // Usage: node scripts/freeze-design-geometry.mjs   (design/v0/out must be built; port BINARKA_PORT_BASE + 4 must be free, 4177 by default; scripts/capture-ports.mjs)
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
@@ -63,6 +70,13 @@ const bp = (name) => {
 const PORT = capturePorts().design;
 const OUT = 'quality/design-geometry.json';
 
+export const SETUP_SELECTORS = ['[data-section="setup"]', '[data-section="setup"] [data-control="level"] button:first-of-type .level-text'];
+const SETUP_WIDTHS = [320, 375, 768, 1024, 1366, 1440];
+const SETUP_STATES = ['setup', 'setup-four'];
+// The one recorded deviation of the sheet (A-60, SQ-5): the product keeps the level group's 28px bottom margin. Appended after the design's
+// stylesheet, so it wins over the design's `.setup .level-control` rules by source order.
+const SETUP_DEVIATION_CSS = '.setup .level-control { margin-bottom: 28px }';
+
 const config = JSON.parse(readFileSync('quality/visual-parity.config.json', 'utf8'));
 const cases = config.breakpoints
   .map((b) => ({ ...b, ...parseShot(b.name) }))
@@ -103,6 +117,7 @@ await new Promise((r) => server.listen(PORT, '127.0.0.1', r));
 const browser = await chromium.launch();
 const out = [];
 const rulesOut = [];
+const setupOut = [];
 try {
   for (const c of cases) {
     const ctx = await browser.newContext({ ...devices['Desktop Chrome'], viewport: { width: c.width, height: c.height }, reducedMotion: 'reduce', colorScheme: 'light' });
@@ -155,6 +170,62 @@ try {
     if (layout.decidedBy === null) throw new Error(`${c.shot}: the panel's height matches neither max-height, min-height nor its content height (layout ${JSON.stringify(layout)})`);
     rulesOut.push({ shot: c.shot, width: c.width, height: c.height, state: 'rules', captureBoard: captureBoardFor(c.board), afterLoad: 'open-rules', boxes, layout });
     await ctx.close();
+  }
+  for (const state of SETUP_STATES) {
+    for (const w of SETUP_WIDTHS) {
+      const name = `${w}-light-${state}`;
+      const bp = config.breakpoints.find((b) => b.name === name);
+      if (!bp) throw new Error(`quality/visual-parity.config.json has no breakpoint ${name}`);
+      const ctx = await browser.newContext({ ...devices['Desktop Chrome'], viewport: { width: bp.width, height: bp.height }, reducedMotion: 'reduce', colorScheme: 'light' });
+      const page = await ctx.newPage();
+      await page.goto(`http://127.0.0.1:${PORT}/${state}/`, { waitUntil: 'load' });
+      await page.locator('[data-board]').waitFor();
+      await page.locator(`${SETUP_SELECTORS[0]}:popover-open`).waitFor();
+      const measure = () => page.evaluate((sels) => {
+        const sheet = document.querySelector(sels[0]);
+        const text = document.querySelector(sels[1]);
+        const level = sheet?.querySelector('[data-control="level"]');
+        if (!sheet || !text || !level) return null;
+        const cs = getComputedStyle(sheet);
+        const r = (el) => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height }; };
+        return {
+          boxes: { [sels[0]]: r(sheet), [sels[1]]: r(text) },
+          levelMarginBottom: getComputedStyle(level).marginBottom,
+          scrollHeight: sheet.scrollHeight,
+          clientHeight: sheet.clientHeight,
+          minHeight: cs.minHeight,
+          maxHeight: cs.maxHeight,
+        };
+      }, SETUP_SELECTORS);
+      const design = await measure();
+      if (!design) throw new Error(`${name}: the design page lacks ${SETUP_SELECTORS.join(' or ')}`);
+      // Guard the injection (as e2e/nfr-14-palette.spec.ts guards its deviations): the override must replace the design value the key records.
+      const designMargin = bp.width <= 360 ? '16px' : '24px';
+      if (design.levelMarginBottom !== designMargin) throw new Error(`${name}: the design's level margin-bottom is ${design.levelMarginBottom}, not ${designMargin}; the recorded deviation is stale`);
+      await page.evaluate((css) => {
+        const el = document.createElement('style');
+        el.textContent = css;
+        document.head.append(el);
+      }, SETUP_DEVIATION_CSS);
+      const product = await measure();
+      if (product?.levelMarginBottom !== '28px') throw new Error(`${name}: the injected deviation did not apply (${product?.levelMarginBottom})`);
+      const sheetH = design.boxes[SETUP_SELECTORS[0]].h;
+      const minHeightPx = Number.parseFloat(design.minHeight) || 0;
+      const maxHeightPx = design.maxHeight === 'none' ? null : Number.parseFloat(design.maxHeight);
+      const decidedBy = maxHeightPx !== null && Math.abs(sheetH - maxHeightPx) <= 0.5 ? 'max-height' : Math.abs(sheetH - minHeightPx) <= 0.5 ? 'min-height' : 'content';
+      setupOut.push({
+        shot: name,
+        width: bp.width,
+        height: bp.height,
+        state,
+        captureBoard: captureBoardFor(state),
+        afterLoad: 'open-setup',
+        boxes: design.boxes,
+        expected: product.boxes,
+        layout: { scrollHeight: design.scrollHeight, clientHeight: design.clientHeight, minHeightPx, maxHeightPx, decidedBy },
+      });
+      await ctx.close();
+    }
   }
 } finally {
   await browser.close();
@@ -212,6 +283,26 @@ const fixture = {
     },
     cases: rulesOut,
   },
+  setupSheet: {
+    selectors: SETUP_SELECTORS,
+    coverage: 'sampled',
+    provenance: {
+      designCommit: freshProvenance.designCommit,
+      designCssSha1: freshProvenance.designCssSha1,
+      designBuildSha1: freshProvenance.designBuildSha1,
+      browser: freshProvenance.browser,
+    },
+    deviations: [
+      {
+        rule: '.setup .level-control { margin-bottom }',
+        design: '24px; 1rem at 22.5rem and narrower',
+        product: '28px',
+        reason: 'A-60, SQ-5: the focus ring of the last option under the footer strip',
+        contentDecidedCases: setupOut.filter((c) => c.layout.decidedBy === 'content').map((c) => c.shot),
+      },
+    ],
+    cases: setupOut,
+  },
 };
 writeFileSync(OUT, `${JSON.stringify(fixture, null, 2)}\n`);
-console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors`);
+console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors; setupSheet ${setupOut.length} cases (content-decided: ${fixture.setupSheet.deviations[0].contentDecidedCases.join(', ') || 'none'})`);
