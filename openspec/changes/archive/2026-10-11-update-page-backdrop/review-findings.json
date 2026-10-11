@@ -1,0 +1,285 @@
+{
+ "slice": "update-page-backdrop",
+ "runs": [
+  {
+   "runId": "wf_4151f42d-f49",
+   "baseRef": "fb03fdb",
+   "headRef": "bf74837",
+   "date": "2026-10-11",
+   "note": "Persisted by hand from the workflow result (the workflow wrote no file), as in blocks 1 and 2. 8 confirmed, 4 contested, 5 rejected; no defect in the product code of this change (one confirmed product bug is the known, out-of-scope row-137 rules-panel scroll). The user chose «Fix all, then archive» (autonomy-log row 163). No confirming run.",
+   "confirmed": [
+    {
+     "title": "Run 8 masking explanation is contradicted by its own numbers for the soft-dim drops (768-dark-setup-four, 768-dark-rules)",
+     "file": "docs/qa/visual-diff/README.md",
+     "line": 71,
+     "severity": "minor",
+     "confidence": "medium",
+     "evidence": "Line 69 says the design's dark panel fill #2c2620 against the soft composite rgb(18,15,12) gives a YIQ delta of 283, which is under the 352 limit, so the fill-mismatch pixels still count as equal under the soft dim. I recomputed this with pixelmatch's formula: 124.5 against the old page colour, 358.6 against strong, 282.6 against soft. Line 71 still puts 768-dark-setup-four (0.9004 to 0.8674) down to \"the same masking effect under the soft dim\". 768-dark-rules also fell (0.9314 to 0.8882 in check-visual-run-8.txt) and is a soft-dim shot below 64rem. It is counted in the table's -0.0577 dark-rules mean but never explained. Line 67's \"in effect there was no dim\" holds only over bare page: the old rule (--color-page at opacity 0.6) did darken the board cells.",
+     "suggestion": "Change Run 8 so the YIQ-limit mechanism is claimed only for the strong (64rem and wider) dark rules shots. Mark the soft-dim drops (768-dark-setup-four, 768-dark-rules) as not yet explained, or back them with a per-pixel diff (diff.png region and the colours involved). Narrow line 67 to \"no dim over the bare page\". Make the same correction in docs/current-state.md and block-backdrop.txt.",
+     "dimension": "correctness",
+     "verdict": "confirmed",
+     "verifierNotes": [
+      "I confirmed the finding. Recomputing the YIQ deltas with pixelmatch's formula for the panel fill #2c2620 gives 124.5 against the old page colour, 358.6 against the strong composite rgb(15,12,9) and 282.6 against the soft composite rgb(18,15,12). These match the finding and the README's 125, 359 and 283. The limit is 352. That means the fill-mismatch pixels only cross the limit under the strong dim. Under the soft dim they stay under it, so they stay masked. The README's own line 69 therefore undercuts its claim, at line 71, that the 768-dark-setup-four drop (0.9004 to 0.8674) is \"the same masking effect under the soft dim\". check-visual-run-8.txt also lists 768-dark-rules as FAIL at 0.8882, which the README does not explain. The mechanism for the soft-dim drops is unsupported. The severity is minor: it is a documentation-consistency problem and the measurements are not affected.",
+      "README lines 67-71 (Run 8) say the soft composite gives a YIQ delta of 283, under the 352 limit. The same section then says 768-dark-setup-four fell from 0.9004 to 0.8674 from \"the same masking effect under the soft dim\". I recomputed the delta for #2c2620 (44,38,32) against rgb(18,15,12) with pixelmatch's formula and got about 282.5, which matches the README. So the fill-mismatch pixels stay \"equal\" under the soft dim, and that mechanism cannot account for a soft-dim drop. The README's own numbers undercut its explanation. The unexplained 768-dark-rules drop is a second gap. The finding is real, but it is a documentation-accuracy issue, so minor severity fits. I did not find check-visual-run-8.txt at docs/qa/visual-diff/. The 768-dark-rules figures (0.9314 to 0.8882) are unchecked."
+     ],
+     "disposition": "fixed: README § Run 8 limits masking to the strong-dim shots, withdraws the soft-dim claim and marks 768-dark-rules and 768-dark-setup-four as not explained; block-backdrop.txt and current-state follow"
+    },
+    {
+     "title": "Task 5.2 is ticked, but block-backdrop.txt does not report the light rules shots from 64rem separately, and the task's count of six does not match the shot set",
+     "file": "openspec/changes/update-page-backdrop/tasks.md",
+     "line": 39,
+     "severity": "minor",
+     "confidence": "low",
+     "evidence": "Task 5.2 asks to \"Report the six light rules shots from 64rem separately from the rest, and compare with the estimate of design.md\". docs/qa/update-page-backdrop/block-backdrop.txt only prints the flat list of 54 crops and points to the README for the comparison. The light rules shots from 64rem in the gate are 1024-rules, 1366-rules, 1366-rules-techniques, 1440-rules and 1440-rules-techniques: five, not six (there is no 1024-light-rules-techniques shot). The task is ticked as if its wording were met.",
+     "suggestion": "Add the from-64rem light rules subset to block-backdrop.txt (or say in the task that the gate's full shots replace it). Fix the count in tasks.md, or name the six shots it means.",
+     "dimension": "correctness",
+     "verdict": "confirmed",
+     "verifierNotes": [
+      "Confirmed by reading the files. Task 5.2 (tasks.md line 39) asks to report the six light rules shots from 64rem separately in block-backdrop.txt. That file prints a flat list of all 54 shots with no separate subset. Its closing section only points to docs/qa/visual-diff/README.md for the comparison with the estimate. The light rules shots from 64rem in the tool's output are 1024-light-rules, 1366-light-rules, 1366-light-rules-techniques, 1440-light-rules and 1440-light-rules-techniques. That is five, because no 1024-light-rules-techniques shot exists. design.md also says \"six\", so the count is wrong in both places. The task is ticked although the file does not meet its wording. The impact is documentation only, so I keep the severity as minor.",
+      "The finding holds. Task 5.2 is ticked and asks to report the six light rules shots from 64rem separately. block-backdrop.txt prints only the flat list of 54 shots and has no separate subset. It never compares the shots with the design.md estimate. The only light rules shots from 1024 up in the list are 1024-rules, 1366-rules, 1366-rules-techniques, 1440-rules and 1440-rules-techniques, which makes five. No 1024-light-rules-techniques shot exists. design.md line 53 repeats the \"six\" count, so the task inherited an incorrect number. The shortfall in the ticked task is real, but it is a documentation and process-honesty gap. It affects no user or runtime behaviour, so it is minor. The file's scope note defers to the gate's full-shot scores, which partly mitigates it. I did not find the README pointer the finding mentions, but that does not change the verdict."
+     ],
+     "disposition": "fixed: five shots listed separately in block-backdrop.txt; \"six\" corrected in tasks.md and design.md"
+    },
+    {
+     "title": "Dark-rules masking explanation does not cover the soft-backdrop (768) dark rules drop",
+     "file": "docs/qa/visual-diff/README.md",
+     "line": 66,
+     "severity": "minor",
+     "confidence": "medium",
+     "evidence": "The README says the dark rules drop is masking: the panel fill #2c2620 against the old page-over-page dim had a YIQ delta of 125, under the gate limit of 352. It gives 359 for the strong composite and 283 for the soft one. I recomputed the pixelmatch YIQ deltas and got 124.6, 358.5 and 282.5, so the arithmetic is right. But 283 is still under 352, so at widths below 64rem, where the soft backdrop applies, the same panel-versus-page pixels stay masked. Even so, 768-dark-rules fell from 0.9314 (check-visual-run-7.txt) to 0.8882 (check-visual-run-8.txt), and 768-dark-setup-four fell from 0.9004 to 0.8674. The README attributes the second drop to 'the same masking effect under the soft dim'. The mechanism it gives cannot produce those drops, because 283 is below the limit. The cause of the soft-dim falls is unexplained, and the claim is not backed by any artifact. docs/qa/update-page-backdrop/block-backdrop.txt:86 only asserts the 125 and 359 figures.",
+     "suggestion": "Either add a per-pixel diff artifact showing where the 768 dark rules and setup-four pixels newly mismatch, or reword the README so the masking explanation applies only to the strong-dim shots (64rem and up) and the soft-dim falls are marked unexplained. Fix this before the 7.1 review gate counts the claim as evidenced.",
+     "dimension": "security",
+     "verdict": "confirmed",
+     "verifierNotes": [
+      "Confirmed. The README (docs/qa/visual-diff/README.md, Run 8 section) states the soft-dim delta is 283, under the 352 gate limit. It then attributes the 768-dark-setup-four drop to \"the same masking effect under the soft dim\". Masking means a mismatch is hidden because its delta is under the limit. By the README's own numbers, the soft case is under the limit both before (125) and after (283), so the panel-versus-page pixels stay masked and cannot explain a drop. The run files confirm the drops: 768-dark-rules 0.9314 to 0.8882 and 768-dark-setup-four 0.9004 to 0.8674. The claim has no backing artifact; block-backdrop.txt only repeats the 125 and 359 figures. The mechanism for the soft-dim falls is therefore unsupported. The severity is minor because this is a documentation-accuracy issue, not a product defect. I did not check the \"security\" dimension label, which looks mislabeled, but that does not affect the correctness of the claim.",
+      "The finding holds up. I read docs/qa/visual-diff/README.md (Run 8 section) and the two score files, docs/qa/g2/check-visual-run-7.txt and check-visual-run-8.txt. The 768 dark shots did fall: 768-dark-rules went from 0.9314 to 0.8882, and 768-dark-setup-four went from 0.9004 to 0.8674. The README attributes the setup-four drop to \"the same masking effect under the soft dim\". Its own figures say the soft composite gives a YIQ delta of 283 against a gate limit of 352. That delta is under the limit, so those pixels would stay masked and the mechanism cannot produce the fall. block-backdrop.txt only repeats the 125 and 359 figures for the strong dim. It has no per-pixel artifact for the soft case. The cause of the soft-dim drops is therefore unexplained, and the README overreaches. This is a documentation and evidence-quality issue, not a code or security defect, so the severity stays minor and the \"security\" dimension label does not fit."
+     ],
+     "disposition": "fixed with the first finding (duplicate)"
+    },
+    {
+     "title": "Run 8 masking explanation is stated as the established cause, but its own numbers do not explain the soft-backdrop falls (768-dark-rules, 768-dark-setup-four)",
+     "file": "docs/qa/visual-diff/README.md",
+     "line": 66,
+     "severity": "major",
+     "confidence": "high",
+     "evidence": "The README says \"Dark rules panel: these shots fell ... The cause is masking\" and backs it with bare-page YIQ deltas: design panel fill #2c2620 against the bare page is 125, against the strong composite 359, and against the soft composite 283. Only 359 is over the limit of 352. But the per-state table it publishes (rules dark, mean -0.0577 over 6 shots) includes 768-dark-rules, which runs below 64rem and so gets the SOFT backdrop. That shot fell from 0.9314 to 0.8882 (run-7 vs run-8 txt). The prose never names it. The README also says 768-dark-setup-four (0.9004 to 0.8674, soft) is \"the same masking effect under the soft dim\", yet its own soft figure (283) is under the limit. The 768 reference and diff.png show the design's large dark card over the page's dimmed board and plate, not over the bare page. So the mechanism probably involves dimmed page content, which the bare-page arithmetic does not model. No per-pixel measurement (a count of diff pixels by colour pair) was made. current-state.md repeats the claim (\"the old near-invisible dark dim masked the unported panel mismatch (YIQ delta 125, now 359)\").",
+     "suggestion": "Measure it rather than infer it. For 768-dark-rules and 1024-dark-rules, count the diff pixels whose page-side colour moved from the old to the new composite, grouped by the reference colour under them. Then restate the cause in the README and current-state.md as measured, list 768-dark-rules among the fallen shots, and either explain the soft-dim drops or mark the explanation as a hypothesis.",
+     "dimension": "spec-compliance",
+     "verdict": "confirmed",
+     "verifierNotes": [
+      "Confirmed from the files. README lines 66-72 state \"The cause is masking\" as established and give a soft-composite delta of 283, under the 352 limit. The run-7 and run-8 txt files show 768-dark-rules fell 0.9314 to 0.8882 and 768-dark-setup-four fell 0.9004 to 0.8674. Both shots sit below 64rem, so they get the soft backdrop (--color-backdrop-soft). By the README's own arithmetic, the soft delta cannot flip a bare-page pixel, so the stated mechanism does not explain these two falls. The README calls setup-four \"the same masking effect under the soft dim\" without reconciling that. 768-dark-rules is also not named in the prose, though the 'for example' wording leaves room for it. The README's figures are bare-page deltas. The soft falls probably involve dimmed page content, which that arithmetic ignores, so the hypothesis may be partly right for the strong-backdrop shots but is unmeasured for the soft ones. The design.md estimate also says it used the bare page only. No per-pixel colour-pair measurement was made. The finding's severity is arguable, but the mechanism claim is overstated. It should be marked as a hypothesis or measured.",
+      "I confirmed the finding against the repo. The check-visual run 7 and run 8 output files show 768-dark-rules falling from 0.9314 to 0.8882 and 768-dark-setup-four from 0.9004 to 0.8674. The README at line 66 states \"The cause is masking\" and gives the bare-page YIQ deltas of 125, 359 and 283. Only 359 is over the 352 limit, so the soft-dim figure of 283 does not explain the soft-backdrop drops. The README also does not name 768-dark-rules among the fallen shots, though it is one of the six dark rules shots. docs/current-state.md line 19 repeats the same claim. The mechanism may well be masking, but the README and current-state.md present it as established while the arithmetic does not cover the soft case and no per-pixel measurement was made. This is a documentation overclaim, which the project's process-honesty rules care about. It has no effect on users or on exploitability, since nothing in the product changes, so I would call it minor rather than major."
+     ],
+     "disposition": "fixed with the first finding (duplicate)"
+    },
+    {
+     "title": "check-visual-run-8.txt lacks the timestamp, commit, exit code and orphan check that the README's Run 8 section claims from it",
+     "file": "docs/qa/g2/check-visual-run-8.txt",
+     "line": 1,
+     "severity": "minor",
+     "confidence": "high",
+     "evidence": "README § Run 8: \"Run 8, 2026-10-11 08:24 to 08:26 (UTC+5:30) ... **FAIL**, exit 1 ... Before the run, nothing listened on 4173, 4174, 4176 or 4177\". run-7.txt opens with a date and a commit (\"Sun Oct 11 00:39:20 +0530 2026 / 676ee03\", a port note) and ends with \"exit=1\" and an end date. run-8.txt starts directly at \"> binarka@0.1.0 check:visual\" and ends at \"Result: FAIL, 1 warning(s)\". It has no date, no SHA, no exit= line and no lsof output. The only nearby orphan check is the after-run block of block-backdrop.txt (08:24:22). The scores themselves match: I recomputed 84/170, mean 0.9359 and every row of the per-state table from run-7 and run-8, and all agree.",
+     "suggestion": "Add the start and end date, the HEAD SHA, the lsof output and the exit code to the run-8 file, as run 7 has. Otherwise, cite block-backdrop.txt as the source of the orphan check and drop the times and exit code that have no artifact behind them.",
+     "dimension": "spec-compliance",
+     "verdict": "confirmed",
+     "verifierNotes": [
+      "Confirmed by reading the files. docs/qa/g2/check-visual-run-8.txt starts at \"> binarka@0.1.0 check:visual\" and ends at \"Result: FAIL, 1 warning(s)\". It has no date, no SHA, no exit= line and no lsof output. check-visual-run-7.txt has all of these: a date and SHA header, \"exit=1\" and an end date. The README Run 8 section (docs/qa/visual-diff/README.md:62) gives the times 08:24 to 08:26 and \"exit 1\", and cites run-8.txt as the output. The nothing-listened-on-ports claim points to block-backdrop.txt, not to run-8.txt, so the finding is slightly wrong that the orphan check has no source; it is right that the times and exit code have no artifact in run-8.txt. This is a minor evidence-pointer gap, not a wrong number.",
+      "I confirmed the finding by reading the files. docs/qa/g2/check-visual-run-8.txt starts at \"> binarka@0.1.0 check:visual\" and ends at \"Result: FAIL, 1 warning(s)\". It has no date, no commit SHA, no exit= line and no lsof output. check-visual-run-7.txt has all of these: a date, \"676ee03\", a port note, \"exit=1\" and an end date. The README (docs/qa/visual-diff/README.md line 62) states the run time \"08:24 to 08:26\", \"exit 1\" and \"nothing listened on 4173, 4174, 4176 or 4177\" before the run. It links the run-8 file as the output, and cites block-backdrop.txt only for the orphan check. block-backdrop.txt does hold an orphan check at 08:24:22, but that check was taken after the per-block run. So the time window and exit code have no artifact behind them, and the \"before the run\" claim is only loosely supported. The gap is real but minor: it affects the audit trail, not the scores, which match."
+     ],
+     "disposition": "fixed: a header added (times, exit 1, tree, orphan check); the output itself unchanged"
+    },
+    {
+     "title": "Rules dialog opens scrolled to the bottom: the 'Правила' heading and the three basic rules are out of view",
+     "file": "docs/qa/g2/blocks/backdrop/1024-dark-rules/product.png",
+     "line": 0,
+     "severity": "major",
+     "confidence": "high",
+     "evidence": "In the product captures 1024-dark-rules/product.png and 1024-light-rules/product.png, the rules popover starts with only the bottom edges of the example cells showing at its top edge, then 'Складніші прийоми' and the focused 'Зрозуміло' button. The title 'Правила' and the three basic rules with their examples are scrolled out of view. The reference crops show the dialog from its title. Cause in the code: src/ui/play-page.ts:138 gives the close button `autofocus`, so the popover scrolls to the last control when it opens. This change did not cause it (it belongs to the rules-panel block), but every rules shot in this run is taken at this scrolled position, so the dark-rules score drop is not caused by panel placement and fill masking alone.",
+     "suggestion": "Track this under the rules-panel block: move the initial focus to the dialog or its heading, or reset scrollTop to 0 on open, so the rules show first. In the Run 8 note, say that the rules captures are also scrolled, besides the masking explanation.",
+     "dimension": "visual",
+     "verdict": "confirmed",
+     "verifierNotes": [
+      "Confirmed. src/ui/play-page.ts:138 sets `autofocus` on the rules-close button, and rulesPanel.append(...) at line 154 makes that button the last child of the popover. Opening a popover focuses its autofocus element, and focusing a control in an overflowing popover scrolls it into view. The 1024-dark-rules/product.png capture matches this. It starts with only the bottom edges of the example cells, then shows 'Складніші прийоми' and the three technique paragraphs, with the focus ring on 'Зрозуміло'. The 'Правила' heading and the three basic rules are out of view. Nothing in src/ui calls scrollTop, showPopover or any other reset on open. The scroll position and its autofocus cause are therefore real. I did not run the page, so I did not rule out that the capture harness adds a scroll of its own. The finding's claim that this change did not cause it also looks right, because the autofocus belongs to the rules-panel block.",
+      "Confirmed. src/ui/play-page.ts:138 sets `autofocus` on the close button, and the button is the last child of the rules popover (line 140: rulesHeading, rulesList, techniques, closeButton). The popover has overflowing content, so focusing the last control on open scrolls the panel to the bottom. product.png for 1024-dark-rules matches this: the top shows only the bottom edges of the example cells, then 'Складніші прийоми', then the focused 'Зрозуміло' button with a focus ring. The 'Правила' title and the three basic rules are out of view. The finding says this is a pre-existing rules-panel issue rather than a regression from this change, and that is consistent with the code. I did not run the page to check scrollTop directly. The code and the capture agree with each other."
+     ],
+     "disposition": "out of scope: the known open bug of autonomy-log row 137 (rules panel opens at its bottom); left for the user's decision and the rules-panel block"
+    },
+    {
+     "title": "Per-block evidence reports 'geometry within 0.5px' when no geometry was measured",
+     "file": "docs/qa/update-page-backdrop/block-backdrop.txt",
+     "line": 80,
+     "severity": "minor",
+     "confidence": "high",
+     "evidence": "All 54 rows read 'geometry n/a (state reached by a driver)', yet the summary line says 'Block layout: 54 shot(s), geometry within 0.5px (coverage: sampled)' and the run exits 0. In scripts/visual-block.mjs:261, `done` treats every shot without geometry as passing, so the claim rests on zero measurements. The file's scope note says 'No floor is claimed', but the geometry line itself has no qualifier. This is the vacuous-pass pattern that AGENTS.md calls NOT-EARNED.",
+     "suggestion": "Add a note to block-backdrop.txt that geometry was measured on 0 of 54 shots and the 'within' line is vacuous. Change the tool so it prints NOT-EARNED or 'geometry not measured' when no shot has geometry.",
+     "dimension": "visual",
+     "verdict": "confirmed",
+     "verifierNotes": [
+      "Confirmed in code. scripts/visual-block.mjs:261 computes `done` with `results.every(e => e.geometry ? (geometryOff===0 && unpaired===0) : true)`, so a shot with no geometry counts as passing. Line 262 then prints \"geometry within 0.5px\" and line 263 exits 0. Geometry is only set at line 229 for shots not reached by a driver. block-backdrop.txt has 54 lines containing \"n/a\", and the summary reads \"Block layout: 54 shot(s), geometry within 0.5px\", so the claim rests on zero geometry measurements. This is the vacuous-pass pattern AGENTS.md calls NOT-EARNED. The per-row \"geometry n/a\" lines are visible, so nothing is hidden, but the summary line is misleading. Minor severity fits.",
+      "Confirmed by reading the code and the artifact. In scripts/visual-block.mjs, a shot without geometry gets ' geometry n/a (state reached by a driver)'. `done = results.every(e => e.geometry ? ... : true)` returns true when no shot has geometry. The summary line then prints 'geometry within 0.5px' and the script exits 0. block-backdrop.txt has 54 'n/a' lines (grep count 54), and its summary line reads 'Block layout: 54 shot(s), geometry within 0.5px (coverage: sampled)'. So the 'within' claim rests on zero measurements, which is the vacuous-pass pattern AGENTS.md calls NOT-EARNED. The file's scope note disclaims a floor but does not qualify the geometry line. Severity stays minor: it is misleading evidence wording, with no user-facing runtime impact."
+     ],
+     "disposition": "fixed: block-backdrop.txt says the footer is fixed text and no geometry was measured"
+    },
+    {
+     "title": "The rules-techniques crops are byte-identical to the rules crops, so they add no evidence",
+     "file": "docs/qa/g2/blocks/backdrop/1366-dark-rules-techniques/product.png",
+     "line": 0,
+     "severity": "minor",
+     "confidence": "medium",
+     "evidence": "The MD5 hashes of 1366-dark-rules/product.png and 1366-dark-rules-techniques/product.png match (bc5a4ce5...), as do their reference.png files and the 1440-light pair (11f9c0e7...). The scores repeat exactly (0.8077, 0.7614, 0.874, 0.784). The main-column crop never shows a difference between the two states, so these 8 rows count the same frame twice.",
+     "suggestion": "In block-backdrop.txt, mark the rules-techniques rows as duplicates of the rules rows for this crop, or leave them out of the per-block run, so the shot count is not inflated.",
+     "dimension": "visual",
+     "verdict": "confirmed",
+     "verifierNotes": [
+      "I confirmed the claim by checking the files. 1366-dark-rules/product.png and 1366-dark-rules-techniques/product.png have the same MD5 (bc5a4ce5...). Their reference.png files also match each other (a8b98be8...). The 1440-light product pair matches too (11f9c0e7...). The report.json files for the 1366-dark pair show the same region (0,0,1782,1235) and the same pixel score (0.8077). So the rules-techniques crops repeat the rules frames and add no new evidence. The impact is minor: it only inflates the shot count.",
+      "Confirmed: the MD5 hashes match for the 1366-dark rules and rules-techniques pairs. That holds for both the product and reference images. The 1440-light pair also matches. The rules-techniques driver only scrolls the rules panel to its end, so a crop of the main column cannot differ. summary.json has 8 rules-techniques rows. They are duplicate evidence that inflates the shot count. The impact is minor and affects only evidence accounting."
+     ],
+     "disposition": "fixed: noted in block-backdrop.txt (checked with cmp)"
+    }
+   ],
+   "contested": [
+    {
+     "title": "docs/current-state.md says the session's work may be uncommitted, but all five commits are in the range and signed",
+     "file": "docs/current-state.md",
+     "line": 10,
+     "severity": "minor",
+     "confidence": "high",
+     "evidence": "The Working branch line written in this range says \"GPG was locked during this session, so this session's work may still be uncommitted; check git status and git log first.\" In fact `git log --format='%G?' fb03fdb..bf74837` shows 5 commits, all `G` (fa17d9b spec, c9fb815 red, e82eb20 port, 119381a docs, bf74837 ledger). The handoff aid is out of date the moment it lands.",
+     "suggestion": "Replace the caveat with the real state: the commit ids, all GPG-signed (`git log --format='%G?'` output as evidence), not merged or pushed.",
+     "dimension": "correctness",
+     "verdict": "contested",
+     "verifierNotes": [
+      "The five commits are all GPG-signed (G) in fb03fdb..bf74837, and 119381a is the commit that added the caveat. But the caveat is hedged (\"may still be uncommitted... check git status and git log first\") and is not false. git status still shows uncommitted session work: the modified docs/handoff/violation-cause-amendment-draft-2026-10-11.md and docs/requirements.md, plus untracked docs/qa/g2/blocks/ and docs/qa/update-page-backdrop/stills/. The same file describes the violation-cause amendment draft as this session's work. So the statement is accurate for part of the work and still points readers at the right check. The finding's claim that the file is simply wrong, with everything committed, is not supported. At most this is a wording imprecision: the block 3 commits could be named. It is not a correctness defect.",
+      "Confirmed. docs/current-state.md line 10 is committed and unmodified in the working tree. It says \"GPG was locked during this session, so this session's work may still be uncommitted\". `git log --format='%h %G? %s' fb03fdb..bf74837` shows five commits (fa17d9b, c9fb815, e82eb20, 119381a, bf74837), all with signature status G. The caveat is therefore stale, though it is hedged (\"may\") and tells the reader to check git status and git log. The practical effect is limited to a misleading handoff note, so the finding is accurate and minor."
+     ],
+     "disposition": "fixed: current-state updated after the commits"
+    },
+    {
+     "title": "PNG reader in the backdrop e2e treats unknown filter types as Paeth and skips the full signature and CRC checks",
+     "file": "e2e/nfr-14-backdrop.spec.ts",
+     "line": 155,
+     "severity": "minor",
+     "confidence": "low",
+     "evidence": "In `firstPixel`, the `else` branch applies Paeth to any filter byte other than 0 to 3, so a corrupt or unexpected value (5 or more) decodes quietly. Only bytes 1-3 ('PNG') of the 8-byte signature are checked, and a missing IHDR leaves width and channels at 0, so the reader returns [0,0,0] instead of failing. For Chromium's 1x1 clip every filter reduces to the raw byte, so today's results are correct. But the reader can return a value where it should fail loudly, which goes against the file's own fail-don't-pass stance.",
+     "suggestion": "Throw on a filter byte above 4, on a missing IHDR or empty IDAT, and on a raw length other than height*(stride+1). Optionally check the full 8-byte signature. Keep the 1x1 clip.",
+     "dimension": "correctness",
+     "verdict": "contested",
+     "verifierNotes": [
+      "Verified in e2e/nfr-14-backdrop.spec.ts firstPixel (lines ~115-155). The else branch applies Paeth to any filter byte other than 0-3, only bytes 1-3 of the signature are checked, and a missing IHDR with IDAT present returns [0,0,0] (no IDAT at all makes inflateSync throw). There is no raw-length check, and byteAt turns out-of-range reads into 0. All claims are accurate. The only caller, pixelAt, reads a Chromium screenshot of a 1x1 clip. For one pixel every filter reduces to the raw byte, and Chromium emits valid PNGs, so the lax paths are unreachable and results are correct today. This is a hardening nit with no real defect, and the finding's own minor severity and low confidence match that.",
+      "The code matches the description: at e2e/nfr-14-backdrop.spec.ts lines 116-164, `else` is the Paeth branch for any filter byte above 3, only bytes 1-3 of the signature are checked, and a missing IHDR leaves width and channels at 0. But the finding cannot occur for a real user or attacker. `firstPixel` is a private helper in a Playwright test. It only decodes PNGs from `page.screenshot` of a 1x1 clip, which Chromium produces itself, so no untrusted input reaches it. For a 1x1 image every filter type reduces to the raw byte, and Chromium never emits filter bytes above 4. No code path produces a malformed PNG, and the finding itself says today's results are correct. The only scenario is a hypothetical broken or changed screenshot encoder. In that case the read would most likely produce an implausible colour, and the case's pixel assertions would fail anyway. No attacker or user-facing impact exists, and the problem cannot be reproduced. This is a hardening nit about a test helper, not a reproducible defect."
+     ],
+     "disposition": "fixed (the user's «Fix all»): the full signature, the inflated length and the filter type are checked; unknown types throw. CRCs are not checked (zlib's own check covers the image data). e2e backdrop 11 of 11 green after the change"
+    },
+    {
+     "title": "Hand-written PNG reader is correct for Playwright screenshots, but treats an unknown filter type as Paeth instead of failing",
+     "file": "e2e/nfr-14-backdrop.spec.ts",
+     "line": 155,
+     "severity": "minor",
+     "confidence": "medium",
+     "evidence": "I checked the reader: the chunk walk (offset += 12 + length), IHDR parsing, IDAT concatenation, inflateSync, bpp = channels for 8-bit, the Sub/Up/Average (floor) predictors and the Paeth predictor with the a, b, c tie order are all per the PNG spec. Colour types other than 2/6, other bit depths and interlace are refused loudly. However, the `else` branch handles every filter value other than 0-3 as Paeth, so a corrupt filter byte (>4) would decode silently. CRCs are not checked (acceptable). In practice the closed-pixel reads match the page colour in 10 of 10 cases and agree with the computed style in red, which supports the reader for this use.",
+     "suggestion": "Change the last branch to `else if (filter === 4)` and throw on any other filter byte. Optionally add a unit-level self-check that decodes a known tiny PNG.",
+     "dimension": "spec-compliance",
+     "verdict": "contested",
+     "verifierNotes": [
+      "The mechanism is real. In e2e/nfr-14-backdrop.spec.ts at lines 151-160, the filter chain tests 0, 1, 2 and 3, and the final `else` applies Paeth to any other filter byte. A filter byte above 4 would therefore decode silently as Paeth instead of throwing. The impact is very small. The reader only decodes PNGs that Playwright's own page.screenshot produces, and those always use filters 0-4. The helper is test-only, and the header validation already rejects unsupported colour types, bit depths and interlacing. A corrupt PNG would most likely fail at inflateSync first. The finding is a robustness nit, not a correctness bug, so I downgrade it.",
+      "The code does treat any filter byte >= 4 as Paeth (e2e/nfr-14-backdrop.spec.ts ~line 155), but the only input is Chromium's own screenshot of a 1x1 clip via Playwright. Chromium's encoder only emits filter types 0-4, so a corrupt filter byte is unreachable. There is no untrusted input, as this is a local e2e helper. A wrong decode would most likely fail the colour comparison rather than pass silently. Not exploitable or reproducible by a real user or attacker; at most a style-level strictness nit."
+     ],
+     "disposition": "fixed with the previous finding (duplicate)"
+    },
+    {
+     "title": "Open surfaces still lack their action paint: the destructive confirm and the primary actions look like neutral buttons",
+     "file": "docs/qa/g2/blocks/backdrop/375-dark-confirm/product.png",
+     "line": 0,
+     "severity": "minor",
+     "confidence": "high",
+     "evidence": "In 375-dark-confirm/product.png, 'Так, почати' (destructive) and 'Скасувати' have the same dark neutral fill; the reference shows a red destructive button and an orange primary one. Likewise, 'Зрозуміло' in 1024-light-rules/product.png and 'Почати' in 768-light-setup/product.png are outlined secondary-style buttons where the reference has a filled primary. The backdrop behind these surfaces matches the reference (gray, equal pixels, in visual-diff/1024-dark-rules/diff.png), so this block's own port looks right. The surface paint is out of scope here and is declared as later blocks.",
+     "suggestion": "No change in this block. Make sure the dialog, sheet and panel blocks cover the destructive and primary button paint, and that their vision check looks at these same states.",
+     "dimension": "visual",
+     "verdict": "contested",
+     "verifierNotes": [
+      "Viewed 375-dark-confirm product.png vs reference.png: the product's 'Так, почати' and 'Скасувати' are neutral dark buttons while the reference shows a red destructive and an orange primary button, as the finding claims. The proposal's non-goals (proposal.md line 62) and tasks.md 8.2 explicitly defer the panels', sheet's and dialog's own paint to later blocks, matching the finding's out-of-scope/no-change suggestion. I did not separately inspect the 1024-light-rules or 768-light-setup shots, but the claim is confirmed on the main cited image and is consistent with the declared scope. It is a minor note, not a defect in this block.",
+      "The finding is not a defect. It says no change is needed in this block. The OpenSpec proposal and design for update-page-backdrop explicitly put the surfaces' own paint (panel, sheet and dialog fill, border, shadow, and the \"Почати\" button) out of scope and assign it to later blocks (proposal.md line 62, design.md lines 17 and 55). The finding also admits the backdrop matches the reference. A neutral-looking button in a screenshot is a known, documented gap that is owned by later blocks. No user or attacker can hit a bug in this block, so there is nothing to reproduce. The suggestion is a reminder for later blocks, not a problem in the code under review."
+     ],
+     "disposition": "out of scope: the dialog's and panels' own paint are later blocks (proposal Scope NOT delivered)"
+    }
+   ],
+   "rejected": [
+    {
+     "title": "Hand-written PNG reader in the e2e spec is correct for Chromium output, with unchecked edge cases",
+     "file": "e2e/nfr-14-backdrop.spec.ts",
+     "line": 104,
+     "severity": "minor",
+     "confidence": "high",
+     "evidence": "The reader checks the signature, walks the chunks, accepts only 8-bit non-interlaced RGB or RGBA, concatenates IDAT, inflates, and unfilters. The Sub, Up, Average and Paeth filters and the Paeth tie-break (a, then b, then c) match the PNG spec. For a 1x1 clip the first pixel is bytes 1 to 3 of the raw data, which the code reads correctly. It does not verify CRCs, and a filter byte above 4 silently falls into the Paeth branch. It also assumes a device scale factor of 1, which is documented in the file and holds for Desktop Chrome. Neither gap can make a wrong colour pass for a screenshot Playwright produced. A corrupt or odd-filter PNG would read wrong instead of failing loudly.",
+     "suggestion": "Throw on a filter byte above 4. Optionally assert the decoded width and height are both 1, so a clip that was not honoured fails the case.",
+     "dimension": "security",
+     "verdict": "rejected",
+     "verifierNotes": [
+      "I read firstPixel in e2e/nfr-14-backdrop.spec.ts (lines about 97-150). It does what the finding says. It checks the signature, walks the chunks and accepts only 8-bit non-interlaced RGB or RGBA. It concatenates IDAT, inflates, and unfilters with the correct Sub, Up, Average and Paeth logic. A filter byte above 4 does fall into the Paeth else-branch, and CRCs are not checked. Those are real but they are hardening nits, not a wrong mechanism. The only input is a PNG that Playwright's page.screenshot produced, in-process, and Chromium/libpng emits filters 0 to 4 only. The finding itself says neither gap can make a wrong colour pass. There is no reachable fault, and no wrong result in the code. The \"security\" label also does not fit: this is a test helper with no untrusted input. A width/height 1x1 assertion would be a nice-to-have, not a defect. The claim that this is a correctness problem is not supported.",
+      "I read firstPixel() in e2e/nfr-14-backdrop.spec.ts (lines ~104-160). The code matches the finding's description: it checks the signature, restricts to 8-bit non-interlaced RGB/RGBA, concatenates IDAT, and unfilters. The Paeth logic and tie-break are correct. The two gaps the finding names are CRCs not being verified and a filter byte above 4 falling into the Paeth branch. The input is always a PNG that Playwright's page.screenshot produces in-process from Chromium, in a test-only file. No attacker controls it and no real user is exposed. Chromium only emits filters 0 to 4 and never emits a corrupt PNG, so neither gap can be reached. The finding itself says neither gap can make a wrong colour pass. The remaining point is a hardening suggestion about failing loudly, and it has no exploitable or reproducible consequence. The \"security\" dimension label does not fit. At most this is a nitpick."
+     ]
+    },
+    {
+     "title": "Security checklist: no server, auth or data surface in scope; one hygiene note",
+     "file": "src/ui/style.css",
+     "line": 1,
+     "severity": "minor",
+     "confidence": "high",
+     "evidence": "The diff is CSS tokens, tests, e2e, specs and docs for a client-only vanilla-DOM puzzle page. The project has no server, database, users, roles, routes, file handlers, email or exports (TC-12). Per checklist item: (1) authorization matrix, N/A with no endpoints, so nothing to IDOR or tenant-scope; (2) auth and sessions, N/A; (3) injection, clean in the diff, since the new code reads local files with fixed paths ('quality/design-paint.json' and its own spec file), builds no SQL, HTML or CSV, and takes no user input; (4) secrets, no secrets or NEXT_PUBLIC_ variables in the diff; (5) dependencies, `npm audit --omit=dev` reports 0 vulnerabilities and no dependency was added; (6) abuse resistance, N/A with no endpoints or uploads. Spec compliance of the port: I recomputed the four composites from the token bytes and they match the spec and e2e values (light soft 208,198,186; light strong 146,134,122; dark soft 18,15,12; dark strong 15,12,9). `.rules:popover-open::backdrop` inside `@media (min-width: 64rem)` correctly outranks `.rules::backdrop` on specificity. The old opacity and dark-override rules are removed. The tests' DELIBERATE CHANGE comments trace to the deltas. The README and battery counts check out: 84 PASS in run 8 against 82 in run 7, 1774 unit tests, 192 e2e. The only hygiene point is that trace/ledger.jsonl and docs/qa/g2/blocks/ are uncommitted or untracked in the working tree.",
+     "suggestion": "No security action. Before merge and push, confirm the uncommitted trace/ledger.jsonl change is intentional and that the untracked docs/qa/g2/blocks/ crops, which tasks.md says are not committed, stay out of the commit.",
+     "dimension": "security",
+     "verdict": "rejected",
+     "verifierNotes": [
+      "The finding reports no defect. Its own text says \"No security action\" and lists each checklist item as N/A or clean. The only claim that could be checked is the hygiene note, and the session's git status snapshot does match it: trace/ledger.jsonl is modified and docs/qa/g2/blocks/ is untracked. That is normal working-tree state, not a bug in src/ui/style.css or in any code. It is not a correctness or security flaw, and it is already guarded by the project's own process. The tasks.md reference to uncommitted crops is the project's stated intent, and any commit goes through the user's review. I did not re-read the diff or re-run any checks, so the other claims in the finding are unchecked. I refute it as a non-defect and drop it.",
+      "This is not a security defect. It is a checklist note that says no security issue exists. The cited location, src/ui/style.css line 1, holds CSS tokens with no exploitable surface, and the finding itself says the project has no server, auth or user input. The one \"hygiene\" point is that trace/ledger.jsonl is modified and docs/qa/g2/blocks/ is untracked. The session's git status shows both, but that is ordinary working-tree state, not a vulnerability that a user or attacker could reproduce. Nothing in it can be exploited. I did not run the code or open any files; I relied on the git status in this session and on the finding's own text."
+     ]
+    },
+    {
+     "title": "The green run records only pass/fail for the e2e backdrop cases, so the post-port pixel/computed-style agreement claimed in design.md is evidenced only on the old page",
+     "file": "docs/qa/update-page-backdrop/green-run.txt",
+     "line": 17,
+     "severity": "minor",
+     "confidence": "medium",
+     "evidence": "design.md decision 7: \"the secondary getComputedStyle(el, '::backdrop') read agrees with the pixel within 1 per channel (red-run.txt, sections D and the spike)\". Section D shows that agreement against the OLD backdrops (e.g. pixel 181,180,174 vs computed 182,180,175). green-run.txt says \"open-pixel values are not printed by the spec\" and lists only ✓ lines. After the port, each instrument is only known to be within 1 of the expected value, so the two are within 2 of each other, and the measured open pixels (e.g. 208,198,186 / 15,12,9) are not on record. The smoke test does record computed rgba values after the port, but no pixel values.",
+     "suggestion": "Save the 'pixels' annotations from the JSON report of the green run, as section D does for red, into green-run.txt.",
+     "dimension": "spec-compliance",
+     "verdict": "rejected",
+     "verifierNotes": [
+      "The facts in the finding are accurate. green-run.txt says open-pixel values are not printed and lists only pass lines. But no mechanism is wrong. design.md decision 7 says the pixel/computed-style agreement was checked in red-run.txt, sections D and the spike, and that is what it cites. It does not claim the agreement was re-measured after the port. After the port, the spec asserts that each open pixel is within 1 per channel of the expected composite, and those cases passed (10 of 10). So the page's correctness is established by the passing asserts. The missing pixel values are a nice-to-have in the evidence file, not a spec violation or a false claim. The finding's own \"within 2 of each other\" point only restates the tolerance. No code or claim is incorrect, so there is nothing to confirm on the correctness lens.",
+      "The facts hold: green-run.txt does say open-pixel values are not printed, and it lists only pass lines. But the claimed problem does not follow from them. Design.md decision 7 uses the \"agrees within 1 per channel\" statement to validate the PNG reader and the secondary computed-style read. It cites red-run.txt, sections D and the spike, which is where that check was run. It does not claim post-port pixel and computed-style agreement. After the port, the pass lines are the evidence. Each of the 10 e2e cases asserts the open pixel is within 1 per channel of the expected composite, and the green run shows all 10 passing. The smoke test separately records the computed rgba values. Nothing a user or attacker could hit is affected. The only gap is that the measured pixel values are not on record, and that is a stylistic evidence preference, not a spec violation or defect."
+     ]
+    },
+    {
+     "title": "current-state.md still says this session's work may be uncommitted although the slice's commits exist",
+     "file": "docs/current-state.md",
+     "line": 1,
+     "severity": "minor",
+     "confidence": "medium",
+     "evidence": "Added text: \"GPG was locked during this session, so this session's work may still be uncommitted; check git status and git log first.\" The range fb03fdb..bf74837 contains signed commits fa17d9b (spec), c9fb815 (red), e82eb20 (port), 119381a (docs) and bf74837. The handoff line is therefore stale in the same commit series that it describes.",
+     "suggestion": "Update the line to name the committed SHAs, as the handoff protocol asks (claims with evidence pointers).",
+     "dimension": "spec-compliance",
+     "verdict": "rejected",
+     "verifierNotes": [
+      "The line at docs/current-state.md:10 does exist. It says \"GPG was locked during this session, so this session's work may still be uncommitted; check `git status` and `git log` first.\" The commits fa17d9b, c9fb815, e82eb20, 119381a and bf74837 also exist, so the sentence is somewhat out of date. The finding still fails for three reasons.\n\n- **The claim is hedged and points to a check.** The line says \"may\" and tells the reader to run git status and git log. Those commands show the commits, so a reader is not misled.\n- **Some work really is uncommitted.** The git status snapshot shows docs/requirements.md, trace/ledger.jsonl and the violation-cause amendment draft as modified, plus untracked docs/qa/g2/blocks/ and stills. \"May still be uncommitted\" is therefore still true for part of this session's work.\n- **It is not a done-claim.** The line makes no strong completion claim, so the rule about evidence pointers for done-claims does not apply. It is a stale-wording nit at most, not a wrong mechanism.",
+      "The line exists at docs/current-state.md:10 and the slice commits do exist (fa17d9b, c9fb815, e82eb20, 119381a, bf74837). But the statement is hedged (\"may still be uncommitted\") and tells the reader to check `git status` and `git log` first. It is not a false claim, and it is not a done-claim lacking evidence, which is what the handoff rules forbid. The working tree also still shows modified or untracked files (docs/requirements.md, the violation-cause draft, trace/ledger.jsonl, docs/qa/g2/blocks/), so \"may be uncommitted\" is partly still true. The Current phase paragraph in the same file already cites the evidence paths for the slice. At worst this is a cosmetic wording lag with no way for a user or attacker to be harmed by it, and no spec or gate depends on it."
+     ]
+    },
+    {
+     "title": "Coverage summary: the spec-delta scenarios touched by this change are implemented and tested; no scenario is missing or contradicted",
+     "file": "openspec/changes/update-page-backdrop/specs/play-page/spec.md",
+     "line": 369,
+     "severity": "minor",
+     "confidence": "high",
+     "evidence": "14 changed or added scenarios: 14 implemented, 0 partial, 0 missing, 0 contradicted. ADDED requirement (6): the map, no opacity, strong over soft, fade not ported, composited pixel, sampled coverage. These map to tests/play-page-backdrop-stylesheet.test.ts and e2e/nfr-14-backdrop.spec.ts, with src/ui/style.css:31-32, 62-63, 575-576, 617-618, 770-771, 1026-1034 (strong rule inside @media (min-width: 64rem)) and 1057-1058; the dark overrides are deleted. Effective theme (2) maps to tests/play-page-theme-stylesheet.test.ts. The changed count scenarios (Tokens exist and are literal, Every declared token is bound, Token reader translucent, Colours are the G2 palette, dark block 27) are updated with DELIBERATE CHANGE comments that name the delta and the proposal Impact row. No test is weakened: counts rise from 25 to 27, and an extra assertion pins the three #rrggbbaa tokens. I recomputed the token values against design/v0/app/binarka.css:34-35 and 69-70, the A-57 appendix (docs/requirements.md:345-346) and the four composites (208,198,186 / 146,134,122 / 18,15,12 / 15,12,9); all are correct. The only drift: the appendix role text (\"settings backdrop\", \"rules and dialog backdrop\") is narrower than the spec's role column, and design.md open question 2 already records this.",
+     "suggestion": "No action on the scenarios. Settle open question 2 (the appendix role text) before archiving.",
+     "dimension": "spec-compliance",
+     "verdict": "rejected",
+     "verifierNotes": [
+      "The finding is a positive coverage summary, not a claimed defect, so there is no wrong mechanism to confirm. I spot-checked its claims and they hold. The test files tests/play-page-backdrop-stylesheet.test.ts and e2e/nfr-14-backdrop.spec.ts exist. src/ui/style.css defines --color-backdrop-soft as #46280f38 and --color-backdrop-strong as #2d190a80. The strong rule `.rules:popover-open::backdrop` sits inside `@media (min-width: 64rem)`. These match the design values: rgba(70,40,15,0.22) is alpha 0x38 and rgba(45,25,10,0.5) is alpha 0x80. I did not check the dark tokens, the composites or the exact line numbers. The finding raises nothing to fix beyond a note to settle open question 2 before archiving, so I mark it refuted as not a defect.",
+      "This finding reports no defect. It is a coverage summary saying that all 14 changed or added scenarios are implemented and tested, with no scenario missing or contradicted. The only drift it names is the narrower role text in the appendix, which design.md open question 2 already records, and its suggestion is \"No action on the scenarios.\" No real user or attacker can hit a failure from it, so there is nothing to reproduce. I did not open the repository files. Under the default of refuting when the mechanism can't be confirmed, I mark it refuted as a non-problem."
+     ]
+    }
+   ]
+  }
+ ]
+}

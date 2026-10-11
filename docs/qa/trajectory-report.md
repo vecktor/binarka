@@ -5,8 +5,8 @@ archived slice took: review evidence, `Slice:` trailers, and module scope.
 It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
-Scope: 24 archived slice(s).
-Result: PASS, 23 warning(s)
+Scope: 25 archived slice(s).
+Result: PASS, 24 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
 |---|---|---|---|---|
@@ -34,6 +34,7 @@ Result: PASS, 23 warning(s)
 | 2026-10-10-update-page-palette | **unclean** | 7 | yes | ui |
 | 2026-10-10-update-segmented-focus-ring-wording | **missing** | 2 | **no** | - |
 | 2026-10-10-update-setup-sheet-start | **unclean** | 22 | yes | ui |
+| 2026-10-11-update-page-backdrop | **unclean** | 7 | yes | ui |
 
 ## Cross-slice module overlap
 
@@ -67,4 +68,5 @@ None.
 - **review-evidence**: 2026-10-10-update-segmented-focus-ring-wording: review-findings.json is missing (review must have run clean before archive)
 - **process**: 2026-10-10-update-segmented-focus-ring-wording: archived change is missing design.md and/or tasks.md
 - **review-evidence**: 2026-10-10-update-setup-sheet-start: review-findings.json is unclean (review must have run clean before archive)
+- **review-evidence**: 2026-10-11-update-page-backdrop: review-findings.json is unclean (review must have run clean before archive)
 - **in-scope**: src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift

@@ -48,3 +48,6 @@ exit 0
 == a11y: npm run check:a11y (2026-10-11 08:20:55 +0530)
 exit 0
   67 passed (12.8s)
+
+== after the archive (task 8.1): npx openspec validate --all --strict (2026-10-11 09:54:53 +0530)
+Totals: 2 passed, 0 failed (2 items)

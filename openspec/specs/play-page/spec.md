@@ -1422,7 +1422,7 @@ Traces: FR-64
 
 ### Requirement: Borders, cues and focus rings have enough contrast
 
-The stylesheet SHALL define its colours once, as custom properties in the top-level `:root` rule, and every colour a rule uses SHALL be a `var(--color-...)` reference to one of them (FR-65). The tokens are the 25 that the main column binds in the G2 palette (A-57, block 2), with the light value in the top-level `:root` and the dark value in `:root[data-theme="dark"]`:
+The stylesheet SHALL define its colours once, as custom properties in the top-level `:root` rule, and every colour a rule uses SHALL be a `var(--color-...)` reference to one of them (FR-65). The tokens are the 27 that the page binds in the G2 palette: the 25 of the main column (A-57, block 2) and the 2 backdrop tokens that the appendix marks "later" and that this change (G2 block 3, update-page-backdrop) binds, with the light value in the top-level `:root` and the dark value in `:root[data-theme="dark"]`:
 
 | Token | Light | Dark | Role |
 |---|---|---|---|
@@ -1451,8 +1451,10 @@ The stylesheet SHALL define its colours once, as custom properties in the top-le
 | `--color-success-glow` | `#2f6b3a73` | `#8fd19a73` | the win glow keyframes (translucent) |
 | `--color-win-text` | `#1e2126` | `#f1ede4` | win line text |
 | `--color-focus` | `#1e2126` | `#f1ede4` | every focus ring |
+| `--color-backdrop-soft` | `#46280f38` | `#08050273` | backdrop of the settings panel, the setup sheet and the rules panel below 64rem (translucent) |
+| `--color-backdrop-strong` | `#2d190a80` | `#08050299` | backdrop of the confirmation dialog and the rules panel from 64rem (translucent) |
 
-These are the "block 2" rows of the appendix to A-57 in `docs/requirements.md`, value for value; the appendix is the source, this table is what the stylesheet declares. The "later" rows of the appendix (`--color-violation-ink`, `--color-surface-raised`, `--color-overlay-border`, `--color-option-border`, the backdrops and the shadows) are NOT declared by this requirement: the block that binds one adds it by its own delta, so the stylesheet never holds an unused token. A value is a literal `#rrggbb`. A value may be `#rrggbbaa` only for a token that the list marks translucent, and the list marks one, `--color-success-glow`; a translucent token is never the foreground or the background of a contrast pair. The top-level `:root` also declares `color-scheme: light` and `:root[data-theme="dark"]` declares `color-scheme: dark`, and nothing else: `:root` holds only the colour tokens and `color-scheme` (the non-colour variables live on `#app`, as the layout variables do).
+These are the "block 2" rows of the appendix to A-57 in `docs/requirements.md` and the two backdrop rows that the appendix marks "later" and that this change (G2 block 3) binds, value for value; the appendix is the source, this table is what the stylesheet declares (the role column of the two backdrop rows says which surfaces bind each, which the appendix's one-surface roles abbreviate; see «The backdrops take the design's translucent tokens»). The "later" rows of the appendix (`--color-violation-ink`, `--color-surface-raised`, `--color-overlay-border`, `--color-option-border` and the shadows `--color-shadow-sunken`, `--color-shadow-panel` and `--color-shadow-sheet`) are NOT declared by this requirement: the block that binds one adds it by its own delta, so the stylesheet never holds an unused token. A value is a literal `#rrggbb`. A value may be `#rrggbbaa` only for a token that the list marks translucent, and the list marks three, `--color-success-glow`, `--color-backdrop-soft` and `--color-backdrop-strong`; a translucent token is never the foreground or the background of a contrast pair, and a backdrop is checked composited over the page instead (FR-65, see «Effective theme on the document»). The top-level `:root` also declares `color-scheme: light` and `:root[data-theme="dark"]` declares `color-scheme: dark`, and nothing else: `:root` holds only the colour tokens and `color-scheme` (the non-colour variables live on `#app`, as the layout variables do).
 
 The colour scan applies to every declaration outside a `:root` rule, wherever it is in the file (top level, nested rules, `@media`, `@supports`, `@layer`, `@keyframes`): its value SHALL NOT match `/#[0-9a-f]{3,8}\b|\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/i` and SHALL NOT contain a CSS named colour (the full CSS Color 4 list), so `color-mix(` is forbidden everywhere, in gradients, shadows, rings and keyframes too; the keywords `transparent`, `currentcolor`, `inherit`, `initial`, `unset` and `revert` are allowed because they introduce no colour; the colour-bearing shorthands `background`, `border`, `border-top`, `border-right`, `border-bottom`, `border-left`, `outline`, `box-shadow`, `text-decoration` and `column-rule` are allowed only when their colour is a `var(--color-...)` token (or the value is `none` or `0`); and no `--color-*` property is declared outside a `:root` rule. A `:root` rule for this scan is a rule whose selector is exactly `:root` or `:root[data-theme="dark"]`; a rule such as `:root[data-theme="dark"] #app` is an ordinary rule and obeys the scan. Selectors such as `#app` are not declaration values and are not affected. A shadow's geometry stays in the rule and its colour is a token (a `box-shadow` colour is `var(--color-...)`). The rules `body`, `.cell`, `.cell-given`, `.cell-hinted`, `.cell-violation`, `button`, `.message-win` and the `:focus-visible` rules SHALL take their colours from these tokens, declared with longhand properties, as follows:
 
@@ -1491,14 +1493,14 @@ Traces: FR-65, FR-64, NFR-9, FR-104
 
 - **GIVEN** the text of `src/ui/style.css`
 - **WHEN** the test reads the declarations of the top-level `:root` rule
-- **THEN** each of the 25 token names of the list above is declared once, with the light value of the list, `#rrggbb` for 24 of them and `#rrggbbaa` for `--color-success-glow` only
-- **AND** the rule `:root[data-theme="dark"]` declares each of the same 25 names once with the dark value of the list, so each token has exactly two value sets and the dark block redefines every token of the list and adds none
-- **AND** the top-level `:root` declares no property other than the 25 tokens and `color-scheme`, and a translucent token appears in no contrast pair
+- **THEN** each of the 27 token names of the list above is declared once, with the light value of the list, `#rrggbb` for 24 of them and `#rrggbbaa` for the three translucent tokens only (`--color-success-glow`, `--color-backdrop-soft` and `--color-backdrop-strong`)
+- **AND** the rule `:root[data-theme="dark"]` declares each of the same 27 names once with the dark value of the list, so each token has exactly two value sets and the dark block redefines every token of the list and adds none
+- **AND** the top-level `:root` declares no property other than the 27 tokens and `color-scheme`, and a translucent token appears in no contrast pair
 
 #### Scenario: Every declared token is bound by a rule
 
 - **GIVEN** the text of `src/ui/style.css`
-- **WHEN** the test counts, for each of the 25 tokens, the declarations outside `:root` whose value contains `var(<token>)`
+- **WHEN** the test counts, for each of the 27 tokens, the declarations outside `:root` whose value contains `var(<token>)`
 - **THEN** each token is referenced at least once, so the stylesheet holds no unused token
 
 #### Scenario: Rules use the tokens and no colour literal is left
@@ -1576,9 +1578,9 @@ Traces: FR-65, FR-64, NFR-9, FR-104
 
 #### Scenario: The token reader accepts a translucent value only for a translucent token
 
-- **GIVEN** the token reader of the test helpers and a stylesheet text with `--color-success-glow: #2f6b3a73` and, in another copy, `--color-page: #f7f3ea80`
+- **GIVEN** the token reader of the test helpers and a stylesheet text with `--color-success-glow: #2f6b3a73` and `--color-backdrop-strong: #2d190a80` and, in another copy, `--color-page: #f7f3ea80`
 - **WHEN** the reader and the contrast function read each copy
-- **THEN** the first copy is read as a translucent token that no contrast pair uses, and the second is rejected (the format `#rrggbbaa` is allowed only for the token the list marks translucent), as is an `rgb()` value in either
+- **THEN** the first copy is read as two translucent tokens that no contrast pair uses, and the second is rejected (the format `#rrggbbaa` is allowed only for the token the list marks translucent), as is an `rgb()` value in either
 
 ### Requirement: The page meets the WCAG 2.2 AA criteria of the accessibility requirements
 
@@ -2954,9 +2956,9 @@ Traces: FR-103, FR-118, FR-100
 
 ### Requirement: Effective theme on the document
 
-The document element `<html>` SHALL always carry the attribute `data-theme` with the effective theme, `light` or `dark`: the manual choice when it is `light` or `dark`, and the system theme while the choice is `auto` (FR-104, see «Auto follows the system»). The CSS property `color-scheme` of the root SHALL equal the effective theme (`light` or `dark`), so that native parts of the page (the dialog backdrop, scrollbars, form controls) match it; the stylesheet owns it (`:root { color-scheme: light }` and `:root[data-theme="dark"] { color-scheme: dark }`) and no script writes `color-scheme`. The palette of each theme is the stylesheet's (see «Borders, cues and focus rings have enough contrast», A-51). A press on a theme option, a change of the system theme while the choice is `auto`, the head step before the first paint (see «Preferences are applied before the first paint»), and a mount, which applies the choice it reads (see «Stored preferences» and «Failing storage does not stop the page») to the document and to every live mount, are the only things that change `data-theme`.
+The document element `<html>` SHALL always carry the attribute `data-theme` with the effective theme, `light` or `dark`: the manual choice when it is `light` or `dark`, and the system theme while the choice is `auto` (FR-104, see «Auto follows the system»). The CSS property `color-scheme` of the root SHALL equal the effective theme (`light` or `dark`), so that native parts of the page (the dialog backdrop, scrollbars, form controls) match it; the stylesheet owns it (`:root { color-scheme: light }` and `:root[data-theme="dark"] { color-scheme: dark }`) and no script writes `color-scheme`. The palette of each theme is the stylesheet's (see «Borders, cues and focus rings have enough contrast», A-51), and so are the backdrops of the page's surfaces: in each theme they are translucent tokens that dim the page (see «The backdrops take the design's translucent tokens», A-57). A press on a theme option, a change of the system theme while the choice is `auto`, the head step before the first paint (see «Preferences are applied before the first paint»), and a mount, which applies the choice it reads (see «Stored preferences» and «Failing storage does not stop the page») to the document and to every live mount, are the only things that change `data-theme`.
 
-Traces: FR-104, FR-65, A-51
+Traces: FR-104, FR-65, A-51, A-57
 
 #### Scenario: The attribute follows the choice
 
@@ -2978,9 +2980,17 @@ Traces: FR-104, FR-65, A-51
 
 #### Scenario: In dark every backdrop dims the page
 
-- **GIVEN** the text of `src/ui/style.css` and its dark token set (added in the review-gate fix round, autonomy-log row 129: the backdrops of the rules panel, the setup sheet, the settings panel and the confirmation were the text colour, which is light in dark)
-- **WHEN** the test resolves the background colour of `.rules::backdrop`, `.setup-sheet::backdrop`, `.settings::backdrop` and `.confirm::backdrop` under `:root[data-theme="dark"]` (a dark override when one exists, else the plain rule)
-- **THEN** each colour is a token of the dark set and is no lighter than the dark `--color-page`, so an open panel never lightens the page
+- **GIVEN** the text of `src/ui/style.css` and its dark token set (the top-level set with the overrides of `:root[data-theme="dark"]` applied); restated in update-page-backdrop: the backdrops are the translucent tokens `--color-backdrop-soft` and `--color-backdrop-strong` (A-57), so a backdrop is checked composited over the page (FR-65), not as a colour of its own
+- **WHEN** the test resolves the `background-color` of `.rules::backdrop`, of `.rules:popover-open::backdrop` in the `@media (min-width: 64rem)` block, of `.setup-sheet::backdrop`, of `.settings::backdrop` and of `.confirm::backdrop` to a token of the dark set, and composites that token over the dark `--color-page` per channel in sRGB: `round(alpha × token + (1 − alpha) × page)`, with `alpha` the token's last byte divided by 255
+- **THEN** each resolved colour is a translucent token of the dark set (`#rrggbbaa`)
+- **AND** the relative luminance of each composite is lower than that of the dark `--color-page` `#1a1714` (0.0088): the soft composite is `rgb(18, 15, 12)` (0.0050) and the strong composite is `rgb(15, 12, 9)` (0.0038), so an open panel never lightens the page and does dim it
+- **AND** the stylesheet has no rule that sets a `::backdrop` colour for the dark theme only (no selector that starts with `:root[data-theme` and contains `::backdrop`): the dark values come from the token set
+
+#### Scenario: In light every backdrop dims the page
+
+- **GIVEN** the text of `src/ui/style.css` and its light token set (the top-level `:root`)
+- **WHEN** the test resolves and composites the same five backdrops over the light `--color-page`, in the way of the dark scenario
+- **THEN** each resolved colour is a translucent token of the light set, and the relative luminance of each composite is lower than that of the light `--color-page` `#f7f3ea` (0.8982): the soft composite is `rgb(208, 198, 186)` (0.5734) and the strong composite is `rgb(146, 134, 122)` (0.2457)
 
 ### Requirement: Auto follows the system theme live
 
@@ -3826,11 +3836,11 @@ Traces: NFR-14, NFR-10, NFR-12, FR-68, FR-119
 
 - **GIVEN** the stylesheet after this change
 - **WHEN** its `:root` and dark token sets are read
-- **THEN** both sets equal the 25 block-2 tokens and values of the appendix to A-57 (the table of «Borders, cues and focus rings have enough contrast»), and no other `--color-*` token is declared
+- **THEN** both sets equal the 27 tokens and values of the table of «Borders, cues and focus rings have enough contrast» (the 25 block-2 tokens and the 2 backdrop tokens, marked "later" in the appendix to A-57, that this change binds), and no other `--color-*` token is declared
 
 ### Requirement: The main column takes the design palette
 
-The paint of the page's main column SHALL equal that of the design reference (NFR-14, FR-65, A-57) in the sampled cases of `quality/design-paint.json`, except the three deviations that A-57 names. The reference is the design build (`design/v0`, served from `design/v0/out`), which stands in for the frozen reference `design/v0-screenshots/review-set-14/` as in «Main column layout geometry follows the design reference». The main column is the page, the header with the logo and its buttons (the settings button `[data-action="settings"]` and «Правила» `[data-action="rules"]`), the summary button `[data-action="setup"]` with its cue, the board plate `[data-board]` and its cells in every state (ordinary and entry, given, hinted, violation, given in a violation, solved), the focus rings, the three action buttons (`[data-action="hint"]`, `[data-action="reset"]`, `[data-action="new"]`, with the swap after a win) and the message area (the idle, hint and win lines). The setup sheet, the rules and settings panels, the confirmation dialog and their backdrops are outside this requirement and keep their current token bindings until their own blocks; «Почати» keeps its current tokens.
+The paint of the page's main column SHALL equal that of the design reference (NFR-14, FR-65, A-57) in the sampled cases of `quality/design-paint.json`, except the three deviations that A-57 names. The reference is the design build (`design/v0`, served from `design/v0/out`), which stands in for the frozen reference `design/v0-screenshots/review-set-14/` as in «Main column layout geometry follows the design reference». The main column is the page, the header with the logo and its buttons (the settings button `[data-action="settings"]` and «Правила» `[data-action="rules"]`), the summary button `[data-action="setup"]` with its cue, the board plate `[data-board]` and its cells in every state (ordinary and entry, given, hinted, violation, given in a violation, solved), the focus rings, the three action buttons (`[data-action="hint"]`, `[data-action="reset"]`, `[data-action="new"]`, with the swap after a win) and the message area (the idle, hint and win lines). The setup sheet, the rules and settings panels and the confirmation dialog are outside this requirement and keep their current token bindings until their own blocks; their backdrops are covered by «The backdrops take the design's translucent tokens»; «Почати» keeps its current tokens.
 
 The mechanism is declared here and built by the test-engineer, test first. The script `scripts/freeze-design-paint.mjs` freezes the computed paint of the main-column elements and cell kinds of the design build, for the light and the dark scheme, in the states default, hint, win, four and eight, into `quality/design-paint.json`; it serves `design/v0/out` the way `scripts/freeze-design-geometry.mjs` does (including its path guard) and uses the same browser setup as the e2e test (Playwright's "Desktop Chrome" device, reduced motion, the scheme set on the browser context, the viewport 1024×768, no stored preference, so the theme is the system one as in the design's head script). The frozen properties of an element are `color`, `background-color`, the presence of a `background-image` (a gradient or none; never its colour stops, because the design's stripe is a translucent colour and the page's is the opaque composite of it, so the two computed strings can never be equal and the stripe value is pinned by the stylesheet scenarios instead), the colour, width and style of the four borders, `box-shadow`, `font-weight`, `font-style`, `text-decoration-line`, and for the logo's shapes `fill` and `stroke`; and, for the first non-given cell and for «Підказка» after a keyboard key press and a script focus (so that `:focus-visible` applies, as in the capture adapter), the `outline` colour, width, style and offset. The cell kinds are found by their classes (`cell-given`, `cell-hinted`, `cell-violation`) and by the digit: an ordinary empty cell, an entry cell (a non-given cell with a digit and no class), a given cell, a hinted cell, a violating cell. The e2e test `e2e/nfr-14-palette.spec.ts` (`@trace NFR-14`, in the existing `layout` project, whose `testMatch` already includes `nfr-14-*`, so `playwright.config.ts` is not changed) loads the built page for each case with the same capture board (FR-119) as the geometry test and compares every frozen value of every element that exists in the design's case. Hover, active and pressed states are not captured (NFR-14 never captures them; their rules are checked in the stylesheet below).
 
@@ -3930,6 +3940,69 @@ Traces: NFR-14, FR-65, FR-64, A-57
 - **GIVEN** `e2e/nfr-14-palette.spec.ts` and `quality/design-paint.json`
 - **WHEN** a reader looks for the sampling dimensions
 - **THEN** the fixture names the schemes, the states and the viewport as its sampling dimensions, declares `coverage` `sampled`, and neither the test nor the fixture claims all widths, all states or a pixel floor
+
+### Requirement: The backdrops take the design's translucent tokens
+
+The backdrop behind each of the page's surfaces SHALL be the design's translucent colour, held in a colour token and painted as a background colour, never as an `opacity` (NFR-14, FR-65, A-57; G2 block 3, `design/v0/app/binarka.css` lines 791-795, 1083 and 1311). The two tokens are `--color-backdrop-soft` and `--color-backdrop-strong` of the table of «Borders, cues and focus rings have enough contrast» (light `#46280f38` and `#2d190a80`, dark `#08050273` and `#08050299`). Each surface takes its backdrop as follows:
+
+| Surface | Rule | Token |
+|---|---|---|
+| the rules panel (`.rules`, a popover) below 64rem | `.rules::backdrop` | `--color-backdrop-soft` |
+| the rules panel from 64rem (`@media (min-width: 64rem)`) | `.rules:popover-open::backdrop` | `--color-backdrop-strong` |
+| the setup sheet (`.setup-sheet`, a popover; `.setup` in the design) | `.setup-sheet::backdrop` | `--color-backdrop-soft` |
+| the settings panel (`.settings`, a popover) at every width | `.settings::backdrop` | `--color-backdrop-soft` |
+| the confirmation dialog (`.confirm`, a `<dialog>`) at every width | `.confirm::backdrop` | `--color-backdrop-strong` |
+
+From 64rem the rules panel ends over the page (the board or the button row), so the design gives it the dialog's stronger backdrop; the settings panel, a small dropdown, keeps the soft one at every width, on purpose (the design's comment at line 1080). The rules are written with the longhand `background-color`, one `var(--color-backdrop-…)` each (the design writes the `background` shorthand; the longhand has the same cascade and lets the colour scan's longhand clause apply). No rule whose selector contains `::backdrop` declares `opacity`, a colour literal or `color-mix(`, and no `::backdrop` rule takes a colour from any token other than the two backdrop tokens. The overrides that painted a dark backdrop with `--color-page` at 0.6 and 0.7 (`:root[data-theme='dark'] .rules::backdrop`, `.setup-sheet::backdrop`, `.settings::backdrop` and `.confirm::backdrop`) do not exist: the dark values are the dark token set's. Where the strong rule and the soft rule both match (the rules panel from 64rem), the strong one wins by specificity (`:popover-open`), not by source order.
+
+A backdrop is checked composited over the page (FR-65; see «Effective theme on the document»). In each token set the strong composite is darker than the soft composite (relative luminance 0.2457 against 0.5734 in light, 0.0038 against 0.0050 in dark), so "strong" dims more.
+
+Intentionally not delivered in this block, so that testers do not report them as bugs: (1) the design's fade of the backdrops (`transition` of `background-color`, `overlay` and `display`, and the `@starting-style` rules, `binarka.css` lines 1585-1610) is NOT ported: it is wrapped in `@media (prefers-reduced-motion: no-preference)` in the design, the page animates neither the sheet, the panels nor the dialog yet, and the gate's capture forces reduced motion, so no shot shows it; no `::backdrop` rule of the stylesheet declares `transition` or sits in an `@starting-style` rule; (2) the fill, border and shadow of the panels, the sheet and the dialog (the "later" tokens `--color-surface-raised`, `--color-overlay-border`, `--color-option-border`, `--color-violation-ink` and the shadows) keep their current bindings until their own blocks; (3) the page does not paint a backdrop for the closed surfaces: a `::backdrop` exists only while its surface is open.
+
+The mechanism is a stylesheet test, test first, and a browser test: `e2e/nfr-14-backdrop.spec.ts` (`@trace NFR-14`, in the existing `layout` project, whose `testMatch` already includes `nfr-14-*`, so `playwright.config.ts` is not changed) opens each surface in the built page and reads one pixel of a screenshot. The sampling is declared: the surfaces (rules, setup sheet, settings, confirmation), the schemes (light, dark) and the viewport widths 375×812 (below 64rem) and 1024×768 (from 64rem) for the rules panel and 1024×768 for the other three, 10 cases; coverage is `sampled`, never continuum. The browser setup is that of `playwright.config.ts`, as in `e2e/nfr-14-palette.spec.ts` (Playwright "Desktop Chrome", reduced motion, the scheme on the browser context, no stored preference); the gate's own capture (Chromium with `--force-device-scale-factor`, viewport off) is a different instrument and is not used here. The pixel read is one that no surface and no page content covers; the test reads the same pixel with the surface closed first and expects the page colour there, so a pixel under a surface or a card fails the case instead of passing by luck. The stricter instrument that runs before a block-done claim is the per-block pixel crop of `scripts/visual-block.mjs` and the per-shot gate `npm run check:visual`, over the rules, rules-techniques, confirm, setup and settings shots; this requirement claims no pixel floor for any shot.
+
+Traces: NFR-14, FR-65, A-57
+
+#### Scenario: Each surface takes its backdrop token
+
+- **GIVEN** the text of `src/ui/style.css`
+- **WHEN** the test reads the `background-color` declared by `.rules::backdrop`, by `.rules:popover-open::backdrop` inside `@media (min-width: 64rem)`, by `.setup-sheet::backdrop`, by `.settings::backdrop` and by `.confirm::backdrop`
+- **THEN** the values are `var(--color-backdrop-soft)`, `var(--color-backdrop-strong)`, `var(--color-backdrop-soft)`, `var(--color-backdrop-soft)` and `var(--color-backdrop-strong)`, in that order
+- **AND** each of the four plain rules is declared once outside any at-rule, the strong rules for the rules panel exist only inside an `@media (min-width: 64rem)` block, and no `.settings` rule takes the strong token
+
+#### Scenario: No backdrop rule sets opacity
+
+- **GIVEN** the parsed `src/ui/style.css`, every rule found through nested rules and at-rules
+- **WHEN** the test collects the declarations of every rule whose selector contains `::backdrop`
+- **THEN** none of them is `opacity`, none has a value with a colour literal or `color-mix(`, and every `background-color` among them is a single `var(--color-backdrop-soft)` or `var(--color-backdrop-strong)`
+- **AND** the only selectors that contain `::backdrop` are the five of the table above, so no other surface paints a backdrop of its own
+
+#### Scenario: The strong backdrop dims more than the soft one
+
+- **GIVEN** the two backdrop tokens and `--color-page` of each token set (light, then dark)
+- **WHEN** the test composites each token over the page (per channel in sRGB, `round(alpha × token + (1 − alpha) × page)`) and computes the relative luminance of the results
+- **THEN** in light the strong composite `rgb(146, 134, 122)` (0.2457) is darker than the soft one `rgb(208, 198, 186)` (0.5734), and in dark `rgb(15, 12, 9)` (0.0038) is darker than `rgb(18, 15, 12)` (0.0050)
+- **AND** neither backdrop token is the foreground or the background of any pair of «Borders, cues and focus rings have enough contrast»
+
+#### Scenario: The backdrop fade is not ported
+
+- **GIVEN** the parsed `src/ui/style.css`
+- **WHEN** the test collects the rules whose selector contains `::backdrop`, and the `@starting-style` rules
+- **THEN** no `::backdrop` rule declares `transition`, `transition-property` or `animation`, no `::backdrop` rule is inside `@media (prefers-reduced-motion: no-preference)`, and no `@starting-style` rule names a `::backdrop`
+- **AND** a later block that ports the fade changes this scenario by its own delta
+
+#### Scenario: An open surface dims the page to the composite
+
+- **GIVEN** the built page in Chromium at 375×812 and 1024×768 in the light and in the dark scheme with reduced motion (e2e, sampled: the rules panel at both widths, the setup sheet, the settings panel and the confirmation at 1024×768; 10 cases), with the design's fixture board (FR-119) and a pixel that no surface and no page content covers
+- **WHEN** the test reads that pixel of a screenshot with the surface closed, opens the surface (a press on «Правила», on the summary button or on the settings button, or a press on «Нова головоломка» on the fixture board, which asks first, FR-67; all as the capture does), and reads the pixel again
+- **THEN** the closed pixel is the page colour of the scheme, and the open pixel equals the composite of the surface's token over it within 1 per channel: soft over light `rgb(208, 198, 186)`, strong over light `rgb(146, 134, 122)`, soft over dark `rgb(18, 15, 12)`, strong over dark `rgb(15, 12, 9)`
+- **AND** the rules panel at 375×812 shows the soft composite and at 1024×768 the strong composite, the setup sheet and the settings panel show the soft composite, and the confirmation shows the strong composite, in both schemes
+
+#### Scenario: The sampled coverage is declared
+
+- **GIVEN** `e2e/nfr-14-backdrop.spec.ts`
+- **WHEN** a reader looks for the sampling dimensions
+- **THEN** the test names the surfaces, the schemes and the widths as its sampling dimensions, declares coverage `sampled`, and claims neither all widths, all surfaces nor a pixel floor
 
 ## Exclusions
 

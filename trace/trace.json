@@ -893,8 +893,7 @@
       "id": "FR-38",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1131,8 +1130,7 @@
     {
       "id": "FR-63",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1149,8 +1147,7 @@
       "id": "FR-64",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1167,8 +1164,7 @@
       "id": "FR-65",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1248,8 +1244,7 @@
       "id": "FR-67",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1278,8 +1273,7 @@
     {
       "id": "FR-68",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1298,8 +1292,7 @@
       "id": "FR-69",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1692,8 +1685,7 @@
       "id": "FR-104",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1718,8 +1710,7 @@
     {
       "id": "FR-106",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1837,8 +1828,7 @@
       "id": "FR-116",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1885,8 +1875,7 @@
       "id": "FR-119",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/add-violation-cause/specs/play-page/spec.md",
-        "openspec/changes/update-page-backdrop/specs/play-page/spec.md"
+        "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -2398,10 +2387,6 @@
     {
       "check": "active-changes",
       "msg": "active change \"add-violation-cause\" is not archived"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"update-page-backdrop\" is not archived"
     }
   ]
 }

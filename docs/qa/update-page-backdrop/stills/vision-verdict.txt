@@ -1,0 +1,25 @@
+# Vision verdict: update-page-backdrop (task 7.1), a fresh vision-judge subagent (not the builder), read-only
+
+Stills: the 16 PNGs in this folder, captured by the parent on 2026-10-11 at about 09:47 (UTC+5:30) from `npm run build` served by `vite preview --port 4181` (stopped afterwards). Chromium (Playwright), reduced motion, the scheme on the context, theme option "auto". Widths 375x812 and 1024x768; light and dark; surfaces settings, setup, rules, confirm. Verdict recorded 2026-10-11 09:48 +0530.
+
+Result: **16 of 16 met and readable.** No defect in the dim.
+
+375-light-settings   met=yes readable=yes  soft light-brown dim over the whole page, header included
+375-light-setup      met=yes readable=yes  soft, the same tone as settings
+375-light-rules      met=yes readable=yes  soft below 64rem; the panel's top edge clips a row of example cells (panel layout, not this change)
+375-light-confirm    met=yes readable=yes  clearly darker, strong dim
+1024-light-settings  met=yes readable=yes  soft
+1024-light-setup     met=yes readable=yes  soft; the summary label peeks above the sheet (sheet placement, not this change)
+1024-light-rules     met=yes readable=yes  strong from 64rem, visibly darker than the soft stills; example cells clipped (panel layout)
+1024-light-confirm   met=yes readable=yes  strong, the same tone as rules at 1024
+375-dark-settings    met=yes readable=yes  near-black soft dim, never lighter than the page
+375-dark-setup       met=yes readable=yes  soft dark dim
+375-dark-rules       met=yes readable=yes  soft dark dim at 375; example cells clipped (panel layout)
+375-dark-confirm     met=yes readable=yes  strong, slightly darker than soft
+1024-dark-settings   met=yes readable=yes  soft dark dim, header dimmed
+1024-dark-setup      met=yes readable=yes  soft; the summary label peeks above the sheet (sheet placement)
+1024-dark-rules      met=yes readable=yes  strong at 1024, slightly deeper than soft
+1024-dark-confirm    met=yes readable=yes  strong; the page, red cells included, is muted
+
+Judge's caveat: in dark, soft and strong are hard to tell apart by eye. They are pinned by value in e2e/nfr-14-backdrop.spec.ts: the composite within 1 per channel in 10 sampled cases (green-run.txt).
+Seen, not this change: the rules panel clips its example cells at the top edge (the rules-panel block; related to the open bug of row 137); at 1024 the sheet overlaps the summary label (the setup-sheet block).

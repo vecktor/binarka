@@ -215,6 +215,15 @@
         "ui"
       ],
       "processComplete": true
+    },
+    {
+      "slice": "2026-10-11-update-page-backdrop",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 7,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
     }
   ],
   "overlaps": [
@@ -318,6 +327,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-10-update-setup-sheet-start: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-11-update-page-backdrop: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "in-scope",
