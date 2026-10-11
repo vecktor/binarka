@@ -70,7 +70,10 @@ describe('@trace NFR-5 the page text is Ukrainian', () => {
       const names = [q(root, '[data-board]').getAttribute('aria-label') ?? '', ...allCells(root).map((c) => c.getAttribute('aria-label') ?? '')];
       expect(names[0]).toBe(`Поле ${n}×${n}`);
       expect(names).toHaveLength(1 + n * n);
-      for (const name of names.slice(1)) expect(name).toMatch(/^Рядок [1-8], стовпець [1-8], (порожньо|0|1)(, задано|, підказка)?$/);
+      // DELIBERATE CHANGE (add-violation-cause, delta «Ukrainian page text», scenario «Accessible names at every size»; review fix round 1,
+      // finding «the test still pins the old cell-name grammar»): the grammar gains the cause suffix after the hint suffix, as the delta states it.
+      // No board of this test has a cause, so the regex is true before and after (green by construction).
+      for (const name of names.slice(1)) expect(name).toMatch(/^Рядок [1-8], стовпець [1-8], (порожньо|0|1)(, задано|(, підказка)?(, спричиняє порушення)?)$/);
       for (const name of names) {
         expect(/\p{Script=Cyrillic}/u.test(name), `"${name}" has Cyrillic letters`).toBe(true);
         expect(/[A-Za-z]/.test(name), `"${name}" has no Latin letters`).toBe(false);

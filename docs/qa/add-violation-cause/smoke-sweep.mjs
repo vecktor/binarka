@@ -1,3 +1,4 @@
+// Review fix round 1 (2026-10-11): run against `vite preview` of the build on 4173, with the pointer moved off the board after the press.
 import { createRequire } from 'node:module';
 import { readFileSync, mkdirSync } from 'node:fs';
 const REPO = process.argv[2]; const OUT = process.argv[3];
@@ -18,12 +19,13 @@ async function open(b, w, h, scheme, forced = false) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, deviceScaleFactor: 1, forcedColors: forced ? 'active' : 'none' });
   await ctx.addInitScript((v) => { window.__binarkaCaptureBoard = v; }, b.v);
   const page = await ctx.newPage();
-  await page.goto('http://localhost:5173/');
+  await page.goto('http://localhost:4173/');
   await page.waitForSelector('.board .cell');
   const n = b.v.size; const idx = (b.target[0] - 1) * n + (b.target[1] - 1);
   const cell = page.locator('.board .cell').nth(idx);
   const before = await cell.evaluate((el) => el.classList.contains('cell-cause'));
   await cell.click();
+  await page.mouse.move(0, 0); await page.waitForTimeout(250); // review fix round 1: no hover ring in the stills
   const info = await cell.evaluate((el) => { const a = getComputedStyle(el, '::after'); const r = el.getBoundingClientRect(); return { cause: el.classList.contains('cell-cause'), label: el.getAttribute('aria-label'), leg: a.borderTopWidth, legLeft: a.borderLeftWidth, top: a.borderTopColor, left: a.borderLeftColor, fca: a.forcedColorAdjust, theme: document.documentElement.dataset.theme ?? null, cellW: r.width, rect: [r.x, r.y, r.width, r.height] }; });
   return { ctx, page, cell, before, info };
 }

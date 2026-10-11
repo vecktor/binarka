@@ -82,3 +82,15 @@ Ports 4173, 4174, 4176 and 4177 had no listener before and after the preview run
     - The still shows a TRIANGLE in the system text colour, not a filled square (`stills/smoke-6x6-forced-colors-1024.png`).
 
 13. Anything unreadable: none found. No defect was recorded, and nothing blocks the archive.
+
+## Review fix round 1 (2026-10-11, about 15:03 UTC+5:30)
+
+The review gate (run `wf_00db6f47-604`) found that the theme and size stills were taken with the pointer still on the marked cell, so its hover ring was visible in all of them. With the user's choice «Fix 3-6, defer 1-2», these stills were taken again:
+- the same two scripts (`smoke-sweep.mjs`, `smoke-four.mjs`), now moving the pointer to (0, 0) after the press;
+- against `vite preview` of the build on 4173 (ports clean before and after).
+
+The readings are unchanged:
+- every `::after` border-top-width is the same as in step 10 (8×8: 8, 9, 14, 11, 12 and 8 px; 6×6: 15 and 11 px; 4×4: 15 and 17 px);
+- forced colours: a triangle in rgb(0, 0, 0).
+
+Replaced: `stills/smoke-{6x6,8x8}-{light,dark}-*.png`, `stills/smoke-4x4-*.png` and `stills/smoke-6x6-forced-colors-1024.png`. The hover and focus crops (`*-x3.png`) are kept as the only hover and focus evidence. The vision judge re-checked the new stills (`stills/vision-verdict.txt`, fix round 1 section).

@@ -1,0 +1,40 @@
+judge: fresh vision-judge subagent (did not build this UI)
+date: 2026-10-11
+saved by: the parent session, verbatim from the judge's report (the judge has read-only tools: Read, Grep, Glob)
+requirement (FR-120, FR-64, A-58): On the play page, the one cell whose last change broke a rule (the cause cell) shows a small filled right triangle in its top-right inner corner, in the violation border colour (dark red #b3261e light, salmon #ff8a7d dark; system text colour, black, under forced colours). The other cells of the violation are red and striped with a 2px border but have no triangle. Only one cell has the triangle. The triangle must be visible (findable), not covered by the focus ring, and under forced colours a triangle (not a filled square).
+
+smoke-6x6-light-1024.png | met: yes | readable: yes | Row 3 has three red striped 0s (columns 2-4); only the third (column 4) has a dark-red filled triangle top-right, clearly visible; the dark digits on pink are legible.
+smoke-6x6-dark-1024.png | met: yes | readable: yes | Same run in dark: salmon 2px borders on dark stripes; only column 4 has a salmon corner triangle, clearly visible; the salmon digits and white givens are legible.
+smoke-6x6-light-375.png | met: yes | readable: yes | Same board scaled to 375px; a single dark-red triangle on the third red cell of row 3, smaller but plainly visible; no layout breakage.
+smoke-6x6-dark-375.png | met: yes | readable: yes | A single small salmon triangle on the third red cell of row 3; it is smaller than at 1024 but stands out against the dark striped fill; the digits are legible.
+smoke-8x8-light-320.png | met: yes | readable: yes | Row 4 columns 4-6 are red; only column 6 has a dark-red corner triangle at the 8px floor, small but clearly findable against the pink fill; the board fits 320px with no clipping.
+smoke-8x8-dark-320.png | met: yes (weakest of the set) | readable: yes | Row 4 columns 4-6 are red; at the 8px floor the salmon mark matches the border colour, so it shows only as a fuller, squarer top-right corner on column 6, unlike the rounded corners of columns 4 and 5; findable on a close look but marginal (to widen the margin: raise the dark floor or use a different shade from the border at 320px or less).
+smoke-8x8-light-375.png | met: yes | readable: yes | A single dark-red triangle on column 6 of the red run in row 4, clearly visible; the other two red cells have only the border; the givens are legible.
+smoke-8x8-dark-375.png | met: yes | readable: yes | A single small salmon triangle on column 6 of the red run in row 4, visible against the dark stripes; no second mark.
+smoke-4x4-light-375.png | met: yes | readable: yes | All of column 1 and all of row 3 are red (the description said only column 1 rows 1-3; this is correct, since the press at (3,1) breaks both lines); only (3,1) has the dark-red triangle; the mouse was left over that cell, so its tan hover ring shows, and the hypotenuse stays readable.
+smoke-4x4-dark-1024.png | met: yes | readable: yes | Same state in dark: column 1 and row 3 are red; one salmon triangle, on (3,1) only, clearly visible; the hover ring shows on that cell; the digits are legible.
+smoke-6x6-light-1024-focus-x3.png | met: yes | readable: yes | 3x crop: the dark focus outline runs outside the red cell border, and the dark-red triangle in the top-right inner corner is fully clear of it; the 0 is legible.
+smoke-6x6-light-1024-hover-x3.png | met: yes | readable: yes | 3x crop: the tan hover ring is inside the red border and the triangle's legs sit over it; the diagonal edge (hypotenuse) against the pink stripes stays crisp and readable.
+smoke-6x6-dark-1024-hover-x3.png | met: yes | readable: yes | 3x crop: the brown hover ring is inside the salmon border; the salmon triangle's diagonal edge is crisp against the dark stripes; the salmon 0 is legible.
+smoke-6x6-forced-colors-1024.png | met: yes | readable: yes | Single-cell crop: a black filled right triangle with a clear diagonal (not a square) in the top-right corner, and a legible black underlined 0 on white; the crop cannot show that no other cell has a triangle under forced colours, so this still proves only the shape and the colour.
+
+Defects flagged: none (no second triangle, no square under forced colours, no mark covered by the focus ring, no contrast or layout failure). Things a person would notice: smoke-8x8-dark-320 is the weakest frame; the 4x4 red area is wider than the description, which is correct; the forced-colours still is a single-cell crop.
+total: 15 of 15 met and readable
+
+---- review fix round 1 (2026-10-11, about 15:05 UTC+5:30) ----
+judge: a second fresh vision-judge subagent (did not build the UI, did not judge it before); saved by the parent from its report.
+scope: the 10 theme and size stills re-taken with the pointer off the board (smoke-6x6-{light,dark}-{1024,375}, smoke-8x8-{light,dark}-{320,375}, smoke-4x4-light-375, smoke-4x4-dark-1024); the forced-colours still came out byte-identical and the hover/focus crops are unchanged, so their verdicts above stand.
+
+smoke-6x6-light-1024.png | met: yes | readable: yes | only column 4 of the red run has the dark-red triangle; no hover ring.
+smoke-6x6-dark-1024.png | met: yes | readable: yes | only column 4 has the salmon triangle, clear on the dark stripes; no ring.
+smoke-6x6-light-375.png | met: yes | readable: yes | only column 4 has the triangle, smaller but plain; no ring.
+smoke-6x6-dark-375.png | met: yes | readable: yes | only column 4 has the salmon triangle; no ring.
+smoke-8x8-light-320.png | met: yes | readable: yes | only column 6 has the triangle at about the 8px floor; findable after a short scan without the hover ring; no ring.
+smoke-8x8-dark-320.png | met: yes (weakest of the 10) | readable: yes | only column 6 has the salmon triangle; it reads as a filled notch squaring off the rounded corner, same colour as the border; findable without the ring, less quickly than in light.
+smoke-8x8-light-375.png | met: yes | readable: yes | only column 6 has the triangle; clear; no ring.
+smoke-8x8-dark-375.png | met: yes | readable: yes | only column 6 has the salmon triangle; no ring.
+smoke-4x4-light-375.png | met: yes | readable: yes | column 1 and row 3 red; only (3,1) has the triangle; no ring.
+smoke-4x4-dark-1024.png | met: yes | readable: yes | same pattern in dark; only (3,1) has the triangle; no ring.
+
+Defects: none blocking. Polish noted (not required): dark 8x8 at 320 has low separation between the mark and the border (a larger mark at small widths or a 1px inner edge would help; the user kept the signed size).
+total (fix round 1): 10 of 10 met and readable; overall with the unchanged stills: 15 of 15.

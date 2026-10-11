@@ -217,6 +217,15 @@
       "processComplete": true
     },
     {
+      "slice": "2026-10-11-add-violation-cause",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 8,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
       "slice": "2026-10-11-update-page-backdrop",
       "reviewEvidence": "unclean",
       "trailerCommits": 8,
@@ -327,6 +336,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-10-update-setup-sheet-start: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-11-add-violation-cause: review-findings.json is unclean (review must have run clean before archive)"
     },
     {
       "check": "review-evidence",
