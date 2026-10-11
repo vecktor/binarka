@@ -995,7 +995,8 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1182,9 +1183,11 @@
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-palette-stylesheet.test.ts",
         "tests/play-page-panel-shell-stylesheet.test.ts",
         "tests/play-page-rules-panel-stylesheet.test.ts",
+        "tests/play-page-setup-sheet-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
@@ -1325,7 +1328,8 @@
     {
       "id": "FR-71",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1540,9 +1544,11 @@
       "tests": [
         "tests/play-page-english-text.test.ts",
         "tests/play-page-layout.test.ts",
+        "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-root-size.test.ts",
         "tests/play-page-semantics.test.ts",
         "tests/play-page-semantics.test.ts",
+        "tests/play-page-setup-sheet-stylesheet.test.ts",
         "tests/play-page-setup-sheet.test.ts",
         "tests/play-page-setup-sheet.test.ts",
         "tests/play-page-start-button.test.ts"
@@ -1669,7 +1675,8 @@
     {
       "id": "FR-102",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1734,7 +1741,8 @@
     {
       "id": "FR-107",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1848,7 +1856,8 @@
     {
       "id": "FR-117",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [

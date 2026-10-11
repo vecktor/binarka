@@ -475,12 +475,17 @@ describe('The inner metrics are the design\'s', () => {
 
 // The 31 tokens and the 38 pairs as they stood before this change (baseline «Borders, cues and focus rings have enough contrast», after update-panel-shell).
 // LITERAL COPIES taken from tests/helpers/css.ts on 2026-10-11 at ebaf49b; compared as lists, not as the numbers 31 and 38, because the setup-sheet block moves the counts.
+// DELIBERATE CHANGE (update-setup-sheet, rebased onto this block): the baseline list of «Borders, cues and focus rings have enough contrast» is now
+// 32 tokens and 41 pairs (the setup sheet's --color-option-border, decoration in no pair, and the three ring pairs of FR-65, marked «setup sheet»
+// below). This block still adds none; the guard keeps comparing the helper with the baseline list, as its re-scoped scenario says — proposal.md of
+// update-setup-sheet, Impact row «The rules panel takes the design's size, place and paint» (the user's decision of 2026-10-12).
 const BASELINE_TOKEN_NAMES = [
   '--color-page', '--color-text', '--color-text-muted', '--color-cell-bg', '--color-control-bg', '--color-line', '--color-cell-border', '--color-control-border',
   '--color-given-bg', '--color-given-border', '--color-given-text', '--color-entry-text', '--color-primary', '--color-primary-text', '--color-primary-soft',
   '--color-hover-ring', '--color-violation-bg', '--color-violation-border', '--color-violation-stripe', '--color-violation-text', '--color-success',
   '--color-success-bg', '--color-success-glow', '--color-win-text', '--color-focus', '--color-backdrop-soft', '--color-backdrop-strong',
   '--color-surface-raised', '--color-overlay-border', '--color-shadow-panel', '--color-shadow-sheet',
+  '--color-option-border', // setup sheet
 ];
 const BASELINE_PAIRS: [string, string, string, number][] = [
   ['cell-border', '--color-cell-border', '--color-page', 3],
@@ -495,6 +500,8 @@ const BASELINE_PAIRS: [string, string, string, number][] = [
   ['hinted-cue', '--color-primary', '--color-primary-soft', 3],
   ['hinted-cue', '--color-primary', '--color-line', 3],
   ['hinted-cue', '--color-primary', '--color-page', 3],
+  ['hinted-cue', '--color-primary', '--color-control-bg', 3], // setup sheet
+  ['hinted-cue', '--color-primary', '--color-surface-raised', 3], // setup sheet
   ['focus-ring', '--color-focus', '--color-page', 3],
   ['focus-ring', '--color-focus', '--color-cell-bg', 3],
   ['focus-ring', '--color-focus', '--color-given-bg', 3],
@@ -505,6 +512,7 @@ const BASELINE_PAIRS: [string, string, string, number][] = [
   ['focus-ring', '--color-focus', '--color-cell-border', 3],
   ['focus-ring', '--color-focus', '--color-surface-raised', 3],
   ['control-border', '--color-control-border', '--color-page', 3],
+  ['control-border', '--color-control-border', '--color-control-bg', 3], // setup sheet
   ['text', '--color-text', '--color-page', 4.5],
   ['text', '--color-text', '--color-cell-bg', 4.5],
   ['text', '--color-text', '--color-given-bg', 4.5],
