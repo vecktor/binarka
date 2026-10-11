@@ -1,0 +1,52 @@
+# SUPERSEDED IN PART (16:05, finding 1 of the rules-panel draft audit, correction COR-4): the two scores below are right, but the per-pixel classification and the "Reading" used a hand-written YIQ delta, not the gate's pixelmatch 8.0.0. The right classification is docs/qa/prep-g2/soft-dim-768-classify.txt: the design panel FILL #2c2620 over the page's soft-dimmed bare page.
+
+# The two soft-dim drops at 768 (run 7 -> run 8), measured. 2026-10-11 15:40 to 15:46 (UTC+5:30), prep session vibrant-tu-434033, at main 2e19235.
+# Script: docs/qa/prep-g2/soft-dim-768.mjs (capture lock taken; nothing listened on 4173, 4174, 4176 or 4177 before or after).
+# Method: capture each shot with the gate's own adapter (capture() of scripts/check-visual-parity-adapters.mjs, real device scale 2),
+# read the open surface's box, then rebuild the run-7 look of every pixel OUTSIDE the surface: the run-7 dark dim was --color-page
+# #1a1714 at opacity 0.6 over the underlying pixel (removed by e82eb20); the underlying pixel is recovered by inverting today's soft
+# composite (#08050273, alpha 0x73/255). Pixels inside the surface are the same in both runs (the surface paint did not change).
+# Both versions are scored against the frozen reference with the checker's call (pixelmatch, threshold 0.1).
+# Check of the method: the rebuilt scores equal the gate's run-7 scores to 4 places, and today's equal run 9.
+
+== 768-dark-rules
+surface rect (CSS px): x 160.0 y 230.4 w 448.0 h 563.2
+score now 0.8882 (gate run 9 says 0.8882)
+score with the old dim rebuilt outside the surface 0.9314 (gate run 7 said 0.9314)
+pixels that pass with the old dim and fail with the new one (raw YIQ, no AA rule): 2231, CSS rows 96.5 to 830.5
+pixels inside the product surface that fail (raw YIQ): 183039
+  768	ref #3a332b | now #181410 | old #1e1b17
+  503	ref #3d2b1e | now #181410 | old #1e1b17
+  150	ref #3d2b1e | now #50483f | old #474139
+  61	ref #36302a | now #181410 | old #1e1b17
+  56	ref #2c2620 | now #4e463d | old #463f38
+  41	ref #2c2620 | now #4f473e | old #474039
+  36	ref #2c2620 | now #4d463d | old #453f38
+  30	ref #353029 | now #181410 | old #1e1b17
+== 768-dark-setup-four
+surface rect (CSS px): x 160.0 y 229.8 w 448.0 h 564.4
+score now 0.8674 (gate run 9 says 0.8674)
+score with the old dim rebuilt outside the surface 0.9004 (gate run 7 said 0.9004)
+pixels that pass with the old dim and fail with the new one (raw YIQ, no AA rule): 18104, CSS rows 156.5 to 706.5
+pixels inside the product surface that fail (raw YIQ): 300687
+  17298	ref #3d2b1e | now #120f0c | old #1a1714
+  299	ref #3d2b1e | now #50483f | old #474139
+  72	ref #36312b | now #120f0c | old #1a1714
+  35	ref #38332e | now #181410 | old #1e1b17
+  17	ref #352f28 | now #120f0c | old #1a1714
+  16	ref #2c2620 | now #4f473e | old #474039
+  12	ref #2c2620 | now #4e463d | old #463f38
+  9	ref #36312b | now #181410 | old #1e1b17
+
+# Reading (the explanation):
+# The same masking mechanism as the strong-dim shots of README § Run 8, but against the design panel's CONTENT colours, not its fill.
+# The product's surface (28rem, centred, x 160 to 608) and the design's (the column + 1rem, from 6rem; the setup sheet anchored or
+# full-cover) do not cover the same pixels. Where the design shows its own panel paint and the product shows the dimmed page or
+# dimmed cells, the old dim left the product pixel lighter (#1a1714 bare page, #1e1b17 over a cell) and the YIQ delta to the design's
+# dark #3d2b1e (--primary-soft: the checked size option and level card fill; the rules' dashed example cells) and #3a332b (--line: the
+# rules' item separators) stayed under the limit 352. The new soft composite is darker (#120f0c over the bare page, #181410 over a
+# cell), so those pixels now fail. 768-dark-setup-four: 17298 of its 18104 newly failing pixels are one pair, the design's
+# --primary-soft against the dimmed bare page (rows 156 to 706 CSS px). 768-dark-rules: 2231 pixels, mostly the design's --line and
+# --primary-soft over the product's dimmed cells.
+# So the drops are not a backdrop error: they show the surfaces' placement mismatch, which belongs to the rules-panel block (A) and the
+# setup-sheet block (B). Expected: both shots rise when the surfaces take the design's place and paint.

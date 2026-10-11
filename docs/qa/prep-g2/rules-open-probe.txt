@@ -1,0 +1,15 @@
+# Rules panel scroll position right after opening (row 137 bug), 2026-10-11 about 15:50 (UTC+5:30), main 2e19235, Chromium via Playwright.
+# Script: docs/qa/prep-g2/rules-open-probe.mjs (preview on 4180, not a capture port; stopped after).
+# sticky=false is the page as built: the browser's popover focusing steps focus the `autofocus` «Зрозуміло» and scroll it into view,
+# so the panel opens at its END. sticky=true injects only `.rules-close { position: sticky; bottom: 0 }` (the design's rule,
+# design/v0/app/binarka.css .rules-close): the button is already in view when it gets focus, so nothing scrolls and the panel opens
+# at its TOP, with focus still on «Зрозуміло».
+375x812 sticky=false: scrollTop 292 of 292, focus .rules-close
+375x812 sticky=true: scrollTop 0 of 292, focus .rules-close
+320x700 sticky=false: scrollTop 399 of 399, focus .rules-close
+320x700 sticky=true: scrollTop 0 of 399, focus .rules-close
+768x1024 sticky=false: scrollTop 144 of 144, focus .rules-close
+768x1024 sticky=true: scrollTop 0 of 144, focus .rules-close
+1366x650 sticky=false: scrollTop 349 of 349, focus .rules-close
+1366x650 sticky=true: scrollTop 0 of 349, focus .rules-close
+# Not checked: Safari and Firefox (the project tests Chromium only); whether they scroll a stuck sticky element into view is unverified.

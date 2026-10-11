@@ -1,0 +1,20 @@
+{
+  "id": "COR-4",
+  "ts": "2026-10-11T10:34:24.737Z",
+  "utterance": "Prep-session audit (rules-panel draft auditor, 2026-10-11): README § Run 8 says the soft-dim drops at 768 cannot come from the masking mechanism because the YIQ delta of the soft composite against the panel fill is 283, under the limit 352. The gate runs pixelmatch 8.0.0, whose delta is not that YIQ formula; by the gate's own per-pixel verdict the drops are the design panel fill #2c2620 over the page's soft-dimmed bare page (135776 px in 768-dark-rules, 103380 px in 768-dark-setup-four; docs/qa/prep-g2/soft-dim-768-classify.txt). The README's YIQ 125/359/283 figures are wrong-method claims.",
+  "contradictedClaim": "docs/qa/visual-diff/README.md:75",
+  "mappedReqIds": [
+    "NFR-14"
+  ],
+  "gateThatShouldHaveCaught": "G2",
+  "failureMode": "wrong-claim",
+  "failureModeSource": "explicit",
+  "source": "human",
+  "autoKey": null,
+  "disposition": {
+    "status": "resolved",
+    "by": "Serhii Romaniv (the user), in chat on 2026-10-11 through the question form («Fix README, then close it (Recommended)»), recorded by the agent",
+    "ts": "2026-10-11T10:48:00.000Z",
+    "note": "docs/qa/visual-diff/README.md gains § Correction of Run 8 with the gate's own per-pixel classification (docs/qa/prep-g2/soft-dim-768-classify.txt); the Run 9 sentence now points at it; the first reading in docs/qa/prep-g2/soft-dim-768.txt is marked superseded in part (autonomy-log row 172)."
+  }
+}

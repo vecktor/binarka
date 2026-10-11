@@ -1,0 +1,18 @@
+# Pixels of the two 768 soft-dim shots classified by the gate's own per-pixel verdict (pixelmatch 8.0.0, threshold 0.1, its output image), 2026-10-11 16:05 (UTC+5:30). Script: docs/qa/prep-g2/soft-dim-768-classify.mjs; inputs: the product captures docs/qa/prep-g2/768-dark-*-product.png (from soft-dim-768.mjs) and the frozen references. Supersedes the 'Reading' and the YIQ classification of soft-dim-768.txt (finding 1 of the rules-panel draft audit; correction COR-4).
+== 768-dark-rules: pixelmatch 0.8882 now, 0.9314 with the old dim rebuilt
+diff pixels now 351605, old 215707; newly failing 135961 (outside the surface 135961); newly passing 63
+  135776	ref #2c2620 | now #120f0c | old #1a1714
+  150	ref #3d2b1e | now #50483f | old #474139
+  7	ref #2b261f | now #120f0c | old #1a1714
+  5	ref #2c2620 | now #120e0b | old #1a1613
+  3	ref #2c2620 | now #463f37 | old #403a33
+  2	ref #f39a5b | now #69635b | old #59544e
+== 768-dark-setup-four: pixelmatch 0.8674 now, 0.9004 with the old dim rebuilt
+diff pixels now 417114, old 313432; newly failing 103696 (outside the surface 103696); newly passing 14
+  103380	ref #2c2620 | now #120f0c | old #1a1714
+  299	ref #3d2b1e | now #50483f | old #474139
+  2	ref #2c2620 | now #120e0b | old #1a1613
+  2	ref #2b261f | now #120f0c | old #1a1714
+  2	ref #2f2923 | now #120f0c | old #1a1714
+  2	ref #322b25 | now #120f0c | old #1a1714
+# Reading: in both shots every newly failing pixel is outside the product's surface, and >99.7% are one pair: the design's panel FILL #2c2620 (--surface-raised dark) where the page shows its soft-dimmed bare page (#120f0c now; #1a1714 with the old dim, which passed). It is the same masking as the strong-dim shots of README § Run 8: the design's panel covers pixels the page's 28rem panel does not. It belongs to the placement of the rules panel (A) and the setup sheet (B).

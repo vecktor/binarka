@@ -1,0 +1,9 @@
+# Second opening of the rules panel, 2026-10-11 16:03 (UTC+5:30), main 2e19235, Chromium, 375x812; script docs/qa/prep-g2/rules-reopen-probe.mjs (preview on 4180, stopped after).
+# Found by the rules-panel auditor: Chromium restores a popover's scroll offset across hide and show, so the sticky button alone opens the panel at its top only the first time.
+
+sticky only, closed by button: first open 0 of 292, focus .rules-close; second open 292 of 292, focus .rules-close
+sticky only, closed by Escape: first open 0 of 292, focus .rules-close; second open 292 of 292, focus .rules-close
+sticky + reset on open (toggle), closed by button: first open 0 of 292, focus .rules-close; second open 0 of 292, focus .rules-close
+sticky + reset on open (toggle), closed by Escape: first open 0 of 292, focus .rules-close; second open 0 of 292, focus .rules-close
+sticky + reset on close (beforetoggle), closed by button: first open 0 of 292, focus .rules-close; second open 0 of 292, focus .rules-close
+sticky + reset on close (beforetoggle), closed by Escape: first open 0 of 292, focus .rules-close; second open 0 of 292, focus .rules-close
