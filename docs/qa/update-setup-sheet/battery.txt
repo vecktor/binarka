@@ -82,3 +82,7 @@ sweep_exit=1
 - `npm run test:e2e`: 245 passed (every project of the default run; `playwright.config.ts` unchanged).
 - `npm run check:a11y`: 67 passed (axe on every sheet state light and dark, the keyboard sweep, the focus walk at 320×700, 1366×650, 320×568, 375×600) → `docs/qa/a11y-report.json`.
 - The sweep: 35 of 38 at this run; the three failing groups are classified in `docs/qa/update-setup-sheet/sweep.txt` (window-edge artifact, fixed in the check on the user's decision; design-inherited cuts, recorded as Scope NOT delivered). Its re-run after the edit is appended to `sweep.txt`.
+
+## Addendum after the review gate's fix round 1 (HEAD 7c1ed21 plus a comment-only edit of scripts/visual-block.mjs)
+
+2026-10-11 21:31-21:40 (UTC+5:30): `npx vitest run` 77 files / 1900 tests passed; `npm run lint` 0; `npm run build` 0; under the capture lock (21:38:32-21:39:24, ports empty before and after): `npm run test:e2e` 245 passed, `npm run check:a11y` 67 passed (`docs/qa/a11y-report.json`); `npx openspec validate --all --strict` 4 passed; `node scripts/check-eval-ratchet.mjs` PASS; `npm run check:trace` 0 failures; `npm run check:acceptance` 132 contracts, 0 failures. The setup e2e (26/26) and the per-block tool (48 shots, geometry within 0.5px, pixel scores equal to run 11's) ran at 21:29-21:31 (`fix-round-1.txt`). Tool-rewritten reports reverted.

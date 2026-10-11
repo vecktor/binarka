@@ -56,8 +56,8 @@ For parallel session B of `docs/handoff/parallel-g2-plan-2026-10-11.md`. Order o
 
 ## 8. Review gate
 
-- [ ] 8.1 Review gate on the block's commits (a fresh reviewer, not the author), with the rendered stills of the sheet open in light and dark at 320, 375, 768, 1024, 1366 and 1440, in the default and `four` states, looked at by a fresh vision judge, and the explanation of any fall from 7.3. Run ONLY with the user's yes; fix rounds need the user's approval. Evidence: `docs/qa/update-setup-sheet/review-findings.json`; `docs/qa/update-setup-sheet/stills/vision-verdict.txt`; the user's yes recorded in `session-log.md`.
-- [ ] 8.2 Put to the user: the open points of `design.md` (the metrics beyond the draft's list, the edits outside the brief's list, the nfr-13 premise if it failed). Evidence: `session-log.md`.
+- [x] 8.1 Review gate on the block's commits (a fresh reviewer, not the author), with the rendered stills of the sheet open in light and dark at 320, 375, 768, 1024, 1366 and 1440, in the default and `four` states, looked at by a fresh vision judge, and the explanation of any fall from 7.3. Run ONLY with the user's yes; fix rounds need the user's approval. Evidence: `docs/qa/update-setup-sheet/review-findings.json`; `docs/qa/update-setup-sheet/stills/vision-verdict.txt`; the user's yes recorded in `session-log.md`.
+- [x] 8.2 Put to the user: the open points of `design.md` (the metrics beyond the draft's list, the edits outside the brief's list, the nfr-13 premise if it failed). Evidence: `session-log.md`.
 
 ## 9. Archive
 

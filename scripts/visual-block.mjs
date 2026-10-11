@@ -17,7 +17,7 @@
 // measured only for states whose look is reached at mount (GEOMETRY_STATES) or by opening the setup sheet (SHEET_STATES: the design routes
 // /setup/ and /setup-four/ are open at load, the page side presses the summary button, as e2e/nfr-14-setup-sheet.spec.ts replays
 // afterLoad "open-setup"); other states have the pixel channel only. For the sheet states the design page gets the one recorded deviation of
-// quality/design-geometry.json setupSheet injected before it is measured (the level group's 28px margin, A-60/SQ-5, as the freeze script's
+// quality/design-geometry.json setupSheet injected before its geometry is measured (geometry only: the pixel region and the calibration shot use the unmodified design; the level group's 28px margin, A-60/SQ-5, as the freeze script's
 // `expected` boxes), so geometry 0 is reachable; without it the content-decided cases would always be off by the margin (4 px from 48rem at the
 // bottom; on phones the bottom sheet grows upward, moving the top and the description; never past max-height, e.g. 2.31 px at 320x700).
 // The pixel channel still scores against the frozen reference (the unmodified design), so that residual stays visible there.
