@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-11T15:56:58.707Z",
-  "gitHead": "69cf68e890edb8128c4335722630418b59f9fd8c",
+  "createdAt": "2026-10-11T16:18:12.992Z",
+  "gitHead": "0ba98341b38db1bf61e817de5e03a8eaeb4522c0",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -25,12 +25,12 @@
     "scripts/check-recordings.mjs": "447628eccba1a88860d5b2cfb8f4fff9b09050edd0141476a31bcddc66fe3a54",
     "scripts/check-traceability.mjs": "10dfdb95743c685e31f0a1cdb2d4cbef0d728315097efd93544346330250fadf",
     "scripts/check-trajectory.mjs": "2b4e0ba839c639c0da160d74ef204bd9fae09f264404a8342beea815b8ebafc1",
-    "scripts/check-visual-fidelity.mjs": "0fbc99b9b56d4a98fea70b74118a99296478f1ded3010f0347b235ceecd9fa4e",
+    "scripts/check-visual-fidelity.mjs": "03075d89c7ab1ec0f648cbd86f3eb360e1c7b33575f0e0e9f82aa5b5cef86c53",
     "scripts/check-visual-parity-adapters.mjs": "5dbef1099c87e30e4df84212b282bc5b8ba357ddfc85d89ac8edae05ddabb013",
     "scripts/gate-status.mjs": "07617acbbd6ae513bcc7675478e920bd86ff2c765ae1b2ebc2ab27dad50e5fae",
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-5: the visual checker reads its adapters from quality/visual-parity.config.json (\"adapters\") when CHECK_VISUAL_FIDELITY_ADAPTERS is unset, so qa-verify and gate:status measure NFR-14; the config is locked at the quality tier (approved by the user 2026-10-11)"
+    "PD-6: the visual checker stages each run and copies it into docs/qa/visual-diff unless a capture or diff failure would replace a scored report (approved by the user 2026-10-11)"
   ]
 }

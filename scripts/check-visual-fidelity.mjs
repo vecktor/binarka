@@ -34,6 +34,10 @@
 //   docs/qa/visual-diff/<breakpoint>/report.json
 //     { breakpoint, score, threshold, heightDelta, masked, pass, ... }
 //   docs/qa/visual-diff/<breakpoint>/diff.png  (when the pixel diff ran)
+// No score is lost to a failed capture (PD-6): the run is written to a temporary folder first and copied into
+// docs/qa/visual-diff/ unless a capture or diff failed on a breakpoint whose current report holds a score. Such a run
+// is a harness failure, not a measurement: it leaves the reports as they were, FAILS, and names its folder. A breakpoint
+// that has never had a score (for example a state with no driver yet) does not block the copy.
 // Exit 0 ONLY when EVERY breakpoint passes.
 //
 // Stdout conventions (shared across all factory checks):
@@ -59,7 +63,8 @@
 // Wire as: "check:visual": "node scripts/check-visual-fidelity.mjs" in the
 // qa-verify battery + G6; register docs/qa/visual-diff/*/report.json in the
 // acceptance-token table so check-acceptance-methods can join NFR->artifact.
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -260,6 +265,7 @@ export async function runVisualFidelity({ config, capture, diff, writeArtifact, 
   const failures = [];
   const warnings = [];
   const reports = [];
+  const unmeasured = []; // breakpoints whose capture or diff failed (PD-6)
   const fail = (id, msg) => failures.push({ id, msg });
 
   for (const bp of config.breakpoints) {
@@ -303,6 +309,7 @@ export async function runVisualFidelity({ config, capture, diff, writeArtifact, 
         ? `capture unavailable — ${err.message}. Install: ${err.install ?? DEFAULTS.installHint}. ` +
           `Missing tooling is a FAILURE, never a pass (prime directive).`
         : `capture failed: ${err.message}`;
+      unmeasured.push(bp.name);
       failWithReport(msg);
       continue;
     }
@@ -348,11 +355,12 @@ export async function runVisualFidelity({ config, capture, diff, writeArtifact, 
         ? `pixel diff unavailable — ${err.message}. Install: ${err.install ?? DEFAULTS.installHint}. ` +
           `Missing tooling is a FAILURE, never a pass (prime directive).`
         : `pixel diff failed: ${err.message}`;
+      unmeasured.push(bp.name);
       failWithReport(msg, { heightDelta: gate.deltaPct, refHeight: ref.pageHeight, localHeight: local.pageHeight });
     }
   }
 
-  return { failures, warnings, reports, pass: failures.length === 0 };
+  return { failures, warnings, reports, unmeasured, pass: failures.length === 0 };
 }
 
 // ------------------------------------------------------- default adapters
@@ -562,8 +570,10 @@ async function main() {
     adapters = makeDefaultAdapters();
   }
 
+  // PD-6: stage the run; copy it over the committed reports only when every breakpoint was measured.
+  const staging = mkdtempSync(join(tmpdir(), "visual-fidelity-run-"));
   const writeArtifact = (rel, data) => {
-    const abs = join(root, rel);
+    const abs = join(staging, rel);
     mkdirSync(dirname(abs), { recursive: true });
     writeFileSync(abs, data);
   };
@@ -584,6 +594,24 @@ async function main() {
     } catch {
       /* browser teardown must not mask the verdict */
     }
+  }
+
+  const scored = (name) => {
+    try {
+      return JSON.parse(readFileSync(join(root, DEFAULTS.outDir, name, "report.json"), "utf8")).score != null;
+    } catch {
+      return false;
+    }
+  };
+  const lossy = run.unmeasured.filter(scored);
+  if (lossy.length === 0) {
+    if (existsSync(join(staging, DEFAULTS.outDir))) cpSync(staging, root, { recursive: true, force: true });
+  } else {
+    const msg =
+      `${lossy.length} breakpoint(s) with a scored report not measured this run (capture or diff failed: ${lossy.slice(0, 5).join(", ")}` +
+      `${lossy.length > 5 ? ", …" : ""}); ${DEFAULTS.outDir}/ left as it was; this run's reports: ${join(staging, DEFAULTS.outDir)}`;
+    console.error(`FAIL  [visual] ${msg}`);
+    run.failures.push({ id: "visual", msg });
   }
 
   finish(run.pass ? "PASS" : "FAIL", run.failures, [...warnings, ...run.warnings], config.breakpoints.length);

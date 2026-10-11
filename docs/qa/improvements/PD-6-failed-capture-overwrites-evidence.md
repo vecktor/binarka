@@ -1,6 +1,6 @@
 # PD-6: a failed capture overwrites a scored NFR-14 report
 
-Status: **PROPOSED, awaiting the user's approval.** Drafted 2026-10-11 from 21:27 (UTC+5:30) by session C of the parallel G2 plan, on the user's «Overwrite fix as PD-6 (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row C7). No locked file changes before the yes; the edit goes in a commit with `Refs: PD-6`.
+Status: **APPROVED by the user** in chat on 2026-10-11 at about 21:33 (UTC+5:30), through the question form: «A: complete runs only (Recommended)» (session log row C13). **Refined by the user at about 21:44** after the first full run: «Block only if a score would be lost (Recommended)» (row C15), because option A as written counted the two logo shots (no state driver, README gap 2) and so would never update any report. Executed in the commit with `Refs: PD-6`; green proof complete in `PD-6-green-proof.txt`. Drafted from 21:27 by session C of the parallel G2 plan, on the user's «Overwrite fix as PD-6 (Recommended)» (row C7).
 
 ## Defect
 
@@ -24,6 +24,12 @@ Trade-off for A and B: the checker is the factory's reference implementation, an
 ## Green is earned when (after the yes)
 
 The same stub run leaves both committed reports byte-identical, exits FAIL with both failures printed, and names the run folder. A complete run with the parity adapter (under the lock) still writes all 170 reports. `check-factory-integrity` passes after the re-seal.
+
+## As executed
+
+- `scripts/check-visual-fidelity.mjs` (locked): `runVisualFidelity` records each breakpoint whose capture or diff failed (`unmeasured`); `main` writes the run into a fresh folder under the system temp directory and copies it over the repo unless an unmeasured breakpoint's current report holds a score (the refined rule). Otherwise it adds a `[visual]` failure naming those breakpoints, says `docs/qa/visual-diff/` was left as it was, and names the run's folder. A breakpoint that never had a score (the logo shots today) does not block the copy. A height pre-gate failure is a measurement (it compared two captures) and is copied.
+- The verdict is unchanged: a run with unmeasured shots was already FAIL; a blocked one now also says why.
+- Lock re-sealed.
 
 ## Rollback
 

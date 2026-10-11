@@ -1,0 +1,43 @@
+# PD-6 green proof, 2026-10-11 21:45:01 +0530 (session C), the refined rule (the user's «Block only if a score would be lost»)
+
+## 1. stub adapter (capture always fails) on two SCORED shots: the run must not copy (no port bound)
+204651817c6452b4cfe81b2c0a3e37205f12ea3e  docs/qa/visual-diff/1024-dark-default/report.json
+40444710e4407ada96d1028c9225e3ff578794b4  docs/qa/visual-diff/1440-light-default/report.json
+FAIL  [1024-dark-default] capture failed: stub adapter reached (reference, 1024-dark-default)
+FAIL  [1440-light-default] capture failed: stub adapter reached (reference, 1440-light-default)
+FAIL  [visual] 2 breakpoint(s) with a scored report not measured this run (capture or diff failed: 1024-dark-default, 1440-light-default); docs/qa/visual-diff/ left as it was; this run's reports: <tmp>/visual-fidelity-run-XXXX/doc
+Result: FAIL, 1 warning(s)
+204651817c6452b4cfe81b2c0a3e37205f12ea3e  docs/qa/visual-diff/1024-dark-default/report.json
+40444710e4407ada96d1028c9225e3ff578794b4  docs/qa/visual-diff/1440-light-default/report.json
+visual-diff modified: 0
+
+## 2. stub adapter on the two logo shots, which have never had a score: the run is copied (nothing scored is lost)
+FAIL  [logo-dark] capture failed: stub adapter reached (reference, logo-dark)
+FAIL  [logo-light] capture failed: stub adapter reached (reference, logo-light)
+Result: FAIL, 1 warning(s)
+visual-diff modified:  M docs/qa/visual-diff/logo-dark/report.json  M docs/qa/visual-diff/logo-light/report.json 
+  "reason": "capture failed: stub adapter reached (reference, logo-light)",
+  "reason": "capture failed: stub adapter reached (reference, logo-dark)",
+restored with git checkout; modified after: 0
+
+## 3. the full run with the parity adapter, 2026-10-11 21:45:09 to 21:47:31 +0530, BINARKA_PORT_BASE=6173 (own ports, no lock), the callers' command line
+(adapters injected from scripts/check-visual-parity-adapters.mjs)
+FAIL  [logo-dark] capture failed: no state driver for "logo" (shot logo-dark); the page has no such state yet
+FAIL  [logo-light] capture failed: no state driver for "logo" (shot logo-light); the page has no such state yet
+Scope: 170 breakpoint(s)
+Result: FAIL, 1 warning(s)
+exit 1
+PASS lines: 86 of 170
+No '[visual]' line: nothing scored was lost (only the logo shots, never scored, failed), so the run was copied:
+  mtime of docs/qa/visual-diff/1024-dark-default/report.json, logo-light/report.json, 1440-light-default/diff.png: 21:47:31
+  git status --porcelain docs/qa/visual-diff: empty, so the copied reports and diffs are byte-identical to run 10
+
+## 4. history: the first PD-6 rule (complete runs only), full run 21:40 to 21:42
+It blocked the copy on the two logo shots alone (README gap 2: no state driver), so no run could ever update the reports:
+FAIL  [visual] 2 of 170 breakpoint(s) not measured (capture or diff failed); docs/qa/visual-diff/ left as it was; this run's reports: <tmp>/visual-fidelity-run-XXXX/docs/qa/visual-diff
+Shown to the user, who chose «Block only if a score would be lost (Recommended)» (session log row C15).
+
+## 5. factory integrity
+before the re-seal: Result: PASS, 2 warning(s) (the checker drifted; accepted as "covered by an approved improvement commit" because earlier Refs: PD-5 commits touched it: the PD-1 caveat, unchanged)
+re-seal --init-lock --adaptation "PD-6: ...": Result: PASS, 1 warning(s)
+after: Result: PASS, 1 warning(s) (core.hooksPath, pre-existing)
