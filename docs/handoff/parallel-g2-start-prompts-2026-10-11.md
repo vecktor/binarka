@@ -1,34 +1,8 @@
-# Start prompts: the shell's review gate (P2), then sessions A, B and C (2026-10-11)
+# Start prompts: sessions A, B and C of the parallel G2 plan (2026-10-11)
 
-Written by the prep session `vibrant-tu-434033` at about 17:35 (UTC+5:30), autonomy-log row 173. The brief is `docs/handoff/parallel-g2-plan-2026-10-11.md`. Paste each prompt into its own new session.
+Written by the prep session `vibrant-tu-434033` at about 17:35 (UTC+5:30), autonomy-log row 173, and updated at about 17:52 after the shell's archive (row 174). The brief is `docs/handoff/parallel-g2-plan-2026-10-11.md`. Paste each prompt into its own new session.
 
-**Order.** P2 first: it reviews, archives and merges the shell slice `update-panel-shell`, which A and B build on. Start A, B and C only after `main` holds the archived shell. (C has no product code; it can start once P2 has pushed, or earlier if the user wishes.)
-
----
-
-## P2: the shell's review gate, archive and merge (serial, one session)
-
-```text
-You are continuing Бінарка (Project Factory). AGENTS.md applies. Work in your own worktree.
-
-Start point: the prep branch `claude/vibrant-tu-434033` (autonomy-log row 173; if the user merged it into `main`, use `main`). Fast-forward your worktree branch to it (`git merge --ff-only <ref>`; if that fails, stop and ask the user) and confirm with `git log -1 --format=%h`. `npm ci` if node_modules is missing. Build the design reference (gitignored): in `design/v0`, `npm_config_manage_package_manager_versions=false pnpm install --frozen-lockfile`, then `npm_config_manage_package_manager_versions=false pnpm build`.
-
-Read first: `docs/current-state.md` (Last Updated), `docs/handoff/next-session.md` row G2 (the 2026-10-11 row-173 part), `docs/autonomy-log.md` rows 172 and 173, and the change folder `openspec/changes/update-panel-shell/` (tasks 1 to 6 ticked; evidence in `docs/qa/update-panel-shell/`).
-
-Your work: tasks 7 and 8 of `openspec/changes/update-panel-shell/tasks.md`.
-1. Task 7.1, the review gate: the user said yes in chat on 2026-10-11 (row 173). Run the `review-gate` skill on the slice's commits (`64c2d7d..HEAD`, scope the shell's files), and a fresh vision judge on stills of each surface open, light and dark, at 375 and 1024 (`docs/qa/update-panel-shell/smoke/` has screenshots; take settled stills with the pointer off the panels if you need new ones). A confirmed code defect stops you for the user's approval of a fix round. Record dispositions in `openspec/changes/update-panel-shell/review-findings.json`.
-2. Task 7.2: no ADR here (the user left the root `data-size` ADR to stream C as 0009, row 173).
-3. Task 8: archive (`npx openspec archive update-panel-shell --yes`), `npx openspec validate --all --strict`, `npm run check:trace`; update `docs/current-state.md`, `docs/handoff/next-session.md` and the autonomy log (rows from 174).
-4. STOP and ask the user to merge into `main` and push. Only on their word: merge and push. Then tell them A, B and C can start (`docs/handoff/parallel-g2-start-prompts-2026-10-11.md`).
-
-Rules:
-- Signed commits only. Right before each commit: `echo probe | gpg --batch --pinentry-mode error --clearsign >/dev/null 2>&1`; if locked, ask the user to unlock, then make all pending commits at once. `-m` subject first, then the trailers; `Slice:` and `Refs:` on commits touching `src/`. Never `--no-verify`, never squash.
-- `date` before writing any time (UTC+5:30; Kyiv is 2:30 earlier).
-- Revert tool-rewritten reports before committing (`docs/qa/e2e-report.json`, `docs/qa/traceability-report.md`, `trace/trace.json`, `trace/acceptance-contracts.json`, `docs/qa/visual-diff/*/report.json`) unless they are evidence. Never run `npm run gate:status` without reverting the 170 `report.json` after (PD-5).
-- Captures and Playwright runs: take `mkdir /tmp/binarka-capture.lock` (write your session name into it), check `lsof -nP -iTCP:<port> -sTCP:LISTEN` for 4173, 4174, 4176, 4177 before and after, remove the lock after. Stop only orphans of your own worktree.
-- Every done claim needs an evidence path that resolves; subagents leave no scratch files under `tests/`.
-- Not authorised without the user: merging into main, pushing, CI changes, new dependencies, editing locked files (`factory-lock.json`).
-```
+**Order.** P2 is no longer needed: the prep session ran the shell's review gate, its fix round and its archive itself (autonomy-log row 174; `openspec/changes/archive/2026-10-11-update-panel-shell/`). The user merges `claude/vibrant-tu-434033` into `main` and pushes; then A, B and C start from `main` in parallel. (C has no product code and could start earlier if the user wishes.)
 
 ---
 
@@ -83,7 +57,7 @@ Rules for this parallel session:
 ```text
 You are continuing Бінарка (Project Factory). AGENTS.md applies. You are SESSION C of the parallel G2 plan: the process stream. You change no `src/` file.
 
-Start point: `main` (after P2 merged the shell, or as the user says). Work in your own worktree on a branch named `claude/<name>-process`. Fast-forward it to `main` and confirm with `git log -1 --format=%h`. `npm ci` if node_modules is missing.
+Start point: `main` (after the user merged the prep branch `claude/vibrant-tu-434033`, or as the user says). Work in your own worktree on a branch named `claude/<name>-process`. Fast-forward it to `main` and confirm with `git log -1 --format=%h`. `npm ci` if node_modules is missing.
 
 Read first: `docs/handoff/parallel-g2-plan-2026-10-11.md` (section «C: the process stream» and «Rules for the parallel sessions»), `docs/autonomy-log.md` rows 170 to 173, `docs/qa/improvements/PD-1-*` to `PD-3-*` (the format of a PD proposal and its red proof), `docs/qa/visual-diff/README.md` § Known gaps.
 
