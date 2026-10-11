@@ -1,0 +1,530 @@
+{
+  "$comment": [
+    "Smoke boards of add-violation-cause (tasks.md 3.6 (b), 7.1). Each `captureBoard` is a valid capture value (FR-119): size, level, givens with exactly one solution, entries on non-given cells only. Coordinates are 1-based [row, col] as the page shows them (data-row / data-col); `clicks` is the number of clicks on that cell, in order.",
+    "Run: `npm run build && npx vite preview` (port 4173), then `node docs/qa/add-violation-cause/smoke-harness.mjs <name>` (a headed Chromium; the page is paused for the tester). `--check` loads the board headless and prints the cells instead of pausing.",
+    "Every board was built and checked with the engine on 2026-10-11 by the test-engineer (scratch scripts in the session scratchpad, deleted afterwards; their source and output are in docs/qa/add-violation-cause/red-run.txt section D)."
+  ],
+  "p2": {
+    "purpose": "P2, P3, P4 (smoke step 4): row 6 has no given; the recipe makes it read 1 1 0 1 1 _ (four 1s: the count rule) with no other violation on the way; then (6,6) once (a 0: P3) and once more (a 1: P4).",
+    "source": "generate(6, 4, 1).givens (unique); no entries",
+    "captureBoard": {
+      "size": 6,
+      "level": 1,
+      "givens": [
+        [
+          null,
+          null,
+          0,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          1,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          1,
+          1,
+          null,
+          null,
+          0,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          0,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          1,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ],
+      "entries": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    "recipe": [
+      {
+        "cell": [
+          6,
+          1
+        ],
+        "clicks": 2,
+        "then": "row 6 reads 1 _ _ _ _ _"
+      },
+      {
+        "cell": [
+          6,
+          2
+        ],
+        "clicks": 2,
+        "then": "1 1 _ _ _ _"
+      },
+      {
+        "cell": [
+          6,
+          3
+        ],
+        "clicks": 1,
+        "then": "1 1 0 _ _ _"
+      },
+      {
+        "cell": [
+          6,
+          4
+        ],
+        "clicks": 2,
+        "then": "1 1 0 1 _ _"
+      },
+      {
+        "cell": [
+          6,
+          5
+        ],
+        "clicks": 2,
+        "then": "1 1 0 1 1 _: all six cells of row 6 red; only (6,5) shows the triangle (P2)"
+      },
+      {
+        "cell": [
+          6,
+          6
+        ],
+        "clicks": 1,
+        "then": "1 1 0 1 1 0: the row stays red; no triangle anywhere (P3)"
+      },
+      {
+        "cell": [
+          6,
+          6
+        ],
+        "clicks": 1,
+        "then": "1 1 0 1 1 1: the triangle is on (6,6) (P4)"
+      }
+    ]
+  },
+  "p6": {
+    "purpose": "P6 (smoke step 5): the board is rule-clean, and the first hint (hint(board, 4), the pair rule) fills (4,3) with 1, which makes 1 1 1 in column 3 (rows 3 to 5) and four 1s in column 3; (4,3) is among the checker cells, so it is the hinted cause.",
+    "source": "generate(6, 1, 1).givens (unique), with three WRONG entries: (2,6)=1, (4,2)=0, (5,2)=1 (found by the bounded search of red-run.txt section D: seeds 1 to 300 x 300 random entry sets per seed; the first hit at seed 1, the 12th candidate)",
+    "captureBoard": {
+      "size": 6,
+      "level": 1,
+      "givens": [
+        [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ],
+        [
+          1,
+          null,
+          null,
+          null,
+          0,
+          null
+        ],
+        [
+          null,
+          0,
+          1,
+          null,
+          null,
+          null
+        ],
+        [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          1,
+          null,
+          null,
+          1
+        ],
+        [
+          0,
+          null,
+          null,
+          0,
+          null,
+          null
+        ]
+      ],
+      "entries": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          1
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          0,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          1,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    "recipe": [
+      {
+        "press": "Підказка",
+        "then": "(4,3) shows 1 with the dashed border and the triangle; its name ends «, підказка, спричиняє порушення»"
+      },
+      {
+        "press": "Підказка",
+        "then": "the hint line says the board breaks a rule; the triangle stays on (4,3)"
+      }
+    ]
+  },
+  "p8": {
+    "purpose": "P8 (smoke step 6): the design solved fixture (quality/design-paint.json, 1024-light-win) with the non-given entry (1,2) removed; its digit is 1.",
+    "source": "quality/design-paint.json case 1024-light-win, entries[0][1] set to null",
+    "captureBoard": {
+      "size": 6,
+      "level": 1,
+      "givens": [
+        [
+          1,
+          null,
+          null,
+          null,
+          0,
+          null
+        ],
+        [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          1
+        ],
+        [
+          0,
+          null,
+          0,
+          null,
+          0,
+          null
+        ],
+        [
+          null,
+          1,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          0,
+          null
+        ]
+      ],
+      "entries": [
+        [
+          null,
+          null,
+          0,
+          1,
+          null,
+          0
+        ],
+        [
+          1,
+          0,
+          null,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          1,
+          null
+        ],
+        [
+          null,
+          1,
+          null,
+          1,
+          null,
+          1
+        ],
+        [
+          1,
+          null,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          null,
+          1
+        ]
+      ]
+    },
+    "recipe": [
+      {
+        "cell": [
+          1,
+          2
+        ],
+        "clicks": 1,
+        "then": "a wrong 0: four 0s in row 1 (count) and 0 0 0 in column 2 rows 1 to 3 (three, and four 0s in column 2): row 1 and column 2 red, the triangle on (1,2) only"
+      },
+      {
+        "cell": [
+          1,
+          2
+        ],
+        "clicks": 1,
+        "then": "the 1: the win message shows; no triangle and no red cell"
+      }
+    ]
+  },
+  "mount": {
+    "purpose": "Mount (smoke step 7): the design default fixture holds 0 0 0 in row 3 at mount: three red cells and no triangle.",
+    "source": "quality/design-paint.json case 1024-light-default, unchanged",
+    "captureBoard": {
+      "size": 6,
+      "level": 1,
+      "givens": [
+        [
+          1,
+          null,
+          null,
+          null,
+          0,
+          null
+        ],
+        [
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          1
+        ],
+        [
+          0,
+          null,
+          0,
+          null,
+          0,
+          null
+        ],
+        [
+          null,
+          1,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          0,
+          null
+        ]
+      ],
+      "entries": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          1,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          0,
+          0,
+          0,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          0
+        ],
+        [
+          null,
+          null,
+          null,
+          1,
+          null,
+          null
+        ]
+      ]
+    },
+    "recipe": [
+      {
+        "look": "cells (3,1), (3,2), (3,3) red, striped, 2px border; no triangle anywhere"
+      }
+    ]
+  }
+}

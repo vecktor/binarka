@@ -1,0 +1,102 @@
+LABEL SWEEP for add-violation-cause, task 3.4 (the label grammar: «, спричиняє порушення» / ", causes a violation" after the hint suffix)
+Written by the test-engineer on 2026-10-11 (UTC+5:30), worktree trusting-liskov-878a97, HEAD 8bbe6e8, AFTER the edits of tasks 3.1 to 3.3 (so the line
+numbers below are those of the edited files; the folder's Impact numbers are of the tree before the edits).
+Rule: a hit whose state yields a cause is changed and listed with its source; every other hit is listed as unchanged, with why. "State yields a cause"
+means: after the press or hint of that test, the engine checker (findViolations) counts the pressed / filled cell, so FR-120 gives it `cell-cause`.
+Evidence that the classification is right: every unchanged hit below is green against today's page AND against the throwaway spike port of
+red-run.txt section E (74 files / 1837 tests green there).
+
+Commands (run from the worktree root):
+  grep -rnF -- ', підказка' tests e2e
+  grep -rnF -- ', hinted' tests e2e
+  grep -rnF -- 'задано|' tests e2e
+  grep -rnF -- 'given|' tests e2e
+  grep -rnE "cellLabel\(|aria-label|accessibleName\(|expectedCellLabel|expectEnglishPage|enCellLabel" tests/*.ts e2e/*.ts   (the aria-label reads)
+  grep -rn "expectedLabel\|expectAllLabels(" tests/play-page-cells.test.ts
+  grep -rn "Рядок\|'Row \|\"Row " e2e/        -> no hit: no e2e spec pins a cell name
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+1. The oracles (helpers). All CHANGED (task 3.1 / 3.2 (a)); a test that goes through them follows FR-70 with no edit of its own.
+------------------------------------------------------------------------------------------------------------------------------------------------
+tests/helpers/play-page.ts:720-733 expectedCellLabel      CHANGED: reads `cell-cause`, appends «, спричиняє порушення» after «, підказка»; a given
+                                                          keeps «, задано» only. Source: delta «Cell labels» (FR-70, FR-120); Impact row
+                                                          `tests/helpers/play-page.ts` expectedCellLabel 719-728.
+tests/helpers/english.ts:52-62 enCellLabel                CHANGED: a `cause` flag after the suffix (default false). Source: «Cell labels» (English),
+                                                          «English page text»; Impact row `tests/helpers/english.ts` 52-54.
+tests/helpers/english.ts:129-136 expectEnglishPage oracle CHANGED: reads `cell-cause` and passes it. Same source; Impact row 121-126.
+tests/play-page-cells.test.ts:53-69 expectedLabel         CHANGED: reads `cell-cause` (a given never gets it). Source: «Cell labels»; Impact row
+                                                          `tests/play-page-cells.test.ts` 53-64.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+2. Hits whose state yields a cause: CHANGED (or new), each with its source
+------------------------------------------------------------------------------------------------------------------------------------------------
+tests/play-page-cells.test.ts:347-438 (was 336-374)       CHANGED: three equal 0s in row 2 (BLANK) -> (2,3) gets the suffix; PAIR_ROW (3,3) -> the
+                                                          suffix, givens keep «, задано»; HINT_BREAKS hint -> «…, 0, підказка, спричиняє порушення»;
+                                                          new: the P2 board, the suffix follows the marker, the hinted cause. Source: «Cell labels»
+                                                          scenarios «Only the cause cell of a violation gets a suffix», «A given cell in a violation
+                                                          keeps exactly the given suffix», «The suffix follows the marker», «A hinted cause has both
+                                                          suffixes, the hint first»; Impact row 336-374. Its expectAllLabels calls at 359, 370, 395,
+                                                          408, 416, 436 are in cause states (they check the suffix through the oracle).
+tests/play-page-semantics.test.ts:283-303                 CHANGED: PAIR_LEFT, the click on (4,1) makes (4,1) the cause: its name ends «, спричиняє
+                                                          порушення», the givens (4,2), (4,3) exactly «…, 0, задано», no aria-describedby. Source:
+                                                          «Cells expose a Ukrainian name and their state», «A violation is exposed to assistive
+                                                          technology»; Impact row 283-293.
+tests/play-page-english-text.test.ts:214-219, 242-244     CHANGED: the direct cellLabel calls pass `false` as the sixth argument; NEW 248-264: the
+                                                          cause samples (both languages, the given-wins loop). Source: «English page text» (the parity
+                                                          scenario); Impact rows 208-210, 233-235.
+tests/play-page-english-text.test.ts:450-467              NEW «The cause suffix in English mode» (three 0s in row 2; HINT_BREAKS after a hint). Source:
+                                                          «Cell labels»; Impact row 399-420 (the page label reads there stay unchanged).
+tests/play-page-english-text.test.ts:143-147              CHANGED, the regexes EN_CELL / UK_CELL gain the cause suffix. Source: «Page text is per
+                                                          mode»; Impact row 140-141. Its boards (BLANK_4, BLANK, BLANK_8, no press) yield NO cause:
+                                                          the change is the grammar the delta demands, green by construction.
+tests/play-page-reset-accessibility.test.ts:38-42         UNCHANGED although the state yields a cause: setRow(2, '0 0 0 . . .') makes (2,3) the cause,
+                                                          and expectNamesAndStates compares every name with expectedCellLabel, which now reads the
+                                                          class; so the test checks the suffix there with no edit (green today and with the spike port).
+tests/play-page-cells.test.ts:337 (cancelled confirmation)  UNCHANGED although the state yields a cause: mountPlayedBoard's hint fill makes (1,3) the
+                                                          hinted cause; the labels are compared before and after «Скасувати» (equal: the marker is
+                                                          kept) and after «Так, почати» (a new board) through the oracle.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+3. Hits whose state yields NO cause: UNCHANGED (why)
+------------------------------------------------------------------------------------------------------------------------------------------------
+tests/play-page-page-text.test.ts:50     regex (, задано|, підказка)?     WIN_PUZZLE at mount, no press: no cause. (Impact row: "only if the red run shows a
+                                                                          cause state; today none does": confirmed.)
+tests/play-page-page-text.test.ts:73     regex (, задано|, підказка)?     blank 4x4 and 8x8 boards after a size choice, no press on a cell: no cause.
+tests/play-page-semantics.test.ts:55     CELL_NAME (used at :210 only)   PAIR_ROW at mount: no cause.
+tests/play-page-semantics.test.ts:207-210 Names of a fresh board          mount: no cause; the oracle AND (expectedNames) reads cell-cause anyway.
+tests/play-page-semantics.test.ts:213-224 three clicks on (2,3) of BLANK  a single 0, 1, empty in an empty board: no violation.
+tests/play-page-semantics.test.ts:226-233 hint on PAIR_ROW               the pair fill (3,3) = 1 next to 0 0: no violation.
+tests/play-page-semantics.test.ts:235-246 new puzzle after a click (1,1) a single 0: no violation; then a new board.
+tests/play-page-semantics.test.ts:248-258 size change after a click      a single 0, then a new 4x4 board.
+tests/play-page-cells.test.ts:121                                         blank boards at mount.
+tests/play-page-cells.test.ts:221 «The four label forms»                  the hint fills (5,6) = 0 in row 5 `. . 0 1 1 0`: no violation; (3,2) a single 0.
+tests/play-page-cells.test.ts:251-262                                     PAIR_ROW hint (3,3) = 1, then a click empties it: no violation.
+tests/play-page-cells.test.ts:264-277                                     TWO_PAIRS, two pair hints: no violation.
+tests/play-page-cells.test.ts:280-295 (after reset), 298-308 (new puzzle), 310-323 (size change): a hint and a click (1,1) x2 on TWO_PAIRS / PAIR_ROW,
+                                                                          no violation; then a reset or a new board.
+tests/play-page-controls-text.test.ts:88                                  PAIR_ROW, a click (1,1) = 0 and the pair hint (3,3) = 1: no violation.
+tests/play-page-controls-text.test.ts:140 (strings.ts source words)       pins the words that must be in strings.ts; it does not forbid more: the cause word is
+                                                                          added by the port and needs no line here (no delta demands one).
+tests/play-page-english-text.test.ts:267 expectEnglishPage                PAIR_ROW in English at mount.
+tests/play-page-english-text.test.ts:435-448 «The four label forms in English»  as cells:221, no violation.
+tests/play-page-english-text.test.ts:423-428 «Names in English mode»      PAIR_ROW at mount.
+tests/play-page-language.test.ts:190-192 expectEnglishPage + 'Row 1, column 1, 0'  PAIR_ROW, a click (1,1) = 0: no violation.
+tests/play-page-wcag.test.ts:127 expectedCellLabel over all cells         WIN_PUZZLE at mount.
+tests/play-page-capture-board.test.ts:153 expectedCellLabel (expectShown)  capture boards at mount (FR-120: no cell carries cell-cause at mount); the new
+                                                                          GUARD case of 3.3 (c) asserts that directly for a board with a violation.
+tests/play-page-reset-accessibility.test.ts:46, 66                        after «Скинути»: no cause (the reset clears it; the givens' own violation of
+                                                                          DIRTY_GIVENS has no marker).
+tests/play-page-helpers.test.ts:1030-1071                                 the helper self-tests (section A): literal samples, changed in 3.1.
+tests/play-page-capture-board.test.ts:100, 456-470; tests/capture-fixtures.test.ts:23, 137, 140; tests/helpers/play-page.ts:1528
+                                                                          ", hinted" hits that are the property `hinted` of a capture value or of PlayedPage, not
+                                                                          a label: not label grammar.
+tests/ui-strings.test.ts, play-page-settings, -techniques, -preferences, -setup-sheet, -level-control, -size-selector, -size-control, -layout,
+-confirm, -rules-and-reset, -start-button (the aria-label hits of the grep)
+                                                                          names of controls and groups, or scans of the script (Cyrillic / Latin) of every name:
+                                                                          no cell label literal. The script scans hold for the new suffix in both languages
+                                                                          («спричиняє порушення» is Cyrillic, "causes a violation" Latin).
+e2e/nfr-13-a11y.spec.ts:472                                               a focus-ring report label (name sliced to 40 characters), not an assertion on a cell name.
+e2e/helpers.ts                                                            no cell label.
+
+Result: every hit is either changed with its source (sections 1 and 2) or unchanged with a reason (section 3). No unlisted failure in the red run
+(red-run.txt section F: the 56 failures are all in the new or changed tests).

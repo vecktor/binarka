@@ -51,8 +51,12 @@ import type { Puzzle } from '../src/engine/index';
 installPageLifecycle();
 
 /**
- * The label the cell at (row, col) must have, computed from what the page shows (text, data-given, the class cell-hinted):
- * «Рядок R, стовпець C, V» + «, задано» for a given + «, підказка» for the cell the last hint filled. A violation adds nothing.
+ * The label the cell at (row, col) must have, computed from what the page shows (text, data-given, the classes cell-hinted and cell-cause):
+ * «Рядок R, стовпець C, V» + «, задано» for a given + «, підказка» for the cell the last hint filled + «, спричиняє порушення» for the cause
+ * cell (FR-120), after «, підказка»; a given never gets the cause suffix. A violation without the class `cell-cause` adds nothing.
+ * DELIBERATE CHANGE (add-violation-cause, delta «Cell labels» (FR-70, FR-120); proposal.md Impact row `tests/play-page-cells.test.ts` 53-64): the
+ * local oracle reads `cell-cause`, as `expectedCellLabel` does (was: "A violation adds nothing", with no cause suffix). Its ten callers through
+ * `expectAllLabels` then check the suffix wherever a state yields a cause.
  */
 function expectedLabel(root: ParentNode, row: number, col: number): string {
   const el = cellEl(root, row, col);
@@ -60,7 +64,8 @@ function expectedLabel(root: ParentNode, row: number, col: number): string {
   const value = text === '' ? 'порожньо' : text;
   const given = el.getAttribute('data-given') === 'true';
   const hinted = el.classList.contains('cell-hinted');
-  return `Рядок ${row}, стовпець ${col}, ${value}${given ? ', задано' : ''}${hinted ? ', підказка' : ''}`;
+  const cause = !given && el.classList.contains('cell-cause');
+  return `Рядок ${row}, стовпець ${col}, ${value}${given ? ', задано' : ''}${hinted ? ', підказка' : ''}${cause ? ', спричиняє порушення' : ''}`;
 }
 
 /** Every cell's aria-label equals the label its visible state calls for. */
@@ -333,8 +338,14 @@ describe('@trace FR-70 labels follow every change of the cell', () => {
   });
 });
 
-describe('@trace FR-70 a violation adds no suffix', () => {
-  it('A violation adds no suffix: three equal digits side by side in non-given cells carry cell-violation and the plain label', () => {
+// DELIBERATE CHANGE (add-violation-cause, delta «Cell labels» (FR-70, FR-120): the scenario «A violation adds no suffix» is replaced by «Only the
+// cause cell of a violation gets a suffix», and «A given cell in a violation keeps exactly the given suffix» gains the cause cell; proposal.md
+// Impact row `tests/play-page-cells.test.ts` 336-374): the describe and test titles follow; (2,3), the third press, gets «, спричиняє порушення»
+// while (2,1) and (2,2) keep the plain label; (3,3) gets the suffix while the givens keep «, задано»; the hinted cause of HINT_BREAKS reads
+// «…, 0, підказка, спричиняє порушення». Three cases are new: the P2 AND, the label half of «The suffix follows the marker», and «A hinted cause
+// has both suffixes, the hint first».
+describe('@trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix', () => {
+  it('Only the cause cell of a violation gets a suffix: of three equal digits side by side, the third press reads «, спричиняє порушення», the other two the plain label', () => {
     const root = mountFixture(BLANK);
     clickCell(root, 2, 1);
     clickCell(root, 2, 2);
@@ -344,11 +355,22 @@ describe('@trace FR-70 a violation adds no suffix', () => {
 
     expect(cellLabel(root, 2, 1)).toBe('Рядок 2, стовпець 1, 0');
     expect(cellLabel(root, 2, 2)).toBe('Рядок 2, стовпець 2, 0');
-    expect(cellLabel(root, 2, 3)).toBe('Рядок 2, стовпець 3, 0');
+    expect(cellLabel(root, 2, 3)).toBe('Рядок 2, стовпець 3, 0, спричиняє порушення');
     expectAllLabels(root, 'with a violation');
   });
 
-  it('a given cell that is part of a violation keeps exactly «, задано»', () => {
+  it('Only the cause cell of a violation gets a suffix: on the board of P2 (a row of six highlighted by the count rule) only (1,5) has the suffix', () => {
+    const root = mountFixture(BLANK);
+    for (const [c, times] of [[1, 2], [2, 2], [3, 1], [4, 2], [5, 2]] as const) clickCell(root, 1, c, times);
+    expect(readBoard(root)[0], 'premise: row 1 reads 1 1 0 1 1 _').toEqual([1, 1, 0, 1, 1, null]);
+    expect(violationCells(root), 'premise: the whole row is highlighted').toEqual([1, 2, 3, 4, 5, 6].map((c) => [1, c]));
+
+    expect(cellLabel(root, 1, 5), 'the cell that holds the fourth 1').toBe('Рядок 1, стовпець 5, 1, спричиняє порушення');
+    for (const c of [1, 2, 3, 4, 6]) expect(cellLabel(root, 1, c), `the cell 1,${c} has no suffix`).not.toContain('спричиняє');
+    expectAllLabels(root, 'on the board of P2');
+  });
+
+  it('A given cell in a violation keeps exactly the given suffix: the givens keep «, задано», the clicked cell (3,3) reads «, спричиняє порушення»', () => {
     const root = mountFixture(PAIR_ROW);
     clickCell(root, 3, 3); // 0 0 0 in row 3: the givens (3,1) and (3,2) are in the violation
     expect(violationCells(root)).toEqual([[3, 1], [3, 2], [3, 3]]);
@@ -356,20 +378,61 @@ describe('@trace FR-70 a violation adds no suffix', () => {
 
     expect(cellLabel(root, 3, 1)).toBe('Рядок 3, стовпець 1, 0, задано');
     expect(cellLabel(root, 3, 2)).toBe('Рядок 3, стовпець 2, 0, задано');
-    expect(cellLabel(root, 3, 3)).toBe('Рядок 3, стовпець 3, 0');
+    expect(cellLabel(root, 3, 3)).toBe('Рядок 3, стовпець 3, 0, спричиняє порушення');
   });
 
-  it('a hint-filled cell that also violates keeps «, підказка» (the FR forbids a suffix for the violation, not for the hint)', () => {
-    // HINT_BREAKS: the hint fill (1,3) = 0 completes 0 0 0 in column 3. Literal reading of FR-70: the cell the hint filled appends
-    // «, підказка»; being in violation adds nothing.
+  it('a hint-filled cell that also violates and is the cause reads «, підказка, спричиняє порушення»; the givens keep «, задано»', () => {
+    // HINT_BREAKS: the hint fill (1,3) = 0 completes 0 0 0 in column 3, so (1,3) is the cause (FR-120). FR-70: the cell the hint filled appends
+    // «, підказка», and the cause cell appends «, спричиняє порушення» after it.
     const root = mountFixture(HINT_BREAKS);
     pressHint(root);
     expect(hintedCells(root)).toEqual([[1, 3]]);
     expect(cellEl(root, 1, 3).classList.contains('cell-violation'), 'premise: the hinted cell is also in violation').toBe(true);
 
-    expect(cellLabel(root, 1, 3)).toBe('Рядок 1, стовпець 3, 0, підказка');
+    expect(cellLabel(root, 1, 3)).toBe('Рядок 1, стовпець 3, 0, підказка, спричиняє порушення');
     expect(cellLabel(root, 2, 3), 'a given in the same violation').toBe('Рядок 2, стовпець 3, 0, задано');
+    expect(cellLabel(root, 3, 3), 'a given in the same violation').toBe('Рядок 3, стовпець 3, 0, задано');
     expectAllLabels(root, 'with a hinted violating cell');
+  });
+
+  it('The suffix follows the marker: after (5,5) the label of (2,3) is plain again and (5,5) reads «…, 0»; a second run moves the suffix to (4,3)', () => {
+    const root = mountFixture(BLANK);
+    for (const c of [1, 2, 3]) clickCell(root, 2, c);
+    expect(cellLabel(root, 2, 3), 'premise: (2,3) carries the suffix').toBe('Рядок 2, стовпець 3, 0, спричиняє порушення');
+
+    clickCell(root, 5, 5);
+
+    expect(cellText(root, 2, 3), 'the text of (2,3) is still 0').toBe('0');
+    expect(cellLabel(root, 2, 3)).toBe('Рядок 2, стовпець 3, 0');
+    expect(cellLabel(root, 5, 5)).toBe('Рядок 5, стовпець 5, 0');
+    expectAllLabels(root, 'after (5,5)');
+
+    const other = mountFixture(BLANK);
+    for (const c of [1, 2, 3]) clickCell(other, 2, c);
+    expect(cellLabel(other, 2, 3), 'premise: (2,3) carries the suffix').toBe('Рядок 2, стовпець 3, 0, спричиняє порушення');
+    for (const c of [1, 2, 3]) clickCell(other, 4, c);
+    expect(cellLabel(other, 4, 3), 'the label of (4,3) gains the suffix').toBe('Рядок 4, стовпець 3, 0, спричиняє порушення');
+    expect(cellLabel(other, 2, 3), 'and the label of (2,3) has lost it').toBe('Рядок 2, стовпець 3, 0');
+    expectAllLabels(other, 'after the second run');
+  });
+
+  it('A hinted cause has both suffixes, the hint first: (1,3) of HINT_BREAKS after a hint, the givens «, задано», and after a click on (1,3) no «, підказка»', () => {
+    const root = mountFixture(HINT_BREAKS);
+    pressHint(root);
+    expect(cellLabel(root, 1, 3)).toBe('Рядок 1, стовпець 3, 0, підказка, спричиняє порушення');
+    expect(cellLabel(root, 2, 3)).toBe('Рядок 2, стовпець 3, 0, задано');
+    expect(cellLabel(root, 3, 3)).toBe('Рядок 3, стовпець 3, 0, задано');
+
+    clickCell(root, 1, 3);
+
+    expect(cellText(root, 1, 3)).toBe('1');
+    expect(cellLabel(root, 1, 3), 'the hint suffix is gone: the hinted cell was clicked').not.toContain('підказка');
+    // The click makes (1,3) a 1 next to the givens 1 1 at (1,1) and (1,2): row 1 then holds 1 1 1, a `three` violation whose cells include
+    // (1,3), so FR-120 («Cause marker») makes (1,3) the cause and FR-70 gives it the cause suffix. The scenario's AND first read «Рядок 1,
+    // стовпець 3, 1»; the folder was corrected to this reading (docs/qa/add-violation-cause/red-run.txt, «Findings»).
+    expect(violationCells(root), 'premise of the FR-120 reading: the 1 at (1,3) makes 1 1 1 in row 1').toContainEqual([1, 3]);
+    expect(cellLabel(root, 1, 3)).toBe('Рядок 1, стовпець 3, 1, спричиняє порушення');
+    expectAllLabels(root, 'after the click on (1,3)');
   });
 });
 

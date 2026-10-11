@@ -358,6 +358,42 @@ export function scanColours(parsed: ParsedStyles): ColourScan {
   return scan;
 }
 
+/**
+ * add-violation-cause (FR-65; delta «Borders, cues and focus rings have enough contrast», scenario «A system colour keyword appears in exactly one
+ * declaration»): the CSS Color 4 system colours, in lower case (the CSSOM serialises the keyword in lower case; the scan compares without regard to
+ * case): the 19 of its section on system colors and its 23 deprecated ones. None of them is in `NAMED_COLOURS`, so the named-colour scan never sees
+ * them; they are listed on their own and pinned by `scanSystemColours`. The existing scans above are NOT changed by this list.
+ */
+export const SYSTEM_COLOURS: ReadonlySet<string> = new Set(
+  (
+    // the 19 current system colours
+    'accentcolor accentcolortext activetext buttonborder buttonface buttontext canvas canvastext field fieldtext graytext highlight ' +
+    'highlighttext linktext mark marktext selecteditem selecteditemtext visitedtext ' +
+    // the 23 deprecated system colours
+    'activeborder activecaption appworkspace background buttonhighlight buttonshadow captiontext inactiveborder inactivecaption ' +
+    'inactivecaptiontext infobackground infotext menu menutext scrollbar threeddarkshadow threedface threedhighlight threedlightshadow ' +
+    'threedshadow window windowframe windowtext'
+  ).split(' '),
+);
+
+/**
+ * add-violation-cause (FR-65): the scan of the system colours over every declaration outside the `:root` rules (the top-level one and
+ * `:root[data-theme="dark"]`), wherever it is in the file (top level, nested rules, at-rules, keyframes), matched as whole identifiers as the named
+ * colours are (strings, `url()` and the names inside `var()` are not read). One message per declaration that holds one, `selector { property: value }`
+ * with the at-rule chain first, as `scanColours` writes them. It TIGHTENS the scans above (a new list of hits), never relaxes them.
+ */
+export function scanSystemColours(parsed: ParsedStyles): string[] {
+  const hits: string[] = [];
+  for (const rule of parsed.rules) {
+    if (isRootRule(rule) || isDarkRootRule(rule)) continue;
+    const where = `${rule.context.join(' ')} ${rule.selectors.join(', ')}`.trim();
+    for (const { property, value } of rule.declarations) {
+      if (identifiersOf(value).some((id) => SYSTEM_COLOURS.has(id))) hits.push(`${where} { ${property}: ${value} }`);
+    }
+  }
+  return hits;
+}
+
 // ---------------------------------------------------------------------------------------------------------
 // Tokens and contrast (FR-65)
 // ---------------------------------------------------------------------------------------------------------
@@ -560,7 +596,11 @@ export function withTokensInlined(text: string, tokens: Record<string, string> =
   return text.replace(/var\(\s*(--color-[\w-]+)\s*\)/g, (whole, name: string) => tokens[name] ?? whole);
 }
 
-export type PairGroup = 'cell-border' | 'violation-cue' | 'hinted-cue' | 'focus-ring' | 'control-border' | 'text';
+/**
+ * DELIBERATE CHANGE (add-violation-cause, delta «Borders, cues and focus rings have enough contrast»; proposal.md Impact row `tests/helpers/css.ts`
+ * `PairGroup` 563): the group `cause-cue` (the mark of FR-64 on the stripe) is added.
+ */
+export type PairGroup = 'cell-border' | 'violation-cue' | 'cause-cue' | 'hinted-cue' | 'focus-ring' | 'control-border' | 'text';
 
 export interface ContrastPair {
   group: PairGroup;
@@ -573,14 +613,19 @@ const pairs = (group: PairGroup, fg: string, bgs: string[], min: number): Contra
   bgs.map((bg) => ({ group, fg: `--color-${fg}`, bg: `--color-${bg}`, min }));
 
 /**
- * Every pair of FR-65 in the G2 palette: 3 for borders, cues and rings, 4.5 for text (34 pairs). update-page-palette (delta «Borders, cues and
+ * Every pair of FR-65 in the G2 palette: 3 for borders, cues and rings, 4.5 for text (35 pairs). update-page-palette (delta «Borders, cues and
  * focus rings have enough contrast»): the given-cue group and the cell-border pair against the given fill go (a given cell is inactive, A-57),
  * the board plate, the solved plate, the hinted cue, the violation text on the stripe, the focus ring on the cell border and the win text on the
  * success plate come in. No pair names a translucent token.
+ * DELIBERATE CHANGE (add-violation-cause, delta «Borders, cues and focus rings have enough contrast», scenario «The cause cue has 3:1 against the
+ * violation fill and the stripe»; proposal.md Impact row `tests/helpers/css.ts` `CONTRAST_PAIRS` 581-594, comment 575-580): one pair, the cause cue
+ * `--color-violation-border` on `--color-violation-stripe` (group `cause-cue`); its pair against the fill is the existing violation cue pair. 34
+ * pairs became 35. No pair of `--color-violation-border` with `--color-hover-ring` or `--color-focus` (accepted adjacencies, A-58, PA-Q8).
  */
 export const CONTRAST_PAIRS: ContrastPair[] = [
   ...pairs('cell-border', 'cell-border', ['page', 'cell-bg', 'line', 'success-bg'], 3),
   ...pairs('violation-cue', 'violation-border', ['page', 'cell-bg', 'violation-bg', 'line'], 3),
+  ...pairs('cause-cue', 'violation-border', ['violation-stripe'], 3),
   ...pairs('hinted-cue', 'primary', ['primary-soft', 'line', 'page'], 3),
   ...pairs('focus-ring', 'focus', ['page', 'cell-bg', 'given-bg', 'violation-bg', 'line', 'primary-soft', 'success-bg', 'cell-border'], 3),
   ...pairs('control-border', 'control-border', ['page'], 3),

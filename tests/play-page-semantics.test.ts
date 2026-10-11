@@ -280,7 +280,7 @@ describe('cells expose a Ukrainian name and their state', () => {
     noReadonly();
   });
 
-  it('@trace FR-61 @trace FR-35 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"', () => {
+  it('@trace FR-61 @trace FR-35 @trace FR-120 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"', () => {
     const root = mountFixture(PAIR_LEFT);
     expect(attributeCells(root, 'aria-invalid')).toEqual([]);
     clickCell(root, 4, 1);
@@ -290,6 +290,16 @@ describe('cells expose a Ukrainian name and their state', () => {
     for (const cell of allCells(root).filter((c) => c.classList.contains('cell-violation'))) {
       expect(cell.getAttribute('aria-invalid')).toBe('true');
     }
+    // DELIBERATE CHANGE (add-violation-cause, delta «Cells expose a Ukrainian name and their state» (FR-61, FR-70, FR-120), the new AND of «A violation
+    // is exposed to assistive technology»; proposal.md Impact row `tests/play-page-semantics.test.ts` 283-293): the clicked cell (4,1) is the cause, so
+    // its name ends «, спричиняє порушення»; the givens (4,2) and (4,3) keep exactly their FR-70 label with no cause word; no cell has
+    // aria-describedby.
+    expect(cellEl(root, 4, 1).getAttribute('aria-label') ?? '', 'the name of the clicked cell ends with the cause suffix').toMatch(/, спричиняє порушення$/);
+    expect(cellEl(root, 4, 1).getAttribute('aria-label')).toBe('Рядок 4, стовпець 1, 0, спричиняє порушення');
+    expect(cellEl(root, 4, 2).getAttribute('aria-label')).toBe('Рядок 4, стовпець 2, 0, задано');
+    expect(cellEl(root, 4, 3).getAttribute('aria-label')).toBe('Рядок 4, стовпець 3, 0, задано');
+    for (const [r, c] of [[4, 2], [4, 3]] as const) expect(cellEl(root, r, c).getAttribute('aria-label') ?? '', `the given ${r},${c}`).not.toContain('спричиняє');
+    expect(attributeCells(root, 'aria-describedby'), 'no cell has aria-describedby').toEqual([]);
   });
 
   it('@trace FR-61 @trace FR-38 The invalid state is removed with the highlight, and the attribute is absent, never "false"', () => {

@@ -49,9 +49,17 @@ export const EN_LANGUAGE_LABEL = 'Language';
 
 export const enSizeLabel = (n: number): string => `Grid ${n}×${n}`;
 export const enSummaryLabel = (n: number, level: number): string => `${n}×${n} · ${EN_LEVEL_NAMES[level - 1] ?? '?'}`;
-/** The English cell name: "Row R, column C, V" plus ", given" or ", hinted" (V is "empty", 0 or 1). */
-export const enCellLabel = (row: number, col: number, value: string, suffix: '' | 'given' | 'hinted' = ''): string =>
-  `Row ${row}, column ${col}, ${value === '' ? 'empty' : value}${suffix === '' ? '' : `, ${suffix}`}`;
+/**
+ * The English cell name: "Row R, column C, V" plus ", given", or else ", hinted" and then ", causes a violation" for the cause cell (V is
+ * "empty", 0 or 1); a given wins over both flags.
+ * DELIBERATE CHANGE (add-violation-cause, delta «Cell labels» (FR-70, FR-120) and «English page text» (FR-111); proposal.md Impact row
+ * `tests/helpers/english.ts` `enCellLabel` 52-54): the suffix `'' | 'given' | 'hinted'` cannot say "hinted and cause", so a `cause` flag follows it
+ * (default false, so every earlier call keeps its meaning).
+ */
+export const enCellLabel = (row: number, col: number, value: string, suffix: '' | 'given' | 'hinted' = '', cause = false): string =>
+  `Row ${row}, column ${col}, ${value === '' ? 'empty' : value}${
+    suffix === 'given' ? ', given' : `${suffix === 'hinted' ? ', hinted' : ''}${cause ? ', causes a violation' : ''}`
+  }`;
 
 // ---------------------------------------------------------------------------------------------------------
 // The English page, read from the DOM (the table of «English page text»)
@@ -121,7 +129,10 @@ export function expectEnglishPage(root: HTMLElement, size = 6, level = 1): void 
   for (const cell of cells) {
     const given = cell.getAttribute('data-given') === 'true';
     const hinted = cell.classList.contains('cell-hinted');
-    const expected = enCellLabel(Number(cell.getAttribute('data-row')), Number(cell.getAttribute('data-col')), cell.textContent, given ? 'given' : hinted ? 'hinted' : '');
+    // DELIBERATE CHANGE (add-violation-cause, delta «Cell labels» (FR-70, FR-120); proposal.md Impact row `tests/helpers/english.ts` 121-126): the
+    // per-cell oracle reads `cell-cause`, so an English page with a cause cell expects ", causes a violation" there
+    const cause = cell.classList.contains('cell-cause');
+    const expected = enCellLabel(Number(cell.getAttribute('data-row')), Number(cell.getAttribute('data-col')), cell.textContent, given ? 'given' : hinted ? 'hinted' : '', cause);
     expect(cell.getAttribute('aria-label'), `the name of cell ${cell.getAttribute('data-row') ?? ''},${cell.getAttribute('data-col') ?? ''}`).toBe(expected);
   }
 }

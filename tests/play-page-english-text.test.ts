@@ -16,6 +16,7 @@
 // holds every Ukrainian export name. It does not depend on the name of the table or of the accessor.
 //
 // @trace FR-111
+// @trace FR-120
 // @trace NFR-5
 // @trace FR-94
 // @trace FR-41
@@ -32,11 +33,13 @@ import {
   BLANK,
   BLANK_4,
   BLANK_8,
+  HINT_BREAKS,
   PAIR_ROW,
   WIN_PUZZLE,
   accessibleName,
   allCells,
   cellLabel,
+  cellText,
   clickCell,
   collectEverything,
   collectPageText,
@@ -137,8 +140,11 @@ describe('Page text is per mode', () => {
   it('Both modes at every size and after a switch', () => {
     const fixtures = { 4: BLANK_4, 6: BLANK, 8: BLANK_8 };
     const nameIn = (language: 'uk' | 'en', n: number): string => (language === 'en' ? enSizeLabel(n) : `Поле ${n}×${n}`);
-    const EN_CELL = /^Row [1-8], column [1-8], (empty|0|1)(, given|, hinted)?$/;
-    const UK_CELL = /^Рядок [1-8], стовпець [1-8], (порожньо|0|1)(, задано|, підказка)?$/;
+    // DELIBERATE CHANGE (add-violation-cause, delta «Page text is per mode», scenario «Both modes at every size and after a switch»; proposal.md
+    // Impact row `tests/play-page-english-text.test.ts` 140-141): the cell-name grammar gains the cause suffix after the hint suffix. No board of
+    // this test has a cause, so the regexes stay true on today's page and after the port (green by construction; red-run.txt section C).
+    const EN_CELL = /^Row [1-8], column [1-8], (empty|0|1)(, given|(, hinted)?(, causes a violation)?)$/;
+    const UK_CELL = /^Рядок [1-8], стовпець [1-8], (порожньо|0|1)(, задано|(, підказка)?(, спричиняє порушення)?)$/;
     const check = (root: HTMLElement, language: 'uk' | 'en', n: number): void => {
       const board = q(root, '[data-board]').getAttribute('aria-label') ?? '';
       expect(board, `${language} board name at ${n}×${n}`).toBe(nameIn(language, n));
@@ -205,9 +211,12 @@ describe('English page text', () => {
     // GUARD half: the Ukrainian exports keep their names and shapes, and their outputs are those of the existing exports.
     for (const name of UK_EXPORTS) expect(exportsOf, `the Ukrainian export ${name} still exists`).toHaveProperty(name);
     expect((exportsOf.sizeLabel as (n: number) => string)(4)).toBe('Поле 4×4');
-    expect((exportsOf.cellLabel as (...args: unknown[]) => string)(2, 3, null, false, false)).toBe('Рядок 2, стовпець 3, порожньо');
-    expect((exportsOf.cellLabel as (...args: unknown[]) => string)(3, 1, 0, true, false)).toBe('Рядок 3, стовпець 1, 0, задано');
-    expect((exportsOf.cellLabel as (...args: unknown[]) => string)(5, 6, 0, false, true)).toBe('Рядок 5, стовпець 6, 0, підказка');
+    // DELIBERATE CHANGE (add-violation-cause, delta «English page text» (FR-70, FR-120: `cellLabel` takes a sixth argument `cause`); proposal.md
+    // Impact row `tests/play-page-english-text.test.ts` 208-210 and 233-235): the existing sample calls pass `false` as the sixth argument; their
+    // outputs are those of the five-argument calls. The cause samples follow below.
+    expect((exportsOf.cellLabel as (...args: unknown[]) => string)(2, 3, null, false, false, false)).toBe('Рядок 2, стовпець 3, порожньо');
+    expect((exportsOf.cellLabel as (...args: unknown[]) => string)(3, 1, 0, true, false, false)).toBe('Рядок 3, стовпець 1, 0, задано');
+    expect((exportsOf.cellLabel as (...args: unknown[]) => string)(5, 6, 0, false, true, false)).toBe('Рядок 5, стовпець 6, 0, підказка');
     expect((exportsOf.summaryText as (n: number, level: number) => string)(6, 2)).toBe('6×6 · Задачка');
 
     const english = englishTable();
@@ -230,10 +239,27 @@ describe('English page text', () => {
 
     const en = english as Record<string, (...args: unknown[]) => string>;
     expect(en.sizeLabel?.(4)).toBe('Grid 4×4');
-    expect(en.cellLabel?.(2, 3, null, false, false)).toBe('Row 2, column 3, empty');
-    expect(en.cellLabel?.(3, 1, 0, true, false)).toBe('Row 3, column 1, 0, given');
-    expect(en.cellLabel?.(5, 6, 0, false, true)).toBe('Row 5, column 6, 0, hinted');
+    expect(en.cellLabel?.(2, 3, null, false, false, false)).toBe('Row 2, column 3, empty');
+    expect(en.cellLabel?.(3, 1, 0, true, false, false)).toBe('Row 3, column 1, 0, given');
+    expect(en.cellLabel?.(5, 6, 0, false, true, false)).toBe('Row 5, column 6, 0, hinted');
     expect(en.summaryText?.(6, 2)).toBe('6×6 · Teaser');
+  });
+
+  // add-violation-cause (FR-70, FR-111, FR-120; delta «English page text», the parity scenario's new AND): `cellLabel` with `cause` true in both
+  // languages, the hint suffix first, and a given winning over the other flags whatever the sixth argument is.
+  it('Every Ukrainian string has an English counterpart with the same key: the cause samples of cellLabel', () => {
+    const uk = exportsOf.cellLabel as (...args: unknown[]) => string;
+    const en = englishTable() as Record<string, (...args: unknown[]) => string>;
+    expect(uk(5, 6, 0, false, true, true)).toBe('Рядок 5, стовпець 6, 0, підказка, спричиняє порушення');
+    expect(en.cellLabel?.(5, 6, 0, false, true, true)).toBe('Row 5, column 6, 0, hinted, causes a violation');
+    expect(uk(2, 3, 0, false, false, true)).toBe('Рядок 2, стовпець 3, 0, спричиняє порушення');
+    expect(en.cellLabel?.(2, 3, 0, false, false, true)).toBe('Row 2, column 3, 0, causes a violation');
+    for (const hinted of [false, true]) {
+      for (const cause of [false, true]) {
+        expect(uk(3, 1, 0, true, hinted, cause), `a given (hinted ${hinted}, cause ${cause})`).toBe('Рядок 3, стовпець 1, 0, задано');
+        expect(en.cellLabel?.(3, 1, 0, true, hinted, cause), `a given in English (hinted ${hinted}, cause ${cause})`).toBe('Row 3, column 1, 0, given');
+      }
+    }
   });
 
   it('The English page at mount', () => {
@@ -418,6 +444,26 @@ describe('Cell labels (English)', () => {
     expect(readBoard(root)[4]?.[5], 'premise: the hint filled (5,6) with 0').toBe(0);
     expect(cellLabel(root, 1, 4), 'a given 1').toBe('Row 1, column 4, 1, given');
     expect(cellLabel(root, 5, 6), 'the hint-filled cell').toBe('Row 5, column 6, 0, hinted');
+  });
+});
+
+// add-violation-cause (FR-70, FR-111, FR-120; delta «Cell labels», scenario «The cause suffix in English mode»): both boards, in English mode. The
+// English wording ", causes a violation" was confirmed by the user on 2026-10-11 (autonomy-log row 164).
+describe('@trace FR-70 @trace FR-120 Cell labels (English): the cause suffix', () => {
+  it('The cause suffix in English mode', () => {
+    const root = mountFixture(BLANK, { language: 'en' });
+    for (const c of [1, 2, 3]) clickCell(root, 2, c);
+    expect(cellLabel(root, 2, 1)).toBe('Row 2, column 1, 0');
+    expect(cellLabel(root, 2, 2)).toBe('Row 2, column 2, 0');
+    expect(cellLabel(root, 2, 3)).toBe('Row 2, column 3, 0, causes a violation');
+    expect(cellLabel(root, 2, 3)).toBe(enCellLabel(2, 3, '0', '', true));
+
+    const hinted = mountFixture(HINT_BREAKS, { language: 'en' });
+    pressHint(hinted);
+    expect(cellText(hinted, 1, 3), 'premise: the hint filled (1,3) with 0').toBe('0');
+    expect(cellLabel(hinted, 1, 3)).toBe('Row 1, column 3, 0, hinted, causes a violation');
+    expect(cellLabel(hinted, 2, 3)).toBe('Row 2, column 3, 0, given');
+    expect(cellLabel(hinted, 3, 3)).toBe('Row 3, column 3, 0, given');
   });
 });
 

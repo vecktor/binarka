@@ -1,0 +1,663 @@
+RED RUN for add-violation-cause, section 3 of tasks.md (tasks 3.1 to 3.6 and the run part of 3.7)
+Worktree: /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/trusting-liskov-878a97, branch claude/trusting-liskov-878a97, HEAD 8bbe6e8.
+src/, design/, quality/, openspec/, docs/requirements.md, playwright.config.ts, package.json and scripts/ unchanged by the test-engineer (the
+uncommitted edits of design/v0/app/binarka.css and of the change folder that `git status` shows were there before this run: tasks 1.x and 2.1/2.2).
+Written by the test-engineer on 2026-10-11 (times are the machine clock, UTC+5:30 as the user's). The parent confirms this red run; tasks.md is not
+ticked; nothing is committed.
+Lines "Could not parse CSS stylesheet" are jsdom stderr noise (tests/helpers/css.ts header) and are removed from the excerpts.
+
+Baseline before any edit (the same tree, unedited tests):
+$ npm run test:run
+ Test Files  72 passed (72)
+      Tests  1774 passed (1774)
+
+==============================================================================================================
+SECTION A. Task 3.1: the helper self-tests of tests/play-page-helpers.test.ts against the OLD helpers (red), then against the new ones (green)
+==============================================================================================================
+Order of work: tests/play-page-helpers.test.ts was edited first (and only it): the expectedCellLabel self-test (951-966 of the old file) gains the
+cause cell, the hinted cause in both class orders (the hint suffix first, never the reverse), and a given with both flags (stays «, задано»); 965-966
+stay; `4 + 4 + 3 + 8 + 1 + 14` becomes `4 + 4 + 1 + 3 + 8 + 1 + 14` plus an explicit 35, with a new DELIBERATE CHANGE note after 450-452 (the notes
+that say 34 stay as history); the group list gains `cause-cue` and the cause-cue pair is pinned; a new describe of six self-tests of the system-colour
+scan (SYSTEM_COLOURS is the 19 + 23 list, a keyword in a rule is found case-insensitively, the forced-colours rule in an at-rule is found with its
+context, `:root` and `:root[data-theme="dark"]` are not scanned, `transparent`/`currentcolor`/token names/strings/longer identifiers are not hits, and
+the old scans still pass the forced-colours rule); and one self-test of the widened enCellLabel.
+tests/helpers/ was NOT touched until this run was saved:
+$ git status --short tests/helpers
+(empty output, exit 0)
+
+$ npx vitest run tests/play-page-helpers.test.ts      (against the untouched tests/helpers/play-page.ts, css.ts, english.ts)
+date: Sun Oct 11 13:47:29 +0530 2026
+     × the design token values meet every pair (3 for borders, cues and rings, 4.5 for text) 3ms
+     × CONTRAST_PAIRS has the groups of the new list, no given-cue group and no (cell-border, given-bg) pair 1ms
+     × SYSTEM_COLOURS holds the 19 current and the 23 deprecated CSS Color 4 system colours, in lower case, and no named colour 0ms
+     × finds a keyword in a rule, case-insensitively, and reports `selector { property: value }` 1ms
+     × scans inside at-rules and names the context (the forced-colours rule of the cause mark) 1ms
+     × does not scan a keyword in :root or :root[data-theme="dark"] 0ms
+     × transparent, currentcolor, the named colours, token names, strings and longer identifiers are not hits 1ms
+     × the existing scans pass the forced-colours rule as written: the new scan is the one that pins it (the old scans are not loosened) 1ms
+     × expectedCellLabel spells the FR-70 label: «порожньо» for an empty cell, «, задано» on a given, «, підказка» on a hinted cell, «, спричиняє порушення» after it on the cause cell, no suffix otherwise 1ms
+     × enCellLabel spells the English label with the cause suffix after ", hinted"; a given keeps ", given" 0ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  10 failed | 124 passed (134)
+
+Failing tests and their first error line:
+ FAIL  tests/play-page-helpers.test.ts > css helper: contrastRatio and rgbOf > the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)
+AssertionError: expected [ …(34) ] to have a length of 35 but got 34
+ FAIL  tests/play-page-helpers.test.ts > css helper: contrastRatio and rgbOf > CONTRAST_PAIRS has the groups of the new list, no given-cue group and no (cell-border, given-bg) pair
+AssertionError: expected [ 'cell-border', …(5) ] to deeply equal [ 'cause-cue', 'cell-border', …(5) ]
+ FAIL  tests/play-page-helpers.test.ts > css helper: scanSystemColours (the system-colour scan of add-violation-cause) > SYSTEM_COLOURS holds the 19 current and the 23 deprecated CSS Color 4 system colours, in lower case, and no named colour
+TypeError: SYSTEM_COLOURS is not iterable
+ FAIL  tests/play-page-helpers.test.ts > css helper: scanSystemColours (the system-colour scan of add-violation-cause) > finds a keyword in a rule, case-insensitively, and reports `selector { property: value }`
+TypeError: scanSystemColours is not a function
+ FAIL  tests/play-page-helpers.test.ts > css helper: scanSystemColours (the system-colour scan of add-violation-cause) > scans inside at-rules and names the context (the forced-colours rule of the cause mark)
+TypeError: scanSystemColours is not a function
+ FAIL  tests/play-page-helpers.test.ts > css helper: scanSystemColours (the system-colour scan of add-violation-cause) > does not scan a keyword in :root or :root[data-theme="dark"]
+TypeError: scanSystemColours is not a function
+ FAIL  tests/play-page-helpers.test.ts > css helper: scanSystemColours (the system-colour scan of add-violation-cause) > transparent, currentcolor, the named colours, token names, strings and longer identifiers are not hits
+TypeError: scanSystemColours is not a function
+ FAIL  tests/play-page-helpers.test.ts > css helper: scanSystemColours (the system-colour scan of add-violation-cause) > the existing scans pass the forced-colours rule as written: the new scan is the one that pins it (the old scans are not loosened)
+TypeError: scanSystemColours is not a function
+ FAIL  tests/play-page-helpers.test.ts > page helpers for keys, focus, rows and names > expectedCellLabel spells the FR-70 label: «порожньо» for an empty cell, «, задано» on a given, «, підказка» on a hinted cell, «, спричиняє порушення» after it on the cause cell, no suffix otherwise
+AssertionError: the cause cell: expected 'Рядок 2, стовпець 3, 0' to be 'Рядок 2, стовпець 3, 0, спричиняє пор…' // Object.is equality
+ FAIL  tests/play-page-helpers.test.ts > page helpers for keys, focus, rows and names > enCellLabel spells the English label with the cause suffix after ", hinted"; a given keeps ", given"
+AssertionError: expected 'Row 2, column 3, 0' to be 'Row 2, column 3, 0, causes a violation' // Object.is equality
+
+Reading of the 10 reds against the old helpers:
+ - 35 pairs / the cause-cue group: AssertionError (the old CONTRAST_PAIRS has 34 pairs and no cause-cue group).
+ - SYSTEM_COLOURS / scanSystemColours: TypeError "is not iterable" / "is not a function" (the export does not exist in the old helper; the
+   section-A precedent of update-page-backdrop, where a new export is red as a TypeError against the old helper). Only section A has such reds.
+ - expectedCellLabel: AssertionError (the old oracle gives no cause suffix).
+ - enCellLabel: AssertionError (the old oracle ignores the cause flag).
+
+Then the helpers were changed (tests/helpers/play-page.ts expectedCellLabel and its doc comment; tests/helpers/css.ts PairGroup + `cause-cue`,
+CONTRAST_PAIRS + the pair (35, comment follows), SYSTEM_COLOURS + scanSystemColours next to scanColours, the existing scans COLOUR_LITERAL,
+NAMED_COLOURS, COLOUR_KEYWORDS, SHORTHANDS, COLOUR_PROPERTIES NOT changed; tests/helpers/english.ts enCellLabel(row, col, value, suffix, cause = false)
+and its doc comment, and the per-cell oracle of expectEnglishPage reads `cell-cause`), each with a DELIBERATE CHANGE comment naming the delta and
+the proposal row.
+
+$ npx vitest run tests/play-page-helpers.test.ts      (against the new helpers)
+ Test Files  1 passed (1)
+      Tests  134 passed (134)
+
+==============================================================================================================
+SECTION B. Task 3.3: the new tests, red on assertions against today's src/ (GUARD list below)
+==============================================================================================================
+New files: tests/play-page-violation-cause.test.ts (3.3 (a), 39 tests: every scenario of «Cause marker», one test per table row, the oracle at
+N = 4, 6, 8), tests/play-page-cause-stylesheet.test.ts (3.3 (b), 11 tests), and one new describe in tests/play-page-capture-board.test.ts (3.3 (c),
+1 test). Every scenario whose GIVEN needs a marker asserts it as a named premise ("premise: (3,3) carries cell-cause"), which is what makes the
+"no cell has cell-cause" THEN lines red today instead of vacuously green.
+
+Run (the per-file runs during writing, then the full run of section F, which is the record):
+$ npx vitest run tests/play-page-violation-cause.test.ts       -> 38 failed | 1 passed (39)
+$ npx vitest run tests/play-page-cause-stylesheet.test.ts      -> 9 failed | 2 passed (11)
+$ npx vitest run tests/play-page-capture-board.test.ts -t "cause marker"   -> 1 passed (the GUARD)
+Every failure is an AssertionError (section F lists each with its message); none is an import, syntax or type error, and `npm run build` (which
+runs `tsc --noEmit` over tests/ and e2e/) passes on the edited tree (section D).
+
+Spike for the stylesheet test (jsdom 29.1.1, a scratch script with the planned rules, deleted): the CSSOM serialises `content: ''` as `""`, a
+written `0` as `0px`, `ButtonText` as `buttontext`, keeps `forced-color-adjust: none`, and reads the `max(...)` longhand widths back as written;
+a shorthand such as `border-top` stays in the declaration list under its own name (so "declares no border-top" is read from the list); the computed
+style of `.cell.cell-hinted.cell-violation.cell-cause` is `2px dashed`; `getComputedStyle(el, '::after')` is "Not implemented" in jsdom.
+
+GUARD list (green on today's page by design; each must stay green after the port):
+ 1. tests/play-page-violation-cause.test.ts «P5, a violation that is on the board at mount carries no marker»: no press happens before the
+    reads (DIRTY_GIVENS at mount, a click on a given, a click on a cell that breaks no rule, and a capture board with 0 0 0), so no marker exists
+    today or after the port; the scenario describes a non-event.
+ 2. tests/play-page-capture-board.test.ts «a capture board with a violation has no cause marker at mount» (3.3 (c)): the same non-event on a
+    capture value (FR-119), plus the highlight that the capture board already shows.
+ 3. tests/play-page-cause-stylesheet.test.ts «The cause cue has 3:1 against the violation fill and the stripe»: the tokens exist today (5.38 / 6.24
+    against the fill, 4.33 / 4.61 against the stripe, recomputed here), the pair is in tests/helpers/css.ts since 3.1 (35 pairs), the token list is
+    still 27.
+ 4. tests/play-page-cause-stylesheet.test.ts «The accepted adjacencies of the cause mark are not contrast pairs: the ratios and the pair list»:
+    2.45 / 2.00 against the hover ring and no pair with the hover ring or the focus ring hold today.
+ 5. e2e/nfr-14-cause-mark.spec.ts «the sampling is declared ... and each capture value is valid and clean before the press»: it checks the file's
+    own matrix and its capture values with the engine, not the page.
+ 6. Sub-assertions inside red tests that hold today (they cannot make a test red; listed so that nobody reads them as evidence):
+    - `.cell` declares no `position` (in «The cause mark is a corner triangle drawn with borders», which is red on its `.cell-cause` premise first);
+    - the widths 1px, 1px, 2px, 2px of tests/play-page-stylesheet.test.ts:478-509 (unchanged file; its `fourKinds` clicks (3,3) at 481, which
+      becomes the cause after the port, and the widths stay 2px: green today and green against the spike port of section E);
+    - "no element has aria-describedby" (P1 and the semantics AND): true today, trivially;
+    - a click on a given cell keeps the marker: true today only because no marker exists (the row of «Actions that change no cell keep the marker»
+      is red on its premise);
+    - the e2e closed-pixel reads and the neighbour reads (section D).
+
+==============================================================================================================
+SECTION C. Task 3.2: the tests changed on purpose, each with its delta (red where the delta yields a cause; green by construction otherwise)
+==============================================================================================================
+(a) tests/play-page-cells.test.ts 53-64, the local oracle `expectedLabel` reads `cell-cause` and its doc comment follows. Delta «Cell labels» (FR-70,
+    FR-120); proposal.md Impact row `tests/play-page-cells.test.ts` 53-64. GREEN BY CONSTRUCTION today: the oracle and the page agree while no cell
+    has the class; its ten callers through `expectAllLabels` check the suffix wherever a state yields a cause after the port.
+(b) tests/play-page-cells.test.ts 336-374 (the describe «a violation adds no suffix» replaced). Delta «Cell labels»: «A violation adds no suffix»
+    becomes «Only the cause cell of a violation gets a suffix»; «A given cell in a violation keeps exactly the given suffix» gains (3,3); the
+    hinted case reads «…, 0, підказка, спричиняє порушення» (its comment at 363-364 follows). Proposal row `tests/play-page-cells.test.ts` 336-374.
+    RED (3 changed + 3 new):
+     - «Only the cause cell ...: of three equal digits side by side ...»    expected 'Рядок 2, стовпець 3, 0' to be '..., 0, спричиняє пор…'
+     - «A given cell in a violation keeps exactly the given suffix ...»     expected 'Рядок 3, стовпець 3, 0' to be '..., 0, спричиняє пор…'
+     - «a hint-filled cell that also violates and is the cause ...»        expected '..., 0, підказка' to be '..., 0, підказка, спр…'
+     - NEW «Only the cause cell ...: on the board of P2 ... only (1,5)»    expected 'Рядок 1, стовпець 5, 1' to be '..., 1, спричиняє пор…'
+     - NEW «The suffix follows the marker ...»                              premise: (2,3) carries the suffix
+     - NEW «A hinted cause has both suffixes, the hint first ...»          expected '..., 0, підказка' to be '..., 0, підказка, спр…'
+       (its click on (1,3): see FINDING 1 below)
+(c) tests/play-page-english-text.test.ts. Deltas «Page text is per mode» (the regexes), «English page text» (cellLabel takes a sixth argument; the
+    parity scenario's new AND) and «Cell labels» (the English scenario); proposal row `tests/play-page-english-text.test.ts` 140-141, 208-210,
+    233-235, 399-420.
+     - 140-141 the two regexes gain `(, hinted)?(, causes a violation)?` / `(, підказка)?(, спричиняє порушення)?`: GREEN BY CONSTRUCTION (a
+       superset; no board of that test has a cause). It cannot go red and is not forced to.
+     - 208-210 and 233-235: the five-argument sample calls pass `false` as the sixth argument: GREEN BY CONSTRUCTION today (the extra argument is
+       ignored by today's cellLabel; the calls go through the existing `(...args: unknown[]) => string` cast, so tsc passes).
+     - NEW «Every Ukrainian string has an English counterpart with the same key: the cause samples of cellLabel»: RED,
+       expected 'Рядок 5, стовпець 6, 0, підказка' to be '..., підказка, спр…' (with the given-wins loop in both languages after it).
+     - NEW «The cause suffix in English mode»: RED, expected 'Row 2, column 3, 0' to be 'Row 2, column 3, 0, causes a violation'.
+(d) tests/play-page-semantics.test.ts 283-293 «A violation is exposed to assistive technology» gains the scenario's new AND ((4,1) ends «, спричиняє
+    порушення»; (4,2) and (4,3) are exactly «Рядок 4, стовпець 2, 0, задано» and «Рядок 4, стовпець 3, 0, задано»; no aria-describedby). Delta
+    «Cells expose a Ukrainian name and their state» (FR-61, FR-70, FR-120); proposal row `tests/play-page-semantics.test.ts` 283-293. RED:
+    the name of the clicked cell ends with the cause suffix: expected 'Рядок 4, стовпець 1, 0' to match /, спричиняє порушення$/
+(e) tests/play-page-page-text.test.ts 50 and 73 and tests/play-page-semantics.test.ts 55 (CELL_NAME): NOT changed. No state of those tests yields
+    a cause: page-text 50 reads WIN_PUZZLE at mount; page-text 73 reads blank 4x4 and 8x8 boards; CELL_NAME (used at semantics 210 only) reads
+    PAIR_ROW at mount. The spike port of section E runs them green. (label-sweep.txt lists them.)
+The helper changes of 3.1 (section A) are the remaining deliberate changes.
+
+==============================================================================================================
+SECTION D. Task 3.6: the browser pieces (e2e red run, the ::after spike, the smoke harness and boards, the P6 search)
+==============================================================================================================
+D.1 The `::after` spike (before the spec was written). A scratch script (deleted) launched the project's Playwright Chromium on a synthetic page: an
+8-column grid container of 296px (container-type inline-size, --n 8, --board-gap 2px), cells with a 2px border, and the planned `.cell-cause::after`
+rule (the six longhands with the max() leg).
+$ node <scratchpad>/spike/pseudo.mjs
+with the ::after rule (cell-cause): {"content":"\"\"","borderTopWidth":"8px","borderLeftWidth":"8px","borderTopColor":"rgb(179, 38, 30)","position":"absolute","cellWidth":35.25}
+without any ::after rule (today's cell): {"content":"none","borderTopWidth":"0px","borderLeftWidth":"0px","borderTopColor":"rgb(0, 0, 0)","position":"static","cellWidth":35.25}
+Result: `getComputedStyle(cell, '::after')` IS readable in Chromium (it resolves the max() leg: 35.25px cell -> (35.25 - 4) / 4 = 7.81 -> the 8px
+floor). So the spec carries it as the SECOND assertion of each case (max(8, (cell width - 4) / 4) px within 0.5px), never the only one.
+
+D.2 The capture values of the two cases. Built on the givens of the design fixture of the size (quality/design-paint.json cases 1024-light-default,
+6x6, and 1024-dark-eight, 8x8; both have exactly one solution); the coordinates were chosen with the engine by a scratch script (deleted):
+$ npx tsx <scratchpad>/spike/e2e-coords.ts
+1024-light-default n 6 solutions 1
+row 3, entries (3,1) (3,2), target (3,3) -> [three, row 3]
+row 3, entries (3,2) (3,3), target (3,4) -> [three, row 3]
+1024-dark-eight n 8 solutions 1
+... 25 candidates; chosen: row 4, entries (4,4) (4,5), target (4,6) -> [{"rule":"three","axis":"row","index":3,"cells":[[3,3],[3,4],[3,5]]}]
+Chosen: light 6x6 entries 0 at (3,2) and (3,3), target (3,4); dark 8x8 entries 0 at (4,4) and (4,5), target (4,6). The premises (one solution, no
+violation before, exactly one `three` with the target after) are asserted again at run time in the spec's GUARD test.
+
+D.3 The e2e red run against today's built page.
+$ npm run build            -> tsc --noEmit (tests/ and e2e/ included) and vite build: OK (dist/assets/index-VOvuxgWV.css, index-DkNRgho5.js)
+$ lsof -nP -iTCP:4173 -sTCP:LISTEN ; ... 4174 ; ... 4176 ; ... 4177      -> all empty (no orphaned vite preview)
+$ npx playwright test --project=layout e2e/nfr-14-cause-mark.spec.ts
+date: Sun Oct 11 14:07:20 +0530 2026   exit 1
+
+Running 3 tests using 3 workers
+
+  ✓  2 [layout] › e2e/nfr-14-cause-mark.spec.ts:100:1 › @trace NFR-14 @trace FR-120 the sampling is declared (scheme, size, width; coverage sampled; 2 cases) and each capture value is valid and clean before the press (16ms)
+  ✘  3 [layout] › e2e/nfr-14-cause-mark.spec.ts:212:7 › dark scheme › @trace FR-64 @trace FR-120 @trace NFR-14 dark 8x8 at 320x640: the closed pixel is not the border colour, the cause cell's corner pixel is --color-violation-border after the press, the neighbour's is not (313ms)
+  ✘  1 [layout] › e2e/nfr-14-cause-mark.spec.ts:212:7 › light scheme › @trace FR-64 @trace FR-120 @trace NFR-14 light 6x6 at 1024x768: the closed pixel is not the border colour, the cause cell's corner pixel is --color-violation-border after the press, the neighbour's is not (313ms)
+
+
+  1) [layout] › e2e/nfr-14-cause-mark.spec.ts:212:7 › light scheme › @trace FR-64 @trace FR-120 @trace NFR-14 light 6x6 at 1024x768: the closed pixel is not the border colour, the cause cell's corner pixel is --color-violation-border after the press, the neighbour's is not 
+
+    Error: light 6x6 at 1024x768: the cause cell's pixel (574, 311) is rgb(251, 228, 225), the mark is rgb(179, 38, 30) within 1 per channel (the closed pixel was rgb(255, 253, 248))
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      257 |         expect
+      258 |           .soft(within(open, want, 1), `${name}: the cause cell's pixel (${after.x}, ${after.y}) is ${css(open)}, the mark is ${css(want)} within 1 per channel (the closed pixel was ${css(closed)})`)
+    > 259 |           .toBe(true);
+          |            ^
+      260 |         expect
+      261 |           .soft(within(neighbourPixel, want, 1), `${name}: the adjacent violating cell (${neighbourCell.join(',')}), not the cause, reads ${css(neighbourPixel)} at (${neighbour.x}, ${neighbour.y}), which must not be the mark ${css(want)}`)
+      262 |           .toBe(false);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/trusting-liskov-878a97/e2e/nfr-14-cause-mark.spec.ts:259:12
+
+    Error: light 6x6 at 1024x768: getComputedStyle(cell, '::after').borderTopWidth is 0px, wanted 15.00px within 0.5px
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      265 |         expect
+      266 |           .soft(Number.isFinite(width) && Math.abs(width - leg) <= 0.5, `${name}: getComputedStyle(cell, '::after').borderTopWidth is ${pseudo.borderTopWidth}, wanted ${leg.toFixed(2)}px within 0.5px`)
+    > 267 |           .toBe(true);
+          |            ^
+      268 |       });
+      269 |     }
+      270 |   });
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/trusting-liskov-878a97/e2e/nfr-14-cause-mark.spec.ts:267:12
+
+    Error Context: test-results/nfr-14-cause-mark-light-sc-c344b-ress-the-neighbour-s-is-not-layout/error-context.md
+
+  2) [layout] › e2e/nfr-14-cause-mark.spec.ts:212:7 › dark scheme › @trace FR-64 @trace FR-120 @trace NFR-14 dark 8x8 at 320x640: the closed pixel is not the border colour, the cause cell's corner pixel is --color-violation-border after the press, the neighbour's is not 
+
+    Error: dark 8x8 at 320x640: the cause cell's pixel (229, 248) is rgb(94, 51, 47), the mark is rgb(255, 138, 125) within 1 per channel (the closed pixel was rgb(36, 32, 27))
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      257 |         expect
+      258 |           .soft(within(open, want, 1), `${name}: the cause cell's pixel (${after.x}, ${after.y}) is ${css(open)}, the mark is ${css(want)} within 1 per channel (the closed pixel was ${css(closed)})`)
+    > 259 |           .toBe(true);
+          |            ^
+      260 |         expect
+      261 |           .soft(within(neighbourPixel, want, 1), `${name}: the adjacent violating cell (${neighbourCell.join(',')}), not the cause, reads ${css(neighbourPixel)} at (${neighbour.x}, ${neighbour.y}), which must not be the mark ${css(want)}`)
+      262 |           .toBe(false);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/trusting-liskov-878a97/e2e/nfr-14-cause-mark.spec.ts:259:12
+
+    Error: dark 8x8 at 320x640: getComputedStyle(cell, '::after').borderTopWidth is 0px, wanted 8.00px within 0.5px
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      265 |         expect
+      266 |           .soft(Number.isFinite(width) && Math.abs(width - leg) <= 0.5, `${name}: getComputedStyle(cell, '::after').borderTopWidth is ${pseudo.borderTopWidth}, wanted ${leg.toFixed(2)}px within 0.5px`)
+    > 267 |           .toBe(true);
+          |            ^
+      268 |       });
+      269 |     }
+      270 |   });
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/trusting-liskov-878a97/e2e/nfr-14-cause-mark.spec.ts:267:12
+
+    Error Context: test-results/nfr-14-cause-mark-dark-sch-4f9ce-ress-the-neighbour-s-is-not-layout/error-context.md
+
+  2 failed
+    [layout] › e2e/nfr-14-cause-mark.spec.ts:212:7 › light scheme › @trace FR-64 @trace FR-120 @trace NFR-14 light 6x6 at 1024x768: the closed pixel is not the border colour, the cause cell's corner pixel is --color-violation-border after the press, the neighbour's is not 
+    [layout] › e2e/nfr-14-cause-mark.spec.ts:212:7 › dark scheme › @trace FR-64 @trace FR-120 @trace NFR-14 dark 8x8 at 320x640: the closed pixel is not the border colour, the cause cell's corner pixel is --color-violation-border after the press, the neighbour's is not 
+  1 passed (4.9s)
+
+The annotations (read from docs/qa/e2e-report.json before it was restored):
+@trace NFR-14 @trace FR-120 the sampling is declared (scheme | passed
+@trace FR-64 @trace FR-120 @trace NFR-14 light 6x6 at 1024x7 | failed
+    pixels: light 6x6 at 1024x768: target (3,4) pixel (574, 311): closed rgb(255, 253, 248), open rgb(251, 228, 225), want rgb(179, 38, 30); neighbour (3,3) pixel (506, 311) rgb(251, 228, 225); ::after border-top-width 0px (content none), want 15.00px (cell width 64.00px)
+    pixels: light 6x6 at 1024x768: target (3,4) pixel (574, 311): closed rgb(255, 253, 248), open rgb(251, 228, 225), want rgb(179, 38, 30); neighbour (3,3) pixel (506, 311) rgb(251, 228, 225); ::after border-top-width 0px (content none), want 15.00px (cell width 64.00px)
+@trace FR-64 @trace FR-120 @trace NFR-14 dark 8x8 at 320x640 | failed
+    pixels: dark 8x8 at 320x640: target (4,6) pixel (229, 248): closed rgb(36, 32, 27), open rgb(94, 51, 47), want rgb(255, 138, 125); neighbour (4,5) pixel (192, 248) rgb(94, 51, 47); ::after border-top-width 0px (content none), want 8.00px (cell width 35.25px)
+    pixels: dark 8x8 at 320x640: target (4,6) pixel (229, 248): closed rgb(36, 32, 27), open rgb(94, 51, 47), want rgb(255, 138, 125); neighbour (4,5) pixel (192, 248) rgb(94, 51, 47); ::after border-top-width 0px (content none), want 8.00px (cell width 35.25px)
+
+Reading: the closed pixels are GREEN (light rgb(255, 253, 248) = --color-cell-bg, dark rgb(36, 32, 27) = the dark cell fill; neither is the border
+colour); the open pixels are RED (light rgb(251, 228, 225) = --color-violation-bg, dark rgb(94, 51, 47) = the dark stripe: today the cell turns into
+a violating cell and shows no mark); the neighbour reads are GREEN (not the border colour); the secondary ::after reads are RED (0px, content none).
+$ git checkout docs/qa/e2e-report.json      -> Updated 1 path from the index
+$ git status --short docs/qa/traceability-report.md trace/      -> empty (not rewritten)
+$ lsof ... 4173 / 4174 / 4176 / 4177       -> all empty
+
+D.4 The smoke harness and boards (3.6 (b)): docs/qa/add-violation-cause/smoke-harness.mjs and docs/qa/add-violation-cause/smoke-boards.json
+(boards p2, p6, p8, mount, each with its recipe of 1-based cells and click counts). The harness starts no server; it opens a headed Chromium on the
+preview URL with `window.__binarkaCaptureBoard` set by addInitScript and calls page.pause(); `--check` is headless and only verifies that the page
+took the board.
+$ node --check docs/qa/add-violation-cause/smoke-harness.mjs     -> OK
+The boards were checked with the engine (scratch script, deleted): every value has size 6, level 1, givens with one solution, no entry on a given;
+p2, p6, p8 are rule-clean at mount, mount has [three, row 3]; p8 after the wrong 0 at (1,2): count row 1, three column 2, count column 2 (the cause
+(1,2) is in all three); p8 after the 1: solved, no violation.
+p2 (generate(6, 4, 1), row 6 has no given): the recipe states, each checked with findViolations (no violation until the fourth 1; then only row 6):
+  1 _ _ _ _ _ / 1 1 _ _ _ _ / 1 1 0 _ _ _ / 1 1 0 1 _ _ / 1 1 0 1 1 _ (count only) / 1 1 0 1 1 0 (count) / 1 1 0 1 1 1 (three + count)
+Then the harness was run in --check mode against today's built page (a preview started for the check and killed after it; the ports were empty
+before and after, and no vite process of this worktree was left):
+$ node docs/qa/add-violation-cause/smoke-harness.mjs p2 --check
+board p2: P2, P3, P4 (smoke step 4): row 6 has no given; the recipe makes it read 1 1 0 1 1 _ (four 1s: the count rule) with no other violation on the way; then (6,6) once (a 0: P3) and once more (a 1: P4).
+source: generate(6, 4, 1).givens (unique); no entries
+  1. click (6,1) x2: row 6 reads 1 _ _ _ _ _
+  2. click (6,2) x2: 1 1 _ _ _ _
+  3. click (6,3) x1: 1 1 0 _ _ _
+  4. click (6,4) x2: 1 1 0 1 _ _
+  5. click (6,5) x2: 1 1 0 1 1 _: all six cells of row 6 red; only (6,5) shows the triangle (P2)
+  6. click (6,6) x1: 1 1 0 1 1 0: the row stays red; no triangle anywhere (P3)
+  7. click (6,6) x1: 1 1 0 1 1 1: the triangle is on (6,6) (P4)
+the page shows the capture board: yes
+  . . 0 . . .
+  . 1 . . . .
+  1 1 . . 0 .
+  . . . . 0 .
+  . . . 1 . .
+  . . . . . .
+exit 0
+$ node docs/qa/add-violation-cause/smoke-harness.mjs p6 --check
+board p6: P6 (smoke step 5): the board is rule-clean, and the first hint (hint(board, 4), the pair rule) fills (4,3) with 1, which makes 1 1 1 in column 3 (rows 3 to 5) and four 1s in column 3; (4,3) is among the checker cells, so it is the hinted cause.
+source: generate(6, 1, 1).givens (unique), with three WRONG entries: (2,6)=1, (4,2)=0, (5,2)=1 (found by the bounded search of red-run.txt section D: seeds 1 to 300 x 300 random entry sets per seed; the first hit at seed 1, the 12th candidate)
+  1. press «Підказка»: (4,3) shows 1 with the dashed border and the triangle; its name ends «, підказка, спричиняє порушення»
+  2. press «Підказка»: the hint line says the board breaks a rule; the triangle stays on (4,3)
+the page shows the capture board: yes
+  . . 1 . . .
+  1 . . . 0 1
+  . 0 1 . . .
+  0 0 . . . .
+  . 1 1 . . 1
+  0 . . 0 . .
+exit 0
+$ node docs/qa/add-violation-cause/smoke-harness.mjs p8 --check
+board p8: P8 (smoke step 6): the design solved fixture (quality/design-paint.json, 1024-light-win) with the non-given entry (1,2) removed; its digit is 1.
+source: quality/design-paint.json case 1024-light-win, entries[0][1] set to null
+  1. click (1,2) x1: a wrong 0: four 0s in row 1 (count) and 0 0 0 in column 2 rows 1 to 3 (three, and four 0s in column 2): row 1 and column 2 red, the triangle on (1,2) only
+  2. click (1,2) x1: the 1: the win message shows; no triangle and no red cell
+the page shows the capture board: yes
+  1 . 0 1 0 0
+  1 0 1 0 1 0
+  0 0 1 0 1 1
+  0 1 0 1 0 1
+  1 1 0 0 1 0
+  0 0 1 1 0 1
+exit 0
+$ node docs/qa/add-violation-cause/smoke-harness.mjs mount --check
+board mount: Mount (smoke step 7): the design default fixture holds 0 0 0 in row 3 at mount: three red cells and no triangle.
+source: quality/design-paint.json case 1024-light-default, unchanged
+  1. look: cells (3,1), (3,2), (3,3) red, striped, 2px border; no triangle anywhere
+the page shows the capture board: yes
+  1 . . . 0 .
+  1 . 1 . . .
+  0 0 0 . . 1
+  0 . 0 . 0 .
+  . 1 . . . 0
+  . . . 1 0 .
+exit 0
+
+D.5 The P6 board: a bounded search with the engine. Command (the scratch script was deleted after the run; its source is below):
+$ time npx tsx <scratchpad>/spike/p6-search.ts 300 300
+{"found":true,"size":6,"seed":1,"level":1,"examined":12,"entries":[[null,null,null,null,null,null],[null,null,null,null,null,1],[null,null,null,null,null,null],[null,0,null,null,null,null],[null,1,null,null,null,null],[null,null,null,null,null,null]],"givens":[[null,null,1,null,null,null],[1,null,null,null,0,null],[null,0,1,null,null,null],[0,null,null,null,null,null],[null,null,1,null,null,1],[0,null,null,0,null,null]],"hint":{"row":3,"col":2,"value":1,"rule":"pair"},"violations":[{"rule":"three","axis":"col","index":2,"cells":[[2,2],[3,2],[4,2]]},{"rule":"count","axis":"col","index":2,"cells":[[0,2],[2,2],[3,2],[4,2]]}]}
+npx tsx  300 300  0.38s user 0.10s system 81% cpu 0.598 total
+Bound: generate(6, seed, 1) for seeds 1 to 300, 300 random sets of 1 to 8 WRONG entries per seed (an LCG with seed 12345). Result: FOUND at seed 1,
+the 12th candidate: the first hint (hint(board, 4), the pair rule; 0-based row 3, col 2 = 1-based (4,3)) fills a 1 that makes 1 1 1 in column 3
+and four 1s there; (4,3) is in the checker cells of both, so it is the hinted cause. So P6 is checked in the smoke test with board p6 too (it does
+not rest on the jsdom fixture HINT_BREAKS alone).
+Source of the search script:
+---------------------------------------------------------------------------------------------------------------
+// Bounded search for the smoke board p6 (tasks.md 3.6 (b)): a valid capture value (unique-solution givens of an engine puzzle, plus WRONG
+// entries on non-given cells) on which the board is rule-clean and the page's first hint (hint(board, 4)) is a fill that breaks a rule.
+import { countSolutions, findViolations, generate, hint } from '/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/trusting-liskov-878a97/src/engine/index';
+type C = 0 | 1 | null;
+const SEEDS = Number(process.argv[2] ?? 300);
+const TRIES = Number(process.argv[3] ?? 300);
+let rng = 12345;
+const rand = (): number => { rng = (Math.imul(rng, 1103515245) + 12345) >>> 0; return rng / 4294967296; };
+let examined = 0;
+for (const size of [6]) for (let seed = 1; seed <= SEEDS; seed++) {
+  const p = generate(size, seed, 1);
+  const g = p.givens as C[][];
+  if (countSolutions(g) !== 1) continue;
+  for (let t = 0; t < TRIES; t++) {
+    examined++;
+    const k = 1 + Math.floor(rand() * 8);
+    const e: C[][] = g.map((row) => row.map(() => null));
+    for (let i = 0; i < k; i++) {
+      const r = Math.floor(rand() * size), c = Math.floor(rand() * size);
+      if (g[r][c] !== null) continue;
+      e[r][c] = (1 - (p.solution[r][c] as number)) as 0 | 1; // a wrong entry
+    }
+    const b = g.map((row, r) => row.map((v, c) => v ?? e[r][c]));
+    if (findViolations(b).length > 0) continue;
+    const h = hint(b, 4);
+    if (h.kind !== 'fill') continue;
+    const after = b.map((row) => [...row]);
+    after[h.row][h.col] = h.value;
+    const v = findViolations(after);
+    if (v.length === 0) continue;
+    console.log(JSON.stringify({ found: true, size, seed, level: 1, examined, entries: e, givens: g, hint: { row: h.row, col: h.col, value: h.value, rule: (h as { rule?: string }).rule }, violations: v }));
+    process.exit(0);
+  }
+}
+console.log(JSON.stringify({ found: false, seeds: SEEDS, triesPerSeed: TRIES, examined }));
+---------------------------------------------------------------------------------------------------------------
+
+==============================================================================================================
+SECTION E. Informational, not a claim about the port: the new and changed tests against a throwaway spike port (outside this worktree)
+==============================================================================================================
+To check that the red tests go green for the right reason (and to classify the snapshot comparisons of task 3.5), the test-engineer made a scratch
+copy of the repository in the session scratchpad (rsync without node_modules/.git/design/docs; node_modules symlinked; design/v0/lib copied for
+tests/capture-fixtures.test.ts), and wrote a minimal FR-120 port there only: strings.ts cellLabel(..., cause) in both tables; play-page.ts a `cause`
+state with setCause (cleared before the click's renderCell, set after refreshHighlights from findViolations(board) v.cells; the same around the hint
+fill; cleared by showPuzzle and resetBoard); style.css the `.cell-cause` and `.cell-cause::after` rules and the forced-colours block of task 5.3.
+This worktree's src/ was never edited. The scratch copy was deleted afterwards.
+ - `npx vitest run` in the copy: Test Files 74 passed (74), Tests 1837 passed (1837) (after copying design/v0/lib for capture-fixtures).
+ - `npx playwright test --project=layout e2e/nfr-14-cause-mark.spec.ts` in the copy: 3 passed; light: open rgb(179, 38, 30), ::after 15px (cell
+   64px); dark 320: open rgb(255, 138, 125), ::after 8px (cell 35.25px); the neighbours rgb(251, 228, 225) and rgb(94, 51, 47).
+ - `npx playwright test` (all projects) in the copy: 195 passed.
+ (The ports 4173/4174/4176/4177 were checked empty before and after each of these runs.)
+This shows the tests are satisfiable by a port that follows the folder (FINDING 1 included) and that no existing test outside the deltas breaks
+under such a port. The implementer's real port is judged by its own green run (task 5.4), not by this.
+
+==============================================================================================================
+SECTION F. Task 3.7 (the run part): `npm run test:run` against today's src/
+==============================================================================================================
+$ npm run test:run
+date: Sun Oct 11 14:08:34 +0530 2026   exit 1
+ ❯ tests/play-page-violation-cause.test.ts (39 tests | 38 failed)
+ ❯ tests/play-page-cells.test.ts (28 tests | 6 failed)
+ ❯ tests/play-page-cause-stylesheet.test.ts (11 tests | 9 failed)
+ ❯ tests/play-page-semantics.test.ts (24 tests | 1 failed)
+ ❯ tests/play-page-english-text.test.ts (26 tests | 2 failed)
+ Test Files  5 failed | 69 passed (74)
+      Tests  56 failed | 1781 passed (1837)
+   Duration  59.10s
+Error kinds of the 56 failures: 56 x AssertionError (no TypeError, no import, syntax or type error).
+The other 69 files are green, among them every old test outside the deltas (tests/play-page-helpers.test.ts 134 passed, with the new helper
+self-tests; tests/play-page-capture-board.test.ts with the new GUARD; tests/play-page-stylesheet.test.ts untouched and green).
+1774 (baseline) + 63 new tests = 1837: 39 (violation-cause) + 11 (cause-stylesheet) + 1 (capture-board) + 3 (cells: P2 AND, the suffix follows the
+marker, the hinted cause) + 2 (english-text) + 7 (helpers: 6 system-colour scan + 1 enCellLabel).
+$ npm run lint      -> no problem reported
+$ npm run build     -> OK (tsc --noEmit over src/, tests/, e2e/)
+
+Every failing test and its first assertion message:
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause mark is a corner triangle drawn with borders
+     AssertionError: src/ui/style.css has a top-level rule .cell-cause: expected 0 to be greater than 0
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 4x4: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell
+     AssertionError: premise: (3,3) is violating and carries cell-cause (from the page): expected [ true, false ] to deeply equal [ true, true ]
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 6x6: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell
+     AssertionError: premise: (3,3) is violating and carries cell-cause (from the page): expected [ true, false ] to deeply equal [ true, true ]
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 8x8: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell
+     AssertionError: premise: (3,3) is violating and carries cell-cause (from the page): expected [ true, false ] to deeply equal [ true, true ]
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell’s own border: a hinted cause (HINT_BREAKS at 6x6) keeps 2px dashed
+     AssertionError: premise: (1,3) is a hinted violating cause: expected [ true, true, false ] to deeply equal [ true, true, true ]
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > Forced colours keep the mark
+     AssertionError: exactly one rule, .cell-cause::after in @media (forced-colors: active) and no other at-rule: expected [] to deeply equal [ { …(2) } ]
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > The accepted adjacencies of the cause mark are not contrast pairs: the focus ring is outside the cell and the mark declares no ring
+     AssertionError: premise: src/ui/style.css has a rule .cell-cause: expected 0 to be greater than 0
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > A system colour keyword appears in exactly one declaration
+     AssertionError: exactly one: border-top-color of .cell-cause::after in @media (forced-colors: active), ButtonText: expected [] to have a length of 1 but got +0
+ - tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > Rules use the tokens and no colour literal is left: the top-level .cell-cause::after takes its border-top-color from the token
+     AssertionError: premise: a top-level .cell-cause::after rule (outside any at-rule): expected 0 to be greater than 0
+ - tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > Only the cause cell of a violation gets a suffix: of three equal digits side by side, the third press reads «, спричиняє порушення», the other two the plain label
+     AssertionError: expected 'Рядок 2, стовпець 3, 0' to be 'Рядок 2, стовпець 3, 0, спричиняє пор…' // Object.is equality
+ - tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > Only the cause cell of a violation gets a suffix: on the board of P2 (a row of six highlighted by the count rule) only (1,5) has the suffix
+     AssertionError: the cell that holds the fourth 1: expected 'Рядок 1, стовпець 5, 1' to be 'Рядок 1, стовпець 5, 1, спричиняє пор…' // Object.is equality
+ - tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > A given cell in a violation keeps exactly the given suffix: the givens keep «, задано», the clicked cell (3,3) reads «, спричиняє порушення»
+     AssertionError: expected 'Рядок 3, стовпець 3, 0' to be 'Рядок 3, стовпець 3, 0, спричиняє пор…' // Object.is equality
+ - tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > a hint-filled cell that also violates and is the cause reads «, підказка, спричиняє порушення»; the givens keep «, задано»
+     AssertionError: expected 'Рядок 1, стовпець 3, 0, підказка' to be 'Рядок 1, стовпець 3, 0, підказка, спр…' // Object.is equality
+ - tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > The suffix follows the marker: after (5,5) the label of (2,3) is plain again and (5,5) reads «…, 0»; a second run moves the suffix to (4,3)
+     AssertionError: premise: (2,3) carries the suffix: expected 'Рядок 2, стовпець 3, 0' to be 'Рядок 2, стовпець 3, 0, спричиняє пор…' // Object.is equality
+ - tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > A hinted cause has both suffixes, the hint first: (1,3) of HINT_BREAKS after a hint, the givens «, задано», and after a click on (1,3) no «, підказка»
+     AssertionError: expected 'Рядок 1, стовпець 3, 0, підказка' to be 'Рядок 1, стовпець 3, 0, підказка, спр…' // Object.is equality
+ - tests/play-page-english-text.test.ts > English page text > Every Ukrainian string has an English counterpart with the same key: the cause samples of cellLabel
+     AssertionError: expected 'Рядок 5, стовпець 6, 0, підказка' to be 'Рядок 5, стовпець 6, 0, підказка, спр…' // Object.is equality
+ - tests/play-page-english-text.test.ts > @trace FR-70 @trace FR-120 Cell labels (English): the cause suffix > The cause suffix in English mode
+     AssertionError: expected 'Row 2, column 3, 0' to be 'Row 2, column 3, 0, causes a violation' // Object.is equality
+ - tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-35 @trace FR-120 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"
+     AssertionError: the name of the clicked cell ends with the cause suffix: expected 'Рядок 4, стовпець 1, 0' to match /, спричиняє порушення$/
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P1, three equal digits side by side: the pressed cell is marked
+     AssertionError: exactly one cell, (2,3), has cell-cause: expected [] to deeply equal [ [ 2, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P2, too many of one digit: the cell that holds the excess digit is marked
+     AssertionError: exactly one cell, (1,5), has cell-cause; the other 1s and the 0s do not: expected [] to deeply equal [ [ 1, 5 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P3, a correct digit put into an already broken line is not marked
+     AssertionError: premise: the board of P2, (1,5) has cell-cause: expected [] to deeply equal [ [ 1, 5 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P4, adding to the excess marks the added cell
+     AssertionError: exactly one cell, (1,6), has cell-cause: expected [] to deeply equal [ [ 1, 6 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Identical lines: the pressed cell of the second line is marked
+     AssertionError: exactly one cell, (2,4), has cell-cause: expected [] to deeply equal [ [ 2, 4 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P6, a hint fill that breaks a rule marks the hinted cell
+     AssertionError: (1,3) is hinted, violating and the cause: expected [ true, true, false ] to deeply equal [ true, true, true ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P6, the next hint refuses and the marker stays
+     AssertionError: premise: (1,3) carries cell-cause after the first hint: expected [] to deeply equal [ [ 1, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, the marker shows the last press only
+     AssertionError: premise: (2,3) carries cell-cause: expected [] to deeply equal [ [ 2, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, a later press that breaks a rule moves the marker
+     AssertionError: premise: (2,3) carries cell-cause: expected [] to deeply equal [ [ 2, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, pressing the marked cell again removes the marker
+     AssertionError: premise: (2,3) carries cell-cause: expected [] to deeply equal [ [ 2, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P8, a solved board carries no marker
+     AssertionError: premise: on the way, X is the cause: expected [] to deeply equal [ [ 4, 1 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A given in the same violation is never marked
+     AssertionError: only (3,3) has cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > clicks a non-given cell other than (3,3…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > clicks (3,3) itself (the 0 becomes 1, w…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Нова головоломка» and then «Та…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the size to 4 by a choice (mark…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the size to 8 by a choice (mark…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the level to «Задачка» by a cho…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Почати» with the marked choice…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Скинути» and then «Так, почати»
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A hint cannot follow a marker
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > clicks a given cell, (3,1) (once, and a…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Підказка» (the hint refuses, F…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > clicks [data-action="rules"] and then t…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet through the stubb…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet, presses «Поле 8×…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet, presses the alre…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the settings panel through the st…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the settings panel and presses th…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Нова головоломка» and then «Ск…
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Скинути» and then «Скасувати»
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A confirmation removes the marker when it is performed, not when it is requested
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A failed generation keeps the marker
+     AssertionError: premise: (3,3) carries cell-cause: expected [] to deeply equal [ [ 3, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker follows a language switch
+     AssertionError: premise: (2,3) carries cell-cause: expected [] to deeply equal [ [ 2, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Two mounts are independent
+     AssertionError: premise: the marker is made on the first page: expected [] to deeply equal [ [ 2, 3 ] ]
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 4: three passes over every cell, the marker equals {X} exactly when the checker counts X
+     AssertionError: 26 disagreements with the checker (the first five shown): expected [ …(5) ] to deeply equal []
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 6: three passes over every cell, the marker equals {X} exactly when the checker counts X
+     AssertionError: 66 disagreements with the checker (the first five shown): expected [ …(5) ] to deeply equal []
+ - tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 8: three passes over every cell, the marker equals {X} exactly when the checker counts X
+     AssertionError: 122 disagreements with the checker (the first five shown): expected [ …(5) ] to deeply equal []
+
+==============================================================================================================
+FINDINGS
+==============================================================================================================
+1. CONTRADICTION in the folder (specs/play-page/spec.md, «Cell labels», scenario «A hinted cause has both suffixes, the hint first», last AND):
+   "after a click on (1,3) the label is «Рядок 1, стовпець 3, 1» (both suffixes gone: the hinted cell was clicked and the run is broken)". On
+   HINT_BREAKS the givens are 1 at (1,1) and (1,2); the click turns the hinted 0 at (1,3) into 1, so row 1 reads 1 1 1 and the checker reports
+   [{"rule":"three","axis":"row","index":0,"cells":[[0,0],[0,1],[0,2]]}] (checked with the engine). By FR-120 and the ADDED «Cause marker», (1,3)
+   is then the cause and its label is «Рядок 1, стовпець 3, 1, спричиняє порушення». The test (tests/play-page-cells.test.ts, «A hinted cause has
+   both suffixes, the hint first») follows the signed requirement: it asserts the hint suffix is gone and the label is «…, 1, спричиняє
+   порушення», with a FINDING comment. The folder should fix the literal (or the step, e.g. click (1,3) twice to empty it) by its own edit; the test
+   changes with it.
+2. tasks.md 3.3 (a) says "a capture value [is] from tests/helpers/play-page.ts", but that file has no capture-value helper (the capture boards of
+   tests/play-page-capture-board.test.ts are built in that file). The new test builds its capture value locally with the engine (generate(6, 5, 1),
+   as the capture-board test does); the e2e builds its two from quality/design-paint.json, as e2e/nfr-14-backdrop.spec.ts does. No helper was added
+   (3.1 lists the helper changes).
+3. The counts of task 3.5 hold for pageState (25 calls in 4 files) and fullState (41 calls in 7 files); snapshot is now 86 calls on 85 lines in 19
+   files: the 84 / 83 / 18 of the folder plus the 2 calls of the new test «The marker follows a language switch». A wrapper the folder does not
+   count also carries the class list: `boardFacts()` of tests/play-page-marked-choice.test.ts:83-100 (snapshot inside it at :93, 13 calls); it is
+   classified in snapshot-sweep.txt.
+4. No old test fails outside the deltas (section F); no comparison of snapshot / pageState / fullState / boardFacts needs a change (section E and
+   snapshot-sweep.txt).
+5. P8 (first AND): the test also asserts the marker ON THE WAY (the first click puts a wrong 0 at X, the count rule makes X the cause), so the final
+   "no cell has cell-cause" is not vacuous; the scenario does not name that intermediate state, it only says "clicks X until it shows the solution
+   digit".
+6. «Later board changes remove the marker», row "changes the size to 4 (one run) or to 8 (one run)" is two rows in the test (4 and 8).
+
+## Parent confirmation (task 3.7), 2026-10-11 14:20 UTC+5:30
+
+Run by the parent session, not the test-engineer, after the folder fix of the hinted-cause scenario (spec.md «A hinted cause has both suffixes, the hint first», last AND now «Рядок 1, стовпець 3, 1, спричиняє порушення», per FR-120) and the matching comment in `tests/play-page-cells.test.ts`. `git diff --stat -- src/` is empty (no port).
+
+```
+$ npm run test:run   # exit 1
+ Test Files  5 failed | 69 passed (74)
+      Tests  56 failed | 1781 passed (1837)
+
+   9  FAIL  tests/play-page-cause-stylesheet.test.ts
+   6  FAIL  tests/play-page-cells.test.ts
+   2  FAIL  tests/play-page-english-text.test.ts
+   1  FAIL  tests/play-page-semantics.test.ts
+  38  FAIL  tests/play-page-violation-cause.test.ts
+
+Error kinds printed (vitest prints one block per distinct failure):
+  38 AssertionError
+No TypeError, ReferenceError, SyntaxError or module-resolution error in the output.
+```
+
+Failing tests (names as printed):
+
+```
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause mark is a corner triangle drawn with borders
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 4x4: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 6x6: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 8x8: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell’s own border: a hinted cause (HINT_BREAKS at 6x6) keeps 2px dashed
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > Forced colours keep the mark
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > The accepted adjacencies of the cause mark are not contrast pairs: the focus ring is outside the cell and the mark declares no ring
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > A system colour keyword appears in exactly one declaration
+ FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > Rules use the tokens and no colour literal is left: the top-level .cell-cause::after takes its border-top-color from the token
+ FAIL  tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > Only the cause cell of a violation gets a suffix: of three equal digits side by side, the third press reads «, спричиняє порушення», the other two the plain label
+ FAIL  tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > Only the cause cell of a violation gets a suffix: on the board of P2 (a row of six highlighted by the count rule) only (1,5) has the suffix
+ FAIL  tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > A given cell in a violation keeps exactly the given suffix: the givens keep «, задано», the clicked cell (3,3) reads «, спричиняє порушення»
+ FAIL  tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > a hint-filled cell that also violates and is the cause reads «, підказка, спричиняє порушення»; the givens keep «, задано»
+ FAIL  tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > The suffix follows the marker: after (5,5) the label of (2,3) is plain again and (5,5) reads «…, 0»; a second run moves the suffix to (4,3)
+ FAIL  tests/play-page-cells.test.ts > @trace FR-70 @trace FR-120 only the cause cell of a violation gets a suffix > A hinted cause has both suffixes, the hint first: (1,3) of HINT_BREAKS after a hint, the givens «, задано», and after a click on (1,3) no «, підказка»
+ FAIL  tests/play-page-english-text.test.ts > English page text > Every Ukrainian string has an English counterpart with the same key: the cause samples of cellLabel
+ FAIL  tests/play-page-english-text.test.ts > @trace FR-70 @trace FR-120 Cell labels (English): the cause suffix > The cause suffix in English mode
+ FAIL  tests/play-page-semantics.test.ts > cells expose a Ukrainian name and their state > @trace FR-61 @trace FR-35 @trace FR-120 A violation is exposed: three equal digits side by side give cell-violation and aria-invalid="true"
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P1, three equal digits side by side: the pressed cell is marked
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P2, too many of one digit: the cell that holds the excess digit is marked
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P3, a correct digit put into an already broken line is not marked
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P4, adding to the excess marks the added cell
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Identical lines: the pressed cell of the second line is marked
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P6, a hint fill that breaks a rule marks the hinted cell
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P6, the next hint refuses and the marker stays
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, the marker shows the last press only
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, a later press that breaks a rule moves the marker
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, pressing the marked cell again removes the marker
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P8, a solved board carries no marker
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A given in the same violation is never marked
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > clicks a non-given cell other than (3,3…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > clicks (3,3) itself (the 0 becomes 1, w…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Нова головоломка» and then «Та…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the size to 4 by a choice (mark…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the size to 8 by a choice (mark…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the level to «Задачка» by a cho…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Почати» with the marked choice…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Скинути» and then «Так, почати»
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A hint cannot follow a marker
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > clicks a given cell, (3,1) (once, and a…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Підказка» (the hint refuses, F…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > clicks [data-action="rules"] and then t…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet through the stubb…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet, presses «Поле 8×…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet, presses the alre…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the settings panel through the st…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the settings panel and presses th…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Нова головоломка» and then «Ск…
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Скинути» and then «Скасувати»
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A confirmation removes the marker when it is performed, not when it is requested
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A failed generation keeps the marker
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker follows a language switch
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Two mounts are independent
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 4: three passes over every cell, the marker equals {X} exactly when the checker counts X
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 6: three passes over every cell, the marker equals {X} exactly when the checker counts X
+ FAIL  tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 8: three passes over every cell, the marker equals {X} exactly when the checker counts X
+```

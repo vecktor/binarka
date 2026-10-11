@@ -79,6 +79,7 @@ import {
   trackErrors,
 } from './helpers/play-page';
 import { VALID_4X4, boardOf, parseBoard } from './helpers/board';
+import { enCellLabel } from './helpers/english';
 import {
   CONTRAST_PAIRS,
   DARK_LABEL,
@@ -100,7 +101,10 @@ import {
   rgbTripleOf,
   rulesWithSelector,
   injectPageStyles,
+  NAMED_COLOURS,
+  SYSTEM_COLOURS,
   scanColours,
+  scanSystemColours,
   themeTokenSets,
   tokenFormatProblems,
   withTokensInlined,
@@ -450,6 +454,10 @@ describe('css helper: contrastRatio and rgbOf', () => {
   // DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
   // `tests/play-page-helpers.test.ts:437-442`): the comment and `toHaveLength(25)` become 27 and the key list follows (the pair count stays 34:
   // a backdrop is in no pair). The two added lines pin the helper's light value table to the fixture, which is the spec's table written out.
+  // DELIBERATE CHANGE (add-violation-cause, delta «Borders, cues and focus rings have enough contrast», scenario «The cause cue has 3:1 against the
+  // violation fill and the stripe»; proposal.md Impact row `tests/play-page-helpers.test.ts` 460, 466-467): CONTRAST_PAIRS gains the cause cue
+  // `--color-violation-border` on `--color-violation-stripe` (group `cause-cue`), so the list holds 35 pairs (4 cell border + 4 violation cue +
+  // 1 cause cue + 3 hinted cue + 8 focus ring + 1 control border + 14 text). The notes above, which say 34, stay as history.
   it('the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)', () => {
     expect(TOKEN_NAMES).toHaveLength(27);
     expect(Object.keys(DESIGN_TOKENS).sort()).toEqual([...TOKEN_NAMES].sort());
@@ -457,15 +465,25 @@ describe('css helper: contrastRatio and rgbOf', () => {
     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
     expect(contrastRatio('#847b6d', '#e2dbcc')).toBeCloseTo(3.03, 2);
     expect(contrastRatio('#1e2126', '#847b6d')).toBeCloseTo(3.87, 2);
-    expect(CONTRAST_PAIRS).toHaveLength(4 + 4 + 3 + 8 + 1 + 14);
+    expect(CONTRAST_PAIRS).toHaveLength(4 + 4 + 1 + 3 + 8 + 1 + 14);
+    expect(CONTRAST_PAIRS, 'the list holds 35 pairs (add-violation-cause)').toHaveLength(35);
   });
 
   // update-page-palette (delta «Borders, cues and focus rings have enough contrast», scenario «Cell borders have 3:1»): the pair of the cell
   // border against the given fill is gone (a given cell is inactive, A-57), the given-cue group with it, and the hinted cue is a group.
   it('CONTRAST_PAIRS has the groups of the new list, no given-cue group and no (cell-border, given-bg) pair', () => {
     expect([...new Set(CONTRAST_PAIRS.map((pair) => pair.group))].sort()).toEqual(
-      ['cell-border', 'control-border', 'focus-ring', 'hinted-cue', 'text', 'violation-cue'].sort(),
+      ['cause-cue', 'cell-border', 'control-border', 'focus-ring', 'hinted-cue', 'text', 'violation-cue'].sort(),
     );
+    // add-violation-cause (FR-65, A-58; scenario «The cause cue has 3:1 against the violation fill and the stripe»): the cause cue is one pair, the
+    // border colour on the stripe at 3:1 (the pair against the fill is the existing violation cue pair, not a second copy of it)
+    expect(CONTRAST_PAIRS.filter((pair) => pair.group === 'cause-cue')).toEqual([
+      { group: 'cause-cue', fg: '--color-violation-border', bg: '--color-violation-stripe', min: 3 },
+    ]);
+    expect(
+      CONTRAST_PAIRS.filter((pair) => pair.fg === '--color-violation-border' && pair.bg === '--color-violation-bg').map((pair) => pair.group),
+      'the pair against the fill stays the violation cue pair, once',
+    ).toEqual(['violation-cue']);
     expect(CONTRAST_PAIRS.filter((pair) => pair.fg === '--color-cell-border' && pair.bg === '--color-given-bg')).toEqual([]);
     expect(CONTRAST_PAIRS.filter((pair) => pair.group === 'cell-border').map((pair) => pair.bg)).toEqual([
       '--color-page',
@@ -847,6 +865,67 @@ describe('css helper: scanColours (the colour scan) and the lookups', () => {
   });
 });
 
+// add-violation-cause (FR-65; delta «Borders, cues and focus rings have enough contrast», scenario «A system colour keyword appears in exactly one
+// declaration»; tasks.md 3.1): the new scan of the CSS Color 4 system colours, next to `scanColours`. It runs on literal samples, never on
+// src/ui/style.css. The existing scans are not changed: the last test pins that they still pass the forced-colours rule as written.
+describe('css helper: scanSystemColours (the system-colour scan of add-violation-cause)', () => {
+  it('SYSTEM_COLOURS holds the 19 current and the 23 deprecated CSS Color 4 system colours, in lower case, and no named colour', () => {
+    const current = [
+      'AccentColor', 'AccentColorText', 'ActiveText', 'ButtonBorder', 'ButtonFace', 'ButtonText', 'Canvas', 'CanvasText', 'Field', 'FieldText',
+      'GrayText', 'Highlight', 'HighlightText', 'LinkText', 'Mark', 'MarkText', 'SelectedItem', 'SelectedItemText', 'VisitedText',
+    ];
+    const deprecated = [
+      'ActiveBorder', 'ActiveCaption', 'AppWorkspace', 'Background', 'ButtonHighlight', 'ButtonShadow', 'CaptionText', 'InactiveBorder',
+      'InactiveCaption', 'InactiveCaptionText', 'InfoBackground', 'InfoText', 'Menu', 'MenuText', 'Scrollbar', 'ThreeDDarkShadow', 'ThreeDFace',
+      'ThreeDHighlight', 'ThreeDLightShadow', 'ThreeDShadow', 'Window', 'WindowFrame', 'WindowText',
+    ];
+    expect(current).toHaveLength(19);
+    expect(deprecated).toHaveLength(23);
+    expect([...SYSTEM_COLOURS].sort()).toEqual([...current, ...deprecated].map((name) => name.toLowerCase()).sort());
+    expect([...SYSTEM_COLOURS].filter((name) => NAMED_COLOURS.has(name)), 'no system colour is a named colour').toEqual([]);
+  });
+
+  it('finds a keyword in a rule, case-insensitively, and reports `selector { property: value }`', () => {
+    const hits = scanSystemColours(parseStyles('.a { border-top-color: ButtonText; } .b { color: CANVASTEXT; } .c { outline-color: threedface; }'));
+    expect(hits).toHaveLength(3);
+    expect(hits[0]).toMatch(/^\.a \{ border-top-color: buttontext \}$/i);
+    expect(hits.some((m) => /\.b \{ color: canvastext \}/i.test(m)), 'an upper-case current keyword').toBe(true);
+    expect(hits.some((m) => /\.c \{ outline-color: threedface \}/i.test(m)), 'a deprecated keyword').toBe(true);
+  });
+
+  it('scans inside at-rules and names the context (the forced-colours rule of the cause mark)', () => {
+    const hits = scanSystemColours(
+      parseStyles('@media (forced-colors: active) { .cell-cause::after { forced-color-adjust: none; border-top-color: ButtonText; border-left-color: transparent; } }'),
+    );
+    expect(hits).toHaveLength(1);
+    expect(hits[0]).toMatch(/^@media \(forced-colors: active\) \.cell-cause::after \{ border-top-color: buttontext \}$/i);
+  });
+
+  it('does not scan a keyword in :root or :root[data-theme="dark"]', () => {
+    expect(scanSystemColours(parseStyles(':root { color: CanvasText; background-color: Canvas; } :root[data-theme="dark"] { color: ButtonText; }'))).toEqual([]);
+  });
+
+  it('transparent, currentcolor, the named colours, token names, strings and longer identifiers are not hits', () => {
+    const parsed = parseStyles(`
+      .a { border-left-color: transparent; color: currentcolor; background-color: red; }
+      .b { color: var(--color-canvas); border-color: var(--color-menu); }
+      .c { content: 'ButtonText'; font-family: 'Canvas', serif; }
+      .d { transition-property: background-color; grid-template-areas: none; list-style: none; }
+    `);
+    expect(scanSystemColours(parsed)).toEqual([]);
+  });
+
+  it('the existing scans pass the forced-colours rule as written: the new scan is the one that pins it (the old scans are not loosened)', () => {
+    const parsed = parseStyles(
+      '@media (forced-colors: active) { .cell-cause::after { forced-color-adjust: none; border-top-color: ButtonText; border-left-color: transparent; } }',
+    );
+    expect(scanColours(parsed)).toEqual({ literals: [], named: [], shorthands: [], tokensOutsideRoot: [], colourProperties: [] });
+    expect(scanSystemColours(parsed)).toHaveLength(1);
+    // and the old scans still flag a system colour where they read it: a colour property that is not a token
+    expect(scanColours(parseStyles('.x { color: ButtonText; }')).colourProperties).toHaveLength(1);
+  });
+});
+
 describe('page helpers for keys, focus, rows and names', () => {
   /** Two button cells and a div cell that cannot take focus (no tabindex). */
   function sampleBoard(): HTMLElement {
@@ -948,7 +1027,7 @@ describe('page helpers for keys, focus, rows and names', () => {
     root.remove();
   });
 
-  it('expectedCellLabel spells the FR-70 label: «порожньо» for an empty cell, «, задано» on a given, «, підказка» on a hinted cell, no suffix otherwise', () => {
+  it('expectedCellLabel spells the FR-70 label: «порожньо» for an empty cell, «, задано» on a given, «, підказка» on a hinted cell, «, спричиняє порушення» after it on the cause cell, no suffix otherwise', () => {
     const cell = (row: number, col: number, text: string, given: boolean, className = ''): HTMLElement => {
       const el = document.createElement('button');
       el.setAttribute('data-row', String(row));
@@ -964,6 +1043,31 @@ describe('page helpers for keys, focus, rows and names', () => {
     expect(expectedCellLabel(cell(5, 6, '0', false, 'cell-hinted'))).toBe('Рядок 5, стовпець 6, 0, підказка');
     expect(expectedCellLabel(cell(4, 2, '1', false, 'cell-violation')), 'a violation adds no suffix').toBe('Рядок 4, стовпець 2, 1');
     expect(expectedCellLabel(cell(1, 4, '1', true, 'cell-given cell-violation')), 'a given in a violation').toBe('Рядок 1, стовпець 4, 1, задано');
+    // DELIBERATE CHANGE (add-violation-cause, delta «Cell labels» (FR-70, FR-120); proposal.md Impact row `tests/play-page-helpers.test.ts`
+    // 951-966): the oracle reads the class `cell-cause` and appends «, спричиняє порушення» after «, підказка»; a given never gets it. The two
+    // lines above stay true: a violating cell WITHOUT the class has no suffix.
+    expect(expectedCellLabel(cell(2, 3, '0', false, 'cell-violation cell-cause')), 'the cause cell').toBe('Рядок 2, стовпець 3, 0, спричиняє порушення');
+    for (const classes of ['cell-hinted cell-violation cell-cause', 'cell-cause cell-violation cell-hinted']) {
+      const label = expectedCellLabel(cell(1, 3, '0', false, classes));
+      expect(label, `a hinted cause (${classes}): the hint suffix first`).toBe('Рядок 1, стовпець 3, 0, підказка, спричиняє порушення');
+      expect(label, 'never the cause suffix first').not.toBe('Рядок 1, стовпець 3, 0, спричиняє порушення, підказка');
+    }
+    expect(
+      expectedCellLabel(cell(3, 1, '0', true, 'cell-given cell-violation cell-hinted cell-cause')),
+      'a given with both flags keeps exactly «, задано»',
+    ).toBe('Рядок 3, стовпець 1, 0, задано');
+  });
+
+  // add-violation-cause (FR-70, FR-111; tasks.md 3.1): the English oracle `enCellLabel` takes a `cause` flag after the suffix, so it can say
+  // "hinted, causes a violation"; a given wins over both flags.
+  it('enCellLabel spells the English label with the cause suffix after ", hinted"; a given keeps ", given"', () => {
+    expect(enCellLabel(2, 3, '')).toBe('Row 2, column 3, empty');
+    expect(enCellLabel(3, 1, '0', 'given')).toBe('Row 3, column 1, 0, given');
+    expect(enCellLabel(5, 6, '0', 'hinted')).toBe('Row 5, column 6, 0, hinted');
+    expect(enCellLabel(2, 3, '0', '', true)).toBe('Row 2, column 3, 0, causes a violation');
+    expect(enCellLabel(1, 3, '0', 'hinted', true)).toBe('Row 1, column 3, 0, hinted, causes a violation');
+    expect(enCellLabel(3, 1, '0', 'given', true), 'a given wins over the cause flag').toBe('Row 3, column 1, 0, given');
+    expect(enCellLabel(2, 3, '0', '', false)).toBe('Row 2, column 3, 0');
   });
 });
 

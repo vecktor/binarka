@@ -265,6 +265,29 @@ describe('@trace FR-119 violations and the hinted marker of a valid value', () =
   });
 });
 
+// add-violation-cause (FR-120, FR-119; tasks.md 3.3 (c); scenario «P5, a violation that is on the board at mount carries no marker» of «Cause
+// marker»): a violation that is already on a capture board was caused by no press, so no cell carries `cell-cause` at mount, while the board still
+// highlights it. GUARD: green on today's page by design (no marker exists before a press), docs/qa/add-violation-cause/red-run.txt section B.
+describe('@trace FR-120 @trace FR-119 a capture board with a violation has no cause marker at mount', () => {
+  it('three equal digits in row 3 at mount: the three cells carry cell-violation and aria-invalid, and no cell carries cell-cause', () => {
+    const value = sixBase();
+    const entries: Grid = value.entries.map((line) => line.map((): Cell => null));
+    const row = entries[2];
+    expect.assert(row !== undefined, 'premise: row 3 exists');
+    expect(value.givens[2]?.slice(0, 3), 'premise: no given in row 3, columns 1 to 3').toEqual([null, null, null]);
+    row[0] = 0;
+    row[1] = 0;
+    row[2] = 0;
+    expect(findViolations(merged({ ...value, entries })).length, 'premise: the value holds a violation').toBeGreaterThan(0);
+    const m = mountWith({ ...value, entries });
+    expectNoSeed(m);
+    expect(violationCells(m.root), 'the capture board still highlights the violation').toEqual([[3, 1], [3, 2], [3, 3]]);
+    for (const cell of allCells(m.root).filter((el) => el.classList.contains('cell-violation'))) expect(cell.getAttribute('aria-invalid')).toBe('true');
+    expect(allCells(m.root).filter((el) => el.classList.contains('cell-cause')), 'no cell carries cell-cause at mount').toEqual([]);
+    expect(allCells(m.root).filter((el) => (el.getAttribute('aria-label') ?? '').includes('спричиняє')), 'no label holds the cause suffix').toEqual([]);
+  });
+});
+
 describe('@trace FR-119 a solved value shows the win state at mount', () => {
   it('the win message shows the win text at once, with no click', () => {
     const value = solvedValue();

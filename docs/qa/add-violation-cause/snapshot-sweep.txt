@@ -1,0 +1,590 @@
+SNAPSHOT SWEEP for add-violation-cause, task 3.5 (snapshot() and its wrappers carry each cell's class list; FR-120 adds `cell-cause` to it)
+Written by the test-engineer on 2026-10-11 (UTC+5:30), worktree trusting-liskov-878a97, HEAD 8bbe6e8, after the edits of tasks 3.1 to 3.3.
+
+1. The list, rebuilt (outside tests/helpers/play-page.ts)
+$ grep -rnoE '\b(snapshot|pageState|fullState)\(' tests e2e | grep -v '^tests/helpers/play-page.ts'
+  snapshot(   86 calls on 85 lines in 19 files   (keyboard 14, hinted-cell 14, language 10, click-cycle 7, level-control 6, theme 4, start-button 4,
+                                                  size-selector 4, confirm 4, violation-cause 2, setup-sheet 2, rules-and-reset 2, rendering 2,
+                                                  new-puzzle-and-seed 2 (one line holds two), level-interplay 2, level-4x4 2, layout 2, hint 2,
+                                                  marked-choice 1)
+  pageState(  25 calls in 4 files                (confirm 15, size-selector 6, level-interplay 2, level-control 2)
+  fullState(  41 calls in 7 files                (setup-sheet 12, marked-choice 10, level-interplay 8, retry 6, settings 2, level-4x4 2, language 1)
+  e2e/: none.
+  Inside tests/helpers/play-page.ts: snapshot at :546 (the definition), pageState at :1244-1245 (calls snapshot), fullState at :1224-1225 (calls
+  pageState).
+Difference from the folder's counts of 2026-10-11 (snapshot 84 calls on 83 lines in 18 files; pageState 25 in 4; fullState 41 in 7): +2 snapshot
+calls in 1 new file, both in tests/play-page-violation-cause.test.ts «The marker follows a language switch» (a before/after pair across two
+language presses; that test is new and asserts the class lists are equal, FR-120). pageState and fullState: no difference.
+One more wrapper carries the class list and is not in the folder's counts: `boardFacts()` of tests/play-page-marked-choice.test.ts:83-100
+(`cells: snapshot(root)` at :93), called at 117, 130, 192, 203, 290, 306, 322, 335, 348, 361, 386, 402, 417, 429. It is classified below.
+
+2. Method
+Each comparison was read in its test and classified; the classification was then checked with an instrument: a throwaway spike port of FR-120 in a
+scratch copy of the repository (red-run.txt section E; this worktree's src/ untouched; the copy deleted afterwards) with snapshot(), pageState() and
+fullState() instrumented to record, for every call, the call site and the cells that carry `cell-cause` at that moment (491 calls recorded over the
+whole suite; boardFacts' call sites recorded in a second run of tests/play-page-marked-choice.test.ts with the caller's frame). Every call site of the
+list was executed. Under that port the whole suite is green (74 files, 1837 tests), so no comparison fails.
+
+Classes:
+  K0  spans actions that change no cell, and no marker is on the board: must stay equal; FR-120 adds nothing.
+  KM  spans actions that change no cell, and a marker IS on the board after the port (mostly the played board of mountPlayedBoard, whose hint fill
+      makes (1,3) the hinted cause; keyboard T9/T11 on a board whose (4,4) entry is a cause): must stay equal, because FR-120 keeps the marker
+      across every action that changes no cell (a panel, a theme, a language, a marking press, a cancelled or failed choice, a refused hint, Escape,
+      a click on a given). These comparisons now also pin the keep rule; none needs an edit.
+  P   spans a press that creates a violation: may change (the marker joins the class list). NONE of the listed comparisons is of this class: every
+      before/after pair that spans a press either spans a press that breaks no rule (D) or compares a new board after a confirmed action (K0).
+  D   spans a press that breaks no rule; the test expects exactly the clicked cell to differ.
+  X   compares two pages (two mounts), not a before/after of one page.
+  R   a one-sided read (not a comparison).
+  W   the body of a wrapper.
+
+Result: no comparison changes; no DELIBERATE CHANGE is needed for task 3.5 (FR-120 demands none). The run shows no unlisted failure: the 56 red
+tests of red-run.txt section F are all new or changed tests, none of them a comparison of this list.
+
+3. Every comparison, per test (file :line of the test «title»; each call line with the cell-cause state the instrument recorded there)
+73 groups; classes: D: 1, K0 33, KM 35, R: 1, W: 1, X: 2
+
+play-page-click-cycle.test.ts :23 «Clicking a given cell changes nothing (once, then twice more)»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.29: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.34: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+    l.42: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-click-cycle.test.ts :46 «Clicking a given 0 changes nothing either»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.50: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.52: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-click-cycle.test.ts :86 «a click changes only the clicked cell»
+  CLASS D: spans a click that breaks NO rule; the test expects exactly the clicked cell to differ. Unaffected (no violation, so no marker).
+    l.88: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.91: const after = snapshot(root);
+           read under the spike port: no cell-cause
+
+play-page-confirm.test.ts :122 «table: «Нова головоломка», «Поле 4×4» and «Скинути» act at once on a board with only givens»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.160: const before = pageState(root);
+           read under the spike port: no cell-cause
+    l.166: expect(pageState(root), 'no cell, class or message changes').toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-confirm.test.ts :174 «$name: showModal once, the dialog is open, board, size, messages, highlights and cell-hinted unchanged, no seed, no gene»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.176: const before = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.189: expect(pageState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-confirm.test.ts :202 «$name: close() runs once and BEFORE the action; then the effect of the row, both messages empty, no cell-hinted»
+  CLASS KM: stateBefore vs the state at the moment close() runs (the action has not run yet): no cell changed; the marker (1,3) of the played board is on both sides.
+    l.204: const stateBefore = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.211: atClose = pageState(root);
+           read under the spike port: cell-cause on 1,3
+
+play-page-confirm.test.ts :268 «the late `close` event that a browser fires after close() neither undoes nor repeats the confirmed action»
+  CLASS K0: both reads after «Так, почати» (a new board, no marker); the late close event changes nothing.
+    l.272: const afterConfirm = pageState(root);
+           read under the spike port: no cell-cause
+    l.279: expect(pageState(root)).toEqual(afterConfirm);
+           read under the spike port: no cell-cause
+
+play-page-confirm.test.ts :292 «$name then «Скасувати»: close() once, dialog closed, state as before, no seed, no generator call, showModal once in all»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.294: const before = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.306: expect(pageState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-confirm.test.ts :364 «Escape (cancel, then close, no button pressed): nothing changes, no seed, no generator call; a second request opens the »
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.366: const before = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.375: expect(pageState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+    l.384: expect(pageState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-confirm.test.ts :398 «A hint-filled cell counts: after only «Підказка» the new puzzle button asks, and the board is unchanged until «Так, поча»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.404: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.409: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-confirm.test.ts :418 «A solved board still asks (A-29): $name opens the dialog; board and win message are unchanged until «Так, почати»»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.424: const before = pageState(root);
+           read under the spike port: no cell-cause
+    l.430: expect(pageState(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-confirm.test.ts :462 ««Почати» asks, marking does not»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.466: const cells = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.479: expect(snapshot(root), 'with its cell texts').toEqual(cells);
+           read under the spike port: cell-cause on 1,3
+
+play-page-hint.test.ts :203 «No fill when the engine has no target: kind none»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.207: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.212: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-hinted-cell.test.ts :282 «A hint with no rule applying keeps the marker (kind none at ceiling 4, after PAIR_8 was hinted)»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.290: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.299: expect(snapshot(root)).toEqual(before); // nothing else changed, the marker included
+           read under the spike port: no cell-cause
+
+play-page-hinted-cell.test.ts :302 «A hint on a broken board keeps the marker (HINT_BREAKS: the hint fill itself breaks a rule)»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.310: const before = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.317: expect(snapshot(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-hinted-cell.test.ts :323 «Opening the setup sheet through the stubbed showPopover() and clicking [data-action="setup-close"] keeps the marker»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.326: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.334: expect(snapshot(root), 'nothing else changed').toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-hinted-cell.test.ts :338 «Marking «Поле 8×8» and «Задачка» and then clicking [data-action="setup-close"] keeps the marker»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.341: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.353: expect(snapshot(root), 'nothing else changed').toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-hinted-cell.test.ts :356 «A level change that needs the confirmation, then «Скасувати», keeps the marker (a cancelled confirmation, FR-67)»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.358: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.363: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-hinted-cell.test.ts :384 «@trace FR-103 Opening the settings panel and pressing a theme option keeps the marker»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.387: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.394: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-hinted-cell.test.ts :399 «The generator throws for size 8: the board stays 6x6 with the same snapshot and X keeps the marker»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.401: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.409: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-keyboard.test.ts :122 «@trace FR-59 T3 A hint leaves the focus on the hint button, with a fill (PAIR_ROW) and without (ISOLATED)»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.136: const before = snapshot(empty);
+           read under the spike port: no cell-cause
+    l.139: expect(snapshot(empty), 'premise: the hint filled nothing').toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-keyboard.test.ts :157 «@trace FR-59 T5 Arrow, Home and End keys are not handled: not prevented, the focus stays on the cell, no cell changes (N»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.163: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.188: expect(snapshot(root), `${n}x${n}: no cell changed its text, data-given or classes`).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-keyboard.test.ts :192 «@trace FR-59 @trace FR-33 T6 Keys on a given cell change nothing and move nothing (WIN_PUZZLE given 0 at 1,3)»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.196: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.201: expect(snapshot(root), `${key} changed no cell`).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-keyboard.test.ts :205 «@trace FR-59 T7 Other keys are not prevented: Tab, Shift+Tab, PageDown, PageUp, Escape and a letter»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.208: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.221: expect(snapshot(root), 'no key changed a cell').toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-keyboard.test.ts :240 «@trace FR-33 @trace FR-60 T9 A click on a given changes nothing and leaves the focus on it (once, then twice more)»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.246: const before = snapshot(root);
+           read under the spike port: cell-cause on 4,4
+    l.251: expect(snapshot(root), `the given ${row},${col} and every other cell are unchanged`).toEqual(before);
+           read under the spike port: cell-cause on 4,4
+
+play-page-keyboard.test.ts :257 «@trace FR-60 T10 The page does not handle Enter or Space: keydown and keyup, plain, with Ctrl, Alt, Shift and repeated, »
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.262: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.272: expect(snapshot(root), `${what} changed nothing`).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-keyboard.test.ts :280 «@trace FR-33 @trace FR-60 T11 Enter and Space key events on a given cell change nothing, are not prevented, and the focu»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.283: const before = snapshot(root);
+           read under the spike port: cell-cause on 4,4
+    l.297: expect(snapshot(root)).toEqual(before);
+           read under the spike port: cell-cause on 4,4
+
+play-page-language.test.ts :198 «A language press changes nothing else»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.211: cells: snapshot(root),
+           read under the spike port: cell-cause on 1,3
+    l.224: expect(snapshot(root), 'every cell keeps its text, data-given and class list (cell-violation and cell-hinted i
+           read under the spike port: cell-cause on 1,3
+
+play-page-language.test.ts :409 «A hint sentence switches language and stays the same hint»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.418: const afterHint = snapshot(root);
+           read under the spike port: no cell-cause
+    l.427: expect(snapshot(root), 'no other cell changed').toEqual(afterHint);
+           read under the spike port: no cell-cause
+
+play-page-language.test.ts :445 «The no-rule sentence switches too»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.449: const before = snapshot(noRule);
+           read under the spike port: no cell-cause
+    l.452: expect(snapshot(noRule), 'no cell changed').toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-language.test.ts :455 «The broken-rule sentence switches too»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.459: const before = snapshot(broken);
+           read under the spike port: no cell-cause, violation shown
+    l.462: expect(snapshot(broken), 'no cell changed').toEqual(before);
+           read under the spike port: no cell-cause, violation shown
+
+play-page-language.test.ts :494 «A language press keeps the marker»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.499: const text = snapshot(root);
+           read under the spike port: no cell-cause
+    l.505: expect(snapshot(root)).toEqual(text);
+           read under the spike port: no cell-cause
+
+play-page-language.test.ts :706 «a choice after a switch passes the same size and level»
+  CLASS R: a one-sided read of `.summary`, not a before/after comparison of cells.
+    l.716: expect(fullState(root).summary).toBe('6×6 · Warm-up');
+           read under the spike port: no cell-cause
+
+play-page-layout.test.ts :229 «Clicking the rules button and the close button calls none of showPopover, hidePopover, togglePopover»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.236: const cells = snapshot(root);
+           read under the spike port: no cell-cause
+    l.251: expect(snapshot(root)).toEqual(cells);
+           read under the spike port: no cell-cause
+
+play-page-level-4x4.test.ts :164 «Pressing an unavailable level changes nothing»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.167: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.168: const cells = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.186: expect(snapshot(root), 'every cell keeps its text and class list').toEqual(cells);
+           read under the spike port: cell-cause on 1,3
+    l.189: expect(fullState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-level-control.test.ts :127 «A level press only marks»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.130: const cells = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.140: expect(snapshot(root), 'and its cell texts').toEqual(cells);
+           read under the spike port: cell-cause on 1,3
+
+play-page-level-control.test.ts :202 «A level change after play asks first, then replaces the board»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.204: const before = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.214: expect(pageState(root), 'the board and the messages are unchanged').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-level-control.test.ts :258 «A generator error keeps the previous board»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.263: const before = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.280: expect(snapshot(root), 'the same cell texts and highlights').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-level-control.test.ts :290 «A generator result of the wrong size keeps the previous board»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.292: const before = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.301: expect(snapshot(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-level-interplay.test.ts :297 «A level change on a board with entries asks and changes nothing yet»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.299: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.310: expect(fullState(root), 'every cell, the size, both messages and the summary are unchanged').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+    l.324: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.336: expect(fullState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-level-interplay.test.ts :445 «A board with entries asks first and changes nothing yet: the button «Задачка» (the injected generator returns a 6x6 fixt»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.447: const before = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.458: expect(pageState(root), 'every cell, the size and the messages are unchanged').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-level-interplay.test.ts :490 ««Скасувати» leaves everything unchanged: «Задачка»»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.492: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.495: const cells = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.505: expect(snapshot(root)).toEqual(cells);
+           read under the spike port: cell-cause on 1,3
+    l.506: expect(fullState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-level-interplay.test.ts :515 «A solved board still asks (A-29): the button of another level opens the dialog; board and win message are unchanged unti»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.521: const before = fullState(root);
+           read under the spike port: no cell-cause
+    l.528: expect(fullState(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-marked-choice.test.ts :83 «function boardFacts()»
+  CLASS W: the body of the wrapper boardFacts() (snapshot at :93); its 14 call sites are classified below.
+    l.93: cells: snapshot(root),
+           read under the spike port: cell-cause on 1,3; no cell-cause
+
+play-page-marked-choice.test.ts :285 «The shown size only marks at every size: with entries, a hint sentence, cell-hinted and cell-violation, «Поле ${n}×${n}»»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.289: const before = fullState(root); // the marked choice equals the board shown, so aria-checked of both groups is
+           read under the spike port: cell-cause on 1,3
+    l.290: const facts = boardFacts(root);
+           read under the spike port: cell-cause on 1,3
+    l.306: expect(boardFacts(root), 'every cell (text and classes, cell-violation and cell-hinted included), both message
+           read under the spike port: cell-cause on 1,3
+    l.307: expect(fullState(root), 'and so is aria-checked of both groups').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-marked-choice.test.ts :314 «The shown size only marks at every size: on a freshly mounted page of the same size with no player entries, «Поле ${n}×$»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.321: const before = fullState(root);
+           read under the spike port: no cell-cause
+    l.322: const facts = boardFacts(root);
+           read under the spike port: no cell-cause
+    l.335: expect(boardFacts(root)).toEqual(facts);
+           read under the spike port: no cell-cause
+    l.336: expect(fullState(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-marked-choice.test.ts :380 «The shown level only marks at every level (size $n, level $level), with entries and on a freshly prepared page»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.385: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.386: const facts = boardFacts(root);
+           read under the spike port: cell-cause on 1,3
+    l.402: expect(boardFacts(root), 'every cell (text and classes), both messages and the summary are unchanged').toEqual
+           read under the spike port: cell-cause on 1,3
+    l.403: expect(fullState(root), 'and so is aria-checked of both groups').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+    l.416: const stateB = fullState(fresh);
+           read under the spike port: no cell-cause
+    l.417: const factsB = boardFacts(fresh);
+           read under the spike port: no cell-cause
+    l.429: expect(boardFacts(fresh)).toEqual(factsB);
+           read under the spike port: no cell-cause
+    l.430: expect(fullState(fresh)).toEqual(stateB);
+           read under the spike port: no cell-cause
+
+play-page-marked-choice.test.ts :437 «An unavailable level press does nothing at all»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.467: const before = fullState(page.root);
+           read under the spike port: cell-cause on 1,3
+    l.474: expect(fullState(page.root), 'nothing changed').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-new-puzzle-and-seed.test.ts :232 «Injected seed gives a reproducible page: two pages with seed 42 and the real generator are identical»
+  CLASS X: two pages mounted with the same seed, no press: equal; no marker on either.
+    l.237: expect(snapshot(a)).toEqual(snapshot(b));
+           read under the spike port: no cell-cause
+
+play-page-rendering.test.ts :110 «two mounts on two different roots are independent»
+  CLASS X: page b before and after a click on page a: b is independent (FR-120 "two mounts are independent"); the click on a is a single 0, no violation.
+    l.113: const bBefore = snapshot(b);
+           read under the spike port: no cell-cause
+    l.116: expect(snapshot(b)).toEqual(bBefore);
+           read under the spike port: no cell-cause
+
+play-page-retry.test.ts :98 «Three run-outs keep everything»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.100: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.117: expect(fullState(root), 'the board, the messages, aria-checked of both groups and the summary are unchanged').
+           read under the spike port: cell-cause on 1,3
+
+play-page-retry.test.ts :146 «An ordinary error is not retried»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.153: const before = fullState(root);
+           read under the spike port: no cell-cause
+    l.161: expect(fullState(root), 'the board is unchanged').toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-retry.test.ts :164 «A result of the wrong size is not retried»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.168: const before = fullState(root);
+           read under the spike port: no cell-cause
+    l.176: expect(fullState(root), 'the board is unchanged').toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-rules-and-reset.test.ts :257 «Reset on an untouched board changes nothing: same cell text and classes, same messages»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.259: const cellsBefore = snapshot(root);
+           read under the spike port: no cell-cause, violation shown
+    l.270: expect(snapshot(root)).toEqual(cellsBefore);
+           read under the spike port: no cell-cause, violation shown
+
+play-page-settings.test.ts :128 «The panel opens and closes with no script»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.132: const before = { state: fullState(root), aria: aria(), hint: hintMessage(root), win: winMessage(root) };
+           read under the spike port: no cell-cause
+    l.139: expect(fullState(root)).toEqual(before.state);
+           read under the spike port: no cell-cause
+
+play-page-setup-sheet.test.ts :282 «The sheet opens and closes with no script»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.284: const before = fullState(root);
+           read under the spike port: no cell-cause
+    l.285: const cells = snapshot(root);
+           read under the spike port: no cell-cause
+    l.293: expect(fullState(root)).toEqual(before);
+           read under the spike port: no cell-cause
+    l.294: expect(snapshot(root)).toEqual(cells);
+           read under the spike port: no cell-cause
+
+play-page-setup-sheet.test.ts :408 «The shown size and the shown level only mark»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.411: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.429: expect(fullState(root), `cells, messages, aria-checked of both groups and the summary are unchanged (${what})`
+           read under the spike port: cell-cause on 1,3
+
+play-page-setup-sheet.test.ts :479 «Escape, the close button and a closing toggle event change nothing»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.482: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.496: expect(fullState(root), 'cells, messages, aria-checked of both groups (back on the board shown) and the summar
+           read under the spike port: cell-cause on 1,3
+
+play-page-setup-sheet.test.ts :585 ««Скасувати» returns the focus to the summary button and drops the pending action ($name)»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.588: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.601: expect(fullState(root), 'the board, size, level, messages and summary are unchanged').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-setup-sheet.test.ts :621 «Escape returns the focus to the summary button ($name)»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.624: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.635: expect(fullState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-setup-sheet.test.ts :640 «A failed generation after «Так, почати» focuses the summary button»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.645: const before = fullState(root);
+           read under the spike port: cell-cause on 1,3
+    l.654: expect(fullState(root), 'the summary and everything else are unchanged').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-size-selector.test.ts :138 «A size press only marks»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.141: const cells = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.152: expect(snapshot(root), 'and its cell texts').toEqual(cells);
+           read under the spike port: cell-cause on 1,3
+
+play-page-size-selector.test.ts :196 «Choose 8x8 after play: asked first (board and aria-checked unchanged), then after «Так, почати» 64 cells, no entries, hi»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.199: const before = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.207: expect(pageState(root), 'nothing changed before the confirmation').toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-size-selector.test.ts :332 «at 8x8 a failed change to 4 keeps aria-checked on 8, not on the default 6»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.342: const before = snapshot(root);
+           read under the spike port: no cell-cause
+    l.348: expect(snapshot(root)).toEqual(before);
+           read under the spike port: no cell-cause
+
+play-page-size-selector.test.ts :358 «A generator error keeps the previous board: same cells, messages, highlights, marker; aria-checked on 6; dialog closed; »
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.363: const before = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.380: expect(pageState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-size-selector.test.ts :403 «A generator result of the wrong size keeps the previous board (${name} for size 8)»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.405: const before = pageState(root);
+           read under the spike port: cell-cause on 1,3
+    l.415: expect(pageState(root)).toEqual(before);
+           read under the spike port: cell-cause on 1,3
+
+play-page-start-button.test.ts :185 ««Почати» on a board with entries asks first»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.189: const cells = snapshot(root);
+           read under the spike port: cell-cause on 1,3
+    l.210: expect(snapshot(root), 'with the same cell texts').toEqual(cells);
+           read under the spike port: cell-cause on 1,3
+
+play-page-start-button.test.ts :259 «A failed generation after «Почати» keeps everything»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.268: const cells = snapshot(root);
+           read under the spike port: no cell-cause
+    l.283: expect(snapshot(root), 'with the same cell texts').toEqual(cells);
+           read under the spike port: no cell-cause
+
+play-page-theme.test.ts :71 «A theme press changes only the theme»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.85: cells: snapshot(root),
+           read under the spike port: cell-cause on 1,3
+    l.100: expect(snapshot(root), 'every cell keeps its text and class list').toEqual(before.cells);
+           read under the spike port: cell-cause on 1,3
+
+play-page-theme.test.ts :346 «Opening the panel closes the sheet and discards the marked choice»
+  CLASS K0: spans actions that change no cell, no marker on the board: must stay equal; FR-120 adds nothing. Unchanged.
+    l.348: const before = { cells: snapshot(root), hint: hintMessage(root), win: winMessage(root), summary: summaryText(r
+           read under the spike port: no cell-cause
+    l.358: expect(snapshot(root)).toEqual(before.cells);
+           read under the spike port: no cell-cause
+
+play-page-marked-choice.test.ts :113 «Marking changes only the marked choice»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.117: const facts = boardFacts(root);
+           read under the spike port: cell-cause on 1,3
+    l.130: expect(boardFacts(root), 'the board, the messages, the highlights, cell-hinted and the summary are unchanged')
+           read under the spike port: cell-cause on 1,3
+
+play-page-marked-choice.test.ts :176 «Closing without «Почати» discards the marked choice by every route»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.192: const facts = boardFacts(root);
+           read under the spike port: cell-cause on 1,3
+    l.203: expect(boardFacts(root), `${route}: the board, the messages, the highlights, cell-hinted and the summary are u
+           read under the spike port: cell-cause on 1,3
+
+play-page-marked-choice.test.ts :344 «A size marked and then another size marked»
+  CLASS KM: spans actions that change no cell, with a marker on the board (spike port): must stay equal; the marker is KEPT (FR-120: not removed by an action that changes no cell), so the comparison also pins that rule. Unchanged.
+    l.348: const facts = boardFacts(root);
+           read under the spike port: cell-cause on 1,3
+    l.361: expect(boardFacts(root), 'the board, the messages and the summary are unchanged').toEqual(facts);
+           read under the spike port: cell-cause on 1,3

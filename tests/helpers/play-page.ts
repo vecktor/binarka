@@ -717,13 +717,18 @@ function describeElement(el: Element | null): string {
 }
 
 /**
- * The FR-70 label a cell must carry, built from its own `data-row`, `data-col`, text, `data-given` and the class
- * `cell-hinted`: «Рядок R, стовпець C, V» with V «порожньо», «0» or «1», then «, задано» for a given or «, підказка» for a
- * hinted cell (a violation adds no suffix). Written independently of the page: it does not import src/ui/strings.ts.
+ * The FR-70 label a cell must carry, built from its own `data-row`, `data-col`, text, `data-given` and the classes
+ * `cell-hinted` and `cell-cause`: «Рядок R, стовпець C, V» with V «порожньо», «0» or «1», then «, задано» for a given, or else
+ * «, підказка» for a hinted cell followed by «, спричиняє порушення» for the cause cell (a violation without `cell-cause` adds no
+ * suffix; a given never gets the hint or the cause suffix). Written independently of the page: it does not import src/ui/strings.ts.
+ * DELIBERATE CHANGE (add-violation-cause, delta «Cell labels» (FR-70, FR-120); proposal.md Impact row `tests/helpers/play-page.ts`
+ * `expectedCellLabel` 719-728): the oracle reads `cell-cause` (was: "a violation adds no suffix", with no cause suffix at all).
  */
 export function expectedCellLabel(cell: Element): string {
   const value = cell.textContent === '' ? 'порожньо' : cell.textContent;
-  const suffix = cell.getAttribute('data-given') === 'true' ? ', задано' : cell.classList.contains('cell-hinted') ? ', підказка' : '';
+  const hinted = cell.classList.contains('cell-hinted') ? ', підказка' : '';
+  const cause = cell.classList.contains('cell-cause') ? ', спричиняє порушення' : '';
+  const suffix = cell.getAttribute('data-given') === 'true' ? ', задано' : `${hinted}${cause}`;
   return `Рядок ${cell.getAttribute('data-row') ?? ''}, стовпець ${cell.getAttribute('data-col') ?? ''}, ${value}${suffix}`;
 }
 
