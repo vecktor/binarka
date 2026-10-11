@@ -28,6 +28,8 @@
   --color-success-glow: #2f6b3a73;
   --color-win-text: #1e2126;
   --color-focus: #1e2126;
+  --color-backdrop-soft: #46280f38;
+  --color-backdrop-strong: #2d190a80;
 }
 
 :root[data-theme='dark'] {
@@ -57,6 +59,8 @@
   --color-success-glow: #8fd19a73;
   --color-win-text: #f1ede4;
   --color-focus: #f1ede4;
+  --color-backdrop-soft: #08050273;
+  --color-backdrop-strong: #08050299;
 }
 
 /* ---------- Layout geometry (update-page-layout-geometry, NFR-14): ported from design/v0/app/binarka.css with the same formulas, so
@@ -569,8 +573,7 @@ button:focus-visible {
 }
 
 .confirm::backdrop {
-  background-color: var(--color-text);
-  opacity: 0.45;
+  background-color: var(--color-backdrop-strong);
 }
 
 .confirm p {
@@ -612,8 +615,7 @@ button:focus-visible {
 }
 
 .rules::backdrop {
-  background-color: var(--color-text);
-  opacity: 0.3;
+  background-color: var(--color-backdrop-soft);
 }
 
 @media (min-width: 48rem) {
@@ -766,8 +768,7 @@ button:focus-visible {
 }
 
 .setup-sheet::backdrop {
-  background-color: var(--color-text);
-  opacity: 0.3;
+  background-color: var(--color-backdrop-soft);
 }
 
 @media (min-width: 48rem) {
@@ -1026,6 +1027,11 @@ button:focus-visible {
   #app {
     --cell-cap: 4.5rem;
   }
+
+  /* From this width the rules panel ends over the board, so it takes the stronger backdrop; it wins by specificity. */
+  .rules:popover-open::backdrop {
+    background-color: var(--color-backdrop-strong);
+  }
 }
 
 /* Settings panel: a bottom sheet on phones, a panel under the header at the right from 48rem (design/v0 .settings). */
@@ -1049,19 +1055,7 @@ button:focus-visible {
 }
 
 .settings::backdrop {
-  background-color: var(--color-text);
-  opacity: 0.3;
-}
-/* In dark the text colour is light, so a backdrop of it would lighten the page; the dark page colour dims it instead (review-set-13). */
-:root[data-theme='dark'] .rules::backdrop,
-:root[data-theme='dark'] .setup-sheet::backdrop,
-:root[data-theme='dark'] .settings::backdrop {
-  background-color: var(--color-page);
-  opacity: 0.6;
-}
-:root[data-theme='dark'] .confirm::backdrop {
-  background-color: var(--color-page);
-  opacity: 0.7;
+  background-color: var(--color-backdrop-soft);
 }
 
 @media (min-width: 48rem) {

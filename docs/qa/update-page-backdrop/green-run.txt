@@ -1,0 +1,42 @@
+# Green run, update-page-backdrop section 3 (the port)
+Note: the date stamps were taken when this file was assembled from the saved run outputs, not at each command; the runs happened in the order listed.
+lsof 4173, 4174, 4176, 4177 before the build and the Playwright run: no listener (no orphaned vite preview)
+
+## $ npm run test:run  (Sun Oct 11 08:18:35 +0530 2026)
+ Test Files  72 passed (72)
+      Tests  1774 passed (1774)
+
+## $ npm run build  (Sun Oct 11 08:18:35 +0530 2026)
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-VOvuxgWV.css  19.22 kB │ gzip:  4.15 kB
+dist/assets/index-DkNRgho5.js   34.61 kB │ gzip: 12.60 kB
+
+✓ built in 32ms
+
+## $ npx playwright test --project=layout  (Sun Oct 11 08:18:35 +0530 2026)
+  125 passed (12.7s)
+nfr-14-backdrop results (open-pixel values are not printed by the spec; each case asserts the composite within 1 per channel):
+✓   38 [layout] › e2e/nfr-14-backdrop.spec.ts:86:1 › @trace NFR-14 the sampling is declared: surfaces, schemes and widths; coverage sampled, with the 10 cases of the spec (1ms)
+✓   40 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light rules 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it (180ms)
+✓   39 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light rules 375x812: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (197ms)
+✓   42 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light settings 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (196ms)
+✓   41 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light setup 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (200ms)
+✓   43 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light confirm 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it (176ms)
+✓   44 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark rules 375x812: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (195ms)
+✓   45 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark rules 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it (194ms)
+✓   46 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark setup 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (194ms)
+✓   47 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark settings 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (180ms)
+✓   48 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark confirm 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it (191ms)
+
+nfr-14-palette, nfr-14-layout-geometry, nfr-10, nfr-12, nfr-18 counts:
+nfr-14-palette: 27 passed, 0 failed
+nfr-14-layout-geometry: 38 passed, 0 failed
+nfr-10: 21 passed, 0 failed
+nfr-12: 16 passed, 0 failed
+nfr-18: 12 passed, 0 failed
+
+docs/qa/e2e-report.json restored with git checkout.
+
+## $ git diff --stat -- src
+ src/ui/style.css | 32 +++++++++++++-------------------
+ 1 file changed, 13 insertions(+), 19 deletions(-)
