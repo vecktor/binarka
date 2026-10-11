@@ -1,0 +1,33 @@
+# Does any NFR-14 capture reach a violation through a board change after mount? (violation-cause amendment, Basis)
+# Run 2026-10-11 07:26 +0530 with node_modules/.bin/tsx on the script below (the worktree path shortened to <W>).
+# The adapter's drivers change a cell only in the 'hint' shot (one press of «Підказка» on hintBoard without its h cell).
+
+## script
+import { readFileSync } from 'node:fs';
+import { hint } from '<W>/src/engine/hint.ts';
+import { findViolations } from '<W>/src/engine/rules.ts';
+const boards = JSON.parse(readFileSync('<W>/design/v0/lib/boards.json', 'utf8'));
+for (const [name, b] of Object.entries<any>(boards)) {
+  const grid = b.rows.map((row: string) => row.trim().split(/\s+/).map((t: string) => (t === '.' || t.startsWith('h') ? null : Number(t.slice(1)))));
+  console.log(name, 'violations at mount (hinted cell dropped):', findViolations(grid).length);
+  if (name === 'hintBoard') for (const ceiling of [1, 2, 3, 4]) {
+    const h: any = hint(grid.map((r: any) => [...r]), ceiling);
+    const next = grid.map((r: any) => [...r]);
+    if (h.kind === "fill") next[h.row][h.col] = h.value;
+    console.log(' ceiling', ceiling, JSON.stringify(h).slice(0, 160), '-> violations after fill:', findViolations(next).length);
+  }
+}
+
+## output (the hint sentence elided)
+fixtureBoard violations at mount (hinted cell dropped): 1
+hintBoard violations at mount (hinted cell dropped): 0
+ ceiling 1 {"kind":"fill","row":2,"col":2,"value":1,"rule":"pair","axis":"row","line":2,"digit":0,... -> violations after fill: 0
+ ceiling 2 {"kind":"fill","row":2,"col":2,"value":1,"rule":"pair","axis":"row","line":2,"digit":0,... -> violations after fill: 0
+ ceiling 3 {"kind":"fill","row":2,"col":2,"value":1,"rule":"pair","axis":"row","line":2,"digit":0,... -> violations after fill: 0
+ ceiling 4 {"kind":"fill","row":2,"col":2,"value":1,"rule":"pair","axis":"row","line":2,"digit":0,... -> violations after fill: 0
+solvedBoard violations at mount (hinted cell dropped): 0
+eightBoard violations at mount (hinted cell dropped): 0
+fourBoard violations at mount (hinted cell dropped): 0
+
+## repeat
+# Re-run on 2026-10-11 at about 07:27 (UTC+5:30), the same command; `diff` of the two outputs (the sentence elided the same way) printed nothing and the shell printed "identical".
