@@ -1,0 +1,307 @@
+# Red run: update-setup-sheet (tasks 2.1 to 2.6)
+
+Session B (`claude/magical-nash-setup`, base `ebaf49b`). Tests written by two test-engineer subagents (unit: tasks 2.1-2.4; e2e: task 2.5), disjoint files; the parent (session B) ran both suites itself against today's `src/ui/style.css` (unchanged) on 2026-10-11 between 18:24 and 18:30 (UTC+5:30) and confirmed every new failure is an assertion that names a missing declaration, value or box, none an import, syntax or type error (`grep -iE "TypeError|SyntaxError|Cannot find module|ReferenceError"` over the unit output: no match). `npx eslint` on the touched files and `npx tsc --noEmit -p .`: clean (subagent reports).
+
+## A. Task 2.1: the shell's tests that read the sheet (they must stay green after the port, except the one modified scenario)
+
+- `tests/play-page-panel-shell-stylesheet.test.ts`
+  - :61-73 exactly one top-level `.setup-sheet` rule with the shell's `background-color`, `border-color`, `box-shadow`; :72 reads the FIRST raw `.setup-sheet {` block of the file (audit finding 7: the 22.5rem rule must come after the base rule).
+  - :81-91 exactly one `box-shadow` in `.setup-sheet` inside `@media (min-width: 48rem)` (the panel shadow); `border-color` and `background-color` at every width are the shell's tokens or absent.
+  - :131-137 the `.setup-sheet:popover-open::before` strip's `background` and `box-shadow`.
+  - :139-146 exactly one top-level `.setup-close` rule, the raised `background-color`.
+  - :152-154 exactly 7 shadow rules over the panels and `.confirm` (so the 22.5rem and anchored `.setup-sheet` rules declare no `box-shadow`).
+  - :178-195 the pairs on the raised fill: the one scenario this folder modifies («exactly three» becomes four, 38 becomes 41).
+- `tests/play-page-root-size.test.ts`: no selector read of `.setup-sheet`; it opens the sheet behaviourally (:153, :157); the `:has(` count guard (:274-281).
+- `e2e/nfr-14-panel-shell.spec.ts`: reads the open sheet by `[data-section="setup"]` / `:popover-open` (:211, :218), its computed fill, border, shadow, the «Закрити» fill and the strip shadow (:244-247), and compares with the design build (:360-361, :377-378). Paint only, no geometry.
+
+## B. Task 2.2: helpers and count pins (each edit carries `// DELIBERATE CHANGE (update-setup-sheet): … — proposal.md Impact row «…»`)
+
+| File | Edit | Row | Today |
+|---|---|---|---|
+| `tests/helpers/css.ts` | `TOKEN_NAMES` 32nd `--color-option-border`; `PALETTE_LIGHT` `#c4b59c`; `PALETTE_DARK` `#5a5045`; `CONTRAST_PAIRS` 41 (`control-border` gains `control-bg`; `hinted-cue` primary gains `control-bg`, `surface-raised`) | Borders | helper (GUARD) |
+| `tests/play-page-helpers.test.ts` | `DESIGN_TOKENS`, `DARK_SAMPLE` rows; 32; `4+4+1+5+9+2+16` = 41; hinted-cue five pairs; four pairs on the raised fill | Borders; The panels | GUARD (green) |
+| `tests/play-page-cause-stylesheet.test.ts` | 38→41, 31→32 | Borders | FAIL (the 32-token compare: `--color-option-border` missing) |
+| `tests/play-page-theme-stylesheet.test.ts` | 31→32 | Borders | FAIL (`--color-option-border is declared once in :root[data-theme="dark"]`) |
+| `tests/play-page-level-stylesheet.test.ts` | :220 31→32, :230 "no 33rd" | Borders | FAIL («--color-option-border is declared once in :root») |
+| `tests/play-page-layout-geometry.test.ts` | `LIGHT`/`DARK` rows; 32 | Main column | FAIL (token sets differ by one key) |
+| `tests/play-page-stylesheet.test.ts` | 31→32 | Borders | FAIL (`--color-option-border is declared once in the top-level :root`) |
+| `tests/play-page-palette-stylesheet.test.ts` | title 32 | Borders | FAIL (`expected ['--color-option-border']` unbound) |
+| `tests/play-page-panel-shell-stylesheet.test.ts` | exactly four pairs on the raised fill, 41, ratio loop + `--color-primary` (5.40 / 6.82) | The panels | GUARD (green: the helper changed, the four tokens exist) |
+
+## C. Task 2.3: `tests/play-page-level-stylesheet.test.ts`
+
+- :188 the checked ring: `background-image` with `radial-gradient(` and `var(--color-primary)`, no `box-shadow`, no `inset`: FAIL (`expected '' to contain 'radial-gradient('`).
+- :15 the stale "held" comment now points at the ADDED requirement (no assertion).
+- «The start button declares its colours»: new assertion `[fg, bg]` = `['--color-primary-text', '--color-primary']`: FAIL («Почати» binds color var(--color-primary-text) on background-color var(--color-primary)).
+
+## D. Task 2.4: new `tests/play-page-setup-sheet-stylesheet.test.ts` (`@trace FR-96`, `@trace FR-65`, `@trace NFR-14`), 42 tests: 31 FAIL, 11 GUARD
+
+The file reads the raw stylesheet text (source order, at-rule chain, declarations as written) for the declarations jsdom's CSSOM drops or folds (`env()` in the phone padding, `border-left: 3px solid var()`, `calc(0.875rem + 0.5rem)`, the double `max-height`).
+
+GUARD (pass today by design): the first `.setup-sheet {` block is the top-level one; no `min-height` of the sheet buttons in an at-rule; the 48rem rule keeps the shell's three bindings at most once each; `:has(` exactly once and no `.board*` rule declares `--board-width`; no rule exactly `.setup-sheet` declares `display`; the 28px level margin outside any at-rule and not changed by a media rule; `scroll-padding-bottom` ≥ `calc(2.75rem + 48px)`; the theme and language checked rules unchanged; no motion on `.setup-sheet*`/`.level-control*`; the colour scan over those rules; the three ring ratios (3.68/4.13, 5.40/7.39, 5.40/6.82), 41 pairs, no new `PairGroup`.
+
+FAIL (the 31, each on an assertion naming the declaration; full list in the unit output below): the phone rule (radius, padding), `max-height` twice (`expected ['80dvh'] to deeply equal ['90vh','88dvh']`), the 22.5rem rule and its source order, the small-phone cards, the 48rem full cover, the anchored rule and its order, both `min-height` formulas, no `line-height`, the indent, the card, ring and checked-ring paint, no `box-shadow` in the six rules, the description colours, the reason line, the size options, «Почати», «Закрити», the gradient tokens, the nine inner-metrics tests, `--color-option-border` declared and bound.
+
+## E. Task 2.5: new `e2e/nfr-14-setup-sheet.spec.ts` (`@trace NFR-14`, `@trace FR-96`, project `layout`)
+
+26 tests by default (2 fixture, 12 box, 12 floor/no-cut); `SETUP_SHEET_SWEEP=1` adds 12 sweep tests (one per state and height, failures collected). Sampling declared: six viewports × two states, `coverage: sampled`; stricter instruments named (`npm run check:visual`, `scripts/visual-block.mjs --block setup`, the sweep). The box tests are generated from the 12 shot names, not from the fixture, so they exist and FAIL while the key is absent. GUARD: «the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes».
+
+Run (under the capture lock; `npm run build` first; `design/v0/out/index.html` present):
+```
+$ mkdir /tmp/binarka-capture.lock   # owner: session B magical-nash-setup 2026-10-11 18:29 +0530
+$ npx playwright test --project=layout e2e/nfr-14-setup-sheet.spec.ts --reporter=list
+== lsof before 2026-10-11 18:29:31 +0530
+port 4173:
+port 4174:
+port 4176:
+port 4177:
+  ✓   3 [layout] › e2e/nfr-14-setup-sheet.spec.ts:132:1 › @trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED, nothing else changes) (5ms)
+  ✘   4 [layout] › e2e/nfr-14-setup-sheet.spec.ts:141:1 › @trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, the recorded 28px deviation and the 12 cases (4ms)
+  ✘   5 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 320-light-setup (320x700): the open setup sheet matches the design's box within the fixture's tolerance (175ms)
+  ✘   1 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 320-light-setup-four (320x700): the open setup sheet matches the design's box within the fixture's tolerance (180ms)
+  ✘   2 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 375-light-setup (375x812): the open setup sheet matches the design's box within the fixture's tolerance (179ms)
+  ✘   6 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 375-light-setup-four (375x812): the open setup sheet matches the design's box within the fixture's tolerance (175ms)
+  ✘   7 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 768-light-setup (768x1024): the open setup sheet matches the design's box within the fixture's tolerance (221ms)
+  ✘   8 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 768-light-setup-four (768x1024): the open setup sheet matches the design's box within the fixture's tolerance (231ms)
+  ✘  10 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 1024-light-setup-four (1024x768): the open setup sheet matches the design's box within the fixture's tolerance (221ms)
+  ✘   9 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 1024-light-setup (1024x768): the open setup sheet matches the design's box within the fixture's tolerance (228ms)
+  ✘  11 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 1366-light-setup (1366x650): the open setup sheet matches the design's box within the fixture's tolerance (215ms)
+  ✘  12 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 1366-light-setup-four (1366x650): the open setup sheet matches the design's box within the fixture's tolerance (165ms)
+  ✓  14 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 320x700 default: the open setup sheet cuts no idle line (205ms)
+  ✘  15 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 1440-light-setup-four (1440x900): the open setup sheet matches the design's box within the fixture's tolerance (215ms)
+  ✘  13 [layout] › e2e/nfr-14-setup-sheet.spec.ts:304:5 › @trace NFR-14 @trace FR-96 1440-light-setup (1440x900): the open setup sheet matches the design's box within the fixture's tolerance (217ms)
+  ✓  16 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 320x700 four: the open setup sheet cuts no idle line (168ms)
+  ✓  17 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 375x812 four: the open setup sheet cuts no idle line (114ms)
+  ✘  18 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 1024x768 default: the open setup sheet ends below the button row and cuts no idle line (138ms)
+  ✓  20 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 1024x768 four: the open setup sheet ends below the button row and cuts no idle line (115ms)
+  ✓  19 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 375x812 default: the open setup sheet cuts no idle line (166ms)
+  ✘  21 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 1366x650 four: the open setup sheet ends below the button row and cuts no idle line (145ms)
+  ✓  22 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 1440x900 default: the open setup sheet ends below the button row and cuts no idle line (104ms)
+  ✓  24 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 768x1024 four: the open setup sheet ends below the button row and cuts no idle line (147ms)
+  ✘  23 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 768x1024 default: the open setup sheet ends below the button row and cuts no idle line (157ms)
+  ✘  25 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 1366x650 default: the open setup sheet ends below the button row and cuts no idle line (132ms)
+  ✓  26 [layout] › e2e/nfr-14-setup-sheet.spec.ts:359:5 › @trace NFR-14 @trace FR-96 1440x900 four: the open setup sheet ends below the button row and cuts no idle line (121ms)
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 320-light-setup: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "320-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 320-light-setup-four: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "320-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 375-light-setup: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "375-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 375-light-setup-four: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "375-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 768-light-setup: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "768-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 768-light-setup-four: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "768-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 1024-light-setup: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "1024-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 1024-light-setup-four: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "1024-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 1366-light-setup: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "1366-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 1366-light-setup-four: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "1366-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 1440-light-setup: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "1440-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 4
+    + Array [
+    +   "quality/design-geometry.json has no setupSheet case 1440-light-setup-four: run `node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-setup-sheet/tasks.md) to add the key setupSheet to quality/design-geometry.json",
+    +   "1440-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    + ]
+    + Received  + 3
+    + Array [
+    +   "768x1024 default: the sheet's bottom 774.00 cuts the idle line (768.33 to 808.92; sheet 160.00,250.00 448.00x524.00)",
+    + ]
+    + Received  + 3
+    + Array [
+    +   "1024x768 default: the sheet ends at 646.00, above the floor min(R+8, H-16) = min(650.00, 752) = 650.00 (R = 642.00, H = 768, sheet 288.00,122.00 448.00x524.00)",
+    + ]
+    + Received  + 3
+    + Array [
+    +   "1366x650 default: the sheet's bottom 585.00 cuts the idle line (554.33 to 594.92; sheet 459.00,65.00 448.00x520.00)",
+    + ]
+    + Received  + 3
+    + Array [
+    +   "1366x650 four: the sheet's bottom 585.00 cuts the idle line (546.33 to 586.92; sheet 459.00,65.00 448.00x520.00)",
+    + ]
+  17 failed
+  9 passed (7.7s)
+exit=1
+== lsof after 2026-10-11 18:29:40 +0530
+port 4173:
+port 4174:
+port 4176:
+port 4177:
+$ rm -r /tmp/binarka-capture.lock
+```
+
+Reading of E: the fixture-key test and all 12 box tests fail on the missing key (with the freeze instruction) and on the sheet's computed `line-height: normal` against the body's 24px; the computed level margin is already 28px (no message). The floor/no-cut part fails at 768×1024 default (the sheet's bottom cuts the idle line), 1024×768 default (the sheet ends 4px above the floor), 1366×650 default and four (the cut idle line of `docs/qa/update-page-layout-geometry/stills/1366-dark-setup.png`); 320, 375, 1440 and the other `four` states pass today (the 28rem centred box happens to clear them). `docs/qa/e2e-report.json` was not rewritten (list reporter; `git status` clean there).
+
+## F. Task 3.2 (after the refreeze, `docs/qa/update-setup-sheet/refreeze.txt`)
+
+Two edits to the new e2e's fixture test before this run, both demanded by the frozen data (not by the page): the content-decided growth is `min(4 or 12, maxHeightPx − design h)` (the `320-light-setup` case meets the cap: +2.31px), and `layout.minHeightPx` is `>= 0` (the phone regimes have no `min-height`). Re-run under the lock, 2026-10-11 18:31-18:32 (UTC+5:30):
+
+```
+$ npx playwright test --project=layout e2e/nfr-14-setup-sheet.spec.ts --reporter=list
+== 2026-10-11 18:31:58 +0530 lock taken
+port 4173:
+port 4174:
+port 4176:
+port 4177:
+  ✓   3 [layout] › e2e/nfr-14-setup-sheet.spec.ts:132:1 › @trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED, nothing else changes) (4ms)
+  ✓   1 [layout] › e2e/nfr-14-setup-sheet.spec.ts:141:1 › @trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, the recorded 28px deviation and the 12 cases (36ms)
+  ✘   7 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 768-light-setup (768x1024): the open setup sheet matches the design's box within the fixture's tolerance (220ms)
+  ✘   6 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 375-light-setup-four (375x812): the open setup sheet matches the design's box within the fixture's tolerance (229ms)
+  ✘   5 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 375-light-setup (375x812): the open setup sheet matches the design's box within the fixture's tolerance (223ms)
+  ✘   2 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 320-light-setup-four (320x700): the open setup sheet matches the design's box within the fixture's tolerance (228ms)
+  ✘   4 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 320-light-setup (320x700): the open setup sheet matches the design's box within the fixture's tolerance (235ms)
+  ✘   8 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 1366-light-setup-four (1366x650): the open setup sheet matches the design's box within the fixture's tolerance (228ms)
+  ✘  12 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 1366-light-setup (1366x650): the open setup sheet matches the design's box within the fixture's tolerance (237ms)
+  ✘  10 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 768-light-setup-four (768x1024): the open setup sheet matches the design's box within the fixture's tolerance (227ms)
+  ✘   9 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 1024-light-setup-four (1024x768): the open setup sheet matches the design's box within the fixture's tolerance (240ms)
+  ✘  11 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 1024-light-setup (1024x768): the open setup sheet matches the design's box within the fixture's tolerance (238ms)
+  ✓  15 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 320x700 default: the open setup sheet cuts no idle line (324ms)
+  ✓  17 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 375x812 default: the open setup sheet cuts no idle line (334ms)
+  ✓  14 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 320x700 four: the open setup sheet cuts no idle line (344ms)
+  ✘  16 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 1440-light-setup-four (1440x900): the open setup sheet matches the design's box within the fixture's tolerance (343ms)
+  ✘  13 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 1440-light-setup (1440x900): the open setup sheet matches the design's box within the fixture's tolerance (367ms)
+  ✓  18 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 375x812 four: the open setup sheet cuts no idle line (143ms)
+  ✓  20 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 768x1024 four: the open setup sheet ends below the button row and cuts no idle line (127ms)
+  ✘  19 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 768x1024 default: the open setup sheet ends below the button row and cuts no idle line (151ms)
+  ✘  21 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 1366x650 default: the open setup sheet ends below the button row and cuts no idle line (132ms)
+  ✘  22 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 1366x650 four: the open setup sheet ends below the button row and cuts no idle line (123ms)
+  ✓  24 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 1024x768 four: the open setup sheet ends below the button row and cuts no idle line (178ms)
+  ✘  23 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 1024x768 default: the open setup sheet ends below the button row and cuts no idle line (197ms)
+  ✓  25 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 1440x900 default: the open setup sheet ends below the button row and cuts no idle line (169ms)
+  ✓  26 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 1440x900 four: the open setup sheet ends below the button row and cuts no idle line (127ms)
+    +   "320-light-setup [data-section=\"setup\"]: page 0.00,140.00 320.00x560.00, expected 0.00,144.00 320.00x556.00, design's own boxes 0.00,146.31 320.00x553.69 (decided by content); off at top 140.00 vs 144.00",
+    +   "320-light-setup first description: page left edge 35.00, design's 29.00 (page box 35.00,257.00 249.98x54.00, design box 29.00,257.31 261.98x56.67)",
+    +   "320-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    +   "320-light-setup-four [data-section=\"setup\"]: page 0.00,140.00 320.00x560.00, expected 0.00,144.00 320.00x556.00, design's own boxes 0.00,144.00 320.00x556.00 (decided by max-height); off at top 140.00 vs 144.00",
+    +   "320-light-setup-four first description: page left edge 35.00, design's 29.00 (page box 35.00,307.78 249.98x54.00, design box 29.00,306.78 261.98x56.67)",
+    +   "320-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    +   "375-light-setup [data-section=\"setup\"]: page 0.00,265.00 375.00x547.00, expected 0.00,272.98 375.00x539.02, design's own boxes 0.00,276.98 375.00x535.02 (decided by content); off at top 265.00 vs 272.98",
+    +   "375-light-setup first description: page left edge 35.00, design's 31.00 (page box 35.00,382.00 305.00x54.00, design box 31.00,397.98 313.00x37.78)",
+    +   "375-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    +   "375-light-setup-four [data-section=\"setup\"]: page 0.00,236.61 375.00x575.39, expected 0.00,238.09 375.00x573.91, design's own boxes 0.00,242.09 375.00x569.91 (decided by content); off at top 236.61 vs 238.09",
+    +   "375-light-setup-four first description: page left edge 35.00, design's 31.00 (page box 35.00,382.00 305.00x54.00, design box 31.00,397.98 313.00x37.78)",
+    +   "375-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    +   "768-light-setup [data-section=\"setup\"]: page 160.00,250.00 448.00x524.00, expected 127.00,156.00 514.00x590.00, design's own boxes 127.00,156.00 514.00x590.00 (decided by min-height); off at left 160.00 vs 127.00, top 250.00 vs 156.00, right 608.00 vs 641.00, bottom 774.00 vs 746.00",
+    +   "768-light-setup first description: page left edge 203.00, design's 158.00 (page box 203.00,371.00 362.00x36.00, design box 158.00,277.00 451.98x37.78)",
+    +   "768-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    +   "768-light-setup-four [data-section=\"setup\"]: page 160.00,235.80 448.00x552.39, expected 127.00,156.00 514.00x556.02, design's own boxes 127.00,156.00 514.00x552.02 (decided by content); off at left 160.00 vs 127.00, top 235.80 vs 156.00, right 608.00 vs 641.00, bottom 788.19 vs 712.02",
+    +   "768-light-setup-four first description: page left edge 203.00, design's 158.00 (page box 203.00,385.19 362.00x36.00, design box 158.00,311.89 451.98x37.78)",
+    +   "768-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    +   "1024-light-setup [data-section=\"setup\"]: page 288.00,122.00 448.00x524.00, expected 303.00,156.00 418.00x521.13, design's own boxes 303.00,156.00 418.00x517.13 (decided by content); off at left 288.00 vs 303.00, top 122.00 vs 156.00, right 736.00 vs 721.00, bottom 646.00 vs 677.13",
+    +   "1024-light-setup first description: page left edge 331.00, design's 334.00 (page box 331.00,243.00 362.00x36.00, design box 334.00,277.00 356.00x37.78)",
+    +   "1024-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    +   "1024-light-setup-four [data-section=\"setup\"]: page 288.00,107.80 448.00x552.39, expected 303.00,156.00 418.00x556.02, design's own boxes 303.00,156.00 418.00x552.02 (decided by content); off at left 288.00 vs 303.00, top 107.80 vs 156.00, right 736.00 vs 721.00, bottom 660.19 vs 712.02",
+    +   "1024-light-setup-four first description: page left edge 331.00, design's 334.00 (page box 331.00,257.19 362.00x36.00, design box 334.00,311.89 356.00x37.78)",
+    +   "1024-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    +   "1366-light-setup [data-section=\"setup\"]: page 459.00,65.00 448.00x520.00, expected 467.00,96.00 432.00x521.13, design's own boxes 467.00,96.00 432.00x517.13 (decided by content); off at left 459.00 vs 467.00, top 65.00 vs 96.00, right 907.00 vs 899.00, bottom 585.00 vs 617.13",
+    +   "1366-light-setup first description: page left edge 502.00, design's 498.00 (page box 502.00,186.00 362.00x36.00, design box 498.00,217.00 370.00x37.78)",
+    +   "1366-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    +   "1366-light-setup-four [data-section=\"setup\"]: page 459.00,65.00 448.00x520.00, expected 467.00,96.00 432.00x538.00, design's own boxes 467.00,96.00 432.00x538.00 (decided by max-height); off at left 459.00 vs 467.00, top 65.00 vs 96.00, right 907.00 vs 899.00, bottom 585.00 vs 634.00",
+    +   "1366-light-setup-four first description: page left edge 502.00, design's 498.00 (page box 502.00,214.39 362.00x36.00, design box 498.00,251.89 370.00x37.78)",
+    +   "1366-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    +   "1440-light-setup [data-section=\"setup\"]: page 496.00,188.00 448.00x524.00, expected 487.00,156.00 466.00x542.00, design's own boxes 487.00,156.00 466.00x542.00 (decided by min-height); off at left 496.00 vs 487.00, top 188.00 vs 156.00, right 944.00 vs 953.00, bottom 712.00 vs 698.00",
+    +   "1440-light-setup first description: page left edge 539.00, design's 518.00 (page box 539.00,309.00 362.00x36.00, design box 518.00,277.00 403.98x37.78)",
+    +   "1440-light-setup: the sheet's computed line-height is normal, the body's is 24px",
+    +   "1440-light-setup-four [data-section=\"setup\"]: page 496.00,173.80 448.00x552.39, expected 487.00,156.00 466.00x556.02, design's own boxes 487.00,156.00 466.00x552.02 (decided by content); off at left 496.00 vs 487.00, top 173.80 vs 156.00, right 944.00 vs 953.00, bottom 726.19 vs 712.02",
+    +   "1440-light-setup-four first description: page left edge 539.00, design's 518.00 (page box 539.00,323.19 362.00x36.00, design box 518.00,311.89 403.98x37.78)",
+    +   "1440-light-setup-four: the sheet's computed line-height is normal, the body's is 24px",
+    +   "768x1024 default: the sheet's bottom 774.00 cuts the idle line (768.33 to 808.92; sheet 160.00,250.00 448.00x524.00)",
+    +   "1024x768 default: the sheet ends at 646.00, above the floor min(R+8, H-16) = min(650.00, 752) = 650.00 (R = 642.00, H = 768, sheet 288.00,122.00 448.00x524.00)",
+    +   "1366x650 default: the sheet's bottom 585.00 cuts the idle line (554.33 to 594.92; sheet 459.00,65.00 448.00x520.00)",
+    +   "1366x650 four: the sheet's bottom 585.00 cuts the idle line (546.33 to 586.92; sheet 459.00,65.00 448.00x520.00)",
+  16 failed
+  10 passed (7.9s)
+exit=1
+port 4173:
+port 4174:
+port 4176:
+port 4177:
+== lock released 2026-10-11 18:32:08 +0530
+```
+
+Reading: both fixture tests pass now (the key is present and well formed). All 12 box tests fail on the box assertions (the old sheet is a 28rem box, 448px wide, centred, and 80dvh on phones), on the description's left edge (no indent) and on `line-height: normal`, not on a missing fixture. The floor and no-cut failures are as in section E.
+
+## Unit run (task 2.6)
+
+```
+$ npx vitest run --reporter=verbose
+ Test Files  7 failed | 70 passed (77)
+      Tests  39 failed | 1861 passed (1900)
+FAIL  tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > The cause cue has 3:1 against the violation fill and the stripe
+FAIL  tests/play-page-layout-geometry.test.ts > @trace NFR-14 @trace FR-65 the main column takes the G2 palette > Colours are the G2 palette: the light and dark token sets equal the 32 tokens and values of the table (25 of block 2, 2 backdr
+FAIL  tests/play-page-level-stylesheet.test.ts > @trace FR-65 @trace FR-101 the start button declares its colours > The start button declares its colours
+FAIL  tests/play-page-level-stylesheet.test.ts > @trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements and the buttons are buttons > The existing stylesheet scans still pass
+FAIL  tests/play-page-level-stylesheet.test.ts > @trace FR-87 @trace NFR-9 the checked level has a cue besides colour > The checked level has a cue besides colour
+FAIL  tests/play-page-palette-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the G2 palette) > Every declared token is bound by a rule: each of the 32 tokens is referenced by a declaration outside :root
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The ring pairs and the option border token (update-setup-sheet, FR-65, A-60) > --color-option-border is bound: a declaration outside :root has the value var(--color-option-border) (the 
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The ring pairs and the option border token (update-setup-sheet, FR-65, A-60) > The available card border is decoration: --color-option-border is #c4b59c / #5a5045, not translucent, 1.98
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > The card description: font-size 0.875rem, weight 400, line-height 1.35
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > The card name: font-size 1rem, weight 700, line-height 1.25, gap 0.5rem
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > The level cards: padding 0.5rem 0.75rem, gap 0.125rem, min-height 2.75rem, 2px border, rad
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > The level group: gap 0.5rem and margin-top 0.75rem
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > The reason line: margin 0, padding 0.25rem 0 0.25rem 0.75rem, font-size 0.875rem, line-hei
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > The size control: width 100% with no max-width, margin 0, radius var(--radius-m), 1px bord
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > The size options: padding 0 0.5rem, 2px border, font-size 0.9375rem, line-height 1.2, weig
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > «Закрити»: padding 0 0.5rem, 2px border, radius var(--radius-m), weight 600, min-
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design inner metrics (update-setup-sheet, «Inner metrics», A-60) > «Почати»: padding 0 0.75rem, 2px border, radius var(--radius-m), weight 700, line-
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > No box-shadow in any of the six card and ring rules (no inset shadow on the unavailable card, no inset 
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > The cards are painted as the design paints them: the plain, checked and unavailable card
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > The cards are painted as the design paints them: the ring, the checked ring with the gradient dot, the 
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > The description is muted, and the checked card has its description in --color-text
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > The description starts under the name: padding-left calc(0.875rem + 0.5rem), the ring 0.875rem square, 
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > The gradient of the checked ring has its colours as var(--color-...) tokens
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > The reason line has its accent: border-left 3px solid var(--color-primary), color var(--color-text), fo
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > The size options take the primary paint: the checked option and the unchecked option (muted ink, weight
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > «Закрити» has a border: the rule that is exactly .setup-close outside any at-rule declares bor
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-65, A-60) > «Почати» is filled: the rules that match [data-action=setup-start] and not [data-action=setup-c
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > From 48rem the sheet covers the page from 6rem: the one .setup-sheet rule inside @media (min-width: 4
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > No rule that is exactly .setup-sheet declares line-height (the placeholder line-height: normal is gon
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > On a tall window the sheet hangs under the summary button: the one .setup-sheet rule inside @media (m
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > The anchored block comes after the @media (min-width: 48rem) block that holds the .setup-sheet rule, 
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > The phone regime: max-height is declared exactly twice, 90vh first and 88dvh second (the browser with
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > The phone regime: the rule that is exactly .setup-sheet outside any at-rule declares the bottom sheet
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > The sheet reads the board side through the root: both min-height values read var(--board-width) and v
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > The small phone rule comes after the base .setup-sheet rule in the file, so it wins by source order
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > The small phone tightens the cards: gap 0.375rem and padding 0.375rem 0.625rem at 22.5rem, 0.5rem and
+FAIL  tests/play-page-setup-sheet-stylesheet.test.ts > The setup sheet takes the design size and place (update-setup-sheet, FR-96, A-60) > The small phone: the rule that is exactly .setup-sheet inside @media (max-width: 22.5rem) declares ma
+FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 Tokens exist and are literal: the 32 names of the G2 palette, each declared once in the top-level :root with the light value of the list
+FAIL  tests/play-page-theme-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the dark set) > Tokens exist and are literal: the dark block declares each of the 32 names once with the dark value of the list, so each to
+```

@@ -93,9 +93,12 @@ describe('the colours are tokens (FR-65)', () => {
   // are literal», proposal.md Impact row `tests/play-page-stylesheet.test.ts:92-110`, comment 84-91): the title, `toHaveLength(27)` and the message become
   // 31 (the four shell tokens last), `#rrggbb` for 26 and `#rrggbbaa` for the five translucent tokens only: the list at 107-110 is the five names (sorted),
   // which adds `--color-shadow-panel` and `--color-shadow-sheet`. Red on today's stylesheet: it declares 27 tokens.
-  it('@trace FR-65 Tokens exist and are literal: the 31 names of the G2 palette, each declared once in the top-level :root with the light value of the list', () => {
+  // DELIBERATE CHANGE (update-setup-sheet): the title, `toHaveLength(31)` and the message become 32 (the 32nd name `--color-option-border` last, `#rrggbb`); the list of the
+  // `#rrggbbaa` tokens stays the five names — proposal.md Impact row «Borders, cues and focus rings have enough contrast» (`tests/play-page-stylesheet.test.ts` 94, 96, 98, 109).
+  // Red on today's stylesheet: it declares 31 tokens.
+  it('@trace FR-65 Tokens exist and are literal: the 32 names of the G2 palette, each declared once in the top-level :root with the light value of the list', () => {
     const parsed = readStyles();
-    expect(TOKEN_NAMES).toHaveLength(31);
+    expect(TOKEN_NAMES).toHaveLength(32);
     for (const name of TOKEN_NAMES) {
       const declarations = parsed.tokenDeclarations.filter((d) => d.property === name);
       expect(declarations, `${name} is declared once in the top-level :root`).toHaveLength(1);
@@ -106,7 +109,7 @@ describe('the colours are tokens (FR-65)', () => {
     }
     expect(
       parsed.tokenDeclarations.map((d) => d.property).sort(),
-      'the top-level :root declares the 31 tokens and no other --color-*',
+      'the top-level :root declares the 32 tokens and no other --color-*',
     ).toEqual([...TOKEN_NAMES].sort());
     expect(
       parsed.tokenDeclarations.filter((d) => /^#[0-9a-f]{8}$/i.test(d.value)).map((d) => d.property).sort(),

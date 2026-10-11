@@ -21,6 +21,9 @@ import { BLANK_4, PAIR_ROW, WIN_MESSAGE, bySize, clickCell, generateSpy, install
 // literal copies gain the four shell rows of the spec's table (`--color-surface-raised`, `--color-overlay-border`, `--color-shadow-panel`,
 // `--color-shadow-sheet`: light `#fffdf8`, `#e2dbcc`, `#00000040`, `#0000002e`; dark `#2c2620`, `#8a7f71`, `#00000040`, `#0000002e`), 31 tokens in each set,
 // and the title and the length check are 31. Nothing else in the scenario changes. Red on today's stylesheet: both sets hold 27 tokens.
+// DELIBERATE CHANGE (update-setup-sheet): both copies gain the setup-sheet row `--color-option-border` (light `#c4b59c`, dark `#5a5045`), 32 tokens in each set, and the title and the length
+// check are 32 — proposal.md Impact row «Main column layout geometry follows the design reference» (`tests/play-page-layout-geometry.test.ts` 22-23, `LIGHT` 24, `DARK` 57, 92, 96). Red on
+// today's stylesheet: both sets hold 31 tokens.
 const LIGHT: Record<string, string> = {
   '--color-page': '#f7f3ea',
   '--color-text': '#1e2126',
@@ -53,6 +56,7 @@ const LIGHT: Record<string, string> = {
   '--color-overlay-border': '#e2dbcc',
   '--color-shadow-panel': '#00000040',
   '--color-shadow-sheet': '#0000002e',
+  '--color-option-border': '#c4b59c',
 };
 const DARK: Record<string, string> = {
   '--color-page': '#1a1714',
@@ -86,14 +90,15 @@ const DARK: Record<string, string> = {
   '--color-overlay-border': '#8a7f71',
   '--color-shadow-panel': '#00000040',
   '--color-shadow-sheet': '#0000002e',
+  '--color-option-border': '#5a5045',
 };
 
 describe('@trace NFR-14 @trace FR-65 the main column takes the G2 palette', () => {
-  it('Colours are the G2 palette: the light and dark token sets equal the 31 tokens and values of the table (25 of block 2, 2 backdrops, 4 shell tokens), and no other --color-* is declared', () => {
+  it('Colours are the G2 palette: the light and dark token sets equal the 32 tokens and values of the table (25 of block 2, 2 backdrops, 4 shell tokens, 1 setup-sheet token), and no other --color-* is declared', () => {
     const [light, dark] = themeTokenSets(readStyles());
     expect(light?.tokens).toEqual(LIGHT);
     expect(dark?.tokens).toEqual(DARK);
-    expect(Object.keys(LIGHT)).toHaveLength(31);
+    expect(Object.keys(LIGHT)).toHaveLength(32);
   });
 });
 

@@ -175,22 +175,27 @@ describe('The panels take the shared surface paint (update-panel-shell)', () => 
 
   // Scenario «The raised fill is covered by pairs». The pair list is the helper's (changed in task 2.1), so the list half is a GUARD of the helper; the
   // ratios are computed from the stylesheet's own tokens, so the test is red today (the tokens are not declared).
-  it('The raised fill is covered by pairs: exactly three, with the recorded ratios in the light and the dark set; no pair names the border or a shadow; 38 pairs', () => {
+  // DELIBERATE CHANGE (update-setup-sheet): "exactly three" becomes exactly four (the fourth: `--color-primary` at 3, group `hinted-cue`, the checked level card's border on the sheet),
+  // "38 pairs" becomes 41, and the ratio loop gains `--color-primary` (5.40 light, 6.82 dark) — proposal.md Impact row «The panels take the shared surface paint»
+  // (`tests/play-page-panel-shell-stylesheet.test.ts` comment 175-177, `it` 178-195). The pair-list half is a GUARD of the helper (green once `tests/helpers/css.ts` is changed);
+  // the ratios come from the stylesheet's tokens and stay green here (every token of the four ratios is declared today).
+  it('The raised fill is covered by pairs: exactly four, with the recorded ratios in the light and the dark set; no pair names the border or a shadow; 41 pairs', () => {
     const onRaised = CONTRAST_PAIRS.filter((p) => p.bg === RAISED);
     expect(
       onRaised.map((p) => `${p.group}: ${p.fg} at ${p.min}`).sort(),
       'the pairs on the raised fill (helper list, GUARD once task 2.1 is done)',
-    ).toEqual(['focus-ring: --color-focus at 3', 'text: --color-text at 4.5', 'text: --color-text-muted at 4.5']);
+    ).toEqual(['focus-ring: --color-focus at 3', 'hinted-cue: --color-primary at 3', 'text: --color-text at 4.5', 'text: --color-text-muted at 4.5']);
     expect(CONTRAST_PAIRS.filter((p) => [OVERLAY, SHADOW_PANEL, SHADOW_SHEET].some((n) => p.fg === n || p.bg === n))).toEqual([]);
-    expect(CONTRAST_PAIRS, 'the list holds 38 pairs (GUARD of the helper)').toHaveLength(38);
-    const want: Record<string, [number, number, number]> = { light: [15.88, 7.17, 15.88], dark: [12.79, 6.96, 12.79] };
+    expect(CONTRAST_PAIRS, 'the list holds 41 pairs (GUARD of the helper)').toHaveLength(41);
+    const want: Record<string, [number, number, number, number]> = { light: [15.88, 7.17, 15.88, 5.4], dark: [12.79, 6.96, 12.79, 6.82] };
     for (const set of themeTokenSets(readStyles())) {
       const fill = tokenIn(set, RAISED);
-      const ratios = ['--color-text', '--color-text-muted', '--color-focus'].map((name) => Number(contrastRatio(tokenIn(set, name), fill).toFixed(2)));
-      expect(ratios, `${set.label}: text, muted text and focus ring on the raised fill`).toEqual(want[set.label]);
+      const ratios = ['--color-text', '--color-text-muted', '--color-focus', '--color-primary'].map((name) => Number(contrastRatio(tokenIn(set, name), fill).toFixed(2)));
+      expect(ratios, `${set.label}: text, muted text, focus ring and primary on the raised fill`).toEqual(want[set.label]);
       expect(ratios[0], `${set.label}: text at least 4.5`).toBeGreaterThanOrEqual(4.5);
       expect(ratios[1], `${set.label}: muted text at least 4.5`).toBeGreaterThanOrEqual(4.5);
       expect(ratios[2], `${set.label}: focus ring at least 3`).toBeGreaterThanOrEqual(3);
+      expect(ratios[3], `${set.label}: primary (the checked card's border) at least 3`).toBeGreaterThanOrEqual(3);
     }
   });
 });

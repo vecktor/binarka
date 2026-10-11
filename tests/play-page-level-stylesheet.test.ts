@@ -12,7 +12,10 @@
 //
 // The rules are read from src/ui/style.css as declarations (jsdom never matches :focus-visible and applies no nested rule to
 // computed style, A-28, TC-13). The selectors are the spec-made ones of design.md ambiguity E, written with single-quoted attribute
-// values as the existing size-control tests do. Layout and the look are NOT claimed (held NFR-10, NFR-12, NFR-14).
+// values as the existing size-control tests do. Layout and the look were not claimed here (held NFR-10, NFR-12, NFR-14).
+// DELIBERATE CHANGE (update-setup-sheet): the "held" sentence points at the ADDED requirement «The setup sheet takes the design's size, place and paint» now (size and place, the
+// cards' paint and the dot are pinned in tests/play-page-setup-sheet-stylesheet.test.ts, @trace FR-96, FR-65, NFR-14) — proposal.md Impact row «The summary and level buttons set
+// their own colours» (`tests/play-page-level-stylesheet.test.ts` :15, stale "held" comment).
 import { describe, expect, it } from 'vitest';
 import {
   BLANK,
@@ -151,6 +154,10 @@ describe('@trace FR-65 @trace FR-101 the start button declares its colours', () 
     const fg = tokenOf(parsed, declarations.get('color'));
     const bg = tokenOf(parsed, declarations.get('background-color'));
     expect.assert(fg !== undefined && bg !== undefined, 'premise: both colours are tokens');
+    // DELIBERATE CHANGE (update-setup-sheet): one new assertion — «Почати» is filled: `color: var(--color-primary-text)` on `background-color: var(--color-primary)` (the rest of the test stays; the
+    // 4.5:1 loop below then runs on that pair) — proposal.md Impact row «The summary and level buttons set their own colours» (`tests/play-page-level-stylesheet.test.ts` 122-175). Red on today's
+    // stylesheet: «Почати» is `--color-text` on `--color-control-bg`.
+    expect([fg, bg], '«Почати» binds color var(--color-primary-text) on background-color var(--color-primary)').toEqual(['--color-primary-text', '--color-primary']);
     // add-theme-switch DELIBERATE CHANGE (FR-65, A-51; delta «The start button declares its colours», last clause "in each token set"): once per set
     const sets = themeTokenSets(parsed);
     for (const set of sets) {
@@ -185,7 +192,13 @@ describe('@trace FR-87 @trace NFR-9 the checked level has a cue besides colour',
     const dot = declarationsFor(parsed, ".level-control button[aria-checked='true'] .level-name::before");
     expect(ring.get('content'), 'the ring rule declares content').toBeDefined();
     expect(ring.get('border-radius'), 'the ring rule declares a border-radius').toBeDefined();
-    expect(dot.get('box-shadow') ?? '', 'the checked rule draws a dot with an inset box-shadow').toContain('inset');
+    // DELIBERATE CHANGE (update-setup-sheet): the dot is a `background-image` with `radial-gradient(` and `var(--color-primary)` instead of an `inset` `box-shadow`, and the checked ring
+    // declares no `box-shadow` and no `inset` (SQ-3 A, SQ-2) — proposal.md Impact row «The summary and level buttons set their own colours» (`tests/play-page-level-stylesheet.test.ts` 188).
+    // Red on today's stylesheet: the dot is the inset shadow.
+    expect(dot.get('background-image') ?? '', 'the checked ring draws a dot with a radial-gradient background-image').toContain('radial-gradient(');
+    expect(dot.get('background-image') ?? '', 'the dot is painted with the primary token').toContain('var(--color-primary)');
+    expect(dot.has('box-shadow'), 'the checked ring declares no box-shadow').toBe(false);
+    expect(`${dot.get('box-shadow') ?? ''} ${dot.get('background-image') ?? ''}`, 'no inset shadow is left').not.toContain('inset');
   });
 });
 
@@ -217,7 +230,10 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     // are literal», proposal.md Impact row `tests/play-page-level-stylesheet.test.ts:216` (comment 213-215) and `:226`): `toHaveLength(27)` becomes 31; the
     // message "no 28th colour token" at 226 was stale text (it said 28 beside the 27) and follows the count: "no 32nd". Red on today's stylesheet: the
     // four shell tokens are not declared once in :root.
-    expect(TOKEN_NAMES, 'the 31 tokens of the list').toHaveLength(31);
+    // DELIBERATE CHANGE (update-setup-sheet): `toHaveLength(31)` becomes 32 (the setup-sheet token `--color-option-border`) and the message "no 32nd colour token" becomes
+    // "no 33rd" — proposal.md Impact row «Borders, cues and focus rings have enough contrast» (`tests/play-page-level-stylesheet.test.ts` 220, 230). Red on today's stylesheet:
+    // the 32nd token is not declared once in :root.
+    expect(TOKEN_NAMES, 'the 32 tokens of the list').toHaveLength(32);
     for (const name of TOKEN_NAMES) {
       expect(parsed.tokenDeclarations.filter((d) => d.property === name), `${name} is declared once in :root`).toHaveLength(1);
       expect(parsed.darkTokenDeclarations.filter((d) => d.property === name), `${name} is declared once in :root[data-theme="dark"]`).toHaveLength(1);
@@ -227,7 +243,7 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     expect(scanColours(parsed).shorthands).toEqual([]);
     expect(scanColours(parsed).colourProperties).toEqual([]);
     expect(scanColours(parsed).tokensOutsideRoot).toEqual([]);
-    expect(Object.keys(parsed.tokens).filter((name) => name.startsWith('--color-')).sort(), 'no 32nd colour token').toEqual([...TOKEN_NAMES].sort());
+    expect(Object.keys(parsed.tokens).filter((name) => name.startsWith('--color-')).sort(), 'no 33rd colour token').toEqual([...TOKEN_NAMES].sort());
     // «Nothing removes the outline»
     expect(text).not.toMatch(/outline\s*:\s*(none|0(px)?(?![\d.]))/i);
     expect(text).not.toMatch(/outline-style\s*:\s*none/i);

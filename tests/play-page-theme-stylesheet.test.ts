@@ -162,10 +162,13 @@ describe('Borders, cues and focus rings have enough contrast (the dark set)', ()
   // update-panel-shell DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and
   // are literal», proposal.md Impact row `tests/play-page-theme-stylesheet.test.ts:162, 165, 174`, comment 158-161): the title, `toHaveLength(27)` and
   // the message become 31; the dark block redefines the 31 names and adds none. Red on today's stylesheet: its dark block redefines 27.
-  it('Tokens exist and are literal: the dark block declares each of the 31 names once with the dark value of the list, so each token has exactly two value sets', () => {
+  // DELIBERATE CHANGE (update-setup-sheet): the title, `toHaveLength(31)` and the message become 32; the dark block redefines the 32 names (the 32nd `--color-option-border`,
+  // dark `#5a5045`) and adds none — proposal.md Impact row «Borders, cues and focus rings have enough contrast» (`tests/play-page-theme-stylesheet.test.ts` 165, 168, 177).
+  // Red on today's stylesheet: its dark block redefines 31.
+  it('Tokens exist and are literal: the dark block declares each of the 32 names once with the dark value of the list, so each token has exactly two value sets', () => {
     const parsed = readStyles();
     expect(darkRootRules(parsed).length, 'a top-level :root[data-theme="dark"] rule exists').toBe(1);
-    expect(TOKEN_NAMES).toHaveLength(31);
+    expect(TOKEN_NAMES).toHaveLength(32);
     for (const name of TOKEN_NAMES) {
       const declarations = parsed.darkTokenDeclarations.filter((d) => d.property === name);
       expect(declarations, `${name} is declared once in :root[data-theme="dark"]`).toHaveLength(1);
@@ -174,7 +177,7 @@ describe('Borders, cues and focus rings have enough contrast (the dark set)', ()
         TRANSLUCENT_TOKENS.has(name) ? /^#[0-9a-f]{8}$/i : /^#[0-9a-f]{6}$/i,
       );
     }
-    expect(parsed.darkTokenDeclarations.map((d) => d.property).sort(), 'the dark block redefines the 31 tokens and adds none').toEqual([...TOKEN_NAMES].sort());
+    expect(parsed.darkTokenDeclarations.map((d) => d.property).sort(), 'the dark block redefines the 32 tokens and adds none').toEqual([...TOKEN_NAMES].sort());
     expect(themeTokenSets(parsed).map((set) => set.label), 'two value sets').toEqual(['light', 'dark']);
   });
 

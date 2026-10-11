@@ -399,13 +399,15 @@ export function scanSystemColours(parsed: ParsedStyles): string[] {
 // ---------------------------------------------------------------------------------------------------------
 
 /**
- * The 31 colour tokens of the G2 palette (A-57 appendix; the table of the spec delta of update-panel-shell), in the order of that table: the 25 of
- * the main column (block 2), the two backdrops (block 3) and the four of the panel shell. update-page-palette (delta «Borders, cues and focus rings have
+ * The 32 colour tokens of the G2 palette (A-57 appendix; the table of the spec delta of update-panel-shell), in the order of that table: the 25 of
+ * the main column (block 2), the two backdrops (block 3), the four of the panel shell and the one of the setup sheet. update-page-palette (delta «Borders, cues and focus rings have
  * enough contrast»): this was the 13 baseline names. DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast»;
  * proposal.md Impact row `tests/helpers/css.ts` `TOKEN_NAMES` 366-370): 27 names, the table's last two rows `--color-backdrop-soft` and
  * `--color-backdrop-strong`. DELIBERATE CHANGE (update-panel-shell, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
  * `tests/helpers/css.ts` `TOKEN_NAMES` 408-436, comment 402-407): 31 names, the four shell rows last, in the order of the spec table. A later block adds
  * its rows from the appendix.
+ * DELIBERATE CHANGE (update-setup-sheet): 32 names, the setup-sheet row `--color-option-border` last (decoration, A-60; in no pair) — proposal.md Impact row
+ * «Borders, cues and focus rings have enough contrast» (`TOKEN_NAMES` ~410).
  */
 export const TOKEN_NAMES = [
   '--color-page',
@@ -439,16 +441,19 @@ export const TOKEN_NAMES = [
   '--color-overlay-border',
   '--color-shadow-panel',
   '--color-shadow-sheet',
+  '--color-option-border',
 ] as const;
 
 /**
- * The values of the 31 tokens, light (the top-level `:root`) and dark (`:root[data-theme="dark"]`), written out of the table of the spec delta
+ * The values of the 32 tokens, light (the top-level `:root`) and dark (`:root[data-theme="dark"]`), written out of the table of the spec delta
  * of update-panel-shell (the 25 rows of update-page-palette, the two backdrop rows and the four shell rows) and of the appendix to A-57 in
  * docs/requirements.md. The stylesheet tests compare the file with them; the contrast ratios are computed from the stylesheet, never from these (they
  * are expectations, not inputs). DELIBERATE CHANGE (update-page-backdrop, delta 1; proposal.md Impact row `tests/helpers/css.ts` `PALETTE_LIGHT` 399-403,
  * `PALETTE_DARK` 431): the two backdrop rows, `#46280f38` and `#2d190a80` in light, `#08050273` and `#08050299` in dark. DELIBERATE CHANGE
  * (update-panel-shell, delta 1; proposal.md Impact row `tests/helpers/css.ts` `PALETTE_LIGHT` 445-473, `PALETTE_DARK` 475-503, comment 439-444): the four
  * shell rows of the appendix, light `#fffdf8`, `#e2dbcc`, `#00000040`, `#0000002e`; dark `#2c2620`, `#8a7f71`, `#00000040`, `#0000002e`.
+ * DELIBERATE CHANGE (update-setup-sheet): the setup-sheet row of the appendix, `--color-option-border`, light `#c4b59c`, dark `#5a5045` — proposal.md Impact row
+ * «Borders, cues and focus rings have enough contrast» (`PALETTE_LIGHT` 453, `PALETTE_DARK` 487).
  */
 export const PALETTE_LIGHT: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-page': '#f7f3ea',
@@ -482,6 +487,7 @@ export const PALETTE_LIGHT: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-overlay-border': '#e2dbcc',
   '--color-shadow-panel': '#00000040',
   '--color-shadow-sheet': '#0000002e',
+  '--color-option-border': '#c4b59c',
 };
 
 export const PALETTE_DARK: Record<(typeof TOKEN_NAMES)[number], string> = {
@@ -516,6 +522,7 @@ export const PALETTE_DARK: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-overlay-border': '#8a7f71',
   '--color-shadow-panel': '#00000040',
   '--color-shadow-sheet': '#0000002e',
+  '--color-option-border': '#5a5045',
 };
 
 /**
@@ -637,7 +644,7 @@ const pairs = (group: PairGroup, fg: string, bgs: string[], min: number): Contra
   bgs.map((bg) => ({ group, fg: `--color-${fg}`, bg: `--color-${bg}`, min }));
 
 /**
- * Every pair of FR-65 in the G2 palette: 3 for borders, cues and rings, 4.5 for text (38 pairs). update-page-palette (delta «Borders, cues and
+ * Every pair of FR-65 in the G2 palette: 3 for borders, cues and rings, 4.5 for text (41 pairs). update-page-palette (delta «Borders, cues and
  * focus rings have enough contrast»): the given-cue group and the cell-border pair against the given fill go (a given cell is inactive, A-57),
  * the board plate, the solved plate, the hinted cue, the violation text on the stripe, the focus ring on the cell border and the win text on the
  * success plate come in. No pair names a translucent token.
@@ -649,14 +656,18 @@ const pairs = (group: PairGroup, fg: string, bgs: string[], min: number): Contra
  * and the focus ring»; proposal.md Impact row `tests/helpers/css.ts` `CONTRAST_PAIRS` 625-639, comment 616-624): three pairs on the raised fill,
  * `--color-text` and `--color-text-muted` (group `text`) and `--color-focus` (group `focus-ring`); 35 pairs became 38, no new `PairGroup`. No pair
  * names `--color-overlay-border` (signed decoration), `--color-shadow-panel` or `--color-shadow-sheet` (translucent).
+ * DELIBERATE CHANGE (update-setup-sheet): three ring pairs, `--color-control-border` on `--color-control-bg` (group `control-border`) and
+ * `--color-primary` on `--color-control-bg` and on `--color-surface-raised` (group `hinted-cue`); 38 pairs became 41, no new `PairGroup`,
+ * `TRANSLUCENT_TOKENS` unchanged; no pair names `--color-option-border` (decoration, A-60) — proposal.md Impact row «Borders, cues and focus rings have
+ * enough contrast» (`CONTRAST_PAIRS` 653-667, `PairGroup` 627).
  */
 export const CONTRAST_PAIRS: ContrastPair[] = [
   ...pairs('cell-border', 'cell-border', ['page', 'cell-bg', 'line', 'success-bg'], 3),
   ...pairs('violation-cue', 'violation-border', ['page', 'cell-bg', 'violation-bg', 'line'], 3),
   ...pairs('cause-cue', 'violation-border', ['violation-stripe'], 3),
-  ...pairs('hinted-cue', 'primary', ['primary-soft', 'line', 'page'], 3),
+  ...pairs('hinted-cue', 'primary', ['primary-soft', 'line', 'page', 'control-bg', 'surface-raised'], 3),
   ...pairs('focus-ring', 'focus', ['page', 'cell-bg', 'given-bg', 'violation-bg', 'line', 'primary-soft', 'success-bg', 'cell-border', 'surface-raised'], 3),
-  ...pairs('control-border', 'control-border', ['page'], 3),
+  ...pairs('control-border', 'control-border', ['page', 'control-bg'], 3),
   ...pairs('text', 'text', ['page', 'cell-bg', 'given-bg', 'control-bg', 'primary-soft', 'surface-raised'], 4.5),
   ...pairs('text', 'given-text', ['given-bg'], 4.5),
   ...pairs('text', 'entry-text', ['cell-bg'], 4.5),
