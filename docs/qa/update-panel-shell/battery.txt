@@ -93,3 +93,18 @@ exit 0
 4176: 
 4177: 
 lock released; finished Sun Oct 11 17:14:54 +0530 2026
+
+## Archive (task 8.1), Sun Oct 11 17:50:59 +0530 2026
+$ npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+✓ change/update-rules-panel
+✓ change/update-setup-sheet
+Totals: 4 passed, 0 failed (4 items)
+$ npm run check:trace
+FAIL  [tasks-complete] openspec/changes/archive/2026-10-11-update-panel-shell/tasks.md has 3 unchecked task(s) but is archived
+
+traceability: 115 MVP FRs checked — 1 failure(s), 117 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+After ticking 8.1 to 8.3 in the archived tasks.md: npm run check:trace -> traceability: 115 MVP FRs checked — 0 failure(s), 117 warning(s) (Sun Oct 11 17:51:19 +0530 2026).

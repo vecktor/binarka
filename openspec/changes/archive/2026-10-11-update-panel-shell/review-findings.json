@@ -1,0 +1,253 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "openspec change update-panel-shell (G2 shared panel shell): src/ui/style.css, src/ui/play-page.ts, the red/changed tests (tests/helpers/css.ts, tests/play-page-*.test.ts, tests/play-page-panel-shell-stylesheet.test.ts, tests/play-page-root-size.test.ts, e2e/nfr-14-panel-shell.spec.ts) against openspec/changes/update-panel-shell/specs/play-page/spec.md",
+  "change": "update-panel-shell",
+  "baseRef": "64c2d7d",
+  "headRef": "0f4f5ab",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 1,
+      "contested": 1,
+      "rejected": 2
+    },
+    "spec-compliance": {
+      "confirmed": 4,
+      "contested": 0,
+      "rejected": 2
+    },
+    "visual": {
+      "confirmed": 2,
+      "contested": 0,
+      "rejected": 1
+    }
+  },
+  "confirmedTitles": [
+    "The 'Two mounts are independent' test skips opening the sheet on the first root, which the scenario requires",
+    "Task 5.1 is ticked as a manual smoke test but was scripted",
+    "The evidence for task 6.3 (docs/qa/g2/blocks/panel-shell/) is untracked",
+    "'Every fall explained per pixel' is backed by a sample of 7 of the 42 falling shots",
+    "The test for the moved variables checks only that the 48rem --cell-max values exist",
+    "Rules panel opens scrolled to the bottom: the heading and the first rules are cut off at the top edge",
+    "On tablet and desktop the setup sheet covers and cuts through the size-picker trigger",
+    "e2e shell test pins fill and border to the spec values, but never checks the design's shadow against the spec's rgba(0,0,0,0.18)/0.25"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-11T12:20:00Z",
+  "findings": [
+    {
+      "title": "The 'Two mounts are independent' test skips opening the sheet on the first root, which the scenario requires",
+      "file": "tests/play-page-root-size.test.ts",
+      "line": 156,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "The scenario says that on the second root the player opens the sheet (stubbed `showPopover()`), marks 4×4 and presses «Почати», 'then on the first root the player does the same for «Поле 8×8»'. The test calls `openSheet(second)` and then, for the first root, only `markSize(first, 8); pressStart(first);` without `openSheet(first)`. In jsdom this probably makes no difference to the result. But the test does not follow the scenario's steps, and it would not notice a regression where opening one root's sheet changes shared state (the shared `languageMounts` set shows that mounts do share module state).",
+      "suggestion": "Add `openSheet(first);` before `markSize(first, 8);` so the test performs the scenario's steps exactly.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The spec scenario (openspec/changes/update-panel-shell/specs/play-page/spec.md:562-568) says that on the second root the player opens the sheet, marks a size and presses «Почати». It then says \"on the first root the player does the same\", which includes opening the sheet. The test at tests/play-page-root-size.test.ts:156-165 calls openSheet(second) but goes straight to markSize(first, 8) and pressStart(first) with no openSheet(first). So the deviation is real. Other tests in the same file (lines 79-86) also call markSize and pressStart without openSheet, so in jsdom the omission most likely changes nothing and the test would still pass. The only effect is a small loss of fidelity to the scenario. That is a test-completeness nit with very low impact, so I confirm the finding at minor severity or below.",
+        "The finding is accurate but trivial. The scenario is at openspec/changes/update-panel-shell/specs/play-page/spec.md:565. It says that on the second root the player opens the sheet, marks 4×4 and presses «Почати», and that \"then on the first root the player does the same for «Поле 8×8»\". \"The same\" includes opening the sheet. The test at tests/play-page-root-size.test.ts lines 153-157 calls openSheet(second) but goes straight to markSize(first, 8); pressStart(first) without openSheet(first). The omission is real. It affects only the test's fidelity to the scenario, not any real user or attacker, and the test most likely still passes. Nothing in the product can fail because of it, so I rate it a low-severity test nit and keep it as reported."
+      ],
+      "disposition": "fixed in fix round 1: openSheet(first) added (tests/play-page-root-size.test.ts)"
+    },
+    {
+      "title": "Task 5.1 is ticked as a manual smoke test but was scripted",
+      "file": "docs/qa/update-panel-shell/smoke-test.txt",
+      "line": 7,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "tasks.md 5.1: 'Manual smoke test of the built page, step by step ... (7) Switch the theme to dark in the settings panel'. The evidence header says: 'Deviation from the task's wording: the steps are scripted (computed values and screenshots), not clicked by hand; the dark scheme is the system scheme (colorScheme on the context, no stored theme) instead of the settings switch'. The run used headless Chromium driven by smoke-test.mjs. The deviation is disclosed, but the checkbox reads as if the task's wording was met.",
+      "suggestion": "Have the user accept the deviation (record it in the autonomy log) or run the manual steps by hand. Steps (7) and (8) through the settings switch are not covered by the scripted run.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The facts check out. Task 5.1 in openspec/changes/update-panel-shell/tasks.md is ticked [x] and calls for a \"Manual smoke test ... step by step\". Step 7 says to switch the theme to dark in the settings panel and repeat steps 2 to 5, and step 8 repeats the steps in light and dark. The evidence header of docs/qa/update-panel-shell/smoke-test.txt says the steps were scripted in headless Chromium through smoke-test.mjs and were not clicked by hand. It also says dark was set as the system scheme, with no stored theme and no use of the settings switch. So the tick does not meet the task's literal wording, and the settings-switch path is not exercised by that run. The deviation is disclosed in the evidence file, and the argument for equivalence is that both routes use the same token set (FR-104). I did not find a place where the user accepted the deviation: tasks.md has no deviation note, and autonomy-log row 173 only says the smoke test was \"scripted in Chromium, PASS on every step\". Earlier slices were also smoke-tested by an agent in a browser, so this is a process and wording gap, not a behavioural defect. I rate it minor and low-impact, and I keep the severity as reported.",
+        "The facts hold. Task 5.1 in tasks.md is ticked [x] and reads \"Manual smoke test ... step by step\", with step 7 switching the theme through the settings panel. The evidence file docs/qa/update-panel-shell/smoke-test.txt says the steps were scripted in headless Chromium. It also says dark mode was applied as the system colour scheme, not through the settings switch. Autonomy-log row 173 repeats \"scripted in Chromium, PASS on every step\". It does not record that the user accepted the deviation, and I found no user sign-off for it. The settings-switch path in steps 7 and 8 is therefore not exercised. The deviation is openly disclosed in the evidence header, and the file argues the two paths use the same token set (FR-104). The add-violation-cause smoke also used Playwright, so there is precedent. This is a process-honesty and spec-wording gap, not a defect a user or attacker could hit. I would downgrade it to a nit."
+      ],
+      "disposition": "accepted by the user («Accept the scripted smoke test (Recommended)»); recorded in smoke-test.txt and autonomy-log row 174"
+    },
+    {
+      "title": "The evidence for task 6.3 (docs/qa/g2/blocks/panel-shell/) is untracked",
+      "file": "docs/qa/g2/blocks/panel-shell",
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "tasks.md 6.3 is ticked with 'Evidence: ... docs/qa/g2/blocks/panel-shell/'. git status shows '?? docs/qa/g2/blocks/', so the 55 per-block folders (diff, onion, product and reference PNGs, report.json) are not in HEAD. run10-vs-run9.txt:150 says 'output local and untracked'. This audit covers 64c2d7d..HEAD, so the artifact sits outside it, and a fresh checkout or reviewer cannot resolve the pointer.",
+      "suggestion": "Commit the folder, or a reduced copy such as the report.json files plus the onion images, with the next docs commit. Otherwise reword 6.3 so it points only at the tracked run10-vs-run9.txt summary.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. `git status` shows `?? docs/qa/g2/blocks/`, so the folder is untracked and no `.gitignore` rule covers it. Task 6.3 in openspec/changes/update-panel-shell/tasks.md is ticked and lists `docs/qa/g2/blocks/panel-shell/` as evidence. The tracked `run10-vs-run9.txt` (commit 5e764a2) says at line 150 that the output is \"local and untracked\". A fresh checkout therefore cannot resolve that evidence pointer. The tracked summary and the check-visual-run-10.txt file do exist, so the damage is limited and \"minor\" is the right severity. The finding is accurate.",
+        "Confirmed by direct inspection. Task 6.3 in openspec/changes/update-panel-shell/tasks.md is ticked and its Evidence clause lists docs/qa/g2/blocks/panel-shell/. The folder exists locally with 55 entries, but `git ls-files docs/qa/g2/blocks` returns 0 and git status shows `?? docs/qa/g2/blocks/`. It is not gitignored (check-ignore returned nothing). run10-vs-run9.txt:150 says \"output local and untracked\". A fresh checkout therefore cannot resolve the pointer. The other two evidence files are tracked. The impact is on reproducibility and traceability only, so minor severity is right."
+      ],
+      "disposition": "fixed: task 6.3 now points at the tracked run10-vs-run9.txt (which holds the tool's summary lines); the blocks folder stays local and untracked, as for every block"
+    },
+    {
+      "title": "'Every fall explained per pixel' is backed by a sample of 7 of the 42 falling shots",
+      "file": "docs/qa/update-panel-shell/run10-vs-run9.txt",
+      "line": 47,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Commit 5e764a2 says 'every fall explained per pixel'. The evidence says 'Shots that fell: 42' and 'Method: the six largest falls of each surface (and one light setup shot) re-captured', so 7 shots are classified pixel by pixel. The reading for those 7 is plausible: the panels are still in their pre-G2 size and place, so the correct raised fill now lands where the reference shows the dimmed page. The other 35 falls are explained by extrapolation. design.md also expected 'confirm dark 3 of 5' to rise; it stayed at 3 of 5, with all 5 dark confirm shots slightly lower. Reading (2) covers this, but the missed expectation is not named as such.",
+      "suggestion": "Call the explanation 'sampled (7 of 42)' in current-state and in the gate hand-off, with the stricter-instrument path (classify every falling shot). State plainly that the expected confirm and dark-settings* rises did not happen, or happened only for plain dark settings (2 to 4 of 6).",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism holds. run10-vs-run9.txt reports 42 falling shots. Its stated method re-captures only \"the six largest falls of each surface (and one light setup shot)\". fall-classify.txt contains exactly 7 per-pixel classifications: 768-dark-setup-four, 1024-dark-setup, 1366-dark-setup, 320-dark-settings, 1440-dark-rules, 375-dark-confirm and 768-light-setup-marked-four. The \"Reading\" paragraph then generalizes to \"every fall\". Commit 5e764a2 says \"every fall explained per pixel\", and docs/current-state.md says \"42 falls explained per pixel\". Both overstate a 7-of-42 sample. This also conflicts with the project's sampling-blindness lesson, which says a sample must be declared as sampled and carry a stricter-instrument path. The evidence file itself discloses the method, and the 7-shot reading is plausible, so the severity stays minor. The confirm-rise expectation was also not named as missed: dark confirm stayed at 3 of 5, and only plain dark settings rose, from 2 to 4 of 6.",
+        "Confirmed on the facts. fall-classify.txt has 7 classified shots, and run10-vs-run9.txt states the method as the six largest falls per surface plus one light shot. Yet the commit message says \"every fall explained per pixel\", and current-state.md says \"42 falls explained per pixel\". The other 35 falls rest on extrapolation, and the doc's \"Reading\" does not label itself as sampled. This is a documentation-overstatement defect, not a runtime exploit. The evidence file discloses its own method, which limits the harm, and the repo's sampling-blindness and done-claims rules make this a real inconsistency. Minor severity fits."
+      ],
+      "disposition": "fixed: run10-vs-run9.txt, README § Run 10 and current-state say SAMPLED (7 of 42) and name the stricter instrument; the missed confirm rise is stated"
+    },
+    {
+      "title": "The test for the moved variables checks only that the 48rem --cell-max values exist",
+      "file": "tests/play-page-root-size.test.ts",
+      "line": 244,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The requirement says the variables move 'with the values the `.board` rules had', and that in the 48rem block `#app` and `#app[data-size='8']` declare --cell-max. The test checks the top-level and 30rem values exactly but uses `expect(read(wide, '--cell-max'), ...).toBeDefined()` for both 48rem rules. The code is correct: style.css:1060 and :1064 keep the clamp(...) values word for word, and the geometry e2e (32 cases) is green. The gap does not violate the scenario's THEN, which does not list the 48rem values, but it would not catch a later edit of those values in this test.",
+      "suggestion": "Optional: assert the compacted values `clamp(2.75rem,calc((100dvh-var(--reserve))/var(--n)),var(--cell-cap))` and `clamp(1.5rem,calc((100dvh-var(--reserve))/8),var(--cell-cap))`, the same way the 30rem block is asserted.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The cited lines are as described. tests/play-page-root-size.test.ts lines 243-246 only call toBeDefined() on --cell-max for the 48rem `#app` and `#app[data-size='8']` rules. The 30rem block just above asserts exact values. The spec (update-panel-shell play-page spec, line 521) says the variables move \"with the values the .board rules had\", and for the 48rem block it only says the rules \"declare --cell-max\". Its scenario does not pin those values, so the test matches the spec's explicit text, but it would miss a later change to the 48rem values. I did not open style.css, so I did not re-check the finding's claim that the code keeps the clamp values word for word. The finding is a real but low-impact test-strength gap. It is optional, not a correctness defect.",
+        "Confirmed at tests/play-page-root-size.test.ts:244-247. The two 48rem --cell-max assertions use toBeDefined(), while the top-level and 30rem values are pinned exactly. src/ui/style.css (~1060-1064) holds the clamp(...) values the finding quotes, so the code is correct. A later edit to those 48rem values would not fail this test. This is a test-strength gap only. No user or attacker can trigger it, and the spec's THEN does not require pinning these values, so it stays minor."
+      ],
+      "disposition": "fixed: the two 48rem values are pinned exactly (the values of 64c2d7d, lines 1039 and 1043)"
+    },
+    {
+      "title": "Rules panel opens scrolled to the bottom: the heading and the first rules are cut off at the top edge",
+      "file": "docs/qa/update-panel-shell/smoke/1024-dark-rules.png",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The smoke script clicks [data-action=\"rules\"], waits 150 ms and takes the screenshot without scrolling (smoke-test.mjs lines 22-24). In every product rules still (1024-dark-rules.png, 1024-light-rules.png, 375-dark-rules.png, 375-light-rules.png) the panel already shows its end: «Зрозуміло» is visible, the «Правила» heading and the first two rules are scrolled out of view, and a row of example cells is sliced in half against the panel's top border. The design stills (1024-dark-design-rules.png, 375-dark-design-rules.png) open at the top with the heading showing. The pre-change capture fall/head/1440-dark-rules.png shows the same scroll, so update-panel-shell did not cause this. The likely cause is the popover giving focus to the close button at the end of the panel, which scrolls it into view. The new raised fill and shadow make the clipped top edge stand out more.",
+      "suggestion": "Not a blocker for update-panel-shell. Track it in update-rules-panel (block A): on open, set scrollTop to 0 or focus the heading or panel instead of the last button, or make the close button a sticky footer as the design does. Then re-capture the rules stills.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The finding holds up. In src/ui/play-page.ts the rules panel is a popover div with overflow-y:auto and max-height 55dvh. The close button is the last child, appended after the rules list and the techniques section, and it has the `autofocus` attribute. When the popover opens, focus moves to that button, which scrolls it into view. The smoke test takes the screenshot 150 ms after the click with no scroll reset. The screenshot 1024-dark-rules.png shows the panel scrolled to its end. The \"Складніші прийоми\" heading is at the top, «Зрозуміло» is visible, and a row of example cells is sliced against the top border. The \"Правила\" heading and the first rules are out of view. This is a real, minor visual defect. The finding already says it predates update-panel-shell and should not block that change, so the severity and the pointer to block A are right.",
+        "The finding holds. In src/ui/play-page.ts (around line 138) the close button is created with `autofocus` and is appended last in the rules popover. The panel is a scrollable popover, so focusing that button scrolls it into view. The stills 1024-dark-rules.png and 375-dark-rules.png show the panel opened at its end. The «Правила» heading and the first rules are scrolled out, and a row of example cells is sliced at the top border. The smoke script takes the shot after a 150 ms wait with no scrolling, so the stills show what a real user sees on open. The scroll is not new to update-panel-shell, and the severity is minor (cosmetic), as the finding says."
+      ],
+      "disposition": "known and owned by block A (update-rules-panel, FR-57 as amended, A-59); not this change; the smoke PASS is scoped to paint"
+    },
+    {
+      "title": "On tablet and desktop the setup sheet covers and cuts through the size-picker trigger",
+      "file": "docs/qa/update-panel-shell/smoke/1024-dark-setup-scrolled.png",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "In 1024-dark-setup-scrolled.png the sheet's top edge (about y=123) lands across the «6×6 · Розминка» trigger (about y=105-147), so only the top half of the trigger text shows above the sheet's border. In the design still 1024-dark-design-setup.png the sheet sits fully below the trigger, which stays readable. This is placement, not paint, so update-setup-sheet (block B) owns it. I did not open the pre-change capture to confirm the overlap existed before this change.",
+      "suggestion": "Handle it in update-setup-sheet: anchor the sheet below the trigger, as the design does, instead of centring it in the viewport. Re-capture 1024 and 1440 setup in both schemes.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism holds. In src/ui/style.css the `@media (min-width: 48rem)` rule sets `.setup-sheet` to `inset: 0` with a fixed 28rem width. That centres the sheet in the viewport, and it is not anchored below the `.setup-button` trigger. In 1024-dark-setup-scrolled.png the sheet top (about y=123) cuts across the trigger (about y=105-147). In 1024-dark-design-setup.png the sheet sits fully below the trigger. I also opened docs/qa/update-panel-shell/fall/head/1024-dark-setup.png, the pre-change capture, and it shows the same overlap, with the trigger's top edge peeking above the sheet. So the overlap predates this change and is not a regression from the shell paint work. The CSS comment says \"Layout is not claimed (held NFR-10, NFR-12, NFR-14)\", and the finding already says placement belongs to update-setup-sheet (block B). That ownership is consistent. This is a real, minor design divergence that belongs to block B, so I could not refute it.",
+        "The overlap is real and reproducible. In 1024-dark-setup-scrolled.png the sheet's top edge (about y=123) cuts through the \"6×6\" trigger, which spans roughly y=105-147. In 1024-dark-design-setup.png the sheet sits fully below the trigger. The cause is in src/ui/style.css: at min-width 48rem, `.setup-sheet` is a fixed, `inset: 0`, `margin: auto`, `height: fit-content` modal. That centres it in the viewport instead of anchoring it under the trigger, so at 1024x768 its top lands on the trigger. This placement rule is not in the diff of the shell change (the diff only touches `.setup-sheet > *`), so the finding is right that it predates the change and belongs to update-setup-sheet. It also looks like a deliberate modal, with a dimming backdrop, and the CSS comment says \"Layout is not claimed\". I downgrade it because it is a minor design-parity gap deferred to block B, not a defect introduced by this change. I checked only the 1024 dark pair, not 1440."
+      ],
+      "disposition": "known and owned by block B (update-setup-sheet, FR-96 as amended, A-60); not this change"
+    },
+    {
+      "title": "e2e shell test pins fill and border to the spec values, but never checks the design's shadow against the spec's rgba(0,0,0,0.18)/0.25",
+      "file": "e2e/nfr-14-panel-shell.spec.ts",
+      "line": 370,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "Lines 360-361 assert `want.surface.fill` equals `FILL[scheme]` and `want.surface.border` equals the spec border. The shadow is only compared page-vs-design: `note('box-shadow', shadowDifference(have.surface.shadow, want.surface.shadow))`. The spec scenario names the expected layers (`rgba(0, 0, 0, 0.18)` below 48rem on the three panels, `rgba(0, 0, 0, 0.25)` from 48rem and on the dialog). If the design build and the page drifted together (for example after a design rebuild), the shadow check would still pass. The fill and border cannot drift this way because they are anchored.",
+      "suggestion": "Add a spec anchor for the design side: parse `want.surface.shadow` and assert the alpha (0.18 or 0.25, by surface and viewport) and the geometry (0 -8px 32px 0 or 0 16px 40px 0). Do the same for the strip shadow.",
+      "dimension": "correctness",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The facts are accurate. Lines 360-361 anchor fill and border to literals, and line 370 compares shadow only page against design. But this is not an incorrect mechanism. The spec scenario (update-panel-shell play-page spec, line 507) says the shadow \"equals the design's layer by layer\" with the same colour (alpha within 0.005) and the same offsets, blur and spread. The rgba(0,0,0,0.18) and 0.25 values are parenthetical illustrations of the design's values, not a separate literal requirement. shadowDifference compares exactly those things. The file header says the design is read live as the reference, and the anchors on fill and border exist as an extra guard. The finding describes an optional hardening of a test, an extra anchor against a design rebuild drifting. It does not describe a wrong check, and it doesn't show how the page could ship with a shadow the spec forbids. The finding's own rating is minor severity and low confidence. I'm refuting it as a correctness defect.",
+        "Confirmed at line 370: the design shadow is only compared page-vs-design. Fill and border are anchored to spec literals at lines 360-361, but no test in e2e or tests pins the shadow alpha or geometry to the spec values. The gap is real. It is a test-coverage weakness, not a user-facing defect. It only matters if the page and the design build drift together, and the design build is a frozen, locally served output. Minor severity and low confidence fit."
+      ],
+      "disposition": "contested, treated as confirmed and fixed: the e2e anchors the design's shadow to the spec's literal (0.18 sheet below 48rem, 0.25 panel and dialog); 24 of 24 green"
+    },
+    {
+      "title": "Size-dependent layout variables are now keyed on #app only, so .board is no longer self-contained under any other mount root",
+      "file": "src/ui/style.css",
+      "line": 209,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`--n`, `--cell-max`, `--board-gap`, `--board-pad` and `--board-width` moved from `.board` to `#app { --n: 6; ... }` and `#app[data-size='4'|'8']`, while `.board` still uses `grid-template-columns: repeat(var(--n), minmax(0, 1fr))` and `width: min(100%, var(--board-width), ...)`. `mountPlayPage(root)` accepts any element and does set `data-size` on it, but if that element is not `#app`, `--n` is undefined. The grid declaration is then invalid at computed-value time and the board collapses to one column. Before this change the board read its own `data-size`. The spec allows this ('the layout rules key on #app, the one root the page is built for'), so it does not break the spec. But it couples layout to an id while the JS hook is generic.",
+      "suggestion": "Accept and document it, as the spec does. Or key the variable rules on the hook instead of the id (for example `[data-size='8']:has(> .board-host)` is not allowed, but a class the page puts on its root, such as `.play-root[data-size='8']`, would work). Then any mounted root gets the variables, and the e2e/jsdom roots match production.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The mechanism is literally true: --n and the other size variables are declared only on #app, so a mount root that is not #app would get an invalid grid. But it is not a correctness defect. The only production caller is src/main.ts, which mounts into the #app element from index.html. The file already declares the other layout variables (--space-*) on #app and says so in its comment, so the id coupling is an established convention. The spec explicitly allows it, as the finding concedes. The finding names no reachable failure path. It only notes that jsdom test roots may differ, and the layout tests that read the stylesheet do not depend on the root. This is a design preference, not a wrong-behaviour bug.",
+        "The only production caller is src/main.ts, which calls mountPlayPage(app) on the #app element from index.html (line 40). The #app rule therefore always applies for real users, and no attacker or user can pick a different mount root. The other callers are jsdom tests (tests/helpers/play-page.ts and tests/play-page-root-size.test.ts), and jsdom does no layout, so the missing --n has no effect there. The finding itself says the spec allows this and describes it as coupling, not a defect. It cannot occur in practice, so it is not exploitable or reproducible."
+      ],
+      "disposition": "rejected by the verifiers; no change"
+    },
+    {
+      "title": "A missing page-side close button or strip crashes the e2e case instead of being reported as a labelled difference",
+      "file": "e2e/nfr-14-panel-shell.spec.ts",
+      "line": 371,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "`note('«Закрити» fill', colourDifference(have.closeFill ?? 'none', want.closeFill))` passes the string 'none' to `parseColour`. That function throws `not an rgb(a) colour: \"none\"` instead of returning a difference. Inside `read()`, `paintOf` also uses `page.locator(...).evaluate`, which times out when the close button is missing. The spec asks that 'a pair of values that differ is reported with the surface, the scheme, the viewport and both strings'. A throw loses the surface/scheme/viewport label that `differences` would carry.",
+      "suggestion": "In `read()`, return null when the close button or strip is missing (check with `locator.count()`). In the comparison, push an explicit `${label}: page has no element, design ${want...}` difference instead of calling `colourDifference` with 'none'.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The mechanism is only partly real, and it doesn't amount to a defect. In `read()`, `closeFill` is null only when `CLOSE_BUTTON[surface]` is undefined. If the page lacks a close button that is configured, `page.locator(...).evaluate` times out inside `read()`. The error names the locator, and the `test()` title carries the surface, scheme and viewport. The test still fails loudly and is never silently green. The `'none'` fallback at line 371 can only run when `want.closeFill !== null` but the page-side selector is undefined. That is an internal config mismatch the spec author controls, and the thrown parse error would still fail the test. The claim that surface/scheme/viewport labels are lost is overstated. The test name supplies them, and only the in-message diff format differs. This is a stylistic nicety for failure reporting, not wrong behaviour, and the claimed mismatch with the spec's \"differences reported\" requirement is not clearly a violation. A missing element is an environment or setup failure, not a paint difference.",
+        "The 'none' path the finding cites cannot be reached. In `read()` (lines ~236-250), `closeFill` is null only when the surface has no `CLOSE_BUTTON` entry. The same `read()` and the same `surface` produce both the design reading and the page reading. So when `want.closeFill !== null`, `have.closeFill` is always a string, because `read()` either returns a computed colour or throws. The `?? 'none'` fallback is dead code, and `parseColour('none')` is never called. The same applies to `stripShadow`, and `parseShadow` handles 'none' anyway.\n\nThe remaining case is a page with no close button or strip. There, `page.locator(...).evaluate` times out inside `read()` and the test fails. That is a failing test with a locator-timeout message that names the selector, not a silent pass or a false green. The failure also shows up in Playwright's output under the test title, which already contains the scheme, surface and viewport (`${name}`). So the label is not lost. The only cost is a less tidy error message in a test-only helper, which is a style nit and not a correctness or reproducibility defect. The finding is low-confidence and minor, and its mechanism is mostly unreachable."
+      ],
+      "disposition": "rejected by the verifiers; no change"
+    },
+    {
+      "title": "Coverage summary: 63 scenarios: 62 implemented, 1 partial, 0 missing, 0 contradicted",
+      "file": "openspec/changes/update-panel-shell/specs/play-page/spec.md",
+      "line": 1,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "This counts 18+8+12+6 scenarios in the 4 MODIFIED requirements and 9+10 in the 2 ADDED ones. I checked the changed scenarios directly. (1) The paint bindings in src/ui/style.css match the spec table for .rules, .setup-sheet, .settings and .confirm, the footer strip, .setup-close and .settings-close. (2) The four tokens have the right values in both sets. (3) The hook: play-page.ts:182 sets data-size before any generation, and showPuzzle at :337 sets it before replaceChildren. A failed generation throws inside makePuzzle before showPuzzle runs, so the root keeps its value. (4) The variables now sit only on #app rules, with the same values and the same specificity relationships; --reserve and --cell-cap are on #app at 1048-1053, so var() still resolves on #app. (5) :has( appears once and !important zero times. (6) Re-running the 3.6 filter on 64c2d7d..HEAD prints nothing. (7) The changed tests carry DELIBERATE CHANGE notes that trace to proposal Impact rows; the new tests assert spec literals (31, 38, ratios, values), not values copied from the port. My own re-run: vitest on 4 files, 77 passed. The baseline scenarios count as implemented based on docs/qa/update-panel-shell/green-run.txt (1858 vitest, 152 layout e2e) and battery.txt (check:trace and check:a11y exit 0); I did not re-run those.",
+      "suggestion": "None: this item only reports coverage. Nothing blocks the review gate (task 7.1).",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding reports no defect. It is a coverage tally (63 scenarios, 62 implemented, 1 partial) with the suggestion \"None: this item only reports coverage\", so there is no wrong mechanism to confirm. The arithmetic in its evidence is consistent: 18+8+12+6+9+10 = 63. It also names a \"partial\" scenario without saying which one or what is missing, so there is no concrete failing behaviour to verify. I did not re-read the code. Under the default-to-refuted rule, an informational summary with no positively confirmed defect is refuted.",
+        "The finding is a coverage tally, not a defect. It describes no failing behavior, no input that triggers a problem, and no user or attacker who could be affected. Its own suggestion is \"None: this item only reports coverage,\" and it says nothing blocks the review gate. The single \"partial\" scenario is never identified, so no concrete problem can be reproduced or exploited. I did not open the code or re-run any tests. The refutation rests on the finding's own text, which names no mechanism that could occur."
+      ],
+      "disposition": "rejected by the verifiers; no change"
+    },
+    {
+      "title": "Nothing checks that the design server is closed after the run",
+      "file": "e2e/nfr-14-panel-shell.spec.ts",
+      "line": 304,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "Spec line 515: 'THEN the test fails with a message that names `pnpm build` ..., the design server listens on a port chosen by the operating system and is closed after the run'. In the code, test.afterAll calls stopDesignServer, but no assertion checks that the server stopped listening. The other clauses of this scenario are covered: requireDesignBuild throws with the pnpm build message, the port test checks for an ephemeral port that is not 4173, 4174, 4176 or 4177, and SAMPLING declares the dimensions and the stricter instruments.",
+      "suggestion": "Amend the THEN to say the file closes the server in afterAll, because a test inside the describe cannot observe its own teardown. Or add a check after the run, for example a global teardown that asserts server.listening is false.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding says the server is not verified closed. The code does close it. test.afterAll awaits stopDesignServer. That function calls closeAllConnections() and then awaits server.close()'s callback, so afterAll cannot finish until the server has closed. The spec THEN clause (\"closed after the run\") is therefore implemented. The finding itself concedes this and only complains that no assertion checks it. A test inside the describe cannot observe its own afterAll teardown, so a missing in-file assertion is not a defect in the mechanism. The sibling test does assert that the server is listening and uses an ephemeral port. A real gap would be a server left open, and nothing in the code leaves one open. At most this is a minor spec-wording or verification-style note, not a major correctness or spec-compliance failure.",
+        "The spec clause is implemented: test.afterAll awaits stopDesignServer, which calls closeAllConnections() and awaits server.close(). The server binds to an ephemeral port on 127.0.0.1. The only gap is that no assertion observes the teardown, and a test inside the describe cannot observe its own afterAll. No real failure scenario exists, and the finding concedes the code closes the server. This is a test-coverage nit at most, not a major spec violation."
+      ],
+      "disposition": "rejected by the verifiers; no change"
+    },
+    {
+      "title": "Smoke report says the rules panel equals the design and gives \"PASS on every step\", but the paired stills visibly differ",
+      "file": "docs/qa/update-panel-shell/smoke-test.txt",
+      "line": 20,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Step (2) says the «Правила» readings are \"Equal to the design's /rules/\" and the report ends \"Result: PASS on every step.\" That holds for the computed fill, border and shadow values. The stills it points to are not equal to the design, though: the product opens scrolled to the end and is narrower, while the design opens at the top. Step (4) has the same gap for the setup sheet's placement. Nothing in the report says the PASS covers paint only, so a reader could take it as visual parity.",
+      "suggestion": "Limit steps (2) and (4) to what was compared, e.g. \"paint (fill/border/shadow) equal; layout and scroll differences are out of scope (blocks A and B)\". List the visible differences as known and out of scope, so the PASS is not read as layout parity.",
+      "dimension": "visual",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The smoke report does not claim layout parity. Steps (2) to (4) say \"Equal to the design's /rules/\", \"/settings/\" and \"/setup/\" immediately after listing only fill, border and shadow readings. Step (9) is likewise explicitly about \"every fill, border and shadow reading\". The change is \"update-panel-shell\", the shared panel paint. Layout and scroll belong to the separate blocks A and B (rules panel and setup sheet) that other commits cover. The scroll in the setup still is stated as deliberate, to show the footer strip, and the only claim made about it is that no band appears. The vision verdict also limits its judgement to the shell paint. I found no claim of visual or layout parity in the document. I did not open the stills, so I cannot confirm the finding's claim that product and design differ in width and scroll. Even if they do, the report's wording is scoped to paint, so the mechanism the finding describes (a PASS overstating its scope) does not hold. At most this is a wording nit about adding an explicit \"paint only\" note, not an incorrect claim.",
+        "The smoke report scopes its claims to paint. The header says the steps are \"computed values and screenshots\", with \"16 surface readings\". Step 2 lists only fill, border and shadow values, and step 9 says \"every fill, border and shadow reading equals the page's\". The \"Equal to the design's /rules/\" is attached to those readings, not to layout. The report makes no layout or scroll-position parity claim. The task is the panel shell (fill, border, shadow), and layout belongs to other blocks, A and B. The report also does not point to design-vs-page stills as proof of equality. The vision verdict judged page stills only, for legibility. The finding names no real misstatement, only a possible misreading of \"PASS\". At most this is a stylistic wording nit, and a reader would have to ignore the explicit paint-only readings to be misled. The finding's own evidence concedes the claim \"holds for the computed fill, border and shadow values\", so it is not a reproducible defect."
+      ],
+      "disposition": "rejected by the verifiers; no change"
+    }
+  ],
+  "fixRound": {
+    "round": 1,
+    "approvedBy": "the user, through the question form on 2026-10-11 (about 17:45 UTC+5:30): «Fix the minors now, then archive (Recommended)»",
+    "noProductCodeChange": true
+  },
+  "visionJudge": "docs/qa/update-panel-shell/stills-vision-verdict.txt (16 of 16 met and readable)",
+  "reviewRun": "wf_6f799240-65c",
+  "productCodeDefect": "none confirmed"
+}

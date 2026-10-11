@@ -1488,7 +1488,7 @@ Traces: FR-64, FR-120, FR-65, A-58
 
 ### Requirement: Borders, cues and focus rings have enough contrast
 
-The stylesheet SHALL define its colours once, as custom properties in the top-level `:root` rule, and every colour a rule uses SHALL be a `var(--color-...)` reference to one of them (FR-65), with one narrow exception: the system colour keyword `ButtonText` in the forced-colours block of the cause mark (see the colour scan below and «A violation shows a cue besides colour»; the user adopted that rule on 2026-10-11). The tokens are the 27 that the page binds in the G2 palette: the 25 of the main column (A-57, block 2) and the 2 backdrop tokens that the appendix marks "later" and that this change (G2 block 3, update-page-backdrop) binds, with the light value in the top-level `:root` and the dark value in `:root[data-theme="dark"]`:
+The stylesheet SHALL define its colours once, as custom properties in the top-level `:root` rule, and every colour a rule uses SHALL be a `var(--color-...)` reference to one of them (FR-65), with one narrow exception: the system colour keyword `ButtonText` in the forced-colours block of the cause mark (see the colour scan below and «A violation shows a cue besides colour»; the user adopted that rule on 2026-10-11). The tokens are the 31 that the page binds in the G2 palette: the 25 of the main column (A-57, block 2), the 2 backdrop tokens (G2 block 3, update-page-backdrop) and the 4 shell tokens (G2 shell slice, update-panel-shell) that the appendix marks "later" and that the last two changes bind, with the light value in the top-level `:root` and the dark value in `:root[data-theme="dark"]`:
 
 | Token | Light | Dark | Role |
 |---|---|---|---|
@@ -1519,8 +1519,12 @@ The stylesheet SHALL define its colours once, as custom properties in the top-le
 | `--color-focus` | `#1e2126` | `#f1ede4` | every focus ring |
 | `--color-backdrop-soft` | `#46280f38` | `#08050273` | backdrop of the settings panel, the setup sheet and the rules panel below 64rem (translucent) |
 | `--color-backdrop-strong` | `#2d190a80` | `#08050299` | backdrop of the confirmation dialog and the rules panel from 64rem (translucent) |
+| `--color-surface-raised` | `#fffdf8` | `#2c2620` | fill of the rules panel, the setup sheet, the settings panel and the confirmation dialog; the setup sheet's footer strip; the fill of «Закрити» in the sheet and in the settings panel |
+| `--color-overlay-border` | `#e2dbcc` | `#8a7f71` | border colour of the rules panel, the setup sheet and the settings panel |
+| `--color-shadow-panel` | `#00000040` | `#00000040` | drop shadow of the three panels from 48rem and of the confirmation dialog at every width (translucent) |
+| `--color-shadow-sheet` | `#0000002e` | `#0000002e` | drop shadow of the three panels below 48rem (translucent) |
 
-These are the "block 2" rows of the appendix to A-57 in `docs/requirements.md` and the two backdrop rows that the appendix marks "later" and that this change (G2 block 3) binds, value for value; the appendix is the source, this table is what the stylesheet declares (the role column of the two backdrop rows says which surfaces bind each, which the appendix's one-surface roles abbreviate; see «The backdrops take the design's translucent tokens»). The "later" rows of the appendix (`--color-violation-ink`, `--color-surface-raised`, `--color-overlay-border`, `--color-option-border` and the shadows `--color-shadow-sunken`, `--color-shadow-panel` and `--color-shadow-sheet`) are NOT declared by this requirement: the block that binds one adds it by its own delta, so the stylesheet never holds an unused token. A value is a literal `#rrggbb`. A value may be `#rrggbbaa` only for a token that the list marks translucent, and the list marks three, `--color-success-glow`, `--color-backdrop-soft` and `--color-backdrop-strong`; a translucent token is never the foreground or the background of a contrast pair, and a backdrop is checked composited over the page instead (FR-65, see «Effective theme on the document»). The top-level `:root` also declares `color-scheme: light` and `:root[data-theme="dark"]` declares `color-scheme: dark`, and nothing else: `:root` holds only the colour tokens and `color-scheme` (the non-colour variables live on `#app`, as the layout variables do).
+These are the "block 2" rows of the appendix to A-57 in `docs/requirements.md`, the two backdrop rows that the appendix marks "later" and that G2 block 3 binds, and the four shell rows that the appendix marks "later" and that this change (update-panel-shell) binds, value for value; the appendix is the source, this table is what the stylesheet declares (the role column of the two backdrop rows says which surfaces bind each, and the role column of the four shell rows says which surfaces and parts bind each, which the appendix's short roles "sheet, panel and dialog fill", "panel border", "panel drop shadow" and "phone sheet shadow" abbreviate; see «The backdrops take the design's translucent tokens» and «The panels take the shared surface paint»). The "later" rows of the appendix that remain are `--color-violation-ink` (the block of the confirmation dialog) and `--color-option-border` (the block of the setup sheet); they are NOT declared by this requirement: the block that binds one adds it by its own delta, so the stylesheet never holds an unused token. The row `--color-shadow-sunken` was withdrawn on 2026-10-11 (the appendix to A-57): the design dropped the inset it served. A value is a literal `#rrggbb`. A value may be `#rrggbbaa` only for a token that the list marks translucent, and the list marks five, `--color-success-glow`, `--color-backdrop-soft`, `--color-backdrop-strong`, `--color-shadow-panel` and `--color-shadow-sheet`; a translucent token is never the foreground or the background of a contrast pair, a backdrop is checked composited over the page instead (FR-65, see «Effective theme on the document»), and a shadow is decoration that holds no text and marks no component, so it is checked by no pair (its binding is pinned by «The panels take the shared surface paint»). The top-level `:root` also declares `color-scheme: light` and `:root[data-theme="dark"]` declares `color-scheme: dark`, and nothing else: `:root` holds only the colour tokens and `color-scheme` (the non-colour variables live on `#app`, as the layout variables do).
 
 The colour scan applies to every declaration outside a `:root` rule, wherever it is in the file (top level, nested rules, `@media`, `@supports`, `@layer`, `@keyframes`): its value SHALL NOT match `/#[0-9a-f]{3,8}\b|\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/i` and SHALL NOT contain a CSS named colour (the full CSS Color 4 list), so `color-mix(` is forbidden everywhere, in gradients, shadows, rings and keyframes too; the keywords `transparent`, `currentcolor`, `inherit`, `initial`, `unset` and `revert` are allowed because they introduce no colour; the CSS Color 4 system colours (the 19 of its section on system colors: `AccentColor`, `AccentColorText`, `ActiveText`, `ButtonBorder`, `ButtonFace`, `ButtonText`, `Canvas`, `CanvasText`, `Field`, `FieldText`, `GrayText`, `Highlight`, `HighlightText`, `LinkText`, `Mark`, `MarkText`, `SelectedItem`, `SelectedItemText`, `VisitedText`; and the 23 deprecated ones of the same specification: `ActiveBorder`, `ActiveCaption`, `AppWorkspace`, `Background`, `ButtonHighlight`, `ButtonShadow`, `CaptionText`, `InactiveBorder`, `InactiveCaption`, `InactiveCaptionText`, `InfoBackground`, `InfoText`, `Menu`, `MenuText`, `Scrollbar`, `ThreeDDarkShadow`, `ThreeDFace`, `ThreeDHighlight`, `ThreeDLightShadow`, `ThreeDShadow`, `Window`, `WindowFrame`, `WindowText`; matched as whole identifiers, as the named colours are) are not in the list of named colours that the scan refuses and are not tokens; they are therefore listed on their own: exactly one declaration outside `:root` may hold one, `border-top-color: ButtonText` of `.cell-cause::after` inside `@media (forced-colors: active)` (the colour that the user's system chooses is not a palette colour, and the unscoped form would break the normal paint), and the scan of system colours is a new scan that tightens the old ones, never a relaxation of them; the colour-bearing shorthands `background`, `border`, `border-top`, `border-right`, `border-bottom`, `border-left`, `outline`, `box-shadow`, `text-decoration` and `column-rule` are allowed only when their colour is a `var(--color-...)` token (or the value is `none` or `0`); and no `--color-*` property is declared outside a `:root` rule. A `:root` rule for this scan is a rule whose selector is exactly `:root` or `:root[data-theme="dark"]`; a rule such as `:root[data-theme="dark"] #app` is an ordinary rule and obeys the scan. Selectors such as `#app` are not declaration values and are not affected. A shadow's geometry stays in the rule and its colour is a token (a `box-shadow` colour is `var(--color-...)`). The rules `body`, `.cell`, `.cell-given`, `.cell-hinted`, `.cell-violation`, `.cell-cause::after`, `button`, `.message-win` and the `:focus-visible` rules SHALL take their colours from these tokens, declared with longhand properties, as follows:
 
@@ -1542,33 +1546,33 @@ The WCAG 2 contrast ratio, computed from relative luminance on the resolved `#rr
 - the violation cue `--color-violation-border` against `--color-page`, `--color-cell-bg`, `--color-violation-bg` and `--color-line`;
 - the cause cue (the mark of FR-64, which lies on the violation fill and its stripe) `--color-violation-border` against `--color-violation-bg` (the pair above) and against `--color-violation-stripe`;
 - the hinted cue and the primary colour: `--color-primary` against `--color-primary-soft`, `--color-line` and `--color-page`;
-- the focus ring `--color-focus` against `--color-page`, `--color-cell-bg`, `--color-given-bg`, `--color-violation-bg`, `--color-line`, `--color-primary-soft`, `--color-success-bg` and `--color-cell-border`;
+- the focus ring `--color-focus` against `--color-page`, `--color-cell-bg`, `--color-given-bg`, `--color-violation-bg`, `--color-line`, `--color-primary-soft`, `--color-success-bg`, `--color-cell-border` and `--color-surface-raised` (the fill of the panels and the dialog, where the ring of «Зрозуміло», «Закрити» and the options is drawn);
 - the control border `--color-control-border` against `--color-page`.
 
 The given cell is told from an ordinary one by weight, not by a border: `.cell-given` declares `font-weight` 800 against the ordinary cell's 500, a given cell in a violation keeps 800 (the rule `.cell-given.cell-violation` declares `font-weight` 800, over the 700 of `.cell-violation`), and its border is 1px in `--color-given-border`, which equals `--color-cell-border` (deliberate, PA-Q1 A of the palette amendment: the design's given cue is the weight; the fill `--color-given-bg`, the darker digit and the missing bottom inset line are decoration). The text SHALL have at least 4.5:1:
 
-- `--color-text` against `--color-page`, `--color-cell-bg`, `--color-given-bg`, `--color-control-bg` and `--color-primary-soft`;
+- `--color-text` against `--color-page`, `--color-cell-bg`, `--color-given-bg`, `--color-control-bg`, `--color-primary-soft` and `--color-surface-raised`;
 - `--color-given-text` against `--color-given-bg`;
 - `--color-entry-text` against `--color-cell-bg`;
-- `--color-text-muted` against `--color-page`, `--color-cell-bg` and `--color-control-bg`;
+- `--color-text-muted` against `--color-page`, `--color-cell-bg`, `--color-control-bg` and `--color-surface-raised`;
 - `--color-violation-text` against `--color-violation-bg` and against `--color-violation-stripe` (the darkest band of the violating cell);
 - `--color-primary-text` against `--color-primary`;
 - `--color-win-text` against `--color-success-bg`.
 
-Traces: FR-65, FR-64, FR-120, A-58, NFR-9, FR-104
+Traces: FR-65, FR-64, FR-120, A-57, A-58, NFR-9, FR-104
 
 #### Scenario: Tokens exist and are literal
 
 - **GIVEN** the text of `src/ui/style.css`
 - **WHEN** the test reads the declarations of the top-level `:root` rule
-- **THEN** each of the 27 token names of the list above is declared once, with the light value of the list, `#rrggbb` for 24 of them and `#rrggbbaa` for the three translucent tokens only (`--color-success-glow`, `--color-backdrop-soft` and `--color-backdrop-strong`)
-- **AND** the rule `:root[data-theme="dark"]` declares each of the same 27 names once with the dark value of the list, so each token has exactly two value sets and the dark block redefines every token of the list and adds none
-- **AND** the top-level `:root` declares no property other than the 27 tokens and `color-scheme`, and a translucent token appears in no contrast pair
+- **THEN** each of the 31 token names of the list above is declared once, with the light value of the list, `#rrggbb` for 26 of them and `#rrggbbaa` for the five translucent tokens only (`--color-success-glow`, `--color-backdrop-soft`, `--color-backdrop-strong`, `--color-shadow-panel` and `--color-shadow-sheet`)
+- **AND** the rule `:root[data-theme="dark"]` declares each of the same 31 names once with the dark value of the list, so each token has exactly two value sets and the dark block redefines every token of the list and adds none
+- **AND** the top-level `:root` declares no property other than the 31 tokens and `color-scheme`, and a translucent token appears in no contrast pair
 
 #### Scenario: Every declared token is bound by a rule
 
 - **GIVEN** the text of `src/ui/style.css`
-- **WHEN** the test counts, for each of the 27 tokens, the declarations outside `:root` whose value contains `var(<token>)`
+- **WHEN** the test counts, for each of the 31 tokens, the declarations outside `:root` whose value contains `var(<token>)`
 - **THEN** each token is referenced at least once, so the stylesheet holds no unused token
 
 #### Scenario: Rules use the tokens and no colour literal is left
@@ -1617,8 +1621,8 @@ Traces: FR-65, FR-64, FR-120, A-58, NFR-9, FR-104
 - **GIVEN** the resolved colours of the tokens of each token set (light, then dark)
 - **WHEN** the test computes the ratio of `--color-violation-border` against `--color-violation-bg` and against `--color-violation-stripe`
 - **THEN** each ratio is at least 3 (against the fill 5.38 in light and 6.24 in dark; against the stripe 4.33 and 4.61)
-- **AND** the pair against the stripe is in `CONTRAST_PAIRS` (group `cause-cue`) and the pair against the fill is the existing violation cue pair, so the list holds 35 pairs
-- **AND** the stripe is not a cue (its ratio against the fill stays below 3), and the mark has no token of its own: the token list is still the 27 of the table
+- **AND** the pair against the stripe is in `CONTRAST_PAIRS` (group `cause-cue`) and the pair against the fill is the existing violation cue pair, so the list holds 38 pairs (the 35 of the cause-cue change and the 3 pairs on `--color-surface-raised`)
+- **AND** the stripe is not a cue (its ratio against the fill stays below 3), and the mark has no token of its own: the token list is the 31 of the table
 
 #### Scenario: The accepted adjacencies of the cause mark are not contrast pairs
 
@@ -1644,14 +1648,21 @@ Traces: FR-65, FR-64, FR-120, A-58, NFR-9, FR-104
 #### Scenario: The focus ring has 3:1 against every cell background
 
 - **GIVEN** the resolved colours of the tokens of each token set (light, then dark)
-- **WHEN** the test computes the ratio of `--color-focus` against `--color-page`, `--color-cell-bg`, `--color-given-bg`, `--color-violation-bg`, `--color-line`, `--color-primary-soft`, `--color-success-bg` and `--color-cell-border`
-- **THEN** each ratio is at least 3 (against the plate 11.72 in light and 10.65 in dark; against the cell border 3.87 and 3.36)
+- **WHEN** the test computes the ratio of `--color-focus` against `--color-page`, `--color-cell-bg`, `--color-given-bg`, `--color-violation-bg`, `--color-line`, `--color-primary-soft`, `--color-success-bg`, `--color-cell-border` and `--color-surface-raised`
+- **THEN** each ratio is at least 3 (against the plate 11.72 in light and 10.65 in dark; against the cell border 3.87 and 3.36; against the raised surface 15.88 and 12.79)
 
 #### Scenario: The control border has 3:1 and the text has 4.5:1
 
 - **GIVEN** the resolved colours of the tokens of each token set (light, then dark)
-- **WHEN** the test computes the ratio of `--color-control-border` against `--color-page`, and the ratios of the 4.5:1 list above: `--color-text` against `--color-page`, `--color-cell-bg`, `--color-given-bg`, `--color-control-bg` and `--color-primary-soft`; `--color-given-text` against `--color-given-bg`; `--color-entry-text` against `--color-cell-bg`; `--color-text-muted` against `--color-page`, `--color-cell-bg` and `--color-control-bg`; `--color-violation-text` against `--color-violation-bg` and `--color-violation-stripe`; `--color-primary-text` against `--color-primary`; and `--color-win-text` against `--color-success-bg`
+- **WHEN** the test computes the ratio of `--color-control-border` against `--color-page`, and the ratios of the 4.5:1 list above: `--color-text` against `--color-page`, `--color-cell-bg`, `--color-given-bg`, `--color-control-bg`, `--color-primary-soft` and `--color-surface-raised`; `--color-given-text` against `--color-given-bg`; `--color-entry-text` against `--color-cell-bg`; `--color-text-muted` against `--color-page`, `--color-cell-bg`, `--color-control-bg` and `--color-surface-raised`; `--color-violation-text` against `--color-violation-bg` and `--color-violation-stripe`; `--color-primary-text` against `--color-primary`; and `--color-win-text` against `--color-success-bg`
 - **THEN** the first ratio is at least 3 (3.38 light, 4.55 dark) and every other ratio is at least 4.5
+
+#### Scenario: The raised surface carries the text and the focus ring
+
+- **GIVEN** the resolved colours of the tokens of each token set (light, then dark) and `CONTRAST_PAIRS` of the test helpers
+- **WHEN** the test computes the ratio of `--color-text`, of `--color-text-muted` and of `--color-focus` against `--color-surface-raised` (the fill of the rules panel, the setup sheet, the settings panel and the confirmation dialog, which no earlier pair covers: in dark `#2c2620` equals no other background)
+- **THEN** the ratios are 15.88 and 12.79 for the text, 7.17 and 6.96 for the muted text and 15.88 and 12.79 for the focus ring (light, dark), each at least 4.5 for the two text pairs and at least 3 for the focus pair
+- **AND** the three pairs are in `CONTRAST_PAIRS` (the first two in group `text`, the third in group `focus-ring`), the list holds 38 pairs (4 cell border, 4 violation cue, 1 cause cue, 3 hinted cue, 9 focus ring, 1 control border and 16 text), and no pair names `--color-overlay-border`, `--color-shadow-panel` or `--color-shadow-sheet`
 
 #### Scenario: The cascade gives each cell state the colours whose contrast is checked
 
@@ -1668,9 +1679,9 @@ Traces: FR-65, FR-64, FR-120, A-58, NFR-9, FR-104
 
 #### Scenario: The token reader accepts a translucent value only for a translucent token
 
-- **GIVEN** the token reader of the test helpers and a stylesheet text with `--color-success-glow: #2f6b3a73` and `--color-backdrop-strong: #2d190a80` and, in another copy, `--color-page: #f7f3ea80`
+- **GIVEN** the token reader of the test helpers and a stylesheet text with the translucent tokens `--color-success-glow: #2f6b3a73`, `--color-backdrop-strong: #2d190a80` and `--color-shadow-sheet: #0000002e` (it may hold more of the five) and, in another copy, `--color-page: #f7f3ea80`
 - **WHEN** the reader and the contrast function read each copy
-- **THEN** the first copy is read as two translucent tokens that no contrast pair uses, and the second is rejected (the format `#rrggbbaa` is allowed only for the token the list marks translucent), as is an `rgb()` value in either
+- **THEN** the first copy is read as translucent tokens that no contrast pair uses (each is in the helper's set of the five translucent names), and the second is rejected (the format `#rrggbbaa` is allowed only for the token the list marks translucent), as is an `rgb()` value in either
 
 ### Requirement: The page meets the WCAG 2.2 AA criteria of the accessibility requirements
 
@@ -3927,11 +3938,11 @@ Traces: NFR-14, NFR-10, NFR-12, FR-68, FR-119
 
 - **GIVEN** the stylesheet after this change
 - **WHEN** its `:root` and dark token sets are read
-- **THEN** both sets equal the 27 tokens and values of the table of «Borders, cues and focus rings have enough contrast» (the 25 block-2 tokens and the 2 backdrop tokens, marked "later" in the appendix to A-57, that this change binds), and no other `--color-*` token is declared
+- **THEN** both sets equal the 31 tokens and values of the table of «Borders, cues and focus rings have enough contrast» (the 25 block-2 tokens, the 2 backdrop tokens and the 4 shell tokens, marked "later" in the appendix to A-57, that the last two changes bind), and no other `--color-*` token is declared
 
 ### Requirement: The main column takes the design palette
 
-The paint of the page's main column SHALL equal that of the design reference (NFR-14, FR-65, A-57) in the sampled cases of `quality/design-paint.json`, except the three deviations that A-57 names. The reference is the design build (`design/v0`, served from `design/v0/out`), which stands in for the frozen reference `design/v0-screenshots/review-set-14/` as in «Main column layout geometry follows the design reference». The main column is the page, the header with the logo and its buttons (the settings button `[data-action="settings"]` and «Правила» `[data-action="rules"]`), the summary button `[data-action="setup"]` with its cue, the board plate `[data-board]` and its cells in every state (ordinary and entry, given, hinted, violation, given in a violation, solved), the focus rings, the three action buttons (`[data-action="hint"]`, `[data-action="reset"]`, `[data-action="new"]`, with the swap after a win) and the message area (the idle, hint and win lines). The setup sheet, the rules and settings panels and the confirmation dialog are outside this requirement and keep their current token bindings until their own blocks; their backdrops are covered by «The backdrops take the design's translucent tokens»; «Почати» keeps its current tokens.
+The paint of the page's main column SHALL equal that of the design reference (NFR-14, FR-65, A-57) in the sampled cases of `quality/design-paint.json`, except the three deviations that A-57 names. The reference is the design build (`design/v0`, served from `design/v0/out`), which stands in for the frozen reference `design/v0-screenshots/review-set-14/` as in «Main column layout geometry follows the design reference». The main column is the page, the header with the logo and its buttons (the settings button `[data-action="settings"]` and «Правила» `[data-action="rules"]`), the summary button `[data-action="setup"]` with its cue, the board plate `[data-board]` and its cells in every state (ordinary and entry, given, hinted, violation, given in a violation, solved), the focus rings, the three action buttons (`[data-action="hint"]`, `[data-action="reset"]`, `[data-action="new"]`, with the swap after a win) and the message area (the idle, hint and win lines). The setup sheet, the rules and settings panels and the confirmation dialog are outside this requirement. The shell binds their fill, border and shadow (see «The panels take the shared surface paint»), their backdrops are covered by «The backdrops take the design's translucent tokens», and the rest of their paint keeps its current token bindings until their own blocks; «Почати» keeps its current tokens until the setup-sheet block.
 
 The mechanism is declared here and built by the test-engineer, test first. The script `scripts/freeze-design-paint.mjs` freezes the computed paint of the main-column elements and cell kinds of the design build, for the light and the dark scheme, in the states default, hint, win, four and eight, into `quality/design-paint.json`; it serves `design/v0/out` the way `scripts/freeze-design-geometry.mjs` does (including its path guard) and uses the same browser setup as the e2e test (Playwright's "Desktop Chrome" device, reduced motion, the scheme set on the browser context, the viewport 1024×768, no stored preference, so the theme is the system one as in the design's head script). The frozen properties of an element are `color`, `background-color`, the presence of a `background-image` (a gradient or none; never its colour stops, because the design's stripe is a translucent colour and the page's is the opaque composite of it, so the two computed strings can never be equal and the stripe value is pinned by the stylesheet scenarios instead), the colour, width and style of the four borders, `box-shadow`, `font-weight`, `font-style`, `text-decoration-line`, and for the logo's shapes `fill` and `stroke`; and, for the first non-given cell and for «Підказка» after a keyboard key press and a script focus (so that `:focus-visible` applies, as in the capture adapter), the `outline` colour, width, style and offset. The cell kinds are found by their classes (`cell-given`, `cell-hinted`, `cell-violation`) and by the digit: an ordinary empty cell, an entry cell (a non-given cell with a digit and no class), a given cell, a hinted cell, a violating cell. The e2e test `e2e/nfr-14-palette.spec.ts` (`@trace NFR-14`, in the existing `layout` project, whose `testMatch` already includes `nfr-14-*`, so `playwright.config.ts` is not changed) loads the built page for each case with the same capture board (FR-119) as the geometry test and compares every frozen value of every element that exists in the design's case. Hover, active and pressed states are not captured (NFR-14 never captures them; their rules are checked in the stylesheet below).
 
@@ -4048,7 +4059,7 @@ From 64rem the rules panel ends over the page (the board or the button row), so 
 
 A backdrop is checked composited over the page (FR-65; see «Effective theme on the document»). In each token set the strong composite is darker than the soft composite (relative luminance 0.2457 against 0.5734 in light, 0.0038 against 0.0050 in dark), so "strong" dims more.
 
-Intentionally not delivered in this block, so that testers do not report them as bugs: (1) the design's fade of the backdrops (`transition` of `background-color`, `overlay` and `display`, and the `@starting-style` rules, `binarka.css` lines 1585-1610) is NOT ported: it is wrapped in `@media (prefers-reduced-motion: no-preference)` in the design, the page animates neither the sheet, the panels nor the dialog yet, and the gate's capture forces reduced motion, so no shot shows it; no `::backdrop` rule of the stylesheet declares `transition` or sits in an `@starting-style` rule; (2) the fill, border and shadow of the panels, the sheet and the dialog (the "later" tokens `--color-surface-raised`, `--color-overlay-border`, `--color-option-border`, `--color-violation-ink` and the shadows) keep their current bindings until their own blocks; (3) the page does not paint a backdrop for the closed surfaces: a `::backdrop` exists only while its surface is open.
+Intentionally not delivered in this block, so that testers do not report them as bugs: (1) the design's fade of the backdrops (`transition` of `background-color`, `overlay` and `display`, and the `@starting-style` rules, `binarka.css` lines 1585-1610) is NOT ported: it is wrapped in `@media (prefers-reduced-motion: no-preference)` in the design, the page animates neither the sheet, the panels nor the dialog yet, and the gate's capture forces reduced motion, so no shot shows it; no `::backdrop` rule of the stylesheet declares `transition` or sits in an `@starting-style` rule; (2) the "later" tokens `--color-option-border` (the setup-sheet block) and `--color-violation-ink` (the dialog block) are not declared by this requirement or by the shell, and the paint they serve keeps its current bindings until those blocks; `--color-shadow-sunken` was withdrawn on 2026-10-11 (the appendix to A-57); the fill, border and shadow of the panels, the sheet and the dialog are bound by «The panels take the shared surface paint», not by this requirement; (3) the page does not paint a backdrop for the closed surfaces: a `::backdrop` exists only while its surface is open.
 
 The mechanism is a stylesheet test, test first, and a browser test: `e2e/nfr-14-backdrop.spec.ts` (`@trace NFR-14`, in the existing `layout` project, whose `testMatch` already includes `nfr-14-*`, so `playwright.config.ts` is not changed) opens each surface in the built page and reads one pixel of a screenshot. The sampling is declared: the surfaces (rules, setup sheet, settings, confirmation), the schemes (light, dark) and the viewport widths 375×812 (below 64rem) and 1024×768 (from 64rem) for the rules panel and 1024×768 for the other three, 10 cases; coverage is `sampled`, never continuum. The browser setup is that of `playwright.config.ts`, as in `e2e/nfr-14-palette.spec.ts` (Playwright "Desktop Chrome", reduced motion, the scheme on the browser context, no stored preference); the gate's own capture (Chromium with `--force-device-scale-factor`, viewport off) is a different instrument and is not used here. The pixel read is one that no surface and no page content covers; the test reads the same pixel with the surface closed first and expects the page colour there, so a pixel under a surface or a card fails the case instead of passing by luck. The stricter instrument that runs before a block-done claim is the per-block pixel crop of `scripts/visual-block.mjs` and the per-shot gate `npm run check:visual`, over the rules, rules-techniques, confirm, setup and settings shots; this requirement claims no pixel floor for any shot.
 
@@ -4275,6 +4286,163 @@ Traces: FR-120, FR-34, FR-35, FR-36, FR-37, FR-38, FR-39, FR-60, FR-64, FR-67, F
 - **THEN** after each press the set of cells with `cell-cause` is exactly `{X}` when X, the cell just pressed, is among the `cells` of some violation that the checker reports, and is empty otherwise
 - **AND** after each press at most one cell has the class, a cell that has it also has `cell-violation`, `aria-invalid="true"`, `data-given="false"` and a text of `0` or `1`, and no cell label contains the cause suffix unless the cell has the class
 - **AND** the sweep reaches at least one press with a marker and one press without a marker at each size, so the oracle is not vacuous (the test asserts both counts are above zero)
+
+### Requirement: The panels take the shared surface paint
+
+The fill, the border colour and the drop shadow of the rules panel, the setup sheet, the settings panel and the confirmation dialog SHALL come from the four shell tokens of the table of «Borders, cues and focus rings have enough contrast» (NFR-14, FR-65, A-57; G2 shell slice `update-panel-shell`; `design/v0/app/binarka.css` lines 809-829, 949-962, 1103-1117 and 1337-1349). This change (`update-panel-shell`) is paint only, apart from the board-size hook of «The page root carries the board size»: it changes no width, height, place, radius, padding or line height of any of the four surfaces. Their size and place belong to their own blocks (the rules panel, A-59; the setup sheet, A-60; the settings panel and the dialog later), which change those declarations by their own deltas; this sentence does not bind them. The bindings are these, each written with the longhand the colour scan reads (`background-color`, `border-color`) or with a `var(--color-...)` colour inside the shorthand the scan allows (`background`, `box-shadow`):
+
+| Rule (selector) | Where | Declaration |
+|---|---|---|
+| `.rules`, `.setup-sheet`, `.settings` (the design's `.setup` is the page's `.setup-sheet`) | a top-level rule outside any at-rule | `background-color: var(--color-surface-raised)`, `border-color: var(--color-overlay-border)`, `box-shadow: 0 -0.5rem 2rem var(--color-shadow-sheet)` |
+| the same three selectors | inside `@media (min-width: 48rem)` | `box-shadow: 0 1rem 2.5rem var(--color-shadow-panel)`; the `.rules` rule of this block, which states its border again, declares `border-color: var(--color-overlay-border)` |
+| `.confirm` | a top-level rule outside any at-rule, at every width | `background-color: var(--color-surface-raised)`, `border-color: var(--color-control-border)` (unchanged), `box-shadow: 0 1rem 2.5rem var(--color-shadow-panel)` |
+| `.setup-sheet:popover-open::before` (the footer strip) | a top-level rule outside any at-rule | `background: linear-gradient(to bottom, transparent, var(--color-surface-raised) 16px)` and `box-shadow: 0 16px 0 16px var(--color-surface-raised)` |
+| `.setup-close` and `.settings-close` («Закрити» in the sheet and in the settings panel) | the existing rule of each (`.setup-close` and `.settings-close` both exist), outside any at-rule | `background-color: var(--color-surface-raised)` (added to the existing rule by the shell: today neither rule declares a fill, and both inherit the base `button` rule's `--color-control-bg`) |
+
+Three decisions are part of the requirement. (1) **The dialog's border stays `--color-control-border`.** The design's `.confirm` border is `--cell-border` (`binarka.css` line 1343), whose values (light `#8c8374`, dark `#8a7f71`) are the values of the page's `--color-control-border` in both sets, so `--color-overlay-border` is bound by the three panels only. (2) **The shadow's geometry stays in the rule and its colour is the token** (FR-65): the sheet shadow below 48rem, the panel shadow from 48rem, and the panel shadow on the dialog at every width. (3) **The strip and «Закрити» take the same fill as their surface**: in dark the strip and the two buttons would otherwise show `#24201b` bands on the `#2c2620` panel. After the port no rule that is exactly `.rules`, `.setup-sheet`, `.settings` or `.confirm` uses `--color-control-bg` for its `background-color`, no such rule among the three panels uses `--color-given-bg` for its `border-color` (at any width), and the strip uses `--color-control-bg` nowhere. The other rules that paint with `--color-control-bg` inside a surface are controls, not the surface's own fill, and are not touched: the base `button` rule, `.size-control` and its options, `.level-control` options, `.setup-start`, `.theme-control` and `.language-control` with their options (in dark they sit at `#24201b` on the panel's `#2c2620`, as the design's own `--surface` controls do on `--surface-raised`, `binarka.css` line 386).
+
+A pair covers the text and the focus ring on the raised fill: `--color-text`, `--color-text-muted` and `--color-focus` on `--color-surface-raised` (see «Borders, cues and focus rings have enough contrast»). The three shell tokens that paint no text (`--color-overlay-border`, `--color-shadow-panel`, `--color-shadow-sheet`) are in no pair. The overlay border is signed as decoration: the rules-panel amendment records "the border is not a pair (1.24 light against the page; decoration, the backdrop already separates the panel)" (`docs/handoff/rules-panel-amendment-draft-2026-10-11.md`, section 4, ratified at autonomy-log row 172); the reasoning that A-60 gives for the available level card's border supports it (a text-labelled surface is identified by its text and fill, not by its edge). The two shadows are translucent, and a translucent token is in no pair.
+
+Intentionally not delivered in this change, so that testers do not report them as bugs: (1) the design's mask shadow on «Закрити» (`0 0 0 1rem` and `0 1rem 0 1rem` in the raised fill, `binarka.css` lines 543-545): the page's sheet masks scrolled text with the footer strip, and its settings panel's «Закрити» is not sticky; (2) the filled «Зрозуміло» and the sticky rules footer (the rules-panel block), the filled «Почати», the level cards, the size option's paint and the ring (the setup-sheet block), the list separators and the example cells of the rules panel (the rules-panel block), the other paint of the settings panel and of the confirmation dialog (the second wave), and the dialog's `--color-violation-ink` (the dialog block); (3) no size, place, radius, padding or line-height change of any surface, no motion; (4) the colour of a shadow in a browser other than Chromium (only Chromium is tested, NFR-7).
+
+The mechanism is a stylesheet test, test first, and a browser test. `tests/play-page-panel-shell-stylesheet.test.ts` (`@trace NFR-14`, `@trace FR-65`) reads the parsed `src/ui/style.css`. `e2e/nfr-14-panel-shell.spec.ts` (`@trace NFR-14`, in the existing `layout` project, whose `testMatch` already includes `nfr-14-*`, so `playwright.config.ts` is not changed) compares the computed fill, border colour and shadow of the four surfaces with the design build, read live: the test serves `design/v0/out` itself with a static file server on a free port chosen by the operating system (never 4173, 4174, 4176 or 4177, which the page preview and the capture tools bind), with the path guard of `scripts/freeze-design-geometry.mjs` (nothing outside the build folder is served), and opens the design's routes `/rules/`, `/setup/`, `/settings/` and `/confirm/`, which show each surface open at load. The other `nfr-14-*` e2e tests read frozen files (`quality/design-geometry.json`, `quality/design-paint.json`) and do not serve the design build; this one does, because the shell adds no freeze case. If `design/v0/out/index.html` is missing, the test FAILS with the build instruction of `design/README.md` (`pnpm build` in `design/v0`); it is never skipped. The page side is the built page of `playwright.config.ts`, with the design's fixture board (FR-119) and the surface opened by the press the capture uses (`e2e/nfr-14-backdrop.spec.ts`). Both sides use the browser setup of `playwright.config.ts` (Playwright "Desktop Chrome", reduced motion, the scheme on the browser context, no stored preference). The sampling is declared: the surfaces (rules, setup sheet, settings, confirmation), the schemes (light, dark) and the viewports 375×812 and 1024×768, 16 cases; coverage is `sampled`, never continuum. Nothing between the two viewports, no hover, no focus state, no other board is looked at. The stricter instruments that run before a block-done claim are the per-block pixel crop of `scripts/visual-block.mjs` and the per-shot gate `npm run check:visual` over the rules, rules-techniques, confirm, setup and settings shots, and then the full computed-style diff of every element of the surfaces (the escalation path of `docs/qa/visual-diff/README.md`). This requirement claims no pixel floor for any shot.
+
+Traces: NFR-14, FR-65, A-57
+
+#### Scenario: The three panels take the raised fill, the overlay border and the sheet shadow below 48rem
+
+- **GIVEN** the parsed `src/ui/style.css`, every rule found through nested rules and at-rules
+- **WHEN** the test reads the rule of each of `.rules`, `.setup-sheet` and `.settings` that is outside any at-rule
+- **THEN** each declares `background-color` `var(--color-surface-raised)`, `border-color` `var(--color-overlay-border)` and `box-shadow` `0 -0.5rem 2rem var(--color-shadow-sheet)` (whitespace aside), and each of the three declarations appears once in that rule
+- **AND** (a change-time check of this change, task 3.6, recorded in its evidence; not a lasting test, because the panels' own blocks change these declarations later) `git diff -U0` of `src/ui/style.css` against `main` before this change shows no added, removed or changed line that declares `border-width`, `border-radius`, `max-height`, `padding`, `width`, `inset` or `margin` in these three rules (the filter of task 3.6; today's rules are `.rules` at lines 631-648, `.setup-sheet` at 780-801 and `.settings` at 1071-1088 of the file at `main` `64c2d7d`)
+
+#### Scenario: From 48rem the three panels take the panel shadow and keep the overlay border
+
+- **GIVEN** the parsed `src/ui/style.css`
+- **WHEN** the test reads the rule of each of `.rules`, `.setup-sheet` and `.settings` inside `@media (min-width: 48rem)`
+- **THEN** each declares `box-shadow` `0 1rem 2.5rem var(--color-shadow-panel)` once
+- **AND** no rule that is exactly `.rules`, `.setup-sheet` or `.settings`, at any width, declares a `border-color` other than `var(--color-overlay-border)`, in particular the `.rules` rule of the 48rem block no longer declares `var(--color-given-bg)`
+- **AND** no rule that is exactly `.rules`, `.setup-sheet` or `.settings` declares a `background-color` other than `var(--color-surface-raised)`
+
+#### Scenario: The dialog takes the raised fill and the panel shadow and keeps its control border
+
+- **GIVEN** the parsed `src/ui/style.css`
+- **WHEN** the test reads the rules that are exactly `.confirm`
+- **THEN** the rule outside any at-rule declares `background-color` `var(--color-surface-raised)`, `border-color` `var(--color-control-border)` and `box-shadow` `0 1rem 2.5rem var(--color-shadow-panel)`
+- **AND** no rule that is exactly `.confirm` sits inside an at-rule and declares a `box-shadow`, `border-color` or `background-color`, so the dialog has one fill, one border and one shadow at every width
+- **AND** no rule declares `var(--color-overlay-border)` for `.confirm`
+
+#### Scenario: The footer strip and the two close buttons take the raised fill
+
+- **GIVEN** the parsed `src/ui/style.css`
+- **WHEN** the test reads the rule `.setup-sheet:popover-open::before` and the rules that are exactly `.setup-close` and `.settings-close`
+- **THEN** the strip's `background` is `linear-gradient(to bottom, transparent, var(--color-surface-raised) 16px)` and its `box-shadow` is `0 16px 0 16px var(--color-surface-raised)`, and neither value contains `--color-control-bg`
+- **AND** the rule `.setup-close` and the rule `.settings-close` each declare `background-color` `var(--color-surface-raised)`, so the buttons no longer fall back to the base `button` rule's fill
+
+#### Scenario: No shell binding adds a colour literal
+
+- **GIVEN** the parsed `src/ui/style.css` and the colour scan of «Borders, cues and focus rings have enough contrast»
+- **WHEN** the test applies the scan to every declaration outside `:root`
+- **THEN** it finds no colour literal, no named colour and no `color-mix(`, every `box-shadow` of the rules of this requirement has its colour as a `var(--color-...)` token (a shadow's geometry stays in the rule), and each of the four shell tokens is referenced by at least one declaration outside `:root`
+- **AND** the stylesheet has no `!important`, and the raw text contains `:has(` exactly once (the idle-line rule)
+
+#### Scenario: The raised fill is covered by pairs
+
+- **GIVEN** `CONTRAST_PAIRS` of the test helpers and the four surfaces that bind `--color-surface-raised`
+- **WHEN** the test lists the pairs whose background is `--color-surface-raised`
+- **THEN** there are exactly three: `--color-text` and `--color-text-muted` at 4.5:1 (group `text`) and `--color-focus` at 3:1 (group `focus-ring`), and each ratio holds in the light and in the dark token set
+- **AND** no pair names `--color-overlay-border`, `--color-shadow-panel` or `--color-shadow-sheet`, and the list holds 38 pairs
+
+#### Scenario: The shell moves no box
+
+- **GIVEN** the built page, and `e2e/nfr-14-layout-geometry.spec.ts` (its 32 cases and its settings-panel and setup-sheet scenarios), `e2e/nfr-12-targets.spec.ts` and `e2e/nfr-10-fit.spec.ts` as they stand before this change
+- **WHEN** they run after the port
+- **THEN** they pass, and `git diff` of this change shows no edit to those files or to `quality/design-geometry.json`
+
+#### Scenario: A surface has the design's fill, border and shadow in a real browser
+
+- **GIVEN** the built page in Chromium and the design build served from `design/v0/out` by the test, each with the browser setup of `playwright.config.ts`, in the light and in the dark scheme, at 375×812 and at 1024×768 (e2e, sampled: the rules panel, the setup sheet, the settings panel and the confirmation dialog; 16 cases), the page with the design's fixture board (FR-119)
+- **WHEN** the test opens the surface on both sides and finds it by the data contract that both builds share (`[data-section="rules"]`, `[data-section="setup"]`, `[data-section="settings"]` and `dialog[data-dialog="confirm"]`; the design's class for the setup sheet is `.setup`, the page's is `.setup-sheet`, so the class is not used) and reads, for the surface element, `getComputedStyle` `background-color`, `border-top-color` and `box-shadow`
+- **THEN** the fill equals the design's (light `rgb(255, 253, 248)`, dark `rgb(44, 38, 32)`) with every channel within 1, the border colour equals the design's (for the rules panel, the setup sheet and the settings panel light `rgb(226, 219, 204)` and dark `rgb(138, 127, 113)`; for the dialog light `rgb(140, 131, 116)` and dark `rgb(138, 127, 113)`) with every channel within 1, and the shadow equals the design's layer by layer: the same colour with its alpha within 0.005 (`rgba(0, 0, 0, 0.18)` below 48rem on the three panels and `rgba(0, 0, 0, 0.25)` from 48rem and on the dialog at both widths), and the same offsets, blur and spread in px
+- **AND** at the same cases the fill of `.setup-close` and `.settings-close` (read inside the setup sheet and the settings panel) equals the design's, and the setup sheet's footer strip (`::before`; `.setup:popover-open::before` in the design) has a `box-shadow` colour equal to the design's with the same geometry
+- **AND** a pair of values that differ is reported with the surface, the scheme, the viewport and both strings, and the test never passes on a surface it did not open (it asserts the surface is open and not the page behind it)
+
+#### Scenario: The design build is required and the coverage is declared
+
+- **GIVEN** `e2e/nfr-14-panel-shell.spec.ts`
+- **WHEN** `design/v0/out/index.html` is absent, and when a reader looks for the sampling dimensions
+- **THEN** the test fails with a message that names `pnpm build` in `design/v0` (no skip, no pass), the design server listens on a port chosen by the operating system and is closed after the run, and the file names the surfaces, the schemes and the viewports as its sampling dimensions, declares coverage `sampled`, names `scripts/visual-block.mjs` and `npm run check:visual` as the stricter instruments, and claims neither all widths, all surfaces nor a pixel floor
+
+### Requirement: The page root carries the board size
+
+The page root, the element passed to `mountPlayPage` (`#app` in `index.html`), SHALL carry the attribute `data-size` whose value is the digit of the size of the board shown, `4`, `6` or `8`, equal to the `data-size` of `[data-board]` (FR-43, FR-57, FR-96, A-59, A-60; XQ-1 A of the rules-panel and setup-sheet amendment). The page sets it at mount, before it builds the board, to the mount size 6 (the size that is marked at start, FR-43 and FR-100), and sets it again in the same step that creates a board element: a new puzzle, a size change by «Почати» (FR-101, after the confirmation of FR-67 when the board has entries) and a capture board (FR-119). A press that changes only the marked choice (FR-73, FR-100), a hint, a click, a language or theme switch and a cancelled confirmation do not change it. A failed generation (FR-88, FR-101) keeps the previous board and so keeps the attribute equal to that board's. When the generation at mount fails and no board is shown (FR-88, FR-101), the attribute is `6`, the mount size, and `[data-board]` does not exist. A mount starts the attribute at 6 whatever the root held before, and then it follows the board shown (a capture board of size 4 gives 4). Two mounts on two roots are independent: each root carries its own value and a change on one root never touches the other.
+
+The attribute exists so that the layout variables that depend on the size can be read outside the board without a has-selector (FR-65 allows `:has(` in the idle-line rule only). The stylesheet SHALL declare the five size-dependent layout variables `--n`, `--cell-max`, `--board-gap`, `--board-pad` and `--board-width` in rules whose selector begins with `#app` (the plain `#app` rule for 6×6, `#app[data-size='4']`, `#app[data-size='8']`, the small-phone 6×6 rule `#app[data-size='6']` inside `@media (max-width: 22.5rem)`, and the rules of the `@media (max-width: 30rem)` and `@media (min-width: 48rem)` blocks: in the 30rem block `#app` declares `--cell-max` (the `clamp(2.75rem, calc((100svh - 28rem) / var(--n)), 4rem)` of the 6×6 and 4×4 boards) and `#app[data-size='8']` declares `--cell-max` `4rem`, `--board-gap` `0.125rem` and `--board-pad` `0.1875rem`; in the 48rem block `#app` and `#app[data-size='8']` declare `--cell-max`), with the values the `.board` rules had, and in no rule whose selector begins with `.board`. The board and every panel are inside `#app`, so they inherit the same `--board-width`; the rules `.board[data-size='8']` and `.board` keep only the board's own geometry (`width`, `margin-inline`, `--bleed`, the grid, the padding). The attribute is on whatever root is mounted; the layout rules key on `#app`, the one root the page is built for (`src/main.ts`), as every other layout variable already does (the baseline requirement «Borders, cues and focus rings have enough contrast» keeps the non-colour variables on `#app`). The shell uses no new `:has(`. **This goes beyond paint, said plainly:** it is in the shell slice because the rules-panel block and the setup-sheet block both need the board side `min(--board-width, --column)` outside the board and run in parallel. The geometry of the page does not change by it.
+
+Traces: FR-43, FR-57, FR-65, FR-96, A-59, A-60
+
+#### Scenario: The root carries the size of the board at mount
+
+- **GIVEN** a page mounted on a root with the default generator, and another with an injected generator that returns a 6×6 fixture
+- **WHEN** the test reads the root's `data-size` and `[data-board]`'s `data-size`
+- **THEN** both are `6` and equal
+
+#### Scenario: The root follows every size change
+
+- **GIVEN** a mounted page on an untouched board (no player entries) with an injected generator that returns a fixture of the size asked
+- **WHEN** the player marks «Поле 4×4» and presses «Почати», then marks «Поле 8×8» and presses «Почати», then marks «Поле 6×6» and presses «Почати»
+- **THEN** after each press the root's `data-size` equals `[data-board]`'s `data-size`: `4`, then `8`, then `6`
+- **AND** after marking a size without «Почати» the root's `data-size` is still the size of the board shown
+
+#### Scenario: A size change that asks first changes the root only after the confirmation
+
+- **GIVEN** a mounted 6×6 page with one player entry and a generator that returns a fixture of the size asked
+- **WHEN** the player marks «Поле 8×8», presses «Почати» (the confirmation opens), and then presses «Скасувати», and again marks, presses «Почати» and presses «Так, почати»
+- **THEN** while the dialog is open and after «Скасувати» the root's `data-size` is `6`, and after «Так, почати» it is `8`, equal to `[data-board]`'s
+
+#### Scenario: A failed generation keeps the root equal to the board shown
+
+- **GIVEN** a mounted 6×6 page and an injected `generate` that throws for size 8
+- **WHEN** the player marks «Поле 8×8» and presses «Почати» (and confirms when asked)
+- **THEN** `[data-board]` keeps `data-size="6"` and the root's `data-size` is `6`
+
+#### Scenario: With no board shown at mount the root is 6
+
+- **GIVEN** an injected `generate` that throws for every call, so the generation at mount fails
+- **WHEN** the page is mounted
+- **THEN** the page has no `[data-board]` and the root's `data-size` is `6`
+
+#### Scenario: A capture board sets the root
+
+- **GIVEN** a valid capture board of size 4 and another of size 8 (FR-119), each set before the mount
+- **WHEN** each page is mounted
+- **THEN** the root's `data-size` is `4` and `8` respectively, equal to `[data-board]`'s
+
+#### Scenario: Two mounts are independent
+
+- **GIVEN** two pages mounted on two roots, both at the mount size 6, with an injected generator that returns a fixture of the size asked (the mount always asks for 6, so a root reaches another size only through the setup sheet or a capture board)
+- **WHEN** on the second root the player opens the sheet (through the stubbed `showPopover()`, A-44), marks «Поле 4×4» and presses «Почати» (an untouched board asks for no confirmation), then on the first root the player does the same for «Поле 8×8», then the test reads both roots, and then mounts a third page on the first root again
+- **THEN** the second root's `data-size` stayed `4` while the first changed to `8`, each equal to its own `[data-board]`'s, and the third mount sets the first root's `data-size` to `6` afresh without touching the second
+- **AND** a size-4 capture board (FR-119) set before the mount of one root only, and removed before the mount of the other, gives that root `4` and the other `6`
+
+#### Scenario: The size-dependent variables are declared on the root
+
+- **GIVEN** the parsed `src/ui/style.css`, every rule found through nested rules and at-rules
+- **WHEN** the test collects the rules that declare `--n`, `--cell-max`, `--board-gap`, `--board-pad` or `--board-width`
+- **THEN** every such rule's selector begins with `#app`, none begins with `.board`, a top-level `#app` rule outside any at-rule declares all five (`--n` `6`, `--cell-max` `4rem`, `--board-gap`, `--board-pad` and `--board-width`), `#app[data-size='4']` declares `--n` `4`, `#app[data-size='8']` declares `--n` `8`, and the rules for 8×8 and for the small-phone 6×6 board keep the gap and padding values the `.board` rules had (`0.1875rem` and `0.25rem` for 8×8 from the top level, `0.125rem` and `0.1875rem` for 8×8 up to 30rem, `0.1875rem` and `0.25rem` for 6×6 up to 22.5rem)
+- **AND** the raw text contains `:has(` exactly once (the idle-line rule), and no selector reads the board's size through `:has(`
+
+#### Scenario: A panel outside the board reads the board's variables
+
+- **GIVEN** the built page in Chromium at 375×812 and 1024×768, with the design's 4×4, 6×6 and 8×8 fixture boards (FR-119) (e2e, sampled: 3 sizes and 2 viewports, 6 cases)
+- **WHEN** the test reads `getComputedStyle(...).getPropertyValue(name)` of `--n`, `--cell-max`, `--board-gap`, `--board-pad` and `--board-width` on `[data-board]` and on the settings panel (an element outside the board, inside the root)
+- **THEN** each of the five values is non-empty and equal on both elements, and `--n` equals the board's size
+
+#### Scenario: The board keeps its geometry
+
+- **GIVEN** the built page and the existing e2e geometry cases of «Main column layout geometry follows the design reference» (the 32 cases of `quality/design-geometry.json`, with the default, 4×4 and 8×8 boards at the six viewports) and the paint cases of «The main column takes the design palette»
+- **WHEN** they run after the port
+- **THEN** they pass without an edit to `e2e/nfr-14-layout-geometry.spec.ts`, `e2e/nfr-14-palette.spec.ts`, `quality/design-geometry.json` or `quality/design-paint.json`
 
 ## Exclusions
 
