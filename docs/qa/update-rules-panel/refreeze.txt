@@ -1,0 +1,55 @@
+# Refreeze of the rules-panel geometry cases (task 3.1)
+
+- Script: `scripts/freeze-design-geometry.mjs`, edited by a capability-implementer subagent (not run by it). It is not locked: `grep -c freeze-design-geometry factory-lock.json` printed `0`.
+- Lock: `/tmp/binarka-capture.lock`, taken by this session at 18:26:16 (UTC+5:30) after session C released it. `lsof -nP -iTCP:<port> -sTCP:LISTEN` for 4173, 4174, 4176 and 4177 printed nothing before the run and nothing after it. The lock was gone at 18:28:00 without this session removing it (see `red-run.txt` § F and `session-log.md`).
+- Design build: `ls design/v0/out/index.html` → it exists (`pnpm build` at `ebaf49b`, 17:56).
+
+```
+$ node scripts/freeze-design-geometry.mjs        # 18:27:06 → 18:27:17, exit 0
+wrote quality/design-geometry.json: 32 cases x 16 selectors, rulesPanel: 8 cases x 2 selectors
+```
+
+```
+$ git diff --stat quality/design-geometry.json
+ quality/design-geometry.json | 1025 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 1024 insertions(+), 1 deletion(-)
+
+$ git diff -U0 quality/design-geometry.json | grep '^[-+]' | grep -v '^+++\|^---' | grep '^-'
+-  ]
+```
+
+**The one `-` line is the JSON syntax of the array end:** `  ]` became `  ],` because the new key `rulesPanel` follows `cases`. No value was removed or changed. The task's filter expects no `-` line at all, so the values were compared as data instead (`git show HEAD:quality/design-geometry.json` against the new file, `JSON.stringify` per key):
+
+```
+keys before $comment,provenance,tolerancePx,selectors,coverage,cases
+keys after  $comment,provenance,tolerancePx,selectors,coverage,cases,rulesPanel
+$comment identical
+provenance identical
+tolerancePx identical
+selectors identical
+coverage identical
+cases identical
+```
+
+The top-level `provenance` was kept: its `designCommit` and `designCssSha1` match this run's, and its recorded `designBuildSha1` and `browser` are unchanged. This run's own values are in `rulesPanel.provenance`.
+
+```
+rulesPanel sampled ["[data-section=\"rules\"]","[data-section=\"rules\"] .rules-close"]
+provenance {"designCommit":"5e61bfd14de56bff4b3726db4ddd624fcd3c2e04","designCssSha1":"d1b1255f4dff205d15d64850096429cd377e5fbf","designBuildSha1":"c3f5f81e5dacbad72f6f26085a4750d4e695598c","browser":"Playwright chromium 156.0.8078.4, devices[\"Desktop Chrome\"], reducedMotion reduce, colorScheme light"}
+320-light-rules 320x700 rules open-rules panel {"x":0,"y":315,"w":320,"h":385} close {"x":17,"y":640,"w":286,"h":44} layout {"scrollHeight":743,"clientHeight":384,"minHeightPx":0,"maxHeightPx":385,"decidedBy":"max-height"}
+375-light-rules 375x812 rules open-rules panel {"x":0,"y":365.40625,"w":375,"h":446.59375} close {"x":17,"y":752,"w":341,"h":44} layout {"scrollHeight":719,"clientHeight":446,"minHeightPx":0,"maxHeightPx":446.6,"decidedBy":"max-height"}
+768-light-rules 768x1024 rules open-rules panel {"x":119,"y":96,"w":530,"h":736} close {"x":136,"y":771,"w":496,"h":44} layout {"scrollHeight":734,"clientHeight":734,"minHeightPx":736,"maxHeightPx":912,"decidedBy":"min-height"}
+1024-light-rules 1024x768 rules open-rules panel {"x":192,"y":96,"w":640,"h":526.75} close {"x":209,"y":561.75,"w":606,"h":44} layout {"scrollHeight":525,"clientHeight":525,"minHeightPx":0,"maxHeightPx":656,"decidedBy":"content"}
+1366-light-rules 1366x650 rules open-rules panel {"x":363,"y":96,"w":640,"h":526.75} close {"x":380,"y":561.75,"w":606,"h":44} layout {"scrollHeight":525,"clientHeight":525,"minHeightPx":0,"maxHeightPx":538,"decidedBy":"content"}
+1440-light-rules 1440x900 rules open-rules panel {"x":400,"y":96,"w":640,"h":526.75} close {"x":417,"y":561.75,"w":606,"h":44} layout {"scrollHeight":525,"clientHeight":525,"minHeightPx":0,"maxHeightPx":788,"decidedBy":"content"}
+768-light-rules-four 768x1024 rules open-rules panel {"x":119,"y":96,"w":530,"h":612.5} close {"x":136,"y":647.5,"w":496,"h":44} layout {"scrollHeight":611,"clientHeight":611,"minHeightPx":568,"maxHeightPx":912,"decidedBy":"content"}
+800-light-rules-short 800x600 rules open-rules panel {"x":184,"y":96,"w":432,"h":488} close {"x":201,"y":523,"w":398,"h":44} layout {"scrollHeight":654,"clientHeight":486,"minHeightPx":488,"maxHeightPx":488,"decidedBy":"max-height"}
+```
+
+What the cases check, from `layout.decidedBy`:
+- **`max-height`** decides 320, 375 and 800×600. At 320 and 375 the cap is 55dvh. At 800×600 `min-height` and `max-height` both resolve to 488 px, and the tie goes to `max-height` first (the rule in the script's header).
+- **`min-height`** decides only `768-light-rules` (6×6, 736 px). That case alone checks the formula `min(calc(100dvh - 7rem), calc(min(var(--board-width), var(--column)) + 13.875rem))`.
+- **`content`** decides `768-light-rules-four`: its `min-height` resolves to 568 px, lower than the 6×6 case's 736 px, so the board-side term does reach the panel through the root, but the content is 612.5 px tall and decides the box. So the 4×4 case checks the content box, not the formula (design.md, Data model, foresaw this).
+- **`content`** also decides 1024, 1366 and 1440, where the box is `fit-content` with `min-height: 0`.
+
+The design's `.rules-close` is 44 px tall at every case, which agrees with `sticky-ring-probe.txt` (computed padding `1px 6px`).

@@ -1009,6 +1009,8 @@
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-root-size.test.ts",
+        "tests/play-page-rules-panel-stylesheet.test.ts",
+        "tests/play-page-rules-scroll-reset.test.ts",
         "tests/play-page-techniques.test.ts",
         "tests/play-page-techniques.test.ts"
       ],
@@ -1186,6 +1188,7 @@
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-palette-stylesheet.test.ts",
         "tests/play-page-panel-shell-stylesheet.test.ts",
+        "tests/play-page-rules-panel-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",

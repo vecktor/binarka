@@ -181,6 +181,17 @@ export function dispatchToggle(el: Element, newState: 'open' | 'closed'): void {
   el.dispatchEvent(event);
 }
 
+/**
+ * update-rules-panel (FR-57, A-59): what a browser dispatches BEFORE a popover changes state, while it is still shown (on a close) or
+ * still hidden (on an open): a `beforetoggle` event with `newState` and `oldState`. Like `dispatchToggle` it is a plain, non-bubbling
+ * `Event` with the two properties added (jsdom has no ToggleEvent). Unlike `dispatchToggle` it does NOT touch the stub's open state,
+ * because the state change comes after the event.
+ */
+export function dispatchBeforeToggle(el: Element, newState: 'open' | 'closed'): void {
+  const event = Object.assign(new Event('beforetoggle'), { newState, oldState: newState === 'open' ? 'closed' : 'open' });
+  el.dispatchEvent(event);
+}
+
 // ---- add-theme-switch (A-50, FR-113, FR-115; design.md "Risks": cross-test leakage). jsdom's `localStorage` survives between the tests of
 // a file, `<html data-theme>` and an injected `meta[name=theme-color]` too, and `matchMedia` is absent. The lifecycle below cleans
 // all of it before AND after each test, and `installMatchMedia` installs the stub of A-50 (a test that needs "no matchMedia" simply

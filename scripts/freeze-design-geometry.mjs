@@ -10,6 +10,18 @@
 // Sampling: the light shots of review-set-14 whose state is reached at mount (default, four, eight, level, win) or by one press of the hint
 // button (hint), at the reference viewports; geometry does not depend on the scheme. Coverage: sampled, never continuum.
 //
+// Rules panel (change update-rules-panel, key `rulesPanel`, read by e2e/nfr-14-rules-panel.spec.ts): 8 explicit cases, the open
+// panel [data-section="rules"] and its «Зрозуміло» button: the six review-set shots <w>-light-rules (320, 375, 768, 1024, 1366, 1440;
+// widths and heights from the config), 768-light-rules-four (768x1024, the 4x4 board) and 800-light-rules-short (800x600, 6x6; in no
+// breakpoint of the config). Sampling: those 8 viewports, light scheme; coverage: sampled, never continuum. Design side: the
+// /rules/ route is open at load, so the six shots and the short case only wait for :popover-open (a press would CLOSE it); the
+// four case loads /four/ and presses the design's «Правила». Every case records afterLoad "open-rules" (the page side presses
+// «Правила», waits for :popover-open) and an explicit captureBoard (the synthetic names parse to states with no board). Per case
+// `layout` records the design's scrollHeight, clientHeight, resolved min-height and max-height (border-box px) and `decidedBy`:
+// which of max-height, min-height, content equals the box height within 0.5 px (content = scrollHeight + vertical borders;
+// ties go max-height, min-height, content). rulesPanel.provenance is this run's; the top-level `provenance` is kept as
+// recorded while designCommit and designCssSha1 are unchanged (designBuildSha1 differs between worktrees).
+//
 // Usage: node scripts/freeze-design-geometry.mjs   (design/v0/out must be built; port 4177 must be free)
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
@@ -41,6 +53,12 @@ const STATES = ['default', 'four', 'eight', 'level', 'win', 'hint'];
 // The page reaches a state after load with one action, as the capture adapter does: the hint state is the hint board without its hinted cell,
 // then one press of the hint button (FR-119 Q4). The e2e test replays it.
 const AFTER_LOAD = { hint: 'press-hint' };
+const RULES_SELECTORS = ['[data-section="rules"]', '[data-section="rules"] .rules-close'];
+const bp = (name) => {
+  const b = config.breakpoints.find((x) => x.name === name);
+  if (!b) throw new Error(`breakpoint ${name} is missing from quality/visual-parity.config.json`);
+  return b;
+};
 const PORT = 4177;
 const OUT = 'quality/design-geometry.json';
 
@@ -48,6 +66,12 @@ const config = JSON.parse(readFileSync('quality/visual-parity.config.json', 'utf
 const cases = config.breakpoints
   .map((b) => ({ ...b, ...parseShot(b.name) }))
   .filter((b) => b.scheme === 'light' && STATES.includes(b.state));
+
+const RULES_CASES = [
+  ...['320', '375', '768', '1024', '1366', '1440'].map((w) => ({ shot: `${w}-light-rules`, width: bp(`${w}-light-rules`).width, height: bp(`${w}-light-rules`).height, route: '/rules/', press: false, board: 'rules' })),
+  { shot: '768-light-rules-four', width: 768, height: 1024, route: '/four/', press: true, board: 'four' },
+  { shot: '800-light-rules-short', width: 800, height: 600, route: '/rules/', press: false, board: 'rules' },
+];
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain' };
 const root = 'design/v0/out';
@@ -77,6 +101,7 @@ await new Promise((r) => server.listen(PORT, '127.0.0.1', r));
 
 const browser = await chromium.launch();
 const out = [];
+const rulesOut = [];
 try {
   for (const c of cases) {
     const ctx = await browser.newContext({ ...devices['Desktop Chrome'], viewport: { width: c.width, height: c.height }, reducedMotion: 'reduce', colorScheme: 'light' });
@@ -90,6 +115,36 @@ try {
       return [s, { x: r.x, y: r.y, w: r.width, h: r.height }];
     })), LAYOUT_SELECTORS);
     out.push({ shot: c.name, width: c.width, height: c.height, state: c.state, captureBoard: captureBoardFor(c.state), ...(AFTER_LOAD[c.state] ? { afterLoad: AFTER_LOAD[c.state] } : {}), boxes });
+    await ctx.close();
+  }
+  for (const c of RULES_CASES) {
+    const ctx = await browser.newContext({ ...devices['Desktop Chrome'], viewport: { width: c.width, height: c.height }, reducedMotion: 'reduce', colorScheme: 'light' });
+    const page = await ctx.newPage();
+    await page.goto(`http://127.0.0.1:${PORT}${c.route}`, { waitUntil: 'load' });
+    await page.locator('[data-board]').waitFor();
+    if (c.press) await page.locator('[data-action="rules"]').click(); // /four/ is not open at load; on /rules/ a press would close the panel
+    await page.waitForSelector('[data-section="rules"]:popover-open');
+    const { boxes, layout } = await page.evaluate((sels) => {
+      const boxes = Object.fromEntries(sels.map((s) => {
+        const el = document.querySelector(s);
+        if (!el) return [s, null];
+        const r = el.getBoundingClientRect();
+        return [s, { x: r.x, y: r.y, w: r.width, h: r.height }];
+      }));
+      const el = document.querySelector(sels[0]);
+      const cs = getComputedStyle(el);
+      const px = (v) => (v.endsWith('px') ? parseFloat(v) : null);
+      const borders = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+      // min-height / max-height bound the box named by box-sizing; convert to border-box px to compare with the box height.
+      const extra = cs.boxSizing === 'content-box' ? borders + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) : 0;
+      const minH = px(cs.minHeight);
+      const maxH = px(cs.maxHeight);
+      const boxH = el.getBoundingClientRect().height;
+      const near = (v) => v !== null && Math.abs(v - boxH) <= 0.5;
+      const decidedBy = near(maxH === null ? null : maxH + extra) ? 'max-height' : near(minH === null ? null : minH + extra) ? 'min-height' : 'content';
+      return { boxes, layout: { scrollHeight: el.scrollHeight, clientHeight: el.clientHeight, minHeightPx: minH, maxHeightPx: maxH, decidedBy } };
+    }, RULES_SELECTORS);
+    rulesOut.push({ shot: c.shot, width: c.width, height: c.height, state: 'rules', captureBoard: captureBoardFor(c.board), afterLoad: 'open-rules', boxes, layout });
     await ctx.close();
   }
 } finally {
@@ -109,9 +164,7 @@ function buildSha1(dir) {
   walk(dir);
   return hash.digest('hex');
 }
-const fixture = {
-  $comment: 'Layout geometry of the design build, the stand-in for review-set-14 (NFR-14). Generated by scripts/freeze-design-geometry.mjs; do not edit by hand. Read by e2e/nfr-14-layout-geometry.spec.ts.',
-  provenance: {
+const freshProvenance = {
     designCommit: execSync('git log -1 --format=%H -- design/v0').toString().trim(),
     designCssSha1: createHash('sha1').update(css).digest('hex'),
     designBuildSha1: buildSha1(root),
@@ -120,11 +173,32 @@ const fixture = {
     referenceSha1sums: config.referenceSha1sums,
     standIn: 'docs/qa/g2/harness-calibration.txt (the design build reproduces all 170 reference shots at 1.0000)',
     browser: `Playwright chromium ${browser.version()}, devices["Desktop Chrome"], reducedMotion reduce, colorScheme light`,
-  },
+  };
+// Keep the recorded provenance while the design is unchanged (designBuildSha1 differs between worktrees); otherwise write this run's.
+let provenance = freshProvenance;
+if (existsSync(OUT)) {
+  const recorded = JSON.parse(readFileSync(OUT, 'utf8')).provenance;
+  if (recorded?.designCommit === freshProvenance.designCommit && recorded?.designCssSha1 === freshProvenance.designCssSha1) provenance = recorded;
+  else console.warn('WARNING: the design changed since the recorded provenance (designCommit or designCssSha1 differ); writing the fresh provenance');
+}
+const fixture = {
+  $comment: 'Layout geometry of the design build, the stand-in for review-set-14 (NFR-14). Generated by scripts/freeze-design-geometry.mjs; do not edit by hand. Read by e2e/nfr-14-layout-geometry.spec.ts.',
+  provenance: provenance,
   tolerancePx: 0.5,
   selectors: LAYOUT_SELECTORS,
   coverage: 'sampled',
   cases: out,
+  rulesPanel: {
+    selectors: RULES_SELECTORS,
+    coverage: 'sampled',
+    provenance: {
+      designCommit: freshProvenance.designCommit,
+      designCssSha1: freshProvenance.designCssSha1,
+      designBuildSha1: freshProvenance.designBuildSha1,
+      browser: freshProvenance.browser,
+    },
+    cases: rulesOut,
+  },
 };
 writeFileSync(OUT, `${JSON.stringify(fixture, null, 2)}\n`);
-console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors`);
+console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors`);

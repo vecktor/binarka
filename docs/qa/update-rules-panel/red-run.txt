@@ -1,0 +1,116 @@
+# Red run: update-rules-panel (tasks 2.1 to 2.6)
+
+The tests were written by a test-engineer subagent (not the parent) on 2026-10-11, about 18:10 to 18:24 (UTC+5:30), at `ebaf49b` + `02b710c`, before any edit of `src/`. The parent re-ran them and confirmed the red run below.
+
+## A. Shell assertions that read `.rules` (task 2.1)
+
+These must stay green with no edit (design.md decisions 10 and 11).
+
+`tests/play-page-panel-shell-stylesheet.test.ts`:
+- 61-73: exactly one top-level rule that is exactly `.rules`, binding the raised fill, the overlay border and the sheet shadow.
+- 72: `rawDeclarationCounts(text, '.rules', prop)[0]` reads the FIRST `.rules {` block of the raw text, so that block must stay the top-level one. A 22.5rem `.rules` block earlier in the file breaks it (re-audit R2).
+- 82-98: inside `@media (min-width: 48rem)`, exactly one exact `.rules` rule declares `box-shadow` (the panel shadow), and the list of `border-color` values of the exact `.rules` rules there must equal `[var(--color-overlay-border)]`. So the 48rem declarations are merged into one rule.
+- 86-91: every exact `.rules` rule that declares a border colour or a fill uses the overlay border or the raised fill.
+- 152-153: exactly 7 exact-panel rules declare `box-shadow`. The 22.5rem and 64rem `.rules` rules must not declare one; `.rules-close` is not counted.
+- 162 onward: the whole-file colour scan, no `!important`, `:has(` exactly once.
+- 185: `CONTRAST_PAIRS` has 38 entries. Block B moves this; block A must not.
+
+`tests/play-page-root-size.test.ts`:
+- No `.rules` selector.
+- 200-210: every rule that declares `--n`, `--cell-max`, `--board-gap`, `--board-pad` or `--board-width` starts with `#app`, so the panel must not declare them.
+- 280: `:has(` with `data-size`.
+
+`e2e/nfr-14-panel-shell.spec.ts`: the paint part opens `[data-section="rules"]:popover-open` at 375×812 and 1024×768, light and dark, against the design's `/rules/` route, and compares the fill, `border-top-color` and `box-shadow` layer by layer. The port keeps those three.
+
+## B. Helper `dispatchBeforeToggle` (task 2.2)
+
+`tests/helpers/play-page.ts`: `dispatchBeforeToggle(el, newState)` was added right after `dispatchToggle`. It sends a plain non-bubbling `Event('beforetoggle')` with `newState` and `oldState`, and leaves the stub's open state alone. Its self-test in `tests/play-page-helpers.test.ts` (next to the `dispatchToggle` test) is green: `tests/play-page-helpers.test.ts` 135/135.
+
+## C and D. Unit tests (tasks 2.3 and 2.4), parent's run
+
+`npm run test:run` at 18:24 (UTC+5:30): `Test Files 2 failed | 76 passed (78)`, `Tests 32 failed | 1874 passed (1906)`. The two failing files are the two new ones; every other file is green, including `tests/play-page-layout.test.ts`, the shell's two stylesheet tests and `tests/play-page-helpers.test.ts`.
+
+Then `npx vitest run tests/play-page-rules-scroll-reset.test.ts tests/play-page-rules-panel-stylesheet.test.ts --reporter=verbose`: 47 tests, 32 failing (×), 15 passing (✓, each a GUARD). Every failure is an assertion failure, with no import or syntax error. The first assertion messages, as reported by the test-engineer and seen in the parent's output, are:
+- scroll reset: "beforetoggle closed resets scrollTop to 0: expected 120 to be +0"; "toggle open resets scrollTop to 0: expected 80 to be +0"; "beforetoggle closed on the first panel resets the first: expected 50 to be +0". The «no script» clause asserts the reset first, so the "no spy called" check cannot pass vacuously.
+- stylesheet: "`.rules { max-height }` is written twice, 60vh first and the 55dvh fallback after it: expected ['55dvh'] to deeply equal ['60vh','55dvh']"; "`.rules (48rem) { width: calc(var(--column) + 1rem) }`: expected '28rem'…"; "`{ position: sticky }`: expected undefined to be 'sticky'"; "`.rules li { border-top-color: var(--color-line) }`: expected 'var(--color-given-bg)'…"; "`.mini-answer { border-color: var(--color-primary) }`: expected 'var(--color-focus)'"; "no `.rules` rule inside `@media (min-width: 64rem)`: expected [] to have a length of 1"; and so on.
+
+The test list (× fails, ✓ passes):
+```
+× tests/play-page-rules-panel-stylesheet.test.ts > Below 48rem the panel is a bottom sheet with the design's size > the raw text of the top-level .rules declares max-height 60vh first and 55dvh after it, and padding 1.5rem 1rem calc(1rem + env(safe-area-inse
+× tests/play-page-rules-panel-stylesheet.test.ts > Below 48rem the panel is a bottom sheet with the design's size > the parsed top-level .rules declares border-radius 1rem 1rem 0 0 45ms
+✓ tests/play-page-rules-panel-stylesheet.test.ts > Below 48rem the panel is a bottom sheet with the design's size > GUARD: the parsed top-level .rules keeps position fixed, inset auto 0 0 0, width 100%, max-width none, margin 0, overflow-y auto, box-sizing 
+× tests/play-page-rules-panel-stylesheet.test.ts > Below 48rem the panel is a bottom sheet with the design's size > inside @media (max-width: 22.5rem) .rules declares padding-top 1rem and .mini declares width and height 1.5rem and font-size 0.875rem 11ms
+× tests/play-page-rules-panel-stylesheet.test.ts > Below 48rem the panel is a bottom sheet with the design's size > the 22.5rem .rules and .mini rules come later in the file than the top-level .rules and .mini rules (an earlier block would lose at the same s
+✓ tests/play-page-rules-panel-stylesheet.test.ts > Below 48rem the panel is a bottom sheet with the design's size > GUARD: the first block of the raw text whose selector is exactly .rules is the top-level one (not indented, outside every at-rule) 1ms
+✓ tests/play-page-rules-scroll-reset.test.ts > The scroll position is reset when the panel closes and when it opens > GUARD: the premise: jsdom keeps an assigned scrollTop of 120 on the panel (if a jsdom version does not, the recording accessor of the scena
+× tests/play-page-rules-scroll-reset.test.ts > The scroll position is reset when the panel closes and when it opens > beforetoggle (newState closed, oldState open) resets the scrollTop of the panel to 0, and calls no popover method 10ms
+× tests/play-page-rules-scroll-reset.test.ts > The scroll position is reset when the panel closes and when it opens > toggle (newState open, oldState closed) resets the scrollTop of the panel to 0 again, and calls no popover method 8ms
+× tests/play-page-rules-scroll-reset.test.ts > The scroll position is reset when the panel closes and when it opens > the two events in the order of a real closing and opening: 120 -> beforetoggle closed -> 0, then 80 -> toggle open -> 0 6ms
+× tests/play-page-rules-scroll-reset.test.ts > The scroll position is reset when the panel closes and when it opens > with two pages mounted on two roots, both panels at scrollTop 50, an event on the first panel leaves the second at 50: the handlers are per 
+✓ tests/play-page-rules-scroll-reset.test.ts > The scroll position is reset when the panel closes and when it opens > GUARD: after the events the panel keeps its attributes and texts, its one autofocus button, and the board and every cell are unchanged 54ms
+× tests/play-page-rules-scroll-reset.test.ts > The panel opens with no script > the reset events (beforetoggle closed, toggle open) after a click on «Правила» and on «Зрозуміло» call none of showPopover, hidePopover, togglePopover, and ch
+× tests/play-page-rules-panel-stylesheet.test.ts > From 48rem the open panel is a flex column and «Зрозуміло» takes the spare height > .rules:popover-open declares display flex and flex-direction column inside @media (min-width: 48rem) 9ms
+× tests/play-page-rules-panel-stylesheet.test.ts > From 48rem the open panel is a flex column and «Зрозуміло» takes the spare height > .rules > * declares flex-shrink 0 inside @media (min-width: 48rem) 8ms
+✓ tests/play-page-rules-panel-stylesheet.test.ts > From 48rem the open panel is a flex column and «Зрозуміло» takes the spare height > GUARD: no rule whose selector is exactly .rules (alone or in a list) declares display, at any width and in any 
+× tests/play-page-rules-panel-stylesheet.test.ts > From 48rem the open panel is a flex column and «Зрозуміло» takes the spare height > .rules-close declares margin-top auto and the techniques section declares margin-top 0 inside @media (min-width:
+× tests/play-page-rules-panel-stylesheet.test.ts > From 48rem the open panel is a flex column and «Зрозуміло» takes the spare height > those two 48rem rules come later in the file than the top-level .rules-close and techniques rules, so they win a
+× tests/play-page-rules-panel-stylesheet.test.ts > From 48rem the panel takes the column's width plus 1rem, 6rem from the top > the one .rules rule inside @media (min-width: 48rem) declares inset, width, max-width, height, max-height, margin, padding-bottom,
+✓ tests/play-page-rules-panel-stylesheet.test.ts > From 48rem the panel takes the column's width plus 1rem, 6rem from the top > GUARD: the same rule still declares box-shadow 0 1rem 2.5rem var(--color-shadow-panel) and border-color var(--color-overlay-borde
+× tests/play-page-rules-panel-stylesheet.test.ts > The min-height reads the board side through the root > the min-height of the 48rem .rules is min(calc(100dvh - 7rem), calc(min(var(--board-width), var(--column)) + 13.875rem)) 7ms
+✓ tests/play-page-rules-panel-stylesheet.test.ts > The min-height reads the board side through the root > GUARD: no rule whose selector starts with .rules declares --board-width, --column, --n, --cell-max, --board-gap or --board-pad, and the rules that decl
+× tests/play-page-rules-panel-stylesheet.test.ts > From 64rem the panel is one 40rem column with tighter spacing > inside @media (min-width: 64rem): .rules declares width 40rem, height fit-content, min-height 0, padding-top 1rem; .rules h2 margin-bottom 0.25
+× tests/play-page-rules-panel-stylesheet.test.ts > From 64rem the panel is one 40rem column with tighter spacing > the .rules rule of the 64rem block is later in the file than the .rules rule of the 48rem block that declares min-height (the min-height 0 wins
+✓ tests/play-page-rules-panel-stylesheet.test.ts > From 64rem the panel is one 40rem column with tighter spacing > GUARD: the max-width cap calc(100% - 2rem) is declared by the .rules rule of the 48rem block and by no .rules rule outside @media (min-width: 
+✓ tests/play-page-rules-panel-stylesheet.test.ts > From 64rem the panel is one 40rem column with tighter spacing > GUARD: .rules:popover-open::backdrop is declared exactly once, inside @media (min-width: 64rem), with --color-backdrop-strong 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > «Зрозуміло» is sticky and filled, with the design's mask > the top-level .rules-close declares position sticky, bottom 0, width 100%, min-height 2.75rem, padding 1px 6px, a 2px solid primary borde
+× tests/play-page-rules-panel-stylesheet.test.ts > «Зрозуміло» is sticky and filled, with the design's mask > the computed style of the close button in the light token set: position sticky, color --color-primary-text, background-color and border-t
+× tests/play-page-rules-panel-stylesheet.test.ts > «Зрозуміло» is sticky and filled, with the design's mask > the computed style of the close button in the dark token set: position sticky, color --color-primary-text, background-color and border-to
+✓ tests/play-page-rules-panel-stylesheet.test.ts > «Зрозуміло» is sticky and filled, with the design's mask > GUARD: the stylesheet has no :focus or :focus-visible rule for .rules-close (the base button:focus-visible ring is kept) 9ms
+✓ tests/play-page-rules-panel-stylesheet.test.ts > «Зрозуміло» is sticky and filled, with the design's mask > GUARD: the pair --color-primary-text on --color-primary (4.5) is in CONTRAST_PAIRS and holds in each token set 7ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The separators and the example cells take the design's tokens > .rules li declares border-top-color var(--color-line) 7ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The separators and the example cells take the design's tokens > .mini declares border-color var(--color-control-border), background-color var(--color-page) and color var(--color-entry-text) 8ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The separators and the example cells take the design's tokens > .mini-answer declares a 2px dashed border in --color-primary on --color-primary-soft with --color-text 6ms
+✓ tests/play-page-rules-panel-stylesheet.test.ts > The separators and the example cells take the design's tokens > GUARD: .mini-sep keeps color var(--color-text-muted) 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The separators and the example cells take the design's tokens > none of the panel's rules contains --color-given-bg, --color-cell-border or --color-focus in any declaration 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The inner metrics are the design's > .rules h2: font-size 1.125rem, font-weight 700, margin 0 0 0.5rem 7ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The inner metrics are the design's > .rules ul: margin 0 0 1rem, padding 0, list-style none 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The inner metrics are the design's > .rules li: display flex, flex-direction column, gap 0.5rem, padding 0.5rem 0, font-size 0.9375rem, line-height 1.45 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The inner metrics are the design's > .rules [data-section='techniques']: margin 0.5rem 0 0 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The inner metrics are the design's > .rules h3: font-size 1rem, font-weight 700, margin 0 0 0.5rem 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The inner metrics are the design's > .rule-example: display flex, align-items center, gap 0.1875rem 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The inner metrics are the design's > .mini: width 1.75rem, height 1.75rem, font-size 0.9375rem, font-weight 500, font-variant-numeric tabular-nums, border-radius 0.375rem 6ms
+× tests/play-page-rules-panel-stylesheet.test.ts > The inner metrics are the design's > .mini-sep: padding 0 0.5rem 6ms
+✓ tests/play-page-rules-panel-stylesheet.test.ts > The panel adds no token, no pair and no colour literal > GUARD: the colour scan over the panel's rules finds no literal, no named colour, no color-mix(, no bare shorthand colour; every box-shadow layer ends
+✓ tests/play-page-rules-panel-stylesheet.test.ts > The panel adds no token, no pair and no colour literal > GUARD: TOKEN_NAMES and CONTRAST_PAIRS of tests/helpers/css.ts equal the literal copies of the baseline lists (compared as lists, not as counts) 0ms
+✓ tests/play-page-rules-panel-stylesheet.test.ts > The panel adds no token, no pair and no colour literal > GUARD: no !important, :has( exactly once in the raw text, and no panel rule inside @media (prefers-reduced-motion: no-preference) or @starting-style 
+```
+
+## E. The e2e red run (tasks 2.5 and 2.6), parent's run under the capture lock
+
+The lock was acquired at 18:26:16 (it was held by session C from 18:23:52 until then; this session waited). `lsof -nP -iTCP:<port> -sTCP:LISTEN` for 4173, 4174, 4176 and 4177 printed nothing before the run and nothing after it. `npm run build` ran at 18:24, with `src/` unchanged. `design/v0/out/index.html` exists.
+
+`npx playwright test --project=layout e2e/nfr-14-rules-panel.spec.ts --reporter=list`, 18:26:25 to 18:26:51, exit 1: **33 failed, 5 passed**.
+
+- **First opening:** 8 of 8 fail. At 320×700 by mouse: "scrollTop at the first opening by mouse (scrollHeight 783, clientHeight 384) Expected: 0 Received: 399", which is the 399 of `docs/qa/prep-g2/rules-open-probe.txt`. The 375×812 cases fail on `scrollTop` as well. At 768×1024 and 1366×650 they fail on the premise first ("the panel does not scroll (scrollHeight 705, clientHeight 561)" and "(… 705, clientHeight 356)"), because the old 28rem panel keeps `max-height: 55dvh` and scrolls there.
+- **Second opening:** 16 of 16 fail. At 320×700: "scrollTop at the second opening, after one animation frame … Received: 399". At 768×1024: "… Received: 144" (the old panel's end, restored, `rules-reopen-probe.txt`).
+- **Fixture and geometry:** 9 of 9 fail, each with "quality/design-geometry.json has no rulesPanel: run node scripts/freeze-design-geometry.mjs (task 3.1) (no case …)". They fail; none is skipped.
+- **Pass, 5 tests:**
+  - the coverage declaration (a static check of the file);
+  - the ring check at 320×700 and 375×812, which passes today because the old panel puts its plain button 16 px above its inner bottom edge;
+  - the race check at 320×700 and 375×812, which passes today because there is no reset.
+  
+  These three checks guard the port: they must stay green after it.
+
+## F. The geometry red after the refreeze (task 3.2), under the same lock
+
+After `node scripts/freeze-design-geometry.mjs` (18:27:06 to 18:27:17, see `refreeze.txt`), `npx playwright test --project=layout e2e/nfr-14-rules-panel.spec.ts --grep "light-rules|fixture holds" --reporter=list`, 18:27:36 to 18:27:43, exit 1: **8 failed, 1 passed** (the fixture-shape test). Each failure is now on the boxes, not on a missing fixture:
+
+- "320-light-rules: 1 of 2 boxes differ": `.rules-close` design 17.00,640.00 286.00x44.00, page 17.00,637.55 286.00x46.00 (the base `button` padding makes it 46 px).
+- "375-light-rules: 1 of 2 boxes differ".
+- "768-light-rules", "1024-light-rules", "1366-light-rules", "1440-light-rules", "768-light-rules-four", "800-light-rules-short": 2 of 2 boxes differ. For example 1366: `[data-section="rules"]` design 363.00,96.00 640.00x526.75, page 459.00,146.25 448.00x357.50 (the old 28rem panel, centred).
+
+`npx playwright test --project=layout e2e/nfr-14-layout-geometry.spec.ts`: 38 passed, with no edit. It pins `fixture.cases` to the 32 shots, which the refreeze left as they were.
+
+The port check after both runs: `lsof` on 4173, 4174, 4176 and 4177 printed nothing.
+
+**Lock incident:** at 18:28:00 `/tmp/binarka-capture.lock` no longer existed, and this session had not removed it; another session removed it between 18:26:16 and 18:28:00. No capture process was running at 18:28:00 (`ps`). The refreeze reproduced the 32 existing cases and the top-level provenance byte for byte, which points to no interference. The incident is recorded in `session-log.md` and is put to the user.

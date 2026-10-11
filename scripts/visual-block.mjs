@@ -17,7 +17,11 @@
 // measured only for states whose look is reached at mount (GEOMETRY_STATES); other states have the pixel channel only.
 // Sampling: the shots given (default: the default state at every reference viewport and scheme); coverage is `sampled`.
 //
+// Blocks: layout (16 elements, states reached at mount) and rules (the open rules panel and «Зрозуміло», state `rules`: geometry
+// plus pixels; state `rules-techniques`: pixels only).
+//
 // Usage: npm run build && node scripts/visual-block.mjs --block layout [--shots a,b] [--states default,four] [--calibrate]
+//        node scripts/visual-block.mjs --block rules --shots 1366-light-rules   (or --states rules,rules-techniques)
 //        [--out docs/qa/g2/blocks/<block>]
 // Ports: the design build on 4177, the page preview on 4176 (geometry), the adapter's own preview on 4174 (pixels).
 import { spawn } from 'node:child_process';
@@ -57,8 +61,13 @@ const BLOCKS = {
     '[data-message="hint"]',
     '[data-message="win"]',
   ],
+  // The open rules panel and its «Зрозуміло» (update-rules-panel; the same two selectors as rulesPanel in quality/design-geometry.json).
+  rules: ['[data-section="rules"]', '[data-section="rules"] .rules-close'],
 };
-const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win']);
+// States whose geometry is measured on top of the pixels. `rules` (block rules only) opens the panel first: the design route
+// /rules/ is open at load (a press would close it), the product presses «Правила» and waits for :popover-open.
+// `rules-techniques` stays pixel-only: its design route is scrolled to the end by a script.
+const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules']);
 
 const args = process.argv.slice(2);
 const flag = (name, d) => {
@@ -142,6 +151,7 @@ async function designBoxes(shot) {
   try {
     await page.goto(`http://127.0.0.1:${DESIGN_PORT}${designRoute(parseShot(shot.name).state)}`, { waitUntil: 'load' });
     await page.locator('[data-board]').waitFor();
+    if (blockName === 'rules') await page.waitForSelector('[data-section="rules"]:popover-open'); // open at load on /rules/; never press
     return { boxes: await boxes(page), png: calibrate ? await page.screenshot({ animations: 'disabled', caret: 'hide' }) : null };
   } finally {
     await ctx.close();
@@ -165,6 +175,10 @@ async function pageBoxes(shot, url) {
     }, { start: SEED, board: captureBoardFor(state) });
     await page.goto(url, { waitUntil: 'load' });
     await page.locator('[data-board] [data-cell]').first().waitFor();
+    if (blockName === 'rules') {
+      await page.locator('[data-action="rules"]').click();
+      await page.waitForSelector('[data-section="rules"]:popover-open');
+    }
     return await boxes(page);
   } finally {
     await ctx.close();
@@ -225,7 +239,8 @@ try {
       const live = PNG.sync.read(d.png);
       entry.calibration = live.width === ref.width && live.height === ref.height ? score(ref, live) : 'size differs';
     }
-    if (GEOMETRY_STATES.has(state)) {
+    // the rules block measures state `rules` only (the panel is open there); no other block measures state `rules`
+    if (GEOMETRY_STATES.has(state) && (blockName === 'rules') === (state === 'rules')) {
       entry.geometry = geometry(d.boxes, await pageBoxes(shot, preview.url));
       entry.geometryOff = entry.geometry.filter((g) => g.off).length;
       entry.unpaired = entry.geometry.filter((g) => g.unpaired).length;
