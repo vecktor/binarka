@@ -49,6 +49,8 @@
 // set CHECK_VISUAL_FIDELITY_ADAPTERS=<path/to/module.mjs> exporting
 // { capture, diff [, close] } to replace the Playwright/pixelmatch adapters
 // (used by tests/visual.test.mjs; also handy for CI smoke runs).
+// The config may name the module too, as "adapters": "<path>" (PD-5): every caller (qa-verify, gate-status, check:visual)
+// then measures with the project's adapters; the environment variable still wins when it is set.
 //
 // Usage:
 //   node scripts/check-visual-fidelity.mjs                  # uses quality/visual-parity.config.json
@@ -546,8 +548,13 @@ async function main() {
 
   // --- adapters: injected (test hook) or the real Playwright/pixelmatch pair
   let adapters;
-  const adapterPath = process.env.CHECK_VISUAL_FIDELITY_ADAPTERS;
+  const adapterPath = process.env.CHECK_VISUAL_FIDELITY_ADAPTERS || raw.adapters;
   if (adapterPath) {
+    if (typeof adapterPath !== "string" || !existsSync(resolve(root, adapterPath))) {
+      console.error(`FAIL  [config] adapters "${adapterPath}" is not a file (from ${process.env.CHECK_VISUAL_FIDELITY_ADAPTERS ? "CHECK_VISUAL_FIDELITY_ADAPTERS" : `${configRel} "adapters"`})`);
+      finish("FAIL", [{ id: "config", msg: "adapters module not found" }], warnings, 0);
+      return;
+    }
     const mod = await import(pathToFileURL(resolve(root, adapterPath)).href);
     adapters = { capture: mod.capture, diff: mod.diff ?? makeDefaultAdapters().diff, close: mod.close ?? (async () => {}) };
     console.log(`(adapters injected from ${adapterPath})`);

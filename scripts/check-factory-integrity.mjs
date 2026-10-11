@@ -119,7 +119,8 @@ function collectLockTargets() {
   if (existsSync(qualityDir)) {
     for (const e of readdirSync(qualityDir)) {
       if (statSync(join(qualityDir, e)).isDirectory()) continue;
-      if (/-baseline\.json$/.test(e) || e === "telemetry.config.json") files.push(`quality/${e}`);
+      // visual-parity.config.json names the NFR-14 adapters, reference set and threshold (PD-5): tamper-evident too.
+      if (/-baseline\.json$/.test(e) || e === "telemetry.config.json" || e === "visual-parity.config.json") files.push(`quality/${e}`);
     }
   }
   return files.sort();

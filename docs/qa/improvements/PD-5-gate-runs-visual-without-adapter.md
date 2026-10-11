@@ -1,6 +1,6 @@
 # PD-5: `qa-verify` and `gate:status` run the visual checker without the NFR-14 adapter and overwrite its evidence
 
-Status: **PROPOSED, awaiting the user's approval.** Drafted 2026-10-11 from 18:00 (UTC+5:30) by session C of the parallel G2 plan (`claude/modest-darwin-process`; the user's «Draft both», autonomy-log row 170). This is gap 3 of `docs/qa/visual-diff/README.md` § Known gaps, now with a measured cost. No locked file changes before the yes; the edit goes in a commit with `Refs: PD-5`.
+Status: **APPROVED by the user** in chat on 2026-10-11 at about 18:18 (UTC+5:30), through the question form: «B: checker reads adapter from config (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row C7). Executed in the commit with `Refs: PD-5`. **Green proof PARTIAL** (`PD-5-green-proof.txt`): the mechanism is proven without a capture (the callers' command line loads the adapter the config names; the variable still wins; integrity FAIL before and PASS after the re-seal); the full 170-shot run is not yet run, because captures are paused. Drafted from 18:00 by session C of the parallel G2 plan. This is gap 3 of `docs/qa/visual-diff/README.md` § Known gaps.
 
 ## Defect
 
@@ -35,6 +35,14 @@ A failed capture overwrites a committed report with `score: null`. That happens 
 ## Green is earned when (after the yes; not run yet)
 
 The same probe with the fix: the adapter line must read `(adapters injected from scripts/check-visual-parity-adapters.mjs)`, and the rewritten reports must carry the parity adapter's scores (a full run under the lock, compared with the last committed `check:visual` run). `check-factory-integrity` must pass after the re-seal.
+
+## As executed
+
+- `scripts/check-visual-fidelity.mjs` (locked): `CHECK_VISUAL_FIDELITY_ADAPTERS || config.adapters`; a module that is not a file FAILS with the source named.
+- `quality/visual-parity.config.json`: `"adapters": "scripts/check-visual-parity-adapters.mjs"`; its `$comment` says so.
+- `scripts/check-factory-integrity.mjs` (locked): `quality/visual-parity.config.json` joins the quality tier of the lock (tamper-evident, WARN on drift like the baselines).
+- `package.json` `check:visual` still sets the variable (harmless, now redundant). Lock re-sealed.
+- **What changes for everyone:** `npm run qa:verify` and `npm run gate:status` now run the real 170-shot NFR-14 capture: a fresh `npm run build` first, minutes, and the session's gate port (BINARKA_PORT_BASE + 1, PD-4), so take the capture lock or use your own base. They rewrite `docs/qa/visual-diff/*/report.json` with the page's current scores.
 
 ## Rollback
 

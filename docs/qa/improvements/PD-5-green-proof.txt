@@ -1,0 +1,35 @@
+# PD-5 green proof, PARTIAL (static, no capture), 2026-10-11 21:23 +0530 (session C, `claude/modest-darwin-process`)
+
+Captures are paused by the user (session log row C9), so the full run (the PD-5 probe with the parity adapter, 170 shots under
+the lock, compared with the last committed check:visual run) is NOT earned yet. What is earned without binding any port:
+
+# PD-5 static green probe, 2026-10-11 21:23:00 +0530: no port bound. A temporary config (.pd5-probe.config.json, removed after) = the committed config with one breakpoint 'pd5-static-probe' and "adapters" naming a stub module that throws 'stub adapter reached'.
+
+## 1. config names the stub; no CHECK_VISUAL_FIDELITY_ADAPTERS (the callers' command line, plus --config)
+(adapters injected from <scratchpad>/pd5/stub-adapters.mjs
+FAIL  [pd5-static-probe] capture failed: stub adapter reached (reference, pd5-static-probe)
+Scope: 1 breakpoint(s)
+Result: FAIL, 1 warning(s)
+
+## 2. the variable still wins over the config (a missing module named by it FAILS loudly)
+FAIL  [config] adapters "scripts/does-not-exist.mjs" is not a file (from CHECK_VISUAL_FIDELITY_ADAPTERS)
+Result: FAIL, 1 warning(s)
+
+## 3. the committed config names the parity adapter
+  "adapters": "scripts/check-visual-parity-adapters.mjs",
+
+## 4. factory integrity
+# before the re-seal (checker, integrity checker and config edited):
+WARN  [quality/visual-parity.config.json] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+FAIL  [scripts/check-factory-integrity.mjs] gate-bearing file drift (hash drift) vs factory-lock.json with NO commit touching it whose message contains "Refs: PD-<n>". Gate scripts may only change through an approved imp
+FAIL  [scripts/check-visual-fidelity.mjs] gate-bearing file drift (hash drift) vs factory-lock.json with NO commit touching it whose message contains "Refs: PD-<n>". Gate scripts may only change through an approved impro
+Result: FAIL, 2 warning(s)
+# re-seal (--init-lock --adaptation "PD-5: ..."):
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)
+# after:
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Result: PASS, 1 warning(s)
+
+Before the re-seal the integrity check FAILS on the two edited gate scripts and warns that the config is unlocked; after it, PASS, with the config in factory-lock.json (27 locked files, was 26).
