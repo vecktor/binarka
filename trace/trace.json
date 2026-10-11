@@ -1151,12 +1151,15 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-cause-stylesheet.test.ts",
+        "tests/play-page-cause-stylesheet.test.ts",
         "tests/play-page-palette-stylesheet.test.ts",
         "tests/play-page-semantics.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
-        "tests/play-page-stylesheet.test.ts"
+        "tests/play-page-stylesheet.test.ts",
+        "tests/play-page-violation-cause.test.ts"
       ],
       "recordings": []
     },
@@ -1176,6 +1179,8 @@
         "tests/play-page-backdrop-stylesheet.test.ts",
         "tests/play-page-backdrop-stylesheet.test.ts",
         "tests/play-page-backdrop-stylesheet.test.ts",
+        "tests/play-page-cause-stylesheet.test.ts",
+        "tests/play-page-cause-stylesheet.test.ts",
         "tests/play-page-layout-geometry.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
@@ -1314,7 +1319,9 @@
         "tests/play-page-cells.test.ts",
         "tests/play-page-cells.test.ts",
         "tests/play-page-cells.test.ts",
-        "tests/play-page-english-text.test.ts"
+        "tests/play-page-english-text.test.ts",
+        "tests/play-page-english-text.test.ts",
+        "tests/play-page-violation-cause.test.ts"
       ],
       "recordings": []
     },
@@ -1891,7 +1898,9 @@
         "tests/play-page-capture-board.test.ts",
         "tests/play-page-capture-board.test.ts",
         "tests/play-page-capture-board.test.ts",
-        "tests/play-page-capture-board.test.ts"
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-violation-cause.test.ts"
       ],
       "recordings": []
     },
@@ -1901,7 +1910,16 @@
         "openspec/changes/add-violation-cause/specs/play-page/spec.md"
       ],
       "planned": true,
-      "tests": [],
+      "tests": [
+        "tests/play-page-capture-board.test.ts",
+        "tests/play-page-cause-stylesheet.test.ts",
+        "tests/play-page-cells.test.ts",
+        "tests/play-page-english-text.test.ts",
+        "tests/play-page-english-text.test.ts",
+        "tests/play-page-semantics.test.ts",
+        "tests/play-page-violation-cause.test.ts",
+        "tests/play-page-violation-cause.test.ts"
+      ],
       "recordings": []
     },
     {
@@ -1920,10 +1938,6 @@
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "test-trace",
-      "msg": "FR-120 has no test annotated \"@trace FR-120\""
-    },
     {
       "check": "recording-evidence",
       "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"
