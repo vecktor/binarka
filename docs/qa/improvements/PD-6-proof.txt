@@ -1,0 +1,23 @@
+# PD-6 red proof, 2026-10-11 21:27:50 +0530 (session C, `claude/modest-darwin-process`, HEAD e4449c7); no port bound.
+# A temporary config (.pd6-probe.config.json, removed after) = the committed config with two real shots and "adapters" naming a stub
+# module whose capture throws (as a busy port, a dead preview or a crashed browser would). The committed reports are restored after.
+
+## committed reports before
+1024-dark-default: {"breakpoint":"1024-dark-default","score":1,"threshold":0.98,"heightDelta":0,"refHeight":768,"localHeight":768,"masked":0,"pass":true,"generatedBy":"scripts/check-visual-fidelity.mjs"}
+1440-light-default: {"breakpoint":"1440-light-default","score":0.9993,"threshold":0.98,"heightDelta":0,"refHeight":900,"localHeight":900,"masked":0,"pass":true,"generatedBy":"scripts/check-visual-fidelity.mjs"}
+
+## run
+(adapters injected from <scratchpad>/pd5/stub-adapters.mjs)
+FAIL  [1024-dark-default] capture failed: stub adapter reached (reference, 1024-dark-default)
+FAIL  [1440-light-default] capture failed: stub adapter reached (reference, 1440-light-default)
+Scope: 2 breakpoint(s)
+Result: FAIL, 1 warning(s)
+
+## reports after
+1024-dark-default: { "breakpoint": "1024-dark-default", "score": null, "threshold": 0.98, "heightDelta": null, "refHeight": null, "localHeight": null, "masked": 0, "pass": false, "reason": "capture failed: stub adapter reached (reference, 1024-dark-default)", "generatedBy": "scr
+1440-light-default: { "breakpoint": "1440-light-default", "score": null, "threshold": 0.98, "heightDelta": null, "refHeight": null, "localHeight": null, "masked": 0, "pass": false, "reason": "capture failed: stub adapter reached (reference, 1440-light-default)", "generatedBy": "s
+
+## git
+ M docs/qa/visual-diff/1024-dark-default/report.json
+ M docs/qa/visual-diff/1440-light-default/report.json
+restored: 0 modified after git checkout
