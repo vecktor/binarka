@@ -1,0 +1,94 @@
+# Sweep: e2e/nfr-14-setup-sheet.spec.ts with SETUP_SHEET_SWEEP=1 (task 5.4)
+
+Session B, under the capture lock (the battery run of 2026-10-11 20:31:57-20:32:49, UTC+5:30). The sweep is a finer SAMPLE (widths 320 to 1440 in 16 px steps at heights 568, 650, 700, 768, 900, 1024; states default and four; 852 points), not a continuum claim; it reads the page alone (the floor from 48rem and the no-cut check on the idle line's ink band).
+
+```
+$ npm run test:e2e -- --reporter=list; echo e2e_exit=$?; npm run check:a11y; echo a11y_exit=$?; SETUP_SHEET_SWEEP=1 npx playwright test --project=layout e2e/nfr-14-setup-sheet.spec.ts --reporter=list; echo sweep_exit=$?
+  245 passed (23.5s)
+  67 passed (13.1s)
+  ✘  27 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep default at height 568: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  29 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep default at height 650: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  30 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep default at height 768: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  31 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep default at height 900: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✘  28 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep default at height 700: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  34 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep four at height 700: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  32 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep four at height 568: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  33 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep four at height 650: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  35 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep default at height 1024: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  36 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep four at height 768: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  37 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep four at height 900: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✘  38 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep four at height 1024: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  3 failed
+  35 passed (12.9s)
+sweep_exit=1
+== lock released 2026-10-11 20:32:49 +0530
+```
+
+Failures (all no-cut; the floor holds at every point), grouped by height and state (widths):
+
+- 568 default: 320, 336, 352 — the sheet's BOTTOM is the window's bottom edge (568.00); the idle line runs past the fold (ink 559.69 to 593.13).
+- 700 default: 496 to 752 — the same: the bottom sheet's bottom is the window's edge (700.00), the idle ink 668.69 to 702.13 runs past it.
+- 700 default: 768 to 1440 (every step) — the full-cover sheet (window under 44rem tall) ends at 617.13, inside the idle ink 608.69 to 642.13 (a visible cut).
+- 1024 four: 672 to 752 — the bottom sheet's TOP 544.55 lies inside the idle ink 532.69 to 566.13 (a visible cut).
+
+## Classification
+
+1. **The window edge, not the sheet** (568 default 320-352; 700 default 496-752): the sheet's bottom edge coincides with the window's bottom; the idle text there is cut by the window (it is below the fold whether the sheet is open or not). The check counts it because it does not exclude an edge at the window's limit: a check artifact.
+2. **Inherited from the design** (700 default 768-1440; 1024 four 672-752): the design's own sheet cuts the idle text at the same points. Measured in the browser pane on the design build (`python3 -m http.server 5198 -d design/v0/out`, light; the pane's emulation, not the Playwright setup, so about 8 px of offset is possible): `/setup/` at 1024×700: sheet bottom 621.19, idle ink 609.19 to 642.63; `/setup-four/` at 704×1024: sheet top 556.51 (548.5 without the offset), idle ink 533.19 to 566.63. The page's 28px departure moves the content-decided edge by 4 px but does not create the cut.
+
+The six sampled viewports of the spec pass (battery: test:e2e 245/245). Put to the user (session-log).
+
+## The user's decisions (2026-10-11 ~20:38, the question form)
+
+- Class 1: «Ignore window edge (Recommended)»: the no-cut scenario and `e2e/nfr-14-setup-sheet.spec.ts` no longer count an edge within 0.5 px of the window's top or bottom (DELIBERATE CHANGE comment).
+- Class 2: «Record as known gap (Recommended)»: the port stays equal to the design; `proposal.md` «Scope NOT delivered» and the ADDED requirement's not-delivered list (item 9) record the cuts, left to a later design question.
+
+A re-run of the sweep after the edit is appended below (expected: only the class-2 points remain).
+
+## Re-run after the window-edge edit (under the lock, 2026-10-11 20:43:20 onward, before visual-block and check:visual run 11)
+
+```
+$ SETUP_SHEET_SWEEP=1 npx playwright test --project=layout e2e/nfr-14-setup-sheet.spec.ts --reporter=list
+  ✓   2 [layout] › e2e/nfr-14-setup-sheet.spec.ts:136:1 › @trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED, nothing else changes) (5ms)
+  ✓   3 [layout] › e2e/nfr-14-setup-sheet.spec.ts:145:1 › @trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, the recorded 28px deviation and the 12 cases (35ms)
+  ✓   7 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 768-light-setup (768x1024): the open setup sheet matches the design's box within the fixture's tolerance (195ms)
+  ✓   6 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 375-light-setup-four (375x812): the open setup sheet matches the design's box within the fixture's tolerance (194ms)
+  ✓   4 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 320-light-setup (320x700): the open setup sheet matches the design's box within the fixture's tolerance (193ms)
+  ✓   5 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 375-light-setup (375x812): the open setup sheet matches the design's box within the fixture's tolerance (218ms)
+  ✓   1 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 320-light-setup-four (320x700): the open setup sheet matches the design's box within the fixture's tolerance (185ms)
+  ✓   8 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 1024-light-setup (1024x768): the open setup sheet matches the design's box within the fixture's tolerance (135ms)
+  ✓   9 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 768-light-setup-four (768x1024): the open setup sheet matches the design's box within the fixture's tolerance (138ms)
+  ✓  10 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 1024-light-setup-four (1024x768): the open setup sheet matches the design's box within the fixture's tolerance (149ms)
+  ✓  11 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 1366-light-setup (1366x650): the open setup sheet matches the design's box within the fixture's tolerance (145ms)
+  ✓  12 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 1366-light-setup-four (1366x650): the open setup sheet matches the design's box within the fixture's tolerance (150ms)
+  ✓  13 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 1440-light-setup (1440x900): the open setup sheet matches the design's box within the fixture's tolerance (146ms)
+  ✓  14 [layout] › e2e/nfr-14-setup-sheet.spec.ts:337:5 › @trace NFR-14 @trace FR-96 1440-light-setup-four (1440x900): the open setup sheet matches the design's box within the fixture's tolerance (149ms)
+  ✓  15 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 320x700 default: the open setup sheet cuts no idle line (141ms)
+  ✓  16 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 320x700 four: the open setup sheet cuts no idle line (151ms)
+  ✓  17 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 375x812 default: the open setup sheet cuts no idle line (143ms)
+  ✓  19 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 768x1024 default: the open setup sheet ends below the button row and cuts no idle line (137ms)
+  ✓  18 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 375x812 four: the open setup sheet cuts no idle line (141ms)
+  ✓  20 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 768x1024 four: the open setup sheet ends below the button row and cuts no idle line (142ms)
+  ✓  22 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 1024x768 four: the open setup sheet ends below the button row and cuts no idle line (134ms)
+  ✓  21 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 1024x768 default: the open setup sheet ends below the button row and cuts no idle line (139ms)
+  ✓  24 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 1366x650 four: the open setup sheet ends below the button row and cuts no idle line (137ms)
+  ✓  23 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 1366x650 default: the open setup sheet ends below the button row and cuts no idle line (140ms)
+  ✓  25 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 1440x900 default: the open setup sheet ends below the button row and cuts no idle line (141ms)
+  ✓  26 [layout] › e2e/nfr-14-setup-sheet.spec.ts:392:5 › @trace NFR-14 @trace FR-96 1440x900 four: the open setup sheet ends below the button row and cuts no idle line (137ms)
+  ✓  27 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep default at height 568: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  28 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep default at height 650: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  30 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep default at height 768: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  31 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep default at height 900: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✘  29 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep default at height 700: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  32 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep default at height 1024: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  33 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep four at height 568: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  34 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep four at height 650: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  35 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep four at height 700: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  36 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep four at height 768: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✓  37 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep four at height 900: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✘  38 [layout] › e2e/nfr-14-setup-sheet.spec.ts:416:7 › @trace NFR-14 @trace FR-96 sweep four at height 1024: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  2 failed
+  36 passed (13.0s)
+```
+
+Remaining failures, all class 2 (recorded, Scope NOT delivered): 700 default at widths 768 to 1440 (every 16 px step), 1024 four at 672 to 752. The class-1 points (568 default 320-352; 700 default 496-752) are gone. 36 of 38 sweep tests pass.

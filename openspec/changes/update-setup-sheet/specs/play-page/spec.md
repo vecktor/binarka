@@ -644,6 +644,64 @@ Traces: NFR-12, NFR-14, FR-101
 - **WHEN** the probe measures «Почати» in both sheets, and, as it already does, the summary button among the page controls and «Закрити» in the 6×6 sheet
 - **THEN** each measured control is at least 44 px wide and at least 44 px tall, and the spec reports no line for a measured control below 44×44
 
+### Requirement: Cells and buttons show a visible, unobscured focus indicator
+
+The stylesheet SHALL contain a `:focus-visible` rule for `.cell` and for `button` (FR-65), found anywhere in the file (top level, nested with `&` resolved against its parent, or inside an at-rule), each declaring `outline-style: solid`, `outline-width` of at least 2px and `outline-color: var(--color-focus)`. Together they cover every cell and every page button: the header «Правила» and the settings button, the summary button, the three size buttons, the four level buttons, the three theme options, the two language options, the close button «Закрити» of the settings panel, the start button «Почати» and the close button «Закрити» of the setup sheet, «Підказка», «Скинути», «Нова головоломка», «Зрозуміло», «Так, почати» and «Скасувати», all of them `<button>` elements. The `.cell:focus-visible` rule SHALL declare `outline-offset: 2px`, `position: relative` and `z-index` of at least 1, so the 3px ring is drawn outside the cell (the cell's own border, the violation cue included, stays visible), the inner side of the ring, over the gap between cells, shows the board plate `--color-line` and not the page (the board's gaps are 4, 3 and 2px with the size and the width; the pair `--color-focus` against the plate is 11.72 in light and 10.65 in dark, A-57), the ring's outer edge lands on a neighbour's border and fill (the pairs `--color-focus` against the cell, given, violation, hinted-soft and success fills are 10.87 or more in light and 8.17 or more in dark, and against the cell border 3.87 and 3.36) and the ring is not covered by neighbouring cells; the trade-off is that the ring covers the border of a neighbour on that side while the cell is focused. Three adjacencies are accepted below 3:1 (A-57, PA-Q8 of the palette amendment): the ring against a neighbour's violation border (2.47 light, 1.96 dark), against a hinted neighbour's primary border (2.94, 1.88) and against the success border at the edge of a solved 8×8 board (2.53, 1.53); in each case the inner band of the ring stays on the plate at 10.65:1 or more. The `button:focus-visible` rule SHALL declare a positive `outline-offset`. No rule SHALL remove the outline: no declaration `outline: none`, `outline: 0`, `outline-style: none` or `outline-width: 0` exists in the file. The stylesheet SHALL NOT contain `!important`, and SHALL NOT contain `:has(` except in the one selector that hides the idle line: exactly one rule contains `:has(`, the subject of its selector is `.message-idle`, and it declares nothing but `display: none` (FR-71: the idle line is hidden by CSS only, and only `:has` can reach a previous sibling; FR-68 fixes the order idle, hint, win). Where a browser does not know `:has` (Firefox 114 to 120, the Vite 8 build target of `docs/frontend-conventions.md` rule 20) the idle line stays visible next to a message and nothing else depends on the rule. This is the one exception that FR-65 allows. CSS nesting, media queries and `@layer` are allowed by that rule; the test reads them all. The open setup sheet SHALL keep a keyboard-focused control clear of its sticky footer row (FR-65 "unobscured", WCAG 2.4.11): the open sheet declares a `scroll-padding-bottom` of at least the footer height, so the browser's own focus scrolling brings a focused option above the footer (second review-gate fix round, 2026-10-10, autonomy-log row 126).
+
+Traces: FR-65, FR-87, FR-95, FR-97, FR-101, FR-102, FR-117, FR-107, NFR-13
+
+#### Scenario: Focus-visible rules exist for the cell and the button
+
+- **GIVEN** the parsed `src/ui/style.css` (jsdom never matches `:focus-visible`, so these rules are checked as declarations)
+- **WHEN** the test looks for the rules whose selector list contains `.cell:focus-visible` or `button:focus-visible`
+- **THEN** each of the two exists, declares `outline-style: solid`, an `outline-width` of at least 2px and `outline-color: var(--color-focus)`
+
+#### Scenario: The cell ring is outside the border and above the neighbours
+
+- **GIVEN** the `.cell:focus-visible` rule
+- **WHEN** the test reads its declarations
+- **THEN** `outline-offset` is `2px`, `position` is `relative` and `z-index` is an integer of at least 1
+- **AND** the `button:focus-visible` rule declares an `outline-offset` greater than 0
+
+#### Scenario: The ring's accepted adjacencies are recorded
+
+- **GIVEN** the resolved colours of the tokens of each token set (light, then dark)
+- **WHEN** the test computes the ratio of `--color-focus` against `--color-line`, `--color-violation-border`, `--color-primary` and `--color-success`, rounded to two decimals
+- **THEN** the first is at least 10.65 and the other three equal 2.47, 2.94 and 2.53 in light and 1.96, 1.88 and 1.53 in dark, so a change of a value that moves an accepted adjacency is deliberate and not silent
+- **AND** none of those three ratios is listed as a contrast pair of «Borders, cues and focus rings have enough contrast»
+
+#### Scenario: Every page button is a button element
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads `[data-action="rules"]`, the summary button `[data-action="setup"]`, the three size `button[role="radio"]` and the four level `button[role="radio"]` (FR-87), the three theme `button[role="radio"]` (FR-102), the two language `button[role="radio"]` (FR-107), the settings button `[data-action="settings"]`, the close button `[data-action="settings-close"]`, the start button `[data-action="setup-start"]`, the close button `[data-action="setup-close"]`, `[data-action="hint"]`, `[data-action="reset"]`, `[data-action="new"]`, the close button of `[data-section="rules"]`, `[data-confirm="yes"]`, `[data-confirm="no"]` and every `[data-cell]`
+- **THEN** each of them is a `button` element, so `button:focus-visible` (and `.cell:focus-visible` for the cells) applies to it
+
+#### Scenario: Nothing removes the outline
+
+- **GIVEN** the text of `src/ui/style.css`
+- **WHEN** the test searches for `outline: none`, `outline: 0`, `outline-style: none` and `outline-width: 0` (any spacing)
+- **THEN** there is no match
+
+#### Scenario: The stylesheet stays inside the build target, with one `:has(` exception
+
+- **GIVEN** the parsed `src/ui/style.css`, every rule found through nested rules and at-rules
+- **WHEN** the test searches the text for `!important` and collects the rules whose selector contains `:has(`
+- **THEN** there is no `!important`, anywhere
+- **AND** exactly one rule contains `:has(`, the subject of its selector (its last compound selector) is `.message-idle`, and its only declaration is `display: none`
+- **AND** the raw text of the file contains `:has(` exactly once, so no rule the parser drops and no at-rule prelude holds another
+
+#### Scenario: The open sheet reserves the footer in its scroll padding
+
+- **GIVEN** the parsed `src/ui/style.css`
+- **WHEN** the test reads the rule for the open setup sheet (`.setup-sheet:popover-open`)
+- **THEN** it declares `scroll-padding-bottom` with a length of at least `calc(2.75rem + 48px)` (the strip of `2.75rem + 16px`, the sheet's bottom padding of up to 24px and the 5px ring, the need measured in `docs/qa/update-setup-sheet-start/focus-obscured-repro.txt`); the e2e walk decides the fit
+
+#### Scenario: A focused option in a scrolling sheet is not covered by the footer
+
+- **GIVEN** a real browser at 320×700, 1366×650, 320×568 and 375×600 (e2e, `e2e/nfr-13-a11y.spec.ts`; sampled; the 375-wide case is 375×600 since `update-setup-sheet`: with the design's sheet metrics the sheet with «Поле 4×4» marked fits at 375×667 and does not scroll), the setup sheet open with «Поле 4×4» marked, so the sheet scrolls inside itself, which the walk asserts at each viewport
+- **WHEN** the keyboard moves the focus with Tab from «Поле 4×4» through the size options and the four level options, with no scrolling by script
+- **THEN** for each focused option the bottom of its focus ring (its rect bottom plus the outline offset and width) is at or above the top of the footer strip behind «Почати» and «Закрити»
+
 ## ADDED Requirements
 
 ### Requirement: The setup sheet takes the design's size, place and paint
@@ -686,7 +744,7 @@ So on a phone the sheet is a bottom sheet up to 88% of the window height (up to 
 
 **The level group's bottom margin stays 28px at every width, a departure from the design, said plainly (A-60, SQ-5).** The design has 24px at every width above 22.5rem (A-60, corrected at autonomy-log row 173) and 1rem at 22.5rem and narrower; with a smaller margin the keyboard focus ring of the last option sits under the footer strip (FR-65, WCAG 2.4.11; «Cells and buttons show a visible, unobscured focus indicator»). Because the sheet is `fit-content` between its floor and its cap, the departure makes the sheet 4px taller than the design's (12px at 320) wherever its content decides the height; the box test therefore compares the page with the design plus this one recorded deviation (see below), not with the unmodified design. The rule `.setup-sheet > [data-control='level']` keeps `margin-bottom: 28px` outside any at-rule, and `.setup-sheet:popover-open` keeps `scroll-padding-bottom` of at least `calc(2.75rem + 48px)` (the design's bottom padding is 16px, so the value that covered the page's 24px still covers it). **No motion** is ported (SQ-6): no `.setup-sheet` rule is inside `@media (prefers-reduced-motion: no-preference)` or `@starting-style`, and none declares `transition` or `animation`. The contrast of the new bindings is pinned by «Borders, cues and focus rings have enough contrast» (the ring pairs and the primary pairs), not here.
 
-Intentionally not delivered in this change, so that testers do not report them as bugs: (1) the theme and language options' paint and the settings panel's (the second wave); (2) the design's mask shadow on «Закрити» and its `pointer-events: none` on the strip; (3) motion of any kind; (4) the design's 24px and 1rem margins of the level group (the 28px departure above); (5) a computed-paint comparison of the sheet's cards with the design build in a browser (the stylesheet scenarios and the per-shot gate cover the paint); (6) a pixel floor for any setup shot (they are expected to rise, see `design.md`); (7) the sheet in Safari and Firefox (NFR-7); (8) the `cursor` of the unavailable card (the design's `not-allowed`, the page's `default`).
+Intentionally not delivered in this change, so that testers do not report them as bugs: (1) the theme and language options' paint and the settings panel's (the second wave); (2) the design's mask shadow on «Закрити» and its `pointer-events: none` on the strip; (3) motion of any kind; (4) the design's 24px and 1rem margins of the level group (the 28px departure above); (5) a computed-paint comparison of the sheet's cards with the design build in a browser (the stylesheet scenarios and the per-shot gate cover the paint); (6) a pixel floor for any setup shot (they are expected to rise, see `design.md`); (7) the sheet in Safari and Firefox (NFR-7); (8) the `cursor` of the unavailable card (the design's `not-allowed`, the page's `default`); (9) between the sampled viewports the design's own sheet, and so the page's, cuts the idle line's text: at a window 700 px tall from 768 to 1440 px wide (the full cover ends inside the line) and in the 4×4 state at 1024 px tall from 672 to 752 px wide (the bottom sheet's top lies in the line), found by the sweep and left to a later design question (the user's decision of 2026-10-11, `docs/qa/update-setup-sheet/sweep.txt`).
 
 The mechanism is a stylesheet test and a browser test, both test first. `tests/play-page-setup-sheet-stylesheet.test.ts` (`@trace NFR-14`, `@trace FR-65`, `@trace FR-96`) reads the parsed `src/ui/style.css`. `e2e/nfr-14-setup-sheet.spec.ts` (`@trace NFR-14`, `@trace FR-96`, in the existing `layout` project, whose `testMatch` already includes `nfr-14-*`, so `playwright.config.ts` is not changed) compares the open sheet's box and its first level description's left edge with the cases of the new key `setupSheet` of `quality/design-geometry.json`, frozen by `scripts/freeze-design-geometry.mjs` from the design build served from `design/v0/out` with the browser setup of `playwright.config.ts` (Playwright "Desktop Chrome", reduced motion, light scheme). Each case records two boxes of the sheet: the design's own (`boxes`) and the expected product box (`expected`), which the script captures by loading the same design page a second time with one rule injected into the design page in the browser, `.setup .level-control { margin-bottom: 28px }` appended after the design's stylesheet (the one deviation, the 28px margin of A-60 and SQ-5); where the floor or the cap decides the sheet's height the two boxes are equal. The key records the deviation with the rule, the design's value (24px, and 1rem at 22.5rem and narrower), the product value (28px), the reason (A-60, SQ-5: the focus ring of the last option under the footer strip) and the cases whose height the content decides, as «The main column takes the design palette» records the A-57 deviations. The script guards the injection as `e2e/nfr-14-palette.spec.ts` guards its deviations: it reads the design's computed `margin-bottom` of the level group before injecting and fails unless it is 24px (16px at 22.5rem and narrower), so the override never hides a different design value. The description's left edge is not affected by it. The sampling dimensions are declared: the viewports 320×700, 375×812, 768×1024, 1024×768, 1366×650 and 1440×900 and the states default (the design's 6×6 fixture, shot `<w>-light-setup`) and `four` (the 4×4 fixture, shot `<w>-light-setup-four`, which checks the board side B), 12 cases; coverage is `sampled`, never continuum. Geometry does not depend on the colour scheme, so the cases are light. The stricter instruments that run before a block-done claim are the per-shot gate `npm run check:visual` and the per-block pixel crop of `scripts/visual-block.mjs` over the 48 setup shots, and a fine-step sweep of the floor and the no-cut checks (the same spec with the environment variable `SETUP_SHEET_SWEEP=1`, off by default: widths 320 to 1440 in steps of 16 px at the heights 568, 650, 700, 768, 900 and 1024, both states); the sweep is a finer sample, not a continuum claim.
 
@@ -767,7 +825,7 @@ Traces: FR-96, FR-65, FR-99, NFR-14, NFR-12, A-60, A-57
 - **GIVEN** the parsed `src/ui/style.css`
 - **WHEN** the test reads `.setup-sheet > [data-control='level']` and `.setup-sheet:popover-open`
 - **THEN** the first declares `margin-bottom: 28px` outside any at-rule (no media rule changes it), and the second declares a `scroll-padding-bottom` of at least `calc(2.75rem + 48px)`
-- **AND** the e2e walk of «Cells and buttons show a visible, unobscured focus indicator» (320×700, 1366×650, 320×568, 375×667) stays green with no edit, and the walk asserts its premise (the sheet scrolls with «Поле 4×4» marked) at each of the four viewports
+- **AND** the e2e walk of «Cells and buttons show a visible, unobscured focus indicator» (320×700, 1366×650, 320×568, 375×600) stays green, and the walk asserts its premise (the sheet scrolls with «Поле 4×4» marked) at each of the four viewports (the 375-wide case moved from 375×667, where the sheet now fits and does not scroll; the user's decision of 2026-10-11, `docs/qa/update-setup-sheet/green-run.txt`, open finding 2)
 
 #### Scenario: The sheet has no motion and no new colour literal
 
@@ -788,9 +846,9 @@ Traces: FR-96, FR-65, FR-99, NFR-14, NFR-12, A-60, A-57
 #### Scenario: The sheet ends below the button row and cuts no line of text
 
 - **GIVEN** the same six viewports and the two states, the sheet open
-- **WHEN** the test reads the sheet's box S, the bottom of the action button row R (the bottom of `[data-action="hint"]`), the window height H and the box I of the idle line `[data-message="idle"]` (visible in these states)
+- **WHEN** the test reads the sheet's box S, the bottom of the action button row R (the bottom of `[data-action="hint"]`), the window height H and the ink band I of the idle line `[data-message="idle"]` (visible in these states): from the ink top of its first line to the ink bottom of its last line, measured in the browser from the line boxes of its text (`Range.getClientRects()`) and the font's metrics of the idle text (`CanvasRenderingContext2D.measureText` with the computed font: ink top = first line's top + `fontBoundingBoxAscent` − `actualBoundingBoxAscent`; ink bottom = last line's top + `fontBoundingBoxAscent` + `actualBoundingBoxDescent`)
 - **THEN** at 768×1024, 1024×768, 1366×650 and 1440×900, S.bottom is at least `min(R + 8, H - 16)` less 0.5 px (the sheet ends at least 0.5rem below the button row, or at the window's limit when that is higher)
-- **AND** at all six viewports neither S.top nor S.bottom lies strictly inside I (more than 0.5 px from I.top and from I.bottom), so no edge of the sheet cuts the idle line, which is wholly covered or wholly clear; a viewport that fails is a finding, not a licence to loosen the check
+- **AND** at all six viewports neither S.top nor S.bottom lies strictly inside I (more than 0.5 px from I.top and from I.bottom), so no edge of the sheet cuts the idle line's text, which is wholly covered or wholly clear (an edge that lies at the window's limit, within 0.5 px of 0 or of H, is the window's edge, not a cut by the sheet, and is not counted; the user's decision of 2026-10-11, `docs/qa/update-setup-sheet/sweep.txt`); the edge may lie in the line's box above or below the ink (the design's own sheet ends 0.8 px inside the idle line's box at 1024×768, and the page, with the 28px departure, 4.8 px; the user's decision of 2026-10-11 to check the ink, not the box, `docs/qa/update-setup-sheet/green-run.txt`, open finding 1); a viewport that fails is a finding, not a licence to loosen the check
 - **AND** at 1366×650 the idle line is wholly covered or wholly clear in both states (the case of `docs/qa/update-page-layout-geometry/stills/1366-dark-setup.png`, the cut line under the sheet)
 
 #### Scenario: The fixture adds one key and changes nothing else

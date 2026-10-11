@@ -181,7 +181,10 @@ for (const [width, height] of [
   [320, 700],
   [1366, 650],
   [320, 568],
-  [375, 667],
+  // DELIBERATE CHANGE (update-setup-sheet): 375x667 -> 375x600. With the design's sheet metrics the sheet with «Поле 4×4» marked fits at
+  // 375x667 (573 px under the 587 px cap) and the premise below failed; the user moved the case to a height where it scrolls (2026-10-11,
+  // docs/qa/update-setup-sheet/green-run.txt, open finding 2) — proposal.md Impact row «Cells and buttons show a visible, unobscured focus indicator».
+  [375, 600],
 ] as const) {
   test.describe(`${width}x${height} focus not obscured by the sheet footer`, () => {
     test.use({ viewport: { width, height } });
