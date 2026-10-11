@@ -92,3 +92,7 @@ $ SETUP_SHEET_SWEEP=1 npx playwright test --project=layout e2e/nfr-14-setup-shee
 ```
 
 Remaining failures, all class 2 (recorded, Scope NOT delivered): 700 default at widths 768 to 1440 (every 16 px step), 1024 four at 672 to 752. The class-1 points (568 default 320-352; 700 default 496-752) are gone. 36 of 38 sweep tests pass.
+
+## After the rebase onto block A (2026-10-12 01:11-01:15, under the lock)
+
+36 of 38 sweep tests pass; the two failing groups are the same design-inherited cuts (700 default, 768 to 1440; 1024 four, 672 to 752), recorded as not delivered. `battery.txt` § After the rebase.

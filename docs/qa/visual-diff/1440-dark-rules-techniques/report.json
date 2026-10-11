@@ -1,12 +1,11 @@
 {
   "breakpoint": "1440-dark-rules-techniques",
-  "score": 0.8859,
+  "score": 0.997,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 900,
   "localHeight": 900,
   "masked": 0,
-  "pass": false,
-  "reason": "pixel score 0.8859 below threshold 0.98",
+  "pass": true,
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }

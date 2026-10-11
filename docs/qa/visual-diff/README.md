@@ -59,6 +59,51 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 7. **Orphaned previews (PD-4, 2026-10-11, session C).** A capture stopped by a signal, or dying before `close()`, left its `vite preview` listening (the clean close never leaked). Since PD-4 the adapter and `scripts/visual-block.mjs` run `vite` under `node` and stop it on exit and on SIGINT, SIGTERM and SIGHUP; SIGKILL leftovers and Playwright's preview: `node scripts/capture-ports.mjs --stop` (this worktree's only). The ports come from `BINARKA_PORT_BASE` (default 4173: e2e +0, gate +1, page +3, design +4).
 8. **A failed capture overwrites a scored report** (`score: null`), with any adapter. **Closed by PD-6** (`docs/qa/improvements/PD-6-failed-capture-overwrites-evidence.md`): the checker stages each run and copies it here unless a capture or diff failure would replace a scored report; such a run FAILS and names its folder. Shots that never had a score (the logo shots) do not block the copy.
 
+## Run 12 (after update-setup-sheet, G2 block B, rebased onto block A)
+
+`docs/qa/g2/check-visual-run-12.txt`, 2026-10-12 01:12 to 01:15 (UTC+5:30), exit 1: **142 of 170 at 0.98** (run 11: 106). Session B, branch `claude/magical-nash-setup` rebased onto `main` `2230704` (block A merged first, task 10.2); the capture lock was held and nothing listened on 4173, 4174, 4176 or 4177 before or after.
+
+- **All 48 setup shots rose against run 11**, each to exactly its score of session B's pre-rebase run (section below), so the rebase changed no setup pixel; 36 reach 0.98. **No shot of any state fell, and no shot of another state changed** (all 20 rules shots still at 0.98). Per block (`docs/qa/update-setup-sheet/run-vs-previous.txt` § After the rebase): `visual-block --block setup` 48 shots and `--block rules` 20 shots, geometry within 0.5px.
+- **The residual** of the 12 phone setup shots under 0.98 is the signed 28px departure (SQ-5, A-60), as measured in the pre-rebase section below.
+- **Between the samples**, the sweep still finds only the design-inherited idle-line cuts recorded as not delivered (`docs/qa/update-setup-sheet/sweep.txt`).
+
+By state (mean change against run 11; shots that fell):
+
+| State | Scheme | Run 11 at 0.98 | Run 12 at 0.98 | Lowest run 12 | Highest run 12 | Mean change | Fell |
+|---|---|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 3 of 5 | 0.9180 | 0.9904 | +0.0000 | 0 |
+| confirm | light | 3 of 5 | 3 of 5 | 0.9194 | 0.9901 | +0.0000 | 0 |
+| default | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | light | 6 of 6 | 6 of 6 | 0.9985 | 0.9996 | +0.0000 | 0 |
+| eight | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| eight | light | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| rules | dark | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | light | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules-techniques | dark | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules-techniques | light | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| settings | dark | 4 of 6 | 4 of 6 | 0.9117 | 0.9880 | +0.0000 | 0 |
+| settings | light | 4 of 6 | 4 of 6 | 0.9430 | 0.9946 | +0.0000 | 0 |
+| settings-dark | light | 3 of 5 | 3 of 5 | 0.9195 | 0.9894 | +0.0000 | 0 |
+| settings-focus | dark | 1 of 2 | 1 of 2 | 0.9077 | 0.9821 | +0.0000 | 0 |
+| settings-focus | light | 1 of 2 | 1 of 2 | 0.9390 | 0.9919 | +0.0000 | 0 |
+| settings-light | dark | 3 of 5 | 3 of 5 | 0.9458 | 0.9950 | +0.0000 | 0 |
+| setup | dark | 0 of 6 | 4 of 6 | 0.9238 | 1.0000 | +0.1179 | 0 |
+| setup | light | 0 of 6 | 4 of 6 | 0.9218 | 1.0000 | +0.1168 | 0 |
+| setup-four | dark | 0 of 6 | 5 of 6 | 0.9388 | 1.0000 | +0.1403 | 0 |
+| setup-four | light | 0 of 6 | 5 of 6 | 0.9306 | 1.0000 | +0.1222 | 0 |
+| setup-marked | dark | 0 of 6 | 4 of 6 | 0.9054 | 1.0000 | +0.1121 | 0 |
+| setup-marked | light | 0 of 6 | 4 of 6 | 0.8755 | 1.0000 | +0.1177 | 0 |
+| setup-marked-four | dark | 0 of 6 | 5 of 6 | 0.9387 | 1.0000 | +0.1334 | 0 |
+| setup-marked-four | light | 0 of 6 | 5 of 6 | 0.9311 | 1.0000 | +0.1202 | 0 |
+| win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+
 ## Session B's pre-rebase run (update-setup-sheet; numbered run 11 before block A merged, superseded by run 12)
 
 `docs/qa/update-setup-sheet/check-visual-prerebase.txt` (written as `docs/qa/g2/check-visual-run-11.txt` before the rebase onto block A), 2026-10-11 20:44 to 20:46 (UTC+5:30), exit 1: **122 of 170 at 0.98** (run 10: 86). Session B of the parallel G2 plan, branch `claude/magical-nash-setup` on `ebaf49b` plus the uncommitted block (block A merged first and took run 11; this run stays as the pre-rebase evidence); the capture lock was held and nothing listened on 4173, 4174, 4176 or 4177 before or after.

@@ -86,3 +86,44 @@ sweep_exit=1
 ## Addendum after the review gate's fix round 1 (HEAD 7c1ed21 plus a comment-only edit of scripts/visual-block.mjs)
 
 2026-10-11 21:31-21:40 (UTC+5:30): `npx vitest run` 77 files / 1900 tests passed; `npm run lint` 0; `npm run build` 0; under the capture lock (21:38:32-21:39:24, ports empty before and after): `npm run test:e2e` 245 passed, `npm run check:a11y` 67 passed (`docs/qa/a11y-report.json`); `npx openspec validate --all --strict` 4 passed; `node scripts/check-eval-ratchet.mjs` PASS; `npm run check:trace` 0 failures; `npm run check:acceptance` 132 contracts, 0 failures. The setup e2e (26/26) and the per-block tool (48 shots, geometry within 0.5px, pixel scores equal to run 11's) ran at 21:29-21:31 (`fix-round-1.txt`). Tool-rewritten reports reverted.
+
+## After the rebase onto block A (task 10.2; HEAD 0a66df1 on main 2230704, plus the re-audit's folder amendment)
+
+2026-10-11 21:48 to 2026-10-12 01:18 (UTC+5:30).
+
+```
+# no lock (2026-10-12 01:17-01:18, after the folder amendment and the rules-test copies):
+lint exit=0
+ Test Files  79 passed (79)
+      Tests  1949 passed (1949)
+build exit=0
+Change 'update-setup-sheet' is valid
+Totals: 3 passed, 0 failed (3 items)
+Result: PASS
+traceability: 115 MVP FRs checked — 0 failure(s), 116 warning(s)
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+# under the capture lock (2026-10-11 21:51:26-21:52:25; ports empty before and after):
+$ npm run test:e2e -- --reporter=list > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/pr-e2e-all.txt 2>&1; echo e2e_exit=$?; npm run check:a11y > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/pr-a11y.txt 2>&1; echo a11y_exit=$?
+e2e_exit=0
+a11y_exit=0
+a11y.txt:  67 passed (15.1s)
+e2e-all.txt:  283 passed (40.0s)
+# under the capture lock (2026-10-12 01:11:05-01:15:41; ports empty before and after):
+$ node scripts/freeze-design-geometry.mjs; echo freeze_exit=$?; SETUP_SHEET_SWEEP=1 npx playwright test --project=layout e2e/nfr-14-setup-sheet.spec.ts --reporter=list > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb-sweep.txt 2>&1; echo sweep_exit=$?; npm run build > /dev/null 2>&1; node scripts/visual-block.mjs --block setup --states setup,setup-four,setup-marked,setup-marked-four --out /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb-vb-setup > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb-vb-setup.txt 2>&1; echo vbs_exit=$?; node scripts/visual-block.mjs --block rules --states rules,rules-techniques --out /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb-vb-rules > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb-vb-rules.txt 2>&1; echo vbr_exit=$?; date '+%a %b %e %T %z %Y' > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/cv12-start.txt; npm run check:visual > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/cv12-run.txt 2>&1; echo cv_exit=$?; date '+%a %b %e %T %z %Y' > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/cv12-end.txt
+wrote quality/design-geometry.json: 32 cases x 16 selectors, rulesPanel: 8 cases x 2 selectors; setupSheet 12 cases (content-decided: 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four)
+freeze_exit=0
+sweep_exit=1
+vbs_exit=0
+vbr_exit=0
+cv_exit=1
+sweep:   2 failed
+sweep:   36 passed (15.5s)
+Block setup: 48 shot(s), geometry within 0.5px (coverage: sampled)
+Block rules: 20 shot(s), geometry within 0.5px (coverage: sampled)
+```
+
+- Before the rules-test copies were updated (21:48) the unit suite had 1 failure: A's token guard (`folder-audit.md` § «Re-read after block A merged first», finding 1); it is green since, on the user's decision (session-log row 31).
+- `test:e2e` 283 passed includes A's `e2e/nfr-14-rules-panel.spec.ts` with no edit.
+- The refreeze reproduced every key byte for byte except A's `rulesPanel.provenance.designBuildSha1` (A's script records the local build hash, which differs between worktrees, as A's requirement says); the committed fixture was restored, so A's recorded value stands.
+- The sweep: the same two design-inherited groups as `sweep.txt` (700 default 768-1440; 1024 four 672-752), recorded as not delivered.
+- `check:visual` run 12: `docs/qa/g2/check-visual-run-12.txt`, 142 of 170 (run 11: 106); `run-vs-previous.txt` § After the rebase.
