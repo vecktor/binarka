@@ -10,6 +10,11 @@ import { BLANK_4, PAIR_ROW, WIN_MESSAGE, bySize, clickCell, generateSpy, install
 // of the appendix to A-57, and no other `--color-*` token is declared (toEqual on the whole set). The values are written out here on purpose, a
 // second copy of the table that `tests/helpers/css.ts` (PALETTE_LIGHT, PALETTE_DARK) and the spec hold. The geometry itself is checked in a real
 // browser by e2e/nfr-14-layout-geometry.spec.ts (jsdom does not lay out).
+//
+// update-page-backdrop DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 3 «Main column layout geometry follows the design reference», scenario «Colours are the
+// G2 palette», proposal.md Impact row `tests/play-page-layout-geometry.test.ts:9-67` (`LIGHT`, `DARK`) and `:69-74`): the two literal copies gain the
+// backdrop rows of the spec's table (`--color-backdrop-soft`, `--color-backdrop-strong`: light `#46280f38` and `#2d190a80`, dark `#08050273` and
+// `#08050299`), 27 tokens in each set, and the length check is 27. Nothing else in the scenario changes.
 const LIGHT: Record<string, string> = {
   '--color-page': '#f7f3ea',
   '--color-text': '#1e2126',
@@ -36,6 +41,8 @@ const LIGHT: Record<string, string> = {
   '--color-success-glow': '#2f6b3a73',
   '--color-win-text': '#1e2126',
   '--color-focus': '#1e2126',
+  '--color-backdrop-soft': '#46280f38',
+  '--color-backdrop-strong': '#2d190a80',
 };
 const DARK: Record<string, string> = {
   '--color-page': '#1a1714',
@@ -63,14 +70,16 @@ const DARK: Record<string, string> = {
   '--color-success-glow': '#8fd19a73',
   '--color-win-text': '#f1ede4',
   '--color-focus': '#f1ede4',
+  '--color-backdrop-soft': '#08050273',
+  '--color-backdrop-strong': '#08050299',
 };
 
 describe('@trace NFR-14 @trace FR-65 the main column takes the G2 palette', () => {
-  it('Colours are the G2 palette: the light and dark token sets equal the 25 block-2 tokens and values of the appendix to A-57, and no other --color-* is declared', () => {
+  it('Colours are the G2 palette: the light and dark token sets equal the 27 tokens and values of the table (25 of block 2, 2 backdrops), and no other --color-* is declared', () => {
     const [light, dark] = themeTokenSets(readStyles());
     expect(light?.tokens).toEqual(LIGHT);
     expect(dark?.tokens).toEqual(DARK);
-    expect(Object.keys(LIGHT)).toHaveLength(25);
+    expect(Object.keys(LIGHT)).toHaveLength(27);
   });
 });
 

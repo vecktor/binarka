@@ -363,9 +363,11 @@ export function scanColours(parsed: ParsedStyles): ColourScan {
 // ---------------------------------------------------------------------------------------------------------
 
 /**
- * The 25 colour tokens of the main column in the G2 palette (A-57 appendix, block 2; the table of the spec delta of update-page-palette),
- * in the order of that table. update-page-palette (delta «Borders, cues and focus rings have enough contrast»): this was the 13 baseline names.
- * A later block adds its rows from the appendix.
+ * The 27 colour tokens of the G2 palette (A-57 appendix; the table of the spec delta of update-page-backdrop), in the order of that table: the 25 of
+ * the main column (block 2) and the two backdrops (block 3). update-page-palette (delta «Borders, cues and focus rings have enough contrast»): this was
+ * the 13 baseline names. DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
+ * `tests/helpers/css.ts` `TOKEN_NAMES` 366-370): 27 names, the table's last two rows `--color-backdrop-soft` and `--color-backdrop-strong`. A later block
+ * adds its rows from the appendix.
  */
 export const TOKEN_NAMES = [
   '--color-page',
@@ -393,12 +395,16 @@ export const TOKEN_NAMES = [
   '--color-success-glow',
   '--color-win-text',
   '--color-focus',
+  '--color-backdrop-soft',
+  '--color-backdrop-strong',
 ] as const;
 
 /**
- * The values of the 25 tokens, light (the top-level `:root`) and dark (`:root[data-theme="dark"]`), written out of the table of the spec delta
- * of update-page-palette and of the appendix to A-57 in docs/requirements.md. The stylesheet tests compare the file with them; the contrast
- * ratios are computed from the stylesheet, never from these (they are expectations, not inputs).
+ * The values of the 27 tokens, light (the top-level `:root`) and dark (`:root[data-theme="dark"]`), written out of the table of the spec delta
+ * of update-page-backdrop (the 25 rows of update-page-palette and the two backdrop rows) and of the appendix to A-57 in docs/requirements.md. The
+ * stylesheet tests compare the file with them; the contrast ratios are computed from the stylesheet, never from these (they are expectations, not
+ * inputs). DELIBERATE CHANGE (update-page-backdrop, delta 1; proposal.md Impact row `tests/helpers/css.ts` `PALETTE_LIGHT` 399-403, `PALETTE_DARK` 431):
+ * the two backdrop rows, `#46280f38` and `#2d190a80` in light, `#08050273` and `#08050299` in dark.
  */
 export const PALETTE_LIGHT: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-page': '#f7f3ea',
@@ -426,6 +432,8 @@ export const PALETTE_LIGHT: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-success-glow': '#2f6b3a73',
   '--color-win-text': '#1e2126',
   '--color-focus': '#1e2126',
+  '--color-backdrop-soft': '#46280f38',
+  '--color-backdrop-strong': '#2d190a80',
 };
 
 export const PALETTE_DARK: Record<(typeof TOKEN_NAMES)[number], string> = {
@@ -454,13 +462,16 @@ export const PALETTE_DARK: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-success-glow': '#8fd19a73',
   '--color-win-text': '#f1ede4',
   '--color-focus': '#f1ede4',
+  '--color-backdrop-soft': '#08050273',
+  '--color-backdrop-strong': '#08050299',
 };
 
 /**
  * The tokens the list marks translucent: their value is `#rrggbbaa` and they are never the foreground or the background of a contrast pair
- * (a backdrop would be checked composited over the page, a later block). Block 2 has one, the win glow keyframes.
+ * (a backdrop is checked composited over the page, see `compositeOver`). Block 2 had one, the win glow keyframes. DELIBERATE CHANGE (update-page-backdrop,
+ * delta 1; proposal.md Impact row `tests/helpers/css.ts` `TRANSLUCENT_TOKENS` 463, comment 459-462): three, the glow and the two backdrops.
  */
-export const TRANSLUCENT_TOKENS: ReadonlySet<string> = new Set(['--color-success-glow']);
+export const TRANSLUCENT_TOKENS: ReadonlySet<string> = new Set(['--color-success-glow', '--color-backdrop-soft', '--color-backdrop-strong']);
 
 /**
  * What is wrong with the FORMAT of the `--color-*` values of a token map: an opaque token must be `#rrggbb`, a translucent one `#rrggbbaa`;
@@ -480,15 +491,52 @@ export function tokenFormatProblems(tokens: Record<string, string>): string[] {
   return problems;
 }
 
-/** WCAG 2 relative luminance of `#rrggbb`. */
-function luminance(hex: string): number {
+/** An sRGB colour as `[r, g, b]`, each channel an integer 0 to 255. */
+export type Rgb = readonly [number, number, number];
+
+/** `#rrggbb` as an rgb triple; refuses everything else, `#rrggbbaa` included (update-page-backdrop). */
+export function rgbTripleOf(hex: string): Rgb {
   const m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex.trim());
   if (m?.[1] === undefined || m[2] === undefined || m[3] === undefined) throw new Error(`not a #rrggbb colour: "${hex}"`);
-  const [r, g, b] = [m[1], m[2], m[3]].map((part) => {
-    const c = Number.parseInt(part, 16) / 255;
+  return [Number.parseInt(m[1], 16), Number.parseInt(m[2], 16), Number.parseInt(m[3], 16)];
+}
+
+/** WCAG 2 relative luminance of an rgb triple (0 to 1). */
+export function relativeLuminance(rgb: Rgb): number {
+  const [r, g, b] = rgb.map((channel) => {
+    const c = channel / 255;
     return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   });
   return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (b ?? 0);
+}
+
+/** WCAG 2 relative luminance of `#rrggbb`. */
+function luminance(hex: string): number {
+  return relativeLuminance(rgbTripleOf(hex));
+}
+
+/**
+ * update-page-backdrop (FR-65, A-57; delta 2 «Effective theme on the document»): a backdrop is checked composited over the page, not as a colour of
+ * its own. The token `#rrggbbaa` laid over the opaque page `#rrggbb`, per channel in sRGB (the values a browser blends for a plain `background-color`,
+ * not linear light): `round(alpha × token + (1 − alpha) × page)`, `alpha` the last byte divided by 255. Throws on anything else (a token without
+ * alpha, a translucent page, an rgb() or short value), so a mistaken call is a loud failure, never a silent pass. `contrastRatio` and `rgbOf` still
+ * refuse `#rrggbbaa`: a translucent value cannot enter a contrast pair.
+ */
+export function compositeOver(token: string, page: string): Rgb {
+  const m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(token.trim());
+  if (m?.[1] === undefined || m[2] === undefined || m[3] === undefined || m[4] === undefined) {
+    throw new Error(`not a #rrggbbaa colour: "${token}"`);
+  }
+  let base: Rgb;
+  try {
+    base = rgbTripleOf(page);
+  } catch {
+    throw new Error(`the page under a backdrop must be an opaque #rrggbb colour, got "${page}"`);
+  }
+  const alpha = Number.parseInt(m[4], 16) / 255;
+  const own: Rgb = [Number.parseInt(m[1], 16), Number.parseInt(m[2], 16), Number.parseInt(m[3], 16)];
+  const blend = (i: 0 | 1 | 2): number => Math.round(alpha * own[i] + (1 - alpha) * base[i]);
+  return [blend(0), blend(1), blend(2)];
 }
 
 /** The WCAG 2 contrast ratio of two `#rrggbb` colours (1 to 21). */

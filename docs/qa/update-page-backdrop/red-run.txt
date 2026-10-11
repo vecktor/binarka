@@ -1,0 +1,444 @@
+RED RUN for update-page-backdrop, section 2 of tasks.md (tasks 2.1 to 2.6)
+Worktree: /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/jolly-gauss-eb0bb7, branch claude/jolly-gauss-eb0bb7, HEAD 4ee5607, src/ and design/ unchanged.
+Written by the test-engineer. Times are the machine clock (`date`, UTC+5:30 as the user's). The parent confirms this red run; tasks.md is not ticked.
+Lines of the form "Could not parse CSS stylesheet" are jsdom stderr noise (known, see tests/helpers/css.ts header) and are removed from the excerpts.
+
+==============================================================================================================
+SECTION A. Task 2.1: the helper self-tests of tests/play-page-helpers.test.ts against the OLD tests/helpers/css.ts (red), then against the new one (green)
+==============================================================================================================
+Order of work: tests/play-page-helpers.test.ts was edited first (DESIGN_TOKENS and DARK_SAMPLE gain the two backdrop rows, 27 names, three translucent
+tokens, the translucent reader on the backdrops, PALETTE_LIGHT/PALETTE_DARK pinned to the fixtures, and the new self-tests of compositeOver,
+rgbTripleOf and relativeLuminance that pin the four composites of the spec). tests/helpers/css.ts was NOT touched until this run was saved.
+
+$ npx vitest run tests/play-page-helpers.test.ts      (against the untouched tests/helpers/css.ts)
+date: Sun Oct 11 07:59:17 +0530 2026
+
+ ❯ tests/play-page-helpers.test.ts (127 tests | 13 failed) 201ms
+   ❯ css helper: contrastRatio and rgbOf (7)
+     × the design token values meet every pair (3 for borders, cues and rings, 4.5 for text) 2ms
+     × a translucent token is the foreground or the background of no pair, and contrastProblems reports one that a pair names as not #rrggbb 1ms
+   ❯ css helper: the token reader and the translucent token (update-page-palette) (6)
+     × reads --color-backdrop-soft and --color-backdrop-strong as translucent tokens that no contrast pair uses 1ms
+     × rejects #rrggbbaa for a token the list does not mark translucent, and #rrggbb for the translucent one 1ms
+     × rejects an rgb(), rgba() or short hex value in either kind of token; accepts upper case 2ms
+   ❯ css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop) (7)
+     × composites the four backdrops of the spec over their page, per channel in sRGB 0ms
+     × rounds to the nearest integer (light strong red is 145.6, so 146 and not 145), and alpha ff gives the token, alpha 00 the page 0ms
+     × throws on anything that is not a #rrggbbaa over an opaque #rrggbb, so a mistaken call is loud 0ms
+     × rgbTripleOf reads a #rrggbb and refuses #rrggbbaa, like rgbOf 0ms
+     × relativeLuminance of an rgb triple: white 1, black 0, the two pages and the four composites of the spec 0ms
+     × agrees with contrastRatio: (L1 + 0.05) / (L2 + 0.05) of the luminances is the ratio of the same two colours 0ms
+     × in each set the strong composite is darker than the soft one and both are darker than the page (dark: 1.07 and 1.09 against the page) 0ms
+   ❯ css helper: the dark attribute block is a token set (add-theme-switch, TD finding 8) (8)
+     × the signed light and dark palettes meet every pair, and the focus ring keeps its recorded ratios against the accepted neighbours 1ms
+ ❯ tests/play-page-helpers.test.ts:454:25
+ ❯ tests/play-page-helpers.test.ts:497:44
+ ❯ tests/play-page-helpers.test.ts:630:107
+ ❯ tests/play-page-helpers.test.ts:648:117
+ ❯ tests/play-page-helpers.test.ts:663:7
+ ❯ tests/play-page-helpers.test.ts:693:14
+ ❯ tests/play-page-helpers.test.ts:699:12
+ ❯ tests/play-page-helpers.test.ts:706:81
+ ❯ tests/play-page-helpers.test.ts:715:12
+ ❯ tests/play-page-helpers.test.ts:722:12
+ ❯ ratio tests/play-page-helpers.test.ts:733:43
+ ❯ tests/play-page-helpers.test.ts:736:12
+ ❯ tests/play-page-helpers.test.ts:747:27
+ ❯ tests/play-page-helpers.test.ts:1375:100
+
+Assertion messages (first line of each failure):
+ - css helper: contrastRatio and rgbOf > the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)
+     AssertionError: expected [ '--color-page', …(24) ] to have a length of 27 but got 25
+ - css helper: contrastRatio and rgbOf > a translucent token is the foreground or the background of no pair, and contrastProblems reports one that a pair
+     AssertionError: expected [ '--color-success-glow' ] to deeply equal [ '--color-backdrop-soft', …(2) ]
+ - css helper: the token reader and the translucent token (update-page-palette) > reads --color-backdrop-soft and --color-backdrop-strong as translucent 
+     AssertionError: the three translucent tokens are read without a problem: expected [ …(2) ] to deeply equal []
+ - css helper: the token reader and the translucent token (update-page-palette) > rejects #rrggbbaa for a token the list does not mark translucent, and #
+     AssertionError: --color-backdrop-soft: #46280f: expected '' to match /--color-backdrop-soft.*#46280f/
+ - css helper: the token reader and the translucent token (update-page-palette) > rejects an rgb(), rgba() or short hex value in either kind of token; ac
+     AssertionError: expected [ …(2) ] to deeply equal []
+ - css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop) > composites the four backdrops of the
+     TypeError: compositeOver is not a function
+ - css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop) > rounds to the nearest integer (light
+     TypeError: compositeOver is not a function
+ - css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop) > throws on anything that is not a #rr
+     AssertionError: a token without alpha: expected [Function] to throw error matching /rrggbbaa/ but got '(0 , __vite_ssr_import_4__.compositeO…'
+ - css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop) > rgbTripleOf reads a #rrggbb and refu
+     TypeError: rgbTripleOf is not a function
+ - css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop) > relativeLuminance of an rgb triple: 
+     TypeError: relativeLuminance is not a function
+ - css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop) > agrees with contrastRatio: (L1 + 0.0
+     TypeError: rgbTripleOf is not a function
+ - css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop) > in each set the strong composite is 
+     TypeError: rgbTripleOf is not a function
+ - css helper: the dark attribute block is a token set (add-theme-switch, TD finding 8) > the signed light and dark palettes meet every pair, and the foc
+     AssertionError: the helper holds the dark values of the spec table, backdrops included: expected { '--color-page': '#1a1714', …(24) } to deeply equal { '--color-page': '#1a1714', …(26) }
+
+ Test Files  1 failed (1)
+      Tests  13 failed | 114 passed (127)
+
+Reading of the 13 reds against the old helper:
+  * 6 real assertion failures on the spec's values: TOKEN_NAMES has 25 not 27; TRANSLUCENT_TOKENS is one name not three; the token reader flags
+    `--color-backdrop-strong: #2d190a80` as "not #rrggbb"; an opaque `#46280f` on a backdrop is NOT rejected (the old set does not know the token, so
+    it reads it as opaque); in the "rejects an rgb(), rgba() or short hex ..." test the rgb()/rgba()/short-hex/keyword loop still passes on the old helper
+    (an unknown name falls into the opaque pattern, which refuses them) and the failing line is the last one: the old helper refuses `#rrggbbaa` in upper
+    case (`#46280F38`, `#2D190A80`) on the two backdrops, 2 problems where [] is expected; PALETTE_DARK lacks the two dark rows (the PALETTE_LIGHT line
+    of the first test is behind its first failing assertion and is checked in the green run below).
+  * 6 failures because the export does not exist yet: `TypeError: compositeOver is not a function` (2), `rgbTripleOf is not a function` (3),
+    `relativeLuminance is not a function` (1). That is the honest red of a new export, not an assertion on a value.
+  * 1 failure on an assertion that only matches by accident of the missing export: "throws on anything that is not a #rrggbbaa over an opaque
+    #rrggbb": `expect(() => compositeOver('#46280f', ...)).toThrow(/rrggbbaa/)` gets the TypeError "... is not a function" and its message does not
+    match /rrggbbaa/; it becomes a real check of the thrown message once the export exists.
+  * FORWARD GUARDS, green against the old helper because the fixtures they read gained their rows in the same edit: the assertions at the old
+    lines 1193 (`tokenDeclarations` has 27, parses the fixture), 1232 (`dark?.tokens` equals DARK_SAMPLE) and 1268-1270 (`injectPageStyles(DARK_SAMPLE)`
+    leaves no `var(--color-`). They only bite if DARK_SAMPLE loses its backdrop rows AFTER the port. Checked on a scratch copy (a variant of the
+    test file with the old 25-row DARK_SAMPLE, run against a copy of the repo with the port applied; not in the worktree): 3 failed / 124 passed:
+      - themeTokenSets returns [light, dark]...: AssertionError: expected { '--color-page': '#1a1714', ...(26) } to deeply equal { '--color-page': '#1a1714', ...(24) }
+      - the signed light and dark palettes meet every pair...: AssertionError: the helper holds the dark values of the spec table, backdrops included
+      - withTokensInlined(text, tokens) and injectPageStyles(tokens)...: AssertionError: expected '/* The colour tokens (FR-65, A-57 blo...' not to match /var\(\s*--color-/
+    which is what the Impact table of the proposal says (delta 1).
+
+Then tests/helpers/css.ts was changed (TOKEN_NAMES 27, PALETTE_LIGHT/PALETTE_DARK +2 rows, TRANSLUCENT_TOKENS 3, new exports compositeOver,
+relativeLuminance, rgbTripleOf and the type Rgb; contrastRatio and rgbOf are untouched and still refuse #rrggbbaa) and the same file was re-run:
+$ npx vitest run tests/play-page-helpers.test.ts      (against the changed tests/helpers/css.ts)
+Sun Oct 11 08:00:02 +0530 2026
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/jolly-gauss-eb0bb7
+ Test Files  1 passed (1)
+      Tests  127 passed (127)
+   Start at  08:00:03
+   Duration  912ms (environment 40%, tests 24%, import 21%, transform 16%)
+
+==============================================================================================================
+SECTION B. Guards: new or changed tests that pass today BY DESIGN (the folder marks them GUARD)
+==============================================================================================================
+Unit (tests/play-page-backdrop-stylesheet.test.ts), each marked GUARD in its comment:
+  B1  "... The strong backdrop dims more than the soft one: neither backdrop token is the foreground or the background of any contrast pair"
+      Why: the pair list of tests/helpers/css.ts names no backdrop (a translucent token is never in a pair). It keeps a later edit of CONTRAST_PAIRS
+      from adding one. (The composite/luminance half of the same scenario is a separate test and is red.)
+  B2  "The backdrop fade is not ported: no ::backdrop rule declares transition, transition-property or animation, and none is inside
+      @media (prefers-reduced-motion: no-preference)"
+      Why: the stylesheet has no fade today and the scenario pins its absence (design.md decision 3). Non-vacuous: asserts backdropRules() found > 0 rules.
+  B3  "The backdrop fade is not ported: no @starting-style rule names a ::backdrop"
+      Why: the stylesheet has no @starting-style. Read from the raw text with a brace matcher (the CSSOM walk throws on that at-rule).
+  B4  "the fade readers are not vacuous ..." (self-check of B2 and B3 on literal samples that DO have a transition, an animation, a reduced-motion
+      wrapper, a @starting-style, the nested form, and on a comment/unrelated rule that must not match). Green before and after the port.
+E2E (e2e/nfr-14-backdrop.spec.ts):
+  B5  "@trace NFR-14 the sampling is declared: surfaces, schemes and widths; coverage sampled, with the 10 cases of the spec"
+      Why: it reads this file's own matrix (10 cases, declared dimensions, no claim beyond a sample); it does not touch the page.
+Output excerpt for B1-B4 (fresh run, so that the passing lines are printed; the C run's default reporter prints failures only):
+$ npx vitest run tests/play-page-backdrop-stylesheet.test.ts --reporter=verbose
+date: Sun Oct 11 08:14:19 +0530 2026
+ × tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 Each surface takes its backdrop token: rules soft (strong from 64rem), setup s
+ × tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 Each surface takes its backdrop token: the four plain rules are declared once 
+ × tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 No backdrop rule sets opacity: no opacity, no colour literal, no color-mix(, o
+ × tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 The strong backdrop dims more than the soft one: in each token set the strong 
+ ✓ tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 The strong backdrop dims more than the soft one: neither backdrop token is th
+ ✓ tests/play-page-backdrop-stylesheet.test.ts > The backdrop fade is not ported > @trace NFR-14 @trace FR-65 The backdrop fade is not ported: no ::backdrop rule declares transition, transition-property or animation, and none is
+ ✓ tests/play-page-backdrop-stylesheet.test.ts > The backdrop fade is not ported > @trace NFR-14 @trace FR-65 The backdrop fade is not ported: no @starting-style rule names a ::backdrop 0ms
+ ✓ tests/play-page-backdrop-stylesheet.test.ts > The backdrop fade is not ported > the fade readers are not vacuous: they find a transition, an animation, a reduced-motion wrapper and a @starting-style on a backdrop in a sample 
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  4 failed | 4 passed (8)
+(B1-B4 are the four `✓` lines; the four `×` lines are the red tests of section C, [1]-[4]. The C run at 08:09:10 shows the same file as "(8 tests | 4 failed)".)
+B5 excerpt, from the D run at 08:08:33 (section D):
+  ✓   4 [layout] › e2e/nfr-14-backdrop.spec.ts:86:1 › @trace NFR-14 the sampling is declared: surfaces, schemes and widths; coverage sampled, with the 10 cases of the spec (5ms)
+
+Helper self-tests (tests/play-page-helpers.test.ts): all green against the changed helper (section A); the forward guards are the fixture-coupled
+      assertions described in section A. Unchanged and still green by design: "rgbOf and contrastRatio still refuse #rrggbbaa" (old lines 627-629, the
+      folder's "keeps refusing #rrggbbaa" guard), plus the added `contrastRatio('#2d190a80', ...)` throw.
+Not guards but green today for another reason, and it is on purpose: the closed-pixel reads of the 10 e2e cases (soft assertions inside the case; green
+      today, see section D), and the per-case "pixel is outside the open surface" assertion (green).
+Everything else new or changed is red today (section C and D).
+
+==============================================================================================================
+SECTION C. Task 2.2, 2.3, 2.4, 2.6: the unit red run against today's page (src/ unchanged)
+==============================================================================================================
+$ npm run test:run
+date: Sun Oct 11 08:09:10 +0530 2026
+baseline before any edit (same command, saved first): Test Files 71 passed (71); Tests 1757 passed (1757)
+
+Failing tests, with the assertion message and the diff the run printed:
+[1]  FAIL  tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 Each surface takes its backdrop token: rules soft (strong from 64rem), setup sheet soft, settings soft, confirm strong
+AssertionError: a rule for .rules:popover-open::backdrop exists in src/ui/style.css: expected 0 to be greater than 0
+
+[2]  FAIL  tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 Each surface takes its backdrop token: the four plain rules are declared once outside any at-rule, the strong rule of the rules panel only inside @media (min-width: 64rem)
+AssertionError: exactly one .rules:popover-open::backdrop rule exists (a missing rule would make "only inside 64rem" vacuously true): expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+[3]  FAIL  tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 No backdrop rule sets opacity: no opacity, no colour literal, no color-mix(, only a backdrop token, and only the five selectors contain ::backdrop
+AssertionError: ::backdrop rules that declare opacity: expected [ '.confirm::backdrop', …(5) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".confirm::backdrop",
++   ".rules::backdrop",
++   ".setup-sheet::backdrop",
++   ".settings::backdrop",
++   ":root[data-theme='dark'] .rules::backdrop, :root[data-theme='dark'] .setup-sheet::backdrop, :root[data-theme='dark'] .settings::backdrop",
++   ":root[data-theme='dark'] .confirm::backdrop",
++ ]
+
+[4]  FAIL  tests/play-page-backdrop-stylesheet.test.ts > The backdrops take the design's translucent tokens (the stylesheet half) > @trace NFR-14 @trace FR-65 The strong backdrop dims more than the soft one: in each token set the strong composite is darker than the soft one, which is darker than the page
+AssertionError: --color-backdrop-soft is declared in the light token set
+
+[5]  FAIL  tests/play-page-layout-geometry.test.ts > @trace NFR-14 @trace FR-65 the main column takes the G2 palette > Colours are the G2 palette: the light and dark token sets equal the 27 tokens and values of the table (25 of block 2, 2 backdrops), and no other --color-* is declared
+AssertionError: expected { '--color-page': '#f7f3ea', …(24) } to deeply equal { '--color-page': '#f7f3ea', …(26) }
+
+- Expected
++ Received
+
+@@ -1,8 +1,6 @@
+  {
+-   "--color-backdrop-soft": "#46280f38",
+-   "--color-backdrop-strong": "#2d190a80",
+    "--color-cell-bg": "#fffdf8",
+    "--color-cell-border": "#847b6d",
+    "--color-control-bg": "#fffdf8",
+    "--color-control-border": "#8c8374",
+    "--color-entry-text": "#a8400c",
+
+[6]  FAIL  tests/play-page-level-stylesheet.test.ts > @trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements and the buttons are buttons > The existing stylesheet scans still pass
+AssertionError: --color-backdrop-soft is declared once in :root: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+[7]  FAIL  tests/play-page-palette-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the G2 palette) > Every declared token is bound by a rule: each of the 27 tokens is referenced by a declaration outside :root
+AssertionError: tokens no declaration outside :root references: expected [ '--color-backdrop-soft', …(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "--color-backdrop-soft",
++   "--color-backdrop-strong",
++ ]
+
+[8]  FAIL  tests/play-page-stylesheet.test.ts > the colours are tokens (FR-65) > @trace FR-65 Tokens exist and are literal: the 27 names of the G2 palette, each declared once in the top-level :root with the light value of the list
+AssertionError: --color-backdrop-soft is declared once in the top-level :root: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+[9]  FAIL  tests/play-page-theme-stylesheet.test.ts > Effective theme on the document (the backdrops) > In dark every backdrop dims the page
+AssertionError: each of the five backdrops is a translucent token of the dark set whose composite over the dark --color-page is darker than it: expected [ …(5) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".rules::backdrop: --color-text (#f1ede4) in the dark set is not a translucent token (#rrggbbaa)",
++   ".rules:popover-open::backdrop: no rule inside @media (min-width: 64rem) in src/ui/style.css",
++   ".setup-sheet::backdrop: --color-text (#f1ede4) in the dark set is not a translucent token (#rrggbbaa)",
++   ".settings::backdrop: --color-text (#f1ede4) in the dark set is not a translucent token (#rrggbbaa)",
++   ".confirm::backdrop: --color-text (#f1ede4) in the dark set is not a translucent token (#rrggbbaa)",
++ ]
+
+[10]  FAIL  tests/play-page-theme-stylesheet.test.ts > Effective theme on the document (the backdrops) > In light every backdrop dims the page
+AssertionError: each of the five backdrops is a translucent token of the light set whose composite over the light --color-page is darker than it: expected [ …(5) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   ".rules::backdrop: --color-text (#1e2126) in the light set is not a translucent token (#rrggbbaa)",
++   ".rules:popover-open::backdrop: no rule inside @media (min-width: 64rem) in src/ui/style.css",
++   ".setup-sheet::backdrop: --color-text (#1e2126) in the light set is not a translucent token (#rrggbbaa)",
++   ".settings::backdrop: --color-text (#1e2126) in the light set is not a translucent token (#rrggbbaa)",
++   ".confirm::backdrop: --color-text (#1e2126) in the light set is not a translucent token (#rrggbbaa)",
++ ]
+
+[11]  FAIL  tests/play-page-theme-stylesheet.test.ts > Borders, cues and focus rings have enough contrast (the dark set) > Tokens exist and are literal: the dark block declares each of the 27 names once with the dark value of the list, so each token has exactly two value sets
+AssertionError: --color-backdrop-soft is declared once in :root[data-theme="dark"]: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+Totals lines, verbatim:
+ Test Files  6 failed | 66 passed (72)
+      Tests  11 failed | 1763 passed (1774)
+exit code: exit 1
+
+Which delta/proposal row each red test comes from (all fail on an AssertionError, none on an import, syntax or type error; `npm run build` incl. tsc over
+tests/ and e2e/ is clean, `npm run lint` is clean):
+  [1]-[4] tests/play-page-backdrop-stylesheet.test.ts (new, task 2.4)         ADDED requirement, scenarios: the map, plain rules once + strong rule only in 64rem,
+                                                                               no opacity / literal / other token / only five selectors, strong darker than soft
+  [5]     tests/play-page-layout-geometry.test.ts:9-74 (2.2)                  delta 3 «Colours are the G2 palette» (27 tokens)
+  [6]     tests/play-page-level-stylesheet.test.ts:212-223 (2.2)              delta 1 («27 tokens», «no 28th»)
+  [7]     tests/play-page-palette-stylesheet.test.ts:67 (2.2)                 delta 1 «Every declared token is bound by a rule» (title only; body reads TOKEN_NAMES)
+  [8]     tests/play-page-stylesheet.test.ts:85-102 (2.2)                     delta 1 «Tokens exist and are literal» (top-level :root)
+  [9],[10] tests/play-page-theme-stylesheet.test.ts:63-87 (2.3)               delta 2 «In dark every backdrop dims the page» (restated) and «In light ...» (added)
+  [11]    tests/play-page-theme-stylesheet.test.ts:94-107 (2.2)               delta 1 «Tokens exist and are literal» (dark block)
+No previously green unrelated test went red: the 11 failures are exactly the new and the changed tests above; the other 1763 tests, including every
+test of the 66 other files, pass (baseline 1757 + 17 new tests = 1774 total).
+Extra (scratch evidence, not in the worktree): the same 7 test files and all others run against a COPY of the repo with the port of tasks 3.1 to 3.4
+applied (two tokens in both sets, the four ::backdrop rules on the tokens with no opacity, the 64rem strong rule, the dark overrides deleted):
+Test Files 72 passed (72), Tests 1774 passed (1774). So the tests are satisfiable by the specified port and are not over-constrained.
+
+==============================================================================================================
+SECTION D. Task 2.5, 2.6: e2e/nfr-14-backdrop.spec.ts against today's built page (closed pixels green, open pixels red)
+==============================================================================================================
+date (prep): Sun Oct 11 08:08:26 +0530 2026
+$ npm run build
+> tsc --noEmit && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 23 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-3mn1IRW2.css  19.29 kB │ gzip:  4.15 kB
+dist/assets/index-DGo5q3m_.js   34.61 kB │ gzip: 12.60 kB
+
+✓ built in 32ms
+
+$ lsof -nP -iTCP:4173 -sTCP:LISTEN
+(exit 1)
+$ lsof -nP -iTCP:4174 -sTCP:LISTEN
+(exit 1)
+$ lsof -nP -iTCP:4176 -sTCP:LISTEN
+(exit 1)
+$ lsof -nP -iTCP:4177 -sTCP:LISTEN
+(exit 1)
+
+$ npx playwright test --project=layout e2e/nfr-14-backdrop.spec.ts
+date (run): Sun Oct 11 08:08:33 +0530 2026
+Running 11 tests using 5 workers
+  ✓   4 [layout] › e2e/nfr-14-backdrop.spec.ts:86:1 › @trace NFR-14 the sampling is declared: surfaces, schemes and widths; coverage sampled, with the 10 cases of the spec (5ms)
+  ✘   1 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light setup 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (320ms)
+  ✘   3 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light settings 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (329ms)
+  ✘   2 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light rules 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it (327ms)
+  ✘   6 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light confirm 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it (324ms)
+  ✘   5 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light rules 375x812: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (335ms)
+  ✘   7 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark setup 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (268ms)
+  ✘  11 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark rules 375x812: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (290ms)
+  ✘   8 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark settings 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it (281ms)
+  ✘   9 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark confirm 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it (296ms)
+  ✘  10 [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark rules 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it (298ms)
+  1) [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light rules 375x812: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it 
+    Error: light rules 375x812: the open pixel (2, 2) is rgb(181, 180, 174), the soft backdrop over rgb(247, 243, 234) is rgb(208, 198, 186) within 1 per channel (the closed pixel was rgb(247, 243, 234))
+...
+  10 failed
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light rules 375x812: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light rules 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light setup 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light settings 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › light scheme › @trace NFR-14 @trace FR-65 light confirm 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark rules 375x812: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark rules 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark setup 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark settings 1024x768: the closed pixel is the page colour and the open pixel is the soft backdrop composited over it 
+    [layout] › e2e/nfr-14-backdrop.spec.ts:221:7 › dark scheme › @trace NFR-14 @trace FR-65 dark confirm 1024x768: the closed pixel is the page colour and the open pixel is the strong backdrop composited over it 
+  1 passed (5.9s)
+exit 1
+
+Values read per case (from the `pixels` annotation of each test, taken from the json report; pixel is (2, 2), the first corner outside every page content box):
+  PASSED  @trace NFR-14 the sampling is declared: surfaces, schemes and widths; coverage sampled, with the 10 cases of t
+  light rules 375x812: pixel (2, 2); closed rgb(247, 243, 234); open rgb(181, 180, 174); want rgb(208, 198, 186) (the soft backdrop over the page rgb(247, 243, 234)); ::backdrop rgb(30, 33, 38), opacity 0.3 -> rgb(182, 180, 175)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      light rules 375x812: the open pixel (2, 2) is rgb(181, 180, 174), the soft backdrop over rgb(247, 243, 234) is rgb(208, 198, 186) within 1 per channel (the closed pixel was rgb(247, 243, 234))
+      light rules 375x812: the computed ::backdrop (rgb(30, 33, 38), opacity 0.3) over rgb(247, 243, 234) is rgb(182, 180, 175), wanted rgb(208, 198, 186) within 1 per channel
+  light rules 1024x768: pixel (2, 2); closed rgb(247, 243, 234); open rgb(181, 180, 174); want rgb(146, 134, 122) (the strong backdrop over the page rgb(247, 243, 234)); ::backdrop rgb(30, 33, 38), opacity 0.3 -> rgb(182, 180, 175)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      light rules 1024x768: the open pixel (2, 2) is rgb(181, 180, 174), the strong backdrop over rgb(247, 243, 234) is rgb(146, 134, 122) within 1 per channel (the closed pixel was rgb(247, 243, 234))
+      light rules 1024x768: the computed ::backdrop (rgb(30, 33, 38), opacity 0.3) over rgb(247, 243, 234) is rgb(182, 180, 175), wanted rgb(146, 134, 122) within 1 per channel
+  light setup 1024x768: pixel (2, 2); closed rgb(247, 243, 234); open rgb(181, 180, 174); want rgb(208, 198, 186) (the soft backdrop over the page rgb(247, 243, 234)); ::backdrop rgb(30, 33, 38), opacity 0.3 -> rgb(182, 180, 175)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      light setup 1024x768: the open pixel (2, 2) is rgb(181, 180, 174), the soft backdrop over rgb(247, 243, 234) is rgb(208, 198, 186) within 1 per channel (the closed pixel was rgb(247, 243, 234))
+      light setup 1024x768: the computed ::backdrop (rgb(30, 33, 38), opacity 0.3) over rgb(247, 243, 234) is rgb(182, 180, 175), wanted rgb(208, 198, 186) within 1 per channel
+  light settings 1024x768: pixel (2, 2); closed rgb(247, 243, 234); open rgb(181, 180, 174); want rgb(208, 198, 186) (the soft backdrop over the page rgb(247, 243, 234)); ::backdrop rgb(30, 33, 38), opacity 0.3 -> rgb(182, 180, 175)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      light settings 1024x768: the open pixel (2, 2) is rgb(181, 180, 174), the soft backdrop over rgb(247, 243, 234) is rgb(208, 198, 186) within 1 per channel (the closed pixel was rgb(247, 243, 234))
+      light settings 1024x768: the computed ::backdrop (rgb(30, 33, 38), opacity 0.3) over rgb(247, 243, 234) is rgb(182, 180, 175), wanted rgb(208, 198, 186) within 1 per channel
+  light confirm 1024x768: pixel (2, 2); closed rgb(247, 243, 234); open rgb(150, 148, 145); want rgb(146, 134, 122) (the strong backdrop over the page rgb(247, 243, 234)); ::backdrop rgb(30, 33, 38), opacity 0.45 -> rgb(149, 149, 146)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      light confirm 1024x768: the open pixel (2, 2) is rgb(150, 148, 145), the strong backdrop over rgb(247, 243, 234) is rgb(146, 134, 122) within 1 per channel (the closed pixel was rgb(247, 243, 234))
+      light confirm 1024x768: the computed ::backdrop (rgb(30, 33, 38), opacity 0.45) over rgb(247, 243, 234) is rgb(149, 149, 146), wanted rgb(146, 134, 122) within 1 per channel
+  dark rules 375x812: pixel (2, 2); closed rgb(26, 23, 20); open rgb(26, 23, 20); want rgb(18, 15, 12) (the soft backdrop over the page rgb(26, 23, 20)); ::backdrop rgb(26, 23, 20), opacity 0.6 -> rgb(26, 23, 20)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      dark rules 375x812: the open pixel (2, 2) is rgb(26, 23, 20), the soft backdrop over rgb(26, 23, 20) is rgb(18, 15, 12) within 1 per channel (the closed pixel was rgb(26, 23, 20))
+      dark rules 375x812: the computed ::backdrop (rgb(26, 23, 20), opacity 0.6) over rgb(26, 23, 20) is rgb(26, 23, 20), wanted rgb(18, 15, 12) within 1 per channel
+  dark rules 1024x768: pixel (2, 2); closed rgb(26, 23, 20); open rgb(26, 23, 20); want rgb(15, 12, 9) (the strong backdrop over the page rgb(26, 23, 20)); ::backdrop rgb(26, 23, 20), opacity 0.6 -> rgb(26, 23, 20)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      dark rules 1024x768: the open pixel (2, 2) is rgb(26, 23, 20), the strong backdrop over rgb(26, 23, 20) is rgb(15, 12, 9) within 1 per channel (the closed pixel was rgb(26, 23, 20))
+      dark rules 1024x768: the computed ::backdrop (rgb(26, 23, 20), opacity 0.6) over rgb(26, 23, 20) is rgb(26, 23, 20), wanted rgb(15, 12, 9) within 1 per channel
+  dark setup 1024x768: pixel (2, 2); closed rgb(26, 23, 20); open rgb(26, 23, 20); want rgb(18, 15, 12) (the soft backdrop over the page rgb(26, 23, 20)); ::backdrop rgb(26, 23, 20), opacity 0.6 -> rgb(26, 23, 20)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      dark setup 1024x768: the open pixel (2, 2) is rgb(26, 23, 20), the soft backdrop over rgb(26, 23, 20) is rgb(18, 15, 12) within 1 per channel (the closed pixel was rgb(26, 23, 20))
+      dark setup 1024x768: the computed ::backdrop (rgb(26, 23, 20), opacity 0.6) over rgb(26, 23, 20) is rgb(26, 23, 20), wanted rgb(18, 15, 12) within 1 per channel
+  dark settings 1024x768: pixel (2, 2); closed rgb(26, 23, 20); open rgb(26, 23, 20); want rgb(18, 15, 12) (the soft backdrop over the page rgb(26, 23, 20)); ::backdrop rgb(26, 23, 20), opacity 0.6 -> rgb(26, 23, 20)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      dark settings 1024x768: the open pixel (2, 2) is rgb(26, 23, 20), the soft backdrop over rgb(26, 23, 20) is rgb(18, 15, 12) within 1 per channel (the closed pixel was rgb(26, 23, 20))
+      dark settings 1024x768: the computed ::backdrop (rgb(26, 23, 20), opacity 0.6) over rgb(26, 23, 20) is rgb(26, 23, 20), wanted rgb(18, 15, 12) within 1 per channel
+  dark confirm 1024x768: pixel (2, 2); closed rgb(26, 23, 20); open rgb(26, 23, 20); want rgb(15, 12, 9) (the strong backdrop over the page rgb(26, 23, 20)); ::backdrop rgb(26, 23, 20), opacity 0.7 -> rgb(26, 23, 20)
+    status failed; closed-pixel assertion: PASSED (no error names it); errors raised: 2
+      dark confirm 1024x768: the open pixel (2, 2) is rgb(26, 23, 20), the strong backdrop over rgb(26, 23, 20) is rgb(15, 12, 9) within 1 per channel (the closed pixel was rgb(26, 23, 20))
+      dark confirm 1024x768: the computed ::backdrop (rgb(26, 23, 20), opacity 0.7) over rgb(26, 23, 20) is rgb(26, 23, 20), wanted rgb(15, 12, 9) within 1 per channel
+
+Reading:
+  * closed pixel: rgb(247, 243, 234) in all 5 light cases, rgb(26, 23, 20) in all 5 dark cases = the page colour of the scheme -> GREEN in 10 of 10.
+  * open pixel, light: (181,180,174) for rules (both widths), setup and settings (today: --color-text at opacity 0.3), (150,148,145) for confirm (opacity 0.45);
+    the wanted composites are (208,198,186) soft and (146,134,122) strong -> RED: soft off by 12 to 27 per channel, rules from 64rem (strong) by 35 to 52,
+    confirm (strong) by 4 to 23.
+  * open pixel, dark: (26,23,20) = the page itself in all 5 cases (today's dark override paints --color-page over --color-page); wanted (18,15,12) soft,
+    (15,12,9) strong -> RED, off by 8 to 11 per channel. design.md said the same ("In dark that dim is a no-op").
+  * the second assertion (computed ::backdrop) is red in the same 10 cases and gives the same composite as the pixel within 1 per channel
+    (e.g. light rules: computed rgb(30, 33, 38) at opacity 0.3 -> (182,180,175), pixel (181,180,174)), so the two instruments agree.
+  * the closed-pixel guard and the "pixel is outside the open surface" assertion never fired.
+
+SPIKE (task 2.5): getComputedStyle(el, '::backdrop') IS readable in Chromium (Playwright's Desktop Chrome) for a popover (.rules, .setup-sheet, .settings
+via :popover-open) and for the <dialog> (.confirm, [open]): it returns the backdrop's own background-color and opacity (today: rgb(30, 33, 38) with opacity
+0.3 / 0.45 in light, rgb(26, 23, 20) with 0.6 / 0.7 in dark). It is therefore a SECOND assertion in every case (never the only one); after the port it must
+read the token's rgba (alpha serialised to 2 decimals, which the 1 per channel tolerance absorbs) and opacity 1.
+Scratch evidence for the green side (a copy of the repo with the port applied; not in the worktree): `npx playwright test --project=layout
+e2e/nfr-14-backdrop.spec.ts e2e/nfr-14-palette.spec.ts e2e/nfr-14-layout-geometry.spec.ts` -> 76 passed, so the 10 cases are satisfiable by the port and the
+palette and geometry specs stay green with it.
+Side effect to know about: the Playwright json reporter of playwright.config.ts rewrites the TRACKED file docs/qa/e2e-report.json on every run; I
+saved the run's report in the scratchpad and restored the tracked file with `git checkout -- docs/qa/e2e-report.json` (git status shows it unchanged).
+After the run `lsof -nP -iTCP:4173 -sTCP:LISTEN` shows nothing (the webServer was torn down).
+
+## Parent's confirmation (task 2.6)
+
+The parent session re-ran `npm run test:run` on the same tree (src/ unchanged; `git status` shows only tests, e2e, docs and the change folder) shortly before 2026-10-11 08:16 +0530, when this section was written. Its totals and failing set equal section C:
+```
+      Tests  11 failed | 1763 passed (1774)
+ Test Files  6 failed | 66 passed (72)
+   4  FAIL  tests/play-page-backdrop-stylesheet.test.ts
+   1  FAIL  tests/play-page-layout-geometry.test.ts
+   1  FAIL  tests/play-page-level-stylesheet.test.ts
+   1  FAIL  tests/play-page-palette-stylesheet.test.ts
+   1  FAIL  tests/play-page-stylesheet.test.ts
+   3  FAIL  tests/play-page-theme-stylesheet.test.ts
+```
+All 11 failures are AssertionError (checked: `grep -c AssertionError` below), none an import, syntax or type error:
+```
+11
+```
+The e2e red (section D) was not re-run by the parent; its record is the test-engineer's run above.
+
+## Disclosure: the test-engineer's scratch green check and two later edits
+The test-engineer reported (in its hand-back, not in a file) these steps:
+- It applied the port of tasks 3.1 to 3.4 to a copy of the repo in the session scratchpad, never in the worktree. On that copy the unit suite passed 1774 of 1774 and the three nfr-14 e2e specs passed 76 of 76.
+- After that check it made two small edits in the worktree: a message string in e2e/nfr-14-backdrop.spec.ts that matched itself, and an error-message literal in tests/play-page-theme-stylesheet.test.ts. It then re-ran the unit suite (after both edits) and the e2e (after the first).
+- The parent's red confirmation above came AFTER both edits; the file times are 08:06:46 and 08:08:16, before 08:16. So red-first holds on the committed tree: the tests were seen red against the unchanged src/ in their final form.

@@ -23,12 +23,15 @@ import {
   PALETTE_DARK,
   TOKEN_NAMES,
   TRANSLUCENT_TOKENS,
+  compositeOver,
   contrastRatio,
   darkRootRules,
   declarationsFor,
   lightRootRules,
   readStyleText,
   readStyles,
+  relativeLuminance,
+  rgbTripleOf,
   rulesWithSelector,
   themeTokenSets,
 } from './helpers/css';
@@ -63,28 +66,89 @@ describe('Effective theme on the document (the stylesheet half)', () => {
 });
 
 // Review-gate fix round (autonomy-log row 129): the delta scenario «In dark every backdrop dims the page» of «Effective theme on the document».
+//
+// update-page-backdrop DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 2 «Effective theme on the document», scenarios «In dark every backdrop dims the page»
+// (restated) and «In light every backdrop dims the page» (added); proposal.md Impact row `tests/play-page-theme-stylesheet.test.ts:63-87`): the old
+// check took `contrastRatio(colour, '#ffffff')` of the token a backdrop rule names, which throws on a translucent `#rrggbbaa` value. A backdrop is a
+// translucent token (A-57), so it is checked COMPOSITED over the page (FR-65): the five backdrop rules (`.rules::backdrop`,
+// `.rules:popover-open::backdrop` inside `@media (min-width: 64rem)`, `.setup-sheet::backdrop`, `.settings::backdrop`, `.confirm::backdrop`) are resolved
+// to a token of the set, the token must be `#rrggbbaa`, its composite over the set's `--color-page` (`compositeOver`: per channel in sRGB, rounded) must
+// have a lower relative luminance than the page, and the composites are the spec's; in dark the stylesheet has no `:root[data-theme…] …::backdrop` rule.
+interface Backdrop {
+  selector: string;
+  /** a rule that must sit inside this media prelude (jsdom normalises it to `@media (min-width: 64rem)`) */
+  media?: RegExp;
+}
+const BACKDROPS: Backdrop[] = [
+  { selector: '.rules::backdrop' },
+  { selector: '.rules:popover-open::backdrop', media: /^@media \(min-width: 64rem\)$/ },
+  { selector: '.setup-sheet::backdrop' },
+  { selector: '.settings::backdrop' },
+  { selector: '.confirm::backdrop' },
+];
+
+/** What is wrong with the five backdrops in a token set, and the composite of each over that set's page (`rgb(r, g, b)`), in the order of `BACKDROPS`. */
+function backdropsOver(parsed: ParsedStyles, set: TokenSet): { problems: string[]; composites: string[] } {
+  const problems: string[] = [];
+  const composites: string[] = [];
+  const page = hexOf(set, '--color-page');
+  const pageLuminance = relativeLuminance(rgbTripleOf(page));
+  for (const { selector, media } of BACKDROPS) {
+    const rules = rulesWithSelector(parsed, selector).filter((rule) => media === undefined || rule.context.some((c) => media.test(c)));
+    if (rules.length === 0) {
+      problems.push(`${selector}: no rule${media === undefined ? '' : ' inside @media (min-width: 64rem)'} in src/ui/style.css`);
+      continue;
+    }
+    const values = rules.flatMap((rule) => rule.declarations.filter((d) => d.property === 'background-color').map((d) => d.value));
+    const value = values[values.length - 1];
+    const name = /^var\(\s*(--color-[\w-]+)\s*\)$/.exec(value ?? '')?.[1];
+    if (name === undefined) {
+      problems.push(`${selector}: background-color is not a single var(--color-...), got ${String(value)}`);
+      continue;
+    }
+    const colour = set.tokens[name];
+    if (colour === undefined || !/^#[0-9a-f]{8}$/i.test(colour)) {
+      problems.push(`${selector}: ${name} (${String(colour)}) in the ${set.label} set is not a translucent token (#rrggbbaa)`);
+      continue;
+    }
+    const composite = compositeOver(colour, page);
+    composites.push(`rgb(${composite.join(', ')})`);
+    const luminance = relativeLuminance(composite);
+    if (!(luminance < pageLuminance)) {
+      problems.push(`${selector}: ${name} over ${page} is rgb(${composite.join(', ')}), luminance ${luminance.toFixed(4)}, not lower than the page's ${pageLuminance.toFixed(4)}`);
+    }
+  }
+  return { problems, composites };
+}
+
 describe('Effective theme on the document (the backdrops)', () => {
   it('In dark every backdrop dims the page', () => {
     const parsed = readStyles();
     const [, dark] = themeTokenSets(parsed);
     expect.assert(dark !== undefined, 'the dark token set exists');
-    const page = dark.tokens['--color-page'];
-    expect.assert(page !== undefined, 'the dark set has --color-page');
-    for (const host of ['.rules', '.setup-sheet', '.settings', '.confirm']) {
-      const darkSelector = new RegExp(`^:root\\[data-theme=["']dark["']\\] ${host.replace('.', '\\.')}::backdrop$`);
-      const overrides = parsed.rules.filter((rule) => rule.context.length === 0 && rule.selectors.some((sel) => darkSelector.test(sel)));
-      const rules = overrides.length > 0 ? overrides : rulesWithSelector(parsed, `${host}::backdrop`);
-      const values = rules.flatMap((rule) => rule.declarations.filter((d) => d.property === 'background-color').map((d) => d.value));
-      const value = values[values.length - 1];
-      const name = /^var\(\s*(--color-[\w-]+)\s*\)$/.exec(value ?? '')?.[1];
-      expect.assert(name !== undefined, `${host}::backdrop takes its background from a token in dark, got ${String(value)}`);
-      const colour = dark.tokens[name];
-      expect.assert(colour !== undefined, `${name} is in the dark set`);
-      // no lighter than the page: at least the page's contrast against white
-      expect(contrastRatio(colour, '#ffffff'), `${host}::backdrop (${name} = ${colour}) is no lighter than the dark --color-page ${page}`).toBeGreaterThanOrEqual(
-        contrastRatio(page, '#ffffff'),
-      );
-    }
+    const { problems, composites } = backdropsOver(parsed, dark);
+    expect(problems, 'each of the five backdrops is a translucent token of the dark set whose composite over the dark --color-page is darker than it').toEqual([]);
+    // the page `#1a1714` has luminance 0.0088; the soft composite rgb(18, 15, 12) 0.0050, the strong rgb(15, 12, 9) 0.0038
+    expect([...new Set(composites)].sort(), 'the composites are the soft and the strong one of the spec').toEqual(['rgb(15, 12, 9)', 'rgb(18, 15, 12)']);
+    expect(relativeLuminance(rgbTripleOf(hexOf(dark, '--color-page'))), 'the dark --color-page').toBeCloseTo(0.0088, 4);
+    expect(relativeLuminance([18, 15, 12])).toBeCloseTo(0.005, 4);
+    expect(relativeLuminance([15, 12, 9])).toBeCloseTo(0.0038, 4);
+    // the dark values come from the token set: no rule sets a ::backdrop colour for the dark theme only
+    const overrides = parsed.rules.flatMap((rule) => rule.selectors.filter((sel) => sel.startsWith(':root[data-theme') && sel.includes('::backdrop')));
+    expect(overrides, 'no selector that starts with :root[data-theme and contains ::backdrop').toEqual([]);
+  });
+
+  it('In light every backdrop dims the page', () => {
+    const parsed = readStyles();
+    const [light] = themeTokenSets(parsed);
+    expect.assert(light !== undefined, 'the light token set exists');
+    const { problems, composites } = backdropsOver(parsed, light);
+    expect(problems, 'each of the five backdrops is a translucent token of the light set whose composite over the light --color-page is darker than it').toEqual([]);
+    // the page `#f7f3ea` has luminance 0.8982; the soft composite rgb(208, 198, 186) 0.5734, the strong rgb(146, 134, 122) 0.2457
+    expect([...new Set(composites)].sort(), 'the composites are the soft and the strong one of the spec').toEqual(['rgb(146, 134, 122)', 'rgb(208, 198, 186)']);
+    expect(relativeLuminance(rgbTripleOf(hexOf(light, '--color-page'))), 'the light --color-page').toBeCloseTo(0.8982, 4);
+    expect(relativeLuminance([208, 198, 186])).toBeCloseTo(0.5734, 4);
+    expect(relativeLuminance([146, 134, 122])).toBeCloseTo(0.2457, 4);
   });
 });
 
@@ -92,10 +156,13 @@ describe('Borders, cues and focus rings have enough contrast (the dark set)', ()
   // update-page-palette DELIBERATE CHANGE (FR-65, A-51, A-57; delta «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and
   // are literal», proposal.md Impact row `tests/play-page-theme-stylesheet.test.ts:90-100`): "the dark block redefines the 13 tokens and adds none"
   // becomes every token of the list of 25, each once, with the dark value of the list, `#rrggbbaa` for the translucent one only.
-  it('Tokens exist and are literal: the dark block declares each of the 25 names once with the dark value of the list, so each token has exactly two value sets', () => {
+  // update-page-backdrop DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «Tokens exist
+  // and are literal», proposal.md Impact row `tests/play-page-theme-stylesheet.test.ts:94-107`, comment 94-95 says "25"): the dark block declares the
+  // 27 names of the list and adds none; `#rrggbbaa` for the three translucent tokens only.
+  it('Tokens exist and are literal: the dark block declares each of the 27 names once with the dark value of the list, so each token has exactly two value sets', () => {
     const parsed = readStyles();
     expect(darkRootRules(parsed).length, 'a top-level :root[data-theme="dark"] rule exists').toBe(1);
-    expect(TOKEN_NAMES).toHaveLength(25);
+    expect(TOKEN_NAMES).toHaveLength(27);
     for (const name of TOKEN_NAMES) {
       const declarations = parsed.darkTokenDeclarations.filter((d) => d.property === name);
       expect(declarations, `${name} is declared once in :root[data-theme="dark"]`).toHaveLength(1);
@@ -104,7 +171,7 @@ describe('Borders, cues and focus rings have enough contrast (the dark set)', ()
         TRANSLUCENT_TOKENS.has(name) ? /^#[0-9a-f]{8}$/i : /^#[0-9a-f]{6}$/i,
       );
     }
-    expect(parsed.darkTokenDeclarations.map((d) => d.property).sort(), 'the dark block redefines the 25 tokens and adds none').toEqual([...TOKEN_NAMES].sort());
+    expect(parsed.darkTokenDeclarations.map((d) => d.property).sort(), 'the dark block redefines the 27 tokens and adds none').toEqual([...TOKEN_NAMES].sort());
     expect(themeTokenSets(parsed).map((set) => set.label), 'two value sets').toEqual(['light', 'dark']);
   });
 

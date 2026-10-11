@@ -210,7 +210,10 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     // update-page-palette DELIBERATE CHANGE (FR-65, A-57; delta «The summary and level buttons set their own colours», scenario «The existing
     // stylesheet scans still pass», proposal.md Impact row `tests/play-page-level-stylesheet.test.ts:206-219`): the count of 13 and the "no 14th
     // token" scan become the list of 25 tokens of «Borders, cues and focus rings have enough contrast», each declared once in :root and in the dark block.
-    expect(TOKEN_NAMES, 'the 25 tokens of the list').toHaveLength(25);
+    // update-page-backdrop DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and
+    // are literal», proposal.md Impact row `tests/play-page-level-stylesheet.test.ts:212-223`): "the 25 tokens" and "no 26th colour token" become 27 and
+    // "no 28th" (the two backdrop tokens are added to the list).
+    expect(TOKEN_NAMES, 'the 27 tokens of the list').toHaveLength(27);
     for (const name of TOKEN_NAMES) {
       expect(parsed.tokenDeclarations.filter((d) => d.property === name), `${name} is declared once in :root`).toHaveLength(1);
       expect(parsed.darkTokenDeclarations.filter((d) => d.property === name), `${name} is declared once in :root[data-theme="dark"]`).toHaveLength(1);
@@ -220,7 +223,7 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     expect(scanColours(parsed).shorthands).toEqual([]);
     expect(scanColours(parsed).colourProperties).toEqual([]);
     expect(scanColours(parsed).tokensOutsideRoot).toEqual([]);
-    expect(Object.keys(parsed.tokens).filter((name) => name.startsWith('--color-')).sort(), 'no 26th colour token').toEqual([...TOKEN_NAMES].sort());
+    expect(Object.keys(parsed.tokens).filter((name) => name.startsWith('--color-')).sort(), 'no 28th colour token').toEqual([...TOKEN_NAMES].sort());
     // «Nothing removes the outline»
     expect(text).not.toMatch(/outline\s*:\s*(none|0(px)?(?![\d.]))/i);
     expect(text).not.toMatch(/outline-style\s*:\s*none/i);

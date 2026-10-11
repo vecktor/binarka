@@ -82,8 +82,11 @@ import { VALID_4X4, boardOf, parseBoard } from './helpers/board';
 import {
   CONTRAST_PAIRS,
   DARK_LABEL,
+  PALETTE_DARK,
+  PALETTE_LIGHT,
   TOKEN_NAMES,
   TRANSLUCENT_TOKENS,
+  compositeOver,
   contrastProblems,
   contrastRatio,
   darkRootRules,
@@ -92,7 +95,9 @@ import {
   namedColoursIn,
   parseStyles,
   px,
+  relativeLuminance,
   rgbOf,
+  rgbTripleOf,
   rulesWithSelector,
   injectPageStyles,
   scanColours,
@@ -381,6 +386,9 @@ describe('play-page seed helpers and constants', () => {
  * proves they meet the thresholds.
  * DELIBERATE CHANGE (update-page-palette, delta «Borders, cues and focus rings have enough contrast», proposal.md Impact row
  * `tests/play-page-helpers.test.ts:378-418`): the fixture follows `TOKEN_NAMES`, which grows from the 13 baseline names to the 25 of block 2.
+ * DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
+ * `tests/play-page-helpers.test.ts:378-418`): the fixture follows `TOKEN_NAMES` again, now 27 names: the two backdrop tokens of the spec's table
+ * (light `#46280f38` and `#2d190a80`), both translucent.
  */
 const DESIGN_TOKENS: Record<string, string> = {
   '--color-page': '#f7f3ea',
@@ -408,6 +416,8 @@ const DESIGN_TOKENS: Record<string, string> = {
   '--color-success-glow': '#2f6b3a73',
   '--color-win-text': '#1e2126',
   '--color-focus': '#1e2126',
+  '--color-backdrop-soft': '#46280f38',
+  '--color-backdrop-strong': '#2d190a80',
 };
 
 const tokenCss = (tokens: Record<string, string>): string =>
@@ -437,9 +447,13 @@ describe('css helper: contrastRatio and rgbOf', () => {
   // `tests/play-page-helpers.test.ts:378-418`, `:422` and `:425-428`): the fixture is the 25 names; CONTRAST_PAIRS is the new list
   // (4 cell border + 4 violation cue + 3 hinted cue + 8 focus ring + 1 control border + 14 text = 34); the two spot ratios are the tightest
   // pair of the palette (the cell border on the board plate) and the ring on the cell border.
+  // DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
+  // `tests/play-page-helpers.test.ts:437-442`): the comment and `toHaveLength(25)` become 27 and the key list follows (the pair count stays 34:
+  // a backdrop is in no pair). The two added lines pin the helper's light value table to the fixture, which is the spec's table written out.
   it('the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)', () => {
-    expect(TOKEN_NAMES).toHaveLength(25);
+    expect(TOKEN_NAMES).toHaveLength(27);
     expect(Object.keys(DESIGN_TOKENS).sort()).toEqual([...TOKEN_NAMES].sort());
+    expect(PALETTE_LIGHT, 'the helper holds the light values of the spec table, backdrops included').toEqual(DESIGN_TOKENS);
     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
     expect(contrastRatio('#847b6d', '#e2dbcc')).toBeCloseTo(3.03, 2);
     expect(contrastRatio('#1e2126', '#847b6d')).toBeCloseTo(3.87, 2);
@@ -476,8 +490,11 @@ describe('css helper: contrastRatio and rgbOf', () => {
     ]);
   });
 
+  // DELIBERATE CHANGE (update-page-backdrop, delta 1; proposal.md Impact row `tests/play-page-helpers.test.ts:480`): the set holds three names, the
+  // glow and the two backdrops (the spec: "three tokens are translucent"); the loop below is the clause "a translucent token is never the foreground
+  // or the background of a contrast pair".
   it('a translucent token is the foreground or the background of no pair, and contrastProblems reports one that a pair names as not #rrggbb', () => {
-    expect([...TRANSLUCENT_TOKENS]).toEqual(['--color-success-glow']);
+    expect([...TRANSLUCENT_TOKENS].sort()).toEqual(['--color-backdrop-soft', '--color-backdrop-strong', '--color-success-glow']);
     for (const pair of CONTRAST_PAIRS) {
       expect(TRANSLUCENT_TOKENS.has(pair.fg), `${pair.group}: ${pair.fg}`).toBe(false);
       expect(TRANSLUCENT_TOKENS.has(pair.bg), `${pair.group}: ${pair.bg}`).toBe(false);
@@ -603,21 +620,47 @@ describe('css helper: the token reader and the translucent token (update-page-pa
     expect(CONTRAST_PAIRS.some((pair) => pair.fg === '--color-success-glow' || pair.bg === '--color-success-glow')).toBe(false);
   });
 
+  // DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast», scenario «The token reader accepts a
+  // translucent value only for a translucent token»; proposal.md Impact row `tests/play-page-helpers.test.ts:596-625`): the reader accepts the two
+  // backdrop tokens as translucent too. The sample is the scenario's: the glow and the strong backdrop in one copy (two translucent tokens that no
+  // pair uses), `--color-page: #f7f3ea80` in another (rejected), an rgb() value in either (rejected).
+  it('reads --color-backdrop-soft and --color-backdrop-strong as translucent tokens that no contrast pair uses', () => {
+    const parsed = parseStyles(':root { --color-success-glow: #2f6b3a73; --color-backdrop-strong: #2d190a80; --color-backdrop-soft: #46280f38; }');
+    expect(parsed.tokens).toEqual({ '--color-success-glow': '#2f6b3a73', '--color-backdrop-strong': '#2d190a80', '--color-backdrop-soft': '#46280f38' });
+    expect(tokenFormatProblems(parsed.tokens), 'the three translucent tokens are read without a problem').toEqual([]);
+    for (const name of ['--color-backdrop-soft', '--color-backdrop-strong']) {
+      expect(TRANSLUCENT_TOKENS.has(name), `${name} is translucent`).toBe(true);
+      expect(CONTRAST_PAIRS.some((pair) => pair.fg === name || pair.bg === name), `${name} is in no contrast pair`).toBe(false);
+    }
+    expect(tokenFormatProblems({ '--color-page': '#f7f3ea80' }).join('\n')).toMatch(/--color-page.*#f7f3ea80/);
+    expect(tokenFormatProblems({ '--color-backdrop-strong': 'rgba(45, 25, 10, 0.5)' }).join('\n')).toContain('--color-backdrop-strong');
+    // a backdrop that slipped into a pair would be reported, never computed
+    expect(() => contrastRatio('#2d190a80', '#f7f3ea')).toThrow(/rrggbb/);
+  });
+
   it('rejects #rrggbbaa for a token the list does not mark translucent, and #rrggbb for the translucent one', () => {
     const alpha = parseStyles(':root { --color-page: #f7f3ea80; }');
     expect(tokenFormatProblems(alpha.tokens).join('\n')).toMatch(/--color-page.*#f7f3ea80/);
     const opaqueGlow = parseStyles(':root { --color-success-glow: #2f6b3a; }');
     expect(tokenFormatProblems(opaqueGlow.tokens).join('\n')).toMatch(/--color-success-glow.*#2f6b3a/);
+    // update-page-backdrop (delta 1): the same for each backdrop, an opaque value is rejected
+    for (const name of ['--color-backdrop-soft', '--color-backdrop-strong']) {
+      expect(tokenFormatProblems(parseStyles(`:root { ${name}: #46280f; }`).tokens).join('\n'), `${name}: #46280f`).toMatch(
+        new RegExp(`${name}.*#46280f`),
+      );
+    }
   });
 
   it('rejects an rgb(), rgba() or short hex value in either kind of token; accepts upper case', () => {
     for (const value of ['rgb(47, 107, 58)', 'rgba(47, 107, 58, 0.45)', '#2f6', 'red']) {
-      for (const name of ['--color-page', '--color-success-glow']) {
+      for (const name of ['--color-page', '--color-success-glow', '--color-backdrop-soft', '--color-backdrop-strong']) {
         const parsed = parseStyles(`:root { ${name}: ${value}; }`);
         expect(tokenFormatProblems(parsed.tokens).join('\n'), `${name}: ${value}`).toContain(name);
       }
     }
-    expect(tokenFormatProblems({ '--color-page': '#F7F3EA', '--color-success-glow': '#2F6B3A73' })).toEqual([]);
+    expect(
+      tokenFormatProblems({ '--color-page': '#F7F3EA', '--color-success-glow': '#2F6B3A73', '--color-backdrop-soft': '#46280F38', '--color-backdrop-strong': '#2D190A80' }),
+    ).toEqual([]);
   });
 
   it('judges only --color-* names, so the layout variables are never read as colours', () => {
@@ -627,6 +670,90 @@ describe('css helper: the token reader and the translucent token (update-page-pa
   it('rgbOf and contrastRatio still refuse #rrggbbaa, so a translucent value can never be computed by mistake', () => {
     expect(() => rgbOf('#2f6b3a73')).toThrow(/rrggbb/);
     expect(() => contrastRatio('#2f6b3a73', '#f7f3ea')).toThrow(/rrggbb/);
+  });
+});
+
+// update-page-backdrop (delta 2 «Effective theme on the document», scenario «In dark every backdrop dims the page», and the ADDED requirement «The
+// backdrops take the design's translucent tokens», scenario «The strong backdrop dims more than the soft one»; proposal.md Impact row
+// `tests/play-page-helpers.test.ts` "new"): a backdrop is checked composited over the page, per channel in sRGB, `round(alpha × token + (1 − alpha) ×
+// page)`, with `alpha` the token's last byte divided by 255; the new helpers are `compositeOver` (a `#rrggbbaa` over a `#rrggbb`, as an rgb triple),
+// `relativeLuminance` (of an rgb triple) and `rgbTripleOf` (a `#rrggbb` as a triple). Literal samples only: the four composites are the spec's.
+describe('css helper: the composite of a backdrop over the page and the luminance of an rgb triple (update-page-backdrop)', () => {
+  const LIGHT_PAGE = '#f7f3ea';
+  const DARK_PAGE = '#1a1714';
+  const FOUR = [
+    { name: 'light soft', token: '#46280f38', page: LIGHT_PAGE, rgb: [208, 198, 186], luminance: 0.5734 },
+    { name: 'light strong', token: '#2d190a80', page: LIGHT_PAGE, rgb: [146, 134, 122], luminance: 0.2457 },
+    { name: 'dark soft', token: '#08050273', page: DARK_PAGE, rgb: [18, 15, 12], luminance: 0.005 },
+    { name: 'dark strong', token: '#08050299', page: DARK_PAGE, rgb: [15, 12, 9], luminance: 0.0038 },
+  ] as const;
+
+  it('composites the four backdrops of the spec over their page, per channel in sRGB', () => {
+    for (const { name, token, page, rgb } of FOUR) {
+      expect(compositeOver(token, page), `${name}: ${token} over ${page}`).toEqual(rgb);
+    }
+  });
+
+  it('rounds to the nearest integer (light strong red is 145.6, so 146 and not 145), and alpha ff gives the token, alpha 00 the page', () => {
+    // 128/255 × 45 + 127/255 × 247 = 37129/255 = 145.6: a floor would give 145
+    expect(compositeOver('#2d190a80', LIGHT_PAGE)[0]).toBe(146);
+    expect(compositeOver('#2d190aff', LIGHT_PAGE)).toEqual([45, 25, 10]);
+    expect(compositeOver('#2d190a00', LIGHT_PAGE)).toEqual([247, 243, 234]);
+    expect(compositeOver('#FFFFFF80', '#000000'), 'upper case is read; 128/255 × 255 = 128.0').toEqual([128, 128, 128]);
+  });
+
+  it('throws on anything that is not a #rrggbbaa over an opaque #rrggbb, so a mistaken call is loud', () => {
+    expect(() => compositeOver('#46280f', LIGHT_PAGE), 'a token without alpha').toThrow(/rrggbbaa/);
+    expect(() => compositeOver('#46280f38', '#f7f3ea80'), 'a translucent page').toThrow(/rrggbb/);
+    expect(() => compositeOver('rgba(70, 40, 15, 0.22)', LIGHT_PAGE), 'an rgba() token').toThrow(/rrggbbaa/);
+    expect(() => compositeOver('#4628', LIGHT_PAGE), 'a short hex').toThrow(/rrggbbaa/);
+    expect(() => compositeOver('red', LIGHT_PAGE), 'a keyword').toThrow(/rrggbbaa/);
+    expect(() => compositeOver('#46280f38', 'rgb(247, 243, 234)'), 'an rgb() page').toThrow(/rrggbb/);
+  });
+
+  it('rgbTripleOf reads a #rrggbb and refuses #rrggbbaa, like rgbOf', () => {
+    expect(rgbTripleOf(LIGHT_PAGE)).toEqual([247, 243, 234]);
+    expect(rgbTripleOf('#1A1714')).toEqual([26, 23, 20]);
+    expect(() => rgbTripleOf('#f7f3ea80')).toThrow(/rrggbb/);
+    expect(() => rgbTripleOf('red')).toThrow(/rrggbb/);
+  });
+
+  it('relativeLuminance of an rgb triple: white 1, black 0, the two pages and the four composites of the spec', () => {
+    expect(relativeLuminance([255, 255, 255])).toBeCloseTo(1, 10);
+    expect(relativeLuminance([0, 0, 0])).toBe(0);
+    expect(relativeLuminance(rgbTripleOf(LIGHT_PAGE))).toBeCloseTo(0.8982, 4);
+    expect(relativeLuminance(rgbTripleOf(DARK_PAGE))).toBeCloseTo(0.0088, 4);
+    for (const { name, token, page, luminance } of FOUR) {
+      expect(relativeLuminance(compositeOver(token, page)), name).toBeCloseTo(luminance, 4);
+    }
+  });
+
+  it('agrees with contrastRatio: (L1 + 0.05) / (L2 + 0.05) of the luminances is the ratio of the same two colours', () => {
+    const ratio = (a: string, b: string): number => {
+      const [la, lb] = [relativeLuminance(rgbTripleOf(a)), relativeLuminance(rgbTripleOf(b))];
+      return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+    };
+    expect(ratio('#ffffff', '#000000')).toBeCloseTo(21, 5);
+    expect(ratio('#847b6d', '#e2dbcc')).toBeCloseTo(contrastRatio('#847b6d', '#e2dbcc'), 10);
+    expect(ratio(LIGHT_PAGE, DARK_PAGE)).toBeCloseTo(contrastRatio(LIGHT_PAGE, DARK_PAGE), 10);
+  });
+
+  it('in each set the strong composite is darker than the soft one and both are darker than the page (dark: 1.07 and 1.09 against the page)', () => {
+    for (const [scheme, page, soft, strong] of [
+      ['light', LIGHT_PAGE, '#46280f38', '#2d190a80'],
+      ['dark', DARK_PAGE, '#08050273', '#08050299'],
+    ] as const) {
+      const [lPage, lSoft, lStrong] = [
+        relativeLuminance(rgbTripleOf(page)),
+        relativeLuminance(compositeOver(soft, page)),
+        relativeLuminance(compositeOver(strong, page)),
+      ];
+      expect(lStrong, `${scheme}: strong is darker than soft`).toBeLessThan(lSoft);
+      expect(lSoft, `${scheme}: soft is darker than the page`).toBeLessThan(lPage);
+    }
+    const dark = (token: string): number => (relativeLuminance(rgbTripleOf(DARK_PAGE)) + 0.05) / (relativeLuminance(compositeOver(token, DARK_PAGE)) + 0.05);
+    expect(dark('#08050273')).toBeCloseTo(1.07, 2);
+    expect(dark('#08050299')).toBeCloseTo(1.09, 2);
   });
 });
 
@@ -1151,6 +1278,11 @@ describe('the generator spies record the level in a parallel array', () => {
  * product values are the stylesheet's).
  * DELIBERATE CHANGE (update-page-palette, delta «Borders, cues and focus rings have enough contrast»): a sample of 13 arbitrary colours cannot
  * meet the new pairs (they name 17 more tokens), so the sample is the dark half of the signed palette, which does.
+ * DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
+ * `tests/play-page-helpers.test.ts:1149-1181`, assertions 1232 and 1268-1270): the sample gains the two dark backdrop rows of the spec table
+ * (`#08050273` and `#08050299`). Without them `expect(dark?.tokens).toEqual(DARK_SAMPLE)` fails (27 against 25 keys), and after the port
+ * `injectPageStyles(DARK_SAMPLE)` leaves `var(--color-backdrop-*)` uninlined (`tests/helpers/css.ts` `withTokensInlined`), so
+ * `not.toMatch(/var\(\s*--color-/)` fails.
  */
 const DARK_SAMPLE: Record<string, string> = {
   '--color-page': '#1a1714',
@@ -1178,6 +1310,8 @@ const DARK_SAMPLE: Record<string, string> = {
   '--color-success-glow': '#8fd19a73',
   '--color-win-text': '#f1ede4',
   '--color-focus': '#f1ede4',
+  '--color-backdrop-soft': '#08050273',
+  '--color-backdrop-strong': '#08050299',
 };
 const darkBlock = (tokens: Record<string, string>, quote = '"'): string =>
   `:root[data-theme=${quote}dark${quote}] { color-scheme: dark; ${Object.entries(tokens).map(([k, v]) => `${k}: ${v};`).join(' ')} }`;
@@ -1190,7 +1324,8 @@ describe('css helper: the dark attribute block is a token set (add-theme-switch,
     expect(parsed.tokenSets[1]?.tokens['--color-text']).toBe('#ffffff');
     expect(parsed.tokenSets[1]?.tokens['--color-focus'], 'a token the block does not redefine keeps its top-level value').toBe('#1e2126');
     expect(parsed.tokens).toEqual(DESIGN_TOKENS);
-    expect(parsed.tokenDeclarations, 'the 25 tokens of the G2 palette').toHaveLength(25); // was 13 (update-page-palette, proposal.md Impact row `:1068`)
+    // was 13 (update-page-palette, proposal.md Impact row `:1068`); 27 with the two backdrops (update-page-backdrop, delta 1, proposal.md Impact row `:1193`)
+    expect(parsed.tokenDeclarations, 'the 27 tokens of the G2 palette').toHaveLength(27);
     expect(parsed.darkTokenDeclarations.map((d) => d.property)).toEqual(['--color-page', '--color-text']);
     expect(darkRootRules(parsed)).toHaveLength(1);
     expect(darkRootRules(parsed)[0]?.declarations.find((d) => d.property === 'color-scheme')?.value).toBe('dark');
@@ -1237,6 +1372,7 @@ describe('css helper: the dark attribute block is a token set (add-theme-switch,
   it('the signed light and dark palettes meet every pair, and the focus ring keeps its recorded ratios against the accepted neighbours', () => {
     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
     expect(contrastProblems(DARK_SAMPLE)).toEqual([]);
+    expect(PALETTE_DARK, 'the helper holds the dark values of the spec table, backdrops included').toEqual(DARK_SAMPLE);
     const ring = (set: Record<string, string>, other: string): number =>
       Number(contrastRatio(set['--color-focus'] ?? '', set[other] ?? '').toFixed(2));
     expect(['--color-line', '--color-violation-border', '--color-primary', '--color-success'].map((n) => ring(DESIGN_TOKENS, n))).toEqual([11.72, 2.47, 2.94, 2.53]);
