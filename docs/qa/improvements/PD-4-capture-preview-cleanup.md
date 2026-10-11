@@ -1,6 +1,6 @@
 # PD-4: a stopped capture leaves its `vite preview` listening
 
-Status: **PROPOSED, awaiting the user's approval.** Drafted 2026-10-11 from 17:55 (UTC+5:30) by session C of the parallel G2 plan (`claude/modest-darwin-process`; `docs/handoff/parallel-g2-plan-2026-10-11.md`, «C: the process stream»; the user's «Draft both», autonomy-log row 170). No script is edited before the yes. The locked adapter changes only in a commit with `Refs: PD-4`.
+Status: **APPROVED by the user** in chat on 2026-10-11 at about 18:18 (UTC+5:30), through the question form: «Approve fix + helper (Recommended)» and, for the ports, «P2: one base env var (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row C7). Executed in the commit with `Refs: PD-4`. **Green proof PARTIAL** (`PD-4-green-proof.txt`): the adapter under SIGTERM, SIGINT and SIGHUP, the helper after SIGKILL and the port base are green; `visual-block.mjs` itself and Playwright's 4173 are not yet re-run. Drafted from 17:55 by session C of the parallel G2 plan.
 
 ## Defect
 
@@ -56,12 +56,20 @@ Under P2 or P3 one question stays open: **two full captures at the same time loa
 ## Red to green proof
 
 - **Red** (`PD-4-proof.txt`, 2026-10-11 18:07 to 18:09, lock held, ports free before and after): E1, F1 to F4, G1 and G3 leave a listener; the earlier diagnosis is disproved by A and B. Three earlier runs (17:58, 17:59 and 18:02, with earlier versions of the probe) gave the same verdicts for the cases they had (`PD-4-proof-runs-1-3.txt`).
-- **Green is earned when**, after the yes, the same probe run against the changed adapter (real code, case F) frees the port for SIGTERM, SIGINT, SIGHUP and the uncaught error; SIGKILL stays red and the helper stops that listener; `check-factory-integrity` passes after the re-seal. Not run yet.
+- **Green is earned when** the same probe run against the changed adapter (real code, case F) frees the port for SIGTERM, SIGINT, SIGHUP and the uncaught error; SIGKILL stays red and the helper stops that listener; `visual-block.mjs` under SIGTERM frees 4174, 4176 and 4177; `check-factory-integrity` passes after the re-seal. **Earned so far** (`PD-4-green-proof.txt`, 18:23 to 18:26): F1 to F3, K, P and the integrity re-seal. **Not yet:** H (`visual-block.mjs`) and G (4173, which PD-4 does not change, a re-check only). The uncaught-error path of the real adapter is covered by the same exit hook as E2, not run on the adapter itself.
 - **Sampling, declared:** one machine (macOS 26.5.2, Node 22.21.1, npm 10.9.4), one shot, one e2e file; signals to the caller's pid only. A terminal Ctrl-C (signal to the whole group) is not measured.
 
 ## How the two PDs meet
 
 An orphan never measures silently: since PD-2 the adapter refuses a port that something else answers on. It fails loudly instead (the first attempt at run 7). But the checker writes a failed capture into the shot's `docs/qa/visual-diff/*/report.json` as `score: null, pass: false` (`PD-5-proof.txt`), so an orphan also overwrites the committed evidence. That overwrite is the mechanism PD-5 is about.
+
+## As executed
+
+- `scripts/check-visual-parity-adapters.mjs` (locked): `vite` under `node`, `stopOnExit` exported (an exit hook per child and one set of SIGINT, SIGTERM and SIGHUP handlers that exit 128 + n), the local URL on BINARKA_PORT_BASE + 1 when the variable is set; lock re-sealed.
+- `scripts/visual-block.mjs`: the same spawn and `stopOnExit` for its page preview; ports from `scripts/capture-ports.mjs`.
+- `scripts/freeze-design-geometry.mjs`, `scripts/freeze-design-paint.mjs`: the design port from the base (+4). The frozen files hold no port, so a refreeze on another base gives the same bytes.
+- `playwright.config.ts`: the preview port is the base (+0). `e2e/nfr-14-panel-shell.spec.ts`: its forbidden ports follow the base (the test change PD-4 requires; its assertion is unchanged at the default base).
+- New `scripts/capture-ports.mjs`: `portBase()`, `capturePorts()`, and the CLI (list; `--stop` this worktree's listeners only).
 
 ## Rollback
 

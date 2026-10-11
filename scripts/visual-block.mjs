@@ -19,19 +19,20 @@
 //
 // Usage: npm run build && node scripts/visual-block.mjs --block layout [--shots a,b] [--states default,four] [--calibrate]
 //        [--out docs/qa/g2/blocks/<block>]
-// Ports: the design build on 4177, the page preview on 4176 (geometry), the adapter's own preview on 4174 (pixels).
+// Ports (PD-4): BINARKA_PORT_BASE (default 4173) + 4 for the design build, + 3 for the page preview (geometry), + 1 for the
+// adapter's own preview (pixels); scripts/capture-ports.mjs lists them. Neither preview outlives this process (stopOnExit).
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { extname, join, resolve, sep } from 'node:path';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
-import { capture, captureBoardFor, close as closeAdapter, parseShot } from './check-visual-parity-adapters.mjs';
+import { capturePorts } from './capture-ports.mjs';
+import { capture, captureBoardFor, close as closeAdapter, parseShot, stopOnExit } from './check-visual-parity-adapters.mjs';
 
 const TOLERANCE_PX = 0.5;
 const PIXEL_THRESHOLD = 0.1;
-const DESIGN_PORT = 4177;
-const PAGE_PORT = 4176;
+const { design: DESIGN_PORT, page: PAGE_PORT } = capturePorts();
 const config = JSON.parse(readFileSync('quality/visual-parity.config.json', 'utf8'));
 const DPR = config.deviceScaleFactor ?? 2;
 const SEED = config.seed ?? 1;
@@ -106,7 +107,8 @@ function serveDesign() {
 
 async function startPreview() {
   const url = `http://localhost:${PAGE_PORT}/`;
-  const proc = spawn('npx', ['vite', 'preview', '--port', String(PAGE_PORT), '--strictPort'], { stdio: 'ignore' });
+  const proc = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PAGE_PORT), '--strictPort'], { stdio: 'ignore' });
+  stopOnExit(proc);
   let exited = false;
   proc.on('exit', () => { exited = true; });
   for (let i = 0; i < 120; i++) {

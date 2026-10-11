@@ -27,6 +27,11 @@
 //
 // The adapter measures only its own `vite preview`: it fails when something already answers on the config's localUrl
 // before it starts one, and when its preview exits before answering (gap 6 of docs/qa/visual-diff/README.md).
+//
+// Its preview never outlives it (PD-4): `vite` runs under `node` without the `npx` wrapper, so the pid held is the
+// listener, and an exit hook plus SIGINT, SIGTERM and SIGHUP handlers stop it however the process ends (SIGKILL aside:
+// `node scripts/capture-ports.mjs --stop`). The port is the config's localUrl port, or BINARKA_PORT_BASE + 1 when that
+// variable is set (one base per session: e2e +0, this preview +1, visual-block's page preview +3, the design build +4).
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -194,6 +199,25 @@ export function parseShot(name) {
 let server = null;
 let serverReady = null;
 
+/** The config's localUrl, on BINARKA_PORT_BASE + 1 when the variable is set (PD-4). */
+function gateUrl(url) {
+  const raw = process.env.BINARKA_PORT_BASE;
+  if (raw === undefined || raw === '') return url;
+  const base = Number(raw);
+  if (!Number.isInteger(base) || base < 1024 || base > 65530) throw new Error(`BINARKA_PORT_BASE must be an integer from 1024 to 65530, not "${raw}"`);
+  const u = new URL(url);
+  u.port = String(base + 1);
+  return u.href;
+}
+
+/** Stop a child server whenever this process ends, except by SIGKILL (PD-4). The signal handlers exit 128 + n. */
+export function stopOnExit(child) {
+  process.on('exit', () => child.kill());
+  if (stopOnExit.armed) return;
+  stopOnExit.armed = true;
+  for (const [sig, n] of [['SIGINT', 2], ['SIGTERM', 15], ['SIGHUP', 1]]) process.once(sig, () => process.exit(128 + n));
+}
+
 const answers = async (url) => {
   try {
     return (await fetch(url)).ok;
@@ -215,7 +239,8 @@ async function startServer(localUrl) {
   const port = new URL(localUrl).port;
   let exit = null;
   let stderr = '';
-  server = spawn('npx', ['vite', 'preview', '--port', port, '--strictPort'], { stdio: ['ignore', 'pipe', 'pipe'] });
+  server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', port, '--strictPort'], { stdio: ['ignore', 'pipe', 'pipe'] });
+  stopOnExit(server);
   server.stderr.on('data', (chunk) => { stderr += chunk; });
   server.on('error', (err) => { exit ??= `failed to start: ${err.message}`; });
   server.on('exit', (code, signal) => { exit ??= `exited with ${signal ?? `code ${code}`}`; });
@@ -267,6 +292,7 @@ async function captureLocal({ url, name, width, height, settleMs }) {
   const shot = parseShot(name);
   const driver = drivers[shot.state];
   if (!driver) throw new Error(`no state driver for "${shot.state}" (shot ${name}); the page has no such state yet`);
+  url = gateUrl(url);
   await ensureServer(url);
   const browser = await launchForShot(width, height);
   const context = await browser.newContext({ viewport: null, colorScheme: shot.scheme, reducedMotion: 'reduce' });

@@ -20,7 +20,7 @@
 // records, a port that is busy, or two measurements of the same build that differ (the run measures every case twice, in two fresh browser
 // contexts, and the two must be byte-identical). Nothing is written unless every check passed.
 //
-// Usage: node scripts/freeze-design-paint.mjs   (design/v0/out must be built; port 4177 must be free)
+// Usage: node scripts/freeze-design-paint.mjs   (design/v0/out must be built; port BINARKA_PORT_BASE + 4 must be free, 4177 by default; scripts/capture-ports.mjs)
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { createServer } from 'node:http';
@@ -28,8 +28,9 @@ import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from '
 import { extname, join, relative, resolve, sep } from 'node:path';
 import { chromium, devices } from 'playwright';
 import { captureBoardFor, parseShot } from './check-visual-parity-adapters.mjs';
+import { capturePorts } from './capture-ports.mjs';
 
-const PORT = 4177;
+const PORT = capturePorts().design;
 const OUT = 'quality/design-paint.json';
 const VIEWPORT = { width: 1024, height: 768 };
 const SCHEMES = ['light', 'dark'];

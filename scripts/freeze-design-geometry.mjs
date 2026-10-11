@@ -10,7 +10,7 @@
 // Sampling: the light shots of review-set-14 whose state is reached at mount (default, four, eight, level, win) or by one press of the hint
 // button (hint), at the reference viewports; geometry does not depend on the scheme. Coverage: sampled, never continuum.
 //
-// Usage: node scripts/freeze-design-geometry.mjs   (design/v0/out must be built; port 4177 must be free)
+// Usage: node scripts/freeze-design-geometry.mjs   (design/v0/out must be built; port BINARKA_PORT_BASE + 4 must be free, 4177 by default; scripts/capture-ports.mjs)
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { createServer } from 'node:http';
@@ -18,6 +18,7 @@ import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from '
 import { extname, join, relative, resolve, sep } from 'node:path';
 import { chromium, devices } from 'playwright';
 import { captureBoardFor, parseShot } from './check-visual-parity-adapters.mjs';
+import { capturePorts } from './capture-ports.mjs';
 
 export const LAYOUT_SELECTORS = [
   '.page-header',
@@ -41,7 +42,7 @@ const STATES = ['default', 'four', 'eight', 'level', 'win', 'hint'];
 // The page reaches a state after load with one action, as the capture adapter does: the hint state is the hint board without its hinted cell,
 // then one press of the hint button (FR-119 Q4). The e2e test replays it.
 const AFTER_LOAD = { hint: 'press-hint' };
-const PORT = 4177;
+const PORT = capturePorts().design;
 const OUT = 'quality/design-geometry.json';
 
 const config = JSON.parse(readFileSync('quality/visual-parity.config.json', 'utf8'));

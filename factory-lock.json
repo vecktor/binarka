@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-10T11:19:01.960Z",
-  "gitHead": "b45141dde8e981b6697cbc644464a46b1db0aff4",
+  "createdAt": "2026-10-11T15:48:03.644Z",
+  "gitHead": "e7729ac0ae97a85e76670284f39ed62d108f016f",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -25,11 +25,11 @@
     "scripts/check-traceability.mjs": "10dfdb95743c685e31f0a1cdb2d4cbef0d728315097efd93544346330250fadf",
     "scripts/check-trajectory.mjs": "2b4e0ba839c639c0da160d74ef204bd9fae09f264404a8342beea815b8ebafc1",
     "scripts/check-visual-fidelity.mjs": "f6fd0816f6293c0394c3cdb57232bb72b85cebe3b40ac6b88bf0628847722504",
-    "scripts/check-visual-parity-adapters.mjs": "e110e5af97d9ea2e416e74aac7f9481009f4575a464279d3c9c14634a218037d",
+    "scripts/check-visual-parity-adapters.mjs": "5dbef1099c87e30e4df84212b282bc5b8ba357ddfc85d89ac8edae05ddabb013",
     "scripts/gate-status.mjs": "07617acbbd6ae513bcc7675478e920bd86ff2c765ae1b2ebc2ab27dad50e5fae",
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-3: the NFR-14 capture adapter captures at a real device scale (one browser per shot, --force-device-scale-factor and --window-size, viewport emulation off) (approved by the user 2026-10-10)"
+    "PD-4: the NFR-14 capture adapter runs vite under node without npx, stops its preview on exit and on SIGINT/SIGTERM/SIGHUP, and takes its port from BINARKA_PORT_BASE + 1 when set (approved by the user 2026-10-11)"
   ]
 }

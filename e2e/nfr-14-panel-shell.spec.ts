@@ -17,7 +17,7 @@ import { sel } from './helpers';
 // with each channel within 1 and the alpha within 0.005, the same offsets, blur and spread in px); and, in the setup sheet and the settings panel, the fill
 // of «Закрити» and, for the setup sheet, the box-shadow of the footer strip (`::before`). The other `nfr-14-*` tests read frozen files; this one reads the
 // design live because the shell adds no freeze case (decision 9 of design.md). The design server listens on a port chosen by the operating system (never
-// 4173, 4174, 4176 or 4177, which the page preview and the capture tools bind) and serves nothing outside the build folder (the path guard of
+// one of the session's capture ports, BINARKA_PORT_BASE + 0, 1, 3 or 4 (4173, 4174, 4176, 4177 by default; PD-4), which the page preview and the capture tools bind) and serves nothing outside the build folder (the path guard of
 // scripts/freeze-design-geometry.mjs). A missing design/v0/out/index.html FAILS the test with the build instruction; it is never skipped.
 //
 // Part 2, the hook: the built page, with the design's 4x4, 6x6 and 8x8 fixture boards (FR-119), shows the five size-dependent layout variables
@@ -57,8 +57,9 @@ const SAMPLING = {
   stricterInstruments: ['scripts/visual-block.mjs', 'npm run check:visual'],
 } as const;
 
-/** The ports the page preview and the capture tools bind: the design server must never use one of them. */
-const FORBIDDEN_PORTS = [4173, 4174, 4176, 4177];
+/** The ports the page preview and the capture tools bind (scripts/capture-ports.mjs, PD-4): the design server must never use one of them. */
+const PORT_BASE = process.env.BINARKA_PORT_BASE ? Number(process.env.BINARKA_PORT_BASE) : 4173;
+const FORBIDDEN_PORTS = [0, 1, 3, 4].map((offset) => PORT_BASE + offset);
 
 // ---------------------------------------------------------------------------------------------------------
 // The design server (path guard of scripts/freeze-design-geometry.mjs)
@@ -326,7 +327,7 @@ test.describe('paint: the four surfaces against the design build', () => {
     expect(design, 'the design server started').not.toBeNull();
     expect(design?.server.listening, 'the design server is listening').toBe(true);
     expect(design?.port ?? 0, 'an ephemeral port').toBeGreaterThan(1023);
-    expect(FORBIDDEN_PORTS, 'not 4173, 4174, 4176 or 4177').not.toContain(design?.port);
+    expect(FORBIDDEN_PORTS, `not ${FORBIDDEN_PORTS.join(', ')}`).not.toContain(design?.port);
   });
 
   for (const scheme of SCHEMES) {
