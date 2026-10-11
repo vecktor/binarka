@@ -1,0 +1,137 @@
+# Green run: update-setup-sheet (tasks 4.1 to 4.6)
+
+Session B, 2026-10-11 (UTC+5:30). Port of tasks 4.1-4.3 by a capability-implementer subagent (`src/ui/style.css` only); verification by the parent.
+
+## Unit, lint, build (after the source-order fix below, 19:15)
+
+```
+$ npx vitest run
+ Test Files  77 passed (77)
+      Tests  1900 passed (1900)
+$ npm run lint   → exit 0
+$ npm run build  → exit 0
+```
+
+## Task 4.4: the port stays in its share
+
+Every changed line of `src/ui/style.css` (`git diff -U0`), by the enclosing rule (scope script over the diff; new side):
+  17  (between rules: comment or at-rule)
+   1  (top of file)
+   5  .level-control
+   3  .level-control .level-name
+   7  .level-control button
+   4  .level-control button .level-name::before
+   2  .level-control button[aria-checked='true']
+   2  .level-control button[aria-checked='true'] .level-name::before
+   2  .level-control button[aria-checked='true'] .level-text
+   2  .level-control button[aria-disabled='true']
+   4  .level-control button[aria-disabled='true'] .level-name::before
+   6  .level-control p, .level-control [data-level-reason]
+   7  .level-text
+   6  .setup-close
+  21  .setup-sheet
+   1  .setup-sheet:popover-open
+   7  .setup-start
+   4  .size-control
+   6  .size-control button
+   2  .size-control button[aria-checked='true']
+   1  :root
+   1  :root[data-theme='dark']
+The lines "between rules" are comments (the token count 31 → 32, the size-control and sheet header comments, the removed `line-height: normal` comment, the `scroll-padding-bottom` comment "16px at every width"), the two new media preludes and closing braces. No `.rules*`, `.settings*`, `.confirm*`, theme or language control, `.setup-button` or `src/ui/play-page.ts` change.
+
+```
+$ git diff --stat (tracked files, before the commits)
+ docs/qa/a11y-report.json                       |  496 ++++----
+ docs/qa/update-setup-sheet/session-log.md      |    6 +
+ openspec/changes/update-setup-sheet/tasks.md   |   16 +-
+ quality/design-geometry.json                   | 1499 +++++++++++++++++++++++-
+ scripts/freeze-design-geometry.mjs             |  111 +-
+ scripts/visual-block.mjs                       |   15 +-
+ src/ui/style.css                               |  158 ++-
+ tests/helpers/css.ts                           |   23 +-
+ tests/play-page-cause-stylesheet.test.ts       |    8 +-
+ tests/play-page-helpers.test.ts                |   31 +-
+ tests/play-page-layout-geometry.test.ts        |    9 +-
+ tests/play-page-level-stylesheet.test.ts       |   24 +-
+ tests/play-page-palette-stylesheet.test.ts     |    4 +-
+ tests/play-page-panel-shell-stylesheet.test.ts |   17 +-
+ tests/play-page-stylesheet.test.ts             |    9 +-
+ tests/play-page-theme-stylesheet.test.ts       |    9 +-
+ trace/ledger.jsonl                             |    2 +
+ 17 files changed, 2110 insertions(+), 327 deletions(-)
+```
+`design/v0`, `playwright.config.ts`, `factory-lock.json`, `scripts/check-visual-parity-adapters.mjs`, `src/ui/play-page.ts`, `openspec/specs/`, `docs/requirements.md`: unchanged. (`docs/qa/a11y-report.json` was rewritten by `check:a11y`; it stays out of every commit until finding 2 is resolved and re-run.)
+
+## Task 4.5: layout e2e and the a11y walk (under the capture lock)
+
+### Run 1 (19:12)
+== 2026-10-11 19:12:23 +0530 lock taken: session B (update-setup-sheet, magical-nash-setup) 2026-10-11 19:12:23 +0530
+$ npx playwright test --project=layout --reporter=list; echo layout_exit=$?; npm run check:a11y; echo a11y_exit=$?
+  ✘  136 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 320-light-setup (320x700): the open setup sheet matches the design's box within the fixture's tolerance (148ms)
+  ✘  153 [layout] › e2e/nfr-14-setup-sheet.spec.ts:307:5 › @trace NFR-14 @trace FR-96 320-light-setup-four (320x700): the open setup sheet matches the design's box within the fixture's tolerance (213ms)
+  ✘  161 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 1024x768 default: the open setup sheet ends below the button row and cuts no idle line (145ms)
+  3 failed
+  175 passed (15.3s)
+layout_exit=1
+  ✘  53 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 375x667 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (222ms)
+  1 failed
+  66 passed (13.2s)
+a11y_exit=1
+== lock released 2026-10-11 19:12:54 +0530
+    +   "320-light-setup first description: page left edge 31.00, design's 29.00 (page box 31.00,257.00 257.98x56.67, design box 29.00,257.31 261.98x56.67)",
+    +   "320-light-setup-four first description: page left edge 31.00, design's 29.00 (page box 31.00,310.78 257.98x56.67, design box 29.00,306.78 261.98x56.67)",
+    +   "1024x768 default: the sheet's bottom 677.13 cuts the idle line (672.33 to 712.92; sheet 303.00,156.00 418.00x521.13)",
+
+Cause of the two 320 misses: the 22.5rem `.level-control` and `.level-control button` rules of the port sat in a block BEFORE their base rules (same specificity), so they lost on source order and the cards kept `0.75rem` (page description edge 31px, design 29px). The unit test checked only that the declarations exist. Fix (test first): one assertion added to «The small phone tightens the cards» in `tests/play-page-setup-sheet-stylesheet.test.ts` (each 22.5rem rule later in the file than its base rule), seen red (`expected 85 to be greater than 87`), then the two rules moved into their own `@media (max-width: 22.5rem)` block after the level rules; unit 1900/1900.
+
+### Run 2 (19:16, after the fix)
+== 2026-10-11 19:16:24 +0530 lock taken: session B (update-setup-sheet, magical-nash-setup) 2026-10-11 19:16:24 +0530
+$ npx playwright test --project=layout --reporter=list; echo layout_exit=$?; npm run check:a11y; echo a11y_exit=$?
+  ✘  161 [layout] › e2e/nfr-14-setup-sheet.spec.ts:362:5 › @trace NFR-14 @trace FR-96 1024x768 default: the open setup sheet ends below the button row and cuts no idle line (142ms)
+  1 failed
+  177 passed (15.2s)
+layout_exit=1
+  ✘  53 [a11y] › e2e/nfr-13-a11y.spec.ts:189:5 › 375x667 focus not obscured by the sheet footer › NFR-13 focus: with «Поле 4×4» marked, no focused option has its ring under the footer strip (208ms)
+  1 failed
+  66 passed (13.1s)
+a11y_exit=1
+== lock released 2026-10-11 19:16:54 +0530
+    +   "1024x768 default: the sheet's bottom 677.13 cuts the idle line (672.33 to 712.92; sheet 303.00,156.00 418.00x521.13)",
+
+All 12 box tests of `e2e/nfr-14-setup-sheet.spec.ts` pass (sheet edges within 0.5 px of `expected`, the description's left edge within 0.5 px of the design's, the body's line height, the 28px margin), and every other layout spec is green with no edit (`nfr-14-layout-geometry` with its 1366×650 guard, `nfr-14-palette`, `nfr-14-backdrop`, `nfr-14-panel-shell`, `nfr-10-*`, `nfr-12-targets`, `nfr-18-flash`, `nfr-14-cause-mark`): 177 of 178.
+
+## Open finding 1: the no-cut check at 1024×768 (default state) — put to the user
+
+- Page: sheet bottom 677.13 (= the `expected` box: 156 + 521.13), idle line box 672.33 to 712.92: the edge is 4.8 px inside the line box.
+- The design itself (fixture, `1024-light-setup` `boxes`): sheet bottom 673.13 against the same idle box (the default-state fixture `1024-light-default`, the same idle position; inferred, not measured on the `/setup/` route): 0.8 px inside, more than the check's 0.5 px. **The signed no-cut check fails on the design itself at this viewport;** the 28px departure (SQ-5) adds 4 px.
+- Ink: measured in Chromium (the browser pane, `vite preview` on port 5199, 1024×768 light): the idle text is 14px at line height 20.3 px, two lines (673.83-690.33, 694.13-710.63); the first line's ink top (canvas `actualBoundingBoxAscent`) is 677.34, the sheet's bottom 677.19: the glyphs stay 0.15 px clear (font-dependent: `system-ui` differs by OS), and the sheet's shadow falls on them. Screenshot sent to the user.
+
+## Open finding 2: the nfr-13 focus walk's premise at 375×667 — put to the user
+
+`e2e/nfr-13-a11y.spec.ts:194`: «premise: the sheet scrolls (scrollHeight 573 > clientHeight 573)» fails: with the design's metrics the sheet with «Поле 4×4» marked is 573 px and fits under its cap (88dvh = 587 px), so it no longer scrolls at 375×667 (design.md, "Risks", anticipated it for 1366×650 and 320; it held there). The other three viewports of the walk (320×700, 1366×650, 320×568) pass. The ADDED scenario says the walk "stays green with no edit" and "asserts its premise at each of the four viewports": the two clauses now conflict.
+
+## The user's decisions on the two findings (2026-10-11 ~19:25, the question form)
+
+- Finding 1: «Check the ink, not the box (Recommended)». The ADDED scenario «The sheet ends below the button row and cuts no line of text» now reads the idle line's ink band (first line's top + `fontBoundingBoxAscent` − `actualBoundingBoxAscent` to last line's top + `fontBoundingBoxAscent` + `actualBoundingBoxDescent`) and records the design's own 0.8 px and the page's 4.8 px overlap of the line's box; `e2e/nfr-14-setup-sheet.spec.ts` follows (DELIBERATE CHANGE comment); design.md decision 10 and tasks 2.5 follow.
+- Finding 2: «Swap to 375×600 (Recommended)». `e2e/nfr-13-a11y.spec.ts` `[375, 667]` → `[375, 600]` (DELIBERATE CHANGE comment); the folder gains a ninth MODIFIED requirement, «Cells and buttons show a visible, unobscured focus indicator» (the walk's viewports; Traces + NFR-13), and the ADDED scenario's walk clause names 375×600. `npx openspec validate update-setup-sheet --strict`: valid.
+
+### Run 3 (20:29, after both amendments; the lock waited for other sessions from about 19:30)
+
+```
+== 2026-10-11 20:29:15 +0530 lock taken: session B (update-setup-sheet, magical-nash-setup) 2026-10-11 20:29:15 +0530
+$ npx playwright test --project=layout --reporter=list; echo layout_exit=$?; npm run check:a11y; echo a11y_exit=$?; node scripts/visual-block.mjs --block setup --shots 1366-light-setup --out /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--
+  178 passed (15.3s)
+layout_exit=0
+  67 passed (12.9s)
+a11y_exit=0
+1366-light-setup               pixel 0.9813 geometry off 1/2, unpaired 0, max delta 4px
+Block setup: 1 shot(s), geometry NOT within 0.5px (coverage: sampled)
+vb_exit=1
+== lock released 2026-10-11 20:29:48 +0530
+```
+
+Layout 178 of 178 (all 26 tests of `e2e/nfr-14-setup-sheet.spec.ts`, the no-cut check now on the ink band, and every other layout spec with no edit) and `npm run check:a11y` 67 of 67 (the walk's premise holds at 375×600). `docs/qa/a11y-report.json` from this run is the a11y evidence.
+
+## Task 4.6
+
+`scripts/visual-block.mjs` (not locked: `grep -c visual-block factory-lock.json` → 0) gains the block `setup` (the two selectors of the key `setupSheet`) and opens the sheet for the states `setup` and `setup-four` (design routes open at load; the page presses the summary button). Dry run in run 3 (under the lock): `node scripts/visual-block.mjs --block setup --shots 1366-light-setup --out <scratch>/vb-dry`: `1366-light-setup pixel 0.9813 geometry off 1/2, unpaired 0, max delta 4px`. The one off pair is the sheet's box: page 467,96 432×521.19, design 467,96 432×517.19, the 4 px of the recorded 28px-margin deviation in a content-decided case (`quality/design-geometry.json` `setupSheet`; the tool compares with the design's own boxes); the description pair is exact (498,217 370×37.80 on both sides). Exit 1 because the geometry channel counts the deviation as off; expected and recorded.

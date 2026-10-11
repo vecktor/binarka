@@ -14,7 +14,10 @@
 //                      (docs/qa/g2/harness-calibration.txt).
 //
 // The product side shows the design's fixture board through FR-119 (captureBoardFor, exported by the adapter). Geometry is
-// measured only for states whose look is reached at mount (GEOMETRY_STATES); other states have the pixel channel only.
+// measured only for states whose look is reached at mount (GEOMETRY_STATES) or by opening the setup sheet (SHEET_STATES: the design routes
+// /setup/ and /setup-four/ are open at load, the page side presses the summary button, as e2e/nfr-14-setup-sheet.spec.ts replays
+// afterLoad "open-setup"); other states have the pixel channel only. The setup block's geometry compares with the design's own boxes, so in the
+// content-decided cases the sheet's bottom differs by the recorded 28px-margin deviation (4px, 12px at 320; quality/design-geometry.json setupSheet).
 // Sampling: the shots given (default: the default state at every reference viewport and scheme); coverage is `sampled`.
 //
 // Blocks: layout (16 elements, states reached at mount) and rules (the open rules panel and «Зрозуміло», state `rules`: geometry
@@ -64,11 +67,14 @@ const BLOCKS = {
   ],
   // The open rules panel and its «Зрозуміло» (update-rules-panel; the same two selectors as rulesPanel in quality/design-geometry.json).
   rules: ['[data-section="rules"]', '[data-section="rules"] .rules-close'],
+  // The setup sheet (update-setup-sheet): the same two selectors as the key setupSheet of quality/design-geometry.json.
+  setup: ['[data-section="setup"]', '[data-section="setup"] [data-control="level"] button:first-of-type .level-text'],
 };
 // States whose geometry is measured on top of the pixels. `rules` (block rules only) opens the panel first: the design route
 // /rules/ is open at load (a press would close it), the product presses «Правила» and waits for :popover-open.
 // `rules-techniques` stays pixel-only: its design route is scrolled to the end by a script.
-const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules']);
+const SHEET_STATES = new Set(['setup', 'setup-four']);
+const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules', ...SHEET_STATES]);
 
 const args = process.argv.slice(2);
 const flag = (name, d) => {
@@ -154,6 +160,7 @@ async function designBoxes(shot) {
     await page.goto(`http://127.0.0.1:${DESIGN_PORT}${designRoute(parseShot(shot.name).state)}`, { waitUntil: 'load' });
     await page.locator('[data-board]').waitFor();
     if (blockName === 'rules') await page.waitForSelector('[data-section="rules"]:popover-open'); // open at load on /rules/; never press
+    if (SHEET_STATES.has(parseShot(shot.name).state)) await page.locator('[data-section="setup"]:popover-open').waitFor();
     return { boxes: await boxes(page), png: calibrate ? await page.screenshot({ animations: 'disabled', caret: 'hide' }) : null };
   } finally {
     await ctx.close();
@@ -180,6 +187,10 @@ async function pageBoxes(shot, url) {
     if (blockName === 'rules') {
       await page.locator('[data-action="rules"]').click();
       await page.waitForSelector('[data-section="rules"]:popover-open');
+    }
+    if (SHEET_STATES.has(state)) {
+      await page.locator('[data-action="setup"]').click();
+      await page.locator('[data-section="setup"]:popover-open').waitFor();
     }
     return await boxes(page);
   } finally {

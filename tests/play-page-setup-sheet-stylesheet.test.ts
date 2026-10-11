@@ -367,6 +367,13 @@ describe('The setup sheet takes the design size and place (update-setup-sheet, F
     declares('.level-control button (22.5rem)', small(PLAIN), 'padding', '0.375rem 0.625rem');
     declares('.level-control', base('.level-control'), 'gap', '0.5rem');
     declares('.level-control button', base(PLAIN), 'padding', '0.5rem 0.75rem');
+    // The 22.5rem rules have the base rules' specificity, so they win only by coming later in the file (the e2e of the green run caught the
+    // 320 cards keeping 0.75rem: docs/qa/update-setup-sheet/green-run.txt).
+    for (const selector of ['.level-control', PLAIN]) {
+      const later = only(insideOnly(exact(raw, selector), MEDIA_SMALL), `${selector} inside @media (max-width: 22.5rem)`);
+      const first = only(topRules(raw, selector), `${selector} outside any at-rule`);
+      expect(later.index, `the 22.5rem ${selector} rule is later in the file than the base rule, so it wins by source order`).toBeGreaterThan(first.index);
+    }
   });
 
   // Scenario «The small phone tightens the cards», last clause. GUARD: no at-rule declares a min-height for these three controls today.
