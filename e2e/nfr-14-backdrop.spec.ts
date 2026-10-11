@@ -114,7 +114,9 @@ const byteAt = (bytes: Uint8Array, index: number): number => bytes[index] ?? 0;
 
 /** The first pixel of a PNG screenshot as `[r, g, b]` (the screenshot of a 1x1 clip). */
 function firstPixel(png: Buffer): Rgb {
-  if (png.toString('latin1', 1, 4) !== 'PNG') throw new Error('the screenshot is not a PNG');
+  // Review run wf_4151f42d-f49 (contested, fixed): the full 8-byte signature, the inflated length and the filter type are checked, so a PNG
+  // this reader does not understand fails loudly instead of yielding a guessed pixel.
+  if (!png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) throw new Error('the screenshot is not a PNG');
   let offset = 8;
   let width = 0;
   let height = 0;
@@ -139,9 +141,11 @@ function firstPixel(png: Buffer): Rgb {
   }
   const raw = inflateSync(Buffer.concat(data));
   const stride = width * channels;
+  if (raw.length !== height * (stride + 1)) throw new Error(`PNG data is ${raw.length} bytes, expected ${height * (stride + 1)}`);
   const out = new Uint8Array(height * stride);
   for (let y = 0; y < height; y += 1) {
     const filter = byteAt(raw, y * (stride + 1));
+    if (filter > 4) throw new Error(`PNG row ${y} has the unknown filter type ${filter}`);
     for (let x = 0; x < stride; x += 1) {
       const v = byteAt(raw, y * (stride + 1) + 1 + x);
       const a = x >= channels ? byteAt(out, y * stride + x - channels) : 0;
@@ -153,6 +157,7 @@ function firstPixel(png: Buffer): Rgb {
       else if (filter === 2) value = v + b;
       else if (filter === 3) value = v + ((a + b) >> 1);
       else {
+        // filter 4, Paeth (types above 4 were refused above)
         const p = a + b - c;
         const [pa, pb, pc] = [Math.abs(p - a), Math.abs(p - b), Math.abs(p - c)];
         value = v + (pa <= pb && pa <= pc ? a : pb <= pc ? b : c);

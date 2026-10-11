@@ -1,3 +1,8 @@
+# check:visual run 8 (update-page-backdrop, G2 block 3). Header added in review fix round 1 (review run wf_4151f42d-f49), 2026-10-11 about 09:53 (UTC+5:30); the output below is unchanged.
+# Command: npm run check:visual (it builds first). Ran 2026-10-11 08:24:28 to 08:26:50 +0530 (the shell's date before and after). Exit code: 1 (FAIL).
+# Tree: 4ee5607 plus this session's then-uncommitted work; src/ was identical to the later commit e82eb20 (src/ has not changed since: git diff e82eb20 -- src is empty).
+# Orphan check right before the run: lsof -nP -iTCP:<port> -sTCP:LISTEN for 4173, 4174, 4176 and 4177 printed nothing (run in the same shell command as the gate).
+
 
 > binarka@0.1.0 check:visual
 > npm run build && CHECK_VISUAL_FIDELITY_ADAPTERS=scripts/check-visual-parity-adapters.mjs node scripts/check-visual-fidelity.mjs

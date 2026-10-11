@@ -1,0 +1,15 @@
+# Fix round 1 battery (review run wf_4151f42d-f49), by the parent session
+== lint: npm run lint (2026-10-11 09:53:06 +0530)
+exit 0
+== test: npm run test:run (2026-10-11 09:53:27 +0530)
+exit 0
+ Test Files  72 passed (72)
+      Tests  1774 passed (1774)
+== build: npm run build (2026-10-11 09:54:33 +0530)
+exit 0
+== validate: npx openspec validate --all --strict (2026-10-11 09:54:37 +0530)
+exit 0
+Totals: 3 passed, 0 failed (3 items)
+== e2e backdrop after the PNG reader change: npx playwright test --project=layout e2e/nfr-14-backdrop.spec.ts (2026-10-11 09:51, before this file)
+  11 passed (5.9s)
+The new refusals (signature, inflated length, filter type above 4) were not exercised with a corrupt PNG; the green run shows Chromium's screenshots pass them.

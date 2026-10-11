@@ -84,3 +84,15 @@ $ pgrep -fl 'vite preview'  -> (nothing)
 The main-column crops above mix the dim with the unported panel paint, so they are not the block's measure. The comparison with the estimate is in docs/qa/visual-diff/README.md, section "Run 8", from the gate's full shots.
 - The estimate was right for the light rules shots from 64rem (a large rise, still under 0.98) and for the soft shots (little movement).
 - It was wrong for the dark rules shots, which fell. That is masking: with the old backdrop, the design's dark panel fill #2c2620 matched the undimmed page within the gate's YIQ limit (delta 125 against 352). Against the strong composite the delta is 359.
+
+## Review fix round 1 (review run wf_4151f42d-f49), 2026-10-11 about 09:54 (UTC+5:30)
+Task 5.2 asked for the light rules shots from 64rem separately. There are FIVE such shots, not six: no 1024-light-rules-techniques shot exists. Their main-column crop scores, from the list above:
+1024-light-rules               pixel 0.7688 geometry n/a (state reached by a driver)
+1366-light-rules-techniques    pixel 0.7614 geometry n/a (state reached by a driver)
+1366-light-rules               pixel 0.7614 geometry n/a (state reached by a driver)
+1440-light-rules-techniques    pixel 0.784 geometry n/a (state reached by a driver)
+1440-light-rules               pixel 0.784 geometry n/a (state reached by a driver)
+For the gate's full-shot scores of the same shots and the comparison with the estimate, see docs/qa/visual-diff/README.md § Run 8.
+- The tool's last line, "geometry within 0.5px (coverage: sampled)", is its fixed footer. In this run NO geometry was measured: every shot printed "geometry n/a (state reached by a driver)". So this file claims no geometry result.
+- The rules-techniques crops are byte-identical to the rules crops (checked with cmp on 1366-dark and 1440-light). The adapter only scrolls the panel, so the main column under the panel is the same. They add no separate evidence.
+- The masking explanation in "Against the estimate" above holds for the strong-dim shots (64rem and wider) only. The soft-dim drops at 768 (768-dark-rules, 768-dark-setup-four) are not explained yet (README § Run 8).
