@@ -1,0 +1,11 @@
+# Vision judge on the panel-shell stills (task 7.1, second half), 2026-10-11 about 17:37 to 17:39 (UTC+5:30), prep session vibrant-tu-434033.
+# A fresh vision-judge subagent (it did not build the UI), read-only. Stills: docs/qa/update-panel-shell/smoke/{1024,375}-{light,dark}-
+# {rules,settings,setup-scrolled,confirm}.png (16), taken by the scripted smoke test (smoke-test.txt). The judge looked at the page stills
+# only, by eye; the computed values against the design build are in smoke-raw.txt and the e2e (nfr-14-panel-shell, 24 of 24).
+
+Result: 16 of 16 met and readable. No blocking defect.
+- 1024 light: rules, settings, setup (scrolled), confirm: cream fill, thin light border (the dialog's darker grey-brown), soft shadow; «Закрити» and the footer strip on the surface fill, no band.
+- 1024 dark: warm brown fill clearly lighter than the near-black page, visible muted border; no band behind «Почати» and «Закрити»; text high contrast.
+- 375 light: bottom sheets with rounded top corners and a soft shadow above the top edge; the dialog a centred card with a shadow all round.
+- 375 dark: brown sheets with a light-brown top border; legible.
+Non-blocking: in the dark stills the drop shadow is almost invisible against the near-black page (physically expected; the design's shadow is the same token, 0.25 / 0.18 black). Weakest stills: 375-dark-rules and 375-dark-settings (the border and the lighter fill carry the demonstration).

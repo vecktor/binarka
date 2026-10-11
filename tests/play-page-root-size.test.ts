@@ -153,6 +153,8 @@ describe('The page root carries the board size (jsdom)', () => {
     openSheet(second);
     markSize(second, 4);
     pressStart(second);
+    // Review fix round 1 (wf_6f799240-65c, finding 1): the scenario's "the same" on the first root includes opening its sheet.
+    openSheet(first);
     markSize(first, 8);
     pressStart(first);
     expect(dialogIsOpen(first) || dialogIsOpen(second), 'premise: untouched boards ask for no confirmation').toBe(false);
@@ -247,9 +249,11 @@ describe('The size-dependent variables are declared on the root (stylesheet)', (
     expect(read(phone8, '--board-gap'), "#app[data-size='8'] { --board-gap } up to 30rem").toBe('0.125rem');
     expect(read(phone8, '--board-pad'), "#app[data-size='8'] { --board-pad } up to 30rem").toBe('0.1875rem');
     const wide = ruleOf(parsed, '#app', MEDIA_48).filter(declaresVariable);
-    expect(read(wide, '--cell-max'), '#app { --cell-max } from 48rem').toBeDefined();
+    // Review fix round 1 (wf_6f799240-65c, finding 5): the 48rem values are pinned like the 30rem ones, the values the `.board` rules had
+    // (src/ui/style.css at 64c2d7d, lines 1039 and 1043).
+    expect(compact(read(wide, '--cell-max')), '#app { --cell-max } from 48rem').toBe('clamp(2.75rem,calc((100dvh-var(--reserve))/var(--n)),var(--cell-cap))');
     const wide8 = ruleOf(parsed, "#app[data-size='8']", MEDIA_48);
-    expect(read(wide8, '--cell-max'), "#app[data-size='8'] { --cell-max } from 48rem").toBeDefined();
+    expect(compact(read(wide8, '--cell-max')), "#app[data-size='8'] { --cell-max } from 48rem").toBe('clamp(1.5rem,calc((100dvh-var(--reserve))/8),var(--cell-cap))');
   });
 
   // GUARD: true today; the board keeps its own geometry after the variables move (presence only, no value is pinned).

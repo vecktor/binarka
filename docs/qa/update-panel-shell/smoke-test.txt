@@ -27,4 +27,5 @@ Steps 1 to 10, at 1024x768 and 375x812, light and dark (16 surface readings, 4 x
     below it, as the design.
 (9) Design build at the same sizes and schemes: every fill, border and shadow reading equals the page's (raw output, "design /…" lines).
 (10) Console errors: none in all four runs; no raw error text on the page.
-Result: PASS on every step.
+Result: PASS on every step, for the PAINT this change makes (fill, border colour, shadow, the strip and the «Закрити» fills) and the hook. The size, place and scroll position of the surfaces are out of scope (blocks A and B, and the second wave): the stills show the rules panel opened at its end and narrower than the design, and the setup sheet centred across the summary button at 1024, which are known and owned there (review findings 6 and 7 of wf_6f799240-65c).
+The scripted form (not clicked by hand; dark through the system scheme, not the settings switch) was accepted by the user in chat on 2026-10-11 through the question form, «Accept the scripted smoke test (Recommended)» (autonomy-log row 174).

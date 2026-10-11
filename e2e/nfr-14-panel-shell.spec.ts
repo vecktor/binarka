@@ -359,6 +359,12 @@ test.describe('paint: the four surfaces against the design build', () => {
             // the spec's literals, so that a design that drifted shows up here and not only as an equal pair
             expect(want.surface.fill, `${name}: the design's fill is the spec's`).toBe(FILL[scheme]);
             expect(want.surface.border, `${name}: the design's border colour is the spec's`).toBe((surface === 'confirm' ? DIALOG_BORDER : PANEL_BORDER)[scheme]);
+            // Review fix round 1 (wf_6f799240-65c, contested finding): the design's shadow is anchored to the spec's literals too, so a drift
+            // in the design shows up here: the panels below 48rem take 0 -8px 32px 0 at 0.18, the panels from 48rem and the dialog 0 16px 40px 0 at 0.25.
+            const sheetShadow = surface !== 'confirm' && viewport.width < 768;
+            expect(want.surface.shadow.replace(/\s+/g, ' ').trim(), `${name}: the design's shadow is the spec's`).toBe(
+              sheetShadow ? 'rgba(0, 0, 0, 0.18) 0px -8px 32px 0px' : 'rgba(0, 0, 0, 0.25) 0px 16px 40px 0px',
+            );
 
             // the compared values, each reported with the surface, the scheme, the viewport and both strings
             const differences: string[] = [];
