@@ -1,0 +1,214 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "update-setup-sheet (G2 setup-sheet block, session B): src/ui/style.css port + tests + e2e + scripts/freeze-design-geometry.mjs + scripts/visual-block.mjs + quality/design-geometry.json + openspec/changes/update-setup-sheet",
+  "change": "update-setup-sheet",
+  "baseRef": "ebaf49b",
+  "headRef": "tree c689426e9ede7cc8b994574a2af77eaf855dfb9c (the uncommitted block, pinned with git write-tree; GPG was locked, the commits follow and must reproduce it)",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 5,
+      "contested": 0,
+      "rejected": 1
+    },
+    "spec-compliance": {
+      "confirmed": 4,
+      "contested": 2,
+      "rejected": 0
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 1,
+      "rejected": 1
+    }
+  },
+  "confirmedTitles": [
+    "visual-block `setup` block compares with the design's unmodified boxes, so it always exits 1",
+    "visual-block header comment misstates where the deviation shows (bottom only)",
+    "Freeze script keeps the old top-level provenance but writes freshly re-measured top-level cases, with no equality guard",
+    "`decidedBy` and `contentDecidedCases` are computed from the design side only, so 320-light-setup is listed as content-decided while its expected box is capped",
+    "Dead helper `box` in the freeze script; setup selectors repeated in three files",
+    "Spec and refreeze evidence say every content-decided case is 4px taller (12px at 320); 320-light-setup is only 2.31px taller because the cap stops it",
+    "The freeze script keeps the old top-level provenance (browser, designBuildSha1) but re-measures and rewrites the 32 top-level cases with the current browser",
+    "FR-99 is traced by the ADDED requirement and named in the commit trailer, but neither new test file tags it",
+    "Tasks 0.1 to 0.3 are unticked although session-log.md records them as done"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-11T21:13:00+05:30",
+  "findings": [
+    {
+      "title": "visual-block `setup` block compares with the design's unmodified boxes, so it always exits 1",
+      "file": "scripts/visual-block.mjs",
+      "line": 272,
+      "severity": "minor",
+      "confidence": "medium",
+      "dimension": "correctness",
+      "evidence": "The setup states now go through the geometry channel (`GEOMETRY_STATES` includes `SHEET_STATES`). `geometry(d.boxes, …)` compares the page with the design's own boxes, and `const done = results.every((e) => … e.geometryOff === 0 …)` then sets the exit code. Every content-decided case therefore counts the recorded 28px-margin deviation as off. docs/qa/update-setup-sheet/visual-block-setup.txt shows 28 of 48 shots 'off 1/2' or 'off 2/2' and 'geometry NOT within 0.5px', exit 1. The spec and AGENTS.md's per-block definition-of-done name this tool as the stricter instrument (geometry = 0) that runs before a block-done claim. As written it can never pass for this block, so a real regression in a setup shot would sit inside an exit 1 that people have learned to ignore.",
+      "suggestion": "For SHEET_STATES, compare the sheet selector with `quality/design-geometry.json` `setupSheet.cases[].expected`, or inject `SETUP_DEVIATION_CSS` into the design page as the freeze script does, before measuring. Keep the description's left edge checked against the design's own box. Then the block can exit 0 when only the recorded deviation is present.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "visual-block header comment misstates where the deviation shows (bottom only)",
+      "file": "scripts/visual-block.mjs",
+      "line": 20,
+      "severity": "minor",
+      "confidence": "medium",
+      "dimension": "correctness",
+      "evidence": "The comment says 'in the content-decided cases the sheet's bottom differs by the recorded 28px-margin deviation (4px, 12px at 320)'. In the phone regime the sheet is a bottom sheet (`inset: auto 0 0 0`), so the extra height moves the top and the first description instead. The run output shows 'off 2/2' at 320 and 375. At 320 (6×6) the cap limits the growth to 2.22px, not 12px (fixture: design h 553.69, expected 556, max 556).",
+      "suggestion": "Reword it: from 48rem the bottom moves; on the phone the top and the description move; the growth is capped by max-height (2.31px at 320×700 in the 6×6 state). Or remove the caveat once the first finding is fixed.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "Freeze script keeps the old top-level provenance but writes freshly re-measured top-level cases, with no equality guard",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 203,
+      "severity": "minor",
+      "confidence": "high",
+      "dimension": "correctness",
+      "evidence": "When `sameDesign` holds, the fixture gets `provenance: sameDesign ? previous.provenance : freshProvenance` (keeping the recorded `designBuildSha1` and `browser`), while `cases: out` (line 207) is the run's new measurement of the 32 top-level shots. If the local design/v0/out build or the Playwright Chromium differs, as the comment admits ('the build hash differs between worktrees'), changed top-level geometry is written under provenance that names another build and browser, and nothing reports it. The e2e Part 1 test checks only the count, selectors, tolerance and the two hashes, not the boxes. So the spec's 'changes nothing else' is not enforced for `cases`. In this run they happen to be byte-identical.",
+      "suggestion": "When `sameDesign`, deep-compare `out` with `previous.cases` and throw on any difference, or write `previous.cases` through unchanged. Alternatively, record the fresh build and browser whenever any top-level case changed.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "`decidedBy` and `contentDecidedCases` are computed from the design side only, so 320-light-setup is listed as content-decided while its expected box is capped",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 156,
+      "severity": "minor",
+      "confidence": "low",
+      "dimension": "correctness",
+      "evidence": "`decidedBy` compares the design sheet's height with its min and max height. At 320×700 (6×6) the design is 2.31px under the cap ('content'), but the expected product box (556) sits exactly at max-height. The deviation record lists 320-light-setup in `contentDecidedCases` as a case where the departure makes the sheet taller by the margin, yet the growth there is 2.31px, not 12px. The e2e test has to special-case this with `Math.min(…, l.maxHeightPx - design.h)`.",
+      "suggestion": "Also compute and record which bound decides the `expected` box (for example `layout.expectedDecidedBy`). Alternatively, list in `contentDecidedCases` only the cases whose expected box is content-decided, so the fixture says exactly where the departure appears and by how much.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "Dead helper `box` in the freeze script; setup selectors repeated in three files",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 99,
+      "severity": "minor",
+      "confidence": "high",
+      "dimension": "correctness",
+      "evidence": "`const box = (r) => ({ x: r.x, y: r.y, w: r.width, h: r.height });` is never called. The setup loop builds its own `r` inside `page.evaluate`, where the outer helper is not reachable (grep finds no `box(` call). `export const SETUP_SELECTORS` has no importer, and the same two selectors are written out again in scripts/visual-block.mjs:64 and e2e/nfr-14-setup-sheet.spec.ts:83-84. A change to one copy would silently desynchronise the fixture, the per-block tool and the e2e.",
+      "suggestion": "Remove the unused `box`. Move the setup selectors into a side-effect-free shared module (for example next to `captureBoardFor` in check-visual-parity-adapters.mjs) and import them in both scripts. Alternatively, have the e2e read `fixture.setupSheet.selectors`, which it already asserts equal to its constants.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "Spec and refreeze evidence say every content-decided case is 4px taller (12px at 320); 320-light-setup is only 2.31px taller because the cap stops it",
+      "file": "openspec/changes/update-setup-sheet/specs/play-page/spec.md",
+      "line": 745,
+      "severity": "minor",
+      "confidence": "high",
+      "dimension": "spec-compliance",
+      "evidence": "Spec ADDED requirement: \"the departure makes the sheet 4px taller than the design's (12px at 320) wherever its content decides the height\" and \"where the floor or the cap decides the sheet's height the two boxes are equal\". Fixture quality/design-geometry.json setupSheet case 320-light-setup has layout.decidedBy 'content' and boxes h 553.6875, but expected h 556 (= maxHeightPx 556), so it grows by 2.31px, not 12. It is still listed in deviations[0].contentDecidedCases. docs/qa/update-setup-sheet/refreeze.txt line 62 says \"In the 8 content-decided cases it is 4px taller\", which is wrong for this case. The scripts/visual-block.mjs header comment repeats \"4px, 12px at 320\". The e2e Part 1 growth rule already uses min(4|12, maxHeightPx - design.h), and tasks.md 3.1 was reworded to match (session-log row 8). Only the spec text and the evidence summary were left behind.",
+      "suggestion": "Amend the ADDED requirement to say \"4px taller (12px at 22.5rem and narrower), never past max-height (at 320×700 6×6 the expected sheet meets the cap)\". Correct refreeze.txt line 62 and the visual-block.mjs comment to match.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "The freeze script keeps the old top-level provenance (browser, designBuildSha1) but re-measures and rewrites the 32 top-level cases with the current browser",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 199,
+      "severity": "minor",
+      "confidence": "high",
+      "dimension": "spec-compliance",
+      "evidence": "`provenance: sameDesign ? previous.provenance : freshProvenance`, where sameDesign compares only designCommit and designCssSha1. `cases: out` is always the fresh measurement. If a later run uses a different Chromium, the top-level cases change while provenance.browser still names the old browser, and nothing compares `out` with `previous.cases`. This time the cases were byte-identical (refreeze.txt lines 33-38), but that was a one-off check in a scratch filter, not part of the script. The e2e fixture test only checks that there are 32 cases with no setup shot, not that their values are unchanged.",
+      "suggestion": "When the script keeps the previous provenance, also require an equal browser string and a deep-equal `out` against `previous.cases`. If they differ, fail or write fresh provenance. Alternatively, keep `previous.cases` as they are when sameDesign holds.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "FR-99 is traced by the ADDED requirement and named in the commit trailer, but neither new test file tags it",
+      "file": "tests/play-page-setup-sheet-stylesheet.test.ts",
+      "line": 7,
+      "severity": "minor",
+      "confidence": "medium",
+      "dimension": "spec-compliance",
+      "evidence": "ADDED requirement Traces: \"FR-96, FR-65, FR-99, NFR-14, NFR-12, A-60, A-57\". tasks.md trailer: `Refs: NFR-14, FR-96, FR-65, FR-99`. The new unit test tags only FR-96, FR-65 and NFR-14. The new e2e test tags only NFR-14 and FR-96. FR-99 (level option content) is tagged only by the existing tests/play-page-level-control.test.ts, which checks the content, not this change's presentation of the description (indent, muted colour, 0.875rem/1.35). check:trace checks that tagged IDs exist, not that every traced FR has a test.",
+      "suggestion": "Add `@trace FR-99` to the description tests in tests/play-page-setup-sheet-stylesheet.test.ts (indent, `.level-text` colour and metrics), or remove FR-99 from the ADDED requirement's Traces if the presentation is not meant to count toward it.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "Tasks 0.1 to 0.3 are unticked although session-log.md records them as done",
+      "file": "openspec/changes/update-setup-sheet/tasks.md",
+      "line": 7,
+      "severity": "minor",
+      "confidence": "high",
+      "dimension": "spec-compliance",
+      "evidence": "Task 0.1 (worktree from main after the shell's archive; Evidence: the first entry of session-log.md), 0.2 (capture lock; lock and lsof events in session-log rows 7, 8, 12, 15, 21) and 0.3 (keep session-log.md) are all `[ ]`. session-log.md rows 1, 2 and 7 to 21 show them carried out. Every later task (1.1 to 7.3) is ticked and its evidence file exists in the tree: folder-audit.md, red-run.txt, refreeze.txt, green-run.txt, battery.txt, sweep.txt, smoke-test.txt, blocks/setup/summary.json, visual-block-setup.txt, docs/qa/g2/check-visual-run-11.txt, run-vs-previous.txt, and visual-diff/README.md § Run 11. No ticked task lacks its artifact.",
+      "suggestion": "Tick 0.1 to 0.3 with Evidence: docs/qa/update-setup-sheet/session-log.md (rows 1-2 for 0.1, the lock rows for 0.2), or say that standing session rules stay unticked until the merge.",
+      "verdict": "confirmed",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "Freeze script keeps the old top-level provenance while it re-measures every top-level case",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 199,
+      "severity": "minor",
+      "confidence": "medium",
+      "dimension": "security",
+      "evidence": "If designCommit and designCssSha1 are unchanged, `provenance: sameDesign ? previous.provenance : freshProvenance` keeps the old designBuildSha1 and browser string. The 32 top-level `cases` are re-measured in the current run's Chromium. The next maintainer who runs the script in a different Playwright build gets new boxes under a provenance that names the old browser. The `$comment` in the file says only that the build hash differs between worktrees. It does not say that the browser can differ too. This does not affect security, and the guard on the injected deviation is sound.",
+      "suggestion": "Keep the old build hash on purpose, but always write the current `browser` into the top-level provenance. Alternatively, fail or warn when `previous.provenance.browser` differs from the current one.",
+      "verdict": "contested",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "The per-block tool's setup geometry channel compares against the design's own boxes, so the recorded 28px departure always shows as geometry debt",
+      "file": "scripts/visual-block.mjs",
+      "line": 64,
+      "severity": "minor",
+      "confidence": "medium",
+      "dimension": "spec-compliance",
+      "evidence": "The header comment says: \"The setup block's geometry compares with the design's own boxes, so in the content-decided cases the sheet's bottom differs by the recorded 28px-margin deviation\". The spec names scripts/visual-block.mjs as a stricter instrument run before a block-done claim, and the block-conquest rule needs geometry = 0 per block. In 8 of the 12 setup shots this channel can never reach 0, because it does not read setupSheet.expected (session-log row 15: \"geometry off only by the recorded 4 px\").",
+      "suggestion": "For SHEET_STATES, have the geometry channel read setupSheet.expected from quality/design-geometry.json (or report the residual against expected beside the design's boxes), so geometry = 0 is reachable once the recorded deviation is accounted for. Or state in the spec that the per-block geometry for this block is judged against `expected`.",
+      "verdict": "contested",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "The reason-line accent rule also matches any <p> in the level group, not only [data-level-reason]",
+      "file": "src/ui/style.css",
+      "line": 868,
+      "severity": "minor",
+      "confidence": "low",
+      "dimension": "spec-compliance",
+      "evidence": "Spec Paint table: \"Reason line | border-left: 3px solid var(--color-primary), color: var(--color-text)\", with the reason line named `[data-level-reason]`. The port keeps the old selector next to the new one: `.level-control p, .level-control [data-level-reason] { margin: 0; padding: 0.25rem 0 0.25rem 0.75rem; border-left: 3px solid var(--color-primary); ... }`. Today the only <p> in the group is the reason line (src/ui/play-page.ts:92), so nothing renders differently. Any future <p> in the group would get the orange accent without a requirement behind it.",
+      "suggestion": "Remove `.level-control p` from the selector list (keep `.level-control [data-level-reason]`), or note in the spec that the accent applies to every paragraph of the level group.",
+      "verdict": "contested",
+      "disposition": "pending: fix round 1 awaits the user's approval"
+    },
+    {
+      "title": "Fixture `maxHeightPx` can be written as null while the e2e types it as a number and asserts > 0",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 155,
+      "severity": "minor",
+      "confidence": "low",
+      "dimension": "correctness",
+      "evidence": "`const maxHeightPx = design.maxHeight === 'none' ? null : Number.parseFloat(design.maxHeight);` can produce null. e2e/nfr-14-setup-sheet.spec.ts declares `maxHeightPx: number` and asserts `Number.isFinite(l[f]) && l[f] > 0`. It is unreachable today because every sheet regime declares a max-height, but the contract between writer and reader disagrees.",
+      "suggestion": "Make the script throw if a sheet case has no max-height (the spec requires one in every regime), or type the field `number | null` and adjust the assertion.",
+      "verdict": "rejected",
+      "disposition": "rejected by the adversarial verifier"
+    },
+    {
+      "title": "No-cut check treats any sheet edge within 0.5px of the window edge as not cutting the idle line",
+      "file": "e2e/nfr-14-setup-sheet.spec.ts",
+      "line": 322,
+      "severity": "minor",
+      "confidence": "low",
+      "dimension": "security",
+      "evidence": "`atWindowLimit` exempts an edge at y=0 or y=H from the cut check. A bottom sheet whose top or bottom lands exactly on a window limit while the idle line straddles that limit therefore passes. The user recorded this decision on 2026-10-11 and the sweep log backs it, so it is not a defect, only a known blind spot. The assertion is narrower than the spec's «wholly covered or wholly clear» wording. The spec text does carry the window-limit carve-out.",
+      "suggestion": "No change needed. Optionally add a one-line test that the exempted edge case is only taken when the idle ink actually extends past the window limit, so the exemption cannot mask a real cut.",
+      "verdict": "rejected",
+      "disposition": "rejected by the adversarial verifier"
+    }
+  ],
+  "fixRound": null,
+  "visionJudge": {
+    "file": "docs/qa/update-setup-sheet/stills/vision-verdict.txt",
+    "verdict": "24 of 24 met, 24 of 24 readable"
+  },
+  "reviewRun": "wf_96f2007e-603 (32 agents, 0 errors)",
+  "productCodeDefect": false
+}

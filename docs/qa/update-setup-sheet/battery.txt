@@ -1,0 +1,84 @@
+# Battery: update-setup-sheet (tasks 5.1 to 5.4)
+
+Session B, 2026-10-11 (UTC+5:30), on the port (`src/ui/style.css`) with the amendments of the user's decisions of ~19:25 (findings 1 and 2). Tool-rewritten reports (`docs/qa/traceability-report.md`, `trace/trace.json`, `trace/acceptance-contracts.json`) were reverted after the run; `docs/qa/a11y-report.json` is kept as the a11y evidence.
+
+## 5.1-5.3 (no capture)
+
+```
+== 2026-10-11 20:30:21 +0530 $ npm run lint
+
+> binarka@0.1.0 lint
+> eslint .
+
+exit=0
+== 2026-10-11 20:30:41 +0530 $ npm run test:run
+   Start at  20:30:42
+   Duration  59.42s (tests 78%, environment 17%, import 5%, transform 1%)
+
+    Isolate  77 workers spawned · ~819ms startup each (spawn + environment, per file)
+             at least ~6.18s faster with isolate: false — reuses workers across files instead of one per file
+
+exit=0
+== 2026-10-11 20:31:41 +0530 $ npm run build
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-czXihVNt.css  22.15 kB │ gzip:  4.71 kB
+dist/assets/index-jRqTdLy_.js   35.21 kB │ gzip: 12.76 kB
+
+✓ built in 32ms
+exit=0
+== 2026-10-11 20:31:43 +0530 $ npx openspec validate update-setup-sheet --strict
+Change 'update-setup-sheet' is valid
+exit=0
+== 2026-10-11 20:31:44 +0530 $ npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+✓ change/update-rules-panel
+✓ change/update-setup-sheet
+Totals: 4 passed, 0 failed (4 items)
+exit=0
+== 2026-10-11 20:31:45 +0530 $ node scripts/check-eval-ratchet.mjs
+Scope: 6 eval case(s)
+OK    hint-clarity 92.7 (baseline 92.7)
+OK    hint-clarity-en 90 (baseline 90)
+Result: PASS
+exit=0
+== 2026-10-11 20:31:45 +0530 $ npm run check:trace
+WARN  [active-changes] active change "update-rules-panel" is not archived
+WARN  [active-changes] active change "update-setup-sheet" is not archived
+
+traceability: 115 MVP FRs checked — 0 failure(s), 117 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit=0
+== 2026-10-11 20:31:45 +0530 $ npm run check:acceptance
+> binarka@0.1.0 check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+
+Scope: 132 tagged requirement(s)
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+Result: PASS
+exit=0
+```
+
+## 5.4 (under the capture lock)
+
+```
+== 2026-10-11 20:31:57 +0530 lock taken: session B (update-setup-sheet, magical-nash-setup) 2026-10-11 20:31:57 +0530
+$ npm run test:e2e -- --reporter=list; echo e2e_exit=$?; npm run check:a11y; echo a11y_exit=$?; SETUP_SHEET_SWEEP=1 npx playwright test --project=layout e2e/nfr-14-setup-sheet.spec.ts --reporter=list; echo sweep_exit=$?
+  245 passed (23.5s)
+e2e_exit=0
+  67 passed (13.1s)
+a11y_exit=0
+  ✘  27 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep default at height 568: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✘  28 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep default at height 700: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  ✘  38 [layout] › e2e/nfr-14-setup-sheet.spec.ts:413:7 › @trace NFR-14 @trace FR-96 sweep four at height 1024: widths 320 to 1440 in 16 px steps, floor and no-cut (2.5s)
+  3 failed
+  35 passed (12.9s)
+sweep_exit=1
+== lock released 2026-10-11 20:32:49 +0530
+```
+
+- `npm run test:e2e`: 245 passed (every project of the default run; `playwright.config.ts` unchanged).
+- `npm run check:a11y`: 67 passed (axe on every sheet state light and dark, the keyboard sweep, the focus walk at 320×700, 1366×650, 320×568, 375×600) → `docs/qa/a11y-report.json`.
+- The sweep: 35 of 38 at this run; the three failing groups are classified in `docs/qa/update-setup-sheet/sweep.txt` (window-edge artifact, fixed in the check on the user's decision; design-inherited cuts, recorded as Scope NOT delivered). Its re-run after the edit is appended to `sweep.txt`.

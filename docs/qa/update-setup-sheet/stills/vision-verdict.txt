@@ -1,0 +1,12 @@
+# Vision verdict: the open setup sheet (task 8.1)
+
+Judge: a fresh vision-judge subagent of session B (did not build the UI), read-only, 2026-10-11 ~20:55 (UTC+5:30).
+Input: the 24 stills `docs/qa/update-setup-sheet/stills/gate-<w>-<scheme>-<state>.png` (w 320, 375, 768, 1024, 1366, 1440; light, dark; `setup` = 6×6 board with «Задачка» checked, `setup-four` = 4×4 board), the crop of the open sheet from the per-block tool's product capture (the gate's own capture path, device scale 2), the tree reviewed by the review gate (`c689426…`).
+Requirement judged: FR-96 presentation, FR-65, FR-91/FR-99 (the raised panel, the size control with its checked option, the four cards with the indented descriptions, the checked card's border, fill and dot, the unavailable cards dashed and readable with no opacity, the reason line's accent, the footer «Почати» filled and «Закрити» outlined, both ≥ 44 px).
+
+Verdict: **24 of 24 met, 24 of 24 readable.**
+
+- `setup` (12): met and readable; the descriptions start under the names; muted descriptions legible in both schemes; at 320 and 375 the sheet fits without a cut.
+- `setup-four` (12): met and readable; the reason line with its orange bar (two lines at 320); levels 2-4 dashed with a dashed empty ring, muted but legible, no opacity washout.
+- Notes (no defect against the requirement): (1) 320 `four`, light and dark: the 4th card's second description line fades under the footer strip's gradient (the sheet scrolls inside; a fade, not a hard cut); (2) 768 and 1440 `setup`: empty room above the footer row (the design's floor; the spare height sits above the footer by design); (3) 1366 `four`: a tight gap (~10 css px) above the footer, no overlap.
+- No dead-looking control, poor contrast, overlap, hard-clipped text, dark band or misaligned indent.

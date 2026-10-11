@@ -1,0 +1,71 @@
+# Session B pre-rebase run against run 10, by state (task 7.3; superseded by run 12 against run 11 after the rebase)
+
+Session B, 2026-10-11 ~20:50 (UTC+5:30). Run 10 (`docs/qa/g2/check-visual-run-10.txt`, the last run on `main` `ebaf49b`) against the pre-rebase run (`docs/qa/update-setup-sheet/check-visual-prerebase.txt`, this branch before the rebase onto block A; the file was `docs/qa/g2/check-visual-run-11.txt`). The per-block pixel and geometry columns come from `node scripts/visual-block.mjs --block setup --states setup,setup-four,setup-marked,setup-marked-four --out docs/qa/update-setup-sheet/blocks/setup` (same lock, just before run 11): the sheet's crop of the frozen reference against the gate's own capture, and its box against the design build's (`decidedBy` from `quality/design-geometry.json` `setupSheet`, light; geometry n/a for the marked states, reached by a driver).
+
+## Totals
+
+- Shots at 0.98: run 10 86 of 170, pre-rebase run 122 of 170.
+- Setup shots (48): 48 rose, 0 did not; 36 at 0.98 or more.
+- Shots of any state that fell: 0 (none).
+- Shots of other states that changed: (none).
+
+## The 48 setup shots
+
+| Shot | Run 10 | Pre-rebase | Δ | Block pixel | Block geometry | Height decided by (design, light) |
+|---|---|---|---|---|---|---|
+| 320-dark-setup | 0.7566 | 0.9238 | +0.1672 | 0.9055 | off 2/2, unpaired 0, max delta 2.22px | content |
+| 320-dark-setup-four | 0.7800 | 1.0000 | +0.2200 | 1.0 | off 0/2, unpaired 0, max delta 0px | max-height |
+| 320-dark-setup-marked | 0.7627 | 0.9054 | +0.1427 | 0.8821 | n/a (state reached by a driver) | n/a (marked) |
+| 320-dark-setup-marked-four | 0.7801 | 1.0000 | +0.2199 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 320-light-setup | 0.8397 | 0.9218 | +0.0821 | 0.9045 | off 2/2, unpaired 0, max delta 2.22px | content |
+| 320-light-setup-four | 0.8802 | 1.0000 | +0.1198 | 1.0 | off 0/2, unpaired 0, max delta 0px | max-height |
+| 320-light-setup-marked | 0.7964 | 0.8755 | +0.0791 | 0.846 | n/a (state reached by a driver) | n/a (marked) |
+| 320-light-setup-marked-four | 0.8802 | 1.0000 | +0.1198 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 375-dark-setup | 0.8008 | 0.9315 | +0.1307 | 0.8984 | off 2/2, unpaired 0, max delta 4px | content |
+| 375-dark-setup-four | 0.7935 | 0.9388 | +0.1453 | 0.9156 | off 2/2, unpaired 0, max delta 4px | content |
+| 375-dark-setup-marked | 0.8012 | 0.9315 | +0.1303 | 0.8984 | n/a (state reached by a driver) | n/a (marked) |
+| 375-dark-setup-marked-four | 0.7968 | 0.9387 | +0.1419 | 0.9156 | n/a (state reached by a driver) | n/a (marked) |
+| 375-light-setup | 0.8295 | 0.9230 | +0.0935 | 0.8885 | off 2/2, unpaired 0, max delta 4px | content |
+| 375-light-setup-four | 0.8301 | 0.9306 | +0.1005 | 0.907 | off 2/2, unpaired 0, max delta 4px | content |
+| 375-light-setup-marked | 0.8316 | 0.9230 | +0.0914 | 0.8885 | n/a (state reached by a driver) | n/a (marked) |
+| 375-light-setup-marked-four | 0.8311 | 0.9311 | +0.1000 | 0.907 | n/a (state reached by a driver) | n/a (marked) |
+| 768-dark-setup | 0.8694 | 1.0000 | +0.1306 | 1.0 | off 0/2, unpaired 0, max delta 0px | min-height |
+| 768-dark-setup-four | 0.8349 | 0.9915 | +0.1566 | 0.9825 | off 1/2, unpaired 0, max delta 4px | content |
+| 768-dark-setup-marked | 0.8719 | 1.0000 | +0.1281 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 768-dark-setup-marked-four | 0.8732 | 1.0000 | +0.1268 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 768-light-setup | 0.7696 | 1.0000 | +0.2304 | 1.0 | off 0/2, unpaired 0, max delta 0px | min-height |
+| 768-light-setup-four | 0.7647 | 0.9915 | +0.2268 | 0.9825 | off 1/2, unpaired 0, max delta 4px | content |
+| 768-light-setup-marked | 0.7663 | 1.0000 | +0.2337 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 768-light-setup-marked-four | 0.7835 | 1.0000 | +0.2165 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 1024-dark-setup | 0.8817 | 0.9931 | +0.1114 | 0.9812 | off 1/2, unpaired 0, max delta 4px | content |
+| 1024-dark-setup-four | 0.8574 | 0.9931 | +0.1357 | 0.9824 | off 1/2, unpaired 0, max delta 4px | content |
+| 1024-dark-setup-marked | 0.8805 | 0.9904 | +0.1099 | 0.9717 | n/a (state reached by a driver) | n/a (marked) |
+| 1024-dark-setup-marked-four | 0.8589 | 0.9931 | +0.1342 | 0.9824 | n/a (state reached by a driver) | n/a (marked) |
+| 1024-light-setup | 0.8686 | 0.9931 | +0.1245 | 0.9812 | off 1/2, unpaired 0, max delta 4px | content |
+| 1024-light-setup-four | 0.8604 | 0.9931 | +0.1327 | 0.9824 | off 1/2, unpaired 0, max delta 4px | content |
+| 1024-light-setup-marked | 0.8673 | 0.9905 | +0.1232 | 0.9717 | n/a (state reached by a driver) | n/a (marked) |
+| 1024-light-setup-marked-four | 0.8610 | 0.9931 | +0.1321 | 0.9824 | n/a (state reached by a driver) | n/a (marked) |
+| 1366-dark-setup | 0.8929 | 0.9937 | +0.1008 | 0.9812 | off 1/2, unpaired 0, max delta 4px | content |
+| 1366-dark-setup-four | 0.8821 | 1.0000 | +0.1179 | 1.0 | off 0/2, unpaired 0, max delta 0px | max-height |
+| 1366-dark-setup-marked | 0.8979 | 0.9913 | +0.0934 | 0.9717 | n/a (state reached by a driver) | n/a (marked) |
+| 1366-dark-setup-marked-four | 0.8825 | 1.0000 | +0.1175 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 1366-light-setup | 0.8956 | 0.9937 | +0.0981 | 0.9813 | off 1/2, unpaired 0, max delta 4px | content |
+| 1366-light-setup-four | 0.8967 | 1.0000 | +0.1033 | 1.0 | off 0/2, unpaired 0, max delta 0px | max-height |
+| 1366-light-setup-marked | 0.8875 | 0.9913 | +0.1038 | 0.9717 | n/a (state reached by a driver) | n/a (marked) |
+| 1366-light-setup-marked-four | 0.8970 | 1.0000 | +0.1030 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 1440-dark-setup | 0.9335 | 1.0000 | +0.0665 | 1.0 | off 0/2, unpaired 0, max delta 0px | min-height |
+| 1440-dark-setup-four | 0.9292 | 0.9953 | +0.0661 | 0.9824 | off 1/2, unpaired 0, max delta 4px | content |
+| 1440-dark-setup-marked | 0.9318 | 1.0000 | +0.0682 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 1440-dark-setup-marked-four | 0.9350 | 0.9953 | +0.0603 | 0.9824 | n/a (state reached by a driver) | n/a (marked) |
+| 1440-light-setup | 0.9277 | 1.0000 | +0.0723 | 1.0 | off 0/2, unpaired 0, max delta 0px | min-height |
+| 1440-light-setup-four | 0.9454 | 0.9953 | +0.0499 | 0.9825 | off 1/2, unpaired 0, max delta 4px | content |
+| 1440-light-setup-marked | 0.9248 | 1.0000 | +0.0752 | 1.0 | n/a (state reached by a driver) | n/a (marked) |
+| 1440-light-setup-marked-four | 0.9455 | 0.9953 | +0.0498 | 0.9825 | n/a (state reached by a driver) | n/a (marked) |
+
+## Reading
+
+- **Every one of the 48 setup shots rose** (the smallest rise +0.0498, `1440-light-setup-marked-four`); **no shot of any state fell**, and no shot of another state changed. So task 7.3's stop condition is not met.
+- **The residual of every setup shot below 1.0 is the signed 28px departure (SQ-5, A-60), measured:** the per-block pixel score is exactly 1 in every case whose height the floor or the cap decides (768 and 1440 default, 320 and 1366 `four`: the 28px margin does not change the box), and below 1 exactly where the content decides it, with the sheet's box 4 px off the design's (2.22 px at 320, where the expected sheet meets the cap). On phones the bottom sheet grows upward, so its whole content shifts 4 px (`blocks/setup/375-light-setup-diff.png`: the size control, the cards and the text doubled with a vertical offset, the footer row unchanged); from 48rem the anchored and full-cover sheets grow downward, so only the footer row and the bottom edge move (block 0.97-0.98). This is why 12 phone shots (375 in all four states; 320 in `setup` and `setup-marked`; 0.8755-0.9388) stay under 0.98 while the 36 others reach it (the 320 `four` states meet the cap and score 1 in the block). The marked states follow the same rule (their design routes have the same heights as `setup` and `setup-four`).
+- **`768-dark-setup-four`**: run 10 0.8349 → pre-rebase 0.9915. The soft-dim drop of run 8 (`docs/qa/prep-g2/soft-dim-768-classify.txt`: 103,380 of 103,696 newly failing pixels were the design's sheet fill `#2c2620` where the page showed its dimmed page, because the page's sheet sat in the middle) is gone: the sheet now hangs under the summary as the design's does and covers the same pixels; the block's residual is the content-decided 4 px (`blocks/setup/768-dark-setup-four-diff.png`).
+- Coverage: sampled (170 reference shots); no pixel floor is claimed for any shot (proposal.md, Scope NOT delivered).
+

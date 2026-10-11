@@ -59,6 +59,51 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 7. **Orphaned previews (PD-4, 2026-10-11, session C).** A capture stopped by a signal, or dying before `close()`, left its `vite preview` listening (the clean close never leaked). Since PD-4 the adapter and `scripts/visual-block.mjs` run `vite` under `node` and stop it on exit and on SIGINT, SIGTERM and SIGHUP; SIGKILL leftovers and Playwright's preview: `node scripts/capture-ports.mjs --stop` (this worktree's only). The ports come from `BINARKA_PORT_BASE` (default 4173: e2e +0, gate +1, page +3, design +4).
 8. **A failed capture overwrites a scored report** (`score: null`), with any adapter. **Closed by PD-6** (`docs/qa/improvements/PD-6-failed-capture-overwrites-evidence.md`): the checker stages each run and copies it here unless a capture or diff failure would replace a scored report; such a run FAILS and names its folder. Shots that never had a score (the logo shots) do not block the copy.
 
+## Session B's pre-rebase run (update-setup-sheet; numbered run 11 before block A merged, superseded by run 12)
+
+`docs/qa/update-setup-sheet/check-visual-prerebase.txt` (written as `docs/qa/g2/check-visual-run-11.txt` before the rebase onto block A), 2026-10-11 20:44 to 20:46 (UTC+5:30), exit 1: **122 of 170 at 0.98** (run 10: 86). Session B of the parallel G2 plan, branch `claude/magical-nash-setup` on `ebaf49b` plus the uncommitted block (block A merged first and took run 11; this run stays as the pre-rebase evidence); the capture lock was held and nothing listened on 4173, 4174, 4176 or 4177 before or after.
+
+- **All 48 setup shots rose** (`setup`, `setup-four`, `setup-marked`, `setup-marked-four`, light and dark, six viewports), the smallest rise +0.0498; 36 of them reach 0.98. **No shot of any state fell, and no shot of another state changed.**
+- **The residual is the signed 28px departure (SQ-5, A-60), measured per block** (`docs/qa/update-setup-sheet/blocks/setup/summary.json`, `docs/qa/update-setup-sheet/run-vs-previous.txt`): the sheet's crop scores exactly 1 wherever the floor or the cap decides its height (the margin does not move the box) and below 1 where the content decides it, 4 px off the design (2.22 px at 320). The 12 shots under 0.98 are phone shots (375 in all four states; 320 in `setup` and `setup-marked`, where the content decides; the 320 `four` states meet the cap and pass), because the bottom sheet grows upward and its whole content shifts by those 4 px.
+- **`768-dark-setup-four`** 0.8349 → 0.9915: the soft-dim drop of run 8 (Correction of Run 8 below) was the sheet's placement; the sheet now hangs where the design's does.
+- **Between the samples** the fine-step sweep of `e2e/nfr-14-setup-sheet.spec.ts` (`docs/qa/update-setup-sheet/sweep.txt`) finds the design's own sheet cutting the idle line's text at a window 700 px tall (768 to 1440 wide) and in the 4×4 state at 1024 px tall (672 to 752 wide); the page inherits it. Recorded as not delivered on the user's decision; not a gate shot.
+
+By state (the last two columns are the mean change against run 10 and the number of shots that fell):
+
+| State | Scheme | Run 10 at 0.98 | Pre-rebase at 0.98 | Lowest pre-rebase | Highest pre-rebase | Mean change | Fell |
+|---|---|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 3 of 5 | 0.9180 | 0.9904 | +0.0000 | 0 |
+| confirm | light | 3 of 5 | 3 of 5 | 0.9194 | 0.9901 | +0.0000 | 0 |
+| default | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | light | 6 of 6 | 6 of 6 | 0.9985 | 0.9996 | +0.0000 | 0 |
+| eight | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| eight | light | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| rules | dark | 0 of 6 | 0 of 6 | 0.8133 | 0.9069 | +0.0000 | 0 |
+| rules | light | 0 of 6 | 0 of 6 | 0.7822 | 0.9010 | +0.0000 | 0 |
+| rules-techniques | dark | 0 of 4 | 0 of 4 | 0.8133 | 0.9018 | +0.0000 | 0 |
+| rules-techniques | light | 0 of 4 | 0 of 4 | 0.7882 | 0.8980 | +0.0000 | 0 |
+| settings | dark | 4 of 6 | 4 of 6 | 0.9117 | 0.9880 | +0.0000 | 0 |
+| settings | light | 4 of 6 | 4 of 6 | 0.9430 | 0.9946 | +0.0000 | 0 |
+| settings-dark | light | 3 of 5 | 3 of 5 | 0.9195 | 0.9894 | +0.0000 | 0 |
+| settings-focus | dark | 1 of 2 | 1 of 2 | 0.9077 | 0.9821 | +0.0000 | 0 |
+| settings-focus | light | 1 of 2 | 1 of 2 | 0.9390 | 0.9919 | +0.0000 | 0 |
+| settings-light | dark | 3 of 5 | 3 of 5 | 0.9458 | 0.9950 | +0.0000 | 0 |
+| setup | dark | 0 of 6 | 4 of 6 | 0.9238 | 1.0000 | +0.1179 | 0 |
+| setup | light | 0 of 6 | 4 of 6 | 0.9218 | 1.0000 | +0.1168 | 0 |
+| setup-four | dark | 0 of 6 | 5 of 6 | 0.9388 | 1.0000 | +0.1403 | 0 |
+| setup-four | light | 0 of 6 | 5 of 6 | 0.9306 | 1.0000 | +0.1222 | 0 |
+| setup-marked | dark | 0 of 6 | 4 of 6 | 0.9054 | 1.0000 | +0.1121 | 0 |
+| setup-marked | light | 0 of 6 | 4 of 6 | 0.8755 | 1.0000 | +0.1177 | 0 |
+| setup-marked-four | dark | 0 of 6 | 5 of 6 | 0.9387 | 1.0000 | +0.1334 | 0 |
+| setup-marked-four | light | 0 of 6 | 5 of 6 | 0.9311 | 1.0000 | +0.1202 | 0 |
+| win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
 ## Run 11 (after update-rules-panel, G2 block A; parallel session A, branch `claude/peaceful-nash-rules`, not yet merged)
 
 `docs/qa/g2/check-visual-run-11.txt`, 2026-10-11 19:09 to 19:12 (UTC+5:30), exit 1: **106 of 170 at 0.98** (run 10: 86). The capture lock was held by session A, and nothing listened on 4173, 4174, 4176 or 4177 before or after the run. The run rewrote the per-shot `report.json` files and they were reverted, so they still hold run 10; the run file is the evidence.
@@ -74,6 +119,7 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 | rules-techniques | dark | 0 of 4 | 4 of 4 | 0.9913 | 0.9970 |
 | rules-techniques | light | 0 of 4 | 4 of 4 | 0.9913 | 0.9970 |
 | every other state (incl. the 2 logo shots without a driver) | both | 86 of 150 | 86 of 150 | unchanged | unchanged |
+
 
 ## Run 10 (after update-panel-shell, the shared panel shell)
 

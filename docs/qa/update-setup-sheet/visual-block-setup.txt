@@ -1,0 +1,53 @@
+$ node scripts/visual-block.mjs --block setup --states setup,setup-four,setup-marked,setup-marked-four --out docs/qa/update-setup-sheet/blocks/setup
+# under the capture lock of session B, 2026-10-11 20:43:20-20:46:56 (UTC+5:30), before check:visual run 11; exit 1 (the geometry channel counts the recorded 4 px deviation as off).
+# Kept in the repo: summary.json and two diff.png (375-light-setup, 768-dark-setup-four) cited by run-vs-previous.txt; the per-shot reference/product/diff/onion PNGs (28 MB) are not committed (as earlier blocks).
+1024-dark-setup-four           pixel 0.9824 geometry off 1/2, unpaired 0, max delta 4px
+1024-dark-setup-marked-four    pixel 0.9824 geometry n/a (state reached by a driver)
+1024-dark-setup-marked         pixel 0.9717 geometry n/a (state reached by a driver)
+1024-dark-setup                pixel 0.9812 geometry off 1/2, unpaired 0, max delta 4px
+1024-light-setup-four          pixel 0.9824 geometry off 1/2, unpaired 0, max delta 4px
+1024-light-setup-marked-four   pixel 0.9824 geometry n/a (state reached by a driver)
+1024-light-setup-marked        pixel 0.9717 geometry n/a (state reached by a driver)
+1024-light-setup               pixel 0.9812 geometry off 1/2, unpaired 0, max delta 4px
+1366-dark-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-dark-setup-marked-four    pixel 1 geometry n/a (state reached by a driver)
+1366-dark-setup-marked         pixel 0.9717 geometry n/a (state reached by a driver)
+1366-dark-setup                pixel 0.9812 geometry off 1/2, unpaired 0, max delta 4px
+1366-light-setup-four          pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-light-setup-marked-four   pixel 1 geometry n/a (state reached by a driver)
+1366-light-setup-marked        pixel 0.9717 geometry n/a (state reached by a driver)
+1366-light-setup               pixel 0.9813 geometry off 1/2, unpaired 0, max delta 4px
+1440-dark-setup-four           pixel 0.9824 geometry off 1/2, unpaired 0, max delta 4px
+1440-dark-setup-marked-four    pixel 0.9824 geometry n/a (state reached by a driver)
+1440-dark-setup-marked         pixel 1 geometry n/a (state reached by a driver)
+1440-dark-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1440-light-setup-four          pixel 0.9825 geometry off 1/2, unpaired 0, max delta 4px
+1440-light-setup-marked-four   pixel 0.9825 geometry n/a (state reached by a driver)
+1440-light-setup-marked        pixel 1 geometry n/a (state reached by a driver)
+1440-light-setup               pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-setup-four            pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-setup-marked-four     pixel 1 geometry n/a (state reached by a driver)
+320-dark-setup-marked          pixel 0.8821 geometry n/a (state reached by a driver)
+320-dark-setup                 pixel 0.9055 geometry off 2/2, unpaired 0, max delta 2.22px
+320-light-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-light-setup-marked-four    pixel 1 geometry n/a (state reached by a driver)
+320-light-setup-marked         pixel 0.846 geometry n/a (state reached by a driver)
+320-light-setup                pixel 0.9045 geometry off 2/2, unpaired 0, max delta 2.22px
+375-dark-setup-four            pixel 0.9156 geometry off 2/2, unpaired 0, max delta 4px
+375-dark-setup-marked-four     pixel 0.9156 geometry n/a (state reached by a driver)
+375-dark-setup-marked          pixel 0.8984 geometry n/a (state reached by a driver)
+375-dark-setup                 pixel 0.8984 geometry off 2/2, unpaired 0, max delta 4px
+375-light-setup-four           pixel 0.907 geometry off 2/2, unpaired 0, max delta 4px
+375-light-setup-marked-four    pixel 0.907 geometry n/a (state reached by a driver)
+375-light-setup-marked         pixel 0.8885 geometry n/a (state reached by a driver)
+375-light-setup                pixel 0.8885 geometry off 2/2, unpaired 0, max delta 4px
+768-dark-setup-four            pixel 0.9825 geometry off 1/2, unpaired 0, max delta 4px
+768-dark-setup-marked-four     pixel 1 geometry n/a (state reached by a driver)
+768-dark-setup-marked          pixel 1 geometry n/a (state reached by a driver)
+768-dark-setup                 pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup-four           pixel 0.9825 geometry off 1/2, unpaired 0, max delta 4px
+768-light-setup-marked-four    pixel 1 geometry n/a (state reached by a driver)
+768-light-setup-marked         pixel 1 geometry n/a (state reached by a driver)
+768-light-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+
+Block setup: 48 shot(s), geometry NOT within 0.5px (coverage: sampled)
