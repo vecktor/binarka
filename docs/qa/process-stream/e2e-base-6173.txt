@@ -1,0 +1,3 @@
+# e2e on BINARKA_PORT_BASE=6173, 2026-10-11 ~21:52 +0530 (session C; after PD-4's playwright.config.ts and panel-shell e2e change): `BINARKA_PORT_BASE=6173 npx playwright test`, exit 0. docs/qa/e2e-report.json rewritten by the run and restored (not this branch's evidence).
+  ✓  124 [layout] › e2e/nfr-14-panel-shell.spec.ts:326:3 › paint: the four surfaces against the design build › @trace NFR-14 the design server listens on a port chosen by the operating system, not on one the page preview or the capture tools bind (1ms)
+  219 passed (39.8s)

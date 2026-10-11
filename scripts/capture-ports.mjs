@@ -12,8 +12,16 @@
 //        node scripts/capture-ports.mjs --stop   also stop the listeners whose working directory is this worktree (never another's);
 //                                                exit 1 if one of them still listens 2 s later
 // A listener left by SIGKILL, or by a Playwright runner stopped with SIGTERM (it handles SIGINT only), is what --stop is for.
+//
+//        node scripts/capture-ports.mjs --lock <name>     take /tmp/binarka-capture.lock (mkdir, atomic) and write <name>, the
+//                                                         time and this worktree into its owner file; exit 1, printing the
+//                                                         owner and its age, if it exists
+//        node scripts/capture-ports.mjs --unlock <name>   remove the lock only if its owner file names <name>; otherwise exit 1
+//                                                         and leave it (another session's lock is never removed: session C's
+//                                                         `mkdir … ; rm -r` removed session A's on 2026-10-11)
+// The lock is for sessions that share the default ports; a session on its own BINARKA_PORT_BASE needs none.
 import { execFileSync } from 'node:child_process';
-import { realpathSync } from 'node:fs';
+import { mkdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -49,8 +57,55 @@ const cwdOf = (pid) => {
   }
 };
 
+export const LOCK_DIR = process.env.BINARKA_CAPTURE_LOCK ?? '/tmp/binarka-capture.lock'; // the variable is for testing this helper
+const ownerLine = () => {
+  try {
+    return readFileSync(`${LOCK_DIR}/owner`, 'utf8').split('\n')[0];
+  } catch {
+    return null;
+  }
+};
+
+/** Take the shared capture lock for `name`; false (and the current owner) when another holds it. */
+export function takeLock(name, root) {
+  try {
+    mkdirSync(LOCK_DIR);
+  } catch (err) {
+    if (err.code !== 'EEXIST') throw err;
+    const ageMin = Math.round((Date.now() - statSync(LOCK_DIR).mtimeMs) / 60000);
+    return { ok: false, owner: ownerLine() ?? '(no owner file)', ageMin };
+  }
+  writeFileSync(`${LOCK_DIR}/owner`, `${name}\t${new Date().toISOString()}\t${root}\n`);
+  return { ok: true };
+}
+
+/** Release the lock only if its owner file names `name`. */
+export function releaseLock(name) {
+  const owner = ownerLine();
+  if (owner === null) return { ok: false, why: 'no lock (or no owner file) to release' };
+  if (owner.split('\t')[0] !== name) return { ok: false, why: `the lock belongs to "${owner.split('\t')[0]}", not "${name}"; left in place` };
+  rmSync(LOCK_DIR, { recursive: true });
+  return { ok: true };
+}
+
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
-if (isMain) {
+if (isMain && (process.argv.includes('--lock') || process.argv.includes('--unlock'))) {
+  const unlock = process.argv.includes('--unlock');
+  const name = process.argv[process.argv.indexOf(unlock ? '--unlock' : '--lock') + 1];
+  if (!name || name.startsWith('--')) {
+    console.error(`usage: node scripts/capture-ports.mjs ${unlock ? '--unlock' : '--lock'} <session name>`);
+    process.exit(2);
+  }
+  const root = realpathSync(resolve(fileURLToPath(new URL('..', import.meta.url))));
+  if (unlock) {
+    const r = releaseLock(name);
+    console.log(r.ok ? `released ${LOCK_DIR} (${name})` : `NOT released: ${r.why}`);
+    process.exit(r.ok ? 0 : 1);
+  }
+  const r = takeLock(name, root);
+  console.log(r.ok ? `took ${LOCK_DIR} as ${name}` : `NOT taken: held by ${r.owner}, ${r.ageMin} min old (ask the user if over 30 min)`);
+  process.exit(r.ok ? 0 : 1);
+} else if (isMain) {
   const stop = process.argv.includes('--stop');
   const root = realpathSync(resolve(fileURLToPath(new URL('..', import.meta.url))));
   const ports = capturePorts();

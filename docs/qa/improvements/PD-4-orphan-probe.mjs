@@ -1,12 +1,18 @@
 // PD-4 probe: does the capture path leave its `vite preview` listening after it is closed?
-// Usage (after `npm run build`, under /tmp/binarka-capture.lock, ports 4174 and 4176 free):
+// Usage (after `npm run build`; the ports BINARKA_PORT_BASE + 0 to + 4 free, 4173 to 4177 by default, under the capture lock
+// when on the default ports):
 //   node docs/qa/improvements/PD-4-orphan-probe.mjs [--e2e] [--green]
 //   (--e2e also stops Playwright's runner on 4173; --green adds the post-PD-4 cases K (the helper), P (the port base) and
-//   H (visual-block.mjs itself, needs design/v0/out); ports 4173 to 4177 and 5174 free)
+//   H (visual-block.mjs itself, needs design/v0/out); the base + 1001 free too)
 // Read-only for the repo: it edits no script. It runs the adapter's real capture()/close(), replays the spawn line of
 // scripts/visual-block.mjs, and tries two candidate fixes on the same spawn line. Every process it leaves behind is its
 // own; it reports each one and stops it at the end, so the ports are free when it exits.
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
+import { capturePorts } from '../../../scripts/capture-ports.mjs';
+
+// The session's ports (PD-4): BINARKA_PORT_BASE, default 4173. Case P moves a caller to OTHER_BASE.
+const { e2e: E2E, gate: GATE, page: PAGE, design: DESIGN } = capturePorts();
+const OTHER_BASE = E2E + 1000;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const listener = (port) => {
@@ -52,7 +58,7 @@ async function report(label, port, spawnedPid) {
   return pids.length === 0;
 }
 
-for (const port of [4174, 4176]) {
+for (const port of [GATE, PAGE]) {
   if (listener(port).length) {
     console.error(`port ${port} is busy; stop it first (the probe measures only processes it starts)`);
     process.exit(2);
@@ -67,18 +73,18 @@ const results = {};
   const config = JSON.parse(readFileSync('quality/visual-parity.config.json', 'utf8'));
   const shot = config.breakpoints.find((b) => b.name === '375-light-default');
   await adapter.capture({ role: 'local', url: config.localUrl, name: shot.name, width: shot.width, height: shot.height, settleMs: 300 });
-  const before = listener(4174);
-  console.log(`A. while capturing, listener on 4174: ${before.map(ps).join(' | ')}`);
+  const before = listener(GATE);
+  console.log(`A. while capturing, listener on ${GATE}: ${before.map(ps).join(' | ')}`);
   await adapter.close();
-  results.A = await report('A. adapter capture() then close()  [current code]', 4174);
+  results.A = await report('A. adapter capture() then close()  [current code]', GATE);
 }
 
 // B. The spawn line of scripts/visual-block.mjs:109 and its kill at :256, replayed as written.
 {
-  const proc = spawn('npx', ['vite', 'preview', '--port', '4176', '--strictPort'], { stdio: 'ignore' });
-  await waitAnswer('http://localhost:4176/');
+  const proc = spawn('npx', ['vite', 'preview', '--port', String(PAGE), '--strictPort'], { stdio: 'ignore' });
+  await waitAnswer(`http://localhost:${PAGE}/`);
   proc.kill();
-  results.B = await report('B. old visual-block spawn npx, proc.kill()  [before PD-4]', 4176, proc.pid);
+  results.B = await report('B. old visual-block spawn npx, proc.kill()  [before PD-4]', PAGE, proc.pid);
 }
 
 for (const pid of leftovers.splice(0)) process.kill(pid, 'SIGTERM');
@@ -86,33 +92,33 @@ await sleep(1500);
 
 // C. Candidate fix 1 (the plan's): npx in its own process group, the group killed.
 {
-  const proc = spawn('npx', ['vite', 'preview', '--port', '4176', '--strictPort'], { stdio: 'ignore', detached: true });
-  await waitAnswer('http://localhost:4176/');
+  const proc = spawn('npx', ['vite', 'preview', '--port', String(PAGE), '--strictPort'], { stdio: 'ignore', detached: true });
+  await waitAnswer(`http://localhost:${PAGE}/`);
   process.kill(-proc.pid, 'SIGTERM');
-  results.C = await report('C. npx detached, process.kill(-pid)  [fix 1]', 4176, proc.pid);
+  results.C = await report('C. npx detached, process.kill(-pid)  [fix 1]', PAGE, proc.pid);
 }
 
 // D. Candidate fix 2: no wrapper; node runs vite's own bin, so the pid held is the listener; kill() reaches it.
 {
-  const proc = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', '4176', '--strictPort'], { stdio: 'ignore' });
-  await waitAnswer('http://localhost:4176/');
-  console.log(`D. while serving, listener on 4176: ${listener(4176).map(ps).join(' | ')}`);
+  const proc = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PAGE), '--strictPort'], { stdio: 'ignore' });
+  await waitAnswer(`http://localhost:${PAGE}/`);
+  console.log(`D. while serving, listener on ${PAGE}: ${listener(PAGE).map(ps).join(' | ')}`);
   proc.kill();
-  results.D = await report('D. node vite.js directly, proc.kill()  [fix 2]', 4176, proc.pid);
+  results.D = await report('D. node vite.js directly, proc.kill()  [fix 2]', PAGE, proc.pid);
 }
 
 // E. The crash path: a caller that dies by an uncaught error before its finally/close (fix 2 plus an exit hook vs without).
 for (const hook of [false, true]) {
   const body = `
     const { spawn } = require('node:child_process');
-    const p = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', '4176', '--strictPort'], { stdio: 'ignore' });
+    const p = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', '${PAGE}', '--strictPort'], { stdio: 'ignore' });
     ${hook ? "process.on('exit', () => p.kill());" : ''}
-    const t = setInterval(async () => { try { if ((await fetch('http://localhost:4176/')).ok) { clearInterval(t); throw new Error('crash'); } } catch (e) { if (e.message === 'crash') throw e; } }, 250);
+    const t = setInterval(async () => { try { if ((await fetch('http://localhost:${PAGE}/')).ok) { clearInterval(t); throw new Error('crash'); } } catch (e) { if (e.message === 'crash') throw e; } }, 250);
   `;
   const r = spawn(process.execPath, ['-e', body], { stdio: 'ignore' });
   await new Promise((res) => r.on('exit', res));
   const key = hook ? 'E2' : 'E1';
-  results[key] = await report(`E. caller crashes, fix 2 ${hook ? 'WITH' : 'without'} process.on('exit') kill`, 4176);
+  results[key] = await report(`E. caller crashes, fix 2 ${hook ? 'WITH' : 'without'} process.on('exit') kill`, PAGE);
   for (const pid of leftovers.splice(0)) process.kill(pid, 'SIGTERM');
   await sleep(1500);
 }
@@ -134,19 +140,19 @@ const realCaller = `
 `;
 const fixedCaller = `
   const { spawn } = await import('node:child_process');
-  const p = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', '4174', '--strictPort'], { stdio: 'ignore' });
+  const p = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', '${GATE}', '--strictPort'], { stdio: 'ignore' });
   process.on('exit', () => p.kill());
   for (const [sig, n] of [['SIGINT', 2], ['SIGTERM', 15], ['SIGHUP', 1]]) process.once(sig, () => process.exit(128 + n));
-  const t = setInterval(async () => { try { if ((await fetch('http://localhost:4174/')).ok) { clearInterval(t); console.log('READY'); } } catch {} }, 250);
+  const t = setInterval(async () => { try { if ((await fetch('http://localhost:${GATE}/')).ok) { clearInterval(t); console.log('READY'); } } catch {} }, 250);
   setInterval(() => {}, 1000);
 `;
 // F7-F8: candidate fix 1 (npx in its own process group) with no handler, and with the same handlers killing the group.
 const groupCaller = (handlers) => `
   const { spawn } = await import('node:child_process');
-  const p = spawn('npx', ['vite', 'preview', '--port', '4174', '--strictPort'], { stdio: 'ignore', detached: true });
+  const p = spawn('npx', ['vite', 'preview', '--port', '${GATE}', '--strictPort'], { stdio: 'ignore', detached: true });
   ${handlers ? `process.on('exit', () => { try { process.kill(-p.pid, 'SIGTERM'); } catch {} });
   for (const [sig, n] of [['SIGINT', 2], ['SIGTERM', 15], ['SIGHUP', 1]]) process.once(sig, () => process.exit(128 + n));` : ''}
-  const t = setInterval(async () => { try { if ((await fetch('http://localhost:4174/')).ok) { clearInterval(t); console.log('READY'); } } catch {} }, 250);
+  const t = setInterval(async () => { try { if ((await fetch('http://localhost:${GATE}/')).ok) { clearInterval(t); console.log('READY'); } } catch {} }, 250);
   setInterval(() => {}, 1000);
 `;
 const signalCases = [
@@ -167,17 +173,17 @@ for (const [key, body, sig, what] of signalCases) {
     child.stdout.on('data', (d) => { if (String(d).includes('READY')) res(); });
     child.on('exit', () => rej(new Error(`${key}: caller exited before READY`)));
   });
-  console.log(`${key}. while up, listener on 4174: ${listener(4174).map(ps).join(' | ')}`);
+  console.log(`${key}. while up, listener on ${GATE}: ${listener(GATE).map(ps).join(' | ')}`);
   const gone = new Promise((res) => child.on('exit', res));
   process.kill(child.pid, sig);
   await gone;
-  results[key] = await report(`${key}. caller gets ${sig}, ${what}`, 4174);
+  results[key] = await report(`${key}. caller gets ${sig}, ${what}`, GATE);
   if (key === 'F4' && process.argv.includes('--green')) {
     // K. What no handler can catch (SIGKILL) is stopped by the helper, which stops only this worktree's listeners.
     const h = spawnSync(process.execPath, ['scripts/capture-ports.mjs', '--stop'], { encoding: 'utf8' });
     console.log(`K. node scripts/capture-ports.mjs --stop -> exit ${h.status}\n${h.stdout.trim().replace(/^/gm, '   ')}`);
     leftovers.splice(0);
-    results.K = h.status === 0 && (await report('K. after the helper', 4174));
+    results.K = h.status === 0 && (await report('K. after the helper', GATE));
   }
   for (const pid of leftovers.splice(0)) process.kill(pid, 'SIGTERM');
   await sleep(1500);
@@ -185,17 +191,17 @@ for (const [key, body, sig, what] of signalCases) {
 
 // P. The port base (only with --green): the adapter's preview moves to BINARKA_PORT_BASE + 1; 4174 stays free.
 if (process.argv.includes('--green')) {
-  const child = spawn(process.execPath, ['--input-type=module', '-e', realCaller], { stdio: ['ignore', 'pipe', 'inherit'], env: { ...process.env, BINARKA_PORT_BASE: '5173' } });
+  const child = spawn(process.execPath, ['--input-type=module', '-e', realCaller], { stdio: ['ignore', 'pipe', 'inherit'], env: { ...process.env, BINARKA_PORT_BASE: String(OTHER_BASE) } });
   await new Promise((res, rej) => {
     child.stdout.on('data', (d) => { if (String(d).includes('READY')) res(); });
     child.on('exit', () => rej(new Error('P: caller exited before READY')));
   });
-  console.log(`P. BINARKA_PORT_BASE=5173, while up: 5174 ${listener(5174).map(ps).join(' | ') || 'none'}; 4174 ${listener(4174).length ? 'BUSY' : 'free'}`);
-  results.P = listener(5174).length === 1 && listener(4174).length === 0;
+  console.log(`P. BINARKA_PORT_BASE=${OTHER_BASE}, while up: ${OTHER_BASE + 1} ${listener(OTHER_BASE + 1).map(ps).join(' | ') || 'none'}; ${GATE} ${listener(GATE).length ? 'BUSY' : 'free'}`);
+  results.P = listener(OTHER_BASE + 1).length === 1 && listener(GATE).length === 0;
   const gone = new Promise((res) => child.on('exit', res));
   process.kill(child.pid, 'SIGTERM');
   await gone;
-  results.P2 = await report('P. base 5173 caller gets SIGTERM', 5174);
+  results.P2 = await report(`P. base ${OTHER_BASE} caller gets SIGTERM`, OTHER_BASE + 1);
   for (const pid of leftovers.splice(0)) process.kill(pid, 'SIGTERM');
   await sleep(1500);
 }
@@ -207,13 +213,13 @@ if (process.argv.includes('--green')) {
   let exited = null;
   const gone = new Promise((res) => vb.on('exit', (code, signal) => { exited = signal ?? code; res(exited); }));
   const end = Date.now() + 60000;
-  while (!listener(4176).length && exited === null && Date.now() < end) await sleep(50);
-  console.log(`H. while visual-block runs: 4174 ${listener(4174).map(ps).join(' | ') || 'none'}; 4176 ${listener(4176).map(ps).join(' | ') || 'none'}; 4177 ${listener(4177).length ? 'up' : 'none'}`);
+  while (!listener(PAGE).length && exited === null && Date.now() < end) await sleep(50);
+  console.log(`H. while visual-block runs: ${GATE} ${listener(GATE).map(ps).join(' | ') || 'none'}; ${PAGE} ${listener(PAGE).map(ps).join(' | ') || 'none'}; ${DESIGN} ${listener(DESIGN).length ? 'up' : 'none'}`);
   if (exited === null) process.kill(vb.pid, 'SIGTERM');
   else console.log('H. visual-block exited before its page preview listened (not a signal case)');
   console.log(`H. visual-block exit: ${await gone}`);
   const free = [];
-  for (const port of [4174, 4176, 4177]) free.push(await report(`H. visual-block gets SIGTERM, port ${port}`, port));
+  for (const port of [GATE, PAGE, DESIGN]) free.push(await report(`H. visual-block gets SIGTERM, port ${port}`, port));
   results.H = free.every(Boolean);
   for (const pid of leftovers.splice(0)) process.kill(pid, 'SIGTERM');
   await sleep(1500);
@@ -223,16 +229,16 @@ if (process.argv.includes('--green')) {
 // the runner builds first). The signal goes to the runner's pid only, as in F.
 if (process.argv.includes('--e2e')) {
   for (const [key, sig] of [['G1', 'SIGTERM'], ['G2', 'SIGINT'], ['G3', 'SIGKILL']]) {
-    if (listener(4173).length) throw new Error('port 4173 is busy');
+    if (listener(E2E).length) throw new Error(`port ${E2E} is busy`);
     const runner = spawn(process.execPath, ['node_modules/@playwright/test/cli.js', 'test', '--project=layout', 'e2e/nfr-18-flash.spec.ts', '--repeat-each=50'], { stdio: 'ignore' });
     const end = Date.now() + 120000;
-    while (!listener(4173).length && Date.now() < end) await sleep(250);
+    while (!listener(E2E).length && Date.now() < end) await sleep(250);
     await sleep(1500);
-    console.log(`${key}. while up, listener on 4173: ${listener(4173).map(ps).join(' | ')}`);
+    console.log(`${key}. while up, listener on ${E2E}: ${listener(E2E).map(ps).join(' | ')}`);
     const gone = new Promise((res) => runner.on('exit', res));
     process.kill(runner.pid, sig);
     await gone;
-    results[key] = await report(`${key}. playwright runner gets ${sig}`, 4173);
+    results[key] = await report(`${key}. playwright runner gets ${sig}`, E2E);
     for (const pid of leftovers.splice(0)) process.kill(pid, 'SIGTERM');
     await sleep(1500);
   }
@@ -240,5 +246,5 @@ if (process.argv.includes('--e2e')) {
 
 for (const pid of leftovers.splice(0)) process.kill(pid, 'SIGTERM');
 await sleep(1500);
-console.log(`\nafter cleanup: ${[4173, 4174, 4176, 4177, 5174].map((p) => `${p} ${listener(p).length ? 'BUSY' : 'free'}`).join(', ')}`);
+console.log(`\nafter cleanup: ${[E2E, GATE, PAGE, DESIGN, OTHER_BASE + 1].map((p) => `${p} ${listener(p).length ? 'BUSY' : 'free'}`).join(', ')}`);
 console.log(JSON.stringify(results));

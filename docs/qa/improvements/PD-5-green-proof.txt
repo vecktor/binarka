@@ -1,7 +1,7 @@
-# PD-5 green proof, PARTIAL (static, no capture), 2026-10-11 21:23 +0530 (session C, `claude/modest-darwin-process`)
+# PD-5 green proof, 2026-10-11 (session C, `claude/modest-darwin-process`): static part 21:23, full run 21:40 to 21:42 +0530
 
-Captures are paused by the user (session log row C9), so the full run (the PD-5 probe with the parity adapter, 170 shots under
-the lock, compared with the last committed check:visual run) is NOT earned yet. What is earned without binding any port:
+Sections 1 to 4 were written while captures were paused (session log row C9); section 5 is the full run, earned after the
+user allowed captures on an own port base (row C13). Sections 1 to 4 bind no port:
 
 # PD-5 static green probe, 2026-10-11 21:23:00 +0530: no port bound. A temporary config (.pd5-probe.config.json, removed after) = the committed config with one breakpoint 'pd5-static-probe' and "adapters" naming a stub module that throws 'stub adapter reached'.
 
@@ -33,3 +33,18 @@ WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binark
 Result: PASS, 1 warning(s)
 
 Before the re-seal the integrity check FAILS on the two edited gate scripts and warns that the config is unlocked; after it, PASS, with the config in factory-lock.json (27 locked files, was 26).
+
+## 5. The full run (earned 2026-10-11 21:40 to 21:42 +0530, base 6173, no lock: own ports; checker = PD-5 + the PD-6 edit, then uncommitted)
+The callers' command line, `env -u CHECK_VISUAL_FIDELITY_ADAPTERS node scripts/check-visual-fidelity.mjs`, with BINARKA_PORT_BASE=6173:
+(adapters injected from scripts/check-visual-parity-adapters.mjs)
+FAIL  [logo-dark] capture failed: no state driver for "logo" (shot logo-dark); the page has no such state yet
+FAIL  [logo-light] capture failed: no state driver for "logo" (shot logo-light); the page has no such state yet
+FAIL  [visual] 2 of 170 breakpoint(s) not measured (capture or diff failed); docs/qa/visual-diff/ left as it was; this run's reports: <tmp>/visual-fidelity-run-XXXX/docs/qa/visual-diff
+Scope: 170 breakpoint(s)
+Result: FAIL, 1 warning(s)
+exit 1
+PASS lines: 86 of 170 (the 82 others FAIL on score; the 2 logo shots have no state driver, README gap 2).
+The run's own reports (staged by PD-6, not copied because the first PD-6 rule counted the logo shots) against the committed run 10:
+reports 170; byte-equal JSON 170; score changed 0; verdict flipped 0; passing before 86, after 86; null scores after 2
+So qa-verify and gate:status now measure NFR-14 and reproduce run 10 exactly. A second full run (21:45 to 21:47, PD-6 refined) copied
+its reports over docs/qa/visual-diff (mtimes 21:47:31) and git shows no change: byte-identical (PD-6-green-proof.txt).

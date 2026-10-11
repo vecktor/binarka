@@ -1,0 +1,8 @@
+# capture-ports.mjs --lock/--unlock, 2026-10-11 21:36:25 +0530, on a test lock (BINARKA_CAPTURE_LOCK=<scratchpad>/test-capture.lock; the real /tmp lock untouched)
+--lock session-X       -> took <scratchpad>/test-capture.lock as session-X (exit 0)
+--lock session-Y       -> NOT taken: held by session-X	2026-10-11T16:06:25.795Z	/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca, 0 min old (ask the user if over 30 min) (exit 1)
+--unlock session-Y     -> NOT released: the lock belongs to "session-X", not "session-Y"; left in place (exit 1)
+--unlock session-X     -> released <scratchpad>/test-capture.lock (session-X) (exit 0)
+--unlock session-X     -> NOT released: no lock (or no owner file) to release (exit 1)
+--lock session-Y       -> took <scratchpad>/test-capture.lock as session-Y (exit 0)
+--unlock session-Y     -> released <scratchpad>/test-capture.lock (session-Y) (exit 0)

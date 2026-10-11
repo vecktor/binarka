@@ -1,6 +1,6 @@
 # PD-4: a stopped capture leaves its `vite preview` listening
 
-Status: **APPROVED by the user** in chat on 2026-10-11 at about 18:18 (UTC+5:30), through the question form: «Approve fix + helper (Recommended)» and, for the ports, «P2: one base env var (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row C7). Executed in the commit with `Refs: PD-4`. **Green proof PARTIAL** (`PD-4-green-proof.txt`): the adapter under SIGTERM, SIGINT and SIGHUP, the helper after SIGKILL and the port base are green; `visual-block.mjs` itself and Playwright's 4173 are not yet re-run. Drafted from 17:55 by session C of the parallel G2 plan.
+Status: **APPROVED by the user** in chat on 2026-10-11 at about 18:18 (UTC+5:30), through the question form: «Approve fix + helper (Recommended)» and, for the ports, «P2: one base env var (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row C7). Executed in the commit with `Refs: PD-4`. **Green proof complete** (`PD-4-green-proof.txt`, pass 2, 2026-10-11 21:37 to 21:39, on base 6173): the adapter under SIGTERM, SIGINT and SIGHUP, `visual-block.mjs` itself under SIGTERM, the helper after SIGKILL and the port base (Playwright included) are green. Drafted from 17:55 by session C of the parallel G2 plan.
 
 ## Defect
 
@@ -56,7 +56,7 @@ Under P2 or P3 one question stays open: **two full captures at the same time loa
 ## Red to green proof
 
 - **Red** (`PD-4-proof.txt`, 2026-10-11 18:07 to 18:09, lock held, ports free before and after): E1, F1 to F4, G1 and G3 leave a listener; the earlier diagnosis is disproved by A and B. Three earlier runs (17:58, 17:59 and 18:02, with earlier versions of the probe) gave the same verdicts for the cases they had (`PD-4-proof-runs-1-3.txt`).
-- **Green is earned when** the same probe run against the changed adapter (real code, case F) frees the port for SIGTERM, SIGINT, SIGHUP and the uncaught error; SIGKILL stays red and the helper stops that listener; `visual-block.mjs` under SIGTERM frees 4174, 4176 and 4177; `check-factory-integrity` passes after the re-seal. **Earned so far** (`PD-4-green-proof.txt`, 18:23 to 18:26): F1 to F3, K, P and the integrity re-seal. **Not yet:** H (`visual-block.mjs`) and G (4173, which PD-4 does not change, a re-check only). The uncaught-error path of the real adapter is covered by the same exit hook as E2, not run on the adapter itself.
+- **Green is earned when** the same probe run against the changed adapter (real code, case F) frees the port for SIGTERM, SIGINT, SIGHUP and the uncaught error; SIGKILL stays red and the helper stops that listener; `visual-block.mjs` under SIGTERM frees 4174, 4176 and 4177; `check-factory-integrity` passes after the re-seal. **Earned** (`PD-4-green-proof.txt`, pass 2): F1 to F3, H, K, P, and the integrity re-seal; G shows Playwright on the session's base, still leaking on SIGTERM and SIGKILL, which the helper covers. The uncaught-error path of the real adapter is covered by the same exit hook as E2, not run on the adapter itself.
 - **Sampling, declared:** one machine (macOS 26.5.2, Node 22.21.1, npm 10.9.4), one shot, one e2e file; signals to the caller's pid only. A terminal Ctrl-C (signal to the whole group) is not measured.
 
 ## How the two PDs meet

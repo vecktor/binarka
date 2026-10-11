@@ -1,6 +1,6 @@
 # PD-5: `qa-verify` and `gate:status` run the visual checker without the NFR-14 adapter and overwrite its evidence
 
-Status: **APPROVED by the user** in chat on 2026-10-11 at about 18:18 (UTC+5:30), through the question form: «B: checker reads adapter from config (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row C7). Executed in the commit with `Refs: PD-5`. **Green proof PARTIAL** (`PD-5-green-proof.txt`): the mechanism is proven without a capture (the callers' command line loads the adapter the config names; the variable still wins; integrity FAIL before and PASS after the re-seal); the full 170-shot run is not yet run, because captures are paused. Drafted from 18:00 by session C of the parallel G2 plan. This is gap 3 of `docs/qa/visual-diff/README.md` § Known gaps.
+Status: **APPROVED by the user** in chat on 2026-10-11 at about 18:18 (UTC+5:30), through the question form: «B: checker reads adapter from config (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row C7). Executed in the commit with `Refs: PD-5`. **Green proof complete** (`PD-5-green-proof.txt`): the callers' command line loads the adapter the config names, the variable still wins, integrity FAIL before and PASS after the re-seal, and the full 170-shot run on base 6173 reproduces run 10 byte for byte (86 of 170). Drafted from 18:00 by session C of the parallel G2 plan. This is gap 3 of `docs/qa/visual-diff/README.md` § Known gaps.
 
 ## Defect
 
