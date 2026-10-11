@@ -1,0 +1,86 @@
+# Per-block tool: update-page-backdrop (task 5)
+## orphan check before the run (2026-10-11 08:22:55 +0530)
+$ lsof -nP -iTCP:4173 -sTCP:LISTEN
+(exit 1; 1 = nothing listening)
+$ lsof -nP -iTCP:4174 -sTCP:LISTEN
+(exit 1; 1 = nothing listening)
+$ lsof -nP -iTCP:4176 -sTCP:LISTEN
+(exit 1; 1 = nothing listening)
+$ lsof -nP -iTCP:4177 -sTCP:LISTEN
+(exit 1; 1 = nothing listening)
+
+## run: npm run build && node scripts/visual-block.mjs --block layout --states rules,rules-techniques,confirm,setup,settings --out docs/qa/g2/blocks/backdrop (exit 0)
+Scope note: the tool's pixel channel scores only the union of the MAIN COLUMN's design boxes, cut from the frozen reference and from the page capture. Under an open surface that region is partly covered by the panel, sheet or dialog, whose own paint this block does not port. So these numbers mix the backdrop with unported surface paint. The gate's full-shot scores (run 8) are the block's measure of the dim. No floor is claimed here.
+```
+1024-dark-confirm              pixel 0.9795 geometry n/a (state reached by a driver)
+1024-dark-rules                pixel 0.8273 geometry n/a (state reached by a driver)
+1024-dark-settings             pixel 0.9701 geometry n/a (state reached by a driver)
+1024-dark-setup                pixel 0.8547 geometry n/a (state reached by a driver)
+1024-light-confirm             pixel 0.9737 geometry n/a (state reached by a driver)
+1024-light-rules               pixel 0.7688 geometry n/a (state reached by a driver)
+1024-light-settings            pixel 0.9832 geometry n/a (state reached by a driver)
+1024-light-setup               pixel 0.8081 geometry n/a (state reached by a driver)
+1366-dark-rules-techniques     pixel 0.8077 geometry n/a (state reached by a driver)
+1366-dark-rules                pixel 0.8077 geometry n/a (state reached by a driver)
+1366-dark-settings             pixel 0.9712 geometry n/a (state reached by a driver)
+1366-dark-setup                pixel 0.8572 geometry n/a (state reached by a driver)
+1366-light-rules-techniques    pixel 0.7614 geometry n/a (state reached by a driver)
+1366-light-rules               pixel 0.7614 geometry n/a (state reached by a driver)
+1366-light-settings            pixel 0.9826 geometry n/a (state reached by a driver)
+1366-light-setup               pixel 0.8381 geometry n/a (state reached by a driver)
+1440-dark-confirm              pixel 0.9853 geometry n/a (state reached by a driver)
+1440-dark-rules-techniques     pixel 0.874 geometry n/a (state reached by a driver)
+1440-dark-rules                pixel 0.874 geometry n/a (state reached by a driver)
+1440-dark-settings             pixel 0.9787 geometry n/a (state reached by a driver)
+1440-dark-setup                pixel 0.8957 geometry n/a (state reached by a driver)
+1440-light-confirm             pixel 0.9813 geometry n/a (state reached by a driver)
+1440-light-rules-techniques    pixel 0.784 geometry n/a (state reached by a driver)
+1440-light-rules               pixel 0.784 geometry n/a (state reached by a driver)
+1440-light-settings            pixel 0.9875 geometry n/a (state reached by a driver)
+1440-light-setup               pixel 0.8723 geometry n/a (state reached by a driver)
+320-dark-confirm               pixel 0.9049 geometry n/a (state reached by a driver)
+320-dark-rules-techniques      pixel 0.9488 geometry n/a (state reached by a driver)
+320-dark-rules                 pixel 0.9542 geometry n/a (state reached by a driver)
+320-dark-settings              pixel 0.9184 geometry n/a (state reached by a driver)
+320-dark-setup                 pixel 0.7637 geometry n/a (state reached by a driver)
+320-light-confirm              pixel 0.9036 geometry n/a (state reached by a driver)
+320-light-rules-techniques     pixel 0.9482 geometry n/a (state reached by a driver)
+320-light-rules                pixel 0.9494 geometry n/a (state reached by a driver)
+320-light-settings             pixel 0.9407 geometry n/a (state reached by a driver)
+320-light-setup                pixel 0.8626 geometry n/a (state reached by a driver)
+375-dark-confirm               pixel 0.9506 geometry n/a (state reached by a driver)
+375-dark-rules-techniques      pixel 0.9527 geometry n/a (state reached by a driver)
+375-dark-rules                 pixel 0.9586 geometry n/a (state reached by a driver)
+375-dark-settings              pixel 0.9638 geometry n/a (state reached by a driver)
+375-dark-setup                 pixel 0.8032 geometry n/a (state reached by a driver)
+375-light-confirm              pixel 0.947 geometry n/a (state reached by a driver)
+375-light-rules-techniques     pixel 0.9506 geometry n/a (state reached by a driver)
+375-light-rules                pixel 0.9538 geometry n/a (state reached by a driver)
+375-light-settings             pixel 0.9755 geometry n/a (state reached by a driver)
+375-light-setup                pixel 0.8394 geometry n/a (state reached by a driver)
+768-dark-confirm               pixel 0.9796 geometry n/a (state reached by a driver)
+768-dark-rules                 pixel 0.8463 geometry n/a (state reached by a driver)
+768-dark-settings              pixel 0.9701 geometry n/a (state reached by a driver)
+768-dark-setup                 pixel 0.8293 geometry n/a (state reached by a driver)
+768-light-confirm              pixel 0.9738 geometry n/a (state reached by a driver)
+768-light-rules                pixel 0.703 geometry n/a (state reached by a driver)
+768-light-settings             pixel 0.9826 geometry n/a (state reached by a driver)
+768-light-setup                pixel 0.6618 geometry n/a (state reached by a driver)
+
+Block layout: 54 shot(s), geometry within 0.5px (coverage: sampled)
+```
+## orphan check after the run (2026-10-11 08:24:22 +0530)
+$ lsof -nP -iTCP:4173 -sTCP:LISTEN
+(exit 1)
+$ lsof -nP -iTCP:4174 -sTCP:LISTEN
+(exit 1)
+$ lsof -nP -iTCP:4176 -sTCP:LISTEN
+(exit 1)
+$ lsof -nP -iTCP:4177 -sTCP:LISTEN
+(exit 1)
+$ pgrep -fl 'vite preview'  -> (nothing)
+
+## Against the estimate of design.md
+The main-column crops above mix the dim with the unported panel paint, so they are not the block's measure. The comparison with the estimate is in docs/qa/visual-diff/README.md, section "Run 8", from the gate's full shots.
+- The estimate was right for the light rules shots from 64rem (a large rise, still under 0.98) and for the soft shots (little movement).
+- It was wrong for the dark rules shots, which fell. That is masking: with the old backdrop, the design's dark panel fill #2c2620 matched the undimmed page within the gate's YIQ limit (delta 125 against 352). Against the strong composite the delta is 359.

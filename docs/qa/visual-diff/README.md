@@ -57,6 +57,58 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` shows the fixture at level 2 («Задачка») and opens the sheet. `setup-marked` marks 8×8 «Головоломка» on the fixture and puts keyboard focus on «Почати». `hint` shows the hint board without its hinted cell and presses «Підказка» once. `settings-light` and `settings-dark` store the manual theme before load.
 6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits. **Closed by PD-2:** it fails when something already answers on the port, and when its own preview exits before answering (`PD-2-proof.txt`, section 3: before, a stale copy on 4174 was scored 0.9125 without a word; after, "something already answers on http://localhost:4174/").
 
+## Run 8 (after block 3, update-page-backdrop): by state
+
+Run 8, 2026-10-11 08:24 to 08:26 (UTC+5:30), after the backdrops were ported (the change `update-page-backdrop`: the translucent tokens `--color-backdrop-soft` and `--color-backdrop-strong` of the A-57 appendix; its browser check `e2e/nfr-14-backdrop.spec.ts` passes 11 of 11, `docs/qa/update-page-backdrop/green-run.txt`, and the full e2e run passes 192, `battery.txt`): **FAIL**, exit 1, **84 of 170 at 0.98** (run 7: 82). 168 scored 0.7527 to 1.0000 (mean 0.9359, telemetry; run 7: 0.9208). The 2 logo shots still have no state driver. Output: [`docs/qa/g2/check-visual-run-8.txt`](../g2/check-visual-run-8.txt). The per-shot `report.json` and `diff.png` files now hold run 8. Before the run, nothing listened on 4173, 4174, 4176 or 4177; the per-block tool left no orphan this time (`docs/qa/update-page-backdrop/block-backdrop.txt`).
+
+- **Main column:** every main-column state is unchanged, as expected; the block touches only the backdrops.
+- **Light rules panel:** the light `rules` and `rules-techniques` shots rose sharply, for example 1440 from 0.1333 to 0.8404 and 1024 from 0.2216 to 0.7767. The light confirm shots rose slightly; two more pass (3 of 5).
+- **Dark rules panel: these shots fell**, for example 1366 from 0.9427 to 0.8178 and 1024 from 0.9324 to 0.8168. This is not a backdrop error: the browser check reads the design's composites in all 10 sampled cases. **The cause is masking.**
+  - The old dark backdrop was the page colour over the page, so in effect there was no dim.
+  - The design's desktop rules panel is a 40rem column in a different place from the page's panel. Where the design shows its panel fill `#2c2620` and the page shows the bare page `#1a1714`, the gate's per-pixel YIQ delta was 125, under its limit of 352. So those pixels counted as equal.
+  - Against the new strong composite `rgb(15,12,9)` the delta is 359, over the limit; against the soft one `rgb(18,15,12)` it is 283.
+  - So the panel mismatch, which was always there, now shows in the dark score. It belongs to the rules-panel block (its placement and paint), not to this one.
+- **Setup sheet, settings panel, dialog:** within about 0.01 of run 7, except 768-dark-setup-four, from 0.9004 to 0.8674 (the same masking effect under the soft dim). Their own paint and placement are later blocks.
+
+Estimate against measurement (the estimate is in `openspec/changes/update-page-backdrop/design.md`): it was right for the light rules shots from 64rem and for the small movement of the soft shots. It missed the dark rules drop, because it compared the dim with the bare page only, never with the design's panel fill where the two panels do not overlap.
+
+The last column is the mean change against run 7.
+
+| State | Scheme | Shots at 0.98 | Lowest | Highest | Mean change |
+|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 0.9191 | 0.9915 | -0.0009 |
+| confirm | light | 3 of 5 | 0.9180 | 0.9892 | +0.0149 |
+| default | dark | 6 of 6 | 1.0000 | 1.0000 | +0.0000 |
+| default | light | 6 of 6 | 0.9985 | 0.9996 | +0.0000 |
+| eight | dark | 6 of 6 | 1.0000 | 1.0000 | +0.0000 |
+| eight | light | 6 of 6 | 1.0000 | 1.0000 | +0.0000 |
+| four | dark | 5 of 5 | 1.0000 | 1.0000 | +0.0000 |
+| four | light | 5 of 5 | 1.0000 | 1.0000 | +0.0000 |
+| hint | dark | 5 of 5 | 1.0000 | 1.0000 | +0.0000 |
+| hint | light | 5 of 5 | 1.0000 | 1.0000 | +0.0000 |
+| level | dark | 5 of 5 | 1.0000 | 1.0000 | +0.0000 |
+| level | light | 5 of 5 | 1.0000 | 1.0000 | +0.0000 |
+| rules | dark | 0 of 6 | 0.8168 | 0.9029 | -0.0577 |
+| rules | light | 0 of 6 | 0.7767 | 0.9010 | +0.3114 |
+| rules-techniques | dark | 0 of 4 | 0.8178 | 0.8978 | -0.0468 |
+| rules-techniques | light | 0 of 4 | 0.7858 | 0.8980 | +0.3294 |
+| settings | dark | 2 of 6 | 0.9230 | 0.9877 | +0.0000 |
+| settings | light | 4 of 6 | 0.9430 | 0.9928 | -0.0009 |
+| settings-dark | light | 3 of 5 | 0.9308 | 0.9891 | +0.0000 |
+| settings-focus | dark | 1 of 2 | 0.9190 | 0.9819 | +0.0000 |
+| settings-focus | light | 1 of 2 | 0.9391 | 0.9890 | -0.0007 |
+| settings-light | dark | 3 of 5 | 0.9458 | 0.9931 | -0.0006 |
+| setup | dark | 0 of 6 | 0.7527 | 0.9399 | -0.0047 |
+| setup | light | 0 of 6 | 0.7708 | 0.9264 | -0.0006 |
+| setup-four | dark | 0 of 6 | 0.7757 | 0.9370 | -0.0112 |
+| setup-four | light | 0 of 6 | 0.7668 | 0.9447 | -0.0014 |
+| setup-marked | dark | 0 of 6 | 0.7587 | 0.9383 | -0.0042 |
+| setup-marked | light | 0 of 6 | 0.7680 | 0.9235 | -0.0010 |
+| setup-marked-four | dark | 0 of 6 | 0.7756 | 0.9425 | -0.0056 |
+| setup-marked-four | light | 0 of 6 | 0.7882 | 0.9441 | -0.0008 |
+| win | dark | 5 of 5 | 1.0000 | 1.0000 | +0.0000 |
+| win | light | 5 of 5 | 1.0000 | 1.0000 | +0.0000 |
+
 ## Run 7 (after block 2, update-page-palette): by state
 
 Run 7, 2026-10-11 00:39 to 00:41, after the main column's palette was ported (the change `update-page-palette`, port `676ee03`; its paint test `e2e/nfr-14-palette.spec.ts` passes 27 of 27, and the per-block tool reads pixel 1 on the main-column crops of 64 shots except the 6 light default shots, 0.998 to 0.9994, with geometry measured on 54 of them (0 boxes off; the hint shots are pixel only), `docs/qa/update-page-palette/block-palette.txt`, re-run after review run `wf_42e6a5ef-152` found the first copy was a crash log, COR-2): **FAIL**, exit 1, **82 of 170 at 0.98** (run 6: 1). 168 scored 0.1333 to 1.0000 (mean 0.9208, telemetry; run 6: 0.8499). 2 logo shots have no state driver. Output: [`docs/qa/g2/check-visual-run-7.txt`](../g2/check-visual-run-7.txt). The per-shot `report.json` files now hold run 7.

@@ -1,0 +1,25 @@
+# Smoke test: update-page-backdrop (task 4.6), by the parent session in the built-in browser pane
+
+Written on 2026-10-11 08:22 +0530. The test ran from about 08:21 to 08:22 (UTC+5:30), between the battery (battery.txt last written 08:21:09) and this file (08:22:45). A first draft of this line said "08:24 to 08:31"; that was a guess, corrected from the file times.
+Build: the battery's `npm run build` (dist/ from 08:20), served by `npx vite preview --port 4180 --strictPort`.
+(1) Before starting: no listener on 4173, 4174, 4176 or 4177. Port 4180 was chosen so the gated ports stay free. The preview was stopped afterwards, and `lsof` shows nothing on 4173 to 4180.
+Viewport 1024x768 emulated, system scheme light, Chromium (the pane).
+
+Steps, each with what was seen. "computed" is getComputedStyle(el, '::backdrop').backgroundColor:
+(2) Settings button: the panel opens; the whole page, the header included, is dimmed light brown.
+    computed rgba(70, 40, 15, 0.22) (soft); opacity 1.
+    Note: the first pane screenshot, taken straight after the click, showed neither the panel nor the dim. A screenshot after a 1 s wait showed both. This is a capture timing artefact of the pane, as design/README.md notes; the e2e pixel test is the instrument for paint.
+(3) «Правила» at 1024: a clearly darker brown than step 2. computed rgba(45, 25, 10, 0.5) (strong, from 64rem). Closed with Escape.
+    Seen, not this block: the panel opens scrolled to its bottom (the open item of autonomy-log row 137).
+(4) Summary button: the sheet opens over the lighter dim. computed rgba(70, 40, 15, 0.22) (soft).
+    Seen, not this block: the board's edge shows under the sheet's top (the setup-sheet block's known item).
+(5) Two digits entered, then «Нова головоломка»: the confirmation opens over the strong dim. computed rgba(45, 25, 10, 0.5). «Скасувати» closed it (dialog.open false).
+(6) 375x812, «Правила»: the lighter dim (soft). computed rgba(70, 40, 15, 0.22).
+(7) Theme «Темна» at 1024x768. Page rgb(26, 23, 20).
+    computed: settings and sheet rgba(8, 5, 2, 0.45); rules (1024) and confirm rgba(8, 5, 2, 0.6).
+    Screenshot: the page is near-black, and the dims are darker, never lighter than the page.
+(8) Theme «Світла», reload: data-theme is "light" after the reload. The no-flash property itself is NFR-18's e2e test (12 passed in the battery); a glance cannot judge it.
+    Afterwards the theme option was set back to «Як у системі».
+(9) Nothing unreadable was seen under or around any surface in either theme.
+
+Result: no defect of this block found.

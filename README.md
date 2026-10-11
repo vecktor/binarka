@@ -29,6 +29,6 @@ npm run build
 npx openspec validate --all --strict
 ```
 
-Browser checks (Playwright, Chromium): `npm run test:e2e` and `npm run check:a11y`. The design fidelity gate `npm run check:visual` (NFR-14) compares the page with the frozen reference shots; `node scripts/visual-block.mjs` scores one block of the page against them, and `node scripts/freeze-design-paint.mjs` refreezes `quality/design-paint.json`, the design's paint read by `e2e/nfr-14-palette.spec.ts` (both need the design build: `pnpm build` in `design/v0`, see `design/README.md`).
+Browser checks (Playwright, Chromium): `npm run test:e2e` and `npm run check:a11y`. The design fidelity gate `npm run check:visual` (NFR-14) compares the page with the frozen reference shots; `node scripts/visual-block.mjs` scores one block of the page against them, and `node scripts/freeze-design-paint.mjs` refreezes `quality/design-paint.json`, the design's paint read by `e2e/nfr-14-palette.spec.ts` (both need the design build: `pnpm build` in `design/v0`, see `design/README.md`). `e2e/nfr-14-backdrop.spec.ts` reads the dim behind the rules panel, the setup sheet, the settings panel and the confirmation dialog: the translucent tokens `--color-backdrop-soft` and `--color-backdrop-strong` composited over the page, in 10 sampled cases.
 
 See `docs/current-state.md` for the current state and `docs/mvp-capability-plan.md` for the plan.
