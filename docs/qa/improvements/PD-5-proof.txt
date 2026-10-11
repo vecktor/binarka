@@ -1,0 +1,37 @@
+# PD-5 red proof, 2026-10-11 18:02 +0530 (session C, `claude/modest-darwin-process`, HEAD ebaf49b)
+
+Probe: docs/qa/improvements/PD-5-rewrite-probe.mjs. It runs the checker with exactly the command line of the two locked
+callers (`node scripts/check-visual-fidelity.mjs`, CHECK_VISUAL_FIDELITY_ADAPTERS removed from the environment),
+compares every committed docs/qa/visual-diff/*/report.json before and after, then restores them (git checkout) and
+removes any file the run created. Capture lock /tmp/binarka-capture.lock held for the run.
+Ports before: 4173-4177 none listening. Ports after: 4173-4177 none listening (lsof -nP -iTCP:<port> -sTCP:LISTEN).
+Nothing was served on 4174 or 4175 during the run, so every capture failed; if a parallel session's preview had been on
+4174, the default adapter would have captured that session's page instead (not measured; the default adapter has no
+own-server guard, unlike PD-2's).
+
+Output, verbatim:
+scripts/qa-verify.mjs: 77: args: ["scripts/check-visual-fidelity.mjs"],; sets CHECK_VISUAL_FIDELITY_ADAPTERS: no
+scripts/gate-status.mjs: 67: visual: { script: "check-visual-fidelity", args: [] },; sets CHECK_VISUAL_FIDELITY_ADAPTERS: no
+
+run: node scripts/check-visual-fidelity.mjs (no adapter variable), exit 1, 8 s
+adapter line: none (the default URL-to-URL adapters)
+Scope: 170 breakpoint(s)
+Result: FAIL, 1 warning(s)
+first failure: FAIL  [1024-dark-confirm] capture failed: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4175/
+
+reports: 170; rewritten with different content: 170; verdict (pass) flipped: 86
+passing at 0.98: before 86, after 0
+git: 170 tracked file(s) modified, 0 untracked file(s) created
+  1024-dark-confirm
+    before {"breakpoint":"1024-dark-confirm","score":0.985,"threshold":0.98,"heightDelta":0,"refHeight":768,"localHeight":768,"masked":0,"pass":true,"generatedBy":"scripts/check-visual-fidelity.mjs"}
+    after  {"breakpoint":"1024-dark-confirm","score":null,"threshold":0.98,"heightDelta":null,"refHeight":null,"localHeight":null,"masked":0,"pass":false,"reason":"capture failed: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4175/\nCall log:\n  - navigating to \"http://127.0.0.1:4175/\", waiting until \"networkidle\"\n","generatedBy":"scripts/check-visual-fidelity.mjs"}
+  1024-dark-default
+    before {"breakpoint":"1024-dark-default","score":1,"threshold":0.98,"heightDelta":0,"refHeight":768,"localHeight":768,"masked":0,"pass":true,"generatedBy":"scripts/check-visual-fidelity.mjs"}
+    after  {"breakpoint":"1024-dark-default","score":null,"threshold":0.98,"heightDelta":null,"refHeight":null,"localHeight":null,"masked":0,"pass":false,"reason":"capture failed: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4175/\nCall log:\n  - navigating to \"http://127.0.0.1:4175/\", waiting until \"networkidle\"\n","generatedBy":"scripts/check-visual-fidelity.mjs"}
+  1024-dark-eight
+    before {"breakpoint":"1024-dark-eight","score":1,"threshold":0.98,"heightDelta":0,"refHeight":768,"localHeight":768,"masked":0,"pass":true,"generatedBy":"scripts/check-visual-fidelity.mjs"}
+    after  {"breakpoint":"1024-dark-eight","score":null,"threshold":0.98,"heightDelta":null,"refHeight":null,"localHeight":null,"masked":0,"pass":false,"reason":"capture failed: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4175/\nCall log:\n  - navigating to \"http://127.0.0.1:4175/\", waiting until \"networkidle\"\n","generatedBy":"scripts/check-visual-fidelity.mjs"}
+
+restored: docs/qa/visual-diff clean (git status --porcelain empty)
+
+# after the probe: git status --porcelain docs/qa/visual-diff -> 0 line(s)
