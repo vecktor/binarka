@@ -141,6 +141,19 @@ describe('The scroll position is reset when the panel closes and when it opens',
     expect(panel.scrollTop, 'toggle open resets scrollTop to 0 again').toBe(0);
   });
 
+  // The handlers do nothing else: only beforetoggle with newState closed and toggle with newState open reset (review finding 2 of the gate,
+  // the MODIFIED «Rules panel»: "does nothing else in those two handlers").
+  it('beforetoggle with newState open and toggle with newState closed leave the scrollTop as it is', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const panel = rulesPanel(root);
+    ensureScrollTopIsKept(panel);
+    panel.scrollTop = 120;
+    dispatchBeforeToggle(panel, 'open');
+    expect(panel.scrollTop, 'beforetoggle open does not reset').toBe(120);
+    dispatchToggle(panel, 'closed');
+    expect(panel.scrollTop, 'toggle closed does not reset').toBe(120);
+  });
+
   it('with two pages mounted on two roots, both panels at scrollTop 50, an event on the first panel leaves the second at 50: the handlers are per panel', () => {
     const rootA = mountPage({ seedSource: () => 1 });
     const rootB = mountPage({ seedSource: () => 2 });

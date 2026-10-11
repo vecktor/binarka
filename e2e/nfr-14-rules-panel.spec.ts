@@ -51,10 +51,11 @@ interface RulesCase {
   captureBoard: unknown;
   afterLoad: string;
   boxes: Record<string, Box | null>;
-  layout?: { scrollHeight: number; clientHeight: number; minHeightPx: number | null; maxHeightPx: number | null; decidedBy: string };
+  layout?: { scrollHeight: number; clientHeight: number; minHeightPx: number | null; maxHeightPx: number | null; contentHeightPx: number; decidedBy: string };
 }
 interface Fixture {
   tolerancePx: number;
+  provenance: Record<string, unknown>;
   cases: { shot: string; captureBoard: unknown }[];
   rulesPanel?: { selectors: string[]; coverage: string; provenance?: Record<string, string>; cases: RulesCase[] };
 }
@@ -279,6 +280,7 @@ const EXPECTED_CASES = [
   { shot: '800-light-rules-short', width: 800, height: 600 },
 ] as const;
 const SELECTORS = [PANEL, CLOSE];
+const rulesTolerance = fixture.tolerancePx;
 
 test('@trace NFR-14 the fixture holds exactly the 8 rules cases: shots, viewports, coverage sampled, the two selectors, the recorded way into the state', () => {
   const rulesPanel = fixture.rulesPanel;
@@ -293,8 +295,28 @@ test('@trace NFR-14 the fixture holds exactly the 8 rules cases: shots, viewport
     expect([c?.width, c?.height, c?.state, c?.afterLoad], `${want.shot}: viewport, state and the recorded way into the state`).toEqual([want.width, want.height, 'rules', 'open-rules']);
     expect(c?.captureBoard, `${want.shot}: the case holds its own capture board`).toBeTruthy();
     expect(Object.keys(c?.boxes ?? {}).sort(), `${want.shot}: the boxes are keyed by the two selectors`).toEqual([...SELECTORS].sort());
-    expect(typeof c?.layout?.decidedBy, `${want.shot}: the case records which bound decided the design's height`).toBe('string');
+    // The layout record of the scenario «The frozen fixture holds exactly the rules cases…» (review finding 2): the four numbers, the measured
+    // content height and a decidedBy that is one of the three and agrees with the frozen box's height within the tolerance.
+    const layout = c?.layout;
+    expect(layout, `${want.shot}: the case records the design panel's layout`).toBeDefined();
+    if (layout === undefined) continue;
+    for (const [name, v] of [['scrollHeight', layout.scrollHeight], ['clientHeight', layout.clientHeight], ['contentHeightPx', layout.contentHeightPx]] as const) {
+      expect(Number.isFinite(v) && v > 0, `${want.shot}: layout.${name} is a positive number (${v})`).toBe(true);
+    }
+    for (const [name, v] of [['minHeightPx', layout.minHeightPx], ['maxHeightPx', layout.maxHeightPx]] as const) {
+      expect(v === null || Number.isFinite(v), `${want.shot}: layout.${name} is a number of px or null (${v})`).toBe(true);
+    }
+    expect(['min-height', 'max-height', 'content'], `${want.shot}: decidedBy is one of the three`).toContain(layout.decidedBy);
+    const decided = { 'min-height': layout.minHeightPx, 'max-height': layout.maxHeightPx, content: layout.contentHeightPx }[layout.decidedBy as 'min-height' | 'max-height' | 'content'];
+    const boxH = c?.boxes[PANEL]?.h ?? Number.NaN;
+    expect(decided !== null && Math.abs(decided - boxH) <= rulesTolerance, `${want.shot}: the ${layout.decidedBy} (${decided}) equals the frozen panel height (${boxH}) within ${rulesTolerance}px`).toBe(true);
   }
+  // The provenance: this run's four values in rulesPanel.provenance, and the recorded top-level provenance of the same design.
+  const own = rulesPanel.provenance ?? {};
+  for (const key of ['designCommit', 'designCssSha1', 'designBuildSha1', 'browser']) {
+    expect(typeof own[key] === 'string' && own[key] !== '', `rulesPanel.provenance.${key} is recorded`).toBe(true);
+  }
+  expect([fixture.provenance.designCommit, fixture.provenance.designCssSha1], 'the top-level provenance names the same design as rulesPanel.provenance').toEqual([own.designCommit, own.designCssSha1]);
 });
 
 for (const want of EXPECTED_CASES) {
@@ -337,9 +359,11 @@ for (const want of EXPECTED_CASES) {
     expect(panel, `${c.shot}: the panel exists`).not.toBeNull();
     expect(close, `${c.shot}: «Зрозуміло» exists`).not.toBeNull();
     if (panel === null || panel === undefined || close === null || close === undefined) return;
-    const inside = close.x >= panel.x - tolerance && close.y >= panel.y - tolerance && close.x + close.w <= panel.x + panel.w + tolerance && close.y + close.h <= panel.y + panel.h + tolerance;
+    // Containment is strict (no geometry tolerance), and the bottom gap is never negative (review, contested finding).
+    const inside = close.x >= panel.x && close.y >= panel.y && close.x + close.w <= panel.x + panel.w && close.y + close.h <= panel.y + panel.h;
     expect(inside, `${c.shot}: «Зрозуміло» ${f(close)} lies inside the panel ${f(panel)}`).toBe(true);
     const gap = panel.y + panel.h - (close.y + close.h);
     expect(gap, `${c.shot}: the panel's bottom edge less «Зрозуміло»'s bottom edge (the 1px border and the 1rem padding)`).toBeLessThanOrEqual(17 + 0.001);
+    expect(gap, `${c.shot}: «Зрозуміло» does not overhang the panel's bottom edge`).toBeGreaterThanOrEqual(0);
   });
 }

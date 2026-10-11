@@ -7299,6 +7299,7 @@
           "clientHeight": 384,
           "minHeightPx": 0,
           "maxHeightPx": 385,
+          "contentHeightPx": 743.75,
           "decidedBy": "max-height"
         }
       },
@@ -7431,6 +7432,7 @@
           "clientHeight": 446,
           "minHeightPx": 0,
           "maxHeightPx": 446.6,
+          "contentHeightPx": 720.25,
           "decidedBy": "max-height"
         }
       },
@@ -7563,6 +7565,7 @@
           "clientHeight": 734,
           "minHeightPx": 736,
           "maxHeightPx": 912,
+          "contentHeightPx": 612.5,
           "decidedBy": "min-height"
         }
       },
@@ -7695,6 +7698,7 @@
           "clientHeight": 525,
           "minHeightPx": 0,
           "maxHeightPx": 656,
+          "contentHeightPx": 526.75,
           "decidedBy": "content"
         }
       },
@@ -7827,6 +7831,7 @@
           "clientHeight": 525,
           "minHeightPx": 0,
           "maxHeightPx": 538,
+          "contentHeightPx": 526.75,
           "decidedBy": "content"
         }
       },
@@ -7959,6 +7964,7 @@
           "clientHeight": 525,
           "minHeightPx": 0,
           "maxHeightPx": 788,
+          "contentHeightPx": 526.75,
           "decidedBy": "content"
         }
       },
@@ -8043,6 +8049,7 @@
           "clientHeight": 611,
           "minHeightPx": 568,
           "maxHeightPx": 912,
+          "contentHeightPx": 612.5,
           "decidedBy": "content"
         }
       },
@@ -8175,6 +8182,7 @@
           "clientHeight": 486,
           "minHeightPx": 488,
           "maxHeightPx": 488,
+          "contentHeightPx": 656,
           "decidedBy": "max-height"
         }
       }

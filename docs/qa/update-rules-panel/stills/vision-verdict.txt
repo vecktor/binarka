@@ -1,0 +1,32 @@
+# Vision verdict: update-rules-panel stills (task 8.1)
+
+- **Judge:** a fresh vision-judge subagent (not the builder), 2026-10-11 about 21:20 (UTC+5:30), session A.
+- **What it judged:** the 10 stills in this folder, each compared by eye with the reference crop of the same shot, `docs/qa/update-rules-panel/blocks/rules/<shot>/reference.png`. The stills are the page's crops of the open rules panel from `scripts/visual-block.mjs --block rules` (19:07-19:08, head = `16d42ad`'s port).
+- **What it did not do:** it opened no `diff.png`, so this is no pixel-level check. The pixel channel is in `docs/qa/update-rules-panel/visual-block-rules.txt` and `run-vs-previous.txt`.
+- **Requirement judged:** FR-57, NFR-14 and A-59, through the ADDED requirement «The rules panel takes the design's size, place and paint».
+
+**VERDICT: met and readable for all 10 stills.** The only visible difference from the reference is the focus ring on «Зрозуміло». It is the same in all 10, legible on both fills, and unclipped:
+- 320 and 375: fully inside the sheet, with margin on every side.
+- 768: inside the panel, a few px from its edge.
+- Desktop: fully visible.
+
+The button's size, position, fill and text are unchanged.
+
+| Shot | met | readable | Differences beyond the ring | Notes |
+|---|---|---|---|---|
+| 320-light | true | true | none | Heading at the top. The 3 rules wrap to two lines and their cells are intact. Dashed orange answer cell on a pale peach fill. Quiet separators. Filled orange button with white text. Warm off-white fill. The techniques are below the fold, as in the reference. |
+| 320-dark | true | true | none | `#2c2620`-like fill. Light-orange digits and dashed outlines. Light-orange button with dark text. |
+| 375-light | true | true | none | Sheet at its top. «Складніші прийоми» heading visible just above the pinned button. The technique bodies are scrolled out of view, as in the reference. |
+| 375-dark | true | true | none | Same layout, dark fill. |
+| 768-light | true | true | none | Everything visible, button pinned at the bottom. Nothing overlaps or is clipped. |
+| 768-dark | true | true | none | Same, on the dark fill. |
+| 1366-light | true | true | none | Wide panel with all content. The ring's top edge is close to the last technique's text but does not overlap it. |
+| 1366-dark | true | true | none | |
+| 1440-light | true | true | none | Same as 1366-light. |
+| 1440-dark | true | true | none | Same as 1366-dark. |
+
+Caveats from the judge:
+1. On phones the techniques can only be reached by scrolling, as in the design. The stills do not prove they render there; the smoke test does (`smoke-test.txt` step 6: scrolled to the end at 375×812, last technique and the mask seen).
+2. From 1366 the ring takes about 10 px above the button, which is tight but not overlapping.
+
+Overall: text contrast is comfortably AA in both schemes, and the separators are subtle but visible. **No fix needed.** The ring is a capture-state difference: a real pointer click shows none (`smoke-test.txt` step 2). It is noted for session C (`session-log.md`, 20:23).
