@@ -1,0 +1,56 @@
+== 768-dark-setup-four: HEAD 0.8674, port 0.8349; newly failing 102695 (device px x 264-1257, y 445-1587), newly passing 452
+  worse 44666	ref #120e0c | head #24201b | port #2c2620
+  worse 18246	ref #110d0b | head #24201b | port #2c2620
+  worse 13280	ref #0e0b09 | head #24201b | port #2c2620
+  worse 8890	ref #0f0b0a | head #24201b | port #2c2620
+  better 117	ref #8a7f71 | head #4d4438 | port #8a7f71
+  better 76	ref #1a1714 | head #895733 | port #7a4e2e
+  better 72	ref #1a1714 | head #895733 | port #7c4e2e
+== 1024-dark-setup: HEAD 0.9014, port 0.8817; newly failing 62007 (device px x 578-1469, y 232-1343), newly passing 42
+  worse 20376	ref #100c0a | head #24201b | port #2c2620
+  worse 11689	ref #100d0b | head #24201b | port #2c2620
+  worse 11132	ref #100c0b | head #24201b | port #2c2620
+  worse 8872	ref #0f0c0a | head #24201b | port #2c2620
+  better 22	ref #8a7f71 | head #4d4438 | port #8a7f71
+  better 3	ref #3e3a34 | head #24201b | port #2c2620
+  better 3	ref #3c3832 | head #24201b | port #2c2620
+== 1366-dark-setup: HEAD 0.9102, port 0.8929; newly failing 62470 (device px x 920-1811, y 130-1223), newly passing 969
+  worse 32696	ref #110d0b | head #24201b | port #2c2620
+  worse 16397	ref #100c0a | head #24201b | port #2c2620
+  worse 8716	ref #0f0c0a | head #24201b | port #2c2620
+  worse 3352	ref #120e0c | head #24201b | port #2c2620
+  better 294	ref #88847e | head #4d4438 | port #8a7f71
+  better 26	ref #f39a5b | head #69635b | port #545049
+  better 20	ref #8a7f71 | head #4d4438 | port #8a7f71
+== 320-dark-settings: HEAD 0.9230, port 0.9117; newly failing 12158 (device px x 0-639, y 839-889), newly passing 2062
+  worse 7478	ref #100c0a | head #24201b | port #2c2620
+  worse 2848	ref #100c0b | head #24201b | port #2c2620
+  worse 1024	ref #0f0c0a | head #24201b | port #2c2620
+  worse 743	ref #100d0b | head #24201b | port #2c2620
+  better 2042	ref #8a7f71 | head #4d4438 | port #8a7f71
+  better 2	ref #110d0b | head #393329 | port #5d544b
+  better 2	ref #100d0b | head #2f2a22 | port #453e36
+== 1440-dark-rules: HEAD 0.8925, port 0.8859; newly failing 34650 (device px x 975-1904, y 392-1392), newly passing 319
+  worse 15983	ref #0f0c09 | head #24201b | port #2c2620
+  worse 5157	ref #120e0a | head #24201b | port #2c2620
+  worse 4374	ref #2c2620 | head #13100c | port #120f0c
+  worse 2582	ref #2c2620 | head #13100c | port #120f0b
+  better 176	ref #f39a5b | head #1c1712 | port #1a1510
+  better 53	ref #f1ede4 | head #1c1712 | port #1a1510
+  better 24	ref #8a7f71 | head #4d4438 | port #8a7f71
+== 375-dark-confirm: HEAD 0.9608, port 0.9590; newly failing 2329 (device px x 44-706, y 648-977), newly passing 36
+  worse 1295	ref #2c2620 | head #13100c | port #120f0b
+  worse 1022	ref #2c2620 | head #13100c | port #120f0c
+  worse 2	ref #2c2620 | head #3e3a34 | port #453f39
+  worse 1	ref #2c2620 | head #65615b | port #615d57
+  better 12	ref #8a7f71 | head #664125 | port #54351e
+  better 8	ref #2c2620 | head #68645f | port #635f5a
+  better 3	ref #413a34 | head #24201b | port #2c2620
+== 768-light-setup-marked-four: HEAD 0.7882, port 0.7835; newly failing 28247 (device px x 265-1268, y 407-1613), newly passing 13335
+  worse 1478	ref #cfc6b9 | head #d0c7ba | port #b1a99e
+  worse 1462	ref #cfc6b9 | head #d0c7ba | port #b2aa9f
+  worse 1458	ref #cdc4b7 | head #d0c7ba | port #a8a196
+  worse 1196	ref #f6e3d4 | head #d6cec5 | port #d5cdc4
+  better 1739	ref #f7f3ea | head #ddd3be | port #e2dbcc
+  better 1521	ref #e2dbcc | head #bfb4a2 | port #beb3a1
+  better 516	ref #f7f3ea | head #d6cec5 | port #bfb8b0

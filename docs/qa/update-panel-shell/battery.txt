@@ -1,0 +1,95 @@
+# Battery of update-panel-shell (tasks 4.1 to 4.4), prep session vibrant-tu-434033, started Sun Oct 11 17:12:52 +0530 2026 (UTC+5:30); HEAD 64c2d7d plus the uncommitted folder, red tests and port.
+
+## npm run lint
+
+> binarka@0.1.0 lint
+> eslint .
+
+exit 0
+
+## npm run test:run
+   Start at  17:13:12
+   Duration  59.91s (tests 77%, environment 17%, import 5%, transform 1%)
+
+    Isolate  76 workers spawned · ~947ms startup each (spawn + environment, per file)
+             at least ~7.05s faster with isolate: false — reuses workers across files instead of one per file
+
+exit 0
+
+## npm run build
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-TUq3zUZk.css  20.55 kB │ gzip:  4.38 kB
+dist/assets/index-D5xcNIQF.js   35.21 kB │ gzip: 12.76 kB
+
+✓ built in 32ms
+exit 0
+
+## npx openspec validate update-panel-shell --strict
+Change 'update-panel-shell' is valid
+exit 0
+
+## npx openspec validate --all --strict
+✓ spec/play-page
+✓ spec/puzzle-engine
+✓ change/update-panel-shell
+✓ change/update-rules-panel
+✓ change/update-setup-sheet
+Totals: 5 passed, 0 failed (5 items)
+exit 0
+
+## node scripts/check-eval-ratchet.mjs
+Scope: 6 eval case(s)
+OK    hint-clarity 92.7 (baseline 92.7)
+OK    hint-clarity-en 90 (baseline 90)
+Result: PASS
+exit 0
+
+## npm run check:trace
+WARN  [active-changes] active change "update-panel-shell" is not archived
+WARN  [active-changes] active change "update-rules-panel" is not archived
+WARN  [active-changes] active change "update-setup-sheet" is not archived
+
+traceability: 115 MVP FRs checked — 0 failure(s), 118 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit 0
+
+## npm run check:acceptance
+> binarka@0.1.0 check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+
+Scope: 132 tagged requirement(s)
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+Result: PASS
+exit 0
+
+## capture lock taken; ports before:
+4173: 
+4174: 
+4176: 
+4177: 
+
+## npm run test:e2e
+  ✓  217 [a11y] › e2e/nfr-13-a11y.spec.ts:337:3 › the rendered colours follow the effective theme › NFR-13 theme: a press stores the theme, a reload keeps it and a light dismiss keeps the choice (266ms)
+  ✓  211 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 1280x800 manual dark on a light system › NFR-13 axe: no violation with the settings panel open (621ms)
+  ✓  219 [a11y] › e2e/nfr-13-a11y.spec.ts:364:3 › the focused theme option › NFR-13 focus: Tab from the settings button reaches a theme option with a solid outline of at least 2px (135ms)
+  ✓  213 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 1280x800 manual light on a dark system › NFR-13 axe: no violation with the settings panel open (577ms)
+
+  219 passed (23.2s)
+exit 0
+
+## npm run check:a11y
+  ✓  65 [a11y] › e2e/nfr-13-a11y.spec.ts:337:3 › the rendered colours follow the effective theme › NFR-13 theme: a press stores the theme, a reload keeps it and a light dismiss keeps the choice (264ms)
+  ✓  66 [a11y] › e2e/nfr-13-a11y.spec.ts:352:3 › the rendered colours follow the effective theme › NFR-13 theme: light stored by the test on a dark system is light after a reload (137ms)
+  ✓  67 [a11y] › e2e/nfr-13-a11y.spec.ts:364:3 › the focused theme option › NFR-13 focus: Tab from the settings button reaches a theme option with a solid outline of at least 2px (154ms)
+  ✓  61 [a11y] › e2e/nfr-13-a11y.spec.ts:261:9 › 1280x800 manual light on a dark system › NFR-13 axe: no violation with the settings panel open (585ms)
+
+  67 passed (13.0s)
+exit 0
+
+## ports after:
+4173: 
+4174: 
+4176: 
+4177: 
+lock released; finished Sun Oct 11 17:14:54 +0530 2026

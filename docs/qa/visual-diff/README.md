@@ -57,6 +57,51 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` shows the fixture at level 2 («Задачка») and opens the sheet. `setup-marked` marks 8×8 «Головоломка» on the fixture and puts keyboard focus on «Почати». `hint` shows the hint board without its hinted cell and presses «Підказка» once. `settings-light` and `settings-dark` store the manual theme before load.
 6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits. **Closed by PD-2:** it fails when something already answers on the port, and when its own preview exits before answering (`PD-2-proof.txt`, section 3: before, a stale copy on 4174 was scored 0.9125 without a word; after, "something already answers on http://localhost:4174/").
 
+## Run 10 (after update-panel-shell, the shared panel shell)
+
+`docs/qa/g2/check-visual-run-10.txt`, 2026-10-11 17:16 to 17:19 (UTC+5:30), exit 1: **86 of 170 at 0.98** (run 9: 84). The capture lock was held and nothing listened on 4173, 4174, 4176 or 4177 before or after. The per-shot `report.json` files now hold run 10.
+
+- **New passes:** `768-dark-settings` and `1024-dark-settings`. No shot newly fails.
+- **The main column did not move:** every default, four, eight, hint, level and win shot is unchanged to 4 places, so the board-size hook (the page root's `data-size`) moved no box.
+- **42 shots fell** (largest `768-dark-setup-four` 0.8674 to 0.8349; light falls at most 0.0047). Each is explained by a per-pixel classification with the gate's own pixelmatch, against HEAD and port captures that reproduce runs 9 and 10 to 4 places (`docs/qa/update-panel-shell/run10-vs-run9.txt`): the shell's paint equals the design's, but the surfaces are still in their pre-G2 size and place, so where the page shows a surface and the design does not, the right dark fill `#2c2620` (formerly `#24201b`, which happened to pass against the design's dimmed page) and the new shadows now differ more. It is the masking of § Correction of Run 8 in reverse. The rules panel (block A), the setup sheet (block B), and the settings panel and the dialog (second wave) own the placement.
+
+By state (the last two columns are the mean change against run 9 and the number of shots that fell):
+
+| State | Scheme | Run 9 at 0.98 | Run 10 at 0.98 | Lowest run 10 | Highest run 10 | Mean change | Fell |
+|---|---|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 3 of 5 | 0.9180 | 0.9904 | -0.0013 | 5 |
+| confirm | light | 3 of 5 | 3 of 5 | 0.9194 | 0.9901 | +0.0010 | 0 |
+| default | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | light | 6 of 6 | 6 of 6 | 0.9985 | 0.9996 | +0.0000 | 0 |
+| eight | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| eight | light | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| rules | dark | 0 of 6 | 0 of 6 | 0.8133 | 0.9069 | -0.0010 | 4 |
+| rules | light | 0 of 6 | 0 of 6 | 0.7822 | 0.9010 | +0.0024 | 0 |
+| rules-techniques | dark | 0 of 4 | 0 of 4 | 0.8133 | 0.9018 | -0.0006 | 2 |
+| rules-techniques | light | 0 of 4 | 0 of 4 | 0.7882 | 0.8980 | +0.0007 | 0 |
+| settings | dark | 2 of 6 | 4 of 6 | 0.9117 | 0.9880 | -0.0019 | 2 |
+| settings | light | 4 of 6 | 4 of 6 | 0.9430 | 0.9946 | +0.0017 | 0 |
+| settings-dark | light | 3 of 5 | 3 of 5 | 0.9195 | 0.9894 | -0.0023 | 2 |
+| settings-focus | dark | 1 of 2 | 1 of 2 | 0.9077 | 0.9821 | -0.0056 | 1 |
+| settings-focus | light | 1 of 2 | 1 of 2 | 0.9390 | 0.9919 | +0.0014 | 1 |
+| settings-light | dark | 3 of 5 | 3 of 5 | 0.9458 | 0.9950 | +0.0015 | 0 |
+| setup | dark | 0 of 6 | 0 of 6 | 0.7566 | 0.9335 | -0.0089 | 4 |
+| setup | light | 0 of 6 | 0 of 6 | 0.7696 | 0.9277 | +0.0018 | 2 |
+| setup-four | dark | 0 of 6 | 0 of 6 | 0.7800 | 0.9292 | -0.0128 | 5 |
+| setup-four | light | 0 of 6 | 0 of 6 | 0.7647 | 0.9454 | +0.0004 | 2 |
+| setup-marked | dark | 0 of 6 | 0 of 6 | 0.7627 | 0.9318 | -0.0078 | 4 |
+| setup-marked | light | 0 of 6 | 0 of 6 | 0.7663 | 0.9248 | +0.0017 | 2 |
+| setup-marked-four | dark | 0 of 6 | 0 of 6 | 0.7801 | 0.9350 | -0.0095 | 4 |
+| setup-marked-four | light | 0 of 6 | 0 of 6 | 0.7835 | 0.9455 | +0.0000 | 2 |
+| win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+
 ## Correction of Run 8 (COR-4, 2026-10-11, prep session of the parallel G2 plan, autonomy-log row 172)
 
 The YIQ deltas of § Run 8 (125, 359 and 283 against the limit 352) used a hand-written colour formula. The gate runs pixelmatch 8.0.0, whose per-pixel delta is different, so those figures do not describe the gate, and the claim that the soft-dim drops "cannot" come from the masking is wrong. By the gate's own per-pixel verdict (pixelmatch's output image), with the run-7 dim rebuilt pixel by pixel (both scores reproduced to 4 places): in `768-dark-rules` 135,776 of the 135,961 newly failing pixels, and in `768-dark-setup-four` 103,380 of 103,696, are one pair, **the design's panel fill `#2c2620` where the page shows its soft-dimmed bare page** (`#120f0c`; `#1a1714` with the old dim, which passed). So the soft-dim drops are the same masking as the strong-dim drops: the design's surface covers pixels that the page's 28rem surface does not. They belong to the rules-panel and setup-sheet blocks. Evidence: `docs/qa/prep-g2/soft-dim-768-classify.txt` (script `soft-dim-768-classify.mjs`; captures from `soft-dim-768.mjs`). The text of § Run 8 below is kept as written; read its YIQ figures and its "Not explained yet" bullet with this correction. Recorded as `retro/corrections/004-*` (COR-4), dispositioned `resolved` by the user's choice.

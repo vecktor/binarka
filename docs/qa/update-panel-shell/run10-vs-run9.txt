@@ -1,0 +1,205 @@
+# Run 10 against run 9 (update-panel-shell, task 6.3), written 2026-10-11 about 17:27 (UTC+5:30), prep session vibrant-tu-434033.
+# Run 9: docs/qa/g2/check-visual-run-9.txt; run 10: docs/qa/g2/check-visual-run-10.txt (exit 1, 86 of 170 at 0.98).
+
+parsed: run 9 168, run 10 168 scored shots (the 2 logo shots have no state driver in both)
+at 0.98: run 9 84, run 10 86
+
+| State | Scheme | Run 9 at 0.98 | Run 10 at 0.98 | Lowest run 10 | Highest run 10 | Mean change | Fell |
+|---|---|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 3 of 5 | 0.9180 | 0.9904 | -0.0013 | 5 |
+| confirm | light | 3 of 5 | 3 of 5 | 0.9194 | 0.9901 | +0.0010 | 0 |
+| default | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | light | 6 of 6 | 6 of 6 | 0.9985 | 0.9996 | +0.0000 | 0 |
+| eight | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| eight | light | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| rules | dark | 0 of 6 | 0 of 6 | 0.8133 | 0.9069 | -0.0010 | 4 |
+| rules | light | 0 of 6 | 0 of 6 | 0.7822 | 0.9010 | +0.0024 | 0 |
+| rules-techniques | dark | 0 of 4 | 0 of 4 | 0.8133 | 0.9018 | -0.0006 | 2 |
+| rules-techniques | light | 0 of 4 | 0 of 4 | 0.7882 | 0.8980 | +0.0007 | 0 |
+| settings | dark | 2 of 6 | 4 of 6 | 0.9117 | 0.9880 | -0.0019 | 2 |
+| settings | light | 4 of 6 | 4 of 6 | 0.9430 | 0.9946 | +0.0017 | 0 |
+| settings-dark | light | 3 of 5 | 3 of 5 | 0.9195 | 0.9894 | -0.0023 | 2 |
+| settings-focus | dark | 1 of 2 | 1 of 2 | 0.9077 | 0.9821 | -0.0056 | 1 |
+| settings-focus | light | 1 of 2 | 1 of 2 | 0.9390 | 0.9919 | +0.0014 | 1 |
+| settings-light | dark | 3 of 5 | 3 of 5 | 0.9458 | 0.9950 | +0.0015 | 0 |
+| setup | dark | 0 of 6 | 0 of 6 | 0.7566 | 0.9335 | -0.0089 | 4 |
+| setup | light | 0 of 6 | 0 of 6 | 0.7696 | 0.9277 | +0.0018 | 2 |
+| setup-four | dark | 0 of 6 | 0 of 6 | 0.7800 | 0.9292 | -0.0128 | 5 |
+| setup-four | light | 0 of 6 | 0 of 6 | 0.7647 | 0.9454 | +0.0004 | 2 |
+| setup-marked | dark | 0 of 6 | 0 of 6 | 0.7627 | 0.9318 | -0.0078 | 4 |
+| setup-marked | light | 0 of 6 | 0 of 6 | 0.7663 | 0.9248 | +0.0017 | 2 |
+| setup-marked-four | dark | 0 of 6 | 0 of 6 | 0.7801 | 0.9350 | -0.0095 | 4 |
+| setup-marked-four | light | 0 of 6 | 0 of 6 | 0.7835 | 0.9455 | +0.0000 | 2 |
+| win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+
+Shots that fell: 42; rose: 50; unchanged: 76
+  768-dark-setup-four: 0.8674 -> 0.8349 (-0.0325)
+  1024-dark-setup-four: 0.8787 -> 0.8574 (-0.0213)
+  1024-dark-setup-marked-four: 0.8802 -> 0.8589 (-0.0213)
+  1024-dark-setup-marked: 0.9002 -> 0.8805 (-0.0197)
+  1024-dark-setup: 0.9014 -> 0.8817 (-0.0197)
+  1366-dark-setup-marked-four: 0.9 -> 0.8825 (-0.0175)
+  1366-dark-setup-four: 0.8996 -> 0.8821 (-0.0175)
+  1366-dark-setup: 0.9102 -> 0.8929 (-0.0173)
+  768-dark-setup-marked-four: 0.8903 -> 0.8732 (-0.0171)
+  768-dark-setup: 0.8843 -> 0.8694 (-0.0149)
+  768-dark-setup-marked: 0.8856 -> 0.8719 (-0.0137)
+  1366-dark-setup-marked: 0.9094 -> 0.8979 (-0.0115)
+  320-dark-settings: 0.923 -> 0.9117 (-0.0113)
+  320-dark-settings-focus: 0.919 -> 0.9077 (-0.0113)
+  320-light-settings-dark: 0.9308 -> 0.9195 (-0.0113)
+  1440-dark-setup-four: 0.937 -> 0.9292 (-0.0078)
+  1440-dark-setup-marked-four: 0.9425 -> 0.935 (-0.0075)
+  1440-dark-rules: 0.8925 -> 0.8859 (-0.0066)
+  1440-dark-rules-techniques: 0.8925 -> 0.8859 (-0.0066)
+  1440-dark-setup-marked: 0.9383 -> 0.9318 (-0.0065)
+  1440-dark-setup: 0.9399 -> 0.9335 (-0.0064)
+  768-light-setup-marked-four: 0.7882 -> 0.7835 (-0.0047)
+  1366-dark-rules: 0.8178 -> 0.8133 (-0.0045)
+  1366-dark-rules-techniques: 0.8178 -> 0.8133 (-0.0045)
+  1024-dark-rules: 0.8168 -> 0.8135 (-0.0033)
+  768-light-setup-four: 0.7668 -> 0.7647 (-0.0021)
+  375-dark-settings: 0.9355 -> 0.9336 (-0.0019)
+  375-dark-setup-four: 0.7954 -> 0.7935 (-0.0019)
+  375-light-settings-dark: 0.9413 -> 0.9394 (-0.0019)
+  375-dark-confirm: 0.9608 -> 0.959 (-0.0018)
+  768-light-setup-marked: 0.768 -> 0.7663 (-0.0017)
+  768-dark-confirm: 0.9862 -> 0.9849 (-0.0013)
+  768-light-setup: 0.7708 -> 0.7696 (-0.0012)
+  1024-dark-confirm: 0.9862 -> 0.985 (-0.0012)
+  1440-dark-confirm: 0.9915 -> 0.9904 (-0.0011)
+  320-dark-confirm: 0.9191 -> 0.918 (-0.0011)
+  375-light-setup-four: 0.8304 -> 0.8301 (-0.0003)
+  320-light-settings-focus: 0.9391 -> 0.939 (-0.0001)
+  375-light-setup-marked-four: 0.8312 -> 0.8311 (-0.0001)
+  375-light-setup: 0.8296 -> 0.8295 (-0.0001)
+  375-light-setup-marked: 0.8317 -> 0.8316 (-0.0001)
+  768-dark-rules: 0.8882 -> 0.8881 (-0.0001)
+New PASS: ['1024-dark-settings', '768-dark-settings'] New FAIL: []
+
+## Why 42 shots fell (the slice stopped here before the review gate, as task 6.3 says)
+Method: the six largest falls of each surface (and one light setup shot) re-captured with the gate's own adapter from a HEAD build (a detached worktree of 64c2d7d in the session scratchpad, its own dist and preview) and from the port, under the capture lock; both scored against the frozen reference with the gate's call (pixelmatch 8.0.0, threshold 0.1), and the pixels that pass at HEAD and fail after the port classified by pixelmatch's own output image (docs/qa/update-panel-shell/fall-capture.mjs, fall-classify.mjs; captures in docs/qa/update-panel-shell/fall/{head,port}/). Check of the method: every HEAD score equals run 9 to 4 places and every port score equals run 10.
+
+== 768-dark-setup-four: HEAD 0.8674, port 0.8349; newly failing 102695 (device px x 264-1257, y 445-1587), newly passing 452
+  worse 44666	ref #120e0c | head #24201b | port #2c2620
+  worse 18246	ref #110d0b | head #24201b | port #2c2620
+  worse 13280	ref #0e0b09 | head #24201b | port #2c2620
+  worse 8890	ref #0f0b0a | head #24201b | port #2c2620
+  better 117	ref #8a7f71 | head #4d4438 | port #8a7f71
+  better 76	ref #1a1714 | head #895733 | port #7a4e2e
+  better 72	ref #1a1714 | head #895733 | port #7c4e2e
+== 1024-dark-setup: HEAD 0.9014, port 0.8817; newly failing 62007 (device px x 578-1469, y 232-1343), newly passing 42
+  worse 20376	ref #100c0a | head #24201b | port #2c2620
+  worse 11689	ref #100d0b | head #24201b | port #2c2620
+  worse 11132	ref #100c0b | head #24201b | port #2c2620
+  worse 8872	ref #0f0c0a | head #24201b | port #2c2620
+  better 22	ref #8a7f71 | head #4d4438 | port #8a7f71
+  better 3	ref #3e3a34 | head #24201b | port #2c2620
+  better 3	ref #3c3832 | head #24201b | port #2c2620
+== 1366-dark-setup: HEAD 0.9102, port 0.8929; newly failing 62470 (device px x 920-1811, y 130-1223), newly passing 969
+  worse 32696	ref #110d0b | head #24201b | port #2c2620
+  worse 16397	ref #100c0a | head #24201b | port #2c2620
+  worse 8716	ref #0f0c0a | head #24201b | port #2c2620
+  worse 3352	ref #120e0c | head #24201b | port #2c2620
+  better 294	ref #88847e | head #4d4438 | port #8a7f71
+  better 26	ref #f39a5b | head #69635b | port #545049
+  better 20	ref #8a7f71 | head #4d4438 | port #8a7f71
+== 320-dark-settings: HEAD 0.9230, port 0.9117; newly failing 12158 (device px x 0-639, y 839-889), newly passing 2062
+  worse 7478	ref #100c0a | head #24201b | port #2c2620
+  worse 2848	ref #100c0b | head #24201b | port #2c2620
+  worse 1024	ref #0f0c0a | head #24201b | port #2c2620
+  worse 743	ref #100d0b | head #24201b | port #2c2620
+  better 2042	ref #8a7f71 | head #4d4438 | port #8a7f71
+  better 2	ref #110d0b | head #393329 | port #5d544b
+  better 2	ref #100d0b | head #2f2a22 | port #453e36
+== 1440-dark-rules: HEAD 0.8925, port 0.8859; newly failing 34650 (device px x 975-1904, y 392-1392), newly passing 319
+  worse 15983	ref #0f0c09 | head #24201b | port #2c2620
+  worse 5157	ref #120e0a | head #24201b | port #2c2620
+  worse 4374	ref #2c2620 | head #13100c | port #120f0c
+  worse 2582	ref #2c2620 | head #13100c | port #120f0b
+  better 176	ref #f39a5b | head #1c1712 | port #1a1510
+  better 53	ref #f1ede4 | head #1c1712 | port #1a1510
+  better 24	ref #8a7f71 | head #4d4438 | port #8a7f71
+== 375-dark-confirm: HEAD 0.9608, port 0.9590; newly failing 2329 (device px x 44-706, y 648-977), newly passing 36
+  worse 1295	ref #2c2620 | head #13100c | port #120f0b
+  worse 1022	ref #2c2620 | head #13100c | port #120f0c
+  worse 2	ref #2c2620 | head #3e3a34 | port #453f39
+  worse 1	ref #2c2620 | head #65615b | port #615d57
+  better 12	ref #8a7f71 | head #664125 | port #54351e
+  better 8	ref #2c2620 | head #68645f | port #635f5a
+  better 3	ref #413a34 | head #24201b | port #2c2620
+== 768-light-setup-marked-four: HEAD 0.7882, port 0.7835; newly failing 28247 (device px x 265-1268, y 407-1613), newly passing 13335
+  worse 1478	ref #cfc6b9 | head #d0c7ba | port #b1a99e
+  worse 1462	ref #cfc6b9 | head #d0c7ba | port #b2aa9f
+  worse 1458	ref #cdc4b7 | head #d0c7ba | port #a8a196
+  worse 1196	ref #f6e3d4 | head #d6cec5 | port #d5cdc4
+  better 1739	ref #f7f3ea | head #ddd3be | port #e2dbcc
+  better 1521	ref #e2dbcc | head #bfb4a2 | port #beb3a1
+  better 516	ref #f7f3ea | head #d6cec5 | port #bfb8b0
+
+Reading: every fall is a surface pixel of the page where the design shows no surface (or the reverse), because the page's surfaces are still in their pre-G2 size and place. (1) Dark setup, settings and rules: the page's panel pixels moved from #24201b to the design's exact fill #2c2620 (the e2e and the smoke test read the shell paint equal to the design's); where the design shows its dimmed page (#0f0c0a to #120e0c), #24201b still passed and #2c2620 does not. (2) The dialog and the 1440 rules: the new panel shadow darkens the page by one step (#13100c to #120f0c) next to a misplaced surface where the design shows its fill #2c2620. (3) Light setup: the new shadow of the misplaced sheet darkens the dimmed page (#d0c7ba to #b1a99e) where the design shows plain dimmed page (#cfc6b9). The newly passing pixels are mostly the new border colour (#8a7f71, #e2dbcc) where the two surfaces overlap. So the falls are placement residuals that the shell's correct paint uncovers, the same masking as README § Correction of Run 8 in reverse; they belong to the rules-panel block (A), the setup-sheet block (B), and the settings panel and the dialog (the second wave). The main column (default, four, eight, hint, level, win) is unchanged to 4 places, so the board-size hook moved no box; 768-dark-settings and 1024-dark-settings now pass; no shot newly fails.
+
+## Per-block tool (task 6.3)
+node scripts/visual-block.mjs --block layout --states rules,rules-techniques,confirm,setup,settings --out docs/qa/g2/blocks/panel-shell (2026-10-11 17:26, under the lock; exit 0; output local and untracked):
+1024-dark-confirm              pixel 0.9777 geometry n/a (state reached by a driver)
+1024-dark-rules                pixel 0.8225 geometry n/a (state reached by a driver)
+1024-dark-settings             pixel 0.9713 geometry n/a (state reached by a driver)
+1024-dark-setup                pixel 0.8395 geometry n/a (state reached by a driver)
+1024-light-confirm             pixel 0.9756 geometry n/a (state reached by a driver)
+1024-light-rules               pixel 0.7753 geometry n/a (state reached by a driver)
+1024-light-settings            pixel 0.9869 geometry n/a (state reached by a driver)
+1024-light-setup               pixel 0.8179 geometry n/a (state reached by a driver)
+1366-dark-rules-techniques     pixel 0.8005 geometry n/a (state reached by a driver)
+1366-dark-rules                pixel 0.8005 geometry n/a (state reached by a driver)
+1366-dark-settings             pixel 0.9715 geometry n/a (state reached by a driver)
+1366-dark-setup                pixel 0.8362 geometry n/a (state reached by a driver)
+1366-light-rules-techniques    pixel 0.7642 geometry n/a (state reached by a driver)
+1366-light-rules               pixel 0.7642 geometry n/a (state reached by a driver)
+1366-light-settings            pixel 0.9873 geometry n/a (state reached by a driver)
+1366-light-setup               pixel 0.8412 geometry n/a (state reached by a driver)
+1440-dark-confirm              pixel 0.9833 geometry n/a (state reached by a driver)
+1440-dark-rules-techniques     pixel 0.8625 geometry n/a (state reached by a driver)
+1440-dark-rules                pixel 0.8625 geometry n/a (state reached by a driver)
+1440-dark-settings             pixel 0.9792 geometry n/a (state reached by a driver)
+1440-dark-setup                pixel 0.8845 geometry n/a (state reached by a driver)
+1440-light-confirm             pixel 0.9828 geometry n/a (state reached by a driver)
+1440-light-rules-techniques    pixel 0.7843 geometry n/a (state reached by a driver)
+1440-light-rules               pixel 0.7843 geometry n/a (state reached by a driver)
+1440-light-settings            pixel 0.9907 geometry n/a (state reached by a driver)
+1440-light-setup               pixel 0.8746 geometry n/a (state reached by a driver)
+320-dark-confirm               pixel 0.9036 geometry n/a (state reached by a driver)
+320-dark-rules-techniques      pixel 0.9518 geometry n/a (state reached by a driver)
+320-dark-rules                 pixel 0.9572 geometry n/a (state reached by a driver)
+320-dark-settings              pixel 0.904 geometry n/a (state reached by a driver)
+320-dark-setup                 pixel 0.7655 geometry n/a (state reached by a driver)
+320-light-confirm              pixel 0.9053 geometry n/a (state reached by a driver)
+320-light-rules-techniques     pixel 0.9482 geometry n/a (state reached by a driver)
+320-light-rules                pixel 0.9494 geometry n/a (state reached by a driver)
+320-light-settings             pixel 0.9407 geometry n/a (state reached by a driver)
+320-light-setup                pixel 0.8625 geometry n/a (state reached by a driver)
+375-dark-confirm               pixel 0.9482 geometry n/a (state reached by a driver)
+375-dark-rules-techniques      pixel 0.9553 geometry n/a (state reached by a driver)
+375-dark-rules                 pixel 0.9612 geometry n/a (state reached by a driver)
+375-dark-settings              pixel 0.96 geometry n/a (state reached by a driver)
+375-dark-setup                 pixel 0.8032 geometry n/a (state reached by a driver)
+375-light-confirm              pixel 0.9473 geometry n/a (state reached by a driver)
+375-light-rules-techniques     pixel 0.9506 geometry n/a (state reached by a driver)
+375-light-rules                pixel 0.9538 geometry n/a (state reached by a driver)
+375-light-settings             pixel 0.9755 geometry n/a (state reached by a driver)
+375-light-setup                pixel 0.8393 geometry n/a (state reached by a driver)
+768-dark-confirm               pixel 0.9777 geometry n/a (state reached by a driver)
+768-dark-rules                 pixel 0.8461 geometry n/a (state reached by a driver)
+768-dark-settings              pixel 0.9708 geometry n/a (state reached by a driver)
+768-dark-setup                 pixel 0.8073 geometry n/a (state reached by a driver)
+768-light-confirm              pixel 0.9759 geometry n/a (state reached by a driver)
+768-light-rules                pixel 0.7107 geometry n/a (state reached by a driver)
+768-light-settings             pixel 0.9869 geometry n/a (state reached by a driver)
+768-light-setup                pixel 0.6597 geometry n/a (state reached by a driver)
+Block layout: 54 shot(s), geometry within 0.5px (coverage: sampled)

@@ -1,0 +1,30 @@
+# Smoke test of update-panel-shell (task 5.1), 2026-10-11 17:15 to 17:20 (UTC+5:30), prep session vibrant-tu-434033, at main 64c2d7d plus the
+# uncommitted folder, red tests and port. Browser: Chromium (Playwright 1.x, headless), scripted: docs/qa/update-panel-shell/smoke-test.mjs.
+# Page: `npm run build`, `npx vite preview --port 4180 --strictPort`; design: `python3 -m http.server 4181 -d design/v0/out` (neither is a capture
+# port; both stopped after; `lsof` on 4180 and 4181 empty). Raw output: docs/qa/update-panel-shell/smoke-raw.txt (exit 0; a first attempt at
+# 17:15:35 failed on a bug in the script itself, a closure passed into page.evaluate, and was fixed and re-run at 17:15:48).
+# Screenshots: docs/qa/update-panel-shell/smoke/<width>-<scheme>-{rules,settings,setup-scrolled,confirm,design-*}.png. Deviation from the
+# task's wording: the steps are scripted (computed values and screenshots), not clicked by hand; the dark scheme is the system scheme
+# (colorScheme on the context, no stored theme) instead of the settings switch; the two are the same token set (FR-104).
+
+Steps 1 to 10, at 1024x768 and 375x812, light and dark (16 surface readings, 4 x 4):
+(1) No orphan before (the battery's port check at 17:12 and the lock); preview and design served on 4180 and 4181.
+(2) «Правила»: fill rgb(255,253,248) light / rgb(44,38,32) dark; border rgb(226,219,204) / rgb(138,127,113); shadow
+    rgba(0,0,0,0.25) 0 16px 40px at 1024 (below the panel), rgba(0,0,0,0.18) 0 -8px 32px at 375 (above the sheet). Equal to the design's /rules/.
+(3) Settings panel: the same fill, border and shadow, equal to the design's /settings/; its «Закрити» fill is the panel fill
+    (rgb(255,253,248) / rgb(44,38,32)).
+(4) Setup sheet: the same fill, border and shadow, equal to the design's /setup/; «Закрити» fill = the sheet fill; the strip behind the
+    footer is linear-gradient(transparent, <sheet fill> 16px) with an offset shadow in the sheet fill. Seen in 375-dark-setup-scrolled.png
+    (scrolled to the end): no band of another colour under or between «Почати» and «Закрити».
+(5) A cell pressed, then «Нова головоломка»: the dialog has the raised fill, the panel shadow below it (0 16px 40px, 0.25) at both widths,
+    and the border rgb(140,131,116) light (darker than the panels' rgb(226,219,204)) / rgb(138,127,113) dark. Equal to the design's /confirm/.
+(6) Hook: #app data-size 6 = board 6 at mount; after «Почати» with 4, 8, 6: #app 4/8/6 = board 4/8/6. The board's box after returning to
+    6x6 is identical to the box at mount (1024: 303,164 418x418; 375: 16,128 343x343) and «Підказка» likewise; the geometry e2e
+    (nfr-14-layout-geometry, 32 cases) is green in the battery.
+(7) Dark: panels rgb(44,38,32) on the page rgb(26,23,20), border visible (rgb(138,127,113)); 1024-dark-settings.png looked at: the
+    theme and language cards are a little darker than the panel, as the design.
+(8) 375x812 light and dark: the three panels are bottom sheets with the shadow above their top edge; the dialog keeps the panel shadow
+    below it, as the design.
+(9) Design build at the same sizes and schemes: every fill, border and shadow reading equals the page's (raw output, "design /…" lines).
+(10) Console errors: none in all four runs; no raw error text on the page.
+Result: PASS on every step.

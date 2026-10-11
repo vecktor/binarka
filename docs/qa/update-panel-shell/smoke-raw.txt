@@ -1,0 +1,72 @@
+
+== 1024-light (system scheme light, no stored theme)
+rules: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+settings: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+settings «Закрити»: bg rgb(255, 253, 248) | border-top rgb(140, 131, 116) | shadow none
+setup sheet: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+sheet «Закрити»: bg rgb(255, 253, 248) | border-top rgb(140, 131, 116) | shadow none
+sheet strip: bg-image linear-gradient(rgba(0, 0, 0, 0), rgb(255, 253, 248) 16px) | shadow rgb(255, 253, 248) 0px 16px 0px 16px
+hook at mount: #app 6 / board 6; board 303.0,164.0 418.0x418.0; hint 303.0,598.0 114.7x44.0
+hook after «Почати» 4: #app 4 / board 4; board 355.0,164.0 314.0x314.0; hint 303.0,494.0 114.7x44.0
+hook after «Почати» 8: #app 8 / board 8; board 304.5,164.0 415.0x415.0; hint 303.0,595.0 114.7x44.0
+hook after «Почати» 6: #app 6 / board 6; board 303.0,164.0 418.0x418.0; hint 303.0,598.0 114.7x44.0
+dialog: bg rgb(255, 253, 248) | border-top rgb(140, 131, 116) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+console errors: none; raw error text on page: none
+design /rules/: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+design /settings/: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+design /setup/: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+design /confirm/: bg rgb(255, 253, 248) | border-top rgb(140, 131, 116) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+
+== 1024-dark (system scheme dark, no stored theme)
+rules: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+settings: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+settings «Закрити»: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow none
+setup sheet: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+sheet «Закрити»: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow none
+sheet strip: bg-image linear-gradient(rgba(0, 0, 0, 0), rgb(44, 38, 32) 16px) | shadow rgb(44, 38, 32) 0px 16px 0px 16px
+hook at mount: #app 6 / board 6; board 303.0,164.0 418.0x418.0; hint 303.0,598.0 114.7x44.0
+hook after «Почати» 4: #app 4 / board 4; board 355.0,164.0 314.0x314.0; hint 303.0,494.0 114.7x44.0
+hook after «Почати» 8: #app 8 / board 8; board 304.5,164.0 415.0x415.0; hint 303.0,595.0 114.7x44.0
+hook after «Почати» 6: #app 6 / board 6; board 303.0,164.0 418.0x418.0; hint 303.0,598.0 114.7x44.0
+dialog: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+console errors: none; raw error text on page: none
+design /rules/: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+design /settings/: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+design /setup/: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+design /confirm/: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+
+== 375-light (system scheme light, no stored theme)
+rules: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+settings: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+settings «Закрити»: bg rgb(255, 253, 248) | border-top rgb(140, 131, 116) | shadow none
+setup sheet: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+sheet «Закрити»: bg rgb(255, 253, 248) | border-top rgb(140, 131, 116) | shadow none
+sheet strip: bg-image linear-gradient(rgba(0, 0, 0, 0), rgb(255, 253, 248) 16px) | shadow rgb(255, 253, 248) 0px 16px 0px 16px
+hook at mount: #app 6 / board 6; board 16.0,128.0 343.0x343.0; hint 16.0,483.0 343.0x44.0
+hook after «Почати» 4: #app 4 / board 4; board 46.5,128.0 282.0x282.0; hint 16.0,422.0 343.0x44.0
+hook after «Почати» 8: #app 8 / board 8; board 8.0,128.0 359.0x359.0; hint 16.0,499.0 343.0x44.0
+hook after «Почати» 6: #app 6 / board 6; board 16.0,128.0 343.0x343.0; hint 16.0,483.0 343.0x44.0
+dialog: bg rgb(255, 253, 248) | border-top rgb(140, 131, 116) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+console errors: none; raw error text on page: none
+design /rules/: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+design /settings/: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+design /setup/: bg rgb(255, 253, 248) | border-top rgb(226, 219, 204) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+design /confirm/: bg rgb(255, 253, 248) | border-top rgb(140, 131, 116) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+
+== 375-dark (system scheme dark, no stored theme)
+rules: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+settings: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+settings «Закрити»: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow none
+setup sheet: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+sheet «Закрити»: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow none
+sheet strip: bg-image linear-gradient(rgba(0, 0, 0, 0), rgb(44, 38, 32) 16px) | shadow rgb(44, 38, 32) 0px 16px 0px 16px
+hook at mount: #app 6 / board 6; board 16.0,128.0 343.0x343.0; hint 16.0,483.0 343.0x44.0
+hook after «Почати» 4: #app 4 / board 4; board 46.5,128.0 282.0x282.0; hint 16.0,422.0 343.0x44.0
+hook after «Почати» 8: #app 8 / board 8; board 8.0,128.0 359.0x359.0; hint 16.0,499.0 343.0x44.0
+hook after «Почати» 6: #app 6 / board 6; board 16.0,128.0 343.0x343.0; hint 16.0,483.0 343.0x44.0
+dialog: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
+console errors: none; raw error text on page: none
+design /rules/: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+design /settings/: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+design /setup/: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.18) 0px -8px 32px 0px
+design /confirm/: bg rgb(44, 38, 32) | border-top rgb(138, 127, 113) | shadow rgba(0, 0, 0, 0.25) 0px 16px 40px 0px
