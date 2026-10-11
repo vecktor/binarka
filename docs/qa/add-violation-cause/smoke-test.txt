@@ -1,0 +1,84 @@
+# Smoke test: add-violation-cause (task 7.1)
+
+Run by the parent session on 2026-10-11 between about 14:36 and 14:58 (UTC+5:30), after the port and the battery.
+
+## Instruments and their limits
+
+The tester was the parent session (an agent), not a person. It used two instruments:
+- the Claude desktop app's browser pane, against the Vite dev server of this worktree (`npx vite --port 5173`; the same `src/`);
+- a scratch Playwright script against both the dev server and `vite preview` of `npm run build` on 4173. The script is copied as `docs/qa/add-violation-cause/smoke-sweep.mjs` (as it ran, including two unused lines), and its 4×4 variant as `docs/qa/add-violation-cause/smoke-four.mjs`.
+
+Everything the script read was identical on the built page and the dev server.
+
+The capture boards of `smoke-boards.json` (p2, p6, p8, mount) were mounted through a temporary, untracked page in the worktree root. It set `window.__binarkaCaptureBoard` and then imported `src/main.ts`. The page was deleted after the run.
+
+DevTools' Accessibility pane was not used. Names were read as `aria-label` attributes, which axe and the a11y e2e also check.
+
+VoiceOver was not run. Real screen-reader output is not a gate (A-28).
+
+Ports 4173, 4174, 4176 and 4177 had no listener before and after the preview run.
+
+## Steps
+
+1. Setup: PASS. Port check clean. Light scheme, 1024×768.
+
+2. P1, on a generated page: PASS.
+   - First try, row 1 (`. . . . G0 G0`). The second click already broke the count rule (four 0s), so the mark showed on (1,2), then moved to (1,3). That is correct behaviour; it is note n3 of the audit.
+   - Clean try, row 4 of a new board (`. . . . . .`):
+     - after `0 0` there was no mark;
+     - the third click turned (4,1) to (4,3) red, and only (4,3) carries `cell-cause`;
+     - its name is «Рядок 4, стовпець 3, 0, спричиняє порушення»; (4,1) and (4,2) end «, 0»;
+     - `::after` border-top-width is 15px, in rgb(179, 38, 30).
+   - Still (the same state on the fixture board): `stills/smoke-6x6-light-1024.png`.
+
+3. P7: PASS.
+   - A click on (1,1), breaking no rule, removes the mark. The three cells stay red.
+   - Focus: Tab onto the marked cell. The 3px outline runs outside the cell and does not cover the mark (`stills/smoke-6x6-light-1024-focus-x3.png`, 3× scale).
+
+4. P2, P3, P4 (board p2, row 6): PASS.
+   - P2: the row read `1 1 0 1 1 _`. All six cells are red, and only (6,5) is marked («…, 1, спричиняє порушення»).
+   - P3: (6,6) set to 0. The row stays red with no mark.
+   - P4: (6,6) set to 1. The mark is on (6,6).
+
+5. P6 (board p6): PASS.
+   - First «Підказка»: (4,3) is filled with 1 and is hinted (dashed border, computed `border-top-style` dashed). It carries `cell-cause`, and its name is «Рядок 4, стовпець 3, 1, підказка, спричиняє порушення».
+   - Second «Підказка»: the line reads «Спершу виправте порушення правил, підсвічене на полі.», and the mark stays.
+
+6. P8 (board p8): PASS.
+   - A wrong 0 at (1,2): 11 red cells, and the mark is on (1,2) only.
+   - Then the 1 at (1,2): «Вітаємо, головоломку розвʼязано!», no `cell-cause` and no `cell-violation`.
+
+7. Mount (board mount): PASS. (3,1) to (3,3) are red, and no cell carries `cell-cause`.
+
+8. Marker kept and removed (P1 state, the browser pane): PASS.
+   - (a) The mark was kept through each of these:
+     - opening and closing «Правила»;
+     - opening the setup sheet, pressing the already selected «Поле 6×6», and closing it;
+     - switching the theme to dark and back to light in the settings panel.
+   - (b) «Нова головоломка» then «Скасувати»: kept. «Нова головоломка» then «Так, почати» (real pointer clicks): the new board has no `cell-cause`, no violation and no entry.
+   - Note on the first attempt: in the first attempt the confirmation dialog did not open. That attempt had re-mounted the page by hand a second time, through a dynamic import of `src/ui/index.ts` into a replaced `#app`, on top of the mount of `main.ts`. On a clean load the dialog opened and worked. This was an artefact of the test instrument, not a product defect.
+
+9. Language switch (P1 state): PASS.
+   - English: the name is "Row 4, column 3, 0, causes a violation", and the mark stays.
+   - «Українська»: the Ukrainian suffix returns.
+
+10. Themes and sizes: PASS. Every reading below was the same on the built page as on the dev server.
+    - 8×8, light and dark, `::after` border-top-width (all at least 8px):
+
+      | Viewport | 320×640 | 375×812 | 768×1024 | 1024×768 | 1440×900 | 844×390 |
+      |---|---|---|---|---|---|---|
+      | Width | 8px | 9px | 14px | 11px | 12px | 8px |
+
+      The 0.5rem floor binds at 320 and at 844×390.
+    - 6×6: 15px at 1024, 11px at 375, in rgb(179, 38, 30) light and rgb(255, 138, 125) dark.
+    - 4×4: 15px at 375 light, 17px at 1024 dark.
+    - At 8×8 on a 320px window the mark is small but findable: a red corner on the third cell of the run (`stills/smoke-8x8-light-320.png`, `stills/smoke-8x8-dark-320.png`). This matches the design review's "after a short scan".
+    - Stills: `stills/smoke-{6x6,8x8}-{light,dark}-{375,1024,320}.png`, `stills/smoke-4x4-light-375.png`, `stills/smoke-4x4-dark-1024.png`.
+
+11. Hover: PASS. The hover ring runs under the legs and the hypotenuse stays readable in light and dark (`stills/smoke-6x6-light-1024-hover-x3.png`, `stills/smoke-6x6-dark-1024-hover-x3.png`). This is an accepted adjacency (CQ-7).
+
+12. Forced colours: PASS. Emulated through Playwright's `forcedColors: 'active'`; `matchMedia('(forced-colors: active)')` is true.
+    - `::after` reads `forced-color-adjust` none, border-top-color rgb(0, 0, 0), border-left-color transparent.
+    - The still shows a TRIANGLE in the system text colour, not a filled square (`stills/smoke-6x6-forced-colors-1024.png`).
+
+13. Anything unreadable: none found. No defect was recorded, and nothing blocks the archive.

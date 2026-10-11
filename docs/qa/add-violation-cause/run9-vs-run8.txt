@@ -1,0 +1,12 @@
+# Run 9 against run 8 (add-violation-cause, task 8.1), 2026-10-11 about 14:42 UTC+5:30
+
+Claim: no shot moved. Check: the PASS/FAIL lines (each with the shot's score) of the two runs, compared line by line.
+
+```
+$ diff <(grep -E "^\s*(PASS|FAIL)" docs/qa/g2/check-visual-run-8.txt) <(grep -E "^\s*(PASS|FAIL)" docs/qa/g2/check-visual-run-9.txt)
+(no output: exit 0)
+lines compared: run 8 170, run 9 170
+run 9: 84 PASS, 86 FAIL (exit 1, as expected: the unported surfaces)
+```
+
+Every shot's score equals run 8's, so the cause mark shows in no reference shot (none has a press that makes a violation, A-58). No pixel floor is claimed and `check:visual` does not pass.
