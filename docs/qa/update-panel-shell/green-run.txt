@@ -1,0 +1,35 @@
+update-panel-shell: green run, section "vitest" (tasks 3.1 to 3.6)
+
+Date and time: Sun Oct 11 17:09:30 +0530 2026 (machine time; user is UTC+5:30)
+vitest (npm run test:run): Test Files  76 passed (76) / Tests  1858 passed (1858)
+npm run lint exit code: 0
+npx tsc --noEmit exit code: 0
+npm run build exit code: 0
+
+Task 3.6 evidence
+Command: git diff -U0 src/ui/style.css | grep -E '^[+-]' | grep -E '^[+-]\s*(width|max-width|height|max-height|min-height|inset|margin[a-z-]*|padding[a-z-]*|border-width|border-radius|line-height)\s*:'
+Result: no output, exit 1 (no changed geometry declaration anywhere in the style.css diff, so none in .rules, .setup-sheet, .settings or .confirm).
+Command: git diff --stat -- src design quality playwright.config.ts
+ src/ui/play-page.ts |  2 ++
+ src/ui/style.css    | 66 ++++++++++++++++++++++++++++++++++++-----------------
+ 2 files changed, 47 insertions(+), 21 deletions(-)
+(no change to design/, quality/ or playwright.config.ts)
+
+e2e: to be run by the parent (task 3.7)
+
+## e2e, task 3.7 (run by the parent), 2026-10-11 17:12 (UTC+5:30)
+Capture lock taken (mkdir /tmp/binarka-capture.lock) and removed after; nothing listened on 4173, 4174, 4176 or 4177 before or after.
+Command: npm run build && npx playwright test --project=layout --reporter=line  (exit 0)
+   3 e2e/nfr-10-fit.spec.ts
+  18 e2e/nfr-10-header-fit.spec.ts
+  16 e2e/nfr-12-targets.spec.ts
+  11 e2e/nfr-14-backdrop.spec.ts
+   3 e2e/nfr-14-cause-mark.spec.ts
+  38 e2e/nfr-14-layout-geometry.spec.ts
+  27 e2e/nfr-14-palette.spec.ts
+  24 e2e/nfr-14-panel-shell.spec.ts
+  12 e2e/nfr-18-flash.spec.ts
+  152 passed (14.7s)
+nfr-14-panel-shell: 24 of 24 (red was 22 failed, 2 passed); nfr-14-layout-geometry, nfr-14-palette, nfr-14-backdrop, nfr-14-cause-mark, NFR-10, NFR-12 and NFR-18 all in the 152 passed.
+
+Note: vitest prints «Could not parse CSS stylesheet» 10 times; it predates this change (the same line is in docs/qa/add-level-selector-green-run.txt and earlier red runs), and jsdom parses src/ui/style.css with 0 errors at HEAD and after the port (checked by the parent).

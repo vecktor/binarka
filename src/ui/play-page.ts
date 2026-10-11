@@ -179,6 +179,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   dialog.append(dialogText, dialogButtons);
 
   let size = 6;
+  root.setAttribute('data-size', String(size)); // the root carries the board size for the panels' variables (update-panel-shell), before any generation
   let level = 1;
   let markedSize = 6; // the choice marked in the sheet; the board shown is `size` and `level` (FR-100)
   let markedLevel = 1;
@@ -333,6 +334,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
       });
     });
     const nextBoard = el('div', { 'data-board': '', 'data-size': String(n), class: 'board', role: 'group', 'aria-label': texts.sizeLabel(n) });
+    root.setAttribute('data-size', String(n));
     boardEl = nextBoard;
     cellEls = [];
     for (let r = 0; r < n; r++) {
