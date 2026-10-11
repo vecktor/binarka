@@ -219,7 +219,7 @@
     {
       "slice": "2026-10-11-add-violation-cause",
       "reviewEvidence": "unclean",
-      "trailerCommits": 9,
+      "trailerCommits": 10,
       "libDomains": [
         "ui"
       ],
