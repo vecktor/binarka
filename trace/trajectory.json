@@ -246,7 +246,7 @@
     {
       "slice": "2026-10-11-update-rules-panel",
       "reviewEvidence": "unclean",
-      "trailerCommits": 5,
+      "trailerCommits": 6,
       "libDomains": [
         "ui"
       ],
