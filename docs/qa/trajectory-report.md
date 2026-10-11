@@ -34,7 +34,7 @@ Result: PASS, 24 warning(s)
 | 2026-10-10-update-page-palette | **unclean** | 7 | yes | ui |
 | 2026-10-10-update-segmented-focus-ring-wording | **missing** | 2 | **no** | - |
 | 2026-10-10-update-setup-sheet-start | **unclean** | 22 | yes | ui |
-| 2026-10-11-update-page-backdrop | **unclean** | 7 | yes | ui |
+| 2026-10-11-update-page-backdrop | **unclean** | 8 | yes | ui |
 
 ## Cross-slice module overlap
 

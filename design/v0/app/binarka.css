@@ -748,7 +748,10 @@ body {
 }
 
 .cell-violation {
-  border: 2px solid var(--violation);
+  /* Width and colour only, as in the product: a hinted cell in a violation keeps its dashed
+     style (A-58); every other cell keeps the solid style of .cell. */
+  border-width: 2px;
+  border-color: var(--violation);
   background-color: var(--violation-bg);
   background-image: repeating-linear-gradient(
     -45deg,
@@ -762,6 +765,32 @@ body {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.12em;
+}
+
+/* The cause cue (FR-64, FR-120, A-58): a filled right triangle in the top-right inner corner,
+   in the violation border colour. Its legs are a quarter of the cell's inner width: the cell is
+   (board content − gaps) / n, less its two 2px borders, and never less than 0.5rem (8×8 on a
+   phone). Its square corner lies under the curve of the cell's own 2px border, which has the same
+   colour, so it never reaches the board plate (no radius: a rounded corner left a hairline seam
+   along the inner curve). Drawn with borders, not a background image, so forced colours still
+   show a mark, though as a filled square: the transparent left border is forced to the text
+   colour too (checked 2026-10-11, Chrome emulation). */
+.cell-cause {
+  position: relative;
+}
+
+.cell-cause::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: max(0.5rem, calc(((100cqi - (var(--n) - 1) * var(--board-gap)) / var(--n) - 4px) / 4))
+    solid var(--violation);
+  border-left: max(0.5rem, calc(((100cqi - (var(--n) - 1) * var(--board-gap)) / var(--n) - 4px) / 4))
+    solid transparent;
+  pointer-events: none;
 }
 
 /* ---------- Rules (popover: bottom sheet on phones, centred panel on wider screens) ---------- */

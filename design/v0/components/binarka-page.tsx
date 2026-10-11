@@ -9,6 +9,9 @@ export type BoardSpec = {
   size: number
   rows: CellSpec[][]
   violations?: ReadonlyArray<readonly [number, number]>
+  /** FR-120: the cell (row, col; 1-based) that carries `cell-cause`. The product marks at most one;
+      the review-only route /cause/ shows two (P1 and P6) on one board. */
+  causes?: ReadonlyArray<readonly [number, number]>
   solved?: boolean
 }
 
@@ -170,10 +173,19 @@ function Gear() {
   )
 }
 
-function cellLabel(row: number, col: number, digit: string, given: boolean, hinted: boolean) {
+function cellLabel(
+  row: number,
+  col: number,
+  digit: string,
+  given: boolean,
+  hinted: boolean,
+  cause = false,
+) {
   const value = digit === '' ? 'порожньо' : digit
   const suffix = given ? ', задано' : hinted ? ', підказка' : ''
-  return `Рядок ${row}, стовпець ${col}, ${value}${suffix}`
+  // FR-70 (amended 2026-10-11): the cause cell appends «, спричиняє порушення», after «, підказка».
+  const causeSuffix = cause ? ', спричиняє порушення' : ''
+  return `Рядок ${row}, стовпець ${col}, ${value}${suffix}${causeSuffix}`
 }
 
 function Mini({ children, answer = false }: { children: string; answer?: boolean }) {
@@ -206,6 +218,8 @@ export function BinarkaPage({
 
   const isViolation = (row: number, col: number) =>
     board.violations?.some(([r, c]) => r === row && c === col) ?? false
+  const isCause = (row: number, col: number) =>
+    board.causes?.some(([r, c]) => r === row && c === col) ?? false
 
   return (
     <div id="app">
@@ -250,11 +264,13 @@ export function BinarkaPage({
               const given = spec.startsWith('g')
               const hinted = spec.startsWith('h')
               const digit = spec === '.' ? '' : spec.slice(1)
+              const cause = isCause(row, col)
               const className = [
                 'cell',
                 given && 'cell-given',
                 hinted && 'cell-hinted',
                 isViolation(row, col) && 'cell-violation',
+                cause && 'cell-cause',
               ]
                 .filter(Boolean)
                 .join(' ')
@@ -268,7 +284,7 @@ export function BinarkaPage({
                   data-col={col}
                   data-given={given ? 'true' : 'false'}
                   aria-disabled={given ? 'true' : undefined}
-                  aria-label={cellLabel(row, col, digit, given, hinted)}
+                  aria-label={cellLabel(row, col, digit, given, hinted, cause)}
                 >
                   {digit}
                 </button>
