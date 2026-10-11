@@ -224,3 +224,7 @@ Full shasum output:
 logo-dark.png: OK
 logo-light.png: OK
 ```
+
+## Task 2.3: the mirror's commit
+
+`5e61bfd14de56bff4b3726db4ddd624fcd3c2e04` (signed, `%G?` = G), 2026-10-11 about 14:20 UTC+5:30. Then `pnpm build` in `design/v0` (exit 0).
