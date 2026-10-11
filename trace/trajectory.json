@@ -194,7 +194,7 @@
     {
       "slice": "2026-10-10-update-page-palette",
       "reviewEvidence": "unclean",
-      "trailerCommits": 6,
+      "trailerCommits": 7,
       "libDomains": [
         "ui"
       ],
