@@ -36,3 +36,48 @@ Change 'update-setup-sheet' is valid
 ✓ change/update-setup-sheet
 Totals: 5 passed, 0 failed (5 items)
 ```
+
+## Re-read after the shell's merge (task 1.1, session B)
+
+- **Auditor:** a fresh spec-compliance-auditor subagent of session B (`claude/magical-nash-setup`), read-only, 2026-10-11 from about 17:58 to 18:05 (UTC+5:30), at HEAD `ebaf49b`. It did not write the folder and edited no repo file (scratch under `/private/tmp/claude-501/audit-b/`).
+- **Why:** the folder was written at `7564ae3`; the shell's review fix `d176042` and archive `defc5e5` came after.
+
+Commands:
+```
+$ git diff --stat 7564ae3 HEAD -- openspec/specs/play-page/spec.md
+ openspec/specs/play-page/spec.md | 208 +++++++++++++++++++++++++++++++++++----
+ 1 file changed, 188 insertions(+), 20 deletions(-)
+$ git diff --stat 7564ae3 HEAD -- docs/requirements.md
+ docs/requirements.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+- The shell's delta at `7564ae3` is byte-equal to its archived delta (`d176042` changed no spec text); «Borders…», «Main column…» and «The panels…» in the baseline equal the archived shell blocks (empty diffs); the other five MODIFIED blocks' baseline is unchanged between `7564ae3` and HEAD. The only `docs/requirements.md` change is A-60's margin parenthetical (row 173). FR-65, FR-96, FR-99 and the A-57 appendix are unchanged. «The page root carries the board size» is in the baseline (`openspec/specs/play-page/spec.md:4376`). Block A has not merged; B's folder touches none of A's requirement headers.
+- **Result: 0 critical, 0 major, 10 minor, 5 notes; no hunk is a stale copy of the shell's text** (word diffs of all 8 MODIFIED pairs; every hunk is a named edit or an unnamed edit of this folder).
+
+| # | Severity | Finding | Disposition |
+|---|---|---|---|
+| 1 | minor | spec.md:687 and design.md:30 still argue against A-60's old "24px from 48rem" (corrected, row 173) | Fixed: «24px at every width above 22.5rem (A-60, corrected at autonomy-log row 173)»; design.md «A-60 says so since its correction» |
+| 2 | minor | proposal row «The panels…» omits its past-tense rewrites and Traces | Fixed (row text extended) |
+| 3 | minor | proposal row «Borders…» omits the role-column edits, decoration sentence, ring bullets, two added scenarios, Traces | Fixed |
+| 4 | minor | proposal row «Main column…» omits Traces + A-60 | Fixed |
+| 5 | minor | proposal rows of the five sheet requirements omit their Traces edits (and row «summary and level buttons» its parenthetical and look sentence) | Fixed |
+| 6 | note | The setup-sheet token is "assigned to the setup sheet" in the appendix, not marked "later" (3 places) | Fixed for the setup-sheet mentions; the inherited backdrop and shell wording is the baseline's and left |
+| 7 | minor | `tests/play-page-panel-shell-stylesheet.test.ts:44-48` reads the first `.setup-sheet {` block in the file; a 22.5rem rule placed in an earlier 22.5rem block would break it; `.setup-close` keeps one top-level rule (:139-141) | Fixed: design.md decision 2 and task 4.2 say the 22.5rem rule comes after the base rule and `.setup-close`'s padding and border go into its one top-level rule |
+| 8 | minor | spec.md:770 and :794 are process/narrative clauses | Fixed: "the walk asserts its premise at each of the four viewports"; "at 1366×650 the idle line is wholly covered or wholly clear in both states" |
+| 9 | minor | spec.md:783 missing noun; :785 "both boxes" for a line height | Fixed: «the case's `boxes` value (the design's own)»; «the case and both computed line heights» |
+| 10 | minor | proposal.md:38 says "uncommitted edits … re-greps after the merge"; design.md:23 cites the pre-archive path | Fixed: «re-grepped at `ebaf49b`»; the archive path |
+| 11 | minor | Impact line numbers drifted; some count-bearing comments and titles missing | Fixed: the table carries the re-grepped numbers below |
+| 12 | note | `d176042`'s new assertions (`e2e/nfr-14-panel-shell.spec.ts:362-367`, `tests/play-page-root-size.test.ts:156-157, 252-256`) are not broken by the planned port if decisions 2, 4 and finding 7 hold | None |
+| 13 | note | Counts where the table says; every ratio recomputed (3.68/4.13, 5.40/7.39, 5.40/6.82, 4.41/6.13, 1.98/2.06, 1.98/1.90, 3.38/4.55, 12.96/11.50, 5.40/8.55, 6.58/8.32, 7.17/7.54); 4+4+1+5+9+2+16 = 41 | None |
+| 14 | note | A not merged; no A text touched | None |
+| 15 | note | `--column` is declared only in `@media (min-width: 48rem)` (`src/ui/style.css:1053`), consistent with the from-48rem formulas | None |
+
+Re-grepped Impact lines at `ebaf49b`: `tests/helpers/css.ts` TOKEN_NAMES 410-442, PALETTE_LIGHT 453-485, PALETTE_DARK 487-519, CONTRAST_PAIRS 653-667 (hinted-cue :657, control-border :659), PairGroup 627, TRANSLUCENT_TOKENS 528; `tests/play-page-helpers.test.ts` DESIGN_TOKENS 400-432, 474, 480-481 (comment 470-471), 506-510, 526-530, DARK_SAMPLE 1444-1476, 1490; `tests/play-page-cause-stylesheet.test.ts` 212-213 (comments 12, 209); `tests/play-page-theme-stylesheet.test.ts` 168, 177 (comment 164, title 165); `tests/play-page-level-stylesheet.test.ts` 220, 230, 188, :15 (stale held comment), describe 122-175; `tests/play-page-layout-geometry.test.ts` 22-23, 24, 57, 92, 96; `tests/play-page-stylesheet.test.ts` 98, 109 (comment 94, title 96), 322-336, 419-422; `tests/play-page-palette-stylesheet.test.ts` 73; `tests/play-page-panel-shell-stylesheet.test.ts` it 178-195; `e2e/nfr-13-a11y.spec.ts` 177-233 (premise at 194, 231); `e2e/nfr-14-layout-geometry.spec.ts` 49, 124-126, 127-146; `src/ui/style.css` base `.setup-sheet` 798, 48rem rule 826-827, `.setup-close` 906.
+
+Fold by the parent (session B), 2026-10-11 about 18:06 (UTC+5:30), folder text only. Validation after the fold (task 1.2):
+```
+$ npx openspec validate update-setup-sheet --strict
+Change 'update-setup-sheet' is valid
+$ npx openspec validate --all --strict
+Totals: 4 passed, 0 failed (4 items)
+```

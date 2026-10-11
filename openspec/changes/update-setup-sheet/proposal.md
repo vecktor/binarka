@@ -21,38 +21,38 @@ This is block B of the parallel G2 plan (`docs/handoff/parallel-g2-plan-2026-10-
 
 | Baseline requirement (`openspec/specs/play-page/spec.md`) | Action |
 |---|---|
-| Borders, cues and focus rings have enough contrast | MODIFIED (post-shell text; 31 to 32 tokens, 38 to 41 pairs) |
-| Main column layout geometry follows the design reference | MODIFIED (post-shell text; the line-height sentence goes; the token-count scenario follows 31 to 32) |
-| The panels take the shared surface paint | MODIFIED (post-shell text; one scenario and one sentence: a fourth pair on the raised fill) |
-| Setup sheet | MODIFIED (the "held" sentence becomes FR-96's presentation) |
-| Level selector | MODIFIED (the stale "held NFR-10, NFR-12 and NFR-14" sentence) |
-| The summary and level buttons set their own colours | MODIFIED («Почати» bound; the dot scenario) |
-| Start button | MODIFIED (the stale "held NFR-14" sentence) |
-| The start button and the sheet buttons meet the touch-target floor | MODIFIED (the stale "held NFR-14") |
+| Borders, cues and focus rings have enough contrast | MODIFIED (post-shell text; 31 to 32 tokens, 38 to 41 pairs; the role column of four rows; the option-border decoration sentence; the two ring-pair bullets; two scenarios added (the ring pairs, the option border in no pair); Traces + A-60) |
+| Main column layout geometry follows the design reference | MODIFIED (post-shell text; the line-height sentence goes; the token-count scenario follows 31 to 32; Traces + A-60) |
+| The panels take the shared surface paint | MODIFIED (post-shell text; the fourth pair on the raised fill: one sentence, one scenario; the shell's own sentences and its two change-time scenarios rewritten in the past tense and attributed to update-panel-shell; Traces + A-60) |
+| Setup sheet | MODIFIED (the "held" sentence becomes FR-96's presentation; Traces + NFR-12, NFR-14, A-60) |
+| Level selector | MODIFIED (the stale "held NFR-10, NFR-12 and NFR-14" sentence; Traces + NFR-12, NFR-14, A-60) |
+| The summary and level buttons set their own colours | MODIFIED («Почати» bound; the dot scenario; the `.size-control` parenthetical; the held NFR-14 look sentence rewritten; Traces + NFR-14, A-57, A-60) |
+| Start button | MODIFIED (the stale "held NFR-14" sentence; Traces + NFR-14, A-60) |
+| The start button and the sheet buttons meet the touch-target floor | MODIFIED (the stale "held NFR-14"; Traces + NFR-14) |
 | The setup sheet takes the design's size, place and paint | ADDED |
 
 Checked and not modified (the design says what was read): «Level option content» (it holds no "held"; the stale word was in `docs/requirements.md` FR-99, already amended), «The size buttons set their own colours and the board disables double-tap zoom» (it pins `color` and `background-color` tokens and 4.5:1 only; the checked size option's `--color-text` on `--color-primary-soft` is 12.96 / 11.50), «Cells and buttons show a visible, unobscured focus indicator» (its `scroll-padding-bottom` value and the "up to 24px" bound stay true with the design's 16px bottom padding), «Summary button» (outside the sheet; its "held" sentence is left for the user, see `design.md`).
 
 ## Impact
 
-Line numbers are those of this worktree, where the shell's red tests are uncommitted edits (31 tokens, 38 pairs already in place); the implementing session re-greps them after the shell is merged. "The lines the shell changed" are 31 to 32 and 38 to 41. A test changes only when a changed spec demands it.
+Line numbers re-grepped at `ebaf49b` after the shell's merge (`docs/qa/update-setup-sheet/folder-audit.md`, section «Re-read after the shell's merge»). "The lines the shell changed" are 31 to 32 and 38 to 41. A test changes only when a changed spec demands it.
 
 | File | Lines (grep, this worktree) | What | Source |
 |---|---|---|---|
 | `tests/helpers/css.ts` | `TOKEN_NAMES` (~410), `PALETTE_LIGHT` (453), `PALETTE_DARK` (487), `CONTRAST_PAIRS` (653-667) | 32nd name `--color-option-border` last, its two values; `pairs('control-border', 'control-border', ['page', 'control-bg'], 3)`; the `hinted-cue` primary pair gains `control-bg` and `surface-raised`; 38 to 41; no new `PairGroup` (627); `TRANSLUCENT_TOKENS` (528) unchanged; comments follow | Borders |
-| `tests/play-page-helpers.test.ts` | `DESIGN_TOKENS` (~397-430), 474, 480-481, 506-510, 526-530, 1472 (`DARK_SAMPLE`) and its comment (~1442), 1490 | the fixture gains the light row; `toHaveLength(31)` to 32; `4 + 4 + 1 + 3 + 9 + 1 + 16` and `toHaveLength(38)` to `4 + 4 + 1 + 5 + 9 + 2 + 16` and 41; the `hinted-cue` list has five pairs; the pairs on `--color-surface-raised` are four (the shell pinned exactly three); the dark sample gains the row | Borders, Panels |
-| `tests/play-page-cause-stylesheet.test.ts` | 212-213 | 38 to 41, 31 to 32 | Borders |
-| `tests/play-page-theme-stylesheet.test.ts` | 168, 177 (message) | 31 to 32 | Borders |
-| `tests/play-page-level-stylesheet.test.ts` | 220, 230 ("no 32nd" becomes "no 33rd") | 31 to 32 | Borders |
-| `tests/play-page-layout-geometry.test.ts` | 22 (comment), `LIGHT` and `DARK` copies, 92, 96 | both copies gain the row; the title and `toHaveLength(31)` become 32 | Main column |
-| `tests/play-page-stylesheet.test.ts` | 98, 109 (message; the `#rrggbbaa` list stays five names) | 31 to 32 | Borders |
-| `tests/play-page-palette-stylesheet.test.ts` | 73 (title) | 31 to 32; the body reads `TOKEN_NAMES`, so it requires `--color-option-border` to be bound | Borders |
-| `tests/play-page-panel-shell-stylesheet.test.ts` (the shell's new test) | ~175-193 | "exactly three" and "38 pairs" become exactly four and 41; the ratio loop gains `--color-primary` | Panels |
-| `tests/play-page-level-stylesheet.test.ts` | 188 (and the comment at 15) | the dot is a `background-image` with `radial-gradient(` instead of an `inset` `box-shadow` | Summary and level buttons |
-| `tests/play-page-level-stylesheet.test.ts` | 122-163 («The start button declares its colours») | unchanged in text; it must stay green with the primary fill; a new assertion pins the two tokens | Summary and level buttons |
-| `tests/play-page-stylesheet.test.ts` | 320-326 (`scroll-padding-bottom`) and 419-422 (size button colours) | unchanged | checked |
-| `e2e/nfr-13-a11y.spec.ts` | 175-186 (focus not obscured, four viewports) | unchanged; its premise (the sheet scrolls with 4×4 marked) is asserted at each viewport and a failure is a finding for the user | Focus indicator |
-| `e2e/nfr-14-layout-geometry.spec.ts` | 124-126 (comment), 127-148 (the 1366×650 guard) | the comment says "the sheet keeps the normal line height until its own block" and goes; the test is unchanged and must pass; line 49 pins `cases` to 32 and is a guard | Main column |
+| `tests/play-page-helpers.test.ts` | `DESIGN_TOKENS` (400-432, comment 397), 474, 480-481 (comment 470-471), 506-510, 526-530, 1472 (the `DARK_SAMPLE` 1444-1476) and its comment (1441-1442), 1490 (comment 1489) | the fixture gains the light row; `toHaveLength(31)` to 32; `4 + 4 + 1 + 3 + 9 + 1 + 16` and `toHaveLength(38)` to `4 + 4 + 1 + 5 + 9 + 2 + 16` and 41; the `hinted-cue` list has five pairs; the pairs on `--color-surface-raised` are four (the shell pinned exactly three); the dark sample gains the row | Borders, Panels |
+| `tests/play-page-cause-stylesheet.test.ts` | 212-213 (comments 12, 209) | 38 to 41, 31 to 32 | Borders |
+| `tests/play-page-theme-stylesheet.test.ts` | 168, 177 (message), comment 164 and title 165 | 31 to 32 | Borders |
+| `tests/play-page-level-stylesheet.test.ts` | 220, 230 ("no 32nd" becomes "no 33rd"; comment 217-218) | 31 to 32 | Borders |
+| `tests/play-page-layout-geometry.test.ts` | 22-23 (comment), `LIGHT` (24) and `DARK` (57) copies, 92, 96 | both copies gain the row; the title and `toHaveLength(31)` become 32 | Main column |
+| `tests/play-page-stylesheet.test.ts` | 98, 109 (message; the `#rrggbbaa` list stays five names), comment 94 and title 96 | 31 to 32 | Borders |
+| `tests/play-page-palette-stylesheet.test.ts` | 73 (title; comment 71-72) | 31 to 32; the body reads `TOKEN_NAMES`, so it requires `--color-option-border` to be bound | Borders |
+| `tests/play-page-panel-shell-stylesheet.test.ts` (the shell's new test) | comment 175-177, `it` 178-195 ("exactly three" 180-183, 38 at 185, ratio loop 186-194) | "exactly three" and "38 pairs" become exactly four and 41; the ratio loop gains `--color-primary` | Panels |
+| `tests/play-page-level-stylesheet.test.ts` | 188 (and the stale "held" comment at 15) | the dot is a `background-image` with `radial-gradient(` instead of an `inset` `box-shadow` | Summary and level buttons |
+| `tests/play-page-level-stylesheet.test.ts` | 122-175 («The start button declares its colours», `it` 126-174) | unchanged in text; it must stay green with the primary fill; a new assertion pins the two tokens | Summary and level buttons |
+| `tests/play-page-stylesheet.test.ts` | 322-336 (`scroll-padding-bottom`) and 419-422 (size button colours) | unchanged | checked |
+| `e2e/nfr-13-a11y.spec.ts` | 177-233 (focus not obscured, four viewports 180-185; the premise asserted at 194 and 231) | unchanged; its premise (the sheet scrolls with 4×4 marked) is asserted at each viewport and a failure is a finding for the user | Focus indicator |
+| `e2e/nfr-14-layout-geometry.spec.ts` | 124-126 (comment), 127-146 (the 1366×650 guard) | the comment says "the sheet keeps the normal line height until its own block" and goes; the test is unchanged and must pass; line 49 pins `cases` to 32 and is a guard | Main column |
 | `e2e/nfr-12-targets.spec.ts`, `e2e/nfr-10-fit.spec.ts`, `e2e/nfr-14-panel-shell.spec.ts`, `e2e/nfr-14-backdrop.spec.ts`, `e2e/nfr-14-palette.spec.ts` | n/a | unchanged and must stay green | NFR-12, NFR-14 |
 | `quality/design-geometry.json` | new top-level key `setupSheet` | cases added only, each with the design's `boxes` and the expected `expected` box (the design with the 28px margin of A-60, a recorded deviation); `cases`, `selectors`, `tolerancePx`, `designCommit` and `designCssSha1` stay as they are; the key carries its own provenance (the fresh build SHA-1 and browser; `designBuildSha1` differs between worktrees) | NFR-14 |
 
