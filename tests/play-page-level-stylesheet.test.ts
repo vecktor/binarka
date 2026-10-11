@@ -213,7 +213,11 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     // update-page-backdrop DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and
     // are literal», proposal.md Impact row `tests/play-page-level-stylesheet.test.ts:212-223`): "the 25 tokens" and "no 26th colour token" become 27 and
     // "no 28th" (the two backdrop tokens are added to the list).
-    expect(TOKEN_NAMES, 'the 27 tokens of the list').toHaveLength(27);
+    // update-panel-shell DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and
+    // are literal», proposal.md Impact row `tests/play-page-level-stylesheet.test.ts:216` (comment 213-215) and `:226`): `toHaveLength(27)` becomes 31; the
+    // message "no 28th colour token" at 226 was stale text (it said 28 beside the 27) and follows the count: "no 32nd". Red on today's stylesheet: the
+    // four shell tokens are not declared once in :root.
+    expect(TOKEN_NAMES, 'the 31 tokens of the list').toHaveLength(31);
     for (const name of TOKEN_NAMES) {
       expect(parsed.tokenDeclarations.filter((d) => d.property === name), `${name} is declared once in :root`).toHaveLength(1);
       expect(parsed.darkTokenDeclarations.filter((d) => d.property === name), `${name} is declared once in :root[data-theme="dark"]`).toHaveLength(1);
@@ -223,7 +227,7 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     expect(scanColours(parsed).shorthands).toEqual([]);
     expect(scanColours(parsed).colourProperties).toEqual([]);
     expect(scanColours(parsed).tokensOutsideRoot).toEqual([]);
-    expect(Object.keys(parsed.tokens).filter((name) => name.startsWith('--color-')).sort(), 'no 28th colour token').toEqual([...TOKEN_NAMES].sort());
+    expect(Object.keys(parsed.tokens).filter((name) => name.startsWith('--color-')).sort(), 'no 32nd colour token').toEqual([...TOKEN_NAMES].sort());
     // «Nothing removes the outline»
     expect(text).not.toMatch(/outline\s*:\s*(none|0(px)?(?![\d.]))/i);
     expect(text).not.toMatch(/outline-style\s*:\s*none/i);

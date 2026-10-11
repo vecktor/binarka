@@ -1,0 +1,167 @@
+update-panel-shell: red run of the unit tests (tasks 2.1 to 2.4) and the e2e file (task 2.5)
+
+Date and time of the run: Sun Oct 11 17:02:45 +0530 2026 (UTC+5:30, the user's time), in the worktree vibrant-tu-434033 against today's
+src/ui/style.css and src/ui/play-page.ts (no port, no spike anywhere).
+Command: npm run test:run   (vitest run, whole project)
+Summary line: Test Files  8 failed | 68 passed (76)
+              Tests  26 failed | 1832 passed (1858)
+Also: npm run lint passes; npx tsc --noEmit passes (it covers tests/ and e2e/, so the new e2e file type-checks).
+The 26 failures are 26 assertion failures (AssertionError); none is an import, syntax or setup error. Every message below is the first line of
+the vitest failure of that test. The e2e (task 2.5) was written but NOT run by this author (ports are shared; the parent runs it).
+
+----------------------------------------------------------------------------------------------------------------------------------
+A. Helpers (task 2.1): tests/helpers/css.ts and the self-tests of tests/play-page-helpers.test.ts
+----------------------------------------------------------------------------------------------------------------------------------
+Result on today's tree: 0 failed, all 134 tests of tests/play-page-helpers.test.ts pass. They are GUARDS by design (task 2.1: "fail on
+assertions or pass as forward guards"): they run on literal samples and on the helper itself, and the helper and its self-tests are changed
+together (the helper is the unit under test, not the page). Each changed test carries a DELIBERATE CHANGE comment naming delta 1 and the
+proposal Impact row.
+
+GUARDs (changed in tests/play-page-helpers.test.ts), six tests:
+  1. "the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)"   (31 names, 38 pairs, fixture = PALETTE_LIGHT)
+  2. "CONTRAST_PAIRS has the groups of the new list, no given-cue group and no (cell-border, given-bg) pair"   (9 focus-ring backgrounds, the
+     three pairs on --color-surface-raised, no pair names the border or a shadow)
+  3. "a translucent token is the foreground or the background of no pair, and contrastProblems reports one that a pair names as not #rrggbb"  (five names)
+  4. "reads the backdrop and shadow tokens as translucent tokens that no contrast pair uses"   (title and sample gain the shadows)
+  5. "the dark block is the SECOND token set ..."   (31 declarations)
+  6. "the signed light and dark palettes meet every pair, and the focus ring keeps its recorded ratios ..."   (DARK_SAMPLE has 31 rows, equals PALETTE_DARK)
+  (DESIGN_TOKENS and DARK_SAMPLE are fixtures, not tests.)
+
+Evidence that the changed self-tests are not vacuous: with tests/helpers/css.ts temporarily put back to HEAD (restored at once, the diff of
+css.ts is intact), tests/play-page-helpers.test.ts fails 5 of 134 on assertions:
+  - the design token values meet every pair ...: expected [ '--color-page', ...(26) ] to have a length of 31 but got 27
+  - CONTRAST_PAIRS has the groups of the new list ...: expected [ '--color-page', ...(7) ] to deeply equal [ '--color-page', ...(8) ]
+  - a translucent token is the foreground or the background of no pair ...: expected [ '--color-backdrop-soft', ...(2) ] to deeply equal [ ...(4) ]
+  - reads the backdrop and shadow tokens as translucent tokens ...: the four translucent tokens are read without a problem: expected [ Array(1) ] to deeply equal []
+  - the signed light and dark palettes meet every pair ...: the helper holds the dark values of the spec table, backdrops and shell tokens included: expected {...} to deeply equal {...}
+  (the sixth, the 31 declarations check, reads the fixture only, so it passes on the old helper too.)
+
+----------------------------------------------------------------------------------------------------------------------------------
+B. Stylesheet tests changed on purpose (task 2.2) and tests that go red through the new helper lists
+----------------------------------------------------------------------------------------------------------------------------------
+Changed tests (6 failures):
+  tests/play-page-stylesheet.test.ts
+    FAIL "@trace FR-65 Tokens exist and are literal: the 31 names of the G2 palette, each declared once in the top-level :root with the light value of the list"
+         --color-surface-raised is declared once in the top-level :root: expected [] to have a length of 1 but got +0
+  tests/play-page-theme-stylesheet.test.ts
+    FAIL "Tokens exist and are literal: the dark block declares each of the 31 names once with the dark value of the list, so each token has exactly two value sets"
+         --color-surface-raised is declared once in :root[data-theme="dark"]: expected [] to have a length of 1 but got +0
+  tests/play-page-level-stylesheet.test.ts
+    FAIL "The existing stylesheet scans still pass"
+         --color-surface-raised is declared once in :root: expected [] to have a length of 1 but got +0
+  tests/play-page-cause-stylesheet.test.ts
+    FAIL "The cause cue has 3:1 against the violation fill and the stripe"
+         expected [ '--color-backdrop-soft', ...(26) ] to deeply equal [ '--color-backdrop-soft', ...(30) ]   (the stylesheet declares 27 tokens, the list is 31)
+  tests/play-page-layout-geometry.test.ts
+    FAIL "Colours are the G2 palette: the light and dark token sets equal the 31 tokens and values of the table (25 of block 2, 2 backdrops, 4 shell tokens), and no other --color-* is declared"
+         expected { '--color-page': '#f7f3ea', ...(26) } to deeply equal { '--color-page': '#f7f3ea', ...(30) }
+  tests/play-page-palette-stylesheet.test.ts
+    FAIL "Every declared token is bound by a rule: each of the 31 tokens is referenced by a declaration outside :root"
+         tokens no declaration outside :root references: expected [ '--color-surface-raised', ...(3) ] to deeply equal []
+The 3 unchanged tests that fail only because CONTRAST_PAIRS (task 2.1) now names --color-surface-raised, which the stylesheet does not declare yet
+(tests/play-page-stylesheet.test.ts reads the pair list from the helper; no edit to these tests, the spec scenarios demand the pairs):
+    FAIL "@trace FR-65 The focus ring has 3:1 against the page and every cell background (light and dark)"           light token set: expected [ Array(1) ] to deeply equal []
+    FAIL "@trace FR-65 @trace NFR-9 The control border has 3:1 and the text pairs have 4.5:1 (light and dark)"      light token set: expected [ Array(1) ] to deeply equal []
+    FAIL "@trace FR-65 @trace NFR-9 Every pair holds for the top-level token set, the dark set and every set a conditional :root block makes"
+                                                                                                                      token set "top-level": expected [ ...(2) ] to deeply equal []
+GUARD in this section: none of the changed tests passes today. (The test of tests/play-page-cause-stylesheet.test.ts that carries the
+GUARD comment for the 38 pairs fails on the token comparison on the line after it.)
+Section B total: 9 failures (6 changed + 3 unchanged).
+
+----------------------------------------------------------------------------------------------------------------------------------
+C. New panel-shell stylesheet test (task 2.3): tests/play-page-panel-shell-stylesheet.test.ts   (8 tests: 6 failed, 2 passed)
+----------------------------------------------------------------------------------------------------------------------------------
+Not encoded on purpose (the coordinator's correction of the delta): the `git diff -U0` clause and any pin of the panels' width, height, padding,
+max-height, radius, inset, margin or line-height. Said in the file header.
+Failing:
+  1. "The three panels take the raised fill, the overlay border and the sheet shadow below 48rem: one rule each outside any at-rule, each declaration once"
+       .rules { background-color }: expected 'var(--color-control-bg)' to be 'var(--color-surface-raised)'
+  2. "From 48rem the three panels take the panel shadow and keep the overlay border: no rule that is exactly a panel names another border colour or fill"
+       .rules: one box-shadow inside @media (min-width: 48rem): expected [] to deeply equal [ Array(1) ]
+  3. "The dialog takes the raised fill and the panel shadow: one rule outside any at-rule"
+       .confirm { background-color }: expected 'var(--color-control-bg)' to be 'var(--color-surface-raised)'
+  4. "The footer strip and the two close buttons take the raised fill; the strip uses --color-control-bg nowhere"
+       the strip { background }: expected 'linear-gradient(to bottom, transparen...' to be 'linear-gradient(to bottom, transparen...'
+  5. "No shell binding adds a colour literal: each shadow colour is a token, each of the four shell tokens is referenced outside :root"
+       the panels and the dialog declare shadows (3 below 48rem, 3 from 48rem, 1 on the dialog): expected +0 to be 7
+  6. "The raised fill is covered by pairs: exactly three, with the recorded ratios in the light and the dark set; no pair names the border or a shadow; 38 pairs"
+       light: --color-surface-raised is declared in the token set
+GUARDs (pass today by design, must stay green):
+  G1. "GUARD: the dialog keeps --color-control-border, has one fill, border and shadow at every width, and never takes the overlay border"
+  G2. "GUARD: the colour scan finds nothing, there is no !important and exactly one :has("
+  (also GUARD inside test 6: the helper's pair list, 38 pairs and the three pairs on the raised fill, which are green once task 2.1 is in; the
+  test as a whole is red on the ratios, which are read from the stylesheet's own tokens.)
+
+----------------------------------------------------------------------------------------------------------------------------------
+D. New root-size test (task 2.4): tests/play-page-root-size.test.ts   (13 tests: 11 failed, 2 passed)
+----------------------------------------------------------------------------------------------------------------------------------
+Failing, jsdom scenarios (the root has no data-size today):
+  1. "The root carries the size of the board at mount: 6, equal to the board, with the default generator and with an injected 6x6 fixture"
+       the root of the default mount: expected null to be '6'
+  2. "The root follows every size change: 4, then 8, then 6 after each Pochaty; marking a size alone changes nothing"
+       at mount: expected null to be '6'
+  3. "A size change that asks first changes the root only after Tak, pochaty; the dialog and Skasuvaty leave it at 6"
+       while the dialog is open: expected null to be '6'
+  4. "A failed generation keeps the root equal to the board shown: a generator that throws for size 8 leaves 6 on the board and on the root"
+       the root keeps 6: expected null to be '6'
+  5. "With no board shown at mount the root is 6: the generation fails at mount, there is no [data-board]"
+       the root says the mount size: expected null to be '6'
+  6. "A capture board sets the root: a size-4 and a size-8 capture board (FR-119) give 4 and 8, equal to the board"
+       the root of the size-4 capture board: expected null to be '4'
+  7. "Two mounts are independent: each root carries its own value, a change on one never touches the other, a re-mount starts at 6"
+       both mounts start at 6: expected [ null, null ] to deeply equal [ '6', '6' ]
+Failing, stylesheet scenario (the five variables are in .board rules today):
+  8. "Every rule that declares --n, --cell-max, --board-gap, --board-pad or --board-width has a selector that begins with #app, none begins with .board"
+       rules that declare a size-dependent variable outside #app: expected [ '.board', ...(7) ] to deeply equal []
+  9. "The top-level #app declares all five (--n 6, --cell-max 4rem, the 6x6 gap and padding, the board width); #app[data-size] sets --n 4 and 8"
+       a top-level #app rule outside any at-rule declares the variables: expected 0 to be greater than 0
+ 10. "The 8x8 and the small-phone 6x6 rules keep the gap and padding values the .board rules had"
+       #app[data-size='8'] { --board-gap }: expected undefined to be '0.1875rem'
+ 11. "The 30rem and 48rem blocks declare --cell-max (and the 8x8 gap and padding up to 30rem) on #app"
+       #app { --cell-max } up to 30rem: expected undefined to be 'clamp(2.75rem,calc((100svh-28rem)/var...'
+GUARDs (pass today by design, must stay green):
+  G1. "GUARD: the board keeps its own geometry (grid, width, padding; --bleed, width and margin-inline for 8x8 on phones)"   (presence only)
+  G2. "GUARD: the raw text contains :has( exactly once (the idle-line rule) and no selector reads the board size through :has("
+Check of the jsdom flows (not an implementation): the jsdom half of this file was run once from a scratch copy outside the repository with
+`rootSize` replaced by "the data-size of [data-board], else 6" (a stand-in for the attribute, no src change): all 7 jsdom tests passed, so a
+page that sets the attribute equal to the board's (and 6 with no board) turns them green; the stylesheet half cannot be simulated without a
+port and was checked by reading jsdom's serialisation of today's rules (attribute-selector quotes stay single; custom-property values are
+compacted, so the calc()/clamp() values are compared with all whitespace removed).
+
+----------------------------------------------------------------------------------------------------------------------------------
+Count check
+----------------------------------------------------------------------------------------------------------------------------------
+26 failures = B 9 + C 6 + D 11 (A: 0 on the new helper). Files failed: 8 = stylesheet, theme-stylesheet, level-stylesheet, cause-stylesheet,
+layout-geometry, palette-stylesheet, panel-shell-stylesheet, root-size. Passed 1832, of which the GUARDs above.
+
+E. e2e (run by the parent), 2026-10-11 17:06 (UTC+5:30), at main 64c2d7d plus the red tests, today's page built (`npm run build`), `design/v0/out/index.html` present.
+Capture lock /tmp/binarka-capture.lock taken (mkdir) before the run and removed after; nothing listened on 4173, 4174, 4176 or 4177 before or after.
+Command: npx playwright test --project=layout e2e/nfr-14-panel-shell.spec.ts --reporter=line
+Result: 22 failed, 2 passed. Every failure is an assertion: 16 paint cases fail on «the surface paint differs from the design» (expect(differences).toEqual([])), 6 hook cases fail on «--n is non-empty on the settings panel» (the panel reads no size variable today). The 2 passes are the declaration test and the ephemeral-port test (GUARDs).
+  22 failed
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light rules 375x812: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light setup 375x812: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light settings 375x812: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light confirm 375x812: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light rules 1024x768: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light setup 1024x768: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light settings 1024x768: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light confirm 1024x768: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark rules 375x812: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark setup 375x812: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark settings 375x812: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark confirm 375x812: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark rules 1024x768: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark setup 1024x768: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark settings 1024x768: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:339:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark confirm 1024x768: the fill, the border colour and the shadow equal the design's 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:387:7 › hook: a panel outside the board reads the board's variables › @trace FR-43 @trace FR-57 @trace FR-96 4x4 at 375x812: the five variables are equal on the board and on the settings panel, and --n is the board's size 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:387:7 › hook: a panel outside the board reads the board's variables › @trace FR-43 @trace FR-57 @trace FR-96 6x6 at 375x812: the five variables are equal on the board and on the settings panel, and --n is the board's size 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:387:7 › hook: a panel outside the board reads the board's variables › @trace FR-43 @trace FR-57 @trace FR-96 8x8 at 375x812: the five variables are equal on the board and on the settings panel, and --n is the board's size 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:387:7 › hook: a panel outside the board reads the board's variables › @trace FR-43 @trace FR-57 @trace FR-96 4x4 at 1024x768: the five variables are equal on the board and on the settings panel, and --n is the board's size 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:387:7 › hook: a panel outside the board reads the board's variables › @trace FR-43 @trace FR-57 @trace FR-96 6x6 at 1024x768: the five variables are equal on the board and on the settings panel, and --n is the board's size 
+    [layout] › e2e/nfr-14-panel-shell.spec.ts:387:7 › hook: a panel outside the board reads the board's variables › @trace FR-43 @trace FR-57 @trace FR-96 8x8 at 1024x768: the five variables are equal on the board and on the settings panel, and --n is the board's size 
+  2 passed (9.1s)
+
+Parent confirmation (task 2.6), 2026-10-11 17:05 (UTC+5:30): `npm run test:run` re-run by the parent gives Test Files 8 failed | 68 passed (76), Tests 26 failed | 1832 passed (1858), the same 26 tests as sections B to D, each failing on an assertion; `npm run lint` passes. Deviation recorded: the test-engineer ran the seven jsdom root-size tests once in a scratch copy outside the repo with the test's root read replaced by the board's data-size (a simulation of the reading, not a port of the page; deleted); informational only, as in add-violation-cause (autonomy-log row 166).
+

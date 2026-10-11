@@ -15,6 +15,12 @@ import { BLANK_4, PAIR_ROW, WIN_MESSAGE, bySize, clickCell, generateSpy, install
 // G2 palette», proposal.md Impact row `tests/play-page-layout-geometry.test.ts:9-67` (`LIGHT`, `DARK`) and `:69-74`): the two literal copies gain the
 // backdrop rows of the spec's table (`--color-backdrop-soft`, `--color-backdrop-strong`: light `#46280f38` and `#2d190a80`, dark `#08050273` and
 // `#08050299`), 27 tokens in each set, and the length check is 27. Nothing else in the scenario changes.
+//
+// update-panel-shell DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 4 «Main column layout geometry follows the design reference», scenario «Colours are the
+// G2 palette», proposal.md Impact row `tests/play-page-layout-geometry.test.ts:18-45` (`LIGHT`), `:47-75` (`DARK`), `:78` and `:82` (comment 15-17)): the two
+// literal copies gain the four shell rows of the spec's table (`--color-surface-raised`, `--color-overlay-border`, `--color-shadow-panel`,
+// `--color-shadow-sheet`: light `#fffdf8`, `#e2dbcc`, `#00000040`, `#0000002e`; dark `#2c2620`, `#8a7f71`, `#00000040`, `#0000002e`), 31 tokens in each set,
+// and the title and the length check are 31. Nothing else in the scenario changes. Red on today's stylesheet: both sets hold 27 tokens.
 const LIGHT: Record<string, string> = {
   '--color-page': '#f7f3ea',
   '--color-text': '#1e2126',
@@ -43,6 +49,10 @@ const LIGHT: Record<string, string> = {
   '--color-focus': '#1e2126',
   '--color-backdrop-soft': '#46280f38',
   '--color-backdrop-strong': '#2d190a80',
+  '--color-surface-raised': '#fffdf8',
+  '--color-overlay-border': '#e2dbcc',
+  '--color-shadow-panel': '#00000040',
+  '--color-shadow-sheet': '#0000002e',
 };
 const DARK: Record<string, string> = {
   '--color-page': '#1a1714',
@@ -72,14 +82,18 @@ const DARK: Record<string, string> = {
   '--color-focus': '#f1ede4',
   '--color-backdrop-soft': '#08050273',
   '--color-backdrop-strong': '#08050299',
+  '--color-surface-raised': '#2c2620',
+  '--color-overlay-border': '#8a7f71',
+  '--color-shadow-panel': '#00000040',
+  '--color-shadow-sheet': '#0000002e',
 };
 
 describe('@trace NFR-14 @trace FR-65 the main column takes the G2 palette', () => {
-  it('Colours are the G2 palette: the light and dark token sets equal the 27 tokens and values of the table (25 of block 2, 2 backdrops), and no other --color-* is declared', () => {
+  it('Colours are the G2 palette: the light and dark token sets equal the 31 tokens and values of the table (25 of block 2, 2 backdrops, 4 shell tokens), and no other --color-* is declared', () => {
     const [light, dark] = themeTokenSets(readStyles());
     expect(light?.tokens).toEqual(LIGHT);
     expect(dark?.tokens).toEqual(DARK);
-    expect(Object.keys(LIGHT)).toHaveLength(27);
+    expect(Object.keys(LIGHT)).toHaveLength(31);
   });
 });
 

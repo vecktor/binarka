@@ -8,6 +8,8 @@
 //
 // GUARDS (green on today's stylesheet by design; docs/qa/add-violation-cause/red-run.txt section B): the contrast ratios of the cause cue and of
 // the accepted adjacencies (the tokens exist today; the pair count of 35 comes from tests/helpers/css.ts), and the token count of 27.
+// update-panel-shell DELIBERATE CHANGE (delta 1; proposal.md Impact row `tests/play-page-cause-stylesheet.test.ts:205-206` (comment at line 10)): the
+// pair count is now 38 and the token count 31 (see the test that reads them).
 //
 // How a rule is read (design.md decision 6): `declarationsFor` merges every rule of a selector, the forced-colours rule being later in the file, so
 // the top-level `.cell-cause::after` is read alone (empty context) and the forced-colours rule alone (its `@media` context). The values are compared
@@ -202,8 +204,13 @@ describe('@trace FR-65 Borders, cues and focus rings have enough contrast: the c
       '--color-violation-border on --color-violation-stripe',
     ]);
     expect(CONTRAST_PAIRS.filter((p) => p.fg === '--color-violation-border' && p.bg === '--color-violation-bg').map((p) => p.group)).toEqual(['violation-cue']);
-    expect(CONTRAST_PAIRS, 'the list holds 35 pairs').toHaveLength(35);
-    expect(TOKEN_NAMES, 'the mark has no token of its own: still the 27').toHaveLength(27);
+    // update-panel-shell DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «The cause cue has
+    // 3:1 against the violation fill and the stripe», proposal.md Impact row `tests/play-page-cause-stylesheet.test.ts:205-206` (comment at line 10)):
+    // `toHaveLength(35)` becomes 38 (the 3 pairs on `--color-surface-raised`) and `toHaveLength(27)` becomes 31 (the four shell tokens). The count of the
+    // pairs is a GUARD (it comes from the helper, changed in task 2.1); the test fails on the token comparison on the next line, because today's stylesheet
+    // declares 27 tokens.
+    expect(CONTRAST_PAIRS, 'the list holds 38 pairs').toHaveLength(38);
+    expect(TOKEN_NAMES, 'the mark has no token of its own: the 31 of the table').toHaveLength(31);
     expect(Object.keys(readStyles().tokens).filter((name) => name.startsWith('--color-')).sort()).toEqual([...TOKEN_NAMES].sort());
   });
 

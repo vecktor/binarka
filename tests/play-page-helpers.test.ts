@@ -393,6 +393,9 @@ describe('play-page seed helpers and constants', () => {
  * DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
  * `tests/play-page-helpers.test.ts:378-418`): the fixture follows `TOKEN_NAMES` again, now 27 names: the two backdrop tokens of the spec's table
  * (light `#46280f38` and `#2d190a80`), both translucent.
+ * DELIBERATE CHANGE (update-panel-shell, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
+ * `tests/play-page-helpers.test.ts:397-425`): the fixture follows `TOKEN_NAMES` again, now 31 names: the four light shell rows of the spec's table
+ * (`#fffdf8`, `#e2dbcc`, `#00000040`, `#0000002e`), the last two translucent. It must follow `TOKEN_NAMES`: the test below compares it with `PALETTE_LIGHT`.
  */
 const DESIGN_TOKENS: Record<string, string> = {
   '--color-page': '#f7f3ea',
@@ -422,6 +425,10 @@ const DESIGN_TOKENS: Record<string, string> = {
   '--color-focus': '#1e2126',
   '--color-backdrop-soft': '#46280f38',
   '--color-backdrop-strong': '#2d190a80',
+  '--color-surface-raised': '#fffdf8',
+  '--color-overlay-border': '#e2dbcc',
+  '--color-shadow-panel': '#00000040',
+  '--color-shadow-sheet': '#0000002e',
 };
 
 const tokenCss = (tokens: Record<string, string>): string =>
@@ -458,15 +465,20 @@ describe('css helper: contrastRatio and rgbOf', () => {
   // violation fill and the stripe»; proposal.md Impact row `tests/play-page-helpers.test.ts` 460, 466-467): CONTRAST_PAIRS gains the cause cue
   // `--color-violation-border` on `--color-violation-stripe` (group `cause-cue`), so the list holds 35 pairs (4 cell border + 4 violation cue +
   // 1 cause cue + 3 hinted cue + 8 focus ring + 1 control border + 14 text). The notes above, which say 34, stay as history.
+  // DELIBERATE CHANGE (update-panel-shell, delta 1 «Borders, cues and focus rings have enough contrast», scenarios «Tokens exist and are literal» and
+  // «The raised surface carries the text and the focus ring»; proposal.md Impact rows `tests/play-page-helpers.test.ts:462` and `:468-469`): the
+  // fixture and the helper hold 31 names, and CONTRAST_PAIRS holds 38 pairs (4 cell border + 4 violation cue + 1 cause cue + 3 hinted cue + 9 focus
+  // ring + 1 control border + 16 text): the three pairs on `--color-surface-raised`. GUARD: it runs on literals and the helper, so it is green once the
+  // helper (task 2.1) is changed; it fails on the helper as it stands today.
   it('the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)', () => {
-    expect(TOKEN_NAMES).toHaveLength(27);
+    expect(TOKEN_NAMES).toHaveLength(31);
     expect(Object.keys(DESIGN_TOKENS).sort()).toEqual([...TOKEN_NAMES].sort());
-    expect(PALETTE_LIGHT, 'the helper holds the light values of the spec table, backdrops included').toEqual(DESIGN_TOKENS);
+    expect(PALETTE_LIGHT, 'the helper holds the light values of the spec table, backdrops and shell tokens included').toEqual(DESIGN_TOKENS);
     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
     expect(contrastRatio('#847b6d', '#e2dbcc')).toBeCloseTo(3.03, 2);
     expect(contrastRatio('#1e2126', '#847b6d')).toBeCloseTo(3.87, 2);
-    expect(CONTRAST_PAIRS).toHaveLength(4 + 4 + 1 + 3 + 8 + 1 + 14);
-    expect(CONTRAST_PAIRS, 'the list holds 35 pairs (add-violation-cause)').toHaveLength(35);
+    expect(CONTRAST_PAIRS).toHaveLength(4 + 4 + 1 + 3 + 9 + 1 + 16);
+    expect(CONTRAST_PAIRS, 'the list holds 38 pairs (update-panel-shell: 35 + the 3 on --color-surface-raised)').toHaveLength(38);
   });
 
   // update-page-palette (delta «Borders, cues and focus rings have enough contrast», scenario «Cell borders have 3:1»): the pair of the cell
@@ -505,14 +517,39 @@ describe('css helper: contrastRatio and rgbOf', () => {
       '--color-primary-soft',
       '--color-success-bg',
       '--color-cell-border',
+      '--color-surface-raised',
     ]);
+    // DELIBERATE CHANGE (update-panel-shell, delta 1 «Borders, cues and focus rings have enough contrast», scenario «The raised surface carries the text
+    // and the focus ring»; proposal.md Impact row `tests/play-page-helpers.test.ts:499-509`): the focus-ring background list has nine entries, the new
+    // one last, and exactly three pairs have `--color-surface-raised` as background: the text and the muted text at 4.5 (group `text`) and the focus ring
+    // at 3 (group `focus-ring`). GUARD on the helper: green once task 2.1 has changed `CONTRAST_PAIRS`.
+    expect(CONTRAST_PAIRS.filter((pair) => pair.bg === '--color-surface-raised')).toEqual([
+      { group: 'focus-ring', fg: '--color-focus', bg: '--color-surface-raised', min: 3 },
+      { group: 'text', fg: '--color-text', bg: '--color-surface-raised', min: 4.5 },
+      { group: 'text', fg: '--color-text-muted', bg: '--color-surface-raised', min: 4.5 },
+    ]);
+    // no pair names the border or a shadow (signed decoration / translucent)
+    expect(
+      CONTRAST_PAIRS.filter((pair) =>
+        ['--color-overlay-border', '--color-shadow-panel', '--color-shadow-sheet'].some((name) => pair.fg === name || pair.bg === name),
+      ),
+    ).toEqual([]);
   });
 
   // DELIBERATE CHANGE (update-page-backdrop, delta 1; proposal.md Impact row `tests/play-page-helpers.test.ts:480`): the set holds three names, the
   // glow and the two backdrops (the spec: "three tokens are translucent"); the loop below is the clause "a translucent token is never the foreground
   // or the background of a contrast pair".
+  // DELIBERATE CHANGE (update-panel-shell, delta 1 «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and are literal»;
+  // proposal.md Impact row `tests/play-page-helpers.test.ts:514-518`): the set holds five names, the glow, the two backdrops and the two shadows
+  // (the spec: "the list marks five"); the "no pair names one" loop stays. GUARD on the helper: green once task 2.1 has changed `TRANSLUCENT_TOKENS`.
   it('a translucent token is the foreground or the background of no pair, and contrastProblems reports one that a pair names as not #rrggbb', () => {
-    expect([...TRANSLUCENT_TOKENS].sort()).toEqual(['--color-backdrop-soft', '--color-backdrop-strong', '--color-success-glow']);
+    expect([...TRANSLUCENT_TOKENS].sort()).toEqual([
+      '--color-backdrop-soft',
+      '--color-backdrop-strong',
+      '--color-shadow-panel',
+      '--color-shadow-sheet',
+      '--color-success-glow',
+    ]);
     for (const pair of CONTRAST_PAIRS) {
       expect(TRANSLUCENT_TOKENS.has(pair.fg), `${pair.group}: ${pair.fg}`).toBe(false);
       expect(TRANSLUCENT_TOKENS.has(pair.bg), `${pair.group}: ${pair.bg}`).toBe(false);
@@ -642,11 +679,23 @@ describe('css helper: the token reader and the translucent token (update-page-pa
   // translucent value only for a translucent token»; proposal.md Impact row `tests/play-page-helpers.test.ts:596-625`): the reader accepts the two
   // backdrop tokens as translucent too. The sample is the scenario's: the glow and the strong backdrop in one copy (two translucent tokens that no
   // pair uses), `--color-page: #f7f3ea80` in another (rejected), an rgb() value in either (rejected).
-  it('reads --color-backdrop-soft and --color-backdrop-strong as translucent tokens that no contrast pair uses', () => {
-    const parsed = parseStyles(':root { --color-success-glow: #2f6b3a73; --color-backdrop-strong: #2d190a80; --color-backdrop-soft: #46280f38; }');
-    expect(parsed.tokens).toEqual({ '--color-success-glow': '#2f6b3a73', '--color-backdrop-strong': '#2d190a80', '--color-backdrop-soft': '#46280f38' });
-    expect(tokenFormatProblems(parsed.tokens), 'the three translucent tokens are read without a problem').toEqual([]);
-    for (const name of ['--color-backdrop-soft', '--color-backdrop-strong']) {
+  // DELIBERATE CHANGE (update-panel-shell, delta 1 «Borders, cues and focus rings have enough contrast», scenario «The token reader accepts a
+  // translucent value only for a translucent token»; proposal.md Impact row `tests/play-page-helpers.test.ts:645-654`): the title names the shadows
+  // too, the sample gains `--color-shadow-sheet: #0000002e` (four tokens, of which the shell adds one), the `toEqual` and the message follow, and the
+  // loop covers the two shadow names as well as the two backdrops: each is in `TRANSLUCENT_TOKENS` and in no pair. GUARD on the helper: green once
+  // task 2.1 has changed `TRANSLUCENT_TOKENS`.
+  it('reads the backdrop and shadow tokens as translucent tokens that no contrast pair uses', () => {
+    const parsed = parseStyles(
+      ':root { --color-success-glow: #2f6b3a73; --color-backdrop-strong: #2d190a80; --color-backdrop-soft: #46280f38; --color-shadow-sheet: #0000002e; }',
+    );
+    expect(parsed.tokens).toEqual({
+      '--color-success-glow': '#2f6b3a73',
+      '--color-backdrop-strong': '#2d190a80',
+      '--color-backdrop-soft': '#46280f38',
+      '--color-shadow-sheet': '#0000002e',
+    });
+    expect(tokenFormatProblems(parsed.tokens), 'the four translucent tokens are read without a problem').toEqual([]);
+    for (const name of ['--color-backdrop-soft', '--color-backdrop-strong', '--color-shadow-panel', '--color-shadow-sheet']) {
       expect(TRANSLUCENT_TOKENS.has(name), `${name} is translucent`).toBe(true);
       expect(CONTRAST_PAIRS.some((pair) => pair.fg === name || pair.bg === name), `${name} is in no contrast pair`).toBe(false);
     }
@@ -1387,6 +1436,10 @@ describe('the generator spies record the level in a parallel array', () => {
  * (`#08050273` and `#08050299`). Without them `expect(dark?.tokens).toEqual(DARK_SAMPLE)` fails (27 against 25 keys), and after the port
  * `injectPageStyles(DARK_SAMPLE)` leaves `var(--color-backdrop-*)` uninlined (`tests/helpers/css.ts` `withTokensInlined`), so
  * `not.toMatch(/var\(\s*--color-/)` fails.
+ * DELIBERATE CHANGE (update-panel-shell, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
+ * `tests/play-page-helpers.test.ts:1391-1419`): the sample gains the four dark shell rows of the spec table (`#2c2620`, `#8a7f71`, `#00000040`,
+ * `#0000002e`). Without them `expect(dark?.tokens).toEqual(DARK_SAMPLE)` and `PALETTE_DARK` equal to the sample fail (31 against 27 keys), and
+ * `injectPageStyles(DARK_SAMPLE)` leaves `var(--color-surface-raised)` uninlined.
  */
 const DARK_SAMPLE: Record<string, string> = {
   '--color-page': '#1a1714',
@@ -1416,6 +1469,10 @@ const DARK_SAMPLE: Record<string, string> = {
   '--color-focus': '#f1ede4',
   '--color-backdrop-soft': '#08050273',
   '--color-backdrop-strong': '#08050299',
+  '--color-surface-raised': '#2c2620',
+  '--color-overlay-border': '#8a7f71',
+  '--color-shadow-panel': '#00000040',
+  '--color-shadow-sheet': '#0000002e',
 };
 const darkBlock = (tokens: Record<string, string>, quote = '"'): string =>
   `:root[data-theme=${quote}dark${quote}] { color-scheme: dark; ${Object.entries(tokens).map(([k, v]) => `${k}: ${v};`).join(' ')} }`;
@@ -1429,7 +1486,8 @@ describe('css helper: the dark attribute block is a token set (add-theme-switch,
     expect(parsed.tokenSets[1]?.tokens['--color-focus'], 'a token the block does not redefine keeps its top-level value').toBe('#1e2126');
     expect(parsed.tokens).toEqual(DESIGN_TOKENS);
     // was 13 (update-page-palette, proposal.md Impact row `:1068`); 27 with the two backdrops (update-page-backdrop, delta 1, proposal.md Impact row `:1193`)
-    expect(parsed.tokenDeclarations, 'the 27 tokens of the G2 palette').toHaveLength(27);
+    // DELIBERATE CHANGE (update-panel-shell, delta 1; proposal.md Impact row `tests/play-page-helpers.test.ts:1431-1432`): 31 with the four shell tokens
+    expect(parsed.tokenDeclarations, 'the 31 tokens of the G2 palette').toHaveLength(31);
     expect(parsed.darkTokenDeclarations.map((d) => d.property)).toEqual(['--color-page', '--color-text']);
     expect(darkRootRules(parsed)).toHaveLength(1);
     expect(darkRootRules(parsed)[0]?.declarations.find((d) => d.property === 'color-scheme')?.value).toBe('dark');
@@ -1476,7 +1534,7 @@ describe('css helper: the dark attribute block is a token set (add-theme-switch,
   it('the signed light and dark palettes meet every pair, and the focus ring keeps its recorded ratios against the accepted neighbours', () => {
     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
     expect(contrastProblems(DARK_SAMPLE)).toEqual([]);
-    expect(PALETTE_DARK, 'the helper holds the dark values of the spec table, backdrops included').toEqual(DARK_SAMPLE);
+    expect(PALETTE_DARK, 'the helper holds the dark values of the spec table, backdrops and shell tokens included').toEqual(DARK_SAMPLE);
     const ring = (set: Record<string, string>, other: string): number =>
       Number(contrastRatio(set['--color-focus'] ?? '', set[other] ?? '').toFixed(2));
     expect(['--color-line', '--color-violation-border', '--color-primary', '--color-success'].map((n) => ring(DESIGN_TOKENS, n))).toEqual([11.72, 2.47, 2.94, 2.53]);

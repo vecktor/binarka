@@ -89,9 +89,13 @@ describe('the colours are tokens (FR-65)', () => {
   // are literal», proposal.md Impact row `tests/play-page-stylesheet.test.ts:85-102`): the list is the 27 names of the spec's table (the two backdrop
   // tokens last), `#rrggbb` for 24 and `#rrggbbaa` for the three translucent tokens only (`--color-success-glow`, `--color-backdrop-soft` and
   // `--color-backdrop-strong`); the added assertion reads the three off the stylesheet itself.
-  it('@trace FR-65 Tokens exist and are literal: the 27 names of the G2 palette, each declared once in the top-level :root with the light value of the list', () => {
+  // update-panel-shell DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «Tokens exist and
+  // are literal», proposal.md Impact row `tests/play-page-stylesheet.test.ts:92-110`, comment 84-91): the title, `toHaveLength(27)` and the message become
+  // 31 (the four shell tokens last), `#rrggbb` for 26 and `#rrggbbaa` for the five translucent tokens only: the list at 107-110 is the five names (sorted),
+  // which adds `--color-shadow-panel` and `--color-shadow-sheet`. Red on today's stylesheet: it declares 27 tokens.
+  it('@trace FR-65 Tokens exist and are literal: the 31 names of the G2 palette, each declared once in the top-level :root with the light value of the list', () => {
     const parsed = readStyles();
-    expect(TOKEN_NAMES).toHaveLength(27);
+    expect(TOKEN_NAMES).toHaveLength(31);
     for (const name of TOKEN_NAMES) {
       const declarations = parsed.tokenDeclarations.filter((d) => d.property === name);
       expect(declarations, `${name} is declared once in the top-level :root`).toHaveLength(1);
@@ -102,12 +106,12 @@ describe('the colours are tokens (FR-65)', () => {
     }
     expect(
       parsed.tokenDeclarations.map((d) => d.property).sort(),
-      'the top-level :root declares the 27 tokens and no other --color-*',
+      'the top-level :root declares the 31 tokens and no other --color-*',
     ).toEqual([...TOKEN_NAMES].sort());
     expect(
       parsed.tokenDeclarations.filter((d) => /^#[0-9a-f]{8}$/i.test(d.value)).map((d) => d.property).sort(),
-      'the three translucent tokens, and only they, are #rrggbbaa in the top-level :root',
-    ).toEqual(['--color-backdrop-soft', '--color-backdrop-strong', '--color-success-glow']);
+      'the five translucent tokens, and only they, are #rrggbbaa in the top-level :root',
+    ).toEqual(['--color-backdrop-soft', '--color-backdrop-strong', '--color-shadow-panel', '--color-shadow-sheet', '--color-success-glow']);
     const rootProperties = lightRootRules(parsed).flatMap((r) => r.declarations.map((d) => d.property));
     expect(
       rootProperties.filter((property) => !property.startsWith('--color-')),

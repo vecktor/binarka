@@ -67,7 +67,10 @@ describe('Borders, cues and focus rings have enough contrast (the G2 palette)', 
   // update-page-backdrop DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «Every declared token
   // is bound by a rule», proposal.md Impact row `tests/play-page-palette-stylesheet.test.ts:67`): only the title text "25" becomes "27"; the body
   // reads `TOKEN_NAMES` and so now requires the two backdrop tokens to be bound by a rule outside `:root`.
-  it('Every declared token is bound by a rule: each of the 27 tokens is referenced by a declaration outside :root', () => {
+  // update-panel-shell DELIBERATE CHANGE (NFR-14, FR-65, A-57; delta 1 «Borders, cues and focus rings have enough contrast», scenario «Every declared token
+  // is bound by a rule», proposal.md Impact row `tests/play-page-palette-stylesheet.test.ts:70` (comment 67-69)): only the title "27" becomes "31"; the body
+  // reads `TOKEN_NAMES`, so it now requires the four shell tokens to be bound by a rule outside `:root`. Red on today's stylesheet: no rule references them.
+  it('Every declared token is bound by a rule: each of the 31 tokens is referenced by a declaration outside :root', () => {
     const parsed = readStyles();
     const declarations = outsideRoot(parsed).flatMap((r) => r.declarations.map((d) => ({ where: r.selectors.join(', '), ...d })));
     expect(declarations.length, 'the walk found declarations').toBeGreaterThan(50);
