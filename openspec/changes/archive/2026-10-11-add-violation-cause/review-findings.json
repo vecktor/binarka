@@ -1,0 +1,228 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "add-violation-cause (OpenSpec change openspec/changes/add-violation-cause/): FR-120 cause marker, FR-64 corner mark, FR-65 forced-colours clause, FR-70 label suffix",
+  "change": "add-violation-cause (OpenSpec change openspec/changes/add-violation-cause/): FR-120 cause marker, FR-64 corner mark, FR-65 forced-colours clause, FR-70 label suffix",
+  "baseRef": "8bbe6e8",
+  "headRef": "a9abb3f",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 1,
+      "contested": 1,
+      "rejected": 1
+    },
+    "security": {
+      "confirmed": 0,
+      "contested": 0,
+      "rejected": 0
+    },
+    "spec-compliance": {
+      "confirmed": 3,
+      "contested": 0,
+      "rejected": 3
+    },
+    "visual": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 1
+    }
+  },
+  "confirmedTitles": [
+    "The cause suffix logic is written twice, once in the Ukrainian cellLabel and once in the English table",
+    "«Accessible names at every size»: the test still pins the old cell-name grammar that the delta modified",
+    "docs/requirements.md FR-70 still says the English cause wording is \"to confirm\" after the user confirmed it",
+    "current-state.md, committed in the same batch as the port, still says the port waits for a GPG unlock",
+    "The theme-and-size stills show the cause cell with the hover ring on, so the triangle is never seen on its own"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-11T09:32:53Z",
+  "findings": [
+    {
+      "title": "The cause suffix logic is written twice, once in the Ukrainian cellLabel and once in the English table",
+      "file": "src/ui/strings.ts",
+      "line": 32,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`const suffix = given ? `, ${CELL.given}` : (hinted ? `, ${CELL.hint}` : '') + (cause ? `, ${CELL.cause}` : '');` appears again almost word for word at line 163 with `EN_CELL`. The duplication existed before this change, but this change adds a third flag and a precedence rule (a given wins; the hint comes before the cause) to both copies. The rule now lives in two places that have to stay in step. The parity tests catch drift only for the sample calls they make.",
+      "suggestion": "Write one helper, e.g. `buildCellLabel(table, row, col, value, given, hinted, cause)`, and call it from both `cellLabel` and `EN.cellLabel`, passing the `CELL` or `EN_CELL` table.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The duplication is real. Line 32 builds the suffix from CELL and line 163 builds it from EN_CELL with identical logic. Both copies now carry the added cause flag and the same precedence: a given cell wins, then the hint, then the cause. The two copies agree today and the ternary binds as intended, so no behavioural defect exists. This is a maintainability and drift-risk finding, not a correctness bug. It is labelled as correctness but is really a minor cleanup, and it was already duplicated before this change.",
+        "Confirmed by reading src/ui/strings.ts. Line 32 (Ukrainian cellLabel, using CELL) and line 163 (EN.cellLabel, using EN_CELL) contain the same suffix expression and the same return template. The only difference is the table they read from. The precedence rule is the same in both copies: a given cell wins, and otherwise the hint comes before the cause. A change to that rule has to be made twice. This is a maintainability risk, not a user-visible bug. Both copies are currently correct and agree with each other, so no real user hits a wrong label today. The finding is valid as a minor duplication issue."
+      ],
+      "disposition": "deferred",
+      "dispositionNote": "The user's choice «Fix 3-6, defer 1-2» (2026-10-11): a refactor with no behaviour change; the duplication predates this slice; both copies agree and the parity tests cover the samples."
+    },
+    {
+      "title": "«Accessible names at every size»: the test still pins the old cell-name grammar that the delta modified",
+      "file": "tests/play-page-page-text.test.ts",
+      "line": 73,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Spec (MODIFIED «Ukrainian page text», spec.md:693): each cell name matches `/^Рядок [1-8], стовпець [1-8], (порожньо|0|1)(, задано|(, підказка)?(, спричиняє порушення)?)$/`. Test at tests/play-page-page-text.test.ts:73 (the scenario's test: selects 4×4 then 8×8): `/^Рядок [1-8], стовпець [1-8], (порожньо|0|1)(, задано|, підказка)?$/`. The parallel regexes in tests/play-page-english-text.test.ts:147 were updated, but this one was left as is on purpose (red-run.txt section C(e)), because no state of the test produces a cause. The scenario still holds (the narrower regex implies the spec's), but the test no longer states the grammar its scenario declares. A later delta could change the grammar again and this test would not be updated with it.",
+      "suggestion": "Update the regex at :73 to the spec's literal (no behaviour change, stays green) with a DELIBERATE CHANGE comment naming the «Ukrainian page text» delta. Alternatively, if decision 9's option of dropping that MODIFIED requirement is taken, drop the regex edit from spec.md instead.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The facts check out. Line 73 of tests/play-page-page-text.test.ts uses `/^Рядок [1-8], стовпець [1-8], (порожньо|0|1)(, задано|, підказка)?$/`. The MODIFIED scenario at openspec/changes/add-violation-cause/specs/play-page/spec.md:693 gives `(, задано|(, підказка)?(, спричиняє порушення)?)`. tests/play-page-english-text.test.ts:147 already carries the updated grammar. The test is still green, because the narrower regex implies the spec's. But the test no longer states the grammar its own scenario declares, so a later grammar change would not be caught here. That is a small spec-traceability gap and not a functional bug, so the finding stands as minor.",
+        "Confirmed factually: spec.md:693 gives the widened regex, and tests/play-page-page-text.test.ts:73 still uses the old narrower one. The deviation was deliberate (red-run.txt section C(e), task 3.2(e) allows leaving it where no state yields a cause) and the test stays green, so no user-facing problem can occur. It is only a test/spec literal drift. The finding itself says this and rates it minor, so the claim holds as a low-severity maintenance concern. Not refuted, but it should be downgraded."
+      ],
+      "disposition": "fixed",
+      "dispositionNote": "tests/play-page-page-text.test.ts:73 now states the delta's grammar, with a DELIBERATE CHANGE comment; green (review fix round 1)."
+    },
+    {
+      "title": "docs/requirements.md FR-70 still says the English cause wording is \"to confirm\" after the user confirmed it",
+      "file": "docs/requirements.md",
+      "line": 122,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "FR-70 reads: «…, and \", causes a violation\" for the cause cell (English wording to confirm in the slice, FR-111)». The user confirmed \", causes a violation\" on 2026-10-11 (autonomy-log row 164, task 4.1, design.md decision 12), and the delta's «English page text» table and «Cell labels» record it as confirmed (spec.md:256, 596). The source requirement, the document the project treats as the source, was not updated, and tasks 10.2/10.3 do not list this edit. (The \", hint\" vs \", hinted\" mismatch in the same row is CQ-6, deliberately deferred. This finding does not re-flag it.)",
+      "suggestion": "Add a line to task 10.2 (or a separate docs commit) that replaces \"(English wording to confirm in the slice, FR-111)\" with the confirmation note (autonomy-log row 164), leaving the CQ-6 part untouched.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. docs/requirements.md line 122 (FR-70) still reads \"(English wording to confirm in the slice, FR-111)\" for \", causes a violation\". Task 4.1 in openspec/changes/add-violation-cause/tasks.md records that the user confirmed this string, citing autonomy-log row 164. Task 1.1 edited FR-65 in requirements.md, but no task edits FR-70's note. Tasks 10.2 and 10.3 touch only play-page/spec.md, current-state.md, next-session.md and the autonomy log. The requirements file is therefore left stale, as the finding says. It is a minor documentation inconsistency, not a code defect, so severity stays as reported.",
+        "Confirmed by reading docs/requirements.md line 122: FR-70 still says \"(English wording to confirm in the slice, FR-111)\", while task 4.1 records the user's confirmation. No task in the add-violation-cause tasks.md edits that sentence (10.2 explicitly excludes requirements edits other than FR-65 task 1.1). The stale wording is real. It is a documentation inconsistency, not a runtime problem, so severity stays minor."
+      ],
+      "disposition": "fixed",
+      "dispositionNote": "FR-70 now says the English wording was confirmed by the user on 2026-10-11 (autonomy-log row 164); the CQ-6 part untouched (review fix round 1)."
+    },
+    {
+      "title": "current-state.md, committed in the same batch as the port, still says the port waits for a GPG unlock",
+      "file": "docs/current-state.md",
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Added line (commit a6db98b): \"Commits `1907548`, `5e61bfd`, `b1f9dbb`, `954775f` are signed; the port and its evidence wait for a GPG unlock (row 166). Not merged, not pushed.\" The port was committed as da6736d, and its evidence in a6db98b itself, so the handoff is stale on the commit it ships in. The other claim lines carry evidence paths, as task 8.2 and the done-claims rule require.",
+      "suggestion": "In the next docs touch (for example task 10.3, or the gate's own update), replace the sentence with the actual signed commit list (`da6736d`, `a6db98b`, `a9abb3f`).",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. docs/current-state.md line 10 still says \"the port and its evidence wait for a GPG unlock (row 166)\". HEAD already contains the port (da6736d) and its evidence (a6db98b), and both are GPG-signed (git shows G). The line was added in a6db98b, so the handoff is stale in the commit that ships it. The mechanism is real, but it is a minor documentation inaccuracy.",
+        "Confirmed. docs/current-state.md line 10 at HEAD still reads \"Commits 1907548, 5e61bfd, b1f9dbb, 954775f are signed; the port and its evidence wait for a GPG unlock (row 166). Not merged, not pushed.\" The git log shows the port (da6736d), its evidence (a6db98b) and the ledger commit (a9abb3f) are already committed on this branch. `git show a6db98b` shows that commit added the stale sentence. So the handoff doc contradicts the repo state it ships in. This is a documentation inaccuracy, not a runtime defect. A reader of the handoff would wrongly believe the port is uncommitted. Minor severity is appropriate."
+      ],
+      "disposition": "fixed",
+      "dispositionNote": "The sentence now says every commit of the branch is signed and names the port commit da6736d (review fix round 1)."
+    },
+    {
+      "title": "The theme-and-size stills show the cause cell with the hover ring on, so the triangle is never seen on its own",
+      "file": "docs/qa/add-violation-cause/stills/smoke-8x8-dark-320.png",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Smoke-test step 10 lists stills/smoke-{6x6,8x8}-{light,dark}-{375,1024,320}.png and the two 4x4 stills as the plain theme-and-size evidence, separate from the *-hover-x3 stills. In every one of them, the cause cell (the third 0 of the run, or (3,1) at 4x4) has an inner tan/brown ring that its violating neighbours lack. A 3x zoom of smoke-6x6-light-1024.png shows it clearly, and it shows at 8x8 dark 320 too. This is the --color-hover-ring inset: the Playwright click leaves the pointer over the cell, and smoke-sweep.mjs moves the mouse only for the dedicated 1024 hover shot. At 8x8 on 320 (an 8px leg, in the same #ff8a7d as the cell's own border), the hover ring is the more visible thing that sets the cause cell apart in these frames. So the stills overstate how findable the mark is for a touch user, who gets no hover ring. The step-10 claim, 'small but findable: a red corner on the third cell of the run', rests on frames where the ring also marks that cell.",
+      "suggestion": "Re-capture the theme/size stills with the pointer moved off the board (for example page.mouse.move(0,0) and a short wait) before each screenshot, and above all 8x8 light/dark at 320. Re-check the 'findable after a short scan' judgement on the clean frames. Keep the *-hover-x3 stills as the only hover evidence. No product code change is implied.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "smoke-sweep.mjs clicks the target cell, which leaves the pointer over it, and only moves the mouse for the dedicated 1024 hover shot. The theme and size board screenshots are taken with locator.screenshot, which does not move the pointer. A pixel diff of smoke-6x6-light-1024.png between the cause cell and its violating neighbour shows the cause cell has an inner ring of (210,143,107) along its edge that the neighbour lacks, which matches a hover ring. The finding's mechanism is real. It is a minor evidence-quality issue, not a product bug.",
+        "The mechanism is confirmed in code. smoke-sweep.mjs `open()` calls `cell.click()` on the cause cell. The Playwright context has no `hasTouch` and no `isMobile`, so `(hover: hover)` matches, and the pointer stays over the cell. The theme/size stills (8x8 at 320 and 375, 6x6 at 375 and 1024) are screenshotted right after that, with no `mouse.move` away. Only the 1024 hover shot moves the mouse deliberately. src/ui/style.css:460-463 applies `box-shadow: inset 0 0 0 2px var(--color-hover-ring)` on `.cell:not(.cell-given):hover` while the board is unsolved, and the cause cell is not given. The 8x8 dark 320 still also shows the third 0 with a slightly different inner outline than its neighbours. So the evidence frames are contaminated by the hover ring, and they overstate how findable the mark is for a touch user, who gets no hover. This is an evidence-quality issue with no effect on product behaviour, so minor severity is right."
+      ],
+      "disposition": "fixed",
+      "dispositionNote": "The 10 theme and size stills re-taken with the pointer off the board on the built page; readings unchanged; re-judged 10 of 10 by a second fresh vision judge (docs/qa/add-violation-cause/smoke-test.txt, stills/vision-verdict.txt)."
+    },
+    {
+      "title": "The checker runs twice per press: breaksRule repeats the findViolations call that refreshHighlights just made",
+      "file": "src/ui/play-page.ts",
+      "line": 247,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`breaksRule` does `return findViolations(board).some(...)`, and both the click handler and the hint handler call it right after `refreshHighlights()`, which has already run `for (const v of findViolations(board))` on the same board. The result is correct, because the cause cells (`v.cells`) are always a subset of the highlighted set (the count rule highlights the whole line). Still, every press runs the full checker twice, and the two places that read violations can drift apart if one of them changes.",
+      "suggestion": "Have refreshHighlights return the violations it computed (or keep them in a local), and decide the cause from that same list, e.g. `const vs = refreshHighlights(); if (vs.some(v => v.cells.some(...))) setCause([r, c]);`.",
+      "dimension": "correctness",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The duplication is real. In src/ui/play-page.ts, refreshHighlights() (line 269) calls findViolations(board), and breaksRule() (line 248) calls it again on the same unchanged board. This happens at lines 316-317 (click) and 378-379 (hint). The finding admits the result is correct, and I agree: there is no behavioral bug. The cost is one extra checker pass per press on a small grid. The drift risk is speculative. This is a minor redundancy or maintainability nit, not a correctness defect.",
+        "The mechanism is real. In src/ui/play-page.ts, `breaksRule` (line 247) calls `findViolations(board)`, and `refreshHighlights` (line 269) calls it again on the same board. The click handler (lines 316-317) and the hint handler (lines 378-379) each run both back to back. But the finding names no way this can fail for a user or attacker. Both calls see the same board, so the output is correct, as the finding admits. The cost is two checker passes on a grid of at most 8x8 per click, which is negligible. The drift risk is hypothetical and no input triggers it. This is a refactoring suggestion, not a correctness defect, and under the exploitability lens it cannot occur as a problem."
+      ],
+      "disposition": "deferred",
+      "dispositionNote": "The user's choice «Fix 3-6, defer 1-2»: design.md decision 1 accepted the second findViolations call as negligible (at most 64 cells)."
+    },
+    {
+      "title": "The e2e reads the ::after content but never asserts it",
+      "file": "e2e/nfr-14-cause-mark.spec.ts",
+      "line": 249,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`return { borderTopWidth: s.borderTopWidth, content: s.content };` reads `content`, but only `pseudo.borderTopWidth` is used, in the annotation and in the soft assertion at line 264. If `content` were dropped from the rule (e.g. it became `none`), the pixel read would catch it, but the value that is read here goes unchecked, so it is dead data.",
+      "suggestion": "Either remove `content` from the evaluate result, or add a soft assertion that it equals `'\"\"'`, as a second check alongside the pixel (the secondary role the spec allows).",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding's central claim is false. It says only `pseudo.borderTopWidth` is used, but line 254 interpolates `pseudo.content` into the `pixels` annotation (`(content ${pseudo.content})`). So `content` is not dead data. It is recorded as diagnostic evidence next to the width. The test's primary assertion is the corner pixel colour (lines 257-259), and the spec text says the computed-style check is the secondary one. If `content` became `none`, the `::after` would not render and the pixel assertion would fail. A missing soft assertion on `content` is therefore redundant and not a correctness defect in the e2e. At most it is a stylistic nit, and the evidence given is wrong.",
+        "The code at e2e/nfr-14-cause-mark.spec.ts:249 does read `content` and never asserts it. But the finding's claim that it is \"dead data\" is wrong. The value is interpolated into the `pixels` annotation (`::after border-top-width ... (content ${pseudo.content})`), so it is recorded as diagnostic evidence in the test report. The finding itself concedes that the corner-pixel assertion would catch a dropped or `none` content, because the mark would not render. The primary assertion therefore already covers the failure it worries about, and the comment says the borderTopWidth check is only a secondary assertion. No user-visible or test-escape failure follows from reading `content` without asserting it. It is at most a style nit about adding a redundant assertion, not a defect that can occur."
+      ],
+      "disposition": "rejected-by-verifier"
+    },
+    {
+      "title": "Coverage summary (informational, no defect): 75 scenarios: 75 implemented, 0 partial, 0 missing, 0 contradicted. No critical or major finding and no code defect, so no fix round is needed",
+      "file": "openspec/changes/add-violation-cause/specs/play-page/spec.md",
+      "line": 1,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Scenarios counted: «Cause marker» 21, «A violation shows a cue besides colour» 8, «Cell labels» 9, «Cells expose a Ukrainian name and their state» 9, «Borders, cues and focus rings have enough contrast» 17, «English page text» 5, «Page text is per mode» 3, «Ukrainian page text» 3. Product code (da6736d): src/ui/play-page.ts. `cause` state at :189. setCause at :237-244 mirrors setHinted. breaksRule at :247-249 reads findViolations(board) v.cells, not the `marked` highlight set, so A-58/P3 holds. Click order at :313-318: clear, renderCell, setHinted(null), refreshHighlights, then set. Hint fill at :376-380. showPuzzle clears at :327, before the only throw path; that covers new puzzle, Start and size/level changes, and a failed generation never reaches it, so FR-88 keeps the marker. resetBoard at :406. renderCell passes isCause at :262-263. src/ui/strings.ts: given wins, then hint, then cause, in both tables. src/ui/style.css:342-373 matches the spec's longhands, the max() leg, position on .cell-cause only, and the forced-colours block. Every scenario has a test: tests/play-page-violation-cause.test.ts has one test per scenario or table row, plus the oracle at N=4/6/8 with non-vacuity counts. tests/play-page-cause-stylesheet.test.ts covers the stylesheet and contrast scenarios. tests/play-page-cells.test.ts, -english-text, -semantics and -capture-board cover the label and ARIA deltas. e2e/nfr-14-cause-mark.spec.ts covers the sampled pixel read. Green evidence: docs/qa/add-violation-cause/green-run.txt (1837/1837 unit; layout 128/128; the e2e annotations show open rgb(179,38,30)/rgb(255,138,125) and ::after 15px/8px) and battery.txt. Ticked tasks 1.1-8.2 each have their artifact: the design mirror diff stays inside 2.1's allowance (the comment plus the @media block only); the freezes moved in provenance fields only; run9-vs-run8 shows an empty diff. FR ownership per docs/mvp-capability-plan.md:178 (FR-120 owned; FR-64/65/70 amended) is traced in the spec's Traces lines and in the @trace tags.",
+      "suggestion": "None. This entry records the coverage line the output contract asks for.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding claims no defect. It is an informational coverage tally (75 scenarios, all implemented) and has no mechanism that could be wrong in the code. Its severity is minor and its suggestion is \"None\". The task says to default to refuted=true when a mechanism cannot be positively confirmed, and here there is nothing to confirm. I did not re-read the cited code to check the coverage counts, so I am neither confirming nor contradicting the tally. The finding should be dropped as a non-defect.",
+        "The finding is a coverage summary that says it describes no defect (\"None\", 75 of 75 scenarios implemented). It claims no problem that a real user or attacker could trigger, so there is no mechanism to reproduce or exploit. I did not read the code, so I did not check the coverage counts. As a defect report it should be dropped."
+      ],
+      "disposition": "rejected-by-verifier"
+    },
+    {
+      "title": "Judgment on the four known items: none is a finding. No assertion is tuned to the throwaway spike port",
+      "file": "docs/qa/add-violation-cause/red-run.txt",
+      "line": 406,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "(1) Spike port (section E). Every exact literal in the tests comes from the spec text, not from the spike: the LEG string `max(0.5rem, calc(((100cqi - (var(--n) - 1) * var(--board-gap)) / var(--n) - 4px) / 4))`, the label strings, the serialised `\"\"`/`0px` (a jsdom-parser spike, folded into spec.md:228 in 1907548 before the tests), and the three forced-colours declarations. The oracle compares against findViolations on the DOM board, independently of the page. The e2e leg is computed from the measured cell width (`Math.max(8, (target.width - 4) / 4)`), not hardcoded. The e2e coordinates were chosen with the engine (D.2) and are re-asserted at run time. The only assertion beyond the scenario wording is P8's intermediate marker on (4,1) (red-run finding 5). It follows from FR-120 and the engine, not from the spike. (2) Order: b1f9dbb (14:20:58) comes before 954775f (14:22:16, the refreeze). The refreeze changes provenance fields only and no test reads them, so the order cannot have shaped any assertion. (3) Smoke 7.1: `aria-label` on a <button> is its computed accessible name, so reading it is equivalent to the DevTools pane. The ticked task carries the honest parenthetical (agent, browser pane plus Playwright, no DevTools pane, no VoiceOver), which is consistent with A-28. (4) `setCause(null)` before the hint fill (play-page.ts:376) follows FR-120's remover list and decision 10. It is a harmless no-op, because hint() refuses a broken board (FR-26), and the «A hint cannot follow a marker» test pins that refusal.",
+      "suggestion": "No action. Keep this as the reviewer's recorded judgment in review-findings.json.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding says the four known items are not defects, so there is no defective mechanism to confirm, and I default to refuted. I checked three of its factual claims and each held. (1) Section E of red-run.txt labels the spike port \"Informational, not a claim about the port\" and says it ran in a scratch copy that was later deleted. (2) The commit order is as stated: b1f9dbb (14:20:58) is before 954775f (14:22:16), and 1907548 (spec) is before both. (3) play-page.ts:376 has `setCause(null)` before the hint fill, with a comment saying a hint refuses a broken board, so it is a no-op in practice. I did not open the test files, so I did not check that no assertion is tuned to the spike.",
+        "The finding is a reviewer's recorded judgment that none of the four known items is a defect, and its own suggestion is \"No action\". It describes no failure scenario that a user or attacker could trigger, so there is nothing to reproduce. I did not open the cited file or code. I am refuting under the default that a problem I cannot positively confirm counts as refuted."
+      ],
+      "disposition": "rejected-by-verifier"
+    },
+    {
+      "title": "The keyboard path (Enter/Space, FR-60) that FR-120 names as a board change has no scenario of its own",
+      "file": "openspec/changes/add-violation-cause/specs/play-page/spec.md",
+      "line": 5,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "Spec: «A board change of one cell is a click on a non-given cell (FR-34; Enter or Space act as a click, FR-60) or a hint fill». Every «Cause marker» scenario and test uses `click()`, and the e2e uses a script click. The cells are native <button> elements, so Enter/Space fire the same click handler (play-page.ts onBoardClick), and no new code path exists. The keyboard-to-click equivalence is covered elsewhere (tests/play-page-keyboard.test.ts) but not for the marker.",
+      "suggestion": "Optional. Either accept it (it rides on native activation) or add one AND to P1 or a smoke step that makes the marker with Enter in a real browser. A spec amendment is needed only if a scenario is wanted.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding does not identify a wrong mechanism in the code. It only says a keyboard scenario is missing. The cells are native <button type=\"button\"> elements. The only board handler is the single 'click' listener onBoardClick (play-page.ts:302-318, registered at line 347), and there is no separate keydown path. Enter and Space on a button fire the same click, so the marker is set through the same code path (setCause after refreshHighlights). The spec itself says Enter or Space \"act as a click\" (FR-60), and the finding admits keyboard-to-click equivalence is already tested in tests/play-page-keyboard.test.ts. Nothing is wrong or unreachable, so this is at most an optional extra scenario and not a correctness defect.",
+        "The finding is a test-coverage nit, not a defect. play-page.ts has only a click listener (onBoardClick, line 347) and no separate keydown/Enter handler. Cells are native buttons, so Enter and Space activate that same handler and there is no distinct keyboard code path. The spec text at line 5 does say \"Enter or Space act as a click, FR-60\". The finding itself concedes that no new code path exists and that keyboard-to-click equivalence is tested elsewhere. No user or attacker can trigger wrong behavior, and the finding gives no failing scenario. It is not reproducible as a problem."
+      ],
+      "disposition": "rejected-by-verifier"
+    },
+    {
+      "title": "The forced-colours still is a one-cell crop, so it cannot show that only the cause cell gets the triangle",
+      "file": "docs/qa/add-violation-cause/stills/smoke-6x6-forced-colors-1024.png",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The still is 80x80 px and shows one cell: an underlined 0 with a black triangle in the top-right corner. It does show a triangle rather than a filled square, which smoke-test step 12 claims. But it holds none of the two non-cause violating neighbours and no ordinary cell. Under forced colours the violation fill, stripe and border colour are all flattened, so the triangle (and the underline) carry the cue there. Whether the mark stands out from the neighbouring violating cells in that mode cannot be checked from this frame.",
+      "suggestion": "Add a forced-colours still that crops the whole run, or the whole board (the three violating cells plus a neighbour), so a reviewer can see that the triangle is on the cause cell only and is legible next to the other violating cells. Keep the single-cell crop as a detail.",
+      "dimension": "visual",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The facts are accurate. The still is an 80x80 single-cell crop with an underlined 0 and a black triangle, and the smoke script (smoke-sweep.mjs:62) clips to one cell plus 8px. But it is not a correctness defect in the evidence. Step 12 of smoke-test.txt claims only that the mark is a triangle in the system text colour and not a filled square, plus the computed-style values (forced-color-adjust none, border-top-color black, border-left-color transparent). The still supports exactly that. Step 12 never claims the mark appears on the cause cell only, or that it stands out from neighbouring violating cells under forced colours. Cause-only placement is covered by the non-forced stills and the unit and e2e tests. The vision-verdict file already records that the crop proves only shape and colour. The finding asks for extra evidence, which is an optional improvement, and not a wrong claim.",
+        "The still is an 80x80 one-cell crop, as the finding says. But smoke-test step 12 (lines 80-82) claims only that the forced-colours mark is a triangle in the system text colour and not a filled square. The still does show that. The step makes no claim that only the cause cell is marked or that the mark is legible next to other violating cells in forced-colours mode. \"Only the cause cell gets the mark\" is a computed-style and DOM property. It is covered by the unit and stylesheet tests, the cause class, and the full-board stills in light and dark. The smoke-sweep script also records computed style per cell. The missing wider crop is a nice-to-have. It does not leave the claim unproven, so there is no real reproducible defect."
+      ],
+      "disposition": "rejected-by-verifier"
+    }
+  ],
+  "fixRound": {
+    "round": 1,
+    "approvedBy": "the user, through the question form on 2026-10-11 (about 15:00 UTC+5:30): «Fix 3-6, defer 1-2 (Recommended)»",
+    "noProductCodeChange": true
+  },
+  "visionJudge": "docs/qa/add-violation-cause/stills/vision-verdict.txt (15 of 15; fix round 1: 10 of 10)",
+  "reviewRun": "wf_00db6f47-604"
+}

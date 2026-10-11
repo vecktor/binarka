@@ -106,3 +106,17 @@ Running 67 tests using 5 workers
 ```
 
 Re-run on the final tree (after the smoke scripts and stills were added), 2026-10-11 14:44 UTC+5:30: `npm run lint` exit 0.
+
+## Archive (tasks 10.1, 10.2), 2026-10-11 15:08 UTC+5:30
+
+```
+$ npx openspec archive add-violation-cause --yes
+Specs to update: play-page: update (+ 1 added, ~ 7 modified). Change 'add-violation-cause' archived as '2026-10-11-add-violation-cause'.
+$ npx openspec validate --all --strict   # after the archive and the 10.2 bullets
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+Totals: 2 passed, 0 failed (2 items)
+$ npm run check:trace
+traceability: 115 MVP FRs checked — 0 failure(s), 115 warning(s)
+```
