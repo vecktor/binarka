@@ -171,6 +171,15 @@ Source: `docs/handoff/capture-board-amendment-draft-2026-10-10.md`, signed with 
   - **Scope out:** the capture adapter (`scripts/check-visual-parity-adapters.mjs`). It is locked (PD-1), so its change is a separate approved improvement.
 - **Order:** after G2 step 1 (NFR-14 moved, reference `review-set-14`); before G2 convergence.
 
+### 4.13 Violation-cause amendment, slice `add-violation-cause` (signed 2026-10-11 about 09:44, autonomy-log row 163)
+
+Source: `docs/handoff/violation-cause-amendment-draft-2026-10-11.md`, signed with CQ-1 A and the defaults for the rest; `docs/requirements.md` (FR-120, A-58; amended FR-64, FR-65, FR-70).
+
+- **Slice VC, `add-violation-cause`.** Owns: **FR-120** (the cause marker). Amended rows it implements: FR-64 (the corner mark), FR-65 (its contrast pairs), FR-70 (the name suffix).
+  - **Scope in:** the `cell-cause` marker in `src/ui/play-page.ts`; the suffix in both languages in `src/ui/strings.ts`; the `.cell-cause` rule and the forced-colours rule in `src/ui/style.css`; the mirror of the forced-colours rule in the design, and the refreeze of `quality/design-paint.json` and `quality/design-geometry.json`.
+  - **Scope out:** any change to the NFR-14 reference set (no reference shot changes, A-58); motion for the mark.
+- **Order:** after G2 block 3 (`update-page-backdrop`, archived 2026-10-11); before the setup-sheet block.
+
 ## 5. FR coverage check
 
 | FR | Slice | FR | Slice | FR | Slice |
@@ -241,11 +250,11 @@ Added 2026-10-10 (phase S amendment, section 4.11, autonomy-log row 118; the new
 | FR-104 | S2 | FR-110 | S3 | FR-116 | S2 |
 | FR-105 | S2 | FR-111 | S3 | FR-117 | S2 |
 | FR-55 | S3 | FR-56 | S3 | FR-118 | S2 |
-| FR-119 | CB | | | | |
+| FR-119 | CB | FR-120 | VC | | |
 
 S1 is `update-setup-sheet-start` (2 FRs), S2 `add-theme-switch` (11 FRs), S3 `add-english-version` (8 FRs, FR-55 and FR-56 included): 21 in all. Every other amended row of the phase S amendment keeps its owner in the tables above; S1 to S3 change it as an amended row and own no new copy of it.
 
-Total: **56 MVP FRs across 5 slices that own FRs** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4, 7 in slice 6; slice 5 adds none; no gaps, no duplicates), plus **9 MVP FRs across slices A, B, C, E, F** from the 2026-10-05 amendment (FR-27, FR-66 to FR-73), 65 in all, plus **27 MVP FRs across slices DL1 and DL2** from the 2026-10-09 difficulty and setup sheet amendments (22 plus FR-95 to FR-99), 92 in all, plus **21 MVP FRs across slices S1, S2 and S3** from the 2026-10-10 phase S amendment (FR-55, FR-56, FR-100 to FR-118), **113 in all**, plus **FR-119** in slice CB (`add-capture-board`, the 2026-10-10 capture-board amendment), **114 in all**. Slice D owns no new FR (it amends FR-41); slices G and H own no FR.
+Total: **56 MVP FRs across 5 slices that own FRs** (34 in slice 1, 12 in slice 2, 1 in slice 3, 2 in slice 4, 7 in slice 6; slice 5 adds none; no gaps, no duplicates), plus **9 MVP FRs across slices A, B, C, E, F** from the 2026-10-05 amendment (FR-27, FR-66 to FR-73), 65 in all, plus **27 MVP FRs across slices DL1 and DL2** from the 2026-10-09 difficulty and setup sheet amendments (22 plus FR-95 to FR-99), 92 in all, plus **21 MVP FRs across slices S1, S2 and S3** from the 2026-10-10 phase S amendment (FR-55, FR-56, FR-100 to FR-118), **113 in all**, plus **FR-119** in slice CB (`add-capture-board`, the 2026-10-10 capture-board amendment), **114 in all**, plus **FR-120** in slice VC (`add-violation-cause`, the 2026-10-11 violation-cause amendment), **115 in all**. Slice D owns no new FR (it amends FR-41); slices G and H own no FR.
 
 ## 6. Sequencing and schedule
 
