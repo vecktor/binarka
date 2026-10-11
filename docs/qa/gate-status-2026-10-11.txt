@@ -1,0 +1,45 @@
+# npm run gate:status, 2026-10-11 shortly before 10:31 (UTC+5:30), exit 1; run before FR-120 was added to docs/mvp-capability-plan.md (after it, check:trace has 1 failure left: FR-120 spec-mention, until add-violation-cause archives)
+
+> binarka@0.1.0 gate:status
+> node scripts/gate-status.mjs
+
+Gate status (three-valued deterministic checks — judgment criteria sit on top, verify those by hand):
+
+  G0  PASS           scaffold + loop installed
+  G1  needs sign-off requirements signed off
+  G2  FAIL           baseline specs  [traceability]
+  G3  needs sign-off capability plan + acceptance methods exist  [acceptance-methods --mode=existence]
+  G4  FAIL           per-slice  [traceability · trajectory · acceptance-methods --mode=artifact · factory-integrity]
+  G5  NOT-EARNED     hardening (coverage)  [coverage-ratchet]
+  G6  FAIL           QA proof  [recordings · eval-ratchet · acceptance-methods --mode=artifact · visual-fidelity]
+  G7  FAIL           release  [traceability --release --strict-tests --strict-recordings · trajectory --release --check-fresh · recordings · acceptance-methods --mode=artifact · factory-integrity]
+  G8  FAIL           UAT (trace regressions)  [traceability]
+
+Deterministic checks (ladder rung from RULES-CHANGELOG.md; unlisted = experimental):
+  traceability         FAIL           [experimental]
+  trajectory           PASS           [experimental]  Scope: 25
+  recordings           NOT-EARNED     [experimental]  Scope: 0
+  coverage             NOT-EARNED     [experimental]  Scope: 0
+  evals                PASS           [experimental]  Scope: 6
+  acceptanceExistence  PASS           [experimental]  Scope: 132
+  acceptanceArtifact   FAIL           [experimental]  Scope: 132
+  visual               FAIL           [experimental]  Scope: 170
+  processRatchet       NOT-EARNED     [experimental]  Scope: 3
+  integrity            PASS           [experimental]  Scope: 26
+  traceabilityRelease  FAIL           [experimental]
+  trajectoryRelease    FAIL           [experimental]  Scope: 25
+
+Open corrections (no gate may render a green summary while these are open):
+  OPEN-CORRECTION COR-2 (retro/corrections/002-review-run-wf-42e6a5ef-152-the-per-block-evidenc.correction.json): "Review run wf_42e6a5ef-152: the per-block evidence of update-page-palette task 3.5 (docs/qa/update-page-palette/block-palette.txt) is a crash log (port 4174 busy), not the scores it is cited for; the claim '64 shots, geometry 0 off, pixel 1 except light default 0.998 to 0.9996' is unbacked and overstated (geometry was measured on 54 shots; hint shots are pixel-only)" — undispositioned
+
+Unrecorded corrections (detector events with no correction artifact — run `node scripts/correct.mjs --detect`, then disposition):
+  UNRECORDED-CORRECTION waiver-created (docs/qa/waivers/loosen-eval-hint-clarity.json) — AUTO: waiver created (docs/qa/waivers/loosen-eval-hint-clarity.json) — an evidence requirement was waived; record why and disposition this correction.
+
+DIVERGENCE: docs/current-state.md claims "Last completed gate: G3" but the computed frontier is G1 — hard fail: the header may not outrun computed gate status.
+
+DIVERGENCE: docs/current-state.md claims "Current phase: Phase 4" but gates G0–G3 are not all earned (computed frontier: G1) — hard fail: the header may not outrun computed gate status.
+
+(Reviews, sign-offs, and vision-verify are judgment gates — confirm them in docs/qa + the gate checklist.)
+
+Scope: 9 gate(s)
+Result: FAIL
