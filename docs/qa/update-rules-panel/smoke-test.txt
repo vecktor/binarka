@@ -1,0 +1,50 @@
+# Smoke test in a real browser (task 6.1): update-rules-panel
+
+- **When:** 2026-10-11, 19:17 to 19:20 (UTC+5:30), session A.
+- **Browser:** the Claude desktop app's built-in browser pane (Chromium), viewports set by the pane's emulation. Below 768 px wide the pane emulates a phone (Android Chrome user agent, touch points). The clicks are real pointer clicks and the keys real key presses, sent through the pane.
+- **Page:** `npm run build` at 19:17 (the port, uncommitted), then `npx vite preview --port 4173 --strictPort`, started by the pane's `preview_start` from this worktree.
+- **Lock:** session A held `/tmp/binarka-capture.lock` (owner file "session A (update-rules-panel, peaceful-nash-rules) smoke test 2026-10-11 19:17:10 +0530"). `lsof -nP -iTCP:<port> -sTCP:LISTEN` on 4173, 4174, 4176 and 4177 printed nothing before the run and nothing after the server stopped. The lock was removed at 19:19:56.
+- **Measurements:** `getBoundingClientRect` and computed style, read in the page with a script, each one after two animation frames.
+
+## Steps
+
+1. **Lock, port check, build, preview.** Done as above. Light scheme, 1366×650.
+2. **1366×650, mouse.**
+   - Pressed «Правила» with the mouse. The panel was open, `scrollTop` 0, box 363,96 640×526.75: one 40rem column, 6rem from the top. That is the frozen design box (`refreeze.txt`).
+   - `scrollHeight` 525 = `clientHeight` 525: the rules and the techniques fit, with no inner scroll.
+   - The panel fill is `rgb(255,253,248)` and its shadow `rgba(0,0,0,0.25) 0 16px 40px`. «Зрозуміло» is filled `rgb(180,70,13)` (the orange primary) with `rgb(255,253,248)` text, at the bottom, and it is the active element.
+   - **No focus ring after a real mouse click** (`:focus-visible` false), which is the same as the design reference. The gate's capture adapter opens the panel with a script click instead, and then shows the ring (see `run-vs-previous.txt`).
+   - Closed with «Зрозуміло»: the panel closed.
+3. **1366×650, keyboard.** Focused «Правила» and pressed Enter. The panel was open at `scrollTop` 0 with focus on «Зрозуміло». `:focus-visible` was true, outline solid 3px `rgb(30,33,38)` at offset 2px, and visible in the zoomed screenshot. Closed with Escape: the panel closed.
+4. **1440×900 and 1024×768, mouse.** Same shape, `scrollTop` 0, no inner scroll, «Зрозуміло» active.
+   - 1440: 400,96 640×526.75.
+   - 1024: 192,96 640×526.75.
+   
+   Both equal the frozen design boxes.
+5. **768×1024 (tablet), mouse.**
+   - 6×6: box 119,96 530×736. The panel is the column's width plus 1rem, 6rem from the top. Its bottom is at 832 and the message area's bottom at 831.25, so it covers down through the message lines.
+   - «Зрозуміло» is at 136,771 496×44, at the bottom with the spare height above it. `scrollTop` 0, no inner scroll.
+   - **4×4**, set in the setup sheet (Поле 4×4, «Почати»; the root's `data-size` is 4, with 16 cells): the panel is shorter, 119,96 530×612.5, with the computed `min-height` 568px. Both boxes equal the frozen design boxes.
+   - **800×600:** box 176.5,96 432×488, which ends 16 px (1rem) above the window's bottom. The panel's `max-height` is `100dvh - 7rem` and it starts 6rem down, so it ends 1rem above the bottom. Task 6.1's wording, "it ends 7rem above the window's bottom", is a slip in the task text; the measured value is the design's (`refreeze.txt`, 800-light-rules-short: y 96, h 488).
+   - The x of 176.5 against the design's 184, and the close button's width of 383 against 398, come from this pane's classic scrollbars: the page and the panel each show a 15 px scrollbar at 800×600, which the headless capture does not. That is an environment difference. The e2e geometry case `800-light-rules-short` passes within 0.5 px in Playwright (`green-run.txt`).
+6. **Phones, 375×812 and 320×700.**
+   - 375×812, mouse: a bottom sheet, 0,365.41 375×446.59, which is 55% of the height (55dvh). The heading «Правила» is 25 px below the panel's top edge and the first rule is in view. `scrollTop` 0, `scrollHeight` 719 against `clientHeight` 446.
+   - «Зрозуміло» is pinned at the bottom, at 17,752 341×44, with 16 px of room below it.
+   - Scrolled the sheet with the mouse wheel. Partway down, the text slides under the button and the mask hides it (zoomed screenshot: «Складніші прийоми» ends cleanly above the button). At the end, `scrollTop` 273.5 against an end of 273.
+   - Closed with «Зрозуміло» and reopened with a click: `scrollTop` 0, «Зрозуміло» active.
+   - Scrolled to the end again, closed with Escape and reopened: `scrollTop` 0, «Зрозуміло» active.
+   - 320×700, keyboard (focus «Правила», Enter): a sheet 0,315 320×385, with the 22.5rem `padding-top` of 16px. `scrollTop` 0, `scrollHeight` 743 against `clientHeight` 384.
+   - **The ring is fully visible:** `:focus-visible` true, room around the stuck button 16 px below, 17 px left, 17 px right. The 5 px ring fits, and the screenshot shows it unclipped. **No clipped ring.**
+7. **Dark.** The theme was switched to «Темна» in the settings panel, and steps 2, 5 and 6 were repeated.
+   - 320×700: panel fill `rgb(44,38,32)` = `#2c2620`. «Зрозуміло» is filled `rgb(243,154,91)` (the light orange) with `rgb(26,16,7)` (dark) text. The example cells have border `rgb(138,127,113)`, fill `rgb(26,23,20)` and text `rgb(247,164,106)`, and are visible. The answer cell has a dashed `rgb(243,154,91)` border on `rgb(61,43,30)` with `rgb(241,237,228)` text, and is visible. `scrollTop` 0.
+   - 768×1024: 119,96 530×736, fill `#2c2620`, `scrollTop` 0.
+   - 1366×650: 363,96 640×526.75, fill `#2c2620`, `scrollTop` 0, no inner scroll.
+8. **Console.**
+   - No error and no warning.
+   - One `info` line: "Autofocus processing was blocked because a document already has a focused element." This is Chromium's note about the `autofocus` attribute inside the closed popover at load (A-20). It is not an error, and the page showed no raw error text at any step.
+9. **Cleanup.**
+   - The stored theme was removed (`binarka.theme`) and the emulation reset to the pane's own size.
+   - The preview server was stopped. The port check printed nothing, then the lock was removed.
+   - The temporary `.claude/launch.json` (the pane's server entry) was deleted, so it is not part of the change.
+
+Coverage: sampled (the viewports above, both schemes, mouse and keyboard). One Chromium-based browser only (NFR-7: Safari and Firefox untested).

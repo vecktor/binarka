@@ -1,0 +1,83 @@
+# Battery: update-rules-panel (tasks 5.1 to 5.4)
+
+Every run was in the worktree `peaceful-nash-a513f8` (branch `claude/peaceful-nash-rules`) on 2026-10-11, at `ebaf49b` + `02b710c` plus the uncommitted slice: the red tests, the freeze, the tool edits and the port. The tool-rewritten reports (`docs/qa/traceability-report.md`, `trace/trace.json`, `trace/acceptance-contracts.json`, `docs/qa/e2e-report.json`, `docs/qa/visual-diff/*/report.json`) were reverted after each run. `docs/qa/a11y-report.json` is kept, as task 5.4's evidence.
+
+## Battery 2026-10-11 19:13 (UTC+5:30), tree ebaf49b + 02b710c + the uncommitted slice
+```
+$ npm run lint
+> binarka@0.1.0 lint
+> eslint .
+
+exit 
+$ npm run test:run
+ Test Files  78 passed (78)
+      Tests  1906 passed (1906)
+$ npm run build
+✓ built in 47ms
+$ npx openspec validate update-rules-panel --strict
+Change 'update-rules-panel' is valid
+$ npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+✓ change/update-rules-panel
+✓ change/update-setup-sheet
+Totals: 4 passed, 0 failed (4 items)
+$ node scripts/check-eval-ratchet.mjs
+Scope: 6 eval case(s)
+OK    hint-clarity 92.7 (baseline 92.7)
+OK    hint-clarity-en 90 (baseline 90)
+Result: PASS
+exit 0
+$ npm run check:trace
+
+WARN  [active-changes] active change "update-rules-panel" is not archived
+WARN  [active-changes] active change "update-setup-sheet" is not archived
+
+traceability: 115 MVP FRs checked — 0 failure(s), 117 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+$ npm run check:acceptance
+> binarka@0.1.0 check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+
+Scope: 132 tagged requirement(s)
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+Result: PASS
+```
+
+## E2E and a11y (task 5.4), under the capture lock (session A, owner file 19:06:56; lsof on 4173/4174/4176/4177 empty before and after)
+```
+$ npm run test:e2e     # 19:08:52 → 19:09:17, exit 0
+  257 passed (23.9s)
+$ npm run check:a11y   # 19:09:17 → 19:09:30, exit 0
+  67 passed (13.0s)
+✓   2 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 light › NFR-13 axe: no violation in the rules state (662ms)
+✓  13 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 375x812 dark › NFR-13 axe: no violation in the rules state (549ms)
+✓  22 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 light › NFR-13 axe: no violation in the rules state (563ms)
+✓  31 [a11y] › e2e/nfr-13-a11y.spec.ts:51:9 › 1280x800 dark › NFR-13 axe: no violation in the rules state (557ms)
+```
+
+The four axe rules-state cases pass with the filled button, light and dark, at 375×812 and 1280×800. The keyboard sweep «every control shows a visible focus indicator from the keyboard» (`e2e/nfr-13-a11y.spec.ts:60`; its expected list includes `rules-close`, l. 106) passes at 375×812 and 1280×800, light and dark. `npx playwright test --project=layout` (19:07:03 → 19:07:19): 190 passed, see `green-run.txt`.
+
+## Archive (task 9.1), 2026-10-11 21:30 (UTC+5:30)
+
+The gates of task 9.1 were all met first: the battery (above), the smoke test (`smoke-test.txt`), run 11 with no unexplained fall (`run-vs-previous.txt`), and the review gate with its approved fix round (`review-findings.json`, `review-fixes.txt`). `review-findings.json` was copied into the change folder (the trajectory check reads it there), with `clean: false`, because no second gate run re-reviewed the fixes.
+```
+$ npx openspec archive update-rules-panel --yes
+Change 'update-rules-panel' archived as '2026-10-11-update-rules-panel' (play-page: + 1 added, ~ 1 modified)
+$ npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+✓ change/update-setup-sheet
+Totals: 3 passed, 0 failed (3 items)
+$ npm run check:trace
+WARN  [active-changes] active change "update-setup-sheet" is not archived
+FAIL  [tasks-complete] openspec/changes/archive/2026-10-11-update-rules-panel/tasks.md has 4 unchecked task(s) but is archived
+
+traceability: 115 MVP FRs checked — 1 failure(s), 116 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+$ npm run test:run
+ Test Files  78 passed (78)
+      Tests  1907 passed (1907)
+```

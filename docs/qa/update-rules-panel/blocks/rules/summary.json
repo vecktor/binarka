@@ -1,0 +1,264 @@
+{
+  "block": "rules",
+  "tolerancePx": 0.5,
+  "pixelThreshold": 0.1,
+  "coverage": "sampled",
+  "shots": [
+    {
+      "shot": "1024-dark-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 384,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1024-light-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 384,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1366-dark-rules-techniques",
+      "block": "rules",
+      "region": {
+        "x": 726,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1366-dark-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 726,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1366-light-rules-techniques",
+      "block": "rules",
+      "region": {
+        "x": 726,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1366-light-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 726,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1440-dark-rules-techniques",
+      "block": "rules",
+      "region": {
+        "x": 800,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1440-dark-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 800,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1440-light-rules-techniques",
+      "block": "rules",
+      "region": {
+        "x": 800,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "1440-light-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 800,
+        "y": 192,
+        "w": 1280,
+        "h": 1054
+      },
+      "pixel": 0.9885
+    },
+    {
+      "shot": "320-dark-rules-techniques",
+      "block": "rules",
+      "region": {
+        "x": 0,
+        "y": 630,
+        "w": 640,
+        "h": 770
+      },
+      "pixel": 0.9842
+    },
+    {
+      "shot": "320-dark-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 630,
+        "w": 640,
+        "h": 770
+      },
+      "pixel": 0.9842
+    },
+    {
+      "shot": "320-light-rules-techniques",
+      "block": "rules",
+      "region": {
+        "x": 0,
+        "y": 630,
+        "w": 640,
+        "h": 770
+      },
+      "pixel": 0.9842
+    },
+    {
+      "shot": "320-light-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 630,
+        "w": 640,
+        "h": 770
+      },
+      "pixel": 0.9842
+    },
+    {
+      "shot": "375-dark-rules-techniques",
+      "block": "rules",
+      "region": {
+        "x": 0,
+        "y": 730,
+        "w": 750,
+        "h": 894
+      },
+      "pixel": 0.9864
+    },
+    {
+      "shot": "375-dark-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 730,
+        "w": 750,
+        "h": 894
+      },
+      "pixel": 0.9864
+    },
+    {
+      "shot": "375-light-rules-techniques",
+      "block": "rules",
+      "region": {
+        "x": 0,
+        "y": 730,
+        "w": 750,
+        "h": 894
+      },
+      "pixel": 0.9864
+    },
+    {
+      "shot": "375-light-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 0,
+        "y": 730,
+        "w": 750,
+        "h": 894
+      },
+      "pixel": 0.9864
+    },
+    {
+      "shot": "768-dark-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 238,
+        "y": 192,
+        "w": 1060,
+        "h": 1472
+      },
+      "pixel": 0.9918
+    },
+    {
+      "shot": "768-light-rules",
+      "block": "rules",
+      "geometryOff": 0,
+      "unpaired": 0,
+      "maxDelta": 0,
+      "region": {
+        "x": 238,
+        "y": 192,
+        "w": 1060,
+        "h": 1472
+      },
+      "pixel": 0.9918
+    }
+  ]
+}

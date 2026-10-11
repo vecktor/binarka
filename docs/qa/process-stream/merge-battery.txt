@@ -1,0 +1,16 @@
+lint exit 0
+tsc exit 0
+ Test Files  78 passed (78)
+      Tests  1907 passed (1907)
+build exit 0
+Totals: 3 passed, 0 failed (3 items)
+Result: PASS
+Result: PASS, 1 warning(s)
+traceability: 115 MVP FRs checked — 0 failure(s), 116 warning(s)
+Usage: node scripts/check-acceptance-methods.mjs --mode=existence|artifact [--max-age-hours N]
+acceptance existence: Result: PASS
+pre 6173: 
+pre 6174: 
+pre 6176: 
+pre 6177: 
+e2e (base 6173) exit 0:   257 passed (27.2s) 

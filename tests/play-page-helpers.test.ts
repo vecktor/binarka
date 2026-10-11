@@ -25,6 +25,7 @@ import {
   callOrder,
   closeCalls,
   dialogLog,
+  dispatchBeforeToggle,
   dispatchToggle,
   installPageLifecycle,
   onDialogClose,
@@ -1240,6 +1241,43 @@ describe('the popover stubs of installPageLifecycle (jsdom has no showPopover, h
         { newState: 'open', oldState: 'closed', bubbles: false },
       ]);
       expect(reachedBody).toBe(false);
+    } finally {
+      el.remove();
+    }
+  });
+
+  // update-rules-panel (task 2.2; FR-57, A-59): the helper for the `beforetoggle` event of the scroll reset. It mirrors the dispatchToggle test above
+  // and adds the one difference: the stub's open state and the call log stay as they were.
+  it('dispatchBeforeToggle sends a non-bubbling beforetoggle event with newState and oldState, and leaves the stub open state and the log unchanged', () => {
+    const el = document.createElement('div');
+    document.body.append(el);
+    try {
+      const seen: { newState: unknown; oldState: unknown; bubbles: boolean }[] = [];
+      let toggles = 0;
+      el.addEventListener('beforetoggle', (event) => {
+        seen.push({ newState: Reflect.get(event, 'newState'), oldState: Reflect.get(event, 'oldState'), bubbles: event.bubbles });
+      });
+      el.addEventListener('toggle', () => { toggles += 1; });
+      let reachedBody = false;
+      document.body.addEventListener('beforetoggle', () => { reachedBody = true; }, { once: true });
+      el.showPopover();
+      popoverLog.length = 0;
+      dispatchBeforeToggle(el, 'closed');
+      expect(popoverIsOpen(el), 'a closing beforetoggle comes before the state change: the stub stays open').toBe(true);
+      dispatchBeforeToggle(el, 'open');
+      expect(popoverIsOpen(el), 'an opening beforetoggle does not change the open stub either').toBe(true);
+      el.hidePopover();
+      popoverLog.length = 0;
+      dispatchBeforeToggle(el, 'open');
+      expect(popoverIsOpen(el), 'an opening beforetoggle on a closed stub does not open it').toBe(false);
+      expect(seen).toEqual([
+        { newState: 'closed', oldState: 'open', bubbles: false },
+        { newState: 'open', oldState: 'closed', bubbles: false },
+        { newState: 'open', oldState: 'closed', bubbles: false },
+      ]);
+      expect(reachedBody, 'does not bubble').toBe(false);
+      expect(toggles, 'is not a toggle event').toBe(0);
+      expect(popoverLog, 'the dispatch is not a popover method call').toEqual([]);
     } finally {
       el.remove();
     }

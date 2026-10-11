@@ -33,3 +33,45 @@ Change 'update-rules-panel' is valid
 Totals: 4 passed, 0 failed (4 items)
 ```
 - 2026-10-11 about 17:28: block B's folder audit (finding m5) noted that task 10.2 omitted the two scripts both blocks edit; the parent added `scripts/freeze-design-geometry.mjs` and `scripts/visual-block.mjs` to its expected conflicts.
+
+## Re-audit after the shell (task 1.1, session A)
+
+- **Trigger:** the baseline changed after the folder was written. Folder commit `7564ae3` (17:34); shell archive `defc5e5` (17:52). `git diff --stat 7564ae3 ebaf49b -- openspec/specs/play-page/spec.md docs/requirements.md src/ tests/ e2e/ scripts/ quality/` gives `openspec/specs/play-page/spec.md` +208/−23, `docs/requirements.md` 2 lines, `e2e/nfr-14-panel-shell.spec.ts` +6, `tests/play-page-root-size.test.ts` 8 lines, and **no change under `src/`**.
+- **Auditor:** a fresh spec-compliance-auditor subagent, read-only, 2026-10-11 from about 17:57 to 18:03 (UTC+5:30), session A, worktree `peaceful-nash-a513f8` at `ebaf49b`. It did not write the folder. Its scratch files were in the session scratchpad, outside the repo, and it deleted them.
+- **The diff of item 1:** the baseline «Rules panel» (spec l. 727) is byte-identical at `7564ae3` and at `ebaf49b`, so the shell's archive did not touch it and the delta reverts no shell edit. `diff -u` of the baseline block against the folder's MODIFIED block gives four hunks, and each is an edit `proposal.md` names:
+  - (a) `autofocus` stays, with the sticky clause;
+  - (b) the placement sentence of FR-57 replaces "held NFR-14";
+  - (c) the scroll-reset sentence, and the Traces line gaining NFR-14, A-59, A-20;
+  - (d) the new AND clause of «The panel opens with no script», and the two new scenarios.
+  
+  No hunk is un-named.
+- **Shell requirements:** «The panels take the shared surface paint» (spec l. 4290) and «The page root carries the board size» (l. 4376) exist. Every sentence the folder cites from them matches the baseline and `src/ui/style.css`:
+  - the top-level `.rules` (647-665) binds the raised fill, the overlay border and the sheet shadow;
+  - the 48rem `.rules` (677-689) binds the overlay border and the panel shadow;
+  - `--board-width` is declared on `#app` (214), and `--column` on `#app` from 48rem (1053).
+- **Requirements text:** FR-57 (l. 109), A-59 (l. 353) and NFR-14 (l. 184) equal the folder's text. The only change to requirements.md since the folder is the A-60 line (setup sheet), which the folder does not quote.
+- **Shell tests against the port:** none break as long as findings 2 and 3 are followed.
+  - `panel-shell-stylesheet:63` wants one top-level `.rules`.
+  - `:84` and `:94-98` want one exact `.rules` with `box-shadow` and `border-color` across the 48rem blocks.
+  - `:153` counts 7 shadow rules over exact panel selectors, which excludes `.rules-close`.
+  - `:158` only wants each token used more than zero times; nothing counts the bindings of `--color-surface-raised`.
+  - The colour scan accepts multi-layer shadows (`tests/helpers/css.ts:347`).
+- **Validate:** `npx openspec validate update-rules-panel --strict` → `Change 'update-rules-panel' is valid`.
+
+| # | Severity | Finding | Disposition (folded by the parent, session A, 2026-10-11 ~18:06) |
+|---|---|---|---|
+| R1 | major | The scenario «Below 48rem … bottom sheet» cannot be checked from the parsed CSS. jsdom 29.1.1 keeps only the last `max-height` and drops a `padding` shorthand that holds `env()` (the auditor probed this). | Fixed. The scenario reads the raw text of the top-level rule for the `max-height` order and the padding, as the shell's raw counts do. |
+| R2 | major | The 22.5rem `.rules`/`.mini` rules have no fixed place. The existing 22.5rem block (`style.css:451`) is before the panel, so (a) the shell's raw count, which reads the first `.rules {` block, would turn red, and (b) the top-level `padding` and `.mini` `width` would win. | Fixed. The table row and the scenario require a later block and the top-level rule as the first `.rules` of the raw text, with the order asserted. design.md decision 10 is new; tasks 4.2 updated. |
+| R3 | major | The 48rem techniques `margin-top: 0` (and `.rules-close` `margin-top: auto`) lose to the later top-level rules if they are put in the 48rem block at 671. | Fixed. The table row and the «flex column» scenario require a later block and assert the order. Decision 10 and task 4.2. |
+| R4 | minor | jsdom serialises a zero length as `0px`; "whitespace aside" does not cover that. | Fixed. A global comparison sentence was added before the ADDED Traces line. |
+| R5 | minor | The inner-metrics paragraph uses inexact words. | Fixed. Each is now named as a declaration (`display: flex`, `flex-direction: column`, `align-items: center`, `font-variant-numeric: tabular-nums`, `width`/`height: 1.75rem`, `list-style: none`, `padding: 0`), in the paragraph and in the scenario. |
+| R6 | note | Predicted from the box model, not measured: a stuck sticky button sits at the padding-box edge, so the ring check would fail at 320/375. | **Refuted by measurement.** `docs/qa/update-rules-panel/sticky-ring-probe.txt`: on the design build, Chromium keeps the stuck button 16 px above the inner bottom edge (the panel's 1rem bottom padding) and 16 px from the left and right, at 4 viewports, first opening and end. The 5 px ring fits. The same probe confirms `.rules-close` computes `padding: 1px 6px`, height 44 px. Recorded in design.md (Risks, and decision 8). The e2e still measures it on the page. |
+| R7 | minor | `decidedBy` has no tie rule. "Compared with the values before the change" needs a literal copy. | Fixed. Ties are within 0.5 px, with the order `max-height`, `min-height`, `content`. The tests hold literal copies of `TOKEN_NAMES` and `CONTRAST_PAIRS`. |
+| R8 | minor | "The panel's creation at line 138": line 121 creates the panel, 138 is the close button, 150 is the append. | Fixed in proposal.md and tasks 4.1. |
+| R9 | note | Some line numbers drifted (style.css 647-751, the freeze script 112-127/114-123, nfr-12 l. 53, layout test 203-212 / 228-276). | Fixed. The Impact preamble of proposal.md lists the re-grepped numbers. |
+
+Validation after the fold (task 1.2), re-run by the parent at 18:07:
+```
+$ npx openspec validate update-rules-panel --strict
+Change 'update-rules-panel' is valid
+```

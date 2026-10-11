@@ -1,0 +1,50 @@
+{
+  "shot": "1024-dark-rules",
+  "block": "rules",
+  "geometry": [
+    {
+      "sel": "[data-section=\"rules\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 192,
+        "y": 96,
+        "w": 640,
+        "h": 526.75
+      },
+      "product": {
+        "x": 192,
+        "y": 96,
+        "w": 640,
+        "h": 526.75
+      }
+    },
+    {
+      "sel": "[data-section=\"rules\"] .rules-close",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 209,
+        "y": 561.75,
+        "w": 606,
+        "h": 44
+      },
+      "product": {
+        "x": 209,
+        "y": 561.75,
+        "w": 606,
+        "h": 44
+      }
+    }
+  ],
+  "geometryOff": 0,
+  "unpaired": 0,
+  "maxDelta": 0,
+  "region": {
+    "x": 384,
+    "y": 192,
+    "w": 1280,
+    "h": 1054
+  },
+  "pixel": 0.9885
+}

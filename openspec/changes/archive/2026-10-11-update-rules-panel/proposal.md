@@ -14,7 +14,7 @@ This is block A of the parallel G2 plan (`docs/handoff/parallel-g2-plan-2026-10-
 - **Spec, ADDED (1):** «The rules panel takes the design's size, place and paint» (NFR-14, FR-57, FR-65, A-59): the three regimes with their values, `.rules:popover-open` for the flex column, the `min-height` through the root's `--board-width` and `--column`, the 40rem column with the 2rem cap, the tighter spacing, the sticky, filled «Зрозуміло» with the mask, the list separators and example cells, the design's inner metrics, 13 stylesheet and e2e scenarios, and the sampled geometry test.
 - **No new token and no new pair.** The pair `--color-primary-text` on `--color-primary` and the pair `--color-focus` on `--color-surface-raised` are already in the list (no token or pair count changes; the tests compare the helper lists, not numbers).
 - **Not modified, by the split:** «Borders, cues and focus rings have enough contrast», «The main column takes the design palette», «The backdrops…», «Main column layout geometry…», «Setup sheet» and every setup-sheet requirement.
-- **Code:** `src/ui/style.css` (the `.rules*` rules, `.rules-close`, `.mini*`, `.rule-example`, the two list rules); `src/ui/play-page.ts` (the two scroll-reset listeners on the panel, next to the panel's creation at line 138).
+- **Code:** `src/ui/style.css` (the `.rules*` rules, `.rules-close`, `.mini*`, `.rule-example`, the two list rules); `src/ui/play-page.ts` (the two scroll-reset listeners on the panel, next to the panel's creation: `src/ui/play-page.ts:121` creates the panel, 138 the close button with `autofocus`, 150 appends the children).
 - **Tools:** `quality/design-geometry.json` gains the key `rulesPanel` (8 cases), refrozen by `scripts/freeze-design-geometry.mjs`; `scripts/visual-block.mjs` gains a block `rules`.
 
 ## Baseline requirements touched
@@ -26,7 +26,7 @@ This is block A of the parallel G2 plan (`docs/handoff/parallel-g2-plan-2026-10-
 
 ## Impact
 
-Line numbers are those of the worktree at `main` `64c2d7d` (before the shell); the implementing session re-greps them after the shell has moved `src/ui/style.css`. A test changes only when a changed spec demands it.
+Line numbers were written at `main` `64c2d7d` (before the shell) and re-grepped at `ebaf49b` after the shell's merge (re-audit, `docs/qa/update-rules-panel/folder-audit.md`): `src/ui/style.css` `.rules` 647, its 48rem block 671-690, `.rules-close` 747, `.rules:popover-open::backdrop` 1086, the 22.5rem block at 451 (before the panel: not usable for the panel's 22.5rem rules) and 1029, the 48rem `#app` block at 1047; `scripts/freeze-design-geometry.mjs` fixture object 112-127, `provenance` 114-123; `e2e/nfr-12-targets.spec.ts` `rulesClose` 53; `tests/play-page-layout.test.ts` `autofocus` test 203-212, «no script» 228-276. The other numbers below were unchanged. A test changes only when a changed spec demands it.
 
 | File | Lines | What | Source |
 |---|---|---|---|

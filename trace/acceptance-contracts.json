@@ -907,6 +907,14 @@
         "status": "mechanism-ok"
       }
     ],
+    "FR-120": [
+      {
+        "method": "local-verifiable",
+        "mechanism": "npm:test:run",
+        "artifact": null,
+        "status": "mechanism-ok"
+      }
+    ],
     "FR-55": [
       {
         "method": "local-verifiable",

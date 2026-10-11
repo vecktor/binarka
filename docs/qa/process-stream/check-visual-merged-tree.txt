@@ -1,0 +1,179 @@
+# check:visual on the merged tree (session C merge of main 2230704 into claude/modest-darwin-process, before the merge commit), 2026-10-12 01:12:38 to 01:15:01 +0530
+# Command: BINARKA_PORT_BASE=6173 npm run check:visual (builds first; own ports, no lock). Exit 1 (FAIL). The callers' path (qa-verify, gate:status) now runs the same adapter (PD-5).
+# Per-shot scores against run 11 (docs/qa/g2/check-visual-run-11.txt, session A): 168 scored shots, identical scores, all shots (diff of the sorted 'shot score' lists is empty); the 2 logo shots have no state driver (gap 2).
+# The run rewrote 20 docs/qa/visual-diff/*/report.json (the 20 rules shots, run 10 -> run 11 values; PD-6 copied the complete run, its staging folder removed); reverted, as session A did for run 11 (they still hold run 10).
+# Ports 6173-6177 free before and after.
+
+(adapters injected from scripts/check-visual-parity-adapters.mjs)
+PASS  [1024-dark-confirm] score 0.985 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-rules] score 0.9951 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-settings-light] score 0.9918 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-settings] score 0.9807 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [1024-dark-setup-four] pixel score 0.8574 below threshold 0.98
+FAIL  [1024-dark-setup-marked-four] pixel score 0.8589 below threshold 0.98
+FAIL  [1024-dark-setup-marked] pixel score 0.8805 below threshold 0.98
+FAIL  [1024-dark-setup] pixel score 0.8817 below threshold 0.98
+PASS  [1024-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-confirm] score 0.9836 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-default] score 0.9991 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-rules] score 0.9951 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-settings-dark] score 0.983 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-settings] score 0.9912 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [1024-light-setup-four] pixel score 0.8604 below threshold 0.98
+FAIL  [1024-light-setup-marked-four] pixel score 0.861 below threshold 0.98
+FAIL  [1024-light-setup-marked] pixel score 0.8673 below threshold 0.98
+FAIL  [1024-light-setup] pixel score 0.8686 below threshold 0.98
+PASS  [1024-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-rules-techniques] score 0.9956 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-rules] score 0.9956 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-settings-focus] score 0.9821 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-settings] score 0.9823 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [1366-dark-setup-four] pixel score 0.8821 below threshold 0.98
+FAIL  [1366-dark-setup-marked-four] pixel score 0.8825 below threshold 0.98
+FAIL  [1366-dark-setup-marked] pixel score 0.8979 below threshold 0.98
+FAIL  [1366-dark-setup] pixel score 0.8929 below threshold 0.98
+PASS  [1366-light-default] score 0.9996 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-rules-techniques] score 0.9956 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-rules] score 0.9956 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-settings-focus] score 0.9919 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-settings] score 0.9921 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [1366-light-setup-four] pixel score 0.8967 below threshold 0.98
+FAIL  [1366-light-setup-marked-four] pixel score 0.897 below threshold 0.98
+FAIL  [1366-light-setup-marked] pixel score 0.8875 below threshold 0.98
+FAIL  [1366-light-setup] pixel score 0.8956 below threshold 0.98
+PASS  [1440-dark-confirm] score 0.9904 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-rules-techniques] score 0.997 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-rules] score 0.997 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-settings-light] score 0.995 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-settings] score 0.988 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [1440-dark-setup-four] pixel score 0.9292 below threshold 0.98
+FAIL  [1440-dark-setup-marked-four] pixel score 0.935 below threshold 0.98
+FAIL  [1440-dark-setup-marked] pixel score 0.9318 below threshold 0.98
+FAIL  [1440-dark-setup] pixel score 0.9335 below threshold 0.98
+PASS  [1440-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-confirm] score 0.9901 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-default] score 0.9993 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-rules-techniques] score 0.997 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-rules] score 0.997 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-settings-dark] score 0.9894 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-settings] score 0.9946 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [1440-light-setup-four] pixel score 0.9454 below threshold 0.98
+FAIL  [1440-light-setup-marked-four] pixel score 0.9455 below threshold 0.98
+FAIL  [1440-light-setup-marked] pixel score 0.9248 below threshold 0.98
+FAIL  [1440-light-setup] pixel score 0.9277 below threshold 0.98
+PASS  [1440-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [320-dark-confirm] pixel score 0.918 below threshold 0.98
+PASS  [320-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-rules-techniques] score 0.9913 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-rules] score 0.9913 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [320-dark-settings-focus] pixel score 0.9077 below threshold 0.98
+FAIL  [320-dark-settings-light] pixel score 0.9458 below threshold 0.98
+FAIL  [320-dark-settings] pixel score 0.9117 below threshold 0.98
+FAIL  [320-dark-setup-four] pixel score 0.78 below threshold 0.98
+FAIL  [320-dark-setup-marked-four] pixel score 0.7801 below threshold 0.98
+FAIL  [320-dark-setup-marked] pixel score 0.7627 below threshold 0.98
+FAIL  [320-dark-setup] pixel score 0.7566 below threshold 0.98
+PASS  [320-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [320-light-confirm] pixel score 0.9194 below threshold 0.98
+PASS  [320-light-default] score 0.9985 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-rules-techniques] score 0.9913 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-rules] score 0.9913 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [320-light-settings-dark] pixel score 0.9195 below threshold 0.98
+FAIL  [320-light-settings-focus] pixel score 0.939 below threshold 0.98
+FAIL  [320-light-settings] pixel score 0.943 below threshold 0.98
+FAIL  [320-light-setup-four] pixel score 0.8802 below threshold 0.98
+FAIL  [320-light-setup-marked-four] pixel score 0.8802 below threshold 0.98
+FAIL  [320-light-setup-marked] pixel score 0.7964 below threshold 0.98
+FAIL  [320-light-setup] pixel score 0.8397 below threshold 0.98
+PASS  [320-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [375-dark-confirm] pixel score 0.959 below threshold 0.98
+PASS  [375-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-rules-techniques] score 0.9925 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-rules] score 0.9925 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [375-dark-settings-light] pixel score 0.9626 below threshold 0.98
+FAIL  [375-dark-settings] pixel score 0.9336 below threshold 0.98
+FAIL  [375-dark-setup-four] pixel score 0.7935 below threshold 0.98
+FAIL  [375-dark-setup-marked-four] pixel score 0.7968 below threshold 0.98
+FAIL  [375-dark-setup-marked] pixel score 0.8012 below threshold 0.98
+FAIL  [375-dark-setup] pixel score 0.8008 below threshold 0.98
+PASS  [375-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [375-light-confirm] pixel score 0.9582 below threshold 0.98
+PASS  [375-light-default] score 0.9985 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-rules-techniques] score 0.9925 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-rules] score 0.9925 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [375-light-settings-dark] pixel score 0.9394 below threshold 0.98
+FAIL  [375-light-settings] pixel score 0.9604 below threshold 0.98
+FAIL  [375-light-setup-four] pixel score 0.8301 below threshold 0.98
+FAIL  [375-light-setup-marked-four] pixel score 0.8311 below threshold 0.98
+FAIL  [375-light-setup-marked] pixel score 0.8316 below threshold 0.98
+FAIL  [375-light-setup] pixel score 0.8295 below threshold 0.98
+PASS  [375-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-confirm] score 0.9849 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-rules] score 0.9959 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-settings-light] score 0.9917 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-settings] score 0.9802 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [768-dark-setup-four] pixel score 0.8349 below threshold 0.98
+FAIL  [768-dark-setup-marked-four] pixel score 0.8732 below threshold 0.98
+FAIL  [768-dark-setup-marked] pixel score 0.8719 below threshold 0.98
+FAIL  [768-dark-setup] pixel score 0.8694 below threshold 0.98
+PASS  [768-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-confirm] score 0.9837 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-default] score 0.9987 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-rules] score 0.9959 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-settings-dark] score 0.9825 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-settings] score 0.9911 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [768-light-setup-four] pixel score 0.7647 below threshold 0.98
+FAIL  [768-light-setup-marked-four] pixel score 0.7835 below threshold 0.98
+FAIL  [768-light-setup-marked] pixel score 0.7663 below threshold 0.98
+FAIL  [768-light-setup] pixel score 0.7696 below threshold 0.98
+PASS  [768-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+FAIL  [logo-dark] capture failed: no state driver for "logo" (shot logo-dark); the page has no such state yet
+FAIL  [logo-light] capture failed: no state driver for "logo" (shot logo-light); the page has no such state yet
+Scope: 170 breakpoint(s)
+Result: FAIL, 1 warning(s)

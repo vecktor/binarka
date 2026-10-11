@@ -585,8 +585,7 @@
       "id": "FR-74",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -609,8 +608,7 @@
       "id": "FR-76",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -997,8 +995,7 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1009,6 +1006,8 @@
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-root-size.test.ts",
+        "tests/play-page-rules-panel-stylesheet.test.ts",
+        "tests/play-page-rules-scroll-reset.test.ts",
         "tests/play-page-techniques.test.ts",
         "tests/play-page-techniques.test.ts"
       ],
@@ -1164,7 +1163,6 @@
       "id": "FR-65",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md",
         "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1186,6 +1184,7 @@
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-palette-stylesheet.test.ts",
         "tests/play-page-panel-shell-stylesheet.test.ts",
+        "tests/play-page-rules-panel-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
@@ -1473,8 +1472,7 @@
     {
       "id": "FR-93",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1787,7 +1785,6 @@
       "id": "FR-111",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md",
         "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1886,7 +1883,6 @@
       "id": "FR-119",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md",
         "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -2402,10 +2398,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-55 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"update-rules-panel\" is not archived"
     },
     {
       "check": "active-changes",

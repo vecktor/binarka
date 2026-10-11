@@ -1,0 +1,19 @@
+# Probe: where does the design's stuck «Зрозуміло» sit, and what is its padding? (session A, 2026-10-11 ~18:04 UTC+5:30)
+
+Purpose: re-audit finding 6 (folder-audit.md) predicted from the box model that a sticky bottom:0 button sticks at the scrollport (padding-box) edge, so the ring check of «The panel opens at its top» would fail at 320/375. Also confirms the effective padding of .rules-close (the ADDED requirement asks the session to read it on the design build).
+
+Instrument: Playwright chromium, devices['Desktop Chrome'], reducedMotion reduce; design/v0/out (pnpm build at ebaf49b) served on 127.0.0.1:4199; route /rules/ (open at load). Measured on load (first) and after scrollTop = scrollHeight + 100 ms (end). Capture lock /tmp/binarka-capture.lock held for the run; lsof on 4173/4174/4176/4177/4199 empty before and after.
+gapBottom = panelRect.bottom - borderBottomWidth - closeRect.bottom; gapLeft/gapRight likewise. The ring needs 5 px (3px outline + 2px offset).
+
+```
+320x700 first {"scrollTop":0,"sh":743,"ch":384,"panelBottom":700,"closeBottom":684,"bb":"0px","pb":"16px","gapBottom":16,"gapLeft":16,"gapRight":16,"closePadding":"1px 6px","closeH":44,"panelW":320,"panelTop":315,"panelH":385}
+320x700 end   {"scrollTop":359,"sh":743,"ch":384,"panelBottom":700,"closeBottom":683.75,"bb":"0px","pb":"16px","gapBottom":16.25,"gapLeft":16,"gapRight":16,"closePadding":"1px 6px","closeH":44,"panelW":320,"panelTop":315,"panelH":385}
+375x812 first {"scrollTop":0,"sh":719,"ch":446,"panelBottom":812,"closeBottom":796,"bb":"0px","pb":"16px","gapBottom":16,"gapLeft":16,"gapRight":16,"closePadding":"1px 6px","closeH":44,"panelW":375,"panelTop":365.40625,"panelH":446.59375}
+375x812 end   {"scrollTop":273,"sh":719,"ch":446,"panelBottom":812,"closeBottom":796,"bb":"0px","pb":"16px","gapBottom":16,"gapLeft":16,"gapRight":16,"closePadding":"1px 6px","closeH":44,"panelW":375,"panelTop":365.40625,"panelH":446.59375}
+768x1024 first {"scrollTop":0,"sh":734,"ch":734,"panelBottom":832,"closeBottom":815,"bb":"1px","pb":"16px","gapBottom":16,"gapLeft":16,"gapRight":16,"closePadding":"1px 6px","closeH":44,"panelW":530,"panelTop":96,"panelH":736}
+768x1024 end   {"scrollTop":0,"sh":734,"ch":734,"panelBottom":832,"closeBottom":815,"bb":"1px","pb":"16px","gapBottom":16,"gapLeft":16,"gapRight":16,"closePadding":"1px 6px","closeH":44,"panelW":530,"panelTop":96,"panelH":736}
+1366x650 first {"scrollTop":0,"sh":525,"ch":525,"panelBottom":622.75,"closeBottom":605.75,"bb":"1px","pb":"16px","gapBottom":16,"gapLeft":16,"gapRight":16,"closePadding":"1px 6px","closeH":44,"panelW":640,"panelTop":96,"panelH":526.75}
+1366x650 end   {"scrollTop":0,"sh":525,"ch":525,"panelBottom":622.75,"closeBottom":605.75,"bb":"1px","pb":"16px","gapBottom":16,"gapLeft":16,"gapRight":16,"closePadding":"1px 6px","closeH":44,"panelW":640,"panelTop":96,"panelH":526.75}
+```
+
+Result: in Chromium a stuck sticky button respects the scroll container's bottom padding (16 px = 1rem + env(safe-area-inset-bottom) = 0): gapBottom 16 (16.25 at 320 end), gapLeft and gapRight 16 at every viewport. So the ring (5 px) is not clipped on the design geometry; finding 6 is refuted by measurement. The design's .rules-close computes padding '1px 6px' and a 44 px height: the folder's padding value is confirmed. Sampled: 4 viewports, Chromium only.

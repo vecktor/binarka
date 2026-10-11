@@ -1,0 +1,60 @@
+# Run 11 against run 10 (task 7.3, update-rules-panel)
+
+Run 10: docs/qa/g2/check-visual-run-10.txt (main ebaf49b, after update-panel-shell). Run 11: docs/qa/g2/check-visual-run-11.txt (this branch, after the port). Parsed with the gate's own PASS/FAIL lines (score to 4 places); 168 scored shots plus the 2 logo shots, which fail in both runs with "no state driver for logo".
+
+```
+run 10: 86 of 168 at 0.98;  run 11: 106 of 168
+rules and rules-techniques shots: 20
+  320-dark-rules                 run 10 0.8993 FAIL  ->  run 11 0.9913 PASS   rose
+  320-dark-rules-techniques      run 10 0.8948 FAIL  ->  run 11 0.9913 PASS   rose
+  320-light-rules                run 10 0.8927 FAIL  ->  run 11 0.9913 PASS   rose
+  320-light-rules-techniques     run 10 0.8917 FAIL  ->  run 11 0.9913 PASS   rose
+  375-dark-rules                 run 10 0.9069 FAIL  ->  run 11 0.9925 PASS   rose
+  375-dark-rules-techniques      run 10 0.9018 FAIL  ->  run 11 0.9925 PASS   rose
+  375-light-rules                run 10 0.9010 FAIL  ->  run 11 0.9925 PASS   rose
+  375-light-rules-techniques     run 10 0.8980 FAIL  ->  run 11 0.9925 PASS   rose
+  768-dark-rules                 run 10 0.8881 FAIL  ->  run 11 0.9959 PASS   rose
+  768-light-rules                run 10 0.7900 FAIL  ->  run 11 0.9959 PASS   rose
+  1024-dark-rules                run 10 0.8135 FAIL  ->  run 11 0.9951 PASS   rose
+  1024-light-rules               run 10 0.7822 FAIL  ->  run 11 0.9951 PASS   rose
+  1366-dark-rules                run 10 0.8133 FAIL  ->  run 11 0.9956 PASS   rose
+  1366-dark-rules-techniques     run 10 0.8133 FAIL  ->  run 11 0.9956 PASS   rose
+  1366-light-rules               run 10 0.7882 FAIL  ->  run 11 0.9956 PASS   rose
+  1366-light-rules-techniques    run 10 0.7882 FAIL  ->  run 11 0.9956 PASS   rose
+  1440-dark-rules                run 10 0.8859 FAIL  ->  run 11 0.9970 PASS   rose
+  1440-dark-rules-techniques     run 10 0.8859 FAIL  ->  run 11 0.9970 PASS   rose
+  1440-light-rules               run 10 0.8408 FAIL  ->  run 11 0.9970 PASS   rose
+  1440-light-rules-techniques    run 10 0.8408 FAIL  ->  run 11 0.9970 PASS   rose
+other shots whose score fell: 0
+other shots whose score rose: 0
+verdict flips: 20
+   ('1024-dark-rules', 'FAIL', 'PASS')
+   ('1024-light-rules', 'FAIL', 'PASS')
+   ('1366-dark-rules', 'FAIL', 'PASS')
+   ('1366-dark-rules-techniques', 'FAIL', 'PASS')
+   ('1366-light-rules', 'FAIL', 'PASS')
+   ('1366-light-rules-techniques', 'FAIL', 'PASS')
+   ('1440-dark-rules', 'FAIL', 'PASS')
+   ('1440-dark-rules-techniques', 'FAIL', 'PASS')
+   ('1440-light-rules', 'FAIL', 'PASS')
+   ('1440-light-rules-techniques', 'FAIL', 'PASS')
+   ('320-dark-rules', 'FAIL', 'PASS')
+   ('320-dark-rules-techniques', 'FAIL', 'PASS')
+   ('320-light-rules', 'FAIL', 'PASS')
+   ('320-light-rules-techniques', 'FAIL', 'PASS')
+   ('375-dark-rules', 'FAIL', 'PASS')
+   ('375-dark-rules-techniques', 'FAIL', 'PASS')
+   ('375-light-rules', 'FAIL', 'PASS')
+   ('375-light-rules-techniques', 'FAIL', 'PASS')
+   ('768-dark-rules', 'FAIL', 'PASS')
+   ('768-light-rules', 'FAIL', 'PASS')
+```
+
+## Verdict
+
+- **All 20 rules and rules-techniques shots rose** (lowest gain +0.0856 at 375-dark-rules, 0.9069 to 0.9925; largest +0.2129 at 1024-light-rules, 0.7822 to 0.9951; computed from the table above) and **all 20 now pass at 0.98** (0.9913 to 0.9970). The rule of task 7.3 ("every one of the 20 rules shots must rise") holds.
+- **No other shot moved:** 0 fell, 0 rose, to 4 places. The port touched only the panel's rules, so this is expected.
+- **The dark shots from 64rem and `768-dark-rules`** (design.md, "Pixel expectations"): the masking pair (the design's panel fill `#2c2620` where the page showed its dimmed bare page) is gone with the placement. 1024/1366/1440 dark rose from 0.8133-0.8859 to 0.9951-0.9970, and 768-dark from 0.8881 to 0.9959. The block tool's `diff.png` (`docs/qa/update-rules-panel/blocks/rules/<shot>/diff.png`) shows no panel-fill band in any of them.
+- **Light and dark score the same at each width, and `rules` equals `rules-techniques` at each width.** This is the residual's signature, not a coincidence. The block tool (`blocks/rules/summary.json`, crop scores 0.9842 at 320, 0.9864 at 375, 0.9918 at 768, 0.9885 from 1024) and its `diff.png` show that the only difference inside the panel crop is the **focus ring on «Зрозуміло»**: the page shows the 3px `--color-focus` ring at a 2px offset, and the design reference shows no ring. The text, the separators, the example cells, the button fill and the mask are pixel-equal. In `rules-techniques` the page is scrolled to the end exactly as the design, so the reset on open does not undo the locked driver's scroll (the race of design.md decision 1 does not occur in the capture). The ring is a capture-state difference: the locked adapter opens the page's panel with a script click on «Правила», after which Chromium's `:focus-visible` heuristic matches the autofocused button, while the design's `/rules/` route opens with `showPopover()` at load and its reference shows no ring. It is a harness/state difference (AGENTS.md, capture determinism), not a product defect: the page's ring on keyboard focus is required (A-20, NFR-13). It is recorded here and put to the user; the locked adapter is not changed.
+
+Coverage: sampled (the 170 reference shots of review-set-14), never continuum.
