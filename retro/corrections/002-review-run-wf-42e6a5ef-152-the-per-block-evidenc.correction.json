@@ -11,5 +11,10 @@
   "failureModeSource": "explicit",
   "source": "human",
   "autoKey": null,
-  "disposition": null
+  "disposition": {
+    "status": "waived",
+    "by": "Serhii Romaniv (the user), in chat on 2026-10-11 through the question form («Waive it (Recommended)»), recorded by the agent",
+    "ts": "2026-10-11T09:55:48.000Z",
+    "note": "The unbacked claim was withdrawn and the per-block evidence was re-run with its real output in the update-page-palette review fix round 1 (autonomy-log row 160; archived folder openspec/changes/archive/2026-10-10-update-page-palette/). The root cause, orphaned vite preview processes left by the capture path, is tracked as the process defect PD-4 (proposal drafted 2026-10-11, autonomy-log row 170)."
+  }
 }

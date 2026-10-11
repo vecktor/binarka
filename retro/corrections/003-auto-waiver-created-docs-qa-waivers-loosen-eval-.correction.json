@@ -1,0 +1,18 @@
+{
+  "id": "COR-3",
+  "ts": "2026-10-11T09:55:48.939Z",
+  "utterance": "AUTO: waiver created (docs/qa/waivers/loosen-eval-hint-clarity.json) — an evidence requirement was waived; record why and disposition this correction.",
+  "contradictedClaim": null,
+  "mappedReqIds": [],
+  "gateThatShouldHaveCaught": null,
+  "failureMode": "skipped-convention",
+  "failureModeSource": "detector",
+  "source": "auto-waiver",
+  "autoKey": "waiver-created:docs/qa/waivers/loosen-eval-hint-clarity.json",
+  "disposition": {
+    "status": "waived",
+    "by": "Serhii Romaniv (the user): the waiver itself was approved in chat on 2026-10-10 at about 11:42 UTC+5:30 («Waiver»); this record was filed and waived on the user's choice in chat on 2026-10-11 («File it and waive (Recommended)»), recorded by the agent",
+    "ts": "2026-10-11T09:55:48.000Z",
+    "note": "hint-clarity re-baselined from 94 to 92.7 once: judge-to-judge variation, the graded outputs byte-identical before and after add-english-version (docs/qa/add-english-version/eval-hint-clarity-uk-outputs.txt); every case passes its bar of 80. Waiver: docs/qa/waivers/loosen-eval-hint-clarity.json; scope: this one re-baseline."
+  }
+}

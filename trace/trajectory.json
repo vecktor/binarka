@@ -219,7 +219,7 @@
     {
       "slice": "2026-10-11-add-violation-cause",
       "reviewEvidence": "unclean",
-      "trailerCommits": 10,
+      "trailerCommits": 9,
       "libDomains": [
         "ui"
       ],
@@ -228,7 +228,7 @@
     {
       "slice": "2026-10-11-update-page-backdrop",
       "reviewEvidence": "unclean",
-      "trailerCommits": 8,
+      "trailerCommits": 6,
       "libDomains": [
         "ui"
       ],

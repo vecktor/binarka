@@ -1,0 +1,36 @@
+# npm run gate:status, 2026-10-11 15:26 (UTC+5:30), after add-violation-cause archived, COR-2 and COR-3 waived by the user, and the header raised to G3 (autonomy-log row 170). Exit code below.
+
+> binarka@0.1.0 gate:status
+> node scripts/gate-status.mjs
+
+Gate status (three-valued deterministic checks — judgment criteria sit on top, verify those by hand):
+
+  G0  PASS           scaffold + loop installed
+  G1  needs sign-off requirements signed off
+  G2  PASS           baseline specs  [traceability]
+  G3  needs sign-off capability plan + acceptance methods exist  [acceptance-methods --mode=existence]
+  G4  FAIL           per-slice  [traceability · trajectory · acceptance-methods --mode=artifact · factory-integrity]
+  G5  NOT-EARNED     hardening (coverage)  [coverage-ratchet]
+  G6  FAIL           QA proof  [recordings · eval-ratchet · acceptance-methods --mode=artifact · visual-fidelity]
+  G7  FAIL           release  [traceability --release --strict-tests --strict-recordings · trajectory --release --check-fresh · recordings · acceptance-methods --mode=artifact · factory-integrity]
+  G8  PASS           UAT (trace regressions)  [traceability]
+
+Deterministic checks (ladder rung from RULES-CHANGELOG.md; unlisted = experimental):
+  traceability         PASS           [experimental]
+  trajectory           PASS           [experimental]  Scope: 26
+  recordings           NOT-EARNED     [experimental]  Scope: 0
+  coverage             NOT-EARNED     [experimental]  Scope: 0
+  evals                PASS           [experimental]  Scope: 6
+  acceptanceExistence  PASS           [experimental]  Scope: 132
+  acceptanceArtifact   FAIL           [experimental]  Scope: 132
+  visual               FAIL           [experimental]  Scope: 170
+  processRatchet       NOT-EARNED     [experimental]  Scope: 3
+  integrity            PASS           [experimental]  Scope: 26
+  traceabilityRelease  FAIL           [experimental]
+  trajectoryRelease    FAIL           [experimental]  Scope: 26
+
+(Reviews, sign-offs, and vision-verify are judgment gates — confirm them in docs/qa + the gate checklist.)
+
+Scope: 9 gate(s)
+Result: FAIL
+# exit 1
