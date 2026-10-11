@@ -1,0 +1,98 @@
+# PD-4 probe, earlier runs (raw output, verbatim). Runs 1 and 2 used earlier versions of PD-4-orphan-probe.mjs (run 1: cases A to E; run 2: A to F6); run 3 is the full probe before cases F7 to F10 were added. Each under /tmp/binarka-capture.lock, ports 4173-4177 free before and after (session log row C2).
+
+## Run 1, 2026-10-11 17:58:39 +0530
+A. while capturing, listener on 4174: 32807 32773 32703 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+A. adapter capture() then close()  [as is]                 GREEN (port free after close)
+B. visual-block spawn npx, proc.kill()  [as is]            GREEN (port free after close)
+  spawned (the pid the caller holds): 32958 (gone)
+C. npx detached, process.kill(-pid)  [fix 1]               GREEN (port free after close)
+  spawned (the pid the caller holds): 33090 (gone)
+D. while serving, listener on 4176: 33205 32715 32703 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4176 --strictPort
+D. node vite.js directly, proc.kill()  [fix 2]             GREEN (port free after close)
+  spawned (the pid the caller holds): 33205 (gone)
+E. caller crashes, fix 2 without process.on('exit') kill   RED   (still listening after close)
+  listener on 4176: 33313 1 32703 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4176 --strictPort
+E. caller crashes, fix 2 WITH process.on('exit') kill      GREEN (port free after close)
+
+after cleanup: 4174 free, 4176 free
+{"A":true,"B":true,"C":true,"D":true,"E1":false,"E2":true}
+
+## Run 2, 2026-10-11 17:59:51 +0530
+A. while capturing, listener on 4174: 33985 33951 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+A. adapter capture() then close()  [as is]                 GREEN (port free after close)
+B. visual-block spawn npx, proc.kill()  [as is]            GREEN (port free after close)
+  spawned (the pid the caller holds): 34077 (gone)
+C. npx detached, process.kill(-pid)  [fix 1]               GREEN (port free after close)
+  spawned (the pid the caller holds): 34252 (gone)
+D. while serving, listener on 4176: 34333 33893 33871 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4176 --strictPort
+D. node vite.js directly, proc.kill()  [fix 2]             GREEN (port free after close)
+  spawned (the pid the caller holds): 34333 (gone)
+E. caller crashes, fix 2 without process.on('exit') kill   RED   (still listening after close)
+  listener on 4176: 34503 1 33871 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4176 --strictPort
+E. caller crashes, fix 2 WITH process.on('exit') kill      GREEN (port free after close)
+F1. while up, listener on 4174: 34717 34683 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F1. caller gets SIGTERM, adapter as is                     RED   (still listening after close)
+  listener on 4174: 34717 34683 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F2. while up, listener on 4174: 34888 34854 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F2. caller gets SIGINT, adapter as is                      RED   (still listening after close)
+  listener on 4174: 34888 34854 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F3. while up, listener on 4174: 35083 35049 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F3. caller gets SIGHUP, adapter as is                      RED   (still listening after close)
+  listener on 4174: 35083 35049 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F4. while up, listener on 4174: 35264 35230 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F4. caller gets SIGKILL, adapter as is                     RED   (still listening after close)
+  listener on 4174: 35264 35230 33871 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F5. while up, listener on 4174: 35387 35386 33871 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4174 --strictPort
+F5. caller gets SIGTERM, fix 2 + exit hook + signal handlers GREEN (port free after close)
+F6. while up, listener on 4174: 35482 35481 33871 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4174 --strictPort
+F6. caller gets SIGKILL, fix 2 + exit hook + signal handlers RED   (still listening after close)
+  listener on 4174: 35482 1 33871 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4174 --strictPort
+
+after cleanup: 4174 free, 4176 free
+{"A":true,"B":true,"C":true,"D":true,"E1":false,"E2":true,"F1":false,"F2":false,"F3":false,"F4":false,"F5":true,"F6":false}
+
+## Run 3, 2026-10-11 18:02:44 +0530 (--e2e)
+# ports before: 4173= 4174= 4175= 4176= 4177= 
+# start 2026-10-11 18:02:44 +0530, node v22.21.1, npm 10.9.4, ebaf49b
+A. while capturing, listener on 4174: 36663 36629 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+A. adapter capture() then close()  [as is]                 GREEN (port free after close)
+B. visual-block spawn npx, proc.kill()  [as is]            GREEN (port free after close)
+  spawned (the pid the caller holds): 36776 (gone)
+C. npx detached, process.kill(-pid)  [fix 1]               GREEN (port free after close)
+  spawned (the pid the caller holds): 36883 (gone)
+D. while serving, listener on 4176: 36969 36572 36542 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4176 --strictPort
+D. node vite.js directly, proc.kill()  [fix 2]             GREEN (port free after close)
+  spawned (the pid the caller holds): 36969 (gone)
+E. caller crashes, fix 2 without process.on('exit') kill   RED   (still listening after close)
+  listener on 4176: 37072 1 36542 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4176 --strictPort
+E. caller crashes, fix 2 WITH process.on('exit') kill      GREEN (port free after close)
+F1. while up, listener on 4174: 37205 37171 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F1. caller gets SIGTERM, adapter as is                     RED   (still listening after close)
+  listener on 4174: 37205 37171 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F2. while up, listener on 4174: 37354 37319 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F2. caller gets SIGINT, adapter as is                      RED   (still listening after close)
+  listener on 4174: 37354 37319 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F3. while up, listener on 4174: 37501 37466 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F3. caller gets SIGHUP, adapter as is                      RED   (still listening after close)
+  listener on 4174: 37501 37466 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F4. while up, listener on 4174: 37654 37618 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F4. caller gets SIGKILL, adapter as is                     RED   (still listening after close)
+  listener on 4174: 37654 37618 36542 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4174 --strictPort
+F5. while up, listener on 4174: 37768 37767 36542 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4174 --strictPort
+F5. caller gets SIGTERM, fix 2 + exit hook + signal handlers GREEN (port free after close)
+F6. while up, listener on 4174: 37846 37845 36542 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4174 --strictPort
+F6. caller gets SIGKILL, fix 2 + exit hook + signal handlers RED   (still listening after close)
+  listener on 4174: 37846 1 36542 /Users/vecktor/.nvm/versions/node/v22.21.1/bin/node node_modules/vite/bin/vite.js preview --port 4174 --strictPort
+G1. while up, listener on 4173: 38308 38249 38018 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4173 --strictPort
+G1. playwright runner gets SIGTERM                         RED   (still listening after close)
+  listener on 4173: 38308 38249 38018 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4173 --strictPort
+G2. while up, listener on 4173: 38847 38788 38583 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4173 --strictPort
+G2. playwright runner gets SIGINT                          GREEN (port free after close)
+G3. while up, listener on 4173: 39385 39327 39085 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4173 --strictPort
+G3. playwright runner gets SIGKILL                         RED   (still listening after close)
+  listener on 4173: 39385 39327 39085 node /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/modest-darwin-c0ecca/node_modules/.bin/vite preview --port 4173 --strictPort
+
+after cleanup: 4173 free, 4174 free, 4176 free
+{"A":true,"B":true,"C":true,"D":true,"E1":false,"E2":true,"F1":false,"F2":false,"F3":false,"F4":false,"F5":true,"F6":false,"G1":false,"G2":true,"G3":false}
+# end 2026-10-11 18:04:07 +0530
+# ports after: 4173= 4174= 4175= 4176= 4177= 

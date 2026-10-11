@@ -32,9 +32,9 @@ Status: **PROPOSED, awaiting the user's approval.** Drafted 2026-10-11 from 18:0
 
 A failed capture overwrites a committed report with `score: null`. That happens with the right adapter too: a busy port made the first attempt at run 7 fail all 168 captures (autonomy-log row 159). PD-5's fix makes the callers measure the right thing. It does not stop a failed run from writing over good evidence. Possible fix: the checker writes to a run folder and copies into `docs/qa/visual-diff/` only when the run completed, or never overwrites a scored report with a capture failure. That is the checker's output policy, so either inside PD-5 or as a separate PD-6.
 
-## Green proof, after the yes
+## Green is earned when (after the yes; not run yet)
 
-The same probe with the fix: the adapter line reads `(adapters injected from scripts/check-visual-parity-adapters.mjs)`, and the rewritten reports carry the parity adapter's scores (a full run under the lock, compared with the last committed `check:visual` run). Then integrity PASS after the re-seal.
+The same probe with the fix: the adapter line must read `(adapters injected from scripts/check-visual-parity-adapters.mjs)`, and the rewritten reports must carry the parity adapter's scores (a full run under the lock, compared with the last committed `check:visual` run). `check-factory-integrity` must pass after the re-seal.
 
 ## Rollback
 

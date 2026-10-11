@@ -55,8 +55,8 @@ Under P2 or P3 one question stays open: **two full captures at the same time loa
 
 ## Red to green proof
 
-- **Red** (`PD-4-proof.txt`, 2026-10-11 18:07 to 18:09, lock held, ports free before and after): E1, F1 to F4, G1 and G3 leave a listener; the earlier diagnosis is disproved by A and B. Two earlier runs of the probe (17:58 and 17:59) gave the same verdicts for the cases they had.
-- **Green**, after the yes: the same probe with the adapter's own case F (real code) turned green for SIGTERM, SIGINT and SIGHUP and the uncaught error; SIGKILL stays red and is covered by the helper; integrity PASS after the re-seal.
+- **Red** (`PD-4-proof.txt`, 2026-10-11 18:07 to 18:09, lock held, ports free before and after): E1, F1 to F4, G1 and G3 leave a listener; the earlier diagnosis is disproved by A and B. Three earlier runs (17:58, 17:59 and 18:02, with earlier versions of the probe) gave the same verdicts for the cases they had (`PD-4-proof-runs-1-3.txt`).
+- **Green is earned when**, after the yes, the same probe run against the changed adapter (real code, case F) frees the port for SIGTERM, SIGINT, SIGHUP and the uncaught error; SIGKILL stays red and the helper stops that listener; `check-factory-integrity` passes after the re-seal. Not run yet.
 - **Sampling, declared:** one machine (macOS 26.5.2, Node 22.21.1, npm 10.9.4), one shot, one e2e file; signals to the caller's pid only. A terminal Ctrl-C (signal to the whole group) is not measured.
 
 ## How the two PDs meet
