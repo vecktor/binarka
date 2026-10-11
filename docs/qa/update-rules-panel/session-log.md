@@ -1,0 +1,12 @@
+# Session log: update-rules-panel (parallel session A)
+
+Times are UTC+5:30 (the user's zone). This log is copied into `docs/autonomy-log.md` only by the session that merges (task 10.3).
+
+| Date | Time | What happened | The user's words | Evidence |
+|---|---|---|---|---|
+| 2026-10-11 | 17:55 | Session A started in the worktree `/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/peaceful-nash-a513f8`. Branch renamed `claude/peaceful-nash-a513f8` → `claude/peaceful-nash-rules`. `git fetch origin`; `openspec/changes/archive/2026-10-11-update-panel-shell/` exists on `origin/main`; `git merge --ff-only origin/main` succeeded; `git log -1 --format=%h` = `ebaf49b` ("docs: main fast-forwarded to 2fc6978 and pushed; autonomy-log row 175"). `grep -c "The panels take the shared surface paint" openspec/specs/play-page/spec.md` = 4 | Start prompt: "You are SESSION A of the parallel G2 plan: the rules panel." | this row; `git log -1` |
+| 2026-10-11 | 17:56 | `npm ci` (node_modules was missing); design reference built: `design/v0` `pnpm install --frozen-lockfile` and `pnpm build`, exit 0; `design/v0/out/index.html` exists | — | `ls design/v0/out/index.html` |
+| 2026-10-11 | 17:56 | Task 1.1 trigger: the baseline changed after the folder was written (folder commit `7564ae3` 17:34; shell archive `defc5e5` 17:52). `git diff --stat 7564ae3 HEAD`: `openspec/specs/play-page/spec.md` +208/−23, `docs/requirements.md` 1 line, `e2e/nfr-14-panel-shell.spec.ts`, `tests/play-page-root-size.test.ts`; `src/` unchanged. A fresh auditor re-reads the folder | — | `docs/qa/update-rules-panel/folder-audit.md` (re-audit section) |
+| 2026-10-11 | 18:03 | The re-audit came back: 3 major, 4 minor and 2 notes. All scenarios still match the baseline. The «Rules panel» baseline block is byte-identical before and after the shell | — | `folder-audit.md` § Re-audit |
+| 2026-10-11 | 18:04 | Capture lock taken (`mkdir /tmp/binarka-capture.lock`, owner "session A"). The ports 4173/4174/4176/4177/4199 were free before and after. Ran a probe of the design build on 4199 (Playwright, scratch script outside the repo) for finding R6. Lock removed at 18:05 | — | `docs/qa/update-rules-panel/sticky-ring-probe.txt` |
+| 2026-10-11 | 18:07 | Findings R1-R5 and R7-R9 folded into the folder; R6 refuted by the probe. `openspec validate update-rules-panel --strict` is valid. Tasks 0.1, 1.1 and 1.2 ticked | — | `folder-audit.md`; `tasks.md` |
