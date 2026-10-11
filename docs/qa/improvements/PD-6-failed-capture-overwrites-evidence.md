@@ -27,7 +27,7 @@ The same stub run leaves both committed reports byte-identical, exits FAIL with 
 
 ## As executed
 
-- `scripts/check-visual-fidelity.mjs` (locked): `runVisualFidelity` records each breakpoint whose capture or diff failed (`unmeasured`); `main` writes the run into a fresh folder under the system temp directory and copies it over the repo unless an unmeasured breakpoint's current report holds a score (the refined rule). Otherwise it adds a `[visual]` failure naming those breakpoints, says `docs/qa/visual-diff/` was left as it was, and names the run's folder. A breakpoint that never had a score (the logo shots today) does not block the copy. A height pre-gate failure is a measurement (it compared two captures) and is copied.
+- `scripts/check-visual-fidelity.mjs` (locked): `runVisualFidelity` records each breakpoint whose capture or diff failed (`unmeasured`); `main` writes the run into a fresh folder under the system temp directory and copies it over the repo unless an unmeasured breakpoint's current report holds a score (the refined rule). Otherwise it adds a `[visual]` failure naming those breakpoints, says `docs/qa/visual-diff/` was left as it was, and names the run's folder. A breakpoint that never had a score (the logo shots today) does not block the copy. After a copy the run's folder is removed; a blocked run keeps it (found after the first commit: each run left its folder, 170 reports and the diffs, in the temp directory). A height pre-gate failure is a measurement (it compared two captures) and is copied.
 - The verdict is unchanged: a run with unmeasured shots was already FAIL; a blocked one now also says why.
 - Lock re-sealed.
 

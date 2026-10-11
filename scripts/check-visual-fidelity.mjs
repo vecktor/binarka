@@ -63,7 +63,7 @@
 // Wire as: "check:visual": "node scripts/check-visual-fidelity.mjs" in the
 // qa-verify battery + G6; register docs/qa/visual-diff/*/report.json in the
 // acceptance-token table so check-acceptance-methods can join NFR->artifact.
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -606,6 +606,7 @@ async function main() {
   const lossy = run.unmeasured.filter(scored);
   if (lossy.length === 0) {
     if (existsSync(join(staging, DEFAULTS.outDir))) cpSync(staging, root, { recursive: true, force: true });
+    rmSync(staging, { recursive: true, force: true }); // a blocked run keeps its folder; a copied one needs none
   } else {
     const msg =
       `${lossy.length} breakpoint(s) with a scored report not measured this run (capture or diff failed: ${lossy.slice(0, 5).join(", ")}` +

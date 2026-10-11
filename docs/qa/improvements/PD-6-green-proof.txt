@@ -41,3 +41,7 @@ Shown to the user, who chose «Block only if a score would be lost (Recommended)
 before the re-seal: Result: PASS, 2 warning(s) (the checker drifted; accepted as "covered by an approved improvement commit" because earlier Refs: PD-5 commits touched it: the PD-1 caveat, unchanged)
 re-seal --init-lock --adaptation "PD-6: ...": Result: PASS, 1 warning(s)
 after: Result: PASS, 1 warning(s) (core.hooksPath, pre-existing)
+
+## 6. the run folder after the fix (2026-10-11 21:55, stub adapter, no port): removed after a copy, kept when blocked
+copied run (logo shots): run folders left in the temp directory: 0
+blocked run (scored shots): run folders left: 1 (kept on purpose), docs/qa/visual-diff modified: 0
