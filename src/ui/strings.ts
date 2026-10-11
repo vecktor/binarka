@@ -23,12 +23,13 @@ export const CONFIRM = {
   no: 'Скасувати',
 } as const;
 
-const CELL = { row: 'Рядок', col: 'стовпець', empty: 'порожньо', given: 'задано', hint: 'підказка' } as const;
+const CELL = { row: 'Рядок', col: 'стовпець', empty: 'порожньо', given: 'задано', hint: 'підказка', cause: 'спричиняє порушення' } as const;
 
-/** Accessible name of a cell: «Рядок R, стовпець C, V» plus «, задано» or «, підказка» (row and col are 1-based). */
-export function cellLabel(row: number, col: number, value: 0 | 1 | null, given: boolean, hinted: boolean): string {
+/** Accessible name of a cell: «Рядок R, стовпець C, V» plus «, задано», or «, підказка» and then «, спричиняє порушення» on the cause cell
+ * (FR-120); a given wins over the other flags (row and col are 1-based). */
+export function cellLabel(row: number, col: number, value: 0 | 1 | null, given: boolean, hinted: boolean, cause: boolean): string {
   const v = value === null ? CELL.empty : String(value);
-  const suffix = given ? `, ${CELL.given}` : hinted ? `, ${CELL.hint}` : '';
+  const suffix = given ? `, ${CELL.given}` : (hinted ? `, ${CELL.hint}` : '') + (cause ? `, ${CELL.cause}` : '');
   return `${CELL.row} ${row}, ${CELL.col} ${col}, ${v}${suffix}`;
 }
 
@@ -107,7 +108,7 @@ export interface PageTexts {
   sizeLabel: (n: number) => string;
   SIZE_GROUP: string;
   CONFIRM: { text: string; yes: string; no: string };
-  cellLabel: (row: number, col: number, value: 0 | 1 | null, given: boolean, hinted: boolean) => string;
+  cellLabel: (row: number, col: number, value: 0 | 1 | null, given: boolean, hinted: boolean, cause: boolean) => string;
   RULES: { heading: string; items: readonly string[] };
   IDLE: string;
   WIN: string;
@@ -148,7 +149,7 @@ const EN_LEVELS = [
   { name: 'Brain-twister', description: 'Also try a move ahead: if a rule breaks, the other digit goes here.' },
 ] as const;
 
-const EN_CELL = { row: 'Row', col: 'column', empty: 'empty', given: 'given', hint: 'hinted' } as const;
+const EN_CELL = { row: 'Row', col: 'column', empty: 'empty', given: 'given', hint: 'hinted', cause: 'causes a violation' } as const;
 
 // The English table: the same shape as the Ukrainian exports (the parity test compares the leaves). No apostrophe in any text.
 export const EN: PageTexts = {
@@ -157,9 +158,9 @@ export const EN: PageTexts = {
   sizeLabel: (n) => `Grid ${n}×${n}`,
   SIZE_GROUP: 'Grid size',
   CONFIRM: { text: 'Start over? Your moves on this board will be lost.', yes: 'Yes, start over', no: 'Cancel' },
-  cellLabel: (row, col, value, given, hinted) => {
+  cellLabel: (row, col, value, given, hinted, cause) => {
     const v = value === null ? EN_CELL.empty : String(value);
-    const suffix = given ? `, ${EN_CELL.given}` : hinted ? `, ${EN_CELL.hint}` : '';
+    const suffix = given ? `, ${EN_CELL.given}` : (hinted ? `, ${EN_CELL.hint}` : '') + (cause ? `, ${EN_CELL.cause}` : '');
     return `${EN_CELL.row} ${row}, ${EN_CELL.col} ${col}, ${v}${suffix}`;
   },
   RULES: {

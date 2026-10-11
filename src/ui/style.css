@@ -339,6 +339,39 @@ body {
   font-weight: 800;
 }
 
+/* The cause cue (FR-64, FR-120, A-58; design/v0/app/binarka.css .cell-cause): a triangle in the top-right inner corner, in the violation
+   border colour. Its legs are a quarter of the cell's inner width, never less than 0.5rem. Drawn with borders (they survive forced colours), as
+   longhands: jsdom drops or garbles a border shorthand whose width is a max() or a calc() (add-violation-cause design.md decision 5). */
+.cell-cause {
+  position: relative;
+}
+
+.cell-cause::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top-width: max(0.5rem, calc(((100cqi - (var(--n) - 1) * var(--board-gap)) / var(--n) - 4px) / 4));
+  border-top-style: solid;
+  border-top-color: var(--color-violation-border);
+  border-left-width: max(0.5rem, calc(((100cqi - (var(--n) - 1) * var(--board-gap)) / var(--n) - 4px) / 4));
+  border-left-style: solid;
+  border-left-color: transparent;
+  pointer-events: none;
+}
+
+/* Forced colours: the mark stays a triangle in ButtonText, the one system colour of the stylesheet (FR-65's exception, the user's adoption,
+   2026-10-11). */
+@media (forced-colors: active) {
+  .cell-cause::after {
+    forced-color-adjust: none;
+    border-top-color: ButtonText;
+    border-left-color: transparent;
+  }
+}
+
 .cell:focus-visible {
   outline-style: solid;
   outline-width: 3px;

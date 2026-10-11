@@ -1,0 +1,211 @@
+GREEN RUN for add-violation-cause, section 5 of tasks.md (tasks 5.1 to 5.4: the port)
+Worktree: /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/trusting-liskov-878a97, branch claude/trusting-liskov-878a97, HEAD 954775f (the port is uncommitted).
+Written by the capability-implementer on 2026-10-11 (machine clock, UTC+5:30). Only src/ui/play-page.ts, src/ui/strings.ts and src/ui/style.css
+were edited; no test, e2e spec, helper, design file, freeze, openspec file, playwright.config.ts, package.json or script was touched.
+tasks.md is not ticked and nothing is committed (the parent does both). The output of lint, vitest, build and Playwright is copied from the runs
+(captured with redirects); lines that start with "->" are summaries of terminal output (the lsof and git status reads), and section 6 has those
+reads re-run verbatim after everything else;
+lines "Could not parse CSS stylesheet" are jsdom stderr noise (tests/helpers/css.ts header) and are removed from the excerpts.
+
+git status --short before the port (trace/ledger.jsonl and .claude/launch.json were already in this state at the session start):
+ M trace/ledger.jsonl
+?? .claude/launch.json
+
+==============================================================================================================
+1. Lint
+==============================================================================================================
+$ npm run lint
+Sun Oct 11 14:26:53 +0530 2026
+
+> binarka@0.1.0 lint
+> eslint .
+
+exit 0
+
+==============================================================================================================
+2. Unit tests (the whole suite)
+==============================================================================================================
+$ npm run test:run
+Sun Oct 11 14:27:12 +0530 2026
+ Test Files  74 passed (74)
+      Tests  1837 passed (1837)
+   Start at  14:27:12
+   Duration  59.36s (tests 78%, environment 16%, import 5%, transform 1%)
+exit 0
+(red run, docs/qa/add-violation-cause/red-run.txt section F: Test Files 5 failed | 69 passed (74), Tests 56 failed | 1781 passed (1837).)
+
+The previously-red files and the changed ones, run on their own with the verbose reporter:
+$ npx vitest run tests/play-page-violation-cause.test.ts tests/play-page-cause-stylesheet.test.ts tests/play-page-cells.test.ts \
+    tests/play-page-english-text.test.ts tests/play-page-semantics.test.ts tests/play-page-capture-board.test.ts tests/play-page-helpers.test.ts --reporter=verbose
+Sun Oct 11 14:28:26 +0530 2026
+ Test Files  7 passed (7)
+      Tests  317 passed (317)
+exit 0
+Per file (counted from the ✓ / × lines of that output):
+  tests/play-page-capture-board.test.ts: 55 passed, 0 failed
+  tests/play-page-cause-stylesheet.test.ts: 11 passed, 0 failed
+  tests/play-page-cells.test.ts: 28 passed, 0 failed
+  tests/play-page-english-text.test.ts: 26 passed, 0 failed
+  tests/play-page-helpers.test.ts: 134 passed, 0 failed
+  tests/play-page-semantics.test.ts: 24 passed, 0 failed
+  tests/play-page-violation-cause.test.ts: 39 passed, 0 failed
+Cross-check by name: every test listed as failing in red-run.txt section F (" - tests/... > ..." lines) looked up among the ✓ lines:
+previously-red tests listed in red-run.txt section F: 56; found with ✓ in this run: 56; × lines in this run: 0
+The lines of the verbose run for tests/play-page-violation-cause.test.ts and tests/play-page-cause-stylesheet.test.ts:
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P1, three equal digits side by side: the pressed cell is marked 57ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P2, too many of one digit: the cell that holds the excess digit is marked 83ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P3, a correct digit put into an already broken line is not marked 57ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause mark is a corner triangle drawn with borders 66ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P4, adding to the excess marks the added cell 47ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Identical lines: the pressed cell of the second line is marked 34ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 4x4: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell 181ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 6x6: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell 55ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell's own border at 8x8: the four kinds 1px, 1px, 2px, 2px; the cause cell 2px solid, coloured as a violating cell 59ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > The cause cell keeps the cell’s own border: a hinted cause (HINT_BREAKS at 6x6) keeps 2px dashed 24ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-64 A violation shows a cue besides colour: the cause mark > Forced colours keep the mark 14ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > The cause cue has 3:1 against the violation fill and the stripe 19ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > The accepted adjacencies of the cause mark are not contrast pairs: the ratios and the pair list 8ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > The accepted adjacencies of the cause mark are not contrast pairs: the focus ring is outside the cell and the mark declares no ring 23ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > A system colour keyword appears in exactly one declaration 14ms
+ ✓ tests/play-page-cause-stylesheet.test.ts > @trace FR-65 Borders, cues and focus rings have enough contrast: the cause cue > Rules use the tokens and no colour literal is left: the top-level .cell-cause::after takes its border-top-color from the token 8ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P5, a violation that is on the board at mount carries no marker 80ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P6, a hint fill that breaks a rule marks the hinted cell 14ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P6, the next hint refuses and the marker stays 5ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, the marker shows the last press only 34ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, a later press that breaks a rule moves the marker 18ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P7, pressing the marked cell again removes the marker 12ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > P8, a solved board carries no marker 119ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A given in the same violation is never marked 5ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > clicks a non-given cell other than (3,3… 21ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > clicks (3,3) itself (the 0 becomes 1, w… 7ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Нова головоломка» and then «Та… 7ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the size to 4 by a choice (mark… 8ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the size to 8 by a choice (mark… 7ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > changes the level to «Задачка» by a cho… 9ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Почати» with the marked choice… 6ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Later board changes remove the marker > presses «Скинути» and then «Так, почати» 12ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A hint cannot follow a marker 5ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > clicks a given cell, (3,1) (once, and a… 8ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Підказка» (the hint refuses, F… 6ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > clicks [data-action="rules"] and then t… 8ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet through the stubb… 6ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet, presses «Поле 8×… 8ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the setup sheet, presses the alre… 7ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the settings panel through the st… 7ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > opens the settings panel and presses th… 9ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Нова головоломка» and then «Ск… 7ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Actions that change no cell keep the marker > presses «Скинути» and then «Скасувати» 8ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A confirmation removes the marker when it is performed, not when it is requested 13ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > A failed generation keeps the marker 8ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker follows a language switch 41ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > Two mounts are independent 11ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 4: three passes over every cell, the marker equals {X} exactly when the checker counts X 35ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 6: three passes over every cell, the marker equals {X} exactly when the checker counts X 89ms
+ ✓ tests/play-page-violation-cause.test.ts > @trace FR-120 Cause marker > The marker is the checker’s answer after every press (oracle) > N = 8: three passes over every cell, the marker equals {X} exactly when the checker counts X 221ms
+
+==============================================================================================================
+3. Build
+==============================================================================================================
+$ npm run build
+Sun Oct 11 14:28:36 +0530 2026
+
+> binarka@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 23 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-D67flyOn.css  19.80 kB │ gzip:  4.27 kB
+dist/assets/index-DXfepOFh.js   35.13 kB │ gzip: 12.74 kB
+
+✓ built in 32ms
+exit 0
+The cause rules in the built stylesheet (Lightning CSS writes transparent as #0000 and the keyword in lower case):
+$ grep -o "\.cell-cause[^}]*}" dist/assets/index-*.css
+.cell-cause{position:relative}
+.cell-cause:after{content:"";border-top-width:max(.5rem, calc(((100cqi - (var(--n) - 1) * var(--board-gap)) / var(--n) - 4px) / 4));border-top-style:solid;border-top-color:var(--color-violation-border);border-left-width:max(.5rem, calc(((100cqi - (var(--n) - 1) * var(--board-gap)) / var(--n) - 4px) / 4));pointer-events:none;border-left-style:solid;border-left-color:#0000;width:0;height:0;position:absolute;top:0;right:0}
+.cell-cause:after{forced-color-adjust:none;border-top-color:buttontext;border-left-color:#0000}
+$ grep -o "@media (forced-colors:active){[^}]*}}" dist/assets/index-*.css
+@media (forced-colors:active){.cell-cause:after{forced-color-adjust:none;border-top-color:buttontext;border-left-color:#0000}}
+
+==============================================================================================================
+4. Playwright, layout project
+==============================================================================================================
+$ lsof -nP -iTCP:4173 -sTCP:LISTEN ; ... 4174 ; ... 4176 ; ... 4177      -> all four empty before the run (no orphaned vite preview)
+$ npx playwright test --project=layout
+Sun Oct 11 14:28:47 +0530 2026
+
+Running 128 tests using 5 workers
+  ✓   49 [layout] › e2e/nfr-14-cause-mark.spec.ts:100:1 › @trace NFR-14 @trace FR-120 the sampling is declared (scheme, size, width; coverage sampled; 2 cases) and each capture value is valid and clean before the press (12ms)
+  ✓   50 [layout] › e2e/nfr-14-cause-mark.spec.ts:212:7 › light scheme › @trace FR-64 @trace FR-120 @trace NFR-14 light 6x6 at 1024x768: the closed pixel is not the border colour, the cause cell's corner pixel is --color-violation-border after the press, the neighbour's is not (259ms)
+  ✓   51 [layout] › e2e/nfr-14-cause-mark.spec.ts:212:7 › dark scheme › @trace FR-64 @trace FR-120 @trace NFR-14 dark 8x8 at 320x640: the closed pixel is not the border colour, the cause cell's corner pixel is --color-violation-border after the press, the neighbour's is not (256ms)
+  ...
+
+  128 passed (13.0s)
+exit 0
+Per spec (counted from the ✓ / ✘ lines of that output):
+  e2e/nfr-10-fit.spec.ts: 3 passed, 0 failed
+  e2e/nfr-10-header-fit.spec.ts: 18 passed, 0 failed
+  e2e/nfr-12-targets.spec.ts: 16 passed, 0 failed
+  e2e/nfr-14-backdrop.spec.ts: 11 passed, 0 failed
+  e2e/nfr-14-cause-mark.spec.ts: 3 passed, 0 failed
+  e2e/nfr-14-layout-geometry.spec.ts: 38 passed, 0 failed
+  e2e/nfr-14-palette.spec.ts: 27 passed, 0 failed
+  e2e/nfr-18-flash.spec.ts: 12 passed, 0 failed
+  total: 128 passed, 0 failed
+(nfr-10-fit and nfr-10-header-fit are NFR-10, nfr-12-targets is NFR-12, nfr-18-flash is NFR-18.)
+The annotations of nfr-14-cause-mark (read from docs/qa/e2e-report.json before it was restored):
+@trace NFR-14 @trace FR-120 the sampling is declared (scheme | passed
+@trace FR-64 @trace FR-120 @trace NFR-14 light 6x6 at 1024x7 | passed
+    pixels : light 6x6 at 1024x768: target (3,4) pixel (574, 311): closed rgb(255, 253, 248), open rgb(179, 38, 30), want rgb(179, 38, 30); neighbour (3,3) pixel (506, 311) rgb(251, 228, 225); ::after border-top-width 15px (content ""), want 15.00px (cell width 64.00px)
+    pixels : light 6x6 at 1024x768: target (3,4) pixel (574, 311): closed rgb(255, 253, 248), open rgb(179, 38, 30), want rgb(179, 38, 30); neighbour (3,3) pixel (506, 311) rgb(251, 228, 225); ::after border-top-width 15px (content ""), want 15.00px (cell width 64.00px)
+@trace FR-64 @trace FR-120 @trace NFR-14 dark 8x8 at 320x640 | passed
+    pixels : dark 8x8 at 320x640: target (4,6) pixel (229, 248): closed rgb(36, 32, 27), open rgb(255, 138, 125), want rgb(255, 138, 125); neighbour (4,5) pixel (192, 248) rgb(94, 51, 47); ::after border-top-width 8px (content ""), want 8.00px (cell width 35.25px)
+    pixels : dark 8x8 at 320x640: target (4,6) pixel (229, 248): closed rgb(36, 32, 27), open rgb(255, 138, 125), want rgb(255, 138, 125); neighbour (4,5) pixel (192, 248) rgb(94, 51, 47); ::after border-top-width 8px (content ""), want 8.00px (cell width 35.25px)
+Reading: the closed pixels are the cell fill (light rgb(255, 253, 248), dark rgb(36, 32, 27)); after the press the cause cell's corner pixel is
+--color-violation-border exactly (light rgb(179, 38, 30), dark rgb(255, 138, 125)); the violating neighbour reads the fill / stripe, not the mark;
+getComputedStyle(cell, '::after').borderTopWidth is 15px at 6x6 / 1024 and 8px (the 0.5rem floor) at 8x8 / 320. Coverage is sampled (2 cases).
+$ git checkout docs/qa/e2e-report.json
+Updated 1 path from the index
+$ git status --short docs/qa trace/      -> " M trace/ledger.jsonl" only (as before the port; traceability-report.md, trace.json and
+                                             acceptance-contracts.json were not rewritten)
+$ lsof -nP -iTCP:4173 -sTCP:LISTEN ; ... 4174 ; ... 4176 ; ... 4177      -> all four empty after the run
+
+==============================================================================================================
+5. The diff (task 5.4)
+==============================================================================================================
+$ git diff --stat -- src/
+ src/ui/play-page.ts | 25 ++++++++++++++++++++++++-
+ src/ui/strings.ts   | 17 +++++++++--------
+ src/ui/style.css    | 33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 66 insertions(+), 9 deletions(-)
+$ git diff --stat -- design/ tests/ e2e/ quality/ openspec/ playwright.config.ts package.json scripts/
+(empty output)
+$ git diff --stat
+ src/ui/play-page.ts | 25 ++++++++++++++++++++++++-
+ src/ui/strings.ts   | 17 +++++++++--------
+ src/ui/style.css    | 33 +++++++++++++++++++++++++++++++++
+ trace/ledger.jsonl  |  8 ++++++++
+ 4 files changed, 74 insertions(+), 9 deletions(-)
+(trace/ledger.jsonl: modified before the port, as the opening git status shows; 8 added lines then and now; not part of the port.)
+
+==============================================================================================================
+6. The port and status reads re-run verbatim (after all of the above)
+==============================================================================================================
+Sun Oct 11 14:31:36 +0530 2026
+$ lsof -nP -iTCP:4173 -sTCP:LISTEN
+exit 1
+$ lsof -nP -iTCP:4174 -sTCP:LISTEN
+exit 1
+$ lsof -nP -iTCP:4176 -sTCP:LISTEN
+exit 1
+$ lsof -nP -iTCP:4177 -sTCP:LISTEN
+exit 1
+$ git status --short docs/qa trace/
+ M trace/ledger.jsonl
+?? docs/qa/add-violation-cause/green-run.txt
+exit 0
+(lsof exits 1 when nothing listens on the port: no listener on any of the four.)

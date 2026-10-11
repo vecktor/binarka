@@ -186,6 +186,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   let board: Grid = [];
   let cellEls: HTMLElement[][] = [];
   let hinted: [number, number] | null = null;
+  let cause: [number, number] | null = null; // the cell whose last change broke a rule (FR-120); at most one
   let boardEl: HTMLElement | null = null; // the board group shown (its name follows the language)
   let shownHint: Hint | null = null; // the hint result on screen: a language switch rebuilds its sentence (FR-110)
 
@@ -232,6 +233,21 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (next !== null) renderCell(next[0], next[1]);
   }
 
+  /** Move the cause marker (FR-120) the way setHinted moves the hint marker: the cause suffix of the label follows it. */
+  function setCause(next: [number, number] | null): void {
+    const old = cause;
+    if (old !== null) cellEls[old[0]]?.[old[1]]?.classList.remove('cell-cause');
+    cause = next;
+    if (next !== null) cellEls[next[0]]?.[next[1]]?.classList.add('cell-cause');
+    if (old !== null) renderCell(old[0], old[1]);
+    if (next !== null) renderCell(next[0], next[1]);
+  }
+
+  /** True when the checker's cells of a violation include (r, c): the run, the excess digit's cells or the two lines, not the highlighted line. */
+  function breaksRule(r: number, c: number): boolean {
+    return findViolations(board).some((v) => v.cells.some(([vr, vc]) => vr === r && vc === c));
+  }
+
   function renderCell(r: number, c: number): void {
     const node = cellEls[r]?.[c];
     if (node === undefined) return;
@@ -243,7 +259,8 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     if (given) node.setAttribute('aria-disabled', 'true');
     else node.removeAttribute('aria-disabled');
     const isHinted = hinted !== null && hinted[0] === r && hinted[1] === c;
-    node.setAttribute('aria-label', texts.cellLabel(r + 1, c + 1, value, given, isHinted));
+    const isCause = cause !== null && cause[0] === r && cause[1] === c;
+    node.setAttribute('aria-label', texts.cellLabel(r + 1, c + 1, value, given, isHinted, isCause));
   }
 
   function refreshHighlights(): void {
@@ -293,9 +310,11 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     const current = board[r]?.[c] ?? null;
     const next: Cell = current === null ? 0 : current === 0 ? 1 : null;
     (board[r] as Cell[])[c] = next;
+    setCause(null);
     renderCell(r, c);
     setHinted(null);
     refreshHighlights();
+    if (breaksRule(r, c)) setCause([r, c]); // after the highlights, so the cause cell is already a violating one
     updateWin();
   }
 
@@ -305,6 +324,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
       throw new Error(`puzzle is not ${n}x${n}`);
     }
     hinted = null; // the old cell elements are replaced below
+    cause = null;
     givens = copyGrid(puzzle.givens);
     board = copyGrid(puzzle.givens);
     entries?.forEach((row, r) => {
@@ -353,8 +373,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     hintMessage.textContent = h.sentence;
     if (h.kind !== 'fill') return;
     (board[h.row] as Cell[])[h.col] = h.value;
+    setCause(null); // the click's order; a hint refuses a broken board (FR-26), so there is no marker to clear in practice
     setHinted([h.row, h.col]); // renders the cell with its new value and label
     refreshHighlights();
+    if (breaksRule(h.row, h.col)) setCause([h.row, h.col]);
     updateWin();
   });
 
@@ -381,6 +403,7 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
     board = copyGrid(givens);
     for (let r = 0; r < board.length; r++) for (let c = 0; c < board.length; c++) renderCell(r, c);
     setHinted(null);
+    setCause(null);
     refreshHighlights();
     shownHint = null;
     hintMessage.textContent = '';
