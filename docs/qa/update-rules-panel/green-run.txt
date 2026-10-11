@@ -1,0 +1,121 @@
+# Green run: update-rules-panel (tasks 4.1 to 4.6)
+
+A capability-implementer subagent (not the test author) made the port on 2026-10-11 at about 19:00 (UTC+5:30), editing `src/ui/style.css` and `src/ui/play-page.ts` only. The parent re-ran everything below.
+
+## 4.1 to 4.3: unit tests (parent's run, 19:13)
+
+```
+$ npm run test:run
+ Test Files  78 passed (78)
+      Tests  1906 passed (1906)
+```
+`tests/play-page-rules-scroll-reset.test.ts` 7/7 and `tests/play-page-rules-panel-stylesheet.test.ts` 40/40 now pass. So do `tests/play-page-layout.test.ts`, the shell's `tests/play-page-panel-shell-stylesheet.test.ts` and `tests/play-page-root-size.test.ts`, and the backdrop, theme, palette and action-buttons stylesheet tests, all with no edit.
+
+## 4.4: the port stays in its share
+
+```
+$ git diff --stat -- src/
+ src/ui/play-page.ts |   7 ++++
+ src/ui/style.css    | 117 ++++++++++++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 106 insertions(+), 18 deletions(-)
+
+$ git diff -U0 src/ui/style.css | grep "^@@"
+@@ -646 +646 @@ button:focus-visible {
+@@ -651,0 +652 @@ button:focus-visible {
+@@ -654 +655 @@ button:focus-visible {
+@@ -660 +661 @@ button:focus-visible {
+@@ -679 +680 @@ button:focus-visible {
+@@ -682,2 +683,3 @@ button:focus-visible {
+@@ -687 +689,2 @@ button:focus-visible {
+@@ -693,2 +696,3 @@ button:focus-visible {
+@@ -698 +702 @@ button:focus-visible {
+@@ -706,2 +710,2 @@ button:focus-visible {
+@@ -710,2 +714,13 @@ button:focus-visible {
+@@ -717 +732 @@ button:focus-visible {
+@@ -729 +744 @@ button:focus-visible {
+@@ -730,0 +746,4 @@ button:focus-visible {
+@@ -736 +755,3 @@ button:focus-visible {
+@@ -742 +763 @@ button:focus-visible {
+@@ -747,0 +769,3 @@ button:focus-visible {
+@@ -749,0 +774,7 @@ button:focus-visible {
+@@ -752,0 +784,31 @@ button:focus-visible {
+@@ -1088,0 +1151,19 @@ button:focus-visible {
+
+$ git status --short (all changes of the slice)
+ M docs/qa/a11y-report.json
+ M docs/qa/update-rules-panel/session-log.md
+ M openspec/changes/update-rules-panel/tasks.md
+ M quality/design-geometry.json
+ M scripts/freeze-design-geometry.mjs
+ M scripts/visual-block.mjs
+ M src/ui/play-page.ts
+ M src/ui/style.css
+ M tests/helpers/play-page.ts
+ M tests/play-page-helpers.test.ts
+?? docs/qa/g2/check-visual-run-11.txt
+?? docs/qa/update-rules-panel/battery.txt
+?? docs/qa/update-rules-panel/blocks/
+?? docs/qa/update-rules-panel/green-run.txt
+?? docs/qa/update-rules-panel/red-run.txt
+?? docs/qa/update-rules-panel/refreeze.txt
+?? docs/qa/update-rules-panel/run-vs-previous.txt
+?? docs/qa/update-rules-panel/visual-block-rules.raw
+?? e2e/nfr-14-rules-panel.spec.ts
+?? tests/play-page-rules-panel-stylesheet.test.ts
+?? tests/play-page-rules-scroll-reset.test.ts
+
+$ git diff --stat -- design/v0 playwright.config.ts factory-lock.json scripts/check-visual-parity-adapters.mjs openspec/specs docs/requirements.md   (empty = untouched)
+```
+
+Each `style.css` hunk lies inside the panel's rules, and the parent read the whole diff:
+- the comment and the top-level `.rules`;
+- the one 48rem `.rules` rule;
+- `.rules h2`, `.rules ul`, `.rules li`;
+- the new `.rules [data-section='techniques']` and `.rules h3`;
+- `.rule-example`, `.mini`, `.mini-answer`, `.mini-sep`, `.rules-close`;
+- the new 22.5rem and 48rem blocks placed after `.rules-close` (re-audit R2 and R3);
+- the four `.rules*` rules appended to the existing 64rem block, after its backdrop rule.
+
+No `.rules-button`, `:root`, `#app`, `.setup-*`, `.settings*`, `.confirm*` or backdrop rule changed. In `play-page.ts` the only change is the two listeners after the panel's `append` (l. 151-157). The other changed files are the tests, the two scripts, `quality/design-geometry.json`, the change folder and this folder (README follows in task 5.5).
+
+## 4.5: e2e, project `layout`, under the capture lock
+
+Session A held the lock (owner file "session A (update-rules-panel, peaceful-nash-rules) 2026-10-11 19:06:56 +0530", checked after the run). `lsof -nP -iTCP:<port> -sTCP:LISTEN` on 4173, 4174, 4176 and 4177 printed nothing before and after. `npm run build` ran at 19:06.
+
+```
+$ npx playwright test --project=layout --reporter=list     # 19:07:03 → 19:07:19, exit 0
+  190 passed (15.9s)
+tests per file:
+   3 e2e/nfr-10-fit.spec.ts
+  18 e2e/nfr-10-header-fit.spec.ts
+  16 e2e/nfr-12-targets.spec.ts
+  11 e2e/nfr-14-backdrop.spec.ts
+   3 e2e/nfr-14-cause-mark.spec.ts
+  38 e2e/nfr-14-layout-geometry.spec.ts
+  27 e2e/nfr-14-palette.spec.ts
+  24 e2e/nfr-14-panel-shell.spec.ts
+  38 e2e/nfr-14-rules-panel.spec.ts
+  12 e2e/nfr-18-flash.spec.ts
+```
+`nfr-14-rules-panel` passes 38 of 38. That covers:
+- the first and second openings at the 4 viewports, by mouse and keyboard, closed by «Зрозуміло» and by Escape;
+- the premises (the panel scrolls at 320×700 and 375×812, and fits at 768×1024 and 1366×650);
+- the ring check at 320 and 375;
+- the race check;
+- the fixture shape;
+- the 8 geometry cases within 0.5 px.
+
+`nfr-14-layout-geometry`, `nfr-14-palette`, `nfr-14-backdrop`, `nfr-14-panel-shell`, `nfr-14-cause-mark`, `nfr-10-*`, `nfr-12-targets` and `nfr-18-flash` stay green with no edit.
+
+## 4.6: the per-block tool, block `rules` (dry run, same lock)
+
+`grep -c visual-block factory-lock.json` prints `0`.
+
+```
+$ node scripts/visual-block.mjs --block rules --shots 1366-light-rules --out <scratchpad>/blocks-dry     # 19:07:33 → 19:07:36, exit 0
+1366-light-rules               pixel 0.9885 geometry off 0/2, unpaired 0, max delta 0px
+
+Block rules: 1 shot(s), geometry within 0.5px (coverage: sampled)
+```
+
+The full run of task 7.1 is in `visual-block-rules.txt` and `blocks/rules/`.

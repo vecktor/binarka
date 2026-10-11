@@ -1,0 +1,28 @@
+# node scripts/visual-block.mjs --block rules --states rules,rules-techniques --out docs/qa/update-rules-panel/blocks/rules
+# 2026-10-11 19:07:46 → 19:08:12 (UTC+5:30), session A, under the capture lock (owner file checked; lsof 4173/4174/4176/4177 empty before and after). Build: npm run build at 19:06 (the port, uncommitted).
+# The pixel score is the crop of the panel and «Зрозуміло» (pixelmatch threshold 0.1); geometry n/a for rules-techniques (state reached by the locked driver; the design route is scrolled). Residual: the focus ring on «Зрозуміло» on the page side only (see run-vs-previous.txt).
+# Kept in git: summary.json and the per-shot report.json. The PNGs (diff, onion, product, reference; 11 MB) stay untracked in this worktree, as in the layout block (docs/qa/update-page-layout-geometry/block-layout-summary.json only).
+
+1024-dark-rules                pixel 0.9885 geometry off 0/2, unpaired 0, max delta 0px
+1024-light-rules               pixel 0.9885 geometry off 0/2, unpaired 0, max delta 0px
+1366-dark-rules-techniques     pixel 0.9885 geometry n/a (state reached by a driver)
+1366-dark-rules                pixel 0.9885 geometry off 0/2, unpaired 0, max delta 0px
+1366-light-rules-techniques    pixel 0.9885 geometry n/a (state reached by a driver)
+1366-light-rules               pixel 0.9885 geometry off 0/2, unpaired 0, max delta 0px
+1440-dark-rules-techniques     pixel 0.9885 geometry n/a (state reached by a driver)
+1440-dark-rules                pixel 0.9885 geometry off 0/2, unpaired 0, max delta 0px
+1440-light-rules-techniques    pixel 0.9885 geometry n/a (state reached by a driver)
+1440-light-rules               pixel 0.9885 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-rules-techniques      pixel 0.9842 geometry n/a (state reached by a driver)
+320-dark-rules                 pixel 0.9842 geometry off 0/2, unpaired 0, max delta 0px
+320-light-rules-techniques     pixel 0.9842 geometry n/a (state reached by a driver)
+320-light-rules                pixel 0.9842 geometry off 0/2, unpaired 0, max delta 0px
+375-dark-rules-techniques      pixel 0.9864 geometry n/a (state reached by a driver)
+375-dark-rules                 pixel 0.9864 geometry off 0/2, unpaired 0, max delta 0px
+375-light-rules-techniques     pixel 0.9864 geometry n/a (state reached by a driver)
+375-light-rules                pixel 0.9864 geometry off 0/2, unpaired 0, max delta 0px
+768-dark-rules                 pixel 0.9918 geometry off 0/2, unpaired 0, max delta 0px
+768-light-rules                pixel 0.9918 geometry off 0/2, unpaired 0, max delta 0px
+
+Block rules: 20 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0

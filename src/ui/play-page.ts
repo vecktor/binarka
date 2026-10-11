@@ -148,6 +148,13 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   const rulesHeading = el('h2', { id: panelTitleId });
   techniques.append(techniquesHeading, techniquesList);
   rulesPanel.append(rulesHeading, rulesList, techniques, closeButton);
+  // FR-57/A-59: the sticky button keeps the first opening at the top; Chromium restores a popover's scroll offset, so close resets it and open is the net.
+  rulesPanel.addEventListener('beforetoggle', (event) => {
+    if ((event as Event & { newState?: string }).newState === 'closed') rulesPanel.scrollTop = 0;
+  });
+  rulesPanel.addEventListener('toggle', (event) => {
+    if ((event as Event & { newState?: string }).newState === 'open') rulesPanel.scrollTop = 0;
+  });
 
   const themeControl = el('div', { 'data-control': 'theme', role: 'radiogroup', class: 'theme-control' });
   const themeButtons = new Map<ThemeChoice, HTMLButtonElement>();

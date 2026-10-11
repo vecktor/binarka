@@ -57,6 +57,22 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 5. **States the drivers approximate.** `rules-techniques` scrolls the panel to its end, as the design route does. `setup` shows the fixture at level 2 («Задачка») and opens the sheet. `setup-marked` marks 8×8 «Головоломка» on the fixture and puts keyboard focus on «Почати». `hint` shows the hint board without its hinted cell and presses «Підказка» once. `settings-light` and `settings-dark` store the manual theme before load.
 6. **A stale preview server is measured silently.** `ensureServer` in the adapter spawns `vite preview --port 4174 --strictPort`, but it only checks that the URL answers. If another preview is already on 4174, the spawn fails quietly and the capture measures whatever that server serves, possibly an old build. Run 1 was clean, because the earlier preview was stopped first. Make the adapter fail when its own spawn exits. **Closed by PD-2:** it fails when something already answers on the port, and when its own preview exits before answering (`PD-2-proof.txt`, section 3: before, a stale copy on 4174 was scored 0.9125 without a word; after, "something already answers on http://localhost:4174/").
 
+## Run 11 (after update-rules-panel, G2 block A; parallel session A, branch `claude/peaceful-nash-rules`, not yet merged)
+
+`docs/qa/g2/check-visual-run-11.txt`, 2026-10-11 19:09 to 19:12 (UTC+5:30), exit 1: **106 of 170 at 0.98** (run 10: 86). The capture lock was held by session A, and nothing listened on 4173, 4174, 4176 or 4177 before or after the run. The run rewrote the per-shot `report.json` files and they were reverted, so they still hold run 10; the run file is the evidence.
+
+- **All 20 rules and rules-techniques shots rose and now pass**: 0.9913 to 0.9970, up from 0.7822 to 0.9069 in run 10. **No other shot moved**, to 4 places. Comparison: `docs/qa/update-rules-panel/run-vs-previous.txt`.
+- **The dark shots from 64rem and `768-dark-rules`** (§ Correction of Run 8): the masking pair was the design's panel fill `#2c2620` where the page showed its dimmed bare page. It is gone, because the panel now has the design's size and place.
+- **Residual:** the only difference inside the panel crop is the focus ring on «Зрозуміло». The page shows it because the locked adapter opens the panel with a script click, after which `:focus-visible` matches the autofocused button. The design reference shows no ring. This is why light equals dark, and `rules` equals `rules-techniques`, at each width. The text, the separators, the example cells, the fill and the mask are pixel-equal (`docs/qa/update-rules-panel/blocks/rules/<shot>/diff.png`). The scrolled `rules-techniques` shots match the design's end, so the reset on open does not undo the driver's scroll.
+
+| State | Scheme | Run 10 at 0.98 | Run 11 at 0.98 | Lowest run 11 | Highest run 11 |
+|---|---|---|---|---|---|
+| rules | dark | 0 of 6 | 6 of 6 | 0.9913 | 0.9970 |
+| rules | light | 0 of 6 | 6 of 6 | 0.9913 | 0.9970 |
+| rules-techniques | dark | 0 of 4 | 4 of 4 | 0.9913 | 0.9970 |
+| rules-techniques | light | 0 of 4 | 4 of 4 | 0.9913 | 0.9970 |
+| every other state (incl. the 2 logo shots without a driver) | both | 86 of 150 | 86 of 150 | unchanged | unchanged |
+
 ## Run 10 (after update-panel-shell, the shared panel shell)
 
 `docs/qa/g2/check-visual-run-10.txt`, 2026-10-11 17:16 to 17:19 (UTC+5:30), exit 1: **86 of 170 at 0.98** (run 9: 84). The capture lock was held and nothing listened on 4173, 4174, 4176 or 4177 before or after. The per-shot `report.json` files now hold run 10.
