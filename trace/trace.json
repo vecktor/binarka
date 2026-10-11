@@ -585,8 +585,7 @@
       "id": "FR-74",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -609,8 +608,7 @@
       "id": "FR-76",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/specs/puzzle-engine/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md"
+        "openspec/specs/puzzle-engine/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -997,8 +995,7 @@
     {
       "id": "FR-57",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1166,7 +1163,6 @@
       "id": "FR-65",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md",
         "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1476,8 +1472,7 @@
     {
       "id": "FR-93",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1790,7 +1785,6 @@
       "id": "FR-111",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md",
         "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1889,7 +1883,6 @@
       "id": "FR-119",
       "specs": [
         "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-rules-panel/specs/play-page/spec.md",
         "openspec/changes/update-setup-sheet/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -2405,10 +2398,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-55 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"update-rules-panel\" is not archived"
     },
     {
       "check": "active-changes",

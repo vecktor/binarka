@@ -44,7 +44,8 @@
    "verifierNotes": [
     "The mechanism is real. In scripts/freeze-design-geometry.mjs (~line 144), `decidedBy` is `near(maxH+extra) ? 'max-height' : near(minH+extra) ? 'min-height' : 'content'`. Content height (scrollHeight + vertical borders) is never compared. Any box that matches neither bound is labelled 'content' by elimination, and the script's own header comment and spec say it should be an equality check.\n\nThe recorded data fits the finding. For 768-light-rules-four, scrollHeight is 611 and the box is 612.5, so 611 + 2px borders = 613. The difference is exactly 0.5, at the tolerance edge, so the label cannot be told apart from a mismatch. For the 1024 case, 525 + 2 = 527 vs 526.75, within tolerance.\n\nThe only consumer I found is e2e/nfr-14-rules-panel.spec.ts:296. It asserts only `typeof decidedBy === 'string'`, so a mislabel would not be caught. The impact is limited to the label itself: it is recorded metadata, not a pass/fail gate, and the box geometry is measured independently. That makes the severity minor, as claimed. Confirmed as a minor correctness and robustness gap.",
     "The mechanism is real. In scripts/freeze-design-geometry.mjs line 144, `decidedBy` falls through to 'content' whenever neither max-height nor min-height is within 0.5 px of the box height. Content height is never computed or compared, so a box that matches no bound gets labelled 'content' silently. The header comment and spec both say content = scrollHeight + vertical borders, so the code does not match its own documented rule. The e2e test (e2e/nfr-14-rules-panel.spec.ts:296) only checks that `decidedBy` is a string, so a wrong label would not be caught. Impact is small. This is an offline freeze script and not a user-facing path. In the cited recorded case, 768-light-rules-four, the label happens to be correct: scrollHeight 611 plus 2 px of borders is 613, and the box is 612.5, so content is within the 0.5 px tolerance. The risk is a silent mislabel in a future freeze, which is a low-severity diagnostic-quality issue and not a functional bug."
-   ]
+   ],
+   "outcome": "fixed"
   },
   {
    "title": "jsdom scroll-reset tests do not cover the negative cases ('does nothing else')",
@@ -59,7 +60,8 @@
    "verifierNotes": [
     "Confirmed. src/ui/play-page.ts has newState guards on both handlers (beforetoggle only for 'closed', toggle only for 'open'). The scroll-reset test file dispatches only the two positive combinations: beforetoggle 'closed' and toggle 'open'. Other test files dispatch toggle 'closed' or beforetoggle 'open', but on other elements such as the setup sheet, so none of them check that the rules panel's scrollTop stays unchanged. A refactor that drops either guard would pass every test. The spec says the handlers do \"nothing else\", and that is not pinned by any test. This is a real but minor test-coverage gap.",
     "The gap is real. src/ui/play-page.ts (around lines 153-158) guards the reset with `newState === 'closed'` on `beforetoggle` and `newState === 'open'` on `toggle`. Every dispatch in tests/play-page-rules-scroll-reset.test.ts uses only those two combinations: `dispatchBeforeToggle(panel,'closed')` and `dispatchToggle(panel,'open')`. No test dispatches `beforetoggle` 'open' or `toggle` 'closed` and then asserts that scrollTop is unchanged. Removing either newState guard would therefore leave every test in the file green. I did not check the spec's \"does nothing else\" wording. The finding is only a missing negative test, not a user-facing defect, so it is correctly rated minor."
-   ]
+   ],
+   "outcome": "fixed"
   },
   {
    "title": "Freeze script keeps the old top-level provenance while it regenerates the layout cases",
@@ -74,7 +76,8 @@
    "verifierNotes": [
     "The code at lines 177-183 behaves as the finding describes. When designCommit and designCssSha1 match the recorded values, the whole recorded provenance object is kept. That object includes browser, designBuildSha1 and referenceSha1sums. The top-level `cases: out` (line 190) is re-measured on every run in the current browser. After a Chromium or Playwright upgrade, the layout boxes can come from the new browser while the top-level `provenance.browser` still names the old one. Nothing warns about this; the warning fires only when the design changes. `rulesPanel.provenance` takes its browser value from freshProvenance, so it records the real run and the two provenance blocks can disagree. The impact is small. This is a provenance-labeling gap that does not break any measurement. It is also deliberate, since the comment at line 177 says the recorded provenance is kept on purpose. Severity stays minor.",
     "The mechanism is real. At lines ~177-183, when designCommit and designCssSha1 match the recorded values, `provenance = recorded` is kept whole. That includes browser, designBuildSha1 and referenceSha1sums. `cases: out` is always re-measured in the same run and written with that provenance. After a Playwright/Chromium upgrade with the design unchanged, the top-level layout cases come from the new browser while the top-level provenance still names the old one. There is no warning on that path, because the warning fires only when the design changed. Only rulesPanel.provenance records the real run. The impact is limited to stale metadata in a fixture, with no runtime effect for users. The keep-recorded behavior looks deliberate, since the comment says designBuildSha1 differs between worktrees. It is still a genuine, reproducible mislabel, so the finding is a valid minor issue."
-   ]
+   ],
+   "outcome": "fixed"
   },
   {
    "title": "The frozen-fixture scenario is only partly checked: `decidedBy` is a fallback label, and the e2e test does not check the layout fields or the provenance",
@@ -89,7 +92,8 @@
    "verifierNotes": [
     "The mechanism is real. Line 296 of e2e/nfr-14-rules-panel.spec.ts asserts only `typeof c?.layout?.decidedBy === 'string'`. It does not check that the value is one of the three allowed labels, and it does not check the scrollHeight, clientHeight, minHeightPx or maxHeightPx numbers. The test never reads `provenance` at all; grep shows only the type declaration at line 59. In scripts/freeze-design-geometry.mjs line 144, `decidedBy` is `near(maxH+extra) ? 'max-height' : near(minH+extra) ? 'min-height' : 'content'`. `content` is therefore a bare fallback: scrollHeight plus borders is never compared with the box height, even though the header comment (lines 20-21) says it is. A case matching none of the three would be recorded as `content` instead of throwing. The spec scenario (play-page spec line 222) describes `decidedBy` as the label for whichever of the three equals the box height. The finding says the frozen values happen to be consistent. Its claim that the e2e test does not enforce the spec is correct. Severity is lower than major: the data are correct today, and only the guard is weak.",
     "I read the code and the finding's mechanism is accurate. The e2e fixture test (line 296) only asserts `typeof c?.layout?.decidedBy` is 'string'. It does not check the three allowed values, the four layout numbers, or either provenance block. In scripts/freeze-design-geometry.mjs (lines 143-145), `decidedBy` is computed as max-height if near, then min-height if near, otherwise the literal 'content'. The content height (scrollHeight plus borders) is never compared with the box height, although the header comment at lines 20-22 says it is. A freeze run where none of the three bounds matches would therefore still be labelled 'content', and the test would still pass. This is a real gap between the spec and the verification. It is a weak-test and mislabel risk, not a user-facing or attacker-reachable defect. The currently frozen values are consistent, per the finding itself. I would downgrade it from major."
-   ]
+   ],
+   "outcome": "fixed"
   },
   {
    "title": "Ticked tasks 7.1 and 7.3 cite diff.png and onion.png, but none of the block images is committed",
@@ -104,7 +108,8 @@
    "verifierNotes": [
     "Checked directly. `git ls-files docs/qa/update-rules-panel/blocks | grep -c png` returns 0, and only the report.json and summary.json files are tracked. `git status` shows 80 untracked png entries. `.gitignore` ignores only `docs/qa/visual-diff/*/diff.png`, so the blocks images are not ignored. They are simply not committed. Tasks 7.1 and 7.3 are ticked [x]. 7.1 names diff.png and onion.png as outputs, and 7.3 asks for a check against the block tool's diff.png, with the evidence path `docs/qa/update-rules-panel/blocks/rules/`. At the reviewed commit those images do not exist. Because the images are untracked and nothing ignores them, they could still be added in a later commit, which keeps the severity at minor.",
     "I reproduced it. `git ls-files docs/qa/update-rules-panel/blocks | grep -c png` returns 0. `git status` shows the block PNGs under blocks/rules/ as untracked (??), and `.gitignore` ignores only `docs/qa/visual-diff/*/diff.png`, so nothing ignores these. Tasks 7.1 and 7.3 are ticked [x]. 7.1 names `diff.png` and `onion.png` for every shot, and 7.3 tells the reader to check the explanation against the block tool's `diff.png` and cites `docs/qa/update-rules-panel/blocks/rules/` as evidence. At the committed state those images do not exist, so a reviewer or a later session reading the commit range cannot resolve that evidence path. Only the JSON files are committed. The cited path is the folder, so it does resolve to the committed JSON. The impact is limited to missing evidence: nothing breaks at runtime and the images can be regenerated, so I keep it minor. Task 8.1 is correctly left unticked."
-   ]
+   ],
+   "outcome": "fixed"
   }
  ],
  "contested": [
@@ -121,7 +126,8 @@
    "verifierNotes": [
     "I read the cited code in e2e/nfr-14-rules-panel.spec.ts, lines 340-343. The containment check on line 340 adds or subtracts `fixture.tolerancePx` (the 0.5 px geometry tolerance) on all four edges. «Зрозуміло» can therefore overhang the panel by up to 0.5 px and still pass. The gap check on line 343 only asserts `gap <= 17.001`. It has no lower bound, so a slightly negative gap within the tolerance also passes. The test name and the spec text say «inside» without mentioning a tolerance, so the code does differ from the stated wording. The impact is small, though. The earlier box comparison already holds both elements to the frozen design boxes within the same tolerance, and the frozen gap is 16-17 px, so nothing can overhang in practice. Sub-pixel layout rounding also makes a tolerance there defensible. The mechanism is real but the severity is minor, so I downgrade it.",
     "Line 340 does use the 0.5 px tolerance for containment, and the gap check at line 343 has no lower bound. But the finding cannot occur in practice. Before those checks run, the test asserts at lines 316-333 that both the panel and «Зрозуміло» match the frozen design boxes within 0.5 px on every edge. Those boxes give a 16-17 px bottom gap. With each edge off by at most 0.5 px, the gap can only be between about 15 and 18 px, so an overhang or a negative gap cannot reach the lenient containment check. Anything outside that range fails at the box assertion first. The tolerance in the containment check therefore never decides the result, and a button that overhangs the panel cannot pass the test. No user or attacker is affected, because this is test-only code. The remaining point is a cosmetic difference between the spec's wording and the check's tolerance."
-   ]
+   ],
+   "outcome": "fixed"
   }
  ],
  "rejected": [
@@ -200,5 +206,12 @@
     "The code at line 243 does gate geometry as described. The finding's premise that the behaviour is undocumented is wrong, though. Task 4.6 in tasks.md already says the geometry channel opens the panel \"for the state `rules` only\". It also says `rules-techniques` stays on the pixel channel only, and that the design route `/rules/` is open at load. The code carries a comment on the gate: \"the rules block measures state `rules` only... no other block measures state `rules`\". So the behaviour is covered in the task and in the code. The remaining gap, that the spec's mechanism paragraph does not repeat the detail, is wording in an internal dev script. It is not a reproducible problem for any user or attacker, and the finding itself calls the behaviour sensible. The paragraph's \"opens the panel on both sides\" is a loose paraphrase, and task 4.6 gives the precise version."
    ]
   }
- ]
+ ],
+ "clean": false,
+ "fixRound": {
+  "approvedBy": "the user, ~21:26 (UTC+5:30), \"Fix all (Recommended)\"",
+  "commit": "30514e8",
+  "evidence": "docs/qa/update-rules-panel/review-fixes.txt",
+  "outcome": "all 5 confirmed and the 1 contested finding fixed; not re-reviewed by a second gate run, so clean stays false"
+ }
 }

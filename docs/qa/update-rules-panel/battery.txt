@@ -58,3 +58,26 @@ $ npm run check:a11y   # 19:09:17 → 19:09:30, exit 0
 ```
 
 The four axe rules-state cases pass with the filled button, light and dark, at 375×812 and 1280×800. The keyboard sweep «every control shows a visible focus indicator from the keyboard» (`e2e/nfr-13-a11y.spec.ts:60`; its expected list includes `rules-close`, l. 106) passes at 375×812 and 1280×800, light and dark. `npx playwright test --project=layout` (19:07:03 → 19:07:19): 190 passed, see `green-run.txt`.
+
+## Archive (task 9.1), 2026-10-11 21:30 (UTC+5:30)
+
+The gates of task 9.1 were all met first: the battery (above), the smoke test (`smoke-test.txt`), run 11 with no unexplained fall (`run-vs-previous.txt`), and the review gate with its approved fix round (`review-findings.json`, `review-fixes.txt`). `review-findings.json` was copied into the change folder (the trajectory check reads it there), with `clean: false`, because no second gate run re-reviewed the fixes.
+```
+$ npx openspec archive update-rules-panel --yes
+Change 'update-rules-panel' archived as '2026-10-11-update-rules-panel' (play-page: + 1 added, ~ 1 modified)
+$ npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+✓ change/update-setup-sheet
+Totals: 3 passed, 0 failed (3 items)
+$ npm run check:trace
+WARN  [active-changes] active change "update-setup-sheet" is not archived
+FAIL  [tasks-complete] openspec/changes/archive/2026-10-11-update-rules-panel/tasks.md has 4 unchecked task(s) but is archived
+
+traceability: 115 MVP FRs checked — 1 failure(s), 116 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+$ npm run test:run
+ Test Files  78 passed (78)
+      Tests  1907 passed (1907)
+```
