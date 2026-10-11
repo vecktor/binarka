@@ -1,0 +1,226 @@
+# Design mirror: add-violation-cause (tasks 2.1 to 2.3)
+
+## Task 2.1: the diff (designer subagent ad60ee9351d06165c, 2026-10-11 about 13:40 UTC+5:30)
+
+```diff
+diff --git a/design/v0/app/binarka.css b/design/v0/app/binarka.css
+index 73d4578..acb63f8 100644
+--- a/design/v0/app/binarka.css
++++ b/design/v0/app/binarka.css
+@@ -773,8 +773,8 @@ body {
+    phone). Its square corner lies under the curve of the cell's own 2px border, which has the same
+    colour, so it never reaches the board plate (no radius: a rounded corner left a hairline seam
+    along the inner curve). Drawn with borders, not a background image, so forced colours still
+-   show a mark, though as a filled square: the transparent left border is forced to the text
+-   colour too (checked 2026-10-11, Chrome emulation). */
++   show a mark; the forced-colours rule below keeps the mark a triangle in ButtonText (FR-64, the
++   user's adoption, 2026-10-11). */
+ .cell-cause {
+   position: relative;
+ }
+@@ -793,6 +793,17 @@ body {
+   pointer-events: none;
+ }
+ 
++/* Forced colours (FR-64): the mark stays a triangle in ButtonText, not a filled square; the
++   review's forced-colours rule, adopted by the user on 2026-10-11
++   (docs/design/cause-touch-2026-10-11/REVIEW.md). */
++@media (forced-colors: active) {
++  .cell-cause::after {
++    forced-color-adjust: none;
++    border-top-color: ButtonText;
++    border-left-color: transparent;
++  }
++}
++
+ /* ---------- Rules (popover: bottom sheet on phones, centred panel on wider screens) ---------- */
+ 
+ .rules,
+```
+
+## Task 2.2: the reference does not move (2026-10-11 about 13:38 to 13:41 UTC+5:30)
+
+- `pnpm build` in `design/v0` (with `npm_config_manage_package_manager_versions=false`) after the 2.1 edit; the build lists `/cause`, `/cause-eight`, `/cause-four`.
+- Ports 4173, 4174, 4176, 4177 free before the run (`lsof -nP -iTCP:<port> -sTCP:LISTEN` empty).
+- Served: `python3 -m http.server 4173 --bind 127.0.0.1 -d design/v0/out`.
+- Captured: `design/tools/capture-review-set.sh <scratchpad>/refset-mirror` (outside the repository): 170 PNGs.
+- Checked: `(cd <scratchpad>/refset-mirror && shasum -c design/v0-screenshots/review-set-14/SHA1SUMS)`, exit 0. SHA1SUMS itself: `e89badbf4bdbe29478563e9f2edef91fcc5c853f`.
+  - lines ending `: OK`: 170
+  - lines with `FAILED`: 0
+- Routes on the same server: /cause/ 200; /cause-four/ 200; /cause-eight/ 200; 
+- A headless still of `/cause/` at 375×812 (window, not the frame tool, so the page is cropped on the right) shows the triangle on the third cell of the row `0 0 0`: `docs/qa/add-violation-cause/stills/design-mirror-cause-375.png`.
+
+Full shasum output:
+
+```
+1024-dark-confirm.png: OK
+1024-dark-default.png: OK
+1024-dark-eight.png: OK
+1024-dark-four.png: OK
+1024-dark-hint.png: OK
+1024-dark-level.png: OK
+1024-dark-rules.png: OK
+1024-dark-settings-light.png: OK
+1024-dark-settings.png: OK
+1024-dark-setup-four.png: OK
+1024-dark-setup-marked-four.png: OK
+1024-dark-setup-marked.png: OK
+1024-dark-setup.png: OK
+1024-dark-win.png: OK
+1024-light-confirm.png: OK
+1024-light-default.png: OK
+1024-light-eight.png: OK
+1024-light-four.png: OK
+1024-light-hint.png: OK
+1024-light-level.png: OK
+1024-light-rules.png: OK
+1024-light-settings-dark.png: OK
+1024-light-settings.png: OK
+1024-light-setup-four.png: OK
+1024-light-setup-marked-four.png: OK
+1024-light-setup-marked.png: OK
+1024-light-setup.png: OK
+1024-light-win.png: OK
+1366-dark-default.png: OK
+1366-dark-eight.png: OK
+1366-dark-rules-techniques.png: OK
+1366-dark-rules.png: OK
+1366-dark-settings-focus.png: OK
+1366-dark-settings.png: OK
+1366-dark-setup-four.png: OK
+1366-dark-setup-marked-four.png: OK
+1366-dark-setup-marked.png: OK
+1366-dark-setup.png: OK
+1366-light-default.png: OK
+1366-light-eight.png: OK
+1366-light-rules-techniques.png: OK
+1366-light-rules.png: OK
+1366-light-settings-focus.png: OK
+1366-light-settings.png: OK
+1366-light-setup-four.png: OK
+1366-light-setup-marked-four.png: OK
+1366-light-setup-marked.png: OK
+1366-light-setup.png: OK
+1440-dark-confirm.png: OK
+1440-dark-default.png: OK
+1440-dark-eight.png: OK
+1440-dark-four.png: OK
+1440-dark-hint.png: OK
+1440-dark-level.png: OK
+1440-dark-rules-techniques.png: OK
+1440-dark-rules.png: OK
+1440-dark-settings-light.png: OK
+1440-dark-settings.png: OK
+1440-dark-setup-four.png: OK
+1440-dark-setup-marked-four.png: OK
+1440-dark-setup-marked.png: OK
+1440-dark-setup.png: OK
+1440-dark-win.png: OK
+1440-light-confirm.png: OK
+1440-light-default.png: OK
+1440-light-eight.png: OK
+1440-light-four.png: OK
+1440-light-hint.png: OK
+1440-light-level.png: OK
+1440-light-rules-techniques.png: OK
+1440-light-rules.png: OK
+1440-light-settings-dark.png: OK
+1440-light-settings.png: OK
+1440-light-setup-four.png: OK
+1440-light-setup-marked-four.png: OK
+1440-light-setup-marked.png: OK
+1440-light-setup.png: OK
+1440-light-win.png: OK
+320-dark-confirm.png: OK
+320-dark-default.png: OK
+320-dark-eight.png: OK
+320-dark-four.png: OK
+320-dark-hint.png: OK
+320-dark-level.png: OK
+320-dark-rules-techniques.png: OK
+320-dark-rules.png: OK
+320-dark-settings-focus.png: OK
+320-dark-settings-light.png: OK
+320-dark-settings.png: OK
+320-dark-setup-four.png: OK
+320-dark-setup-marked-four.png: OK
+320-dark-setup-marked.png: OK
+320-dark-setup.png: OK
+320-dark-win.png: OK
+320-light-confirm.png: OK
+320-light-default.png: OK
+320-light-eight.png: OK
+320-light-four.png: OK
+320-light-hint.png: OK
+320-light-level.png: OK
+320-light-rules-techniques.png: OK
+320-light-rules.png: OK
+320-light-settings-dark.png: OK
+320-light-settings-focus.png: OK
+320-light-settings.png: OK
+320-light-setup-four.png: OK
+320-light-setup-marked-four.png: OK
+320-light-setup-marked.png: OK
+320-light-setup.png: OK
+320-light-win.png: OK
+375-dark-confirm.png: OK
+375-dark-default.png: OK
+375-dark-eight.png: OK
+375-dark-four.png: OK
+375-dark-hint.png: OK
+375-dark-level.png: OK
+375-dark-rules-techniques.png: OK
+375-dark-rules.png: OK
+375-dark-settings-light.png: OK
+375-dark-settings.png: OK
+375-dark-setup-four.png: OK
+375-dark-setup-marked-four.png: OK
+375-dark-setup-marked.png: OK
+375-dark-setup.png: OK
+375-dark-win.png: OK
+375-light-confirm.png: OK
+375-light-default.png: OK
+375-light-eight.png: OK
+375-light-four.png: OK
+375-light-hint.png: OK
+375-light-level.png: OK
+375-light-rules-techniques.png: OK
+375-light-rules.png: OK
+375-light-settings-dark.png: OK
+375-light-settings.png: OK
+375-light-setup-four.png: OK
+375-light-setup-marked-four.png: OK
+375-light-setup-marked.png: OK
+375-light-setup.png: OK
+375-light-win.png: OK
+768-dark-confirm.png: OK
+768-dark-default.png: OK
+768-dark-eight.png: OK
+768-dark-four.png: OK
+768-dark-hint.png: OK
+768-dark-level.png: OK
+768-dark-rules.png: OK
+768-dark-settings-light.png: OK
+768-dark-settings.png: OK
+768-dark-setup-four.png: OK
+768-dark-setup-marked-four.png: OK
+768-dark-setup-marked.png: OK
+768-dark-setup.png: OK
+768-dark-win.png: OK
+768-light-confirm.png: OK
+768-light-default.png: OK
+768-light-eight.png: OK
+768-light-four.png: OK
+768-light-hint.png: OK
+768-light-level.png: OK
+768-light-rules.png: OK
+768-light-settings-dark.png: OK
+768-light-settings.png: OK
+768-light-setup-four.png: OK
+768-light-setup-marked-four.png: OK
+768-light-setup-marked.png: OK
+768-light-setup.png: OK
+768-light-win.png: OK
+logo-dark.png: OK
+logo-light.png: OK
+```

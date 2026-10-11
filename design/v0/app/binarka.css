@@ -773,8 +773,8 @@ body {
    phone). Its square corner lies under the curve of the cell's own 2px border, which has the same
    colour, so it never reaches the board plate (no radius: a rounded corner left a hairline seam
    along the inner curve). Drawn with borders, not a background image, so forced colours still
-   show a mark, though as a filled square: the transparent left border is forced to the text
-   colour too (checked 2026-10-11, Chrome emulation). */
+   show a mark; the forced-colours rule below keeps the mark a triangle in ButtonText (FR-64, the
+   user's adoption, 2026-10-11). */
 .cell-cause {
   position: relative;
 }
@@ -791,6 +791,17 @@ body {
   border-left: max(0.5rem, calc(((100cqi - (var(--n) - 1) * var(--board-gap)) / var(--n) - 4px) / 4))
     solid transparent;
   pointer-events: none;
+}
+
+/* Forced colours (FR-64): the mark stays a triangle in ButtonText, not a filled square; the
+   review's forced-colours rule, adopted by the user on 2026-10-11
+   (docs/design/cause-touch-2026-10-11/REVIEW.md). */
+@media (forced-colors: active) {
+  .cell-cause::after {
+    forced-color-adjust: none;
+    border-top-color: ButtonText;
+    border-left-color: transparent;
+  }
 }
 
 /* ---------- Rules (popover: bottom sheet on phones, centred panel on wider screens) ---------- */
