@@ -205,6 +205,7 @@ test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors
       } else {
         const delta = Math.max(Math.abs(want.x - design.x), Math.abs(want.y - design.y), Math.abs(bottomOf(want) - bottomOf(design)));
         expect(delta, `${shot}: decided by ${l.decidedBy}, expected ${fmt(want)} should equal the design's ${fmt(design)}`).toBeLessThanOrEqual(0.5);
+        expect(l.expectedDecidedBy, `${shot}: a floor- or cap-decided case keeps its bound in the expected box`).toBe(l.decidedBy);
       }
     }
   }

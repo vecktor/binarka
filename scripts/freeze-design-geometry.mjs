@@ -38,6 +38,7 @@ import { extname, join, relative, resolve, sep } from 'node:path';
 import { chromium, devices } from 'playwright';
 import { captureBoardFor, parseShot } from './check-visual-parity-adapters.mjs';
 import { capturePorts } from './capture-ports.mjs';
+import { SETUP_DEVIATION_CSS, SETUP_SELECTORS, designLevelMargin } from './setup-sheet-deviation.mjs';
 
 export const LAYOUT_SELECTORS = [
   '.page-header',
@@ -70,12 +71,8 @@ const bp = (name) => {
 const PORT = capturePorts().design;
 const OUT = 'quality/design-geometry.json';
 
-const SETUP_SELECTORS = ['[data-section="setup"]', '[data-section="setup"] [data-control="level"] button:first-of-type .level-text'];
 const SETUP_WIDTHS = [320, 375, 768, 1024, 1366, 1440];
 const SETUP_STATES = ['setup', 'setup-four'];
-// The one recorded deviation of the sheet (A-60, SQ-5): the product keeps the level group's 28px bottom margin. Appended after the design's
-// stylesheet, so it wins over the design's `.setup .level-control` rules by source order.
-const SETUP_DEVIATION_CSS = '.setup .level-control { margin-bottom: 28px }';
 
 const config = JSON.parse(readFileSync('quality/visual-parity.config.json', 'utf8'));
 const cases = config.breakpoints
@@ -200,7 +197,7 @@ try {
       const design = await measure();
       if (!design) throw new Error(`${name}: the design page lacks ${SETUP_SELECTORS.join(' or ')}`);
       // Guard the injection (as e2e/nfr-14-palette.spec.ts guards its deviations): the override must replace the design value the key records.
-      const designMargin = bp.width <= 360 ? '16px' : '24px';
+      const designMargin = designLevelMargin(bp.width);
       if (design.levelMarginBottom !== designMargin) throw new Error(`${name}: the design's level margin-bottom is ${design.levelMarginBottom}, not ${designMargin}; the recorded deviation is stale`);
       await page.evaluate((css) => {
         const el = document.createElement('style');

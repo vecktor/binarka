@@ -55,3 +55,75 @@ Block setup: 24 shot(s), geometry within 0.5px (coverage: sampled)
 ```
 
 The refreeze: every top-level key and every setupSheet value byte-identical except the added `layout.expectedDecidedBy` (320-light-setup: design `content`, expected `max-height`; every other case the same bound on both sides); `git diff --stat quality/design-geometry.json`: 24 insertions, 12 deletions (the new field and its preceding comma). The per-block tool over the 24 sheet geometry shots: geometry within 0.5px, exit 0 (before: 28 of 48 off by the recorded deviation, exit 1).
+
+## Completion of round 1 (after the fresh re-verify, 2026-10-11 ~21:27)
+
+A fresh code-reviewer re-verified the round (read-only): 10 of 12 RESOLVED, 2 PARTIAL (#4 the setup selectors still written in three files; #5 `refreeze.txt:62` and `design.md:80` still said "4px (12px at 320)"), and four new minor findings, three of them side effects of fix (a): N1 the pixel crop region taken from the injected (taller) design boxes, which lowered four block pixel scores; N2 `--calibrate` scoring the injected design; N3 the deviation CSS duplicated and unguarded in visual-block; N4 `expectedDecidedBy` unchecked in the floor/cap branch of the e2e. They lie inside the approved fixes (a)-(c), so they were completed in the same round:
+
+- New `scripts/setup-sheet-deviation.mjs` (side-effect free): `SETUP_SELECTORS`, `SETUP_DEVIATION_CSS`, `designLevelMargin(width)`; imported by both scripts (#4, N3).
+- `scripts/visual-block.mjs`: the design page is measured BEFORE the injection for the pixel region and the calibration shot, and AFTER it (with the 24px/16px design-value guard) for the geometry only (N1, N2, N3).
+- `e2e/nfr-14-setup-sheet.spec.ts`: a floor- or cap-decided case keeps its bound in the expected box (N4).
+- `refreeze.txt` and `design.md:80`: the cap clause (#5).
+
+Under the lock (21:29:41-21:30:56, ports empty before and after):
+
+```
+$ node scripts/freeze-design-geometry.mjs; echo freeze_exit=$?; npx playwright test --project=layout e2e/nfr-14-setup-sheet.spec.ts --reporter=list > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/fix1b-e2e.txt 2>&1; echo e2e_exit=$?; node scripts/visual-block.mjs --block setup --states setup,setup-four,setup-marked,setup-marked-four --out /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/fix1b-vb > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/fix1b-vb.txt 2>&1; echo vb_exit=$?
+wrote quality/design-geometry.json: 32 cases x 16 selectors; setupSheet 12 cases (content-decided: 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four); top-level provenance kept
+freeze_exit=0
+e2e_exit=0
+vb_exit=0
+$ cmp quality/design-geometry.json <before>   → identical (the guard passed; nothing moved)
+e2e/nfr-14-setup-sheet.spec.ts:   26 passed (5.7s)
+1024-dark-setup-four           pixel 0.9824 geometry off 0/2, unpaired 0, max delta 0px
+1024-dark-setup-marked-four    pixel 0.9824 geometry n/a (state reached by a driver)
+1024-dark-setup-marked         pixel 0.9717 geometry n/a (state reached by a driver)
+1024-dark-setup                pixel 0.9812 geometry off 0/2, unpaired 0, max delta 0px
+1024-light-setup-four          pixel 0.9824 geometry off 0/2, unpaired 0, max delta 0px
+1024-light-setup-marked-four   pixel 0.9824 geometry n/a (state reached by a driver)
+1024-light-setup-marked        pixel 0.9717 geometry n/a (state reached by a driver)
+1024-light-setup               pixel 0.9812 geometry off 0/2, unpaired 0, max delta 0px
+1366-dark-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-dark-setup-marked-four    pixel 1 geometry n/a (state reached by a driver)
+1366-dark-setup-marked         pixel 0.9717 geometry n/a (state reached by a driver)
+1366-dark-setup                pixel 0.9812 geometry off 0/2, unpaired 0, max delta 0px
+1366-light-setup-four          pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-light-setup-marked-four   pixel 1 geometry n/a (state reached by a driver)
+1366-light-setup-marked        pixel 0.9717 geometry n/a (state reached by a driver)
+1366-light-setup               pixel 0.9813 geometry off 0/2, unpaired 0, max delta 0px
+1440-dark-setup-four           pixel 0.9824 geometry off 0/2, unpaired 0, max delta 0px
+1440-dark-setup-marked-four    pixel 0.9824 geometry n/a (state reached by a driver)
+1440-dark-setup-marked         pixel 1 geometry n/a (state reached by a driver)
+1440-dark-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1440-light-setup-four          pixel 0.9825 geometry off 0/2, unpaired 0, max delta 0px
+1440-light-setup-marked-four   pixel 0.9825 geometry n/a (state reached by a driver)
+1440-light-setup-marked        pixel 1 geometry n/a (state reached by a driver)
+1440-light-setup               pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-setup-four            pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-setup-marked-four     pixel 1 geometry n/a (state reached by a driver)
+320-dark-setup-marked          pixel 0.8821 geometry n/a (state reached by a driver)
+320-dark-setup                 pixel 0.9055 geometry off 0/2, unpaired 0, max delta 0px
+320-light-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-light-setup-marked-four    pixel 1 geometry n/a (state reached by a driver)
+320-light-setup-marked         pixel 0.846 geometry n/a (state reached by a driver)
+320-light-setup                pixel 0.9045 geometry off 0/2, unpaired 0, max delta 0px
+375-dark-setup-four            pixel 0.9156 geometry off 0/2, unpaired 0, max delta 0px
+375-dark-setup-marked-four     pixel 0.9156 geometry n/a (state reached by a driver)
+375-dark-setup-marked          pixel 0.8984 geometry n/a (state reached by a driver)
+375-dark-setup                 pixel 0.8984 geometry off 0/2, unpaired 0, max delta 0px
+375-light-setup-four           pixel 0.907 geometry off 0/2, unpaired 0, max delta 0px
+375-light-setup-marked-four    pixel 0.907 geometry n/a (state reached by a driver)
+375-light-setup-marked         pixel 0.8885 geometry n/a (state reached by a driver)
+375-light-setup                pixel 0.8885 geometry off 0/2, unpaired 0, max delta 0px
+768-dark-setup-four            pixel 0.9825 geometry off 0/2, unpaired 0, max delta 0px
+768-dark-setup-marked-four     pixel 1 geometry n/a (state reached by a driver)
+768-dark-setup-marked          pixel 1 geometry n/a (state reached by a driver)
+768-dark-setup                 pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup-four           pixel 0.9825 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup-marked-four    pixel 1 geometry n/a (state reached by a driver)
+768-light-setup-marked         pixel 1 geometry n/a (state reached by a driver)
+768-light-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+Block setup: 48 shot(s), geometry within 0.5px (coverage: sampled)
+```
+
+The per-block pixel scores of all 48 shots equal those of the run-11 block run (`visual-block-setup.txt`) exactly; geometry is within 0.5px for the 24 sheet geometry shots (exit 0). `blocks/setup/summary.json` is replaced by this run's.

@@ -39,6 +39,7 @@ import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import { capturePorts } from './capture-ports.mjs';
 import { capture, captureBoardFor, close as closeAdapter, parseShot, stopOnExit } from './check-visual-parity-adapters.mjs';
+import { SETUP_DEVIATION_CSS, SETUP_SELECTORS, designLevelMargin } from './setup-sheet-deviation.mjs';
 
 const TOLERANCE_PX = 0.5;
 const PIXEL_THRESHOLD = 0.1;
@@ -71,14 +72,12 @@ const BLOCKS = {
   // The open rules panel and its «Зрозуміло» (update-rules-panel; the same two selectors as rulesPanel in quality/design-geometry.json).
   rules: ['[data-section="rules"]', '[data-section="rules"] .rules-close'],
   // The setup sheet (update-setup-sheet): the same two selectors as the key setupSheet of quality/design-geometry.json.
-  setup: ['[data-section="setup"]', '[data-section="setup"] [data-control="level"] button:first-of-type .level-text'],
+  setup: SETUP_SELECTORS,
 };
 // States whose geometry is measured on top of the pixels. `rules` (block rules only) opens the panel first: the design route
 // /rules/ is open at load (a press would close it), the product presses «Правила» and waits for :popover-open.
 // `rules-techniques` stays pixel-only: its design route is scrolled to the end by a script.
 const SHEET_STATES = new Set(['setup', 'setup-four']);
-// The one recorded deviation of the setup sheet (quality/design-geometry.json setupSheet.deviations, A-60/SQ-5), injected into the design page.
-const SETUP_DEVIATION_CSS = '.setup .level-control { margin-bottom: 28px }';
 const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules', ...SHEET_STATES]);
 
 const args = process.argv.slice(2);
@@ -165,17 +164,25 @@ async function designBoxes(shot) {
     await page.goto(`http://127.0.0.1:${DESIGN_PORT}${designRoute(parseShot(shot.name).state)}`, { waitUntil: 'load' });
     await page.locator('[data-board]').waitFor();
     if (blockName === 'rules') await page.waitForSelector('[data-section="rules"]:popover-open'); // open at load on /rules/; never press
-    if (SHEET_STATES.has(parseShot(shot.name).state)) {
-      await page.locator('[data-section="setup"]:popover-open').waitFor();
-      if (blockName === 'setup') {
-        await page.evaluate((css) => {
-          const el = document.createElement('style');
-          el.textContent = css;
-          document.head.append(el);
-        }, SETUP_DEVIATION_CSS);
-      }
+    const sheetState = SHEET_STATES.has(parseShot(shot.name).state);
+    if (sheetState) await page.locator('[data-section="setup"]:popover-open').waitFor();
+    // The unmodified design: the pixel region and the calibration shot (the frozen reference is the unmodified design).
+    const own = await boxes(page);
+    const png = calibrate ? await page.screenshot({ animations: 'disabled', caret: 'hide' }) : null;
+    // The geometry of the sheet states compares with the design plus the recorded deviation (the freeze script's `expected` boxes), guarded like
+    // the freeze: the design's own margin must be the value the deviation replaces.
+    let geo = own;
+    if (sheetState && blockName === 'setup') {
+      const margin = await page.locator('[data-section="setup"] [data-control="level"]').evaluate((el) => getComputedStyle(el).marginBottom);
+      if (margin !== designLevelMargin(shot.width)) throw new Error(`${shot.name}: the design's level margin-bottom is ${margin}, not ${designLevelMargin(shot.width)}; the recorded deviation is stale`);
+      await page.evaluate((css) => {
+        const el = document.createElement('style');
+        el.textContent = css;
+        document.head.append(el);
+      }, SETUP_DEVIATION_CSS);
+      geo = await boxes(page);
     }
-    return { boxes: await boxes(page), png: calibrate ? await page.screenshot({ animations: 'disabled', caret: 'hide' }) : null };
+    return { boxes: own, geoBoxes: geo, png };
   } finally {
     await ctx.close();
   }
@@ -268,7 +275,7 @@ try {
     }
     // the rules block measures state `rules` only (the panel is open there); no other block measures state `rules`
     if (GEOMETRY_STATES.has(state) && (blockName === 'rules') === (state === 'rules')) {
-      entry.geometry = geometry(d.boxes, await pageBoxes(shot, preview.url));
+      entry.geometry = geometry(d.geoBoxes, await pageBoxes(shot, preview.url));
       entry.geometryOff = entry.geometry.filter((g) => g.off).length;
       entry.unpaired = entry.geometry.filter((g) => g.unpaired).length;
       entry.maxDelta = Math.max(0, ...entry.geometry.filter((g) => !g.unpaired).map((g) => g.delta));

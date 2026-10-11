@@ -7,9 +7,9 @@
     {
       "shot": "1024-dark-setup-four",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 606,
         "y": 312,
@@ -43,9 +43,9 @@
     {
       "shot": "1024-dark-setup",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 606,
         "y": 312,
@@ -57,9 +57,9 @@
     {
       "shot": "1024-light-setup-four",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 606,
         "y": 312,
@@ -93,9 +93,9 @@
     {
       "shot": "1024-light-setup",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 606,
         "y": 312,
@@ -143,9 +143,9 @@
     {
       "shot": "1366-dark-setup",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 934,
         "y": 192,
@@ -193,9 +193,9 @@
     {
       "shot": "1366-light-setup",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 934,
         "y": 192,
@@ -207,9 +207,9 @@
     {
       "shot": "1440-dark-setup-four",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 974,
         "y": 312,
@@ -257,9 +257,9 @@
     {
       "shot": "1440-light-setup-four",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 974,
         "y": 312,
@@ -343,9 +343,9 @@
     {
       "shot": "320-dark-setup",
       "block": "setup",
-      "geometryOff": 2,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 2.22,
+      "maxDelta": 0,
       "region": {
         "x": 0,
         "y": 292,
@@ -393,9 +393,9 @@
     {
       "shot": "320-light-setup",
       "block": "setup",
-      "geometryOff": 2,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 2.22,
+      "maxDelta": 0,
       "region": {
         "x": 0,
         "y": 292,
@@ -407,9 +407,9 @@
     {
       "shot": "375-dark-setup-four",
       "block": "setup",
-      "geometryOff": 2,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 0,
         "y": 484,
@@ -443,9 +443,9 @@
     {
       "shot": "375-dark-setup",
       "block": "setup",
-      "geometryOff": 2,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 0,
         "y": 553,
@@ -457,9 +457,9 @@
     {
       "shot": "375-light-setup-four",
       "block": "setup",
-      "geometryOff": 2,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 0,
         "y": 484,
@@ -493,9 +493,9 @@
     {
       "shot": "375-light-setup",
       "block": "setup",
-      "geometryOff": 2,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 0,
         "y": 553,
@@ -507,9 +507,9 @@
     {
       "shot": "768-dark-setup-four",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 254,
         "y": 312,
@@ -557,9 +557,9 @@
     {
       "shot": "768-light-setup-four",
       "block": "setup",
-      "geometryOff": 1,
+      "geometryOff": 0,
       "unpaired": 0,
-      "maxDelta": 4,
+      "maxDelta": 0,
       "region": {
         "x": 254,
         "y": 312,
