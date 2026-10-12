@@ -160,6 +160,78 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
     expect(rays('ellipse').length, 'at least one ring ray').toBeGreaterThanOrEqual(1);
   });
 
+  // update-logo-legibility DELIBERATE CHANGE (delta requirement «Logo», MODIFIED; the user's drawing B of 2026-10-12): two new scenarios with
+  // geometric floors in viewBox units, spec-made proxies for the held NFR-15 (legibility at 40 px is decided by the vision check, not here).
+  it('The digits are large enough to read at 40 px', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const svg = logoOf(root);
+    expect(svg.getAttribute('viewBox')).toBe('0 0 64 64');
+
+    const cells = Array.from(svg.querySelectorAll('.logo-cell')).map((el) => ({ x: num(el, 'x'), y: num(el, 'y'), w: num(el, 'width'), h: num(el, 'height') }));
+    expect(cells.length).toBe(4);
+    for (const c of cells) {
+      expect(c.w, `the cell at (${c.x}, ${c.y}) is at least 15 wide`).toBeGreaterThanOrEqual(15);
+      expect(c.h, `the cell at (${c.x}, ${c.y}) is at least 15 tall`).toBeGreaterThanOrEqual(15);
+    }
+
+    const bars = Array.from(svg.querySelectorAll('rect.logo-digit'));
+    expect(bars.length).toBe(2);
+    for (const bar of bars) {
+      expect(num(bar, 'width'), 'a bar is at least 4 wide').toBeGreaterThanOrEqual(4);
+      expect(num(bar, 'height'), 'a bar is at least 10 tall').toBeGreaterThanOrEqual(10);
+    }
+
+    const rings = Array.from(svg.querySelectorAll('ellipse.logo-digit-ring'));
+    expect(rings.length).toBe(2);
+    for (const ring of rings) {
+      const cx = num(ring, 'cx');
+      const cy = num(ring, 'cy');
+      const rx = num(ring, 'rx');
+      const ry = num(ring, 'ry');
+      const sw = num(ring, 'stroke-width');
+      expect(sw, 'a ring stroke is at least 2.8').toBeGreaterThanOrEqual(2.8);
+      expect(2 * (rx - sw / 2), 'the ring hole is at least 3.2 wide').toBeGreaterThanOrEqual(3.2);
+      expect(2 * (ry - sw / 2), 'the ring hole is at least 5.6 tall').toBeGreaterThanOrEqual(5.6);
+      const cell = cells.find((c) => cx >= c.x && cx <= c.x + c.w && cy >= c.y && cy <= c.y + c.h);
+      expect.assert(cell !== undefined, `a cell holds the ring centred at (${cx}, ${cy})`);
+      expect(cx - (rx + sw / 2), 'the ring stays inside its cell (left)').toBeGreaterThanOrEqual(cell.x);
+      expect(cx + (rx + sw / 2), 'the ring stays inside its cell (right)').toBeLessThanOrEqual(cell.x + cell.w);
+      expect(cy - (ry + sw / 2), 'the ring stays inside its cell (top)').toBeGreaterThanOrEqual(cell.y);
+      expect(cy + (ry + sw / 2), 'the ring stays inside its cell (bottom)').toBeLessThanOrEqual(cell.y + cell.h);
+    }
+  });
+
+  it('The board sits inside the circle and the rays outside it', () => {
+    const root = mountFixture(WIN_PUZZLE);
+    const svg = logoOf(root);
+    const circle = svg.querySelector('circle');
+    expect.assert(circle !== null, 'the logo has a circle');
+    expect([num(circle, 'cx'), num(circle, 'cy')]).toEqual([32, 32]);
+    const r = num(circle, 'r');
+
+    for (const el of Array.from(svg.querySelectorAll('.logo-cell'))) {
+      const [x, y, w, h, rx] = [num(el, 'x'), num(el, 'y'), num(el, 'width'), num(el, 'height'), num(el, 'rx')];
+      for (const px of [x + rx, x + w - rx]) {
+        for (const py of [y + rx, y + h - rx]) {
+          expect(Math.hypot(px - 32, py - 32), `the corner centre (${px}, ${py}) lies within r - rx of the centre`).toBeLessThanOrEqual(r - rx);
+        }
+      }
+    }
+
+    const rays = Array.from(svg.querySelectorAll('rect, ellipse')).filter((el) => !hasLogoClass(el));
+    expect(rays.length, 'the logo has rays').toBeGreaterThan(0);
+    for (const ray of rays) {
+      const group = ray.parentElement;
+      expect(group?.localName, 'a ray sits in a g').toBe('g');
+      expect(group?.children.length, 'a ray is the only child of its g').toBe(1);
+      expect(group?.getAttribute('transform') ?? '', 'the g rotates about the circle centre').toMatch(/^rotate\(-?[\d.]+ 32 32\)$/);
+      const inner = ray.localName === 'rect' ? num(ray, 'y') + num(ray, 'height') : num(ray, 'cy') + num(ray, 'ry') + num(ray, 'stroke-width') / 2;
+      const top = ray.localName === 'rect' ? num(ray, 'y') : num(ray, 'cy') - num(ray, 'ry') - num(ray, 'stroke-width') / 2;
+      expect(inner, `the ray's inner edge is outside the circle (at most ${32 - r - 0.5})`).toBeLessThanOrEqual(32 - r - 0.5);
+      expect(top, "the ray's top is inside the viewBox").toBeGreaterThanOrEqual(0);
+    }
+  });
+
   it('No image file is used', () => {
     const root = mountFixture(WIN_PUZZLE);
     logoOf(root); // the logo is mounted, so the href checks below run on it

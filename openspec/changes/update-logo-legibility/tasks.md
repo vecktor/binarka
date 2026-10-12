@@ -1,0 +1,38 @@
+# Tasks: update-logo-legibility
+
+Order of work: section 1 (tests) is written FIRST from the delta spec and seen red on assertions before section 2. The project has no database (TC-12), so the "real-DB smoke test" of the template is the vision-verified recording of section 4. Commits that touch `src/` carry `Slice: update-logo-legibility` and `Refs: FR-72, NFR-15`; commits are GPG-signed, no `--no-verify`, no squash. Every ticked task names an evidence file that exists; evidence lives in `docs/qa/update-logo-legibility/` unless the task names another path. Port base for every capture: `BINARKA_PORT_BASE=6873`. Nothing is merged or pushed without the user's word. Run `date` before writing a time (UTC+5:30).
+
+## 0. Decisions
+
+- [ ] 0.1 The user's three answers of 2026-10-12 (drawing B, mirror in `design/v0` with a new review set, wait for the recordings commit then rebase) and the comparison still. Evidence: `docs/qa/update-logo-legibility/session-log.md`, `docs/qa/update-logo-legibility/options-40px-dpr2.png`.
+
+## 1. Red first
+
+- [ ] 1.1 In `tests/play-page-logo.test.ts` add one test per new scenario («The digits are large enough to read at 40 px», «The board sits inside the circle and the rays outside it»), tagged `@trace FR-72`, with a `DELIBERATE CHANGE` comment naming this change. No existing assertion changes.
+- [ ] 1.2 `npx openspec validate update-logo-legibility --strict` passes.
+- [ ] 1.3 Run `npx vitest run tests/play-page-logo.test.ts` against today's drawing: the floors test fails on assertions (cell 11 < 15, bar 2.6 < 4, ring stroke 1.8 < 2.8, hole 2.6 < 3.2); the circle-and-rays test passes and is marked GUARD. Evidence: `docs/qa/update-logo-legibility/red-run.txt`.
+
+## 2. Drawing
+
+- [ ] 2.1 `src/ui/logo.ts`: the coordinates of `design.md` (Decisions). Structure, classes, attributes and order unchanged; no colour, no `id`, no text.
+- [ ] 2.2 `npm run lint`, `npm run test:run`, `npm run build` pass. Evidence: `docs/qa/update-logo-legibility/green-run.txt`.
+
+## 3. Design mirror (the user's yes of 2026-10-12)
+
+- [ ] 3.1 `design/v0/components/binarka-page.tsx`: `Logo` and `LogoDigit` get the same coordinates; nothing else changes. `design/README.md` gains the iteration entry.
+- [ ] 3.2 Build the design (`design/v0`, `pnpm build`), serve `out/` on 127.0.0.1:4173, write the prediction (every shot with the header or the logo sheet changes; every other shot is byte-identical), capture `design/v0-screenshots/review-set-15/` twice with `design/tools/capture-review-set.sh` and compare (`SHA1SUMS`, `run-2.SHA1SUMS`, `CHANGES` against `review-set-14`). Evidence: `design/v0-screenshots/review-set-15/PREDICTION.txt`, `CHANGES`.
+- [ ] 3.3 Ask the user whether to move the NFR-14 reference to `review-set-15` (only the user moves it). Until then report the shot changes against `review-set-14`. Evidence: `session-log.md`.
+
+## 4. Recording and vision (after the rebase)
+
+- [ ] 4.1 Rebase onto `claude/wilbur-recordings` once its held-clip work (`held: true` on `16-logo-40`, the NFR-15 held note, `docs/qa/vision-probe/logo-40-*`) is committed; merge `trace/ledger.jsonl` as a union. Evidence: `session-log.md` (the `git log -1` of the base).
+- [ ] 4.2 `BINARKA_PORT_BASE=6873 node scripts/record-demos.mjs --only 16-logo-40`: both assertions pass. Evidence: `docs/qa/demo-recordings/16-logo-40.{png,webm,md}`.
+- [ ] 4.3 One vision-verify run on `docs/qa/demo-recordings/16-logo-40.png` with a fresh vision-judge (never re-run to shop for a pass). Evidence: the verdict in `docs/qa/demo-recordings/manifest.json` and `docs/qa/vision-report.md`.
+- [ ] 4.4 If met: remove `held: true` from the clip; move NFR-15 from `docs/requirements-held.md` into `docs/requirements.md` with its signed wording (row-68 (1) pattern, one logged commit). If not met: NFR-15 stays held, the verdict is recorded, and the user decides.
+- [ ] 4.5 `npm run check:vision`, `node scripts/check-recordings.mjs --require-vision`, `node scripts/check-traceability.mjs --release --strict-tests --strict-recordings` pass. Evidence: `docs/qa/update-logo-legibility/battery.txt`.
+
+## 5. Review and archive
+
+- [ ] 5.1 Review-gate on the slice diff (one run, one fix round, one confirming run); findings in `openspec/changes/update-logo-legibility/review-findings.json`.
+- [ ] 5.2 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`.
+- [ ] 5.3 Archive only after 4 and 5.1 pass: `npx openspec archive update-logo-legibility --yes`; update `docs/current-state.md` with evidence paths.
