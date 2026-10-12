@@ -65,3 +65,4 @@ Other requirements that must keep passing: FR-65, FR-67, FR-98, FR-101, NFR-9, N
 - A refreeze of `quality/design-paint.json`: the buttons' paint is compared live with the design build.
 - The settings panel (`update-settings-panel`, the other wave-2 block); any change of the focus ring, the dialog's text, the backdrop or the DOM.
 - Coverage is sampled: five confirm widths for the boxes, two schemes at two viewports for the paint; never continuum.
+- A latent gap of the per-block tool, accepted by the user at review gate round 2: `scripts/visual-block.mjs` counts a box with width but zero height (or the reverse) as measured; no current state produces one (every closed sheet or dialog is 0×0, which fails as nothing measured).

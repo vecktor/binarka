@@ -3,148 +3,93 @@
   "scope": "update-confirm-dialog (G2 dialog block, wave 2): src/ui/style.css port + tests + e2e/nfr-14-confirm-dialog.spec.ts + scripts/freeze-design-geometry.mjs + scripts/visual-block.mjs + quality/design-geometry.json + openspec/changes/update-confirm-dialog",
   "change": "update-confirm-dialog",
   "baseRef": "18e5f3f",
-  "headRef": "605b7e5",
+  "headRef": "49034a8",
   "dimensions": {
     "correctness": {
-      "confirmed": 2,
-      "contested": 0,
-      "rejected": 1
+      "confirmed": 0,
+      "contested": 1,
+      "rejected": 2
     },
     "spec-compliance": {
-      "confirmed": 1,
+      "confirmed": 0,
       "contested": 0,
-      "rejected": 3
+      "rejected": 1
     }
   },
-  "confirmedTitles": [
-    "The 'nothing measured' check misses geometry made only of 0x0/0x0 pairs, so `--block setup` on its default state still passes vacuously",
-    "The 'design server is closed' assertion can't fail: server.listening turns false as soon as close() is called",
-    "visual-block still passes vacuously when a measured state shows the block's elements as 0x0 on both sides (e.g. --block setup on state default)"
-  ],
+  "confirmedTitles": [],
   "contestedTitles": [
     "The refreeze rewrote rulesPanel and setupSheet provenance.designBuildSha1, though the spec says those keys are unchanged",
     "The e2e test titles carry @trace FR-65 and @trace NFR-12, which the spec's mechanism paragraph does not list",
     "No test checks that the design server is closed after the run"
   ],
-  "clean": false,
-  "generatedAt": "2026-10-12T14:26:29+05:30",
-  "summary": "Review gate for update-confirm-dialog: 3 confirmed, 0 contested (treat as confirmed unless trivially wrong), 4 rejected. (round 1)",
+  "clean": true,
+  "generatedAt": "2026-10-12T14:35:06+05:30",
+  "summary": "Review gate for update-confirm-dialog: 0 confirmed, 1 contested (treat as confirmed unless trivially wrong), 3 rejected. (round 2, the final round)",
   "findings": [
     {
-      "title": "The 'nothing measured' check misses geometry made only of 0x0/0x0 pairs, so `--block setup` on its default state still passes vacuously",
+      "title": "A box with zero area (w>0 but h=0, or the reverse) still counts as 'measured'",
       "file": "scripts/visual-block.mjs",
-      "line": 325,
-      "severity": "major",
-      "confidence": "medium",
-      "evidence": "The new guard only flags shots where `!e.geometry && e.pixel === undefined`. For `--block setup` with the default `--states default`, the rules/confirm gate at line 290 is true, so `entry.geometry` is built. The setup sheet is an always-present `popover: 'auto'` div (src/ui/play-page.ts:109), so on a closed sheet both its selectors are 0x0 on both sides. `geometry()` then returns `{delta: 0, off: false}` for each pair ('Two 0x0 boxes paint nothing'), and `region()` returns null, so there is no pixel crop. Because `entry.geometry` is truthy, the shot is not counted as empty, `done` is true, and the script prints 'geometry within 0.5px' and exits 0 having measured nothing. Round 0 pointed out this latent setup pattern, and the fix's comment says it closes 'absence of evidence is never success', but this path is still open. I did not run it. The reasoning assumes the design's `/` route also has the closed popover; if it doesn't, the pair comes back unpaired and fails instead.",
-      "suggestion": "Count a shot as measured only when it has a pixel region or at least one geometry pair where some box is non-zero. For example: `const measured = e.pixel !== undefined || e.geometry?.some((g) => !g.unpaired && (g.design.w || g.design.h || g.product.w || g.product.h))`. Alternatively, give each block its required states (setup: setup,setup-four; confirm: confirm; rules: rules) and reject other states. Add a run of `--block setup --shots 375-light-default` to the evidence, expecting exit 1.",
-      "dimension": "correctness",
-      "verdict": "confirmed",
-      "verifierNotes": [
-        "Confirmed by running it. `node scripts/visual-block.mjs --block setup --shots 375-light-default` prints \"pixel n/a geometry off 0/2, unpaired 0, max delta 0px\" and \"Block setup: ... geometry within 0.5px\", and exits 0. The closed sheet leaves both selectors 0x0 on both sides, so `geometry()` returns delta 0 and `region()` returns null. The `empty` check at line 325 only tests `!e.geometry && e.pixel === undefined`, so a truthy all-zero geometry array bypasses it.",
-        "I ran `node scripts/visual-block.mjs --block setup --shots 375-light-default`. It printed \"pixel n/a geometry off 0/2, unpaired 0, max delta 0px\" and \"geometry within 0.5px\", then exited 0. The closed popover sheet is 0x0 on both the design and product sides. Both pairs therefore get `{delta:0, off:false}`, and no pixel region exists. `entry.geometry` is truthy, so the `!e.geometry && e.pixel === undefined` guard does not count the shot as empty. The script reports a pass having measured nothing. Anyone running the setup block with its default `--states default` hits this. The fix only closes the confirm path."
-      ]
-    },
-    {
-      "title": "The 'design server is closed' assertion can't fail: server.listening turns false as soon as close() is called",
-      "file": "e2e/nfr-14-confirm-dialog.spec.ts",
-      "line": 449,
-      "severity": "minor",
-      "confidence": "high",
-      "evidence": "`expect(server.listening, 'the design server is closed after the run').toBe(false)` runs after `stopDesignServer`, but Node's `net.Server.close()` drops the handle synchronously. I checked: `s.listen(0, () => { s.close(() => {}); console.log(s.listening) })` prints `false` before the close callback has run. So the assertion passes whether or not connections drained, and whether or not the close callback ever fires (if it never fired, the afterAll would time out first). The `close(cb)` error argument (for example ERR_SERVER_NOT_RUNNING) is also ignored in stopDesignServer. Round-0 finding 5 is closed on paper, but the check adds no evidence beyond the awaited close itself.",
-      "suggestion": "Make stopDesignServer reject when close() passes an error, and treat the awaited callback as the check. Or, after closing, assert that a fresh connection to `design.port` is refused (for example `net.connect` gets ECONNREFUSED). Either way, word the comment honestly rather than presenting `listening === false` as proof of closure.",
-      "dimension": "correctness",
-      "verdict": "confirmed",
-      "verifierNotes": [
-        "Confirmed at e2e/nfr-14-confirm-dialog.spec.ts. stopDesignServer calls closeAllConnections(), then awaits server.close(() => done()) and ignores the callback's error argument. Line 449 then asserts server.listening is false. Node's net.Server.close() stops listening synchronously, so listening is false as soon as close() is called, whether or not connections drained. The assertion therefore adds nothing beyond the awaited callback. It also could not fail on a ERR_SERVER_NOT_RUNNING error, because that error is swallowed. The finding is accurate and minor, as rated. I did not run the Node snippet, but the code path and Node's documented behaviour agree with it.",
-        "Confirmed. Code at lines 194-203 and 447-449 matches the finding. I ran the repro: calling close() makes server.listening false immediately, before the callback. The assertion therefore adds no evidence beyond the awaited close callback. The close callback's error argument is also ignored. Impact is minor: a weak check and a misleading comment, not a runtime defect."
-      ]
-    },
-    {
-      "title": "visual-block still passes vacuously when a measured state shows the block's elements as 0x0 on both sides (e.g. --block setup on state default)",
-      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/scripts/visual-block.mjs",
-      "line": 325,
-      "severity": "minor",
-      "confidence": "medium",
-      "evidence": "Round-0 fix 1 is closed for the confirm block. The new check `empty = results.filter((e) => !e.geometry && e.pixel === undefined)` makes `--block confirm` on state default exit 1, and fix-round-1.txt shows `375-light-default ... NOTHING MEASURED ... exit 1`. The check only counts a shot as empty when it has no `geometry` entry at all. geometry() (l.241) gives two 0x0 boxes `{ delta: 0, off: false }`. The geometry gate (l.289) only excludes the rules and confirm blocks from foreign states, so `--block setup` with the default `--states default` measures geometry while the popover is closed. Both boxes are 0x0, region() returns null, `e.geometry` is truthy, the shot is not 'empty', and the run prints 'geometry within 0.5px' and exits 0 having compared nothing. Round 0 called this the setup block's latent pattern. This change did not introduce it and the confirm block is not affected, but the new rule 'absence of evidence is never success' covers only half of the vacuous paths.",
-      "suggestion": "Also treat a geometry entry whose every pair is 0x0 on both sides (and which has no pixel region) as nothing measured, or gate the setup block's geometry to SHEET_STATES the same way rules and confirm are gated. Add a dry-run line to the evidence, e.g. `--block setup --shots 375-light-default` exits 1.",
-      "dimension": "spec-compliance",
-      "verdict": "confirmed",
-      "verifierNotes": [
-        "Confirmed by running it. `node scripts/visual-block.mjs --block setup --shots 375-light-default` printed \"pixel n/a geometry off 0/2, unpaired 0, max delta 0px\" and then \"Block setup: 1 shot(s), geometry within 0.5px\". It did not print NOTHING MEASURED. So a shot with no pixel region and two 0x0 geometry pairs counts as measured. I did not capture the exit code, because the zsh PIPESTATUS read came back blank. The `done` expression at the end of the script makes it exit 0 here, since `empty` is empty and geometryOff and unpaired are both 0. The geometry() helper at l.236 returns delta 0 and off false for 0x0 pairs. The geometry gate at l.289 only excludes the rules and confirm blocks from foreign states, so the setup block is measured on state default. The empty check at l.325 looks only for a missing `geometry` entry and an undefined pixel, so it misses this case. The confirm block is unaffected, as the finding says. Severity minor looks right: it is a latent vacuous-pass path, and the run's own output marks it as `pixel n/a`.",
-        "I ran `node scripts/visual-block.mjs --block setup --shots 375-light-default`. It printed \"pixel n/a geometry off 0/2, unpaired 0, max delta 0px\" and then \"geometry within 0.5px\". The exit code was 0. On the default state the setup popover is closed, so both elements are 0x0 on both sides. geometry() returns `{delta:0, off:false}` for such pairs, and region() returns null, so there is no pixel channel. Because `e.geometry` is truthy, the new `empty` filter does not flag the shot, and the run passes with nothing compared. The gate at line 289 only keeps the rules and confirm blocks off foreign states; setup is not gated to SHEET_STATES. This is a real vacuous pass, but a reachable one only when a user explicitly runs `--block setup` with a non-sheet state. The confirm block is unaffected, which is why the severity stays minor."
-      ]
-    },
-    {
-      "title": "The confirm-dialog e2e permanently pins the SHA-1 of rulesPanel and setupSheet, so any future legitimate refreeze of those keys breaks this unrelated test",
-      "file": "e2e/nfr-14-confirm-dialog.spec.ts",
-      "line": 126,
-      "severity": "minor",
-      "confidence": "medium",
-      "evidence": "`UNCHANGED_KEY_SHA1 = { rulesPanel: '0f2164d5…', setupSheet: '6dc8dda1…' }` is asserted on every run, against `JSON.stringify(fixture[key])`. The property it guards ('the refreeze that adds confirmDialog leaves the other keys byte-identical') belongs to this change, but the test will outlive the archive. A design update changes designCommit or designCssSha1, and `keyProvenance` then deliberately writes fresh provenance. A later block that refreezes setupSheet, such as the settings block that design.md flags as a rebase conflict on this file, or even a key reorder, would also change the hash. Any of these fails the confirm-dialog suite with a message about 'main 18e5f3f'.",
-      "suggestion": "Keep the guard while this change is open, but make it robust. Compare the keys structurally against the frozen cases, and tie provenance to the freeze script's own invariant rather than a literal hash. Or record in tasks.md/design.md that the pin must be removed or re-based when the change is archived, or when the design moves.",
-      "dimension": "correctness",
-      "verdict": "rejected",
-      "verifierNotes": [
-        "The pin exists at e2e/nfr-14-confirm-dialog.spec.ts:126 and is asserted at line 283. It does exactly what the finding says. But it is deliberate, and nothing in the code is wrong. A review round on this change (review-findings.json) found that the spec scenario requires rulesPanel and setupSheet to be \"unchanged by its refreeze\". It also found that nothing tested that clause. The SHA-1 pin was added as the fix, and its comment cites that review round. A later refreeze of those keys would change the spec's own \"unchanged\" contract. A test that fails then is the intended tripwire, and the person making that change must re-base it on purpose. The AGENTS.md rule is \"change a test only when a changed requirement demands it\", and this matches it. The finding's real complaint is about maintainability after the change is archived. That is speculative and out of scope for correctness. The test does not misbehave today, it is not flaky, and it does not mis-assert.",
-        "The pin is real. The spec asserts a literal SHA-1 of the rulesPanel and setupSheet keys, and keyProvenance does write fresh provenance when the design changes. But it does not hold up as a defect. First, the pin is a deliberate guard added in review fix round 1 to prove this change's refreeze left the other keys byte-identical. The code comment says so. Second, a future refreeze of those keys would make the test fail loudly with a clear message. A later change that legitimately refreezes them would have to re-base the pin, and that is routine maintenance and not a bug. Third, no user or attacker faces a wrong outcome or a silent pass. The finding only describes hypothetical future maintenance friction, and its own suggestion is to keep the guard while the change is open. I could not confirm a real problem."
-      ]
-    },
-    {
-      "title": "The e2e SHA-1 pin ties the confirm test to the exact bytes of rulesPanel and setupSheet beyond this change",
-      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/e2e/nfr-14-confirm-dialog.spec.ts",
-      "line": 126,
-      "severity": "minor",
-      "confidence": "medium",
-      "evidence": "Fix 2 is closed. keyProvenance() in freeze-design-geometry.mjs:308-313 keeps a key's recorded provenance while designCommit, designCssSha1 and the cases are unchanged, and writes fresh provenance otherwise, so a changed key or a moved design is not mis-labelled. `git diff 18e5f3f 605b7e5 -- quality/design-geometry.json` has 702 insertions and 0 removed lines. The new guard `UNCHANGED_KEY_SHA1 = { rulesPanel: '0f2164d5…', setupSheet: '6dc8dda1…' }` will stay in the layout project after archive. Any later legitimate refreeze of those keys would fail this confirm-dialog test, for example a design move, which by design writes fresh provenance, or a rules or setup re-port. The spec scenario only requires that they are 'unchanged by its refreeze', which is a claim about this change.",
-      "suggestion": "Note in the test comment, or in tasks for the archive, that a deliberate refreeze of rulesPanel or setupSheet must update these two hashes. Alternatively, move the guard into this change's evidence script rather than the permanent e2e. Neither is required for spec compliance.",
-      "dimension": "spec-compliance",
-      "verdict": "rejected",
-      "verifierNotes": [
-        "The pin is deliberate and documented in the code. The comment at e2e/nfr-14-confirm-dialog.spec.ts:~121-123 says it hashes rulesPanel and setupSheet as main 18e5f3f records them, and that the refreeze adding confirmDialog must leave both byte-identical. The spec requires exactly that guarantee. The finding describes a speculative maintenance cost, namely that a later refreeze of those keys would need the hashes updated. It does not show the mechanism is wrong. The reviewer's own suggestion is only to add a note, and the finding says neither fix is needed for spec compliance. Nothing here is incorrect in the code, so the finding is refuted.",
-        "The pin exists as described (UNCHANGED_KEY_SHA1 for rulesPanel and setupSheet at e2e/nfr-14-confirm-dialog.spec.ts:~126). Its comment scopes it to this refreeze. Nothing here is exploitable or reproducible by a user or attacker. The only scenario is a future maintainer deliberately refreezing those keys, and then the test fails loudly and the fix is to update two hashes. That is how a regression pin is meant to behave, not a defect. The finding itself says no change is required for spec compliance. It is a speculative maintainability note, not a real problem."
-      ]
-    },
-    {
-      "title": "The 'server closed' assertion is weak: server.listening becomes false as soon as close() is called",
-      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/e2e/nfr-14-confirm-dialog.spec.ts",
-      "line": 449,
+      "line": 326,
       "severity": "minor",
       "confidence": "low",
-      "evidence": "Fix 5 is closed in form: the afterAll now runs `expect(server.listening, 'the design server is closed after the run').toBe(false)` after `await stopDesignServer(server)`. In Node, `listening` turns false when the listening handle is closed, before open connections drain. So the assertion would also pass without the awaited close callback or closeAllConnections(). It shows the listener stopped, not that the run finished with no open socket. This satisfies the scenario's wording, 'is closed after the run'.",
-      "suggestion": "Optional: also check that a connect to the recorded port is refused after stop, or accept the assertion as it is. No spec change is needed.",
-      "dimension": "spec-compliance",
-      "verdict": "rejected",
+      "evidence": "`const nonEmpty = (b) => Boolean(b && (b.w > 0 || b.h > 0));` treats a box with width but 0 height (a collapsed sheet or dialog container) as non-empty. Such a box paints nothing, and the geometry function's own 'paints nothing' carve-out (`d.w === 0 && d.h === 0 && ...`) is about this same idea. A closed sheet that collapses to Wx0 on both sides would therefore pass as measured with delta 0. The fix-round-2 evidence shows the current closed states are all 0x0 (setup on 375-light-default exits 1), so nothing is affected today.",
+      "suggestion": "Require a positive area, `b.w > 0 && b.h > 0`, so 'measured' means 'something painted'. Then re-run the four blocks on their own states (under /tmp with BINARKA_PORT_BASE=6373) to confirm they still exit 0.",
+      "dimension": "correctness",
+      "verdict": "contested",
       "verifierNotes": [
-        "The code at the cited lines calls closeAllConnections() and awaits server.close() before asserting server.listening is false. It is true that listening flips false as soon as close() is called, so the assertion alone is weak. But the finding is a minor, optional hardening note. It concedes the assertion satisfies the scenario wording 'closed after the run', and no behaviour is wrong. There is no incorrect mechanism or defect to confirm, so I default to refuted.",
-        "The assertion at line 449 follows `await stopDesignServer(server)`. That helper (line 194) already calls `server.closeAllConnections()` and then awaits the `server.close()` callback. So the awaited close and the forced socket drain the finding says are missing are both present. `server.listening === false` is a reasonable check that the listener has stopped. The finding admits the assertion satisfies the scenario's wording (\"is closed after the run\"). No real user or attacker can trigger a problem, because this is a test-hygiene nit and not a defect. The suggestion is optional."
+        "The code at line 326 is as quoted: `nonEmpty = b.w > 0 || b.h > 0`. But the finding does not show a wrong result. The geometry function (line 241) only skips the delta for pairs that are 0x0 on both sides. A Wx0 box goes through the normal delta comparison, which checks x, y, x+w and y+h against the design. That is a real geometric measurement, not an absence of evidence. The \"measured\" gate is meant to reject a shot where all boxes are 0x0, and the code's own comment says exactly that: \"a closed dialog or a closed sheet gives 0x0 boxes on both sides\". The finding's example scenario, a closed sheet that collapses to Wx0, is speculative. It also admits that every current closed state is 0x0, that the setup state exits 1 as intended, and that nothing is affected today. The suggestion to require a positive area is a design preference, and it would discard legitimate geometry evidence such as a zero-height container whose position is compared. The mechanism is not shown to be wrong.",
+        "The code at scripts/visual-block.mjs:326 is `b.w > 0 || b.h > 0`. Boxes come from getBoundingClientRect (line 164), so a rendered but collapsed block element can legitimately be Wx0, and it would count as \"measured\". The geometry carve-out at line 241 only exempts boxes that are 0x0 on both sides, so such a pair would pass with delta 0 and the shot would exit 0. The closed popover or dialog states used today are display:none and give 0x0, so nothing is affected now. This is a latent hardening gap, not a present failure. The fix of requiring `w > 0 && h > 0` is correct and trivial."
       ]
     },
     {
-      "title": "Coverage summary: 15 scenarios: 15 implemented, 0 partial, 0 missing, 0 contradicted. All five round-0 fixes closed, no regression found in the changed paths",
-      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/openspec/changes/update-confirm-dialog/specs/play-page/spec.md",
-      "line": 635,
+      "title": "Refused-connection check can flake when the freed ephemeral port is reused by a parallel worker",
+      "file": "e2e/nfr-14-confirm-dialog.spec.ts",
+      "line": 468,
       "severity": "minor",
-      "confidence": "high",
-      "evidence": "(1) visual-block exits 1 when nothing is measured. fix-round-1.txt shows the vacuous path exits 1, the real `--block confirm --states confirm` run gives 10/10 at pixel 1 with geometry 0/4 off, and the setup block still passes. design.md:72 and spec.md:635 name `--states confirm`. The rules-techniques pixel-only shots keep `entry.pixel`, so they are not flagged. (2) freeze-design-geometry.mjs keyProvenance keeps each key's provenance while its cases are byte-identical and the design is unchanged. The refreeze is byte-identical. The fixture against main 18e5f3f only adds confirmDialog, with 0 removed lines. The e2e checks the SHA-1 of rulesPanel and setupSheet, so the scenario's 'unchanged' clause is now true and tested. (3) scripts/confirm-dialog.mjs exports CONFIRM_SELECTORS, and both scripts import it. (4) The mechanism sentence names FR-65 (paint tests) and NFR-12 (target tests). (5) afterAll asserts server.listening === false. In tasks.md, 8.3 is now ticked with session-log evidence, and 8.2 stays unticked while the gate is still running, which is consistent. Commit 605b7e5 carries `Slice: update-confirm-dialog` and `Refs: FR-67, NFR-14` and changes no src/ file. The battery in fix-round-1.txt is green: lint, test:run 1979, build, openspec strict, eval ratchet, trace, acceptance, e2e 301, a11y 67.",
-      "suggestion": "No action. This entry is the coverage line. The working tree has an uncommitted trace/ledger.jsonl change; commit or discard it before the gate closes.",
+      "confidence": "low",
+      "evidence": "The design server listens on `server.listen(0, '127.0.0.1', done)`, so it gets an OS-assigned ephemeral port, and playwright.config sets `fullyParallel: true`. After close, the afterAll asserts `expect(await connectionRefused(port), ...).toBe(true)`. If another worker, or any other process, binds the same 127.0.0.1 port between the close and the connect, `connect` succeeds and the assertion fails even though this server closed correctly. The window is small, so this is a rare-flake risk and not a logic error.",
+      "suggestion": "Keep the check, but make the evidence specific to this server. Assert that `server.address()` is null after the awaited close, which only holds once the handle is gone. Alternatively, run the connect probe straight after `close()` resolves, which the code already does, and add a comment accepting the residual race. Avoid retry loops that could hide a real leak.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The code matches the description. The server listens on port 0 at 127.0.0.1 (line 189). afterAll awaits close and then asserts a refused connection (lines 462-468). The race itself is possible in principle, but the finding gives no realistic path to it. It needs another process to bind this exact ephemeral port in the milliseconds between the close and the probe. The OS does not hand a just-freed ephemeral port straight to another bind(0), and macOS picks ports randomly. Playwright workers don't share a listener, and each worker's server has its own random port. The finding itself rates this a low-confidence, rare-flake risk and not a logic error, and I found nothing in the code that makes the failure plausible. I could not confirm the mechanism as a real defect, so I default to refuted. The suggested `server.address()` check would also add little. `address()` already returns null once close() has been called, so it is no stronger evidence than `listening`.",
+        "The mechanism exists in principle: the server binds `listen(0, '127.0.0.1')`, the config sets `fullyParallel: true`, and `connectionRefused` probes the freed port. But a false failure needs another process to bind a listener on exactly that port in the few milliseconds between the awaited `close()` and the `connect()` probe. The OS picks ephemeral listener ports pseudo-randomly from a range of tens of thousands of ports, and it does not immediately hand back a just-freed one. A parallel worker would also have to be starting its own `listen(0)` in that same instant. Outgoing client sockets, such as Chromium's, do not create a listener, so they cannot make `connect` succeed. The probe runs straight after `close()`, as the finding's own alternative suggests. The suggested `server.address()` check would be weaker, because it says nothing about whether the handle is really gone. The finding itself rates this low confidence and a rare flake. In practice it is not reproducible, so I treat it as refuted."
+      ]
+    },
+    {
+      "title": "connectionRefused has no timeout of its own and treats non-ECONNREFUSED errors as 'not refused'",
+      "file": "e2e/nfr-14-confirm-dialog.spec.ts",
+      "line": 208,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "`connectionRefused` resolves only on 'connect' or 'error' (`done(error.code === 'ECONNREFUSED')`). On loopback a refusal is immediate, so a hang is unlikely in practice. Still, if neither event fires, the afterAll stalls until the hook timeout, and the error message does not say the probe hung. Any other error code (for example ECONNRESET or EADDRNOTAVAIL) produces the message 'a connection ... is refused after the run' expected true, which points at the wrong cause.",
+      "suggestion": "Add `socket.setTimeout(...)` that destroys the socket and rejects with a clear message. Also include the actual error code in the assertion message, for example by resolving a `{ refused, code }` object, so a failure is diagnosable.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "I read `connectionRefused` at e2e/nfr-14-confirm-dialog.spec.ts:208 and its only caller at line 468. The code matches the description. It resolves only on 'connect' or 'error', has no timeout of its own, and returns true only for ECONNREFUSED. This is not a correctness defect, for three reasons. (1) A connect to a closed port on 127.0.0.1 gets an immediate ECONNREFUSED. A hang would need an unusual network stack, and Playwright's hook timeout would then fail the afterAll anyway. The finding concedes this. (2) Any other error code resolves false, so the assertion fails. That is the safe direction: the check can never pass wrongly. Only the failure message is less specific, and it still names the port. (3) What remains is diagnosability, which is a nicety and does not make the check wrong or let a defect through.",
+        "The code matches the description. `connectionRefused` at line 208 resolves on 'connect' or 'error', with no timeout, and returns `error.code === 'ECONNREFUSED'`. It is called once, at line 468, after `stopDesignServer` has closed the server on 127.0.0.1. A TCP connect to a closed loopback port always fails at once with ECONNREFUSED, so neither the hang nor the other error codes (ECONNRESET, EADDRNOTAVAIL) occur in practice. The finding admits as much (\"a hang is unlikely\"). The only real effect is a less precise assertion message on an already-failing, near-impossible path. That is a test-hygiene nit with no realistic failure scenario, so I treat it as not a real defect."
+      ]
+    },
+    {
+      "title": "connectionRefused has no timeout and treats any non-ECONNREFUSED error as not closed (robustness only, not a spec gap)",
+      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/e2e/nfr-14-confirm-dialog.spec.ts",
+      "line": 208,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "Scenario clause: the design server is \"closed after the run\". Code: `const socket = connect({ port, host: '127.0.0.1' }); socket.once('connect', ...done(false)); socket.once('error', (error) => done(error.code === 'ECONNREFUSED'))`. No socket timeout is set. The server listens on an ephemeral port (`server.listen(0, '127.0.0.1', ...)`), so if another process takes that port between close() and the probe, the check fails even though our server did close. On loopback this is unlikely, and the check fails rather than passing silently, so it does not hide a regression. Fix 2 is otherwise closed: stopDesignServer rejects on a close() error, and the afterAll asserts a refused connection to `design.port`. fix-round-2.txt shows open=false and closed=true, and the spec passes 18/18.",
+      "suggestion": "Optional: add `socket.setTimeout(2000, () => { socket.destroy(); done(false); })` so a stalled connect fails within a bounded time and does not wait for the hook timeout. No spec change is needed.",
       "dimension": "spec-compliance",
       "verdict": "rejected",
       "verifierNotes": [
-        "The finding is a \"coverage summary\" with \"No action\" as its suggestion. It claims no defect, so there is no wrong mechanism to confirm. I checked the cited spec at line 635. It does name `--states confirm` and the mechanism sentence (FR-65 for paint tests, NFR-12 for target tests). `CONFIRM_SELECTORS` is exported from scripts/confirm-dialog.mjs and imported by both visual-block.mjs and freeze-design-geometry.mjs, as the finding says. The uncommitted trace/ledger.jsonl change is confirmed by git status, but that is housekeeping, not a correctness defect in the code. I did not check the runtime claims, such as the vacuous path exiting 1 or the refreeze being byte-identical. With no defect asserted, there is nothing to confirm, so I default to refuted.",
-        "The finding is a coverage summary, not a defect. It says all 15 scenarios are implemented and its own suggestion is \"No action.\" It describes no mechanism by which a user or attacker could hit a problem. The only side note is the uncommitted trace/ledger.jsonl change. The session's git status confirms that change is real, but it is routine working-tree housekeeping and not a reproducible spec or code defect. With no claimed problem to reproduce, the default is refuted. I did not open the cited files, so this rests on the finding's own wording and the git status."
+        "The code at line 208 matches the description: connectionRefused() opens a socket to 127.0.0.1:port and resolves true only on ECONNREFUSED. It has no socket timeout. But this does not make the check wrong. Connecting to a closed loopback port returns ECONNREFUSED immediately, so a stall is not a realistic path. stopDesignServer awaits server.close() and rejects on error, so the listener is gone before the probe runs. A different process taking the ephemeral port in that window is a theoretical race, and the result would be a loud failure, not a false pass, so it cannot hide a regression. The finding itself says it is robustness only, low confidence, and not a spec gap. The scenario clause (server closed after the run) is correctly verified. I found no incorrect behaviour, only an optional hardening idea.",
+        "I read the code at e2e/nfr-14-confirm-dialog.spec.ts lines 195-220. It matches the finding: connectionRefused has no socket timeout, and stopDesignServer awaits close() and rejects on a close error. The problem is not realistically reproducible, for three reasons. A TCP connect to a closed loopback port on 127.0.0.1 gets an immediate ECONNREFUSED, so a stalled connect is not a real scenario. If another process took the ephemeral port between close() and the probe, the check would fail loudly, not pass, so no regression is hidden. The finding also concedes the practical likelihood is very low, and that no spec change is needed. This is a speculative hardening suggestion in a test helper, not a defect a real user or attacker can trigger. It does not reach the bar of a genuine finding."
       ]
     }
   ],
   "fixRound": {
-    "round": 1,
-    "status": "fix round 1 applied in 605b7e5 (docs/qa/update-confirm-dialog/fix-round-1.txt); gate round 1 on ea36535..605b7e5 found 3 confirmed (2 the same: the nothing-measured check misses all-0x0 geometry, e.g. --block setup on state default, pre-existing in the setup block; 1 minor: the server-closed assertion cannot fail), 0 contested, 4 rejected; a fix round 2 needs the user approval",
-    "round0": {
-      "baseRef": "18e5f3f",
-      "headRef": "ea36535",
-      "runId": "wf_f6680184-7e7",
-      "summary": "Review gate for update-confirm-dialog: 3 confirmed, 3 contested (treat as confirmed unless trivially wrong), 2 rejected."
-    }
+    "round": 2,
+    "status": "closed: the gate is clean after fix rounds 1 (605b7e5) and 2 (49034a8)"
   },
   "visionJudge": "docs/qa/update-confirm-dialog/stills/vision-verdict.txt (10/10 met, readable, match)",
   "reviewRun": {
@@ -308,7 +253,101 @@
           ]
         }
       ],
-      "note": "A round-1 reviewer reproduced the vacuous setup run with the default --out, which wrote docs/qa/g2/blocks/setup/summary.json (untracked); the parent removed it after reading it (geometryOff 0, unpaired 0, no pixel, for 375-light-default)."
+      "note": "A round-1 reviewer reproduced the vacuous setup run with the default --out, which wrote docs/qa/g2/blocks/setup/summary.json (untracked); the parent removed it after reading it (geometryOff 0, unpaired 0, no pixel, for 375-light-default).",
+      "fixedIn": "49034a8 (docs/qa/update-confirm-dialog/fix-round-2.txt)"
+    },
+    {
+      "round": 2,
+      "baseRef": "ca66f81",
+      "headRef": "49034a8",
+      "runId": "wf_83b2e47e-0c2",
+      "summary": "Review gate for update-confirm-dialog: 0 confirmed, 1 contested (treat as confirmed unless trivially wrong), 3 rejected.",
+      "dimensions": {
+        "correctness": {
+          "confirmed": 0,
+          "contested": 1,
+          "rejected": 2
+        },
+        "spec-compliance": {
+          "confirmed": 0,
+          "contested": 0,
+          "rejected": 1
+        }
+      },
+      "generatedAt": "2026-10-12T14:35:06+05:30",
+      "findings": [
+        {
+          "title": "A box with zero area (w>0 but h=0, or the reverse) still counts as 'measured'",
+          "file": "scripts/visual-block.mjs",
+          "line": 326,
+          "severity": "minor",
+          "confidence": "low",
+          "evidence": "`const nonEmpty = (b) => Boolean(b && (b.w > 0 || b.h > 0));` treats a box with width but 0 height (a collapsed sheet or dialog container) as non-empty. Such a box paints nothing, and the geometry function's own 'paints nothing' carve-out (`d.w === 0 && d.h === 0 && ...`) is about this same idea. A closed sheet that collapses to Wx0 on both sides would therefore pass as measured with delta 0. The fix-round-2 evidence shows the current closed states are all 0x0 (setup on 375-light-default exits 1), so nothing is affected today.",
+          "suggestion": "Require a positive area, `b.w > 0 && b.h > 0`, so 'measured' means 'something painted'. Then re-run the four blocks on their own states (under /tmp with BINARKA_PORT_BASE=6373) to confirm they still exit 0.",
+          "dimension": "correctness",
+          "verdict": "contested",
+          "verifierNotes": [
+            "The code at line 326 is as quoted: `nonEmpty = b.w > 0 || b.h > 0`. But the finding does not show a wrong result. The geometry function (line 241) only skips the delta for pairs that are 0x0 on both sides. A Wx0 box goes through the normal delta comparison, which checks x, y, x+w and y+h against the design. That is a real geometric measurement, not an absence of evidence. The \"measured\" gate is meant to reject a shot where all boxes are 0x0, and the code's own comment says exactly that: \"a closed dialog or a closed sheet gives 0x0 boxes on both sides\". The finding's example scenario, a closed sheet that collapses to Wx0, is speculative. It also admits that every current closed state is 0x0, that the setup state exits 1 as intended, and that nothing is affected today. The suggestion to require a positive area is a design preference, and it would discard legitimate geometry evidence such as a zero-height container whose position is compared. The mechanism is not shown to be wrong.",
+            "The code at scripts/visual-block.mjs:326 is `b.w > 0 || b.h > 0`. Boxes come from getBoundingClientRect (line 164), so a rendered but collapsed block element can legitimately be Wx0, and it would count as \"measured\". The geometry carve-out at line 241 only exempts boxes that are 0x0 on both sides, so such a pair would pass with delta 0 and the shot would exit 0. The closed popover or dialog states used today are display:none and give 0x0, so nothing is affected now. This is a latent hardening gap, not a present failure. The fix of requiring `w > 0 && h > 0` is correct and trivial."
+          ]
+        },
+        {
+          "title": "Refused-connection check can flake when the freed ephemeral port is reused by a parallel worker",
+          "file": "e2e/nfr-14-confirm-dialog.spec.ts",
+          "line": 468,
+          "severity": "minor",
+          "confidence": "low",
+          "evidence": "The design server listens on `server.listen(0, '127.0.0.1', done)`, so it gets an OS-assigned ephemeral port, and playwright.config sets `fullyParallel: true`. After close, the afterAll asserts `expect(await connectionRefused(port), ...).toBe(true)`. If another worker, or any other process, binds the same 127.0.0.1 port between the close and the connect, `connect` succeeds and the assertion fails even though this server closed correctly. The window is small, so this is a rare-flake risk and not a logic error.",
+          "suggestion": "Keep the check, but make the evidence specific to this server. Assert that `server.address()` is null after the awaited close, which only holds once the handle is gone. Alternatively, run the connect probe straight after `close()` resolves, which the code already does, and add a comment accepting the residual race. Avoid retry loops that could hide a real leak.",
+          "dimension": "correctness",
+          "verdict": "rejected",
+          "verifierNotes": [
+            "The code matches the description. The server listens on port 0 at 127.0.0.1 (line 189). afterAll awaits close and then asserts a refused connection (lines 462-468). The race itself is possible in principle, but the finding gives no realistic path to it. It needs another process to bind this exact ephemeral port in the milliseconds between the close and the probe. The OS does not hand a just-freed ephemeral port straight to another bind(0), and macOS picks ports randomly. Playwright workers don't share a listener, and each worker's server has its own random port. The finding itself rates this a low-confidence, rare-flake risk and not a logic error, and I found nothing in the code that makes the failure plausible. I could not confirm the mechanism as a real defect, so I default to refuted. The suggested `server.address()` check would also add little. `address()` already returns null once close() has been called, so it is no stronger evidence than `listening`.",
+            "The mechanism exists in principle: the server binds `listen(0, '127.0.0.1')`, the config sets `fullyParallel: true`, and `connectionRefused` probes the freed port. But a false failure needs another process to bind a listener on exactly that port in the few milliseconds between the awaited `close()` and the `connect()` probe. The OS picks ephemeral listener ports pseudo-randomly from a range of tens of thousands of ports, and it does not immediately hand back a just-freed one. A parallel worker would also have to be starting its own `listen(0)` in that same instant. Outgoing client sockets, such as Chromium's, do not create a listener, so they cannot make `connect` succeed. The probe runs straight after `close()`, as the finding's own alternative suggests. The suggested `server.address()` check would be weaker, because it says nothing about whether the handle is really gone. The finding itself rates this low confidence and a rare flake. In practice it is not reproducible, so I treat it as refuted."
+          ]
+        },
+        {
+          "title": "connectionRefused has no timeout of its own and treats non-ECONNREFUSED errors as 'not refused'",
+          "file": "e2e/nfr-14-confirm-dialog.spec.ts",
+          "line": 208,
+          "severity": "minor",
+          "confidence": "low",
+          "evidence": "`connectionRefused` resolves only on 'connect' or 'error' (`done(error.code === 'ECONNREFUSED')`). On loopback a refusal is immediate, so a hang is unlikely in practice. Still, if neither event fires, the afterAll stalls until the hook timeout, and the error message does not say the probe hung. Any other error code (for example ECONNRESET or EADDRNOTAVAIL) produces the message 'a connection ... is refused after the run' expected true, which points at the wrong cause.",
+          "suggestion": "Add `socket.setTimeout(...)` that destroys the socket and rejects with a clear message. Also include the actual error code in the assertion message, for example by resolving a `{ refused, code }` object, so a failure is diagnosable.",
+          "dimension": "correctness",
+          "verdict": "rejected",
+          "verifierNotes": [
+            "I read `connectionRefused` at e2e/nfr-14-confirm-dialog.spec.ts:208 and its only caller at line 468. The code matches the description. It resolves only on 'connect' or 'error', has no timeout of its own, and returns true only for ECONNREFUSED. This is not a correctness defect, for three reasons. (1) A connect to a closed port on 127.0.0.1 gets an immediate ECONNREFUSED. A hang would need an unusual network stack, and Playwright's hook timeout would then fail the afterAll anyway. The finding concedes this. (2) Any other error code resolves false, so the assertion fails. That is the safe direction: the check can never pass wrongly. Only the failure message is less specific, and it still names the port. (3) What remains is diagnosability, which is a nicety and does not make the check wrong or let a defect through.",
+            "The code matches the description. `connectionRefused` at line 208 resolves on 'connect' or 'error', with no timeout, and returns `error.code === 'ECONNREFUSED'`. It is called once, at line 468, after `stopDesignServer` has closed the server on 127.0.0.1. A TCP connect to a closed loopback port always fails at once with ECONNREFUSED, so neither the hang nor the other error codes (ECONNRESET, EADDRNOTAVAIL) occur in practice. The finding admits as much (\"a hang is unlikely\"). The only real effect is a less precise assertion message on an already-failing, near-impossible path. That is a test-hygiene nit with no realistic failure scenario, so I treat it as not a real defect."
+          ]
+        },
+        {
+          "title": "connectionRefused has no timeout and treats any non-ECONNREFUSED error as not closed (robustness only, not a spec gap)",
+          "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/e2e/nfr-14-confirm-dialog.spec.ts",
+          "line": 208,
+          "severity": "minor",
+          "confidence": "low",
+          "evidence": "Scenario clause: the design server is \"closed after the run\". Code: `const socket = connect({ port, host: '127.0.0.1' }); socket.once('connect', ...done(false)); socket.once('error', (error) => done(error.code === 'ECONNREFUSED'))`. No socket timeout is set. The server listens on an ephemeral port (`server.listen(0, '127.0.0.1', ...)`), so if another process takes that port between close() and the probe, the check fails even though our server did close. On loopback this is unlikely, and the check fails rather than passing silently, so it does not hide a regression. Fix 2 is otherwise closed: stopDesignServer rejects on a close() error, and the afterAll asserts a refused connection to `design.port`. fix-round-2.txt shows open=false and closed=true, and the spec passes 18/18.",
+          "suggestion": "Optional: add `socket.setTimeout(2000, () => { socket.destroy(); done(false); })` so a stalled connect fails within a bounded time and does not wait for the hook timeout. No spec change is needed.",
+          "dimension": "spec-compliance",
+          "verdict": "rejected",
+          "verifierNotes": [
+            "The code at line 208 matches the description: connectionRefused() opens a socket to 127.0.0.1:port and resolves true only on ECONNREFUSED. It has no socket timeout. But this does not make the check wrong. Connecting to a closed loopback port returns ECONNREFUSED immediately, so a stall is not a realistic path. stopDesignServer awaits server.close() and rejects on error, so the listener is gone before the probe runs. A different process taking the ephemeral port in that window is a theoretical race, and the result would be a loud failure, not a false pass, so it cannot hide a regression. The finding itself says it is robustness only, low confidence, and not a spec gap. The scenario clause (server closed after the run) is correctly verified. I found no incorrect behaviour, only an optional hardening idea.",
+            "I read the code at e2e/nfr-14-confirm-dialog.spec.ts lines 195-220. It matches the finding: connectionRefused has no socket timeout, and stopDesignServer awaits close() and rejects on a close error. The problem is not realistically reproducible, for three reasons. A TCP connect to a closed loopback port on 127.0.0.1 gets an immediate ECONNREFUSED, so a stalled connect is not a real scenario. If another process took the ephemeral port between close() and the probe, the check would fail loudly, not pass, so no regression is hidden. The finding also concedes the practical likelihood is very low, and that no spec change is needed. This is a speculative hardening suggestion in a test helper, not a defect a real user or attacker can trigger. It does not reach the bar of a genuine finding."
+          ]
+        }
+      ],
+      "disposition": "0 confirmed; the 1 contested (a W x 0 box counts as measured in visual-block; latent, no current state produces one) accepted by the user («Accept, record it», session-log.md row 22) and recorded as not delivered in proposal.md; 3 rejected"
+    }
+  ],
+  "cleanReason": "Round 2 on the fix diff ca66f81..49034a8: 0 confirmed; the one contested finding accepted by the user as a recorded latent gap. Rounds 0 and 1 confirmed findings fixed in 605b7e5 and 49034a8.",
+  "acceptedFindings": [
+    {
+      "title": "A box with zero area (w>0 but h=0, or the reverse) still counts as 'measured'",
+      "file": "scripts/visual-block.mjs",
+      "line": 326,
+      "severity": "minor",
+      "acceptedBy": "the user, «Accept, record it» (session-log.md row 22)"
     }
   ]
 }
