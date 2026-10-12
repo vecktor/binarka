@@ -1,5 +1,6 @@
 // Play page: the header logo (FR-72, requirement «Logo» of openspec/changes/add-logo/specs/play-page/spec.md).
-// The shapes are checked in jsdom, which has no layout: sizes, colours and legibility at 40 px are not tested (held NFR-15, NFR-14).
+// The shapes are checked in jsdom, which has no layout: sizes, colours and legibility at 40 px are not tested here: NFR-15 is decided by vision-verify (clip 16-logo-40), the look by NFR-14.
+// update-logo-legibility (2026-10-12): the delta of openspec/changes/update-logo-legibility adds the tile and the 40 px floors below.
 //
 // add-theme-switch DELIBERATE CHANGES (TC-14 and FR-72 as amended 2026-10-10, autonomy-log rows 120 and 121; delta requirement «Logo», MODIFIED):
 // the header holds one more inline svg, the gear inside the settings button, so "the logo" is now the svg inside the HEADING (`logoOf`), the
@@ -170,7 +171,7 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
   });
 
   // update-logo-legibility DELIBERATE CHANGE (delta requirement «Logo», MODIFIED; the user's drawing G of 2026-10-12, after drawing B failed
-  // the vision check, run wf_ae715072-b48): two new scenarios with geometric floors in viewBox units, spec-made proxies for the held NFR-15
+  // the vision check, run wf_ae715072-b48): two new scenarios with geometric floors in viewBox units, spec-made proxies for NFR-15
   // (legibility at 40 px is decided by the vision check, not here).
   it('The digits are large enough to read at 40 px', () => {
     const root = mountFixture(WIN_PUZZLE);
@@ -190,6 +191,11 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
       expect(num(bar, 'width'), 'a bar is at least 6 wide').toBeGreaterThanOrEqual(6);
       expect(num(bar, 'height'), 'a bar is at least 16 tall').toBeGreaterThanOrEqual(16);
       expect(num(bar, 'rx'), 'a bar has square ends').toBeLessThanOrEqual(1);
+      const [bx, by, bw, bh] = [num(bar, 'x'), num(bar, 'y'), num(bar, 'width'), num(bar, 'height')];
+      const home = cells.find((c) => bx >= c.x && bx <= c.x + c.w && by >= c.y && by <= c.y + c.h);
+      expect.assert(home !== undefined, `a cell holds the bar at (${bx}, ${by})`);
+      expect(bx + bw, 'the bar stays inside its cell (right)').toBeLessThanOrEqual(home.x + home.w);
+      expect(by + bh, 'the bar stays inside its cell (bottom)').toBeLessThanOrEqual(home.y + home.h);
     }
 
     const rings = Array.from(svg.querySelectorAll('ellipse.logo-digit-ring'));

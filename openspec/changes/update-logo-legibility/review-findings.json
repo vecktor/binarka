@@ -1,0 +1,233 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "change update-logo-legibility (openspec/changes/update-logo-legibility): the header logo redrawn so its 2x2 digits read at 40 px (drawing G on a rounded square tile, FR-72 amended and signed 2026-10-12), the design mirror in design/v0, the paint fixture re-freeze, the NFR-15 move from docs/requirements-held.md into docs/requirements.md, and clip 16-logo-40 un-held. Drawing B (an earlier round in the same slice) failed the vision check and was replaced; its commits stay as history.",
+  "change": "update-logo-legibility",
+  "baseRef": "3ac284b",
+  "headRef": "5d33392",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 5,
+      "contested": 2,
+      "rejected": 1
+    },
+    "security": {
+      "confirmed": 1,
+      "contested": 0,
+      "rejected": 1
+    },
+    "spec-compliance": {
+      "confirmed": 7,
+      "contested": 2,
+      "rejected": 0
+    }
+  },
+  "confirmedTitles": [
+    "FR-72 row still points legibility at 'the held NFR-15 ... docs/requirements-held.md' after NFR-15 was moved",
+    "Delta spec still calls NFR-15 held and points at requirements-held.md; archiving would carry this into the canonical spec",
+    "current-state.md handoff contradicts the shipped state (says NFR-15 not met, held, clip held)",
+    "tasks.md leaves round-2 tasks 6.3-6.5 unticked although their evidence is committed",
+    "proposal.md and design.md Goals still state drawing B and 'the text of FR-72 does not change'",
+    "FR-72 still says legibility is covered by the \"held\" NFR-14/NFR-15 after NFR-15 moved out of held",
+    "tasks.md checkboxes do not match reality: 6.3, 6.4 and 6.5 are unticked although their artifacts exist, and 4.4 says the not-met branch was taken",
+    "The amended FR-72 row and the delta requirement still call NFR-15 'held' and point to docs/requirements-held.md",
+    "The held-evidence note in logo-40-verdicts.json still says the clip and NFR-15 stay held",
+    "The judge's notes describe colours the drawing does not use (white glyphs on orange)",
+    "docs/current-state.md stops at drawing B and does not record drawing G or the NFR-15 move",
+    "The required release traceability check still fails, and the NFR-14 reference still holds the sun drawing",
+    "Stale header comment in the logo test file and stale round-1 statements in the proposal"
+  ],
+  "contestedTitles": [
+    "Paint fixture is labelled as the stand-in for review-set-14 but is now frozen from a design that no longer matches it",
+    "Floor test checks the ring's full extent inside its cell but not the bar's",
+    "Coverage summary: 11 scenarios: 11 implemented, 0 partial, 0 missing, 0 contradicted",
+    "The met verdict for 16-logo-40 does not record the run id that requirements.md cites"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-12T17:52:00+05:30",
+  "summary": "Review gate for change update-logo-legibility (openspec/changes/update-logo-legibility): the header logo redrawn so its 2x2 digits read at 40 px (drawing G on a rounded square tile, FR-72 amended and signed 2026-10-12), the design mirror in design/v0, the paint fixture re-freeze, the NFR-15 move from docs/requirements-held.md into docs/requirements.md, and clip 16-logo-40 un-held. Drawing B (an earlier round in the same slice) failed the vision check and was replaced; its commits stay as history.: 13 confirmed, 4 contested (treat as confirmed unless trivially wrong), 2 rejected. (round 1; fix round 1 applied; confirming run pending)",
+  "reviewRun": "wf_991ccf83-223",
+  "productCodeDefect": false,
+  "fixRound": 1,
+  "rounds": [
+    {
+      "run": "wf_991ccf83-223",
+      "headRef": "5d33392",
+      "confirmed": 13,
+      "contested": 4,
+      "rejected": 2
+    }
+  ],
+  "findings": [
+    {
+      "verdict": "confirmed",
+      "title": "FR-72 row still points legibility at 'the held NFR-15 ... docs/requirements-held.md' after NFR-15 was moved",
+      "file": "docs/requirements.md",
+      "line": 124,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: dated note on FR-72 (signed sentence unchanged)"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "Delta spec still calls NFR-15 held and points at requirements-held.md; archiving would carry this into the canonical spec",
+      "file": "openspec/changes/update-logo-legibility/specs/play-page/spec.md",
+      "line": 5,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: delta wording and the two test comments"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "current-state.md handoff contradicts the shipped state (says NFR-15 not met, held, clip held)",
+      "file": "docs/current-state.md",
+      "line": 9,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: current-state entry for round 2"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "tasks.md leaves round-2 tasks 6.3-6.5 unticked although their evidence is committed",
+      "file": "openspec/changes/update-logo-legibility/tasks.md",
+      "line": 44,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: tasks 6.3-6.5 ticked, 4.4/4.5 superseded"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "proposal.md and design.md Goals still state drawing B and 'the text of FR-72 does not change'",
+      "file": "openspec/changes/update-logo-legibility/design.md",
+      "line": 10,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: round-1 superseded note in proposal.md and design.md"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "FR-72 still says legibility is covered by the \"held\" NFR-14/NFR-15 after NFR-15 moved out of held",
+      "file": "docs/requirements.md",
+      "line": 124,
+      "severity": "minor",
+      "dimension": "security",
+      "disposition": "fixed: same as finding 1"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "tasks.md checkboxes do not match reality: 6.3, 6.4 and 6.5 are unticked although their artifacts exist, and 4.4 says the not-met branch was taken",
+      "file": "openspec/changes/update-logo-legibility/tasks.md",
+      "line": 44,
+      "severity": "major",
+      "dimension": "spec-compliance",
+      "disposition": "fixed: tasks ticked, 3.3 points at logo-drawing-g and stays open with the user"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "The amended FR-72 row and the delta requirement still call NFR-15 'held' and point to docs/requirements-held.md",
+      "file": "docs/requirements.md",
+      "line": 124,
+      "severity": "major",
+      "dimension": "spec-compliance",
+      "disposition": "fixed: dated note on FR-72 and delta wording"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "The held-evidence note in logo-40-verdicts.json still says the clip and NFR-15 stay held",
+      "file": "docs/qa/vision-probe/logo-40-verdicts.json",
+      "line": 3,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "fixed: superseded sentence in logo-40-verdicts.json"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "The judge's notes describe colours the drawing does not use (white glyphs on orange)",
+      "file": "docs/qa/demo-recordings/manifest.json",
+      "line": 272,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "recorded: session-log row 21 names the judge colour-description error as a known weakness; no re-judge (no shopping)"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "docs/current-state.md stops at drawing B and does not record drawing G or the NFR-15 move",
+      "file": "docs/current-state.md",
+      "line": 9,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "fixed: current-state entry for round 2"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "The required release traceability check still fails, and the NFR-14 reference still holds the sun drawing",
+      "file": "docs/qa/update-logo-legibility/battery-2.txt",
+      "line": 18,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "open: traceability re-run after archive; NFR-14 reference move asked of the user (NOT-EARNED until then)"
+    },
+    {
+      "verdict": "confirmed",
+      "title": "Stale header comment in the logo test file and stale round-1 statements in the proposal",
+      "file": "tests/play-page-logo.test.ts",
+      "line": 2,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "fixed: test header comment; round-1 superseded note"
+    },
+    {
+      "verdict": "contested",
+      "title": "Paint fixture is labelled as the stand-in for review-set-14 but is now frozen from a design that no longer matches it",
+      "file": "quality/design-paint.json",
+      "line": 2,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "no change: the fixture records designCommit 5fcd76c and designBuildSha1; the divergence from review-set-14 is stated in design/README.md iteration 18 and design.md Round 2"
+    },
+    {
+      "verdict": "contested",
+      "title": "Floor test checks the ring's full extent inside its cell but not the bar's",
+      "file": "tests/play-page-logo.test.ts",
+      "line": 188,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: bar-inside-cell assertion and delta clause; a mutant (bar height 30) fails it"
+    },
+    {
+      "verdict": "contested",
+      "title": "Coverage summary: 11 scenarios: 11 implemented, 0 partial, 0 missing, 0 contradicted",
+      "file": "openspec/changes/update-logo-legibility/specs/play-page/spec.md",
+      "line": 1,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "no action: coverage record"
+    },
+    {
+      "verdict": "contested",
+      "title": "The met verdict for 16-logo-40 does not record the run id that requirements.md cites",
+      "file": "docs/qa/demo-recordings/manifest.json",
+      "line": 269,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "fixed: run id in the manifest judge field (metadata only)"
+    },
+    {
+      "verdict": "rejected",
+      "title": "NFR-15 pass rests on one light-scheme still; the dark-scheme 40 px logo was never judged",
+      "file": "scripts/record-demos.mjs",
+      "line": 1277,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "no change: the NFR-15 row declares sampled coverage (one scheme)"
+    },
+    {
+      "verdict": "rejected",
+      "title": "Security checklist: no exploitable issues in scope",
+      "file": "src/ui/logo.ts",
+      "line": 1,
+      "severity": "minor",
+      "dimension": "security",
+      "disposition": "no action: security clean"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # Change: update-logo-legibility
 
+> **Round 1 (drawing B) is superseded by «Round 2: drawing G» at the end of this file.** Drawing B failed the vision check (run `wf_ae715072-b48`), and FR-72 was amended (signed, commit `e8bc370`), so the statements below that FR-72's text does not change, the B coordinates and the circle-and-rays scenarios are history.
+
 ## Why
 
 NFR-15 (held in `docs/requirements-held.md`) says the logo is legible at 40 px: the four digits of the 2×2 mini board «1 0 / 0 1» can be told apart at 40×40 CSS px, and the logo carries no text. Fresh vision-judges rejected the page's own header logo (`src/ui/logo.ts`) drawn at 40×40 CSS px, at device pixel ratio 1 (vision-verify run `wf_8838166c-9f7`) and at ratio 2, the project's capture standard (run `wf_d236b692-54b`): «the four digits show only as tiny pale marks; I could not clearly tell bars from rings». The stills and verdicts are in `docs/qa/vision-probe/logo-40-*` (written by the recordings stream on `claude/wilbur-recordings`). On 2026-10-12 the user decided to keep NFR-15 held and fix the logo in its own slice, judged at ratio 2.

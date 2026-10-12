@@ -21,19 +21,19 @@ Order of work: section 1 (tests) is written FIRST from the delta spec and seen r
 
 - [x] 3.1 `design/v0/components/binarka-page.tsx`: `Logo` and `LogoDigit` get the same coordinates; nothing else changes. `design/README.md` gains the iteration entry. Evidence: commit `04b3036`.
 - [x] 3.2 Build the design (`design/v0`, `pnpm build`), serve `out/` on 127.0.0.1:4173, write the prediction (every shot with the header or the logo sheet changes; every other shot is byte-identical), capture `design/v0-screenshots/logo-drawing-b/` twice with `design/tools/capture-review-set.sh` and compare (`SHA1SUMS`, `run-2.SHA1SUMS`, `CHANGES` against `review-set-14`). Evidence: `design/v0-screenshots/logo-drawing-b/PREDICTION.txt`, `CHANGES`.
-- [ ] 3.3 Ask the user whether to move the NFR-14 reference to `logo-drawing-b` (only the user moves it). Until then report the shot changes against `review-set-14`. Evidence: `session-log.md`.
+- [ ] 3.3 (round 2: the candidate is `design/v0-screenshots/logo-drawing-g/`, combined with the DS stream's `review-set-15`; the question stays open with the user, NOT-EARNED until then) Ask the user whether to move the NFR-14 reference to `logo-drawing-b` (only the user moves it). Until then report the shot changes against `review-set-14`. Evidence: `session-log.md`.
 
 ## 4. Recording and vision (after the rebase)
 
 - [x] 4.1 Rebase onto `claude/wilbur-recordings` once its held-clip work (`held: true` on `16-logo-40`, the NFR-15 held note, `docs/qa/vision-probe/logo-40-*`) is committed; merge `trace/ledger.jsonl` as a union. Evidence: `session-log.md` (the `git log -1` of the base). Done: base `3ac284b`.
 - [x] 4.2 `BINARKA_PORT_BASE=6873 node scripts/record-demos.mjs --only 16-logo-40`: both assertions pass. Evidence: `docs/qa/demo-recordings/16-logo-40.{png,webm,md}`. Evidence: `docs/qa/vision-probe/logo-40-drawB-dpr2.{png,webm,md}` (moved there after the verdict, task 4.4).
 - [x] 4.3 One vision-verify run on `docs/qa/demo-recordings/16-logo-40.png` with a fresh vision-judge (never re-run to shop for a pass). Evidence: the verdict in `docs/qa/demo-recordings/manifest.json` and `docs/qa/vision-report.md`. Result: NOT MET (run `wf_ae715072-b48`); evidence `docs/qa/vision-probe/logo-40-verdicts.json` (`16-logo-40-drawB`).
-- [ ] 4.4 (the not-met branch was taken: the clip stays held, NFR-15 stays held, the verdict is recorded; the user decides) If met: remove `held: true` from the clip; move NFR-15 from `docs/requirements-held.md` into `docs/requirements.md` with its signed wording (row-68 (1) pattern, one logged commit). If not met: NFR-15 stays held, the verdict is recorded, and the user decides.
-- [ ] 4.5 (partial: check:vision and check-recordings --require-vision PASS; traceability --release FAILS on the active change only, `battery.txt`) `npm run check:vision`, `node scripts/check-recordings.mjs --require-vision`, `node scripts/check-traceability.mjs --release --strict-tests --strict-recordings` pass. Evidence: `docs/qa/update-logo-legibility/battery.txt`.
+- [x] 4.4 (round 1, drawing B: the not-met branch was taken; superseded by 6.5, where drawing G passed: the clip stays held, NFR-15 stays held, the verdict is recorded; the user decides) If met: remove `held: true` from the clip; move NFR-15 from `docs/requirements-held.md` into `docs/requirements.md` with its signed wording (row-68 (1) pattern, one logged commit). If not met: NFR-15 stays held, the verdict is recorded, and the user decides.
+- [x] 4.5 (round 1, superseded by 6.5; partial: check:vision and check-recordings --require-vision PASS; traceability --release FAILS on the active change only, `battery.txt`) `npm run check:vision`, `node scripts/check-recordings.mjs --require-vision`, `node scripts/check-traceability.mjs --release --strict-tests --strict-recordings` pass. Evidence: `docs/qa/update-logo-legibility/battery.txt`.
 
 ## 5. Review and archive
 
-- [ ] 5.1 Review-gate on the slice diff (one run, one fix round, one confirming run); findings in `openspec/changes/update-logo-legibility/review-findings.json`.
+- [ ] 5.1 Review-gate on the slice diff (one run, one fix round, one confirming run); findings in `openspec/changes/update-logo-legibility/review-findings.json`. Run 1: `wf_991ccf83-223` (13 confirmed, 4 contested, 2 rejected; no product defect), fix round 1 applied (`review-findings.json`).
 - [ ] 5.2 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`.
 - [ ] 5.3 Archive only after 4 and 5.1 pass: `npx openspec archive update-logo-legibility --yes`; update `docs/current-state.md` with evidence paths.
 
@@ -41,6 +41,6 @@ Order of work: section 1 (tests) is written FIRST from the delta spec and seen r
 
 - [x] 6.1 FR-72 amended in `docs/requirements.md` (signed in chat). Evidence: commit `e8bc370`, `session-log.md` row 13.
 - [x] 6.2 Delta re-cut for G; `npx openspec validate update-logo-legibility --strict` passes; tests changed (tile scenario, floors, board inside the tile) and seen red on drawing B. Evidence: `docs/qa/update-logo-legibility/red-run-2.txt`.
-- [ ] 6.3 `src/ui/logo.ts` drawing G; lint, tests, build. Evidence: `green-run-2.txt`.
-- [ ] 6.4 Design mirror; `scripts/freeze-design-paint.mjs` (`logo-tile` replaces `logo-tooth` and `logo-disc`) and the re-frozen `quality/design-paint.json`; working set `design/v0-screenshots/logo-drawing-g/` (two captures, `CHANGES`); NFR-14 measured (check:visual, e2e). Evidence: `battery-2.txt`.
-- [ ] 6.5 Record `16-logo-40` (`--only`), one vision-verify run with a fresh vision-judge; if met: remove `held`, move NFR-15 (one logged commit), run the three checks. Evidence: `battery-2.txt`.
+- [x] 6.3 `src/ui/logo.ts` drawing G; lint, tests, build. Evidence: `green-run-2.txt` (commit `4c35f24`).
+- [x] 6.4 Design mirror (`5fcd76c`, `ea96c82`, `5d33392`); `scripts/freeze-design-paint.mjs` (`logo-tile` replaces `logo-tooth` and `logo-disc`) and the re-frozen `quality/design-paint.json`; working set `design/v0-screenshots/logo-drawing-g/` (two captures, `CHANGES`); NFR-14 measured (check:visual, e2e). Evidence: `battery-2.txt`.
+- [x] 6.5 Record `16-logo-40` (`--only`), one vision-verify run with a fresh vision-judge; if met: remove `held`, move NFR-15 (one logged commit), run the three checks. Evidence: `battery-2.txt`; verdict met in run `wf_a5ad04e1-c59`; move commit `016414b`. Partial: traceability --release fails only on the active change until the archive (5.3).

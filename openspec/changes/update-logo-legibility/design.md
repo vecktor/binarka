@@ -1,5 +1,7 @@
 # Design: update-logo-legibility
 
+> **Round 1 (drawing B) is superseded by «Round 2: drawing G» at the end of this file.** Drawing B failed the vision check (run `wf_ae715072-b48`), and FR-72 was amended (signed, commit `e8bc370`), so the statements below that FR-72's text does not change, the B coordinates and the circle-and-rays scenarios are history.
+
 ## Context
 
 At 40×40 CSS px one unit of the 64-unit `viewBox` is 0.625 CSS px. Today's board: cells 11 units (6.9 px), bars 2.6 × 7.2 (1.6 × 4.5 px), rings `rx` 2.2, `ry` 3.1, `stroke-width` 1.8 (stroke 1.1 px, hole 2.6 × 4.4 units, 1.6 × 2.8 px). Two fresh vision-judges could not tell bars from rings. The rays take the outer 12 units of each side, and the circle (`r` 19.5) leaves the board 24 of 64 units.
