@@ -6,7 +6,9 @@ import { generate } from '../src/engine/index';
 import type { Grid } from '../src/engine/index';
 import { hasCyrillic, hasLatin, isOneSentence } from './helpers/board';
 
-const TIMEOUT = 30_000;
+// Budget per cold `npm run cli` spawn (and per test). 30 s timed out under machine load (review gate wf_9bab3694-f50; the user
+// approved 120 s on 2026-10-12); a real hang still fails, because every run asserts a non-null exit status.
+const TIMEOUT = 120_000;
 
 interface Run {
   status: number | null;
