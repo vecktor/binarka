@@ -233,7 +233,9 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     // DELIBERATE CHANGE (update-setup-sheet): `toHaveLength(31)` becomes 32 (the setup-sheet token `--color-option-border`) and the message "no 32nd colour token" becomes
     // "no 33rd" — proposal.md Impact row «Borders, cues and focus rings have enough contrast» (`tests/play-page-level-stylesheet.test.ts` 220, 230). Red on today's stylesheet:
     // the 32nd token is not declared once in :root.
-    expect(TOKEN_NAMES, 'the 32 tokens of the list').toHaveLength(32);
+    // DELIBERATE CHANGE (update-confirm-dialog): `toHaveLength(32)` becomes 33 (the dialog token `--color-violation-ink`) and the message "no 33rd colour token" becomes
+    // "no 34th" — proposal.md Impact row «Borders» (`tests/play-page-level-stylesheet.test.ts` 236, 246). Red on today's stylesheet: the 33rd token is not declared once in :root.
+    expect(TOKEN_NAMES, 'the 33 tokens of the list').toHaveLength(33);
     for (const name of TOKEN_NAMES) {
       expect(parsed.tokenDeclarations.filter((d) => d.property === name), `${name} is declared once in :root`).toHaveLength(1);
       expect(parsed.darkTokenDeclarations.filter((d) => d.property === name), `${name} is declared once in :root[data-theme="dark"]`).toHaveLength(1);
@@ -243,7 +245,7 @@ describe('@trace FR-65 @trace FR-95 @trace FR-97 the classes are on the elements
     expect(scanColours(parsed).shorthands).toEqual([]);
     expect(scanColours(parsed).colourProperties).toEqual([]);
     expect(scanColours(parsed).tokensOutsideRoot).toEqual([]);
-    expect(Object.keys(parsed.tokens).filter((name) => name.startsWith('--color-')).sort(), 'no 33rd colour token').toEqual([...TOKEN_NAMES].sort());
+    expect(Object.keys(parsed.tokens).filter((name) => name.startsWith('--color-')).sort(), 'no 34th colour token').toEqual([...TOKEN_NAMES].sort());
     // «Nothing removes the outline»
     expect(text).not.toMatch(/outline\s*:\s*(none|0(px)?(?![\d.]))/i);
     expect(text).not.toMatch(/outline-style\s*:\s*none/i);

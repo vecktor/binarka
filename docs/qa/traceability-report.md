@@ -79,9 +79,9 @@ Result: PASS, 117 warning(s)
 | FR-62 | yes | yes | 4 | - |
 | FR-63 | yes | yes | 6 | - |
 | FR-64 | yes | yes | 9 | - |
-| FR-65 | yes | yes | 49 | - |
+| FR-65 | yes | yes | 50 | - |
 | FR-66 | yes | yes | 15 | - |
-| FR-67 | yes | yes | 19 | - |
+| FR-67 | yes | yes | 20 | - |
 | FR-68 | yes | yes | 8 | - |
 | FR-69 | yes | yes | 3 | - |
 | FR-70 | yes | yes | 7 | - |

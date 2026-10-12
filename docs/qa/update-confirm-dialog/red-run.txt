@@ -1,0 +1,269 @@
+update-confirm-dialog: red run of tasks 2.1 to 2.4 (the test-engineer; the parent confirms the red run and fills section D)
+Written: Mon Oct 12 13:24 +0530 2026 (UTC+5:30), tree = branch claude/laughing-snyder-dialog at 7283cef plus the uncommitted edits listed below.
+Commands: npx vitest run (whole suite, JSON reporter), npx vitest run tests/play-page-confirm-dialog-stylesheet.test.ts, npm run lint, npx tsc --noEmit -p .
+Not run by the test-engineer, by instruction: npx playwright test (the parent runs the e2e red on its own ports).
+
+NOTE ON PRE-EXISTING EDITS: scripts/freeze-design-geometry.mjs and scripts/visual-block.mjs were already modified in the worktree when the test-engineer's
+first `git diff --stat` ran (the opening git status showed only trace/ledger.jsonl). They are not the test-engineer's edits (tasks 3.1 and 3.2, the parent's or a
+sibling's work) and were neither touched nor reverted. The e2e file reads the key shape those edits write (confirmDialog: selectors, coverage, provenance, cases
+with shot, width, height, state, captureBoard, afterLoad "open-confirm", boxes keyed by the four selectors); the fixture itself has NOT been refrozen yet
+(quality/design-geometry.json has the keys $comment, provenance, tolerancePx, selectors, coverage, cases, rulesPanel, setupSheet only).
+
+Files changed by the test-engineer (all under tests/ and e2e/, plus this file):
+  NEW   tests/play-page-confirm-dialog-stylesheet.test.ts   (30 tests)
+  NEW   e2e/nfr-14-confirm-dialog.spec.ts                   (18 tests)
+  EDIT  tests/helpers/css.ts
+  EDIT  tests/play-page-helpers.test.ts
+  EDIT  tests/play-page-theme-stylesheet.test.ts
+  EDIT  tests/play-page-cause-stylesheet.test.ts
+  EDIT  tests/play-page-level-stylesheet.test.ts
+  EDIT  tests/play-page-palette-stylesheet.test.ts
+  EDIT  tests/play-page-stylesheet.test.ts
+  EDIT  tests/play-page-panel-shell-stylesheet.test.ts
+  EDIT  tests/play-page-layout-geometry.test.ts
+  EDIT  tests/play-page-setup-sheet-stylesheet.test.ts
+  EDIT  tests/play-page-rules-panel-stylesheet.test.ts
+
+======================================================================================================
+SECTION A (task 2.1): what reads `.confirm`, and why the planned port keeps it green
+======================================================================================================
+"The rule that is exactly .confirm" = a rule whose selector list is the single selector `.confirm`. The port (design.md decision 6) edits width, padding and
+border-radius INSIDE that rule, adds no second `.confirm` rule, no `.confirm` rule in an at-rule, and no second box-shadow, fill or border colour. The two new
+[data-confirm='yes'|'no'] rules do not contain the text `.confirm`, so no `.confirm` reader sees them.
+
+tests/play-page-panel-shell-stylesheet.test.ts (exactRules(parsed, '.confirm') = selector list exactly `.confirm`):
+  1. l.103-111 "The dialog takes the raised fill and the panel shadow: one rule outside any at-rule": topLevel(exactRules('.confirm')) has length 1; its
+     background-color is var(--color-surface-raised); its box-shadow is exactly `0 1rem 2.5rem var(--color-shadow-panel)`.
+     Kept green: the port touches none of those three declarations and adds no second top-level `.confirm` rule.
+  2. l.113-127 GUARD "the dialog keeps --color-control-border, has one fill, border and shadow at every width, and never takes the overlay border": the top-level
+     rule's border-color is var(--color-control-border); no exactRules('.confirm') rule inside an at-rule declares box-shadow, border-color or background-color;
+     no rule whose selector matches /\.confirm(?![\w-])/ (that is `.confirm`, `.confirm p`, `.confirm::backdrop`; NOT `.confirm-buttons`, NOT the new
+     [data-confirm] rules) contains var(--color-overlay-border) in a declaration value.
+     Kept green: border-color stays; the port declares no .confirm rule in an at-rule; no overlay-border anywhere in the dialog.
+  3. l.149-160 "No shell binding adds a colour literal": the exact rules of .rules, .setup-sheet, .settings and .confirm that declare box-shadow number exactly 7
+     (3 + 3 + the dialog's one). Kept green: the port adds no second box-shadow to .confirm (a second `.confirm` rule with a shadow would make it 8).
+  4. l.162-174 GUARD "the colour scan finds nothing, there is no !important and exactly one :has(": whole stylesheet. Kept green: the two new colour rules use
+     var() only, no literal, no !important, no :has(.
+  5. l.185-192 "The raised fill is covered by pairs: exactly four ... 42 pairs": the pairs with bg --color-surface-raised stay four (the new pair is on
+     --color-violation-bg), only the list length changes 41 -> 42 (DELIBERATE CHANGE, section B).
+tests/play-page-backdrop-stylesheet.test.ts: reads the ::backdrop rules (`.confirm::backdrop { background-color: var(--color-backdrop-strong) }`); the port
+  does not touch that rule.
+e2e/nfr-14-panel-shell.spec.ts: the surface `confirm` reads getComputedStyle of `dialog[data-dialog="confirm"][open]` for background-color, border-top-color and
+  box-shadow only (light/dark x 375x812/1024x768), against the design build. The port changes width, padding and border-radius, none of those three. Border
+  colour stays --color-control-border (rgb(140, 131, 116) light, rgb(138, 127, 113) dark).
+e2e/nfr-14-backdrop.spec.ts: the case `confirm 1024 strong` presses [data-action="new"], waits for dialog[open], and reads the backdrop pixel at the first viewport
+  corner that no page content covers and that is outside the open surface box (2,2 / w-3,2 / 2,h-3 / w-3,h-3); it also reads getComputedStyle(dialog, '::backdrop').
+  The dialog stays centred (margin: auto), so a smaller or larger box does not reach a corner of 1024x768; the ::backdrop rule is untouched.
+Verification of "kept green" (not a claim by reading alone): the whole suite was also run in a scratch copy of the repository (scratchpad tests/port) with
+the planned port applied to the copy's src/ui/style.css (token in both sets, .confirm width/padding/border-radius in place, .confirm p margin, the button metrics, the two
+[data-confirm] rules, one in double quotes and one in single quotes). Result there: every test of the 13 stylesheet files, panel-shell and backdrop-stylesheet included,
+was green; the only failures were 6 files that need files the scratch copy lacks (index.html, design/v0/lib/boards.json, quality/design-paint.json, evals/): capture-fixtures,
+eval-hint-clarity-en, index-html, no-image-assets, play-page-preferences and 2 palette tests that read index.html and design-paint.json. Not a result about the real tree.
+The two playwright specs above were NOT run (instruction).
+
+======================================================================================================
+SECTION B (task 2.2): the token and pair pins. RED = fails on today's stylesheet; GUARD = passes today by design
+======================================================================================================
+Every changed line carries a `DELIBERATE CHANGE (update-confirm-dialog, proposal.md Impact row "<row>")` comment. New line numbers (this tree) first.
+The ordered position of the token is IMMEDIATELY AFTER `--color-focus` and before `--color-backdrop-soft` in every list; TOKEN_NAMES.at(-1) is still
+`--color-option-border`. TRANSLUCENT_TOKENS unchanged (5). No new PairGroup.
+
+tests/helpers/css.ts (row Borders) - the helper is shared; every test that imports it sees the new lists at once, so the helper-only assertions are GUARDs:
+  comment 402            "The 32 colour tokens" -> "The 33 colour tokens ... the one of the confirmation dialog"; history comment 409-414 extended   [comment]
+  TOKEN_NAMES 441        + '--color-violation-ink' after '--color-focus'                                                                    [data of the helper, GUARD]
+  comment 452            "The values of the 32 tokens" -> "The values of the 33 tokens"                                                      [comment]
+  PALETTE_LIGHT 490      + '--color-violation-ink': '#8f1d17'                                                                              [GUARD]
+  PALETTE_DARK 526       + '--color-violation-ink': '#ffb4ab'                                                                              [GUARD]
+  comment 655            "(41 pairs)" -> "(42 pairs)"; history comment 671-674 extended                                                    [comment]
+  CONTRAST_PAIRS 688     + ...pairs('text', 'violation-ink', ['violation-bg'], 4.5) after the violation-text pairs, before primary-text    [GUARD]
+tests/play-page-helpers.test.ts (row Borders) - literal fixtures against the helper: GUARD (green once the helper is changed, as the file says of itself):
+  DESIGN_TOKENS 432      + '--color-violation-ink': '#8f1d17'                                      GUARD
+  l.489                  toHaveLength(32) -> 33                                                    GUARD
+  l.497-498              `... + 16` -> `... + 17`; '41 pairs' toHaveLength(41) -> 42               GUARD
+  DARK_SAMPLE 1538       + '--color-violation-ink': '#ffb4ab'                                      GUARD
+  l.1561                 toHaveLength(32) -> 33 ('the 33 tokens of the G2 palette')                GUARD (parses the fixture text, not the stylesheet)
+tests/play-page-theme-stylesheet.test.ts (row Borders)
+  l.171 title, l.174 toHaveLength(32) -> 33   GUARD on the helper; the loop at l.175-182 is RED:
+     "--color-violation-ink is declared once in :root[data-theme="dark"]: expected [] to have a length of 1 but got +0"
+  l.183 message 'redefines the 32 tokens' -> 33  (RED with the same test)
+tests/play-page-cause-stylesheet.test.ts (row Borders)
+  l.218-221 toHaveLength(41) -> 42 (GUARD), toHaveLength(32) -> 33 (GUARD); the next line (the stylesheet's tokens equal TOKEN_NAMES) is RED:
+     "expected [ '--color-backdrop-soft', …(31) ] to deeply equal [ '--color-backdrop-soft', …(32) ]"
+     (the diff names the missing '--color-violation-ink'; the comparison is the pre-existing one)
+tests/play-page-level-stylesheet.test.ts (row Borders)
+  l.238 toHaveLength(32) -> 33 (GUARD); message l.248 'no 33rd' -> 'no 34th'. The loop is RED:
+     "--color-violation-ink is declared once in :root: expected [] to have a length of 1 but got +0"
+tests/play-page-palette-stylesheet.test.ts (row Borders)
+  l.77 title 32 -> 33. RED: "tokens no declaration outside :root references: expected [ '--color-violation-ink' ] to deeply equal []"
+tests/play-page-stylesheet.test.ts (row Borders)
+  l.101 title, l.103 toHaveLength(33) (GUARD), l.114 message 'declares the 33 tokens' (the #rrggbbaa list stays five names). RED:
+     "--color-violation-ink is declared once in the top-level :root: expected [] to have a length of 1 but got +0"
+  Two further tests of this file go RED as a consequence of the new CONTRAST_PAIRS entry (no edit to them):
+     "The control border has 3:1 and the text pairs have 4.5:1 (light and dark)" and "Every pair holds for the top-level token set, the dark set and every set..."
+     fail with  "expected [ 'text: --color-violation-ink is missing or not #rrggbb' ] to deeply equal []"  (the helper's own message names the token).
+tests/play-page-layout-geometry.test.ts (row Main column)
+  LIGHT 56, DARK 91: + the row; title l.102 and toHaveLength l.106 32 -> 33. RED: the light and dark token sets of the stylesheet (32 keys) do not equal LIGHT/DARK (33 keys):
+     "expected { '--color-page': '#f7f3ea', …(31) } to deeply equal { '--color-page': '#f7f3ea', …(32) }"
+tests/play-page-panel-shell-stylesheet.test.ts (row Panels)
+  l.185 title '41 pairs' -> '42 pairs', l.192 toHaveLength(41) -> 42. GUARD (the count comes from the helper); the four pairs on the raised fill and their ratios unchanged (GUARD).
+tests/play-page-setup-sheet-stylesheet.test.ts (row Borders)
+  l.809 '41 pairs' toHaveLength(41) -> '42 pairs' toHaveLength(42)                       GUARD
+  l.816 TOKEN_NAMES.at(-1) assertion UNCHANGED, message 'the 32nd name of the helper' -> 'the 33rd name of the helper'   GUARD (the token goes after --color-focus)
+tests/play-page-rules-panel-stylesheet.test.ts (row Rules panel)
+  comment l.482-487 (the 33 tokens and 42 pairs since update-confirm-dialog; the older setup-sheet sentence at l.479 stays as history)
+  BASELINE_TOKEN_NAMES l.491-493: '--color-violation-ink', // dialog   after '--color-focus'                       GUARD (compares the two ordered lists)
+  BASELINE_PAIRS l.537: ['text', '--color-violation-ink', '--color-violation-bg', 4.5], // dialog   between violation-text and primary-text   GUARD
+  assertions l.568-570 unchanged in text (they compare the helper with the two literal lists).
+No other pin: `grep -rn "32 token\|the 32\b\|41 pairs\|32nd\|toHaveLength(32)\|toHaveLength(41)\|+ 16" tests e2e scripts evals` now finds only history comments
+(and e2e/nfr-14-setup-sheet.spec.ts:139, the 32 top-level SHOTS of the fixture, which is not a token count).
+
+Section B totals: 8 tests RED in 6 files (theme 1, cause 1, level 1, palette 1, stylesheet 3, layout-geometry 1), every other pin GUARD.
+
+======================================================================================================
+SECTION C (task 2.3): tests/play-page-confirm-dialog-stylesheet.test.ts, 30 tests: 16 RED, 14 GUARD
+======================================================================================================
+How it reads the file: jsdom 29 was probed first (a stub with exactly the pinned declarations): it keeps `width: min(... var() ...)`, expands `padding`/`margin`/
+`flex`/`border-width` into shorthand + longhands, writes `0px` for a bare zero, keeps the quote style of an attribute selector and keeps only the LAST of two
+declarations of a property. So values, "each once" and the old-value checks come from the RAW text of the top-level blocks (comments stripped; local
+topLevelBlocks/rawValues, no export added to tests/helpers/css.ts); the at-rule structure, the colour scan and the token sets come from readStyles().
+The [data-confirm] selectors are matched with the quote style normalised (" -> ').
+
+ #  RED/GUARD  test                                                                                                   failure seen today
+ 1  RED    .confirm width min(22rem, calc(100vw - 2 * var(--page-pad)))      .confirm { width } is min(22rem, calc(100vw - 2 * var(--page-pad))) (found "min(22rem,calc(100vw-32px))")
+ 2  RED    .confirm padding 1.5rem or var(--space-5)                          .confirm { padding } is 1.5rem or var(--space-5) (found "20px")
+ 3  RED    .confirm border-radius var(--radius-l)                             .confirm { border-radius } is var(--radius-l) (found "12px")
+ 4  RED    .confirm holds none of 12px, 20px, 32px in width/padding/radius    .confirm { width: min(22rem,calc(100vw-32px)) } holds none of 12px, 20px and 32px (the old values are gone)
+ 5  GUARD  no `.confirm` rule in an at-rule declares width/padding/border-radius
+ 6  GUARD  --page-pad on #app (1rem; 0.75rem in @media (max-width: 22.5rem)), on no dialog rule
+ 7  RED    .confirm p margin 0 0 1.5rem                                       .confirm p { margin } is 0 0 1.5rem (found "0px0px20px")
+ 8  GUARD  .confirm p line-height 1.5
+ 9  GUARD  .confirm-buttons display flex, wrap-reverse, flex-end, gap 8px|0.5rem
+10  GUARD  .confirm-buttons button flex 1 1 auto, min-height 2.75rem, font-weight 700
+11  RED    .confirm-buttons button padding 0 1rem                             .confirm-buttons button { padding: 0 1rem } is declared once (found 0)
+12  RED    .confirm-buttons button border-width 2px                           ... { border-width: 2px } is declared once (found 0)
+13  RED    .confirm-buttons button border-radius var(--radius-m)              ... { border-radius: var(--radius-m) } is declared once (found 0)
+14  RED    .confirm-buttons button line-height 1.2                            ... { line-height: 1.2 } is declared once (found 0)
+15  RED    [data-confirm='yes']: color/background-color/border-color once, single var()        exactly one top-level rule whose selector contains [data-confirm='yes']: expected [] to have a length of 1 but got +0
+16  RED    [data-confirm='yes']: no outline, outline-color, box-shadow, opacity               (same message; red because the rule is missing)
+17  RED    [data-confirm='no']: color/background-color/border-color once, single var()         ... contains [data-confirm='no']: expected [] to have a length of 1 but got +0
+18  RED    [data-confirm='no']: no outline, outline-color, box-shadow, opacity                (same message)
+19  GUARD  --color-violation-ink on --color-violation-bg and --color-primary-text on --color-primary each in CONTRAST_PAIRS once, group text, at 4.5 (the helper)
+20  RED    text pairs per token set: ink/violation-bg 7.34 light 8.40 dark; primary-text/primary 5.40 and 8.55; each >= 4.5     light: --color-violation-ink is declared in the token set
+21  RED    --color-violation-ink declared in both sets, #rrggbb (#8f1d17 / #ffb4ab), not translucent                              light: --color-violation-ink is declared in the token set
+22  GUARD  ink is in exactly one pair (with violation-bg); no pair of --color-violation-border with --color-surface-raised (either order)
+23  GUARD  recorded frame ratio --color-violation-border on --color-surface-raised 6.43 light, 6.54 dark (the scenario says "(recorded)")
+24  RED    a declaration outside :root has the value var(--color-violation-ink)                                                    declarations outside :root with the value var(--color-violation-ink): expected [] to not deeply equal []
+25  GUARD  colour scan over the rules mentioning .confirm / [data-confirm (no literal, named colour, color-mix(, every colour a single declared var())
+26  GUARD  no transition/animation/transform/opacity; none in prefers-reduced-motion or @starting-style (no @starting-style anywhere); no :hover/:active
+27  GUARD  no !important; :has( exactly once in the raw text
+28  GUARD  shell guard: exactly one top-level rule exactly `.confirm`; background-color, border-color, box-shadow `0 1rem 2.5rem var(--color-shadow-panel)` once each
+29  GUARD  shell guard: no `.confirm` rule in an at-rule declares a fill, border colour or shadow
+30  GUARD  `.confirm::backdrop` background-color var(--color-backdrop-strong); no dialog rule declares var(--color-overlay-border)
+Tests 15-18 are red today because the rules they read do not exist; after the port they read the declarations (a wrong token, a doubled declaration, an outline or an
+opacity then fails with the property named).
+
+======================================================================================================
+SECTION B/C RUN SUMMARY (npx vitest run, whole suite, tree as of 13:24 +0530)
+======================================================================================================
+Test Files: 7 failed | 73 passed (80 incl. the new one)      Tests: 24 failed | 1955 passed (1979)     (after only the section B edits the suite was 1949 tests, 8 red; the tree before any edit was not run)
+  24 failed = 8 (section B pins) + 16 (section C). Every failure is an AssertionError (the 24 messages are above); none is an import, syntax, type or reference error:
+  grep -cE "TypeError|ReferenceError|SyntaxError|Cannot find|Failed to resolve" over the vitest output and the JSON report: 0 and 0.
+npm run lint: exit 0, no output after the script banner.      npx tsc --noEmit -p . (tsconfig includes src, tests, e2e): exit 0, no diagnostics.
+A simulated port in a scratch copy (see section A) turned all 24 green (and left every other test of the 13 stylesheet files green), so none of the 24 is red for a
+reason the port cannot fix; tests 15-18 were checked with one rule in double quotes and one in single quotes.
+
+npm run check:trace (run once, then its two generated files docs/qa/traceability-report.md and trace/trace.json were restored with git checkout, outside the test-engineer's
+remit): "traceability: 115 MVP FRs checked - 0 failure(s)"; the new files were counted (FR-65 49 -> 50, FR-67 19 -> 20). The parent's own run regenerates them.
+
+======================================================================================================
+SECTION D (task 2.4): e2e/nfr-14-confirm-dialog.spec.ts, 18 tests (project `layout`); NOT RUN by the test-engineer. The parent fills the actual run.
+======================================================================================================
+Type-check and lint of the file: clean (tsc -p ., npm run lint). Expected today, with quality/design-geometry.json NOT yet refrozen and design/v0/out built:
+
+ #   test                                                                                         expected today                     what it should fail on
+ 1   design build required + coverage declared (sampling dimensions, sampled, instruments)         GUARD green                        (fails with the `pnpm build` instruction if design/v0/out/index.html is missing)
+ 2   fixture keeps 32 top-level shots, tolerance, hashes, rulesPanel 8 / setupSheet 12 cases       GUARD green
+ 3   fixture holds the key confirmDialog (selectors, sampled, provenance, 5 shots, structure)      RED until task 3.1 ("... has no key "confirmDialog": run `BINARKA_PORT_BASE=<your base> node scripts/freeze-design-geometry.mjs` ...");
+                                                                                                after 3.1 it asserts 296x218 / 343x166 / 352x166, «Скасувати» above «Так, почати» at 320 (246x44), one row elsewhere
+ 4-8 320/375/768/1024/1440-light-confirm: boxes of dialog, p, yes, no vs the recorded design      RED until 3.1 (message pushed to the problems array after the dialog is loaded and asserted [open]: "no confirmDialog case <shot>: run ... freeze ...");
+                                                                                                after 3.1, until the port (task 3.3 predicts): the dialog 288 wide at 320 (design 296), 210 high (218), 156 (166) at 375, buttons 46 tall, «Скасувати» y off
+ 9   design server on an OS-chosen port, not a capture port                                       GUARD green
+ 10-13 paint light/dark x 375x812/1024x768: color, background-color, border-top-color, 2px        RED: page «Скасувати» is the base button fill rgb(255, 253, 248) (light), not the primary rgb(180, 70, 13); «Так, почати» lacks the violation fill/frame;
+                                                                                                border-top-width 1px against 2px. The design side is pinned to the spec literals (a drift of the design build fails with "the design's X is not the spec's Y").
+ 14-18 targets at the five viewports: both buttons >= 44 wide, 44 tall within 0.5                RED: each button is 46 tall ("46.00 px tall, 44 required within 0.5 px ... the old base-button padding made it 46")
+Counts: 15 RED today (1 key + 5 boxes + 4 paint + 5 targets), 3 GUARD (1, 2, 9); after the port and task 3.1 all 18 should pass.
+The file declares SAMPLING (dimensions viewport and colour scheme; the five confirm viewports in light for boxes and targets; the two schemes at 375x812 and 1024x768 for paint;
+coverage `sampled`), names scripts/visual-block.mjs (block `confirm`) and npm run check:visual as the stricter instruments, and its first test reads its own text for the
+phrases it must not claim (assembled in the code so the check does not match itself).
+Never skipped: a missing key or a missing design build throws or fails with the instruction.
+
+SECTION D RUN (filled by the parent, the dialog session, 2026-10-12 13:30-13:31 UTC+5:30), BINARKA_PORT_BASE=6373, after `npm run build`; the tree is
+the red tests on 7283cef (the freeze script edited but NOT run, so quality/design-geometry.json has no key confirmDialog). Command:
+`npx playwright test --project=layout e2e/nfr-14-confirm-dialog.spec.ts --reporter=list`. Result: 15 failed, 3 passed (the 3 GUARDs predicted above).
+
+== port check before
+2026-10-12 13:30:50
+lsof 6373: 
+lsof 6374: 
+lsof 6375: 
+lsof 6376: 
+lsof 6377: 
+build ok
+design/v0/out/index.html
+== npx playwright test --project=layout e2e/nfr-14-confirm-dialog.spec.ts (BINARKA_PORT_BASE=6373)
+  ✘   2 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:278:1 › @trace NFR-14 @trace FR-67 the fixture holds the key confirmDialog: the four selectors, sampled coverage, its own provenance and the 5 cases with the recorded structure (3ms)
+  ✓   3 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:244:1 › @trace NFR-14 the design build is required and the coverage is declared: sampling dimensions, coverage sampled, the stricter instruments named, nothing beyond a sample claimed (6ms)
+  ✓   1 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:266:1 › @trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes (6ms)
+  ✘   7 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 1024-light-confirm (1024x768): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (268ms)
+  ✘   6 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 1440-light-confirm (1440x900): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (304ms)
+  ✘   4 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 320-light-confirm (320x700): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (322ms)
+  ✘   5 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 375-light-confirm (375x812): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (274ms)
+  ✘   8 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 768-light-confirm (768x1024): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (263ms)
+  ✘  12 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 768x1024: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (226ms)
+  ✘  11 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 1024x768: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (223ms)
+  ✘   9 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 375x812: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (234ms)
+  ✘  10 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 320x700: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (231ms)
+  ✘  13 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 1440x900: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (204ms)
+  ✓  17 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:439:3 › paint: both buttons against the design build › @trace NFR-14 the design server listens on a port chosen by the operating system, not on one the page preview or the capture tools bind (4ms)
+  ✘  14 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:452:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (359ms)
+  ✘  15 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:452:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (363ms)
+  ✘  16 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:452:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (365ms)
+  ✘  18 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:452:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (264ms)
+    Error: quality/design-geometry.json has no key "confirmDialog": run `BINARKA_PORT_BASE=<your base> node scripts/freeze-design-geometry.mjs` (task 3.1 of openspec/changes/update-confirm-dialog/tasks.md; design/v0/out must be built) to add the key confirmDialog to quality/design-geometry.json
+    Error: 320-light-confirm: 1 problem(s)
+    Error: 375-light-confirm: 1 problem(s)
+    Error: 768-light-confirm: 1 problem(s)
+    Error: 1024-light-confirm: 1 problem(s)
+    Error: 1440-light-confirm: 1 problem(s)
+    Error: light 375x812: the buttons' paint differs from the design
+    Error: light 1024x768: the buttons' paint differs from the design
+    Error: dark 375x812: the buttons' paint differs from the design
+    Error: dark 1024x768: the buttons' paint differs from the design
+    Error: 320x700: 2 problem(s)
+    Error: 375x812: 2 problem(s)
+    Error: 768x1024: 2 problem(s)
+    Error: 1024x768: 2 problem(s)
+    Error: 1440x900: 2 problem(s)
+  15 failed
+  3 passed (7.6s)
+== port check after
+2026-10-12 13:31:02
+lsof 6373: 
+lsof 6374: 
+lsof 6375: 
+lsof 6376: 
+lsof 6377: 
+
+Failure messages read on a second run of three cases (`-g "320-light-confirm|320x700|light 375x812"`, same ports, all five free after):
+- 320-light-confirm (boxes): "quality/design-geometry.json has no confirmDialog case 320-light-confirm: run `BINARKA_PORT_BASE=<your base> node
+  scripts/freeze-design-geometry.mjs` (task 3.1 ...)": the missing fixture, as task 2.4 requires (never a skip). The fixture-key test fails with the
+  same freeze instruction.
+- 320x700 (targets): "«Так, почати»: 46.00 px tall, 44 required within 0.5 px (box 37.00,388.00 246.00x46.00 ...)" and the same for «Скасувати»
+  (37.00,334.00): an assertion on the old 46px height; «Скасувати» already lies above «Так, почати» at 320 (wrap-reverse).
+- light 375x812 (paint): 8 differences, e.g. "«Так, почати» ... color: page rgb(30, 33, 38) against design rgb(143, 29, 23)", "... border-top-width: page
+  1px against design 2px", "«Скасувати» ... background-color: page rgb(255, 253, 248) against design rgb(180, 70, 13)": assertions on the unpainted buttons.
+No failure is an import, syntax or type error.
+
+RED RUN CONFIRMED BY THE PARENT (task 2.5), 2026-10-12 13:31: `npx vitest run` 24 failed | 1955 passed (1979), 7 files failed of 80, every failure an
+AssertionError (the parent's own run, the same 24 as section B and C); the e2e above 15 failed, 3 passed. Task 3.3 re-runs the geometry part after the freeze.
+

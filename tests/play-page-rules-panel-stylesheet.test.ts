@@ -479,11 +479,18 @@ describe('The inner metrics are the design\'s', () => {
 // 32 tokens and 41 pairs (the setup sheet's --color-option-border, decoration in no pair, and the three ring pairs of FR-65, marked «setup sheet»
 // below). This block still adds none; the guard keeps comparing the helper with the baseline list, as its re-scoped scenario says — proposal.md of
 // update-setup-sheet, Impact row «The rules panel takes the design's size, place and paint» (the user's decision of 2026-10-12).
+// DELIBERATE CHANGE (update-confirm-dialog, proposal.md Impact row «Rules panel»: `tests/play-page-rules-panel-stylesheet.test.ts` comment 476-481, `BASELINE_TOKEN_NAMES` 482-489,
+// `BASELINE_PAIRS` 490-532, assertions 560-561): the baseline list of «Borders, cues and focus rings have enough contrast» is now 33 tokens and 42 pairs (the dialog's
+// `--color-violation-ink` right after `--color-focus`, and its pair `violation-ink` on `violation-bg` after the `violation-text` pairs and before `primary-text`, both marked «dialog»
+// below; the order is the helper's, because the guard compares ordered lists). This block still adds none; the guard keeps comparing the helper with the baseline list. GUARD:
+// it compares two lists that are both changed here (the helper and the literal copy), so it is green; it fails if either list drifts from the other.
 const BASELINE_TOKEN_NAMES = [
   '--color-page', '--color-text', '--color-text-muted', '--color-cell-bg', '--color-control-bg', '--color-line', '--color-cell-border', '--color-control-border',
   '--color-given-bg', '--color-given-border', '--color-given-text', '--color-entry-text', '--color-primary', '--color-primary-text', '--color-primary-soft',
   '--color-hover-ring', '--color-violation-bg', '--color-violation-border', '--color-violation-stripe', '--color-violation-text', '--color-success',
-  '--color-success-bg', '--color-success-glow', '--color-win-text', '--color-focus', '--color-backdrop-soft', '--color-backdrop-strong',
+  '--color-success-bg', '--color-success-glow', '--color-win-text', '--color-focus',
+  '--color-violation-ink', // dialog
+  '--color-backdrop-soft', '--color-backdrop-strong',
   '--color-surface-raised', '--color-overlay-border', '--color-shadow-panel', '--color-shadow-sheet',
   '--color-option-border', // setup sheet
 ];
@@ -527,6 +534,7 @@ const BASELINE_PAIRS: [string, string, string, number][] = [
   ['text', '--color-text-muted', '--color-surface-raised', 4.5],
   ['text', '--color-violation-text', '--color-violation-bg', 4.5],
   ['text', '--color-violation-text', '--color-violation-stripe', 4.5],
+  ['text', '--color-violation-ink', '--color-violation-bg', 4.5], // dialog
   ['text', '--color-primary-text', '--color-primary', 4.5],
   ['text', '--color-win-text', '--color-success-bg', 4.5],
 ];

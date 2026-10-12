@@ -24,6 +24,9 @@ import { BLANK_4, PAIR_ROW, WIN_MESSAGE, bySize, clickCell, generateSpy, install
 // DELIBERATE CHANGE (update-setup-sheet): both copies gain the setup-sheet row `--color-option-border` (light `#c4b59c`, dark `#5a5045`), 32 tokens in each set, and the title and the length
 // check are 32 — proposal.md Impact row «Main column layout geometry follows the design reference» (`tests/play-page-layout-geometry.test.ts` 22-23, `LIGHT` 24, `DARK` 57, 92, 96). Red on
 // today's stylesheet: both sets hold 31 tokens.
+// DELIBERATE CHANGE (update-confirm-dialog): both copies gain the dialog row `--color-violation-ink` (light `#8f1d17`, dark `#ffb4ab`) right after `--color-focus`, 33 tokens in each set, and
+// the title and the length check are 33 — proposal.md Impact row «Main column» (`tests/play-page-layout-geometry.test.ts` `LIGHT` 27-60, `DARK` 61-94, 97, 101). Red on today's
+// stylesheet: both sets hold 32 tokens and lack `--color-violation-ink`.
 const LIGHT: Record<string, string> = {
   '--color-page': '#f7f3ea',
   '--color-text': '#1e2126',
@@ -50,6 +53,7 @@ const LIGHT: Record<string, string> = {
   '--color-success-glow': '#2f6b3a73',
   '--color-win-text': '#1e2126',
   '--color-focus': '#1e2126',
+  '--color-violation-ink': '#8f1d17',
   '--color-backdrop-soft': '#46280f38',
   '--color-backdrop-strong': '#2d190a80',
   '--color-surface-raised': '#fffdf8',
@@ -84,6 +88,7 @@ const DARK: Record<string, string> = {
   '--color-success-glow': '#8fd19a73',
   '--color-win-text': '#f1ede4',
   '--color-focus': '#f1ede4',
+  '--color-violation-ink': '#ffb4ab',
   '--color-backdrop-soft': '#08050273',
   '--color-backdrop-strong': '#08050299',
   '--color-surface-raised': '#2c2620',
@@ -94,11 +99,11 @@ const DARK: Record<string, string> = {
 };
 
 describe('@trace NFR-14 @trace FR-65 the main column takes the G2 palette', () => {
-  it('Colours are the G2 palette: the light and dark token sets equal the 32 tokens and values of the table (25 of block 2, 2 backdrops, 4 shell tokens, 1 setup-sheet token), and no other --color-* is declared', () => {
+  it('Colours are the G2 palette: the light and dark token sets equal the 33 tokens and values of the table (25 of block 2, 2 backdrops, 4 shell tokens, 1 setup-sheet token, 1 dialog token), and no other --color-* is declared', () => {
     const [light, dark] = themeTokenSets(readStyles());
     expect(light?.tokens).toEqual(LIGHT);
     expect(dark?.tokens).toEqual(DARK);
-    expect(Object.keys(LIGHT)).toHaveLength(32);
+    expect(Object.keys(LIGHT)).toHaveLength(33);
   });
 });
 

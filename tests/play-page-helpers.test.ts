@@ -400,6 +400,8 @@ describe('play-page seed helpers and constants', () => {
  * DELIBERATE CHANGE (update-setup-sheet): the fixture follows `TOKEN_NAMES` again, now 32 names: the light row `--color-option-border` `#c4b59c` of the spec's
  * table (the fixture gains the row; GUARD on the helper, red until `TOKEN_NAMES` and `PALETTE_LIGHT` have the 32nd name) — proposal.md Impact row «Borders, cues
  * and focus rings have enough contrast» (`DESIGN_TOKENS` 400-432).
+ * DELIBERATE CHANGE (update-confirm-dialog): the fixture follows `TOKEN_NAMES` again, now 33 names: the light row `--color-violation-ink` `#8f1d17` of the spec's table,
+ * after `--color-focus` (GUARD on the helper, which carries the same row) — proposal.md Impact row «Borders» (`DESIGN_TOKENS` 404-437).
  */
 const DESIGN_TOKENS: Record<string, string> = {
   '--color-page': '#f7f3ea',
@@ -427,6 +429,7 @@ const DESIGN_TOKENS: Record<string, string> = {
   '--color-success-glow': '#2f6b3a73',
   '--color-win-text': '#1e2126',
   '--color-focus': '#1e2126',
+  '--color-violation-ink': '#8f1d17',
   '--color-backdrop-soft': '#46280f38',
   '--color-backdrop-strong': '#2d190a80',
   '--color-surface-raised': '#fffdf8',
@@ -479,8 +482,11 @@ describe('css helper: contrastRatio and rgbOf', () => {
   // (4 cell border + 4 violation cue + 1 cause cue + 5 hinted cue + 9 focus ring + 2 control border + 16 text): the three ring pairs — proposal.md Impact row
   // «Borders, cues and focus rings have enough contrast» (`play-page-helpers.test.ts` 470-471, 474, 480-481). GUARD on the helper: it runs on literals and the
   // helper, so it is green once `tests/helpers/css.ts` has the 32nd name and the three pairs.
+  // DELIBERATE CHANGE (update-confirm-dialog): the fixture and the helper hold 33 names (the 33rd, `--color-violation-ink`, after `--color-focus`), and CONTRAST_PAIRS holds
+  // 42 pairs (4 cell border + 4 violation cue + 1 cause cue + 5 hinted cue + 9 focus ring + 2 control border + 17 text): the dialog pair `violation-ink` on `violation-bg` —
+  // proposal.md Impact row «Borders» (`play-page-helpers.test.ts` 483, 491-492). GUARD on the helper: it runs on literals and the helper, both changed here.
   it('the design token values meet every pair (3 for borders, cues and rings, 4.5 for text)', () => {
-    expect(TOKEN_NAMES).toHaveLength(32);
+    expect(TOKEN_NAMES).toHaveLength(33);
     expect(Object.keys(DESIGN_TOKENS).sort()).toEqual([...TOKEN_NAMES].sort());
     expect(PALETTE_LIGHT, 'the helper holds the light values of the spec table, backdrops and shell tokens included').toEqual(DESIGN_TOKENS);
     expect(contrastProblems(DESIGN_TOKENS)).toEqual([]);
@@ -488,8 +494,9 @@ describe('css helper: contrastRatio and rgbOf', () => {
     expect(contrastRatio('#1e2126', '#847b6d')).toBeCloseTo(3.87, 2);
     // DELIBERATE CHANGE (update-setup-sheet): `4 + 4 + 1 + 3 + 9 + 1 + 16` becomes `4 + 4 + 1 + 5 + 9 + 2 + 16` and 38 becomes 41 (the three ring pairs) — proposal.md
     // Impact row «Borders, cues and focus rings have enough contrast» (`play-page-helpers.test.ts` 480-481).
-    expect(CONTRAST_PAIRS).toHaveLength(4 + 4 + 1 + 5 + 9 + 2 + 16);
-    expect(CONTRAST_PAIRS, 'the list holds 41 pairs (update-panel-shell: 35 + the 3 on --color-surface-raised; update-setup-sheet: + the 3 ring pairs)').toHaveLength(41);
+    // DELIBERATE CHANGE (update-confirm-dialog): `… + 16` becomes `… + 17` and 41 becomes 42 (the pair `--color-violation-ink` on `--color-violation-bg`) — proposal.md Impact row «Borders».
+    expect(CONTRAST_PAIRS).toHaveLength(4 + 4 + 1 + 5 + 9 + 2 + 17);
+    expect(CONTRAST_PAIRS, 'the list holds 42 pairs (update-panel-shell: 35 + the 3 on --color-surface-raised; update-setup-sheet: + the 3 ring pairs; update-confirm-dialog: + the dialog pair)').toHaveLength(42);
   });
 
   // update-page-palette (delta «Borders, cues and focus rings have enough contrast», scenario «Cell borders have 3:1»): the pair of the cell
@@ -1499,6 +1506,8 @@ describe('the generator spies record the level in a parallel array', () => {
  * `injectPageStyles(DARK_SAMPLE)` leaves `var(--color-surface-raised)` uninlined.
  * DELIBERATE CHANGE (update-setup-sheet): the sample gains the dark row `--color-option-border` `#5a5045` (32 keys) — proposal.md Impact row «Borders, cues and focus
  * rings have enough contrast» (`DARK_SAMPLE` 1444-1476). Without it `PALETTE_DARK` equal to the sample fails (32 against 31 keys).
+ * DELIBERATE CHANGE (update-confirm-dialog): the sample gains the dark row `--color-violation-ink` `#ffb4ab` after `--color-focus` (33 keys) — proposal.md Impact row
+ * «Borders» (`DARK_SAMPLE` 1503-1536). GUARD on the helper: `PALETTE_DARK` carries the same row.
  */
 const DARK_SAMPLE: Record<string, string> = {
   '--color-page': '#1a1714',
@@ -1526,6 +1535,7 @@ const DARK_SAMPLE: Record<string, string> = {
   '--color-success-glow': '#8fd19a73',
   '--color-win-text': '#f1ede4',
   '--color-focus': '#f1ede4',
+  '--color-violation-ink': '#ffb4ab',
   '--color-backdrop-soft': '#08050273',
   '--color-backdrop-strong': '#08050299',
   '--color-surface-raised': '#2c2620',
@@ -1548,7 +1558,8 @@ describe('css helper: the dark attribute block is a token set (add-theme-switch,
     // was 13 (update-page-palette, proposal.md Impact row `:1068`); 27 with the two backdrops (update-page-backdrop, delta 1, proposal.md Impact row `:1193`)
     // DELIBERATE CHANGE (update-panel-shell, delta 1; proposal.md Impact row `tests/play-page-helpers.test.ts:1431-1432`): 31 with the four shell tokens
     // DELIBERATE CHANGE (update-setup-sheet): 32 with the setup-sheet token — proposal.md Impact row «Borders, cues and focus rings have enough contrast» (`play-page-helpers.test.ts` 1490)
-    expect(parsed.tokenDeclarations, 'the 32 tokens of the G2 palette').toHaveLength(32);
+    // DELIBERATE CHANGE (update-confirm-dialog): 33 with the dialog token — proposal.md Impact row «Borders» (`play-page-helpers.test.ts` 1551). GUARD on literals: the parsed text is the fixture.
+    expect(parsed.tokenDeclarations, 'the 33 tokens of the G2 palette').toHaveLength(33);
     expect(parsed.darkTokenDeclarations.map((d) => d.property)).toEqual(['--color-page', '--color-text']);
     expect(darkRootRules(parsed)).toHaveLength(1);
     expect(darkRootRules(parsed)[0]?.declarations.find((d) => d.property === 'color-scheme')?.value).toBe('dark');

@@ -1179,6 +1179,7 @@
         "tests/play-page-backdrop-stylesheet.test.ts",
         "tests/play-page-cause-stylesheet.test.ts",
         "tests/play-page-cause-stylesheet.test.ts",
+        "tests/play-page-confirm-dialog-stylesheet.test.ts",
         "tests/play-page-layout-geometry.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts",
@@ -1255,6 +1256,7 @@
       ],
       "planned": true,
       "tests": [
+        "tests/play-page-confirm-dialog-stylesheet.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",
         "tests/play-page-confirm.test.ts",

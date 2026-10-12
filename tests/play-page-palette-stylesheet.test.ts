@@ -72,7 +72,9 @@ describe('Borders, cues and focus rings have enough contrast (the G2 palette)', 
   // reads `TOKEN_NAMES`, so it now requires the four shell tokens to be bound by a rule outside `:root`. Red on today's stylesheet: no rule references them.
   // DELIBERATE CHANGE (update-setup-sheet): only the title "31" becomes "32"; the body reads `TOKEN_NAMES`, so it now requires `--color-option-border` to be bound by a rule outside
   // `:root` — proposal.md Impact row «Borders, cues and focus rings have enough contrast» (`tests/play-page-palette-stylesheet.test.ts` 71-73). Red on today's stylesheet: no rule references it.
-  it('Every declared token is bound by a rule: each of the 32 tokens is referenced by a declaration outside :root', () => {
+  // DELIBERATE CHANGE (update-confirm-dialog): only the title "32" becomes "33"; the body reads `TOKEN_NAMES`, so it now requires `--color-violation-ink` to be bound by a rule outside
+  // `:root` — proposal.md Impact row «Borders» (`tests/play-page-palette-stylesheet.test.ts` 75). Red on today's stylesheet: no rule references it.
+  it('Every declared token is bound by a rule: each of the 33 tokens is referenced by a declaration outside :root', () => {
     const parsed = readStyles();
     const declarations = outsideRoot(parsed).flatMap((r) => r.declarations.map((d) => ({ where: r.selectors.join(', '), ...d })));
     expect(declarations.length, 'the walk found declarations').toBeGreaterThan(50);

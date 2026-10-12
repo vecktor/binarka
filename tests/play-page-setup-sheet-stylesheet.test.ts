@@ -804,12 +804,16 @@ describe('The ring pairs and the option border token (update-setup-sheet, FR-65,
     expect(groupOf('--color-primary', '--color-control-bg'), 'the dot pair is in group hinted-cue, once').toEqual(['hinted-cue']);
     expect(groupOf('--color-primary', '--color-surface-raised'), 'the checked border pair is in group hinted-cue, once').toEqual(['hinted-cue']);
     expect([...new Set(CONTRAST_PAIRS.map((p) => p.group))].sort(), 'no new PairGroup').toEqual(['cause-cue', 'cell-border', 'control-border', 'focus-ring', 'hinted-cue', 'text', 'violation-cue']);
-    expect(CONTRAST_PAIRS, '41 pairs').toHaveLength(41);
+    // DELIBERATE CHANGE (update-confirm-dialog): '41 pairs' becomes 42 (the dialog pair `violation-ink` on `violation-bg`, group `text`; this test's three ring pairs and the
+    // group list are unchanged) — proposal.md Impact row «Borders» (`tests/play-page-setup-sheet-stylesheet.test.ts` 807). GUARD: the count comes from the helper, changed here.
+    expect(CONTRAST_PAIRS, '42 pairs').toHaveLength(42);
   });
 
   // Scenario «The available card's border is decoration and in no pair», first clause. Red today: the token is not declared.
   it('The available card border is decoration: --color-option-border is #c4b59c / #5a5045, not translucent, 1.98 / 1.98 (light) and 2.06 / 1.90 (dark), and in no pair', () => {
-    expect(TOKEN_NAMES.at(-1), 'the 32nd name of the helper').toBe('--color-option-border');
+    // GUARD (update-confirm-dialog, proposal.md Impact row «Borders»): the assertion is UNCHANGED, `--color-violation-ink` goes after `--color-focus`, so the last name of the helper is
+    // still `--color-option-border`; only the message follows the count (it is now the 33rd name).
+    expect(TOKEN_NAMES.at(-1), 'the 33rd name of the helper').toBe('--color-option-border');
     expect(TRANSLUCENT_TOKENS.has('--color-option-border'), 'not a translucent token').toBe(false);
     const want: Record<string, { value: string; onCard: number; onSheet: number }> = {
       light: { value: '#c4b59c', onCard: 1.98, onSheet: 1.98 },

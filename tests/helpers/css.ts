@@ -399,8 +399,8 @@ export function scanSystemColours(parsed: ParsedStyles): string[] {
 // ---------------------------------------------------------------------------------------------------------
 
 /**
- * The 32 colour tokens of the G2 palette (A-57 appendix; the table of the spec delta of update-panel-shell), in the order of that table: the 25 of
- * the main column (block 2), the two backdrops (block 3), the four of the panel shell and the one of the setup sheet. update-page-palette (delta «Borders, cues and focus rings have
+ * The 33 colour tokens of the G2 palette (A-57 appendix; the table of the spec delta of update-confirm-dialog), in the order of that table: the 25 of
+ * the main column (block 2), the two backdrops (block 3), the four of the panel shell, the one of the setup sheet and the one of the confirmation dialog. update-page-palette (delta «Borders, cues and focus rings have
  * enough contrast»): this was the 13 baseline names. DELIBERATE CHANGE (update-page-backdrop, delta 1 «Borders, cues and focus rings have enough contrast»;
  * proposal.md Impact row `tests/helpers/css.ts` `TOKEN_NAMES` 366-370): 27 names, the table's last two rows `--color-backdrop-soft` and
  * `--color-backdrop-strong`. DELIBERATE CHANGE (update-panel-shell, delta 1 «Borders, cues and focus rings have enough contrast»; proposal.md Impact row
@@ -408,6 +408,9 @@ export function scanSystemColours(parsed: ParsedStyles): string[] {
  * its rows from the appendix.
  * DELIBERATE CHANGE (update-setup-sheet): 32 names, the setup-sheet row `--color-option-border` last (decoration, A-60; in no pair) — proposal.md Impact row
  * «Borders, cues and focus rings have enough contrast» (`TOKEN_NAMES` ~410).
+ * DELIBERATE CHANGE (update-confirm-dialog, proposal.md Impact row «Borders»: `tests/helpers/css.ts` comments 402, 409, 448, `TOKEN_NAMES` 412-444): 33 names, the
+ * dialog row `--color-violation-ink` IMMEDIATELY AFTER `--color-focus` and before `--color-backdrop-soft` (design.md decision 2), so `TOKEN_NAMES.at(-1)` stays
+ * `--color-option-border` (GUARD: tests/play-page-setup-sheet-stylesheet.test.ts:812).
  */
 export const TOKEN_NAMES = [
   '--color-page',
@@ -435,6 +438,7 @@ export const TOKEN_NAMES = [
   '--color-success-glow',
   '--color-win-text',
   '--color-focus',
+  '--color-violation-ink',
   '--color-backdrop-soft',
   '--color-backdrop-strong',
   '--color-surface-raised',
@@ -445,7 +449,7 @@ export const TOKEN_NAMES = [
 ] as const;
 
 /**
- * The values of the 32 tokens, light (the top-level `:root`) and dark (`:root[data-theme="dark"]`), written out of the table of the spec delta
+ * The values of the 33 tokens, light (the top-level `:root`) and dark (`:root[data-theme="dark"]`), written out of the table of the spec delta
  * of update-panel-shell (the 25 rows of update-page-palette, the two backdrop rows and the four shell rows) and of the appendix to A-57 in
  * docs/requirements.md. The stylesheet tests compare the file with them; the contrast ratios are computed from the stylesheet, never from these (they
  * are expectations, not inputs). DELIBERATE CHANGE (update-page-backdrop, delta 1; proposal.md Impact row `tests/helpers/css.ts` `PALETTE_LIGHT` 399-403,
@@ -454,6 +458,8 @@ export const TOKEN_NAMES = [
  * shell rows of the appendix, light `#fffdf8`, `#e2dbcc`, `#00000040`, `#0000002e`; dark `#2c2620`, `#8a7f71`, `#00000040`, `#0000002e`.
  * DELIBERATE CHANGE (update-setup-sheet): the setup-sheet row of the appendix, `--color-option-border`, light `#c4b59c`, dark `#5a5045` — proposal.md Impact row
  * «Borders, cues and focus rings have enough contrast» (`PALETTE_LIGHT` 453, `PALETTE_DARK` 487).
+ * DELIBERATE CHANGE (update-confirm-dialog, proposal.md Impact row «Borders»: `PALETTE_LIGHT` 458-491, `PALETTE_DARK` 493-526): the dialog row of the appendix,
+ * `--color-violation-ink`, light `#8f1d17`, dark `#ffb4ab` (opaque, not translucent), after `--color-focus`.
  */
 export const PALETTE_LIGHT: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-page': '#f7f3ea',
@@ -481,6 +487,7 @@ export const PALETTE_LIGHT: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-success-glow': '#2f6b3a73',
   '--color-win-text': '#1e2126',
   '--color-focus': '#1e2126',
+  '--color-violation-ink': '#8f1d17',
   '--color-backdrop-soft': '#46280f38',
   '--color-backdrop-strong': '#2d190a80',
   '--color-surface-raised': '#fffdf8',
@@ -516,6 +523,7 @@ export const PALETTE_DARK: Record<(typeof TOKEN_NAMES)[number], string> = {
   '--color-success-glow': '#8fd19a73',
   '--color-win-text': '#f1ede4',
   '--color-focus': '#f1ede4',
+  '--color-violation-ink': '#ffb4ab',
   '--color-backdrop-soft': '#08050273',
   '--color-backdrop-strong': '#08050299',
   '--color-surface-raised': '#2c2620',
@@ -644,7 +652,7 @@ const pairs = (group: PairGroup, fg: string, bgs: string[], min: number): Contra
   bgs.map((bg) => ({ group, fg: `--color-${fg}`, bg: `--color-${bg}`, min }));
 
 /**
- * Every pair of FR-65 in the G2 palette: 3 for borders, cues and rings, 4.5 for text (41 pairs). update-page-palette (delta «Borders, cues and
+ * Every pair of FR-65 in the G2 palette: 3 for borders, cues and rings, 4.5 for text (42 pairs). update-page-palette (delta «Borders, cues and
  * focus rings have enough contrast»): the given-cue group and the cell-border pair against the given fill go (a given cell is inactive, A-57),
  * the board plate, the solved plate, the hinted cue, the violation text on the stripe, the focus ring on the cell border and the win text on the
  * success plate come in. No pair names a translucent token.
@@ -660,6 +668,10 @@ const pairs = (group: PairGroup, fg: string, bgs: string[], min: number): Contra
  * `--color-primary` on `--color-control-bg` and on `--color-surface-raised` (group `hinted-cue`); 38 pairs became 41, no new `PairGroup`,
  * `TRANSLUCENT_TOKENS` unchanged; no pair names `--color-option-border` (decoration, A-60) — proposal.md Impact row «Borders, cues and focus rings have
  * enough contrast» (`CONTRAST_PAIRS` 653-667, `PairGroup` 627).
+ * DELIBERATE CHANGE (update-confirm-dialog, scenario «The dialog's warning text has 4.5:1 and its frame is decoration»; proposal.md Impact row «Borders»:
+ * `CONTRAST_PAIRS` 664-678, comment 647): one text pair, `--color-violation-ink` on `--color-violation-bg` (7.34 light, 8.40 dark), after the `violation-text` pairs and
+ * before `primary-text`; 41 pairs became 42 (17 text), no new `PairGroup`, `TRANSLUCENT_TOKENS` unchanged. No pair of `--color-violation-border` with
+ * `--color-surface-raised`: the dialog's red frame is decoration (A-62, 6.43 / 6.54, recorded, in no pair).
  */
 export const CONTRAST_PAIRS: ContrastPair[] = [
   ...pairs('cell-border', 'cell-border', ['page', 'cell-bg', 'line', 'success-bg'], 3),
@@ -673,6 +685,7 @@ export const CONTRAST_PAIRS: ContrastPair[] = [
   ...pairs('text', 'entry-text', ['cell-bg'], 4.5),
   ...pairs('text', 'text-muted', ['page', 'cell-bg', 'control-bg', 'surface-raised'], 4.5),
   ...pairs('text', 'violation-text', ['violation-bg', 'violation-stripe'], 4.5),
+  ...pairs('text', 'violation-ink', ['violation-bg'], 4.5),
   ...pairs('text', 'primary-text', ['primary'], 4.5),
   ...pairs('text', 'win-text', ['success-bg'], 4.5),
 ];

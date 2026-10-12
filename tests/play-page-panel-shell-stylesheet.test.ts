@@ -179,14 +179,17 @@ describe('The panels take the shared surface paint (update-panel-shell)', () => 
   // "38 pairs" becomes 41, and the ratio loop gains `--color-primary` (5.40 light, 6.82 dark) — proposal.md Impact row «The panels take the shared surface paint»
   // (`tests/play-page-panel-shell-stylesheet.test.ts` comment 175-177, `it` 178-195). The pair-list half is a GUARD of the helper (green once `tests/helpers/css.ts` is changed);
   // the ratios come from the stylesheet's tokens and stay green here (every token of the four ratios is declared today).
-  it('The raised fill is covered by pairs: exactly four, with the recorded ratios in the light and the dark set; no pair names the border or a shadow; 41 pairs', () => {
+  // DELIBERATE CHANGE (update-confirm-dialog): the title and the count "41 pairs" become 42 (the dialog pair `violation-ink` on `violation-bg`); the pairs on the raised fill stay
+  // exactly four — proposal.md Impact row «Panels» (`tests/play-page-panel-shell-stylesheet.test.ts` 182, 189). GUARD: the count comes from the helper, changed here; no
+  // new pair is on `--color-surface-raised`, so the four-pair list and the ratios are unchanged.
+  it('The raised fill is covered by pairs: exactly four, with the recorded ratios in the light and the dark set; no pair names the border or a shadow; 42 pairs', () => {
     const onRaised = CONTRAST_PAIRS.filter((p) => p.bg === RAISED);
     expect(
       onRaised.map((p) => `${p.group}: ${p.fg} at ${p.min}`).sort(),
       'the pairs on the raised fill (helper list, GUARD once task 2.1 is done)',
     ).toEqual(['focus-ring: --color-focus at 3', 'hinted-cue: --color-primary at 3', 'text: --color-text at 4.5', 'text: --color-text-muted at 4.5']);
     expect(CONTRAST_PAIRS.filter((p) => [OVERLAY, SHADOW_PANEL, SHADOW_SHEET].some((n) => p.fg === n || p.bg === n))).toEqual([]);
-    expect(CONTRAST_PAIRS, 'the list holds 41 pairs (GUARD of the helper)').toHaveLength(41);
+    expect(CONTRAST_PAIRS, 'the list holds 42 pairs (GUARD of the helper)').toHaveLength(42);
     const want: Record<string, [number, number, number, number]> = { light: [15.88, 7.17, 15.88, 5.4], dark: [12.79, 6.96, 12.79, 6.82] };
     for (const set of themeTokenSets(readStyles())) {
       const fill = tokenIn(set, RAISED);

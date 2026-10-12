@@ -12,6 +12,8 @@
 // pair count is now 38 and the token count 31 (see the test that reads them).
 // DELIBERATE CHANGE (update-setup-sheet): the pair count is now 41 and the token count 32 (see the test that reads them) — proposal.md Impact row
 // «Borders, cues and focus rings have enough contrast» (`tests/play-page-cause-stylesheet.test.ts` comments 12 and 209).
+// DELIBERATE CHANGE (update-confirm-dialog): the pair count is now 42 and the token count 33 (see the test that reads them) — proposal.md Impact row «Borders»
+// (`tests/play-page-cause-stylesheet.test.ts` 216, 217).
 //
 // How a rule is read (design.md decision 6): `declarationsFor` merges every rule of a selector, the forced-colours rule being later in the file, so
 // the top-level `.cell-cause::after` is read alone (empty context) and the forced-colours rule alone (its `@media` context). The values are compared
@@ -213,8 +215,10 @@ describe('@trace FR-65 Borders, cues and focus rings have enough contrast: the c
     // declares 27 tokens.
     // DELIBERATE CHANGE (update-setup-sheet): 38 becomes 41 (the three ring pairs; GUARD, it comes from the helper) and 31 becomes 32 (`--color-option-border`; red on
     // today's stylesheet, which declares 31) — proposal.md Impact row «Borders, cues and focus rings have enough contrast» (`tests/play-page-cause-stylesheet.test.ts` 212-213).
-    expect(CONTRAST_PAIRS, 'the list holds 41 pairs').toHaveLength(41);
-    expect(TOKEN_NAMES, 'the mark has no token of its own: the 32 of the table').toHaveLength(32);
+    // DELIBERATE CHANGE (update-confirm-dialog): 41 becomes 42 (the dialog pair `violation-ink` on `violation-bg`; GUARD, it comes from the helper) and 32 becomes 33
+    // (`--color-violation-ink`; GUARD on the helper, the RED line is the stylesheet comparison below, which declares 32) — proposal.md Impact row «Borders».
+    expect(CONTRAST_PAIRS, 'the list holds 42 pairs').toHaveLength(42);
+    expect(TOKEN_NAMES, 'the mark has no token of its own: the 33 of the table').toHaveLength(33);
     expect(Object.keys(readStyles().tokens).filter((name) => name.startsWith('--color-')).sort()).toEqual([...TOKEN_NAMES].sort());
   });
 
