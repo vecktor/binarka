@@ -123,13 +123,16 @@ const TOP_LEVEL_SELECTORS = [
   '[data-message="hint"]',
   '[data-message="win"]',
 ];
-const TOP_LEVEL_DESIGN_COMMIT = '5e61bfd14de56bff4b3726db4ddd624fcd3c2e04';
-const TOP_LEVEL_DESIGN_CSS_SHA1 = 'd1b1255f4dff205d15d64850096429cd377e5fbf';
+const TOP_LEVEL_DESIGN_COMMIT = '41c51651e832cae79b58ce7b492a3550e43f19da';
+const TOP_LEVEL_DESIGN_CSS_SHA1 = '8115024412a8e6c6d135136183fae458489597d0';
 // Review gate fix round 1, finding A: the other blocks' keys, pinned as their recorded cases (SHA-1 of JSON.stringify of the parsed cases,
 // read from main's quality/design-geometry.json at 18e5f3f) and recorded provenance, so adding settingsPanel can change neither.
+// DELIBERATE CHANGE (design stream DS of wave 3, 2026-10-12; A-60 amended and signed, the user moved the NFR-14 reference to review-set-15): design
+// iteration 17 changed the design, so the refreeze writes its provenance (designBuildSha1 of that build) into every key. rulesPanel keeps the cases
+// of 18e5f3f (the 28px moves no rules panel box); setupSheet's cases are the iteration-17 refreeze's (docs/qa/design-stream/refreeze.txt).
 const OTHER_KEYS = [
-  { key: 'rulesPanel', count: 8, casesSha1: 'f70bb8c08a4415002cdd011efb40153047b4a75d', designBuildSha1: 'c3f5f81e5dacbad72f6f26085a4750d4e695598c' },
-  { key: 'setupSheet', count: 12, casesSha1: '8a3992e41569ea4cbdc6f80feb5c0fe0c005abed', designBuildSha1: 'd1193198f7b4e58f412f0ad576ca32683f99e1c4' },
+  { key: 'rulesPanel', count: 8, casesSha1: 'f70bb8c08a4415002cdd011efb40153047b4a75d', designBuildSha1: 'PENDING-REFREEZE' },
+  { key: 'setupSheet', count: 12, casesSha1: 'PENDING-REFREEZE', designBuildSha1: 'PENDING-REFREEZE' },
 ] as const;
 
 const isBox = (v: unknown): v is Box => {
@@ -144,12 +147,12 @@ const caseOf = (shot: string): SettingsCase | undefined => fixture.settingsPanel
 // Part 1: the fixture
 // ---------------------------------------------------------------------------------------------------------
 
-test('@trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED, nothing else changes)', () => {
+test('@trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 17, review-set-15)', () => {
   expect(fixture.cases, 'the top-level cases of quality/design-geometry.json').toHaveLength(32);
   expect(fixture.tolerancePx).toBe(TOLERANCE);
   expect(fixture.selectors).toEqual(TOP_LEVEL_SELECTORS);
-  expect(fixture.provenance.designCommit, 'the top-level provenance keeps the design commit').toBe(TOP_LEVEL_DESIGN_COMMIT);
-  expect(fixture.provenance.designCssSha1, 'the top-level provenance keeps the design CSS hash').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 17').toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 17').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
 });
 
 // DELIBERATE CHANGE (update-settings-panel, review gate fix round 1, finding A; the scenario «The panel, the controls and «Закрити» match the
