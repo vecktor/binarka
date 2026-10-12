@@ -264,7 +264,7 @@
     {
       "slice": "2026-10-12-update-settings-panel",
       "reviewEvidence": "missing",
-      "trailerCommits": 18,
+      "trailerCommits": 19,
       "libDomains": [
         "ui"
       ],

@@ -39,7 +39,7 @@ Result: PASS, 28 warning(s)
 | 2026-10-11-update-panel-shell | **unclean** | 1 | yes | ui |
 | 2026-10-11-update-rules-panel | **unclean** | 6 | yes | ui |
 | 2026-10-12-update-confirm-dialog | clean | 5 | yes | ui |
-| 2026-10-12-update-settings-panel | **missing** | 18 | yes | ui |
+| 2026-10-12-update-settings-panel | **missing** | 19 | yes | ui |
 | 2026-10-12-update-setup-sheet | clean | 56 | yes | ui |
 
 ## Cross-slice module overlap
