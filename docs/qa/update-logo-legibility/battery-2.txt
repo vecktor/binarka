@@ -24,3 +24,10 @@ FAIL  [active-changes] active change "update-logo-legibility" is not archived
 traceability: 115 MVP FRs checked — 1 failure(s), 0 warning(s)
 wrote docs/qa/traceability-report.md and trace/trace.json
 exit: 1
+
+## NFR-14 (in force), drawing G against review-set-14, BINARKA_PORT_BASE=6873, 2026-10-12 17:43 +0530
+npm run check:visual: Result FAIL, exit 1. 156 of 170 at 0.98, the same as run 14 (docs/qa/g2/check-visual-run-14.txt): the same 14 shots fail
+  (the 12 phone setup shots of the signed SQ-5 departure; the 2 logo shots, no state driver on this base). Every shot that passed in run 14 still
+  passes; per-shot change against run 14 over the 168 scored shots: min -0.0031, max -0.0012, mean -0.0022 (the logo's pixels; the reference
+  still holds the sun). Output: check-visual-drawG.txt. The committed per-shot reports (docs/qa/visual-diff/) were restored to run 14.
+npx playwright test e2e/nfr-14-*.spec.ts: 207 passed, exit 0 (e2e-nfr14-drawG.txt), with the re-frozen paint fixture.

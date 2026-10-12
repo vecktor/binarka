@@ -573,3 +573,13 @@ Fresh vision-judges could not tell the logo's bars from rings at 40×40 CSS px (
 - **Capture:** `v0-screenshots/logo-drawing-b/` (170 shots, `SHA1SUMS` SHA-1 `6a5b35929a07faee27b0c4fd8cbe0b94bd429953`; `run-2.SHA1SUMS` equal 170 of 170). Before the change, a capture of this design equalled `review-set-14` on 170 of 170 (`recapture-of-set-14.SHA1SUMS`). Against set 14 every shot changes, each only inside the logo's box (at most 128 × 128 device px; the two logo-sheet shots across the three marks): `CHANGES`. `PREDICTION.txt` expected some shots to have the logo covered and unchanged; there were none.
 - **Renamed (same day):** first written as `review-set-15/`; that name belongs to the 28px design of the DS stream (`docs/handoff/delivery-plan-2026-10-12.md`), so this working set is `logo-drawing-b/` and is not a reference candidate. A fresh vision-judge found drawing B still not legible at 40 px (run `wf_ae715072-b48`, `docs/qa/vision-probe/logo-40-verdicts.json`).
 - **Not done:** no design-reviewer round on this iteration. The NFR-14 reference stays `review-set-14` until the user moves it.
+
+### Iteration 18: the logo on a rounded square tile, by the orchestrator (2026-10-12, change `update-logo-legibility`)
+
+Drawing B failed the vision check (above). The user chose drawing G from four candidates (`docs/qa/update-logo-legibility/options-3-40px-dpr2.png`) and signed the FR-72 amendment (the board on a rounded square tile, no circle, no rays; this departs from UX decision 10's sun).
+
+- **`components/binarka-page.tsx`:** `Logo`: one `rect.logo-tile` (64 × 64, `rx` 14, `currentColor`) replaces the twelve rays and the disc; cells 26 units (`rx` 4, at 4 and 34); `LogoDigit`: bar 7 × 18 with square ends (`rx` 0.8), ring `rx` 6, `ry` 8, stroke 5. `RAY_COUNT` removed. Colours unchanged (the tile takes the disc's colour).
+- **Paint fixture:** `scripts/freeze-design-paint.mjs` names `logo-tile` in place of `logo-tooth` and `logo-disc`; `quality/design-paint.json` re-frozen from this design (only those keys move).
+- **Capture:** working set `v0-screenshots/logo-drawing-g/` (170 shots, `SHA1SUMS` SHA-1 `6bc5118bd34d23771a9c7a169a09109421f034d2`, `run-2.SHA1SUMS` equal 170 of 170). Against set 14 every shot changes, only inside the logo's box: `CHANGES`. Not a reference candidate by itself: `review-set-15` is the DS stream's 28px design, so the next reference set has to carry both changes. The user moves the reference.
+- **Vision:** the page's 40 px logo of drawing G was judged legible by a fresh vision-judge (run `wf_a5ad04e1-c59`); NFR-15 moved into `docs/requirements.md`.
+- **Not done:** no design-reviewer round on this iteration.
