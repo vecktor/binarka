@@ -1,0 +1,11 @@
+# fix-reset-keeps-hint review fix round 1, Mon Oct 12 22:05:17 +0530 2026
+Run wf_2b1c80fe-f30 (6b08d5a..da3e7b5): 1 confirmed, 1 contested (a no-action coverage summary), 4 rejected.
+Confirmed: the «Confirmation before discarding player entries» requirement said «Так, почати» performs the action «exactly as it would on an untouched board»; fixed by a second MODIFIED requirement in the change (full effect; the reading rule names the Reset exception). Spec only, no code.
+
+## npx openspec validate --all --strict
+✓ spec/play-page
+✓ spec/puzzle-engine
+Totals: 3 passed, 0 failed (3 items)
+
+## npx vitest run tests/play-page-rules-and-reset.test.ts
+      Tests  22 passed (22)

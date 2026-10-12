@@ -13,5 +13,5 @@ Fix round 1 of the Phase 7 global review gate, stream F (branch `claude/friendly
 
 ## 3. Review and archive
 
-- [ ] 3.1 Review gate on the slice range (the user's yes). Evidence: `openspec/changes/fix-reset-keeps-hint/review-findings.json`.
+- [x] 3.1 Review gate on the slice range (the user's yes, «Review, then archive»): run `wf_2b1c80fe-f30`, 1 confirmed (spec wording of «Confirmation before discarding player entries»), fixed in one fix round by a second MODIFIED requirement. Evidence: `openspec/changes/fix-reset-keeps-hint/review-findings.json`, `docs/qa/fix-reset-keeps-hint/fix-round-1.txt`.
 - [ ] 3.2 Archive with `npx openspec archive fix-reset-keeps-hint` on the user's yes. Evidence: `docs/qa/fix-reset-keeps-hint/archive.txt`.

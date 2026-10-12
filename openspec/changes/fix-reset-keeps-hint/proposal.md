@@ -9,9 +9,10 @@ The user decided on 2026-10-12 at about 21:50 (UTC+5:30), in the question form: 
 ## What Changes
 
 - **`play-page` spec, MODIFIED (1): «Reset button».** It defines an untouched board (no non-given cell holds a digit, including a hint-filled cell clicked back to empty) and scopes the clearing duties to a board with entries. One scenario added: «Reset on a board emptied again after a hint keeps the hint sentence».
+- **`play-page` spec, MODIFIED (2): «Confirmation before discarding player entries»** (review fix round 1, run `wf_2b1c80fe-f30`): «Так, почати» performs the pending action with its full effect (no longer «exactly as it would on an untouched board», which for Reset now means no change), and the reading rule notes that «Скинути» on a board without entries is no change.
 - **`src/ui/play-page.ts`:** the reset handler does nothing on a board without entries (it already asked nothing there).
 - **`tests/play-page-rules-and-reset.test.ts`:** one test per N for the new scenario, written first (red).
 
 ## Impact
 
-- FR-58 (no wording change). No other requirement, no engine change, no CSS change, so no NFR-14 shot changes.
+- FR-58 (no wording change). No other requirement id, no engine change, no CSS change, so no NFR-14 shot changes.
