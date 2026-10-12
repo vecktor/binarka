@@ -14,7 +14,7 @@ Pending tags are written as `verify: <tag> (pending: …)`. Amendment markers ca
 
 | ID | Phase | Area | Description | Verification |
 |---|---|---|---|---|
-| NFR-15 | MVP | Usability | The logo is legible at 40 px: the four digits of the 2×2 mini board «1 0 / 0 1» can be told apart at 40×40 CSS px, and the logo carries no text. (UX decision 10) (numbered NFR-14 until 2026-10-08) | verify: vision-verify (pending: no `check:vision` mechanism exists; slice H builds the script and it must be seen failing first) |
+| NFR-15 | MVP | Usability | The logo is legible at 40 px: the four digits of the 2×2 mini board «1 0 / 0 1» can be told apart at 40×40 CSS px, and the logo carries no text. (UX decision 10) (numbered NFR-14 until 2026-10-08) | verify: vision-verify (pending: `npm run check:vision` exists (phase H, 2026-10-12) and was seen failing; fresh vision-judges found the 40 px header logo not legible at device pixel ratio 1 (run `wf_8838166c-9f7`) and 2 (run `wf_d236b692-54b`), `docs/qa/vision-probe/logo-40-verdicts.json`; held on the user's decision of 2026-10-12 until a logo-fix slice passes) |
 
 Notes on the held NFRs (the notes on NFR-7, NFR-10, NFR-12 and NFR-13 stay as history after their move on 2026-10-09; the sampling they run is in `docs/qa/g1/README.md`):
 

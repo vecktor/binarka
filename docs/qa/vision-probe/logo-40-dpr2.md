@@ -2,7 +2,7 @@
 
 **Proves:** NFR-15, FR-72
 
-**Result:** asserted ✓
+**Result:** asserted ✓ (the DOM assertions: size, ratio, no text). **Vision: NOT met** at ratio 2 and at ratio 1 — see `logo-40-verdicts.json`; NFR-15 stays held.
 
 **Video:** [16-logo-40.webm](logo-40-dpr2.webm) · recorded by `scripts/record-demos.mjs` against its own `vite preview` of the built page.
 
