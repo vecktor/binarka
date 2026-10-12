@@ -1,13 +1,13 @@
 # ADR-0006: A given cell is told apart by its weight, not by a border
 
-Status: **PROPOSED, for the user's review.** Written 2026-10-11 by session C of the parallel G2 plan, on the user's word (autonomy-log row 170: «write palette decision 4»). The decision itself was signed on 2026-10-10 at about 23:27 (PA-Q1 «A: the design's cue», autonomy-log row 157) and is implemented and archived (`openspec/changes/archive/2026-10-10-update-page-palette/design.md`, decision 4). This ADR records it. It changes nothing.
+Status: **ACCEPTED by the user** in chat on 2026-10-12 at about 16:45 (UTC+5:30), through the question form: «Accept all four (Recommended)» (stream P of wave 3, `docs/qa/process-stream/session-log.md` row P13; line pointers refreshed to `2762e31` before the review). Before that: **PROPOSED, for the user's review.** Written 2026-10-11 by session C of the parallel G2 plan, on the user's word (autonomy-log row 170: «write palette decision 4»). The decision itself was signed on 2026-10-10 at about 23:27 (PA-Q1 «A: the design's cue», autonomy-log row 157) and is implemented and archived (`openspec/changes/archive/2026-10-10-update-page-palette/design.md`, decision 4). This ADR records it. It changes nothing.
 
 ## Context
 
 - Before G2 block 2, the spec's given cue was a 2px border in its own colour, at 3:1 against the cell, the page and the given fill, with bold digits (700). FR-65 asked 3:1 for every cell cue.
 - The design (`review-set-14`) draws a given cell with a 1px border in the ordinary cell-border colour, the given fill, a darker ink and weight 800. None of these is a 3:1 non-text cue: the fill is 1.46:1 (light) and 1.70:1 (dark) against an ordinary cell.
 - Keeping the 2px border would have kept the board shots below NFR-14's 0.98 until a design round drew that border and the user moved the reference (palette amendment, PA-Q1 B).
-- A given cell is `aria-disabled` (FR-69; `src/ui/play-page.ts:260`). WCAG 1.4.11 does not ask 3:1 of an inactive user-interface component.
+- A given cell is `aria-disabled` (FR-69; `src/ui/play-page.ts:267`). WCAG 1.4.11 does not ask 3:1 of an inactive user-interface component.
 
 ## Decision
 
