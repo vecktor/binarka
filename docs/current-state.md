@@ -6,9 +6,27 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-12 15:01 (UTC+5:30; Kyiv 12:31)
-- **Working branch:** `main` = `claude/musing-bhaskara-settings` (worktree `.claude/worktrees/musing-bhaskara-342556`, the WAVE-2 SETTINGS SESSION), rebased onto `origin/main` `27cef3e` (the dialog block) and fast-forwarded into local `main` on the user's word (row 204) and **pushed** (row 205); every commit signed (`git log --format=%G? 27cef3e..main`). Pre-rebase backup branch `backup/update-settings-panel-pre-rebase`; commit map `docs/qa/update-settings-panel/rebase-1.txt`.
-- **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 wave-2 settings session (rows 201 to 205), START HERE:**
+- **Date and time:** 2026-10-12 15:15 (UTC+5:30; Kyiv 12:45)
+- **Working branch:** `claude/peaceful-dijkstra-delivery-plan` (worktree `.claude/worktrees/peaceful-dijkstra-2dc39e`, the DELIVERY-PLANNING SESSION), rebased onto `origin/main` `0ed5550` (wave 2 merged and pushed, row 205); not merged. Pre-rebase head kept on `backup/delivery-plan-prerebase-de41f90`.
+- **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 delivery-planning session (rows 206 to 209), START HERE:**
+  - **The plan for the rest of the app:** `docs/handoff/delivery-plan-2026-10-12.md`; section 0 holds the re-measurement after wave 2. Start prompts for wave 3: `docs/handoff/delivery-wave3-start-prompts-2026-10-12.md` (P process, DS design 28px, R recordings and vision: all three can start now; F final, last).
+  - **Measured on `0ed5550`** (`docs/qa/delivery-plan/after-wave2/*.txt`; the first measurement on `9304d2c` is in `docs/qa/delivery-plan/*.txt`):
+    - visual: run 14 has **156 of 170**. The 14 left are the 12 phone setup shots (the 28px margin) and the 2 logo shots (no driver). No shot sits between 0.98 and 0.99.
+    - acceptance artifact FAIL: it enforces 0.99 because its config key is dead (P-THR), and the logo shots have `score: null`.
+    - recordings NOT-EARNED (0 clips).
+    - coverage PASS after `npm run test:coverage` (unit 1993).
+    - traceability release FAIL 115 (recordings only).
+    - trajectory release FAIL 28: 24 not-clean or missing reviews, 3 folders without `design.md`, freshness. The settings slice's review file is in `docs/qa/update-settings-panel/`, not in its archive, and has no `clean` field: the third time this slip has happened.
+    - integrity PASS; process ratchet NOT-EARNED; correct PASS.
+    - So G4 FAIL (acceptance artifact only), G5 PASS after coverage, G6 and G7 FAIL.
+  - **Decided by the user** (plan section 7):
+    - **move the design to 28px** (the user moves the reference to a new `review-set-15`; pictures in `docs/qa/delivery-plan/sq5/`);
+    - G7 history: **PD, signed dispositions** (no `clean` flipped by hand, no archived folder edited);
+    - **acceptance reads 0.98**, **a logo state driver**, **review ADRs 0006 to 0009** (PD-7 declined);
+    - **CI adds e2e and a11y**.
+  - **Next:** the user merges this branch, then starts P (port base 6573), DS (6773) and R (6673) in parallel, and F (6873) last. Longest chain: P → DS part 2 → F, beside R → H → F; about 3 sessions (plan section 5).
+  - **Scope NOT delivered:** plan section 6. No gate PASS is claimed by this session; no file under `src/`, `tests/`, `e2e/`, `scripts/` or `openspec/` changed.
+  - Earlier: **2026-10-12 wave-2 settings session (rows 201 to 205):**
   - **Block D `update-settings-panel` is ARCHIVED, merged into `main` and pushed** (rows 204, 205): `openspec/changes/archive/2026-10-12-update-settings-panel/` (+1 ADDED «The settings panel takes the design's size, place and paint», ~4 MODIFIED), with `docs/qa/update-settings-panel/review-findings.json` (review `wf_9a5a34f4-ca8`: 7 confirmed, 3 contested, 4 rejected, none a product defect in `src/`; fix round 1 on the user's word, `docs/qa/update-settings-panel/fix-round-1.txt`).
   - The settings panel has the design's size, place and paint (A-61): the phone sheet `max-height` `60vh` then `55dvh`, padding `1.5rem 1rem calc(1rem + env(safe-area-inset-bottom))`, `padding-top: 1rem` at 22.5rem and narrower; the theme and language options take the size options' segmented paint in the same literal forms (the chosen one bold with the `--color-primary` frame on `--color-primary-soft`; theme options grow by content, language options equal halves); «Закрити» sticky with the mask, 44px; `.settings:popover-open` `scroll-padding-bottom: calc(2.75rem + 2rem + 4px + env(safe-area-inset-bottom))` (2px over the signed minimum on the user's word). `src/ui/style.css` only; no token, no pair (33 tokens, 42 pairs, as the dialog left them).
   - Evidence, all in `docs/qa/update-settings-panel/`: `folder-audit.md` (prep audit + the re-audit), `red-run.txt` (11 unit + 20 e2e red on assertions, then on the boxes), `refreeze.txt`, `green-run.txt`, `battery.txt` (on the rebased tree: unit 1993, e2e 323, a11y 67), `smoke-test.txt` (built-in browser; real Tab walks at three short windows), `visual-block-settings.txt` (26 shots pixel 1, geometry 0 of 6 off), `run-vs-previous.txt`, `stills/vision-verdict.txt` (15/15), `review-findings.json`, `fix-round-1.txt`, `rebase-1.txt`, `session-log.md`.

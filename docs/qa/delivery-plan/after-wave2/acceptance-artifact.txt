@@ -1,0 +1,8 @@
+$ node scripts/check-acceptance-methods.mjs --mode=artifact
+# run 2026-10-12 15:12 +0530 on 6713ec2 (main 0ed5550 + this branch's docs)
+Scope: 132 tagged requirement(s)
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.99
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.99
+acceptance (artifact): 132 contract(s) across 132 requirement(s) — 2 failure(s), 0 warning(s), 0 pending
+Result: FAIL
+# exit 1

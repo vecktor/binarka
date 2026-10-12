@@ -1,0 +1,5 @@
+$ node scripts/correct.mjs --check
+# run 2026-10-12 15:12 +0530 on 6713ec2 (main 0ed5550 + this branch's docs)
+Scope: 5 correction signal(s)
+Result: PASS
+# exit 0

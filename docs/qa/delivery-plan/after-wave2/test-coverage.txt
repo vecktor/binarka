@@ -1,0 +1,10 @@
+$ npm run test:coverage
+# run 2026-10-12 15:12 +0530 on 6713ec2
+ Test Files  81 passed (81)
+      Tests  1993 passed (1993)
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s            
+Statements   : 97.51% ( 1297/1330 )
+Branches     : 91.96% ( 687/747 )
+Functions    : 98.19% ( 163/166 )
+Lines        : 99.33% ( 1050/1057 )
+# exit 0

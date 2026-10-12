@@ -1,14 +1,13 @@
 # Start prompts: wave 3 of the delivery plan (2026-10-12)
 
-Written by the planning session `peaceful-dijkstra-2dc39e` (branch `claude/peaceful-dijkstra-delivery-plan`) on 2026-10-12, autonomy-log rows 196 to 198. The plan is `docs/handoff/delivery-plan-2026-10-12.md` (measured state, units, dependencies, the user's decisions in section 7). Paste each prompt into its own new session.
+Written by the planning session `peaceful-dijkstra-2dc39e` (branch `claude/peaceful-dijkstra-delivery-plan`) on 2026-10-12, autonomy-log rows 206 to 209 (re-checked after wave 2 merged, plan section 0). The plan is `docs/handoff/delivery-plan-2026-10-12.md` (measured state, units, dependencies, the user's decisions in section 7). Paste each prompt into its own new session.
 
 **Order.**
 1. The user merges `claude/peaceful-dijkstra-delivery-plan` into `main` and pushes, so these prompts are on `main`.
-2. **Now, beside wave 2:** the process session (P) and the design session (DS, part 1). They share no file with the dialog and settings sessions.
-3. **After the settings session merges:** the recordings session (R). It can write its script earlier, but its final take needs the final page.
-4. **Last, serial:** the final session (F), after D, S, P, DS and R have merged.
+2. **Now (wave 2 is merged, `0ed5550`):** the process session (P), the design session (DS, part 1) and the recordings session (R), in parallel. They own different files (plan section 4).
+3. **Last, serial:** the final session (F), after P, DS and R have merged.
 
-Merge order: dialog, settings, P, DS, R, F. P has no product code and may merge earlier. Whoever merges after P rebases and re-seals the lock for their own locked-file change.
+Merge order: P, DS, R, F (the dialog and settings blocks are already on `main`). P has no product code and may merge earlier. Whoever merges after P rebases and re-seals the lock for their own locked-file change.
 
 **Shared rules (every prompt below includes them by reference; read them).**
 - Work in your own worktree on a branch named `claude/<name>-<stream>`. `git fetch origin`, `git merge --ff-only origin/main`, confirm with `git log -1 --format=%h`. `npm ci` if node_modules is missing. If you capture the design: in `design/v0`, `npm_config_manage_package_manager_versions=false pnpm install --frozen-lockfile`, then `npm_config_manage_package_manager_versions=false pnpm build`.
@@ -35,7 +34,7 @@ Your work, in this order. Each item is one PD with a red proof, the user's appro
 2. P-LOGO: a `logo` state driver in `scripts/check-visual-parity-adapters.mjs`. It shows the page's own header logo SVG at 40, 56 and 64 px in the layout of the design's `/logo/` sheet (`design/v0/app/logo/page.tsx` and its CSS). No `src/` change. Red: today's `score: null` on `logo-light` and `logo-dark`. Green: both shots scored on your own base. Report their scores; do not commit `docs/qa/visual-diff/` reports.
 3. P-TRAJ: `scripts/check-trajectory.mjs` accepts `clean: true`, OR a signed disposition `docs/qa/review-dispositions/<slice>.json` where every confirmed finding has a fix commit that exists in git or a waiver signed by the user, and no product-code defect is open. It also accepts a signed waiver for a missing `design.md`.
    - NEVER flip `clean` by hand and never edit an archived change folder.
-   - Compile the 23 dispositions from the archived `review-findings.json` files. The plan's section 2.4 has the per-slice table; the palette's fixes are mapped from autonomy-log row 160, `2fc41d5` and `faf0b91`.
+   - Compile the 24 dispositions: the 23 archived `review-findings.json` files plus the settings slice's, which was saved as `docs/qa/update-settings-panel/review-findings.json` (not in its archive folder) without a `clean` field. Make the check name a misplaced or field-less review file (this slip happened three times: palette, backdrop, settings). The plan's section 2.4 has the per-slice table; the palette's fixes are mapped from autonomy-log row 160, `2fc41d5` and `faf0b91`.
    - `update-segmented-focus-ring-wording` was never reviewed: ask the user for one review-gate run on its range, instead of a waiver.
    - Give the user ONE table to sign, in one sitting.
    - Red: today's 26 release failures. Green: `node scripts/check-trajectory.mjs --release` exits 0 after the signatures.
@@ -48,7 +47,7 @@ Not in your scope: PD-7 (declined by the user on 2026-10-12), any `src/` change,
 
 ---
 
-## DS: the design session, the 28px level margin (part 1 now; part 2 after the settings session and P merge, and after the user moves the reference)
+## DS: the design session, the 28px level margin (part 1 now; part 2 after P merges and the user moves the reference)
 
 ```text
 You are continuing Бінарка (Project Factory). AGENTS.md applies. You are the DESIGN SESSION (stream DS) of wave 3 of the delivery plan: you move the design to the product's signed 28px level margin, so the 12 phone setup shots can pass NFR-14.
@@ -61,7 +60,7 @@ Part 1 (now; touches `design/` only):
 3. Capture a new set `design/v0-screenshots/review-set-15/` (170 shots, same conditions, with `SHA1SUMS`). Prove that every shot outside the setup states is byte-identical to `review-set-14` (per-file SHA1). List the setup shots that changed. An unstable re-capture is a harness defect: stop and report it.
 4. Ask the user, in one question form: move the NFR-14 reference to `review-set-15`, and sign the A-60 wording (the 28px stops being a departure from the design). Do not move it yourself.
 
-Part 2 (after the settings session and P have merged, and after the user's move): rebase onto `main`.
+Part 2 (after P has merged and the user has moved the reference): rebase onto `main`.
 1. Re-point the NFR-14 row (set id and SHA1) and `quality/visual-parity.config.json` (`referenceDir`, `referenceSha1sums`). The config is locked: this is a PD with a re-seal, after P's re-seal.
 2. Remove the recorded deviation (`scripts/setup-sheet-deviation.mjs`, its use in `scripts/freeze-design-geometry.mjs` and `scripts/visual-block.mjs`, and the guard tests). Red first for any test that changes, with each change traced to the signed A-60 wording.
 3. Refreeze `setupSheet` with the freeze script (never hand-merge `quality/design-geometry.json`).
@@ -71,7 +70,7 @@ Part 2 (after the settings session and P have merged, and after the user's move)
 
 ---
 
-## R: the recordings and vision session (script now; final take after the settings session merges; H after P merges)
+## R: the recordings and vision session (now; H after P merges)
 
 ```text
 You are continuing Бінарка (Project Factory). AGENTS.md applies. You are the RECORDINGS SESSION (stream R) of wave 3 of the delivery plan: the recorded proofs (G6, G7) and Phase H (`check:vision`, NFR-11 and NFR-15).
@@ -84,7 +83,7 @@ Your work:
    - Page FRs go through the page. Engine FRs go through FR-119 capture boards where the page shows them (violations, the win, the hint). Add one CLI clip: it runs `src/cli.ts`, asserts its English text, and shows that output in the clip.
    - Settle before every still. Commit `docs/qa/demo-recordings/` (manifest, webm, png, md).
    - Green: `node scripts/check-recordings.mjs` PASS and `node scripts/check-traceability.mjs --release --strict-tests --strict-recordings` with 0 `recording-evidence` failures.
-   - Take the final recording only after the settings session has merged. DS changes no `src/`, so no re-take is needed after it.
+   - The settings session has merged, so the page is final; DS changes no `src/`, so no re-take is needed after it.
 2. Phase H.
    - Write `scripts/check-vision.mjs` and the npm script `check:vision`. They read the vision verdicts in the manifests and `docs/qa/vision-report.json`, and must never print a PASS over Scope 0.
    - Run the `vision-verify` workflow with a fresh vision-judge over the stills: the four cell states (violation, given, player entry, hinted) in both schemes for NFR-11, and the header logo at 40 px for NFR-15.
@@ -103,7 +102,7 @@ Not in your scope: `src/` changes. If a clip cannot assert an FR without one, st
 ```text
 You are continuing Бінарка (Project Factory). AGENTS.md applies. You are the FINAL SESSION (stream F) of wave 3 of the delivery plan. You run the release battery and hand the gates to the user.
 
-Start only when the dialog, settings, P, DS and R branches are merged into `main` (check `docs/current-state.md`). If one is missing, stop and ask.
+Start only when the P, DS and R branches are merged into `main` (check `docs/current-state.md`). If one is missing, stop and ask.
 
 Read first: `docs/handoff/delivery-wave3-start-prompts-2026-10-12.md` (shared rules; your port base is 6873), `docs/handoff/delivery-plan-2026-10-12.md` (section 6: what «delivered» means and Scope NOT delivered), `scripts/gate-status.mjs`, `scripts/qa-verify.mjs`, and `docs/qa/sign-offs/G1.md`, `G3.md` (the model).
 

@@ -1,8 +1,27 @@
 # Delivery plan: the rest of Бінарка (2026-10-12)
 
-Written by the planning session `peaceful-dijkstra-2dc39e` (branch `claude/peaceful-dijkstra-delivery-plan`, from `origin/main` `9304d2c`), 2026-10-12 from 13:07 to 13:38 (UTC+5:30; autonomy-log rows 196 to 198). No file under `src/`, `tests/`, `e2e/`, `scripts/` or `openspec/` changed. AGENTS.md and the rules of `docs/handoff/parallel-g2-plan-2026-10-11.md` («Rules for the parallel sessions», with own ports instead of the lock) still apply.
+Written by the planning session `peaceful-dijkstra-2dc39e` (branch `claude/peaceful-dijkstra-delivery-plan`, from `origin/main` `9304d2c`), 2026-10-12 from 13:07 to 13:38, re-measured at 15:12 after wave 2 merged (UTC+5:30; autonomy-log rows 206 to 209). No file under `src/`, `tests/`, `e2e/`, `scripts/` or `openspec/` changed. AGENTS.md and the rules of `docs/handoff/parallel-g2-plan-2026-10-11.md` («Rules for the parallel sessions», with own ports instead of the lock) still apply.
 
 **The user's decisions:** asked in the question form on 2026-10-12 and folded into section 7: move the design to 28px; a PD for signed review dispositions; acceptance at 0.98, a logo driver, the ADR review (not PD-7); e2e and a11y in CI.
+
+## 0. Re-measured after wave 2 (2026-10-12 15:12, `main` `0ed5550`)
+
+The dialog block (rows 196 to 200) and the settings block (rows 201 to 205) are archived, merged and pushed. This branch was rebased onto `0ed5550` (backup of the pre-rebase head: `backup/delivery-plan-prerebase-de41f90`), and every check was run again; outputs are in `docs/qa/delivery-plan/after-wave2/`. Sections 1 and 2 keep the first measurement on `9304d2c` as history; where they differ, this section wins.
+
+| Check | On `9304d2c` | On `0ed5550` | Why it moved |
+|---|---|---|---|
+| visual (run 12 → run 14, the settings session's) | 142 of 170 | **156 of 170**; 0 shots between 0.98 and 0.99 | all 10 confirm and 26 settings shots are at 1.0000; the 14 left are the **12 phone setup shots (28px)** and the **2 logo shots (no driver)** |
+| acceptance artifact | FAIL 2 (first failing report `1024-dark-confirm` 0.985 < 0.99) | FAIL 2 (`320-dark-setup` 0.9238 < 0.99) | the 0.98-0.99 band is empty today, but P-THR still matters: after DS the setup shots may land in that band |
+| recordings | NOT-EARNED, 0 clips | NOT-EARNED, 0 clips | — |
+| coverage (after `npm run test:coverage` on this tree) | PASS | PASS, unit **1993** of 1993; the same 97.51 / 91.96 / 98.19 / 99.33 (wave 2 changed CSS and tests only) | — |
+| traceability release | FAIL 117 | **FAIL 115** (recording evidence only) | the two active changes are archived |
+| trajectory release | FAIL 27 | **FAIL 28**: 24 review-evidence, 3 process, freshness | `2026-10-12-update-confirm-dialog` is `clean: true`; **`2026-10-12-update-settings-panel` has no `review-findings.json` in its archive folder**: the settings session saved it as `docs/qa/update-settings-panel/review-findings.json`, without a `clean` field (run `wf_9a5a34f4-ca8`, 7 confirmed, 3 contested, 4 rejected, fix round 1 `3ada092`, no confirming run) |
+| integrity, process ratchet, correct, eval, existence, default trace and trajectory | PASS, NOT-EARNED, PASS, PASS, PASS, PASS, PASS | the same (eval 6 cases; trajectory default 28 warnings) | — |
+
+What this changes in the plan:
+- Wave 2 is done: the units W2-D and W2-S are closed, and **R can start now** (its final take needed the settings merge).
+- P-TRAJ compiles **24** dispositions (the settings slice joins). The **slip has now happened three times**: a hand-written review file without `clean`, and this time outside the archive folder. P-TRAJ's PD also names the file's place and required fields, so the check reports a misplaced or field-less file by name.
+- NFR-14 delivered now depends on exactly two units: DS (12 shots) and P-LOGO (2 shots).
 
 ## 1. Measured state (not estimated)
 
@@ -129,13 +148,13 @@ running ─ W2-D dialog (merges 1st) ─► W2-S settings (rebases, merges 2nd) 
 
 | Unit | What | Blocked by | Owns | Needs the user | Size |
 |---|---|---|---|---|---|
-| W2-D | dialog block (running) | — | its folder, `.confirm*` | merge, review gate | running |
-| W2-S | settings block (running) | W2-D merge (rebase) | its folder, `.settings*` | merge, review gate | running |
+| W2-D | dialog block | — | its folder, `.confirm*` | merge, review gate | **DONE**: archived, merged, pushed (rows 196 to 200) |
+| W2-S | settings block | W2-D merge (rebase) | its folder, `.settings*` | merge, review gate | **DONE**: archived, merged, pushed; run 14 156 of 170 (rows 201 to 205) |
 | DS-1 | the designer sets the design's level-group bottom margin to 28px at every width (`design/v0/app/binarka.css`: the base `.setup .level-control` rule and the 320 rule at about line 991, now 1rem); a fresh design-reviewer; capture `review-set-15` (170 shots); prove every shot outside the setup state byte-identical to `review-set-14` (SHA1 per file) | — (design only) | `design/v0/`, `design/v0-screenshots/review-set-15/`, `design/README.md` | the user moves the reference in chat and signs the A-60 wording (the 28px stops being a departure) | 0.5 to 1 session |
 | DS-2 | re-point NFR-14 (`docs/requirements.md` row: set id and SHA1) and `quality/visual-parity.config.json` (`referenceDir`, `referenceSha1sums`; locked: re-seal under `Refs: PD-<n>`); remove the recorded deviation (`scripts/setup-sheet-deviation.mjs`, its use in `scripts/freeze-design-geometry.mjs` and `scripts/visual-block.mjs`, the guard tests), refreeze `setupSheet`; battery; fresh `check:visual` (expected: the 12 phone setup shots reach 0.98, no other shot changes) | DS-1 and the user's move; W2-S merged (it edits the freeze script and file); P merged (lock) | the files named | the re-seal | 0.5 session |
 | P-THR | PD: the acceptance check reads 0.98 for pixel-diff (`quality/telemetry.config.json`, key `acceptance.tokens["pixel-diff"].threshold`; red proof: today's FAIL at 0.99 over a 0.98-0.99 report) | — | `docs/qa/improvements/PD-8-*`, the config, `factory-lock.json` | approve the PD | 1 to 2 h |
 | P-LOGO | PD: a `logo` state driver in the locked adapter: the page's own header logo SVG at 40, 56 and 64 px in the design's `/logo/` sheet layout (`design/v0/app/logo/page.tsx`); no `src/` change; red proof: today's `score: null` | — | `scripts/check-visual-parity-adapters.mjs`, `factory-lock.json` | approve the PD | 2 to 3 h |
-| P-TRAJ | PD: `check-trajectory.mjs` accepts `clean: true` OR a signed disposition `docs/qa/review-dispositions/<slice>.json` (every confirmed finding with an existing fix commit or the user's waiver; no open product-code defect), and a signed waiver for a missing `design.md`; compile the 23 dispositions from the archived files (no archived file edited; palette's fixes mapped from row 160, `2fc41d5`, `faf0b91`); `update-segmented-focus-ring-wording` was never reviewed, so it gets one review-gate run on its range (the user's yes) instead of a waiver; the three folders without `design.md` get a signed waiver each (for `add-capture-board` the waiver points at its signed amendment draft, which holds its design); red proof: today's 26 failures | — | the script, `docs/qa/review-dispositions/`, `factory-lock.json` | approve the PD; sign the compiled table in one sitting | 3 to 4 h |
+| P-TRAJ | PD: `check-trajectory.mjs` accepts `clean: true` OR a signed disposition `docs/qa/review-dispositions/<slice>.json` (every confirmed finding with an existing fix commit or the user's waiver; no open product-code defect), and a signed waiver for a missing `design.md`; compile the 24 dispositions (23 archived files plus the settings slice's `docs/qa/update-settings-panel/review-findings.json`) (no archived file edited; palette's fixes mapped from row 160, `2fc41d5`, `faf0b91`); `update-segmented-focus-ring-wording` was never reviewed, so it gets one review-gate run on its range (the user's yes) instead of a waiver; the three folders without `design.md` get a signed waiver each (for `add-capture-board` the waiver points at its signed amendment draft, which holds its design); red proof: today's 26 failures | — | the script, `docs/qa/review-dispositions/`, `factory-lock.json` | approve the PD; sign the compiled table in one sitting | 3 to 4 h |
 | P-CI | PD: a Chromium job in `.github/workflows/ci.yml` for `npm run test:e2e` and `npm run check:a11y` (not `check:visual`: NFR-14 needs the same machine and fonts); first measure which specs fail on Linux fonts and report before the user approves | P-TRAJ (so CI on `main` can be green) | `ci.yml`, `factory-lock.json` | approve the PD; a push for a branch CI run | 1 to 2 h + one CI run |
 | P-ADR | prepare ADRs 0006 to 0009 for the user's accept, change or reject in one sitting; fold the answers | — | `docs/adr/0006-0009` | the decisions | 0.5 h + the sitting |
 | R | recordings: adapt `scripts/record-demos.mjs` (ports from `BINARKA_PORT_BASE`, its own `vite preview`); 12 to 16 clips whose `proof` lists cover the 115 MVP FRs (page FRs through the page; engine FRs through FR-119 capture boards where the page shows them, and one CLI clip that runs `src/cli.ts`, asserts its text and shows it); commit the manifest, webm and png | script: none; final take: W2-S and DS-2 merged | `scripts/record-demos.mjs`, `docs/qa/demo-recordings/` | none | 1 to 1.5 sessions |
@@ -146,12 +165,12 @@ Not planned (declined by the user on 2026-10-12): candidate PD-7 (the rules driv
 
 ## 4. Parallel streams
 
-Wave 3 can start now, beside wave 2. Each session works in its own worktree from `origin/main`, on a branch `claude/<name>-<stream>`, with its own `BINARKA_PORT_BASE` (five ports from the base: e2e +0, gate +1, page +3, design +4; `node scripts/capture-ports.mjs`). Start prompts: `docs/handoff/delivery-wave3-start-prompts-2026-10-12.md`.
+Wave 3 starts now (wave 2 merged at `0ed5550`). Each session works in its own worktree from `origin/main`, on a branch `claude/<name>-<stream>`, with its own `BINARKA_PORT_BASE` (five ports from the base: e2e +0, gate +1, page +3, design +4; `node scripts/capture-ports.mjs`). Start prompts: `docs/handoff/delivery-wave3-start-prompts-2026-10-12.md`.
 
 | Stream | Session | Port base | Owns | Must not touch | Merge position |
 |---|---|---|---|---|---|
-| D | dialog (running) | 6373 | as its prompt | — | 1 |
-| S | settings (running) | 6473 | as its prompt | — | 2 |
+| D | dialog (done, merged) | 6373 | — | — | 1 (done) |
+| S | settings (done, merged) | 6473 | — | — | 2 (done) |
 | P | process (P-THR, P-LOGO, P-TRAJ, P-CI, P-ADR, in this order) | 6573 | `docs/qa/improvements/PD-8` and later, `docs/qa/review-dispositions/`, `docs/adr/0006-0009`, `quality/telemetry.config.json`, `scripts/check-visual-parity-adapters.mjs`, `scripts/check-trajectory.mjs`, `.github/workflows/ci.yml`, `factory-lock.json` | `src/`, `tests/`, `e2e/`, `scripts/visual-block.mjs`, `scripts/freeze-*`, `quality/design-*.json`, `quality/visual-parity.config.json`, `docs/qa/visual-diff/*/report.json` (commit proofs only), archived change folders | 3 (no product code; may merge before S if ready, then S needs no rebase for it: no shared file) |
 | DS | design 28px (DS-1 now, DS-2 after S, P and the user's move) | 6773 | `design/v0/`, `design/v0-screenshots/review-set-15/`, `design/README.md`; in DS-2 the files named in section 3 | `src/`, the frozen sets 1 to 14, the other streams' files | 4 |
 | R | recordings and H | 6673 | `scripts/record-demos.mjs`, `scripts/check-vision.mjs`, its `package.json` line, `docs/qa/demo-recordings/`, `docs/qa/vision-report.*`, the NFR-11 and NFR-15 rows | `src/`, any locked file before P merges | 5 (re-record after DS-2 if the setup shots' page changed; it does not: DS-2 changes no `src/`) |
@@ -164,11 +183,11 @@ Rules (as wave 2):
 - Never revert `trace/ledger.jsonl`; commit it, and before a rebase commit it rather than discard it.
 - The user is shared with five sessions: batch questions, prefer the question form.
 
-**This planning branch** adds autonomy rows 196 to 198. If the dialog or settings session merges first and takes those numbers, this branch renumbers on its rebase (row 76 is the precedent). It has no product code and may merge at any position; it should merge before wave 3 starts, so the prompts are on `main`.
+**This planning branch** adds autonomy rows 206 to 209 (renumbered from 196 to 198 on the rebase after wave 2 took 196 to 205; row 76 is the precedent). It has no product code; it should merge before wave 3 starts, so the prompts are on `main`.
 
 ## 5. Critical path and sizes
 
-Critical path: **W2-D → W2-S → DS-2 (after DS-1 and the user's move; P merged) → R final take → H → F → the user's sign-offs.** P runs beside wave 2 and must merge before DS-2. DS-1 runs beside wave 2.
+Critical path (updated after wave 2 merged): **P (its lock re-seals) and DS-1 + the user's reference move → DS-2 → F**, and in parallel **R → H (after P) → F**, then the user's sign-offs. P, DS-1 and R all start now.
 
 | Unit | Size | Basis |
 |---|---|---|
@@ -182,7 +201,7 @@ Critical path: **W2-D → W2-S → DS-2 (after DS-1 and the user's move; P merge
 | a full 170-shot capture | about 2 to 3 minutes | run 12, 07:57 to 07:59 |
 | F | 0.5 to 1 session | the gate run, one global review gate, one fix round at most, the handoff |
 
-After wave 2 merges, about 3 to 4 sessions on the critical path (about 10 to 15 hours of session time), plus the user's turnaround for signatures, GPG, the reference move and merges. P (7 to 10 h) runs beside wave 2 and is not on the path, provided it merges before DS-2.
+From now: about 3 sessions on the longest chain (P 7 to 10 h, then DS-2 0.5 session, then F; or R 1 to 1.5 sessions, then H, then F), about 10 to 15 hours of session time, plus the user's turnaround for signatures, GPG, the reference move, the 24-slice disposition table and merges.
 
 ## 6. What «delivered» means, and Scope NOT delivered
 
