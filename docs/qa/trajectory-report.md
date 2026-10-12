@@ -38,7 +38,7 @@ Result: PASS, 27 warning(s)
 | 2026-10-11-update-page-backdrop | **unclean** | 6 | yes | ui |
 | 2026-10-11-update-panel-shell | **unclean** | 1 | yes | ui |
 | 2026-10-11-update-rules-panel | **unclean** | 6 | yes | ui |
-| 2026-10-12-update-setup-sheet | clean | 55 | yes | ui |
+| 2026-10-12-update-setup-sheet | clean | 56 | yes | ui |
 
 ## Cross-slice module overlap
 
