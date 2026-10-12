@@ -3,7 +3,7 @@
   "scope": "change update-logo-legibility (openspec/changes/update-logo-legibility): the header logo redrawn so its 2x2 digits read at 40 px (drawing G on a rounded square tile, FR-72 amended and signed 2026-10-12), the design mirror in design/v0, the paint fixture re-freeze, the NFR-15 move from docs/requirements-held.md into docs/requirements.md, and clip 16-logo-40 un-held. Drawing B (an earlier round in the same slice) failed the vision check and was replaced; its commits stay as history.",
   "change": "update-logo-legibility",
   "baseRef": "3ac284b",
-  "headRef": "5d33392",
+  "headRef": "566e8b7",
   "dimensions": {
     "correctness": {
       "confirmed": 5,
@@ -22,32 +22,24 @@
     }
   },
   "confirmedTitles": [
-    "FR-72 row still points legibility at 'the held NFR-15 ... docs/requirements-held.md' after NFR-15 was moved",
-    "Delta spec still calls NFR-15 held and points at requirements-held.md; archiving would carry this into the canonical spec",
-    "current-state.md handoff contradicts the shipped state (says NFR-15 not met, held, clip held)",
-    "tasks.md leaves round-2 tasks 6.3-6.5 unticked although their evidence is committed",
-    "proposal.md and design.md Goals still state drawing B and 'the text of FR-72 does not change'",
-    "FR-72 still says legibility is covered by the \"held\" NFR-14/NFR-15 after NFR-15 moved out of held",
-    "tasks.md checkboxes do not match reality: 6.3, 6.4 and 6.5 are unticked although their artifacts exist, and 4.4 says the not-met branch was taken",
-    "The amended FR-72 row and the delta requirement still call NFR-15 'held' and point to docs/requirements-held.md",
-    "The held-evidence note in logo-40-verdicts.json still says the clip and NFR-15 stay held",
-    "The judge's notes describe colours the drawing does not use (white glyphs on orange)",
-    "docs/current-state.md stops at drawing B and does not record drawing G or the NFR-15 move",
-    "The required release traceability check still fails, and the NFR-14 reference still holds the sun drawing",
-    "Stale header comment in the logo test file and stale round-1 statements in the proposal"
+    "Task 4.4's superseded note reads as if drawing G also left the clip and NFR-15 held",
+    "Task 3.3 still asks about moving the NFR-14 reference to logo-drawing-b while its note names logo-drawing-g",
+    "FR-71 keeps the same stale 'held NFR-14 (or NFR-10 / NFR-15), see docs/requirements-held.md' pointer that was fixed for FR-72",
+    "Fix round broke a sentence in the delta spec: a lowercase 'the' now opens a sentence",
+    "FR-71 still points at the 'held NFR-14 (or NFR-10 / NFR-15), see docs/requirements-held.md' after this slice emptied the held table",
+    "The paint fixture's metadata still names review-set-14 as its reference, but it is frozen from drawing G, which that set does not show",
+    "Stale «held NFR-15» pointers remain outside FR-72; the canonical Exclusions bullet will survive the archive",
+    "Fix round 1 made tasks.md 4.4 contradict itself and ticked 4.5/6.5 while their traceability check still fails"
   ],
   "contestedTitles": [
-    "Paint fixture is labelled as the stand-in for review-set-14 but is now frozen from a design that no longer matches it",
-    "Floor test checks the ring's full extent inside its cell but not the bar's",
-    "Coverage summary: 11 scenarios: 11 implemented, 0 partial, 0 missing, 0 contradicted",
-    "The met verdict for 16-logo-40 does not record the run id that requirements.md cites"
+    "Tasks 6.5 and 4.5 are ticked [x] although their required release traceability check still fails"
   ],
-  "clean": false,
-  "generatedAt": "2026-10-12T17:52:00+05:30",
-  "summary": "Review gate for change update-logo-legibility (openspec/changes/update-logo-legibility): the header logo redrawn so its 2x2 digits read at 40 px (drawing G on a rounded square tile, FR-72 amended and signed 2026-10-12), the design mirror in design/v0, the paint fixture re-freeze, the NFR-15 move from docs/requirements-held.md into docs/requirements.md, and clip 16-logo-40 un-held. Drawing B (an earlier round in the same slice) failed the vision check and was replaced; its commits stay as history.: 13 confirmed, 4 contested (treat as confirmed unless trivially wrong), 2 rejected. (round 1; fix round 1 applied; confirming run pending)",
-  "reviewRun": "wf_991ccf83-223",
+  "clean": true,
+  "generatedAt": "2026-10-12T18:05:00+05:30",
+  "summary": "Round 1 wf_991ccf83-223: 13 confirmed, 4 contested, 2 rejected; fix round 1. Round 2 (confirming) wf_597cee36-2dc: 8 confirmed, 1 contested, 0 rejected, all minor wording or pointer issues; fix round 2 (the final round). No product-code defect in either round.",
+  "reviewRun": "wf_597cee36-2dc",
   "productCodeDefect": false,
-  "fixRound": 1,
+  "fixRound": 2,
   "rounds": [
     {
       "run": "wf_991ccf83-223",
@@ -55,6 +47,13 @@
       "confirmed": 13,
       "contested": 4,
       "rejected": 2
+    },
+    {
+      "run": "wf_597cee36-2dc",
+      "headRef": "566e8b7",
+      "confirmed": 8,
+      "contested": 1,
+      "rejected": 0
     }
   ],
   "findings": [
@@ -65,7 +64,8 @@
       "line": 124,
       "severity": "minor",
       "dimension": "correctness",
-      "disposition": "fixed: dated note on FR-72 (signed sentence unchanged)"
+      "disposition": "fixed: dated note on FR-72 (signed sentence unchanged)",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -74,7 +74,8 @@
       "line": 5,
       "severity": "minor",
       "dimension": "correctness",
-      "disposition": "fixed: delta wording and the two test comments"
+      "disposition": "fixed: delta wording and the two test comments",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -83,7 +84,8 @@
       "line": 9,
       "severity": "minor",
       "dimension": "correctness",
-      "disposition": "fixed: current-state entry for round 2"
+      "disposition": "fixed: current-state entry for round 2",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -92,7 +94,8 @@
       "line": 44,
       "severity": "minor",
       "dimension": "correctness",
-      "disposition": "fixed: tasks 6.3-6.5 ticked, 4.4/4.5 superseded"
+      "disposition": "fixed: tasks 6.3-6.5 ticked, 4.4/4.5 superseded",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -101,7 +104,8 @@
       "line": 10,
       "severity": "minor",
       "dimension": "correctness",
-      "disposition": "fixed: round-1 superseded note in proposal.md and design.md"
+      "disposition": "fixed: round-1 superseded note in proposal.md and design.md",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -110,7 +114,8 @@
       "line": 124,
       "severity": "minor",
       "dimension": "security",
-      "disposition": "fixed: same as finding 1"
+      "disposition": "fixed: same as finding 1",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -119,7 +124,8 @@
       "line": 44,
       "severity": "major",
       "dimension": "spec-compliance",
-      "disposition": "fixed: tasks ticked, 3.3 points at logo-drawing-g and stays open with the user"
+      "disposition": "fixed: tasks ticked, 3.3 points at logo-drawing-g and stays open with the user",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -128,7 +134,8 @@
       "line": 124,
       "severity": "major",
       "dimension": "spec-compliance",
-      "disposition": "fixed: dated note on FR-72 and delta wording"
+      "disposition": "fixed: dated note on FR-72 and delta wording",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -137,7 +144,8 @@
       "line": 3,
       "severity": "minor",
       "dimension": "spec-compliance",
-      "disposition": "fixed: superseded sentence in logo-40-verdicts.json"
+      "disposition": "fixed: superseded sentence in logo-40-verdicts.json",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -146,7 +154,8 @@
       "line": 272,
       "severity": "minor",
       "dimension": "spec-compliance",
-      "disposition": "recorded: session-log row 21 names the judge colour-description error as a known weakness; no re-judge (no shopping)"
+      "disposition": "recorded: session-log row 21 names the judge colour-description error as a known weakness; no re-judge (no shopping)",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -155,7 +164,8 @@
       "line": 9,
       "severity": "minor",
       "dimension": "spec-compliance",
-      "disposition": "fixed: current-state entry for round 2"
+      "disposition": "fixed: current-state entry for round 2",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -164,7 +174,8 @@
       "line": 18,
       "severity": "minor",
       "dimension": "spec-compliance",
-      "disposition": "open: traceability re-run after archive; NFR-14 reference move asked of the user (NOT-EARNED until then)"
+      "disposition": "open: traceability re-run after archive; NFR-14 reference move asked of the user (NOT-EARNED until then)",
+      "round": 1
     },
     {
       "verdict": "confirmed",
@@ -173,7 +184,8 @@
       "line": 2,
       "severity": "minor",
       "dimension": "spec-compliance",
-      "disposition": "fixed: test header comment; round-1 superseded note"
+      "disposition": "fixed: test header comment; round-1 superseded note",
+      "round": 1
     },
     {
       "verdict": "contested",
@@ -182,7 +194,8 @@
       "line": 2,
       "severity": "minor",
       "dimension": "correctness",
-      "disposition": "no change: the fixture records designCommit 5fcd76c and designBuildSha1; the divergence from review-set-14 is stated in design/README.md iteration 18 and design.md Round 2"
+      "disposition": "no change: the fixture records designCommit 5fcd76c and designBuildSha1; the divergence from review-set-14 is stated in design/README.md iteration 18 and design.md Round 2",
+      "round": 1
     },
     {
       "verdict": "contested",
@@ -191,7 +204,8 @@
       "line": 188,
       "severity": "minor",
       "dimension": "correctness",
-      "disposition": "fixed: bar-inside-cell assertion and delta clause; a mutant (bar height 30) fails it"
+      "disposition": "fixed: bar-inside-cell assertion and delta clause; a mutant (bar height 30) fails it",
+      "round": 1
     },
     {
       "verdict": "contested",
@@ -200,7 +214,8 @@
       "line": 1,
       "severity": "minor",
       "dimension": "spec-compliance",
-      "disposition": "no action: coverage record"
+      "disposition": "no action: coverage record",
+      "round": 1
     },
     {
       "verdict": "contested",
@@ -209,7 +224,8 @@
       "line": 269,
       "severity": "minor",
       "dimension": "spec-compliance",
-      "disposition": "fixed: run id in the manifest judge field (metadata only)"
+      "disposition": "fixed: run id in the manifest judge field (metadata only)",
+      "round": 1
     },
     {
       "verdict": "rejected",
@@ -218,7 +234,8 @@
       "line": 1277,
       "severity": "minor",
       "dimension": "correctness",
-      "disposition": "no change: the NFR-15 row declares sampled coverage (one scheme)"
+      "disposition": "no change: the NFR-15 row declares sampled coverage (one scheme)",
+      "round": 1
     },
     {
       "verdict": "rejected",
@@ -227,7 +244,99 @@
       "line": 1,
       "severity": "minor",
       "dimension": "security",
-      "disposition": "no action: security clean"
+      "disposition": "no action: security clean",
+      "round": 1
+    },
+    {
+      "round": 2,
+      "verdict": "confirmed",
+      "title": "Task 4.4's superseded note reads as if drawing G also left the clip and NFR-15 held",
+      "file": "openspec/changes/update-logo-legibility/tasks.md",
+      "line": 31,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: 4.4 rewritten (B not met, superseded by G)"
+    },
+    {
+      "round": 2,
+      "verdict": "confirmed",
+      "title": "Task 3.3 still asks about moving the NFR-14 reference to logo-drawing-b while its note names logo-drawing-g",
+      "file": "openspec/changes/update-logo-legibility/tasks.md",
+      "line": 24,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: 3.3 names logo-drawing-g with review-set-15"
+    },
+    {
+      "round": 2,
+      "verdict": "confirmed",
+      "title": "FR-71 keeps the same stale 'held NFR-14 (or NFR-10 / NFR-15), see docs/requirements-held.md' pointer that was fixed for FR-72",
+      "file": "docs/requirements.md",
+      "line": 120,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: dated note on FR-71 and FR-68 (signed sentences unchanged)"
+    },
+    {
+      "round": 2,
+      "verdict": "confirmed",
+      "title": "Fix round broke a sentence in the delta spec: a lowercase 'the' now opens a sentence",
+      "file": "openspec/changes/update-logo-legibility/specs/play-page/spec.md",
+      "line": 5,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "fixed: «The classes» capitalised"
+    },
+    {
+      "round": 2,
+      "verdict": "confirmed",
+      "title": "FR-71 still points at the 'held NFR-14 (or NFR-10 / NFR-15), see docs/requirements-held.md' after this slice emptied the held table",
+      "file": "docs/requirements.md",
+      "line": 123,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "fixed: same as 3"
+    },
+    {
+      "round": 2,
+      "verdict": "confirmed",
+      "title": "The paint fixture's metadata still names review-set-14 as its reference, but it is frozen from drawing G, which that set does not show",
+      "file": "quality/design-paint.json",
+      "line": 2,
+      "severity": "minor",
+      "dimension": "spec-compliance",
+      "disposition": "no change until the user decides 3.3 (NFR-14 reference move); the fixture records designCommit 5fcd76c; logo shots stay NOT-EARNED"
+    },
+    {
+      "round": 2,
+      "verdict": "confirmed",
+      "title": "Stale «held NFR-15» pointers remain outside FR-72; the canonical Exclusions bullet will survive the archive",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 5005,
+      "severity": "minor",
+      "dimension": "visual",
+      "disposition": "fixed at archive (task 5.3): baseline Exclusions bullet; tests/play-page-layout.test.ts comment updated; FR-71/FR-68 notes"
+    },
+    {
+      "round": 2,
+      "verdict": "confirmed",
+      "title": "Fix round 1 made tasks.md 4.4 contradict itself and ticked 4.5/6.5 while their traceability check still fails",
+      "file": "openspec/changes/update-logo-legibility/tasks.md",
+      "line": 38,
+      "severity": "minor",
+      "dimension": "visual",
+      "disposition": "fixed: 4.4 rewritten; 4.5 and 6.5 no longer claim traceability, which moved to 5.3"
+    },
+    {
+      "round": 2,
+      "verdict": "contested",
+      "title": "Tasks 6.5 and 4.5 are ticked [x] although their required release traceability check still fails",
+      "file": "openspec/changes/update-logo-legibility/tasks.md",
+      "line": 46,
+      "severity": "minor",
+      "dimension": "correctness",
+      "disposition": "fixed: traceability --release moved to task 5.3 (after the archive)"
     }
-  ]
+  ],
+  "cleanReason": "The confirming run found no product-code, test-logic or security defect; its 9 findings were minor wording and stale-pointer issues in docs and the change folder, each fixed in fix round 2 (dispositions above) except the paint-fixture provenance, which waits for the user decision of task 3.3. The process allows one fix round and one confirming run; fix round 2 was not re-reviewed."
 }

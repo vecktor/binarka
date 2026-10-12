@@ -4,7 +4,7 @@
 //
 // jsdom has no popover behaviour (no showPopover/hidePopover/togglePopover) and no layout: these tests assert attributes,
 // DOM position and that no popover method is called. Where the panel or the idle line is drawn and whether the idle line is
-// visible is layout, covered by the held NFR-10 / NFR-14 / NFR-15 and NOT claimed here.
+// visible is layout, covered by NFR-10 / NFR-14 / NFR-15 (no longer held; real-browser and vision checks) and NOT claimed here.
 // Exact texts are literals (tests/helpers/play-page.ts); this file never imports src/ui/strings.ts.
 //
 // CHARACTERISATION GUARDS: the scenarios below marked "(characterisation guard)" already pass against the page of the slice
