@@ -6,9 +6,19 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-12 15:15 (UTC+5:30; Kyiv 12:45)
-- **Working branch:** `claude/peaceful-dijkstra-delivery-plan` (worktree `.claude/worktrees/peaceful-dijkstra-2dc39e`, the DELIVERY-PLANNING SESSION), rebased onto `origin/main` `0ed5550` (wave 2 merged and pushed, row 205); not merged. Pre-rebase head kept on `backup/delivery-plan-prerebase-de41f90`.
-- **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 delivery-planning session (rows 206 to 209), START HERE:**
+- **Date and time:** 2026-10-12 17:11 (UTC+5:30; Kyiv 14:41)
+- **Working branch:** `main` (stream P of wave 3, worktree `.claude/worktrees/amazing-feynman-337579`, branch `claude/feynman-process`, merged by the user as PR 1 `0cfc35f` and pushed with this handoff; rows 211 to 217).
+- **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 wave 3, stream P (process; rows 211 to 217), START HERE:**
+  - **Done, each with a red proof, the user's approval, a `Refs: PD-n` commit and a lock re-seal** (`docs/qa/improvements/`, session log `docs/qa/process-stream/session-log.md` P1 to P18):
+    - **PD-8:** the acceptance check reads 0.98 for NFR-14 pixel-diff (`PD-8-green-proof.txt`). A 0.985 report now passes; 0.975 fails.
+    - **PD-9:** a `logo` driver in the capture adapter; logo-dark 1 and logo-light 1 on base 6573 (`PD-9-proof.txt` § 4). The committed `docs/qa/visual-diff/logo-*` reports still say `score: null`: only F commits the 170 reports.
+    - **PD-10:** signed review dispositions (`docs/qa/review-dispositions/`, 24 slices, 240 entries, 213 fixed, 27 waived, 26 product-code defects all fixed, signed by the user with three `design.md` waivers); `check-trajectory --release` exits 0 (`PD-10-green-proof.txt`). A later review file belongs in `openspec/changes/archive/<slice>/` with a boolean `clean`; a `fixCommit` must be on `main`'s history.
+    - **PD-11:** CI `browser` job (a11y and the six font-independent e2e files, the design built on the runner); passed on PR 1 runs `38242058245` and `38243572936` (`PD-11-proof.txt` § 6).
+    - **PD-12:** trajectory trailer counts follow HEAD's history; CI `verify` was red on `main` at `2762e31` (freshness) and passed on run `38243572936` (`PD-12-proof.txt` § 6).
+    - **ADRs 0006 to 0009 ACCEPTED** by the user.
+  - **Scope NOT delivered by P:** the seven geometry and fit e2e files (163 tests) and `check:visual` run only locally (they compare text-sized boxes with values frozen on macOS); the segmented slice's six findings are waived, not fixed (a CSS comment in `src/ui/style.css` that still says «keep it inside» could be reworded by F); no gate PASS is claimed by P.
+  - **Next:** DS part 2 and R's lock re-seal rebase onto this `main` (P's re-seals are in); then F. The process ratchet, coverage `--update`, `gate:status` and the sign-offs are F's.
+  Earlier: **2026-10-12 delivery-planning session (rows 206 to 209), START HERE:**
   - **The plan for the rest of the app:** `docs/handoff/delivery-plan-2026-10-12.md`; section 0 holds the re-measurement after wave 2. Start prompts for wave 3: `docs/handoff/delivery-wave3-start-prompts-2026-10-12.md` (P process, DS design 28px, R recordings and vision: all three can start now; F final, last).
   - **Measured on `0ed5550`** (`docs/qa/delivery-plan/after-wave2/*.txt`; the first measurement on `9304d2c` is in `docs/qa/delivery-plan/*.txt`):
     - visual: run 14 has **156 of 170**. The 14 left are the 12 phone setup shots (the 28px margin) and the 2 logo shots (no driver). No shot sits between 0.98 and 0.99.
