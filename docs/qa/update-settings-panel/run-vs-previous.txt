@@ -1,0 +1,82 @@
+# Run 13 against run 12, by shot (update-settings-panel, task 7.3)
+
+Run 12: `docs/qa/g2/check-visual-run-12.txt` (the last run on `main`). Run 13: `docs/qa/g2/check-visual-run-13-settings-pre-rebase.txt` (this block, before the rebase onto the dialog block; 2026-10-12 13:28 to 13:31 UTC+5:30, ports 6473-6477). Compared by `node <scratch>/cmp.mjs` (each `PASS`/`FAIL [shot] … score X` line of the two files paired by shot name); the by-state table by `<scratch>/bystate.mjs`.
+
+**Verdict of task 7.3: each of the 10 phone settings shots rose (10 of 10), and no shot of any state fell.** The block does not stop here. All 26 settings shots score 1.0000 in run 13; the 142 other scored shots have the same score as in run 12 (0 fell, 0 rose); the two logo shots have no state driver and no score in either run (`docs/qa/visual-diff/README.md` § Known gaps).
+
+```
+## The 26 settings shots (run 12 -> run 13)
+1024-dark-settings           0.9807 -> 1.0000  rose (+0.0193)  pass
+1024-dark-settings-light     0.9918 -> 1.0000  rose (+0.0082)  pass
+1024-light-settings          0.9912 -> 1.0000  rose (+0.0088)  pass
+1024-light-settings-dark     0.9830 -> 1.0000  rose (+0.0170)  pass
+1366-dark-settings           0.9823 -> 1.0000  rose (+0.0177)  pass
+1366-dark-settings-focus     0.9821 -> 1.0000  rose (+0.0179)  pass
+1366-light-settings          0.9921 -> 1.0000  rose (+0.0079)  pass
+1366-light-settings-focus    0.9919 -> 1.0000  rose (+0.0081)  pass
+1440-dark-settings           0.9880 -> 1.0000  rose (+0.0120)  pass
+1440-dark-settings-light     0.9950 -> 1.0000  rose (+0.0050)  pass
+1440-light-settings          0.9946 -> 1.0000  rose (+0.0054)  pass
+1440-light-settings-dark     0.9894 -> 1.0000  rose (+0.0106)  pass
+320-dark-settings            0.9117 -> 1.0000  rose (+0.0883)  [phone]  pass
+320-dark-settings-focus      0.9077 -> 1.0000  rose (+0.0923)  [phone]  pass
+320-dark-settings-light      0.9458 -> 1.0000  rose (+0.0542)  [phone]  pass
+320-light-settings           0.9430 -> 1.0000  rose (+0.0570)  [phone]  pass
+320-light-settings-dark      0.9195 -> 1.0000  rose (+0.0805)  [phone]  pass
+320-light-settings-focus     0.9390 -> 1.0000  rose (+0.0610)  [phone]  pass
+375-dark-settings            0.9336 -> 1.0000  rose (+0.0664)  [phone]  pass
+375-dark-settings-light      0.9626 -> 1.0000  rose (+0.0374)  [phone]  pass
+375-light-settings           0.9604 -> 1.0000  rose (+0.0396)  [phone]  pass
+375-light-settings-dark      0.9394 -> 1.0000  rose (+0.0606)  [phone]  pass
+768-dark-settings            0.9802 -> 1.0000  rose (+0.0198)  pass
+768-dark-settings-light      0.9917 -> 1.0000  rose (+0.0083)  pass
+768-light-settings           0.9911 -> 1.0000  rose (+0.0089)  pass
+768-light-settings-dark      0.9825 -> 1.0000  rose (+0.0175)  pass
+
+phone settings shots: 10; rose: 10
+
+## Every other shot with a score in both runs: 142; fell: 0; rose: 0
+settings shots falling: 0
+at 0.98: run 12 142, run 13 152 (of 168 / 168 scored; the two logo shots have no score)
+```
+
+## By state
+
+| State | Scheme | Run 12 at 0.98 | Run 13 at 0.98 | Lowest run 13 | Highest run 13 | Mean change | Fell |
+|---|---|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 3 of 5 | 0.9180 | 0.9904 | +0.0000 | 0 |
+| confirm | light | 3 of 5 | 3 of 5 | 0.9194 | 0.9901 | +0.0000 | 0 |
+| default | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | light | 6 of 6 | 6 of 6 | 0.9985 | 0.9996 | +0.0000 | 0 |
+| eight | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| eight | light | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| rules-techniques | dark | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules-techniques | light | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | dark | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | light | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| settings-dark | light | 3 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0372 | 0 |
+| settings-focus | dark | 1 of 2 | 2 of 2 | 1.0000 | 1.0000 | +0.0551 | 0 |
+| settings-focus | light | 1 of 2 | 2 of 2 | 1.0000 | 1.0000 | +0.0346 | 0 |
+| settings-light | dark | 3 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0226 | 0 |
+| settings | dark | 4 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0373 | 0 |
+| settings | light | 4 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0213 | 0 |
+| setup-four | dark | 5 of 6 | 5 of 6 | 0.9388 | 1.0000 | +0.0000 | 0 |
+| setup-four | light | 5 of 6 | 5 of 6 | 0.9306 | 1.0000 | +0.0000 | 0 |
+| setup-marked-four | dark | 5 of 6 | 5 of 6 | 0.9387 | 1.0000 | +0.0000 | 0 |
+| setup-marked-four | light | 5 of 6 | 5 of 6 | 0.9311 | 1.0000 | +0.0000 | 0 |
+| setup-marked | dark | 4 of 6 | 4 of 6 | 0.9054 | 1.0000 | +0.0000 | 0 |
+| setup-marked | light | 4 of 6 | 4 of 6 | 0.8755 | 1.0000 | +0.0000 | 0 |
+| setup | dark | 4 of 6 | 4 of 6 | 0.9238 | 1.0000 | +0.0000 | 0 |
+| setup | light | 4 of 6 | 4 of 6 | 0.9218 | 1.0000 | +0.0000 | 0 |
+| win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+
+## The per-block tool (geometry and the panel's pixel crop)
+
+`docs/qa/update-settings-panel/visual-block-settings.txt` (2026-10-12 13:27): 26 shots of the states settings, settings-light, settings-dark and settings-focus, each pixel 1 on the panel's crop and geometry 0 of 6 off, 0 unpaired, max delta 0px; `docs/qa/update-settings-panel/blocks/settings/summary.json`. Coverage: sampled (26 shots, 6 viewports, 2 schemes); the short windows between them are covered by the focus walk of `e2e/nfr-14-settings-panel.spec.ts` only at its three sampled windows.

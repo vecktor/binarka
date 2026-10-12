@@ -1,0 +1,26 @@
+# Vision verdict: update-settings-panel (task 8.1)
+
+Judge: a fresh vision-judge subagent (read-only; not the author of the port or of the stills), dispatched by the settings session on 2026-10-12 at about 13:38 (UTC+5:30), returned about 13:39.
+Stills: `docs/qa/update-settings-panel/stills/<shot>.png`, captured at 13:37 by the gate's own adapter (`capture()` of `scripts/check-visual-parity-adapters.mjs`, device scale 2, ports 6473-6477, free before and after) from the tree of `check:visual` run 13; references: `design/v0-screenshots/review-set-14/<shot>.png`.
+Asked: the chosen option reads as chosen without colour; the language options are equal halves; «Закрити» is whole; legible; the focus ring on «Темна» visible and whole (focus shots); the panel against the reference.
+
+Verdict, as returned (one line per still):
+
+320-light-settings: met=yes readable=yes — Bottom sheet; chosen «Як у системі» and «Українська» are bold with a frame and tinted fill, the others are plain unframed; language halves are equal; «Закрити» is whole with a visible border; matches the reference.
+320-dark-settings: met=yes readable=yes — Same layout in dark; chosen options are bold with an orange frame on a brown fill, the others are plain; «Закрити» is whole; matches the reference.
+375-light-settings: met=yes readable=yes — Sheet under the board with «Підказка» visible above it; chosen options are bold and framed; halves equal; «Закрити» is whole; matches the reference.
+375-dark-settings: met=yes readable=yes — Dark sheet, chosen options bold with an orange frame, others plain light grey; «Закрити» is whole with a visible border; matches the reference.
+768-light-settings: met=yes readable=yes — Panel hangs under the header at the right, over the board; chosen options are bold and framed; halves equal; «Закрити» is full width and whole; matches the reference.
+768-dark-settings: met=yes readable=yes — Same as light in dark paint; frame, bold text and fill separate chosen from the others; text legible; matches the reference.
+1024-light-settings: met=yes readable=yes — Panel at the right under the header, all labels and options legible, chosen shown by bold text and a frame; «Закрити» is whole; matches the reference.
+1024-dark-settings: met=yes readable=yes — Dark panel with an orange-framed bold chosen option, equal language halves, and a bordered «Закрити»; matches the reference.
+1366-light-settings: met=yes readable=yes — Panel under the header at the right, same size and place as the reference; chosen options bold and framed; «Закрити» is whole.
+1366-dark-settings: met=yes readable=yes — Dark panel; orange frame plus bold text mark the chosen options; the others are plain muted-light and legible; matches the reference.
+1440-light-settings: met=yes readable=yes — Same panel at 1440; everything legible and whole; chosen options bold and framed; matches the reference.
+1440-dark-settings: met=yes readable=yes — Dark panel, chosen options bold with an orange frame, equal language halves, bordered «Закрити»; matches the reference.
+375-light-settings-dark: met=yes readable=yes — Stored dark theme: the page and sheet render dark and «Темна» is the chosen option (bold, framed, tinted) while «Світла» and «Як у системі» are plain; matches the reference.
+320-light-settings-focus: met=yes readable=yes — The «Темна» focus ring is a thick near-black rounded outline, clearly visible and whole, on the unchosen option; «Як у системі» stays the chosen one (bold, orange frame); matches the reference.
+1366-dark-settings-focus: met=yes readable=yes — The «Темна» focus ring is a bright white double outline, clearly visible and whole and distinct from the orange chosen frame on «Як у системі»; matches the reference.
+
+Overall: 15 of 15 met and readable; no visible difference from the reference in the panel's size, place, options or paint; defects: none. The judge's one caveat: the focus ring in the 320 light still is dark on a pale panel, still clearly visible.
+Coverage: sampled (15 stills of the 26 settings shots); the per-shot instrument is `check:visual` run 13 (all 26 at 1.0000).

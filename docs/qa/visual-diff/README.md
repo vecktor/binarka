@@ -104,6 +104,51 @@ By state (mean change against run 12; shots that fell):
 | win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
 | win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
 
+## The settings session's pre-rebase run (update-settings-panel; numbered run 13 before the dialog block merged, superseded by run 14)
+
+`docs/qa/g2/check-visual-run-13-settings-pre-rebase.txt` (renamed at the rebase: the dialog session's run 13 took the number on `main`), 2026-10-12 13:28 to 13:31 (UTC+5:30), exit 1: **152 of 170 at 0.98** (run 12: 142). Settings session, branch `claude/musing-bhaskara-settings` at `18e5f3f` plus the uncommitted port; its own capture ports (`BINARKA_PORT_BASE=6473`), nothing listening on 6473 to 6477 before or after. The dialog block (`update-confirm-dialog`) is not in this tree, so its run is compared with run 12, not with the dialog's run 13; the run after the rebase (task 10.2) is run 14.
+
+- **All 26 settings shots rose to 1.0000**, the 10 phone shots among them (0.9077 to 0.9626 in run 12). **No shot of any other state changed** (142 scored shots equal to run 12; 0 fell). Per block: `visual-block --block settings` over the 26 shots, pixel 1 on the panel crop and geometry 0 of 6 off each (`docs/qa/update-settings-panel/visual-block-settings.txt`); shot by shot in `docs/qa/update-settings-panel/run-vs-previous.txt`.
+- **Coverage is sampled**: the 26 shots and, for the short windows where the panel scrolls (no shot shows one), the three windows of the focus walk in `e2e/nfr-14-settings-panel.spec.ts`.
+- The 16 shots under 0.98 are the confirm (4) and setup (12) shots of run 12, unchanged; the two logo shots still have no state driver.
+
+By state (mean change against run 12; shots that fell):
+
+| State | Scheme | Run 12 at 0.98 | Run 13 at 0.98 | Lowest run 13 | Highest run 13 | Mean change | Fell |
+|---|---|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 3 of 5 | 0.9180 | 0.9904 | +0.0000 | 0 |
+| confirm | light | 3 of 5 | 3 of 5 | 0.9194 | 0.9901 | +0.0000 | 0 |
+| default | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | light | 6 of 6 | 6 of 6 | 0.9985 | 0.9996 | +0.0000 | 0 |
+| eight | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| eight | light | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| rules-techniques | dark | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules-techniques | light | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | dark | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | light | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| settings-dark | light | 3 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0372 | 0 |
+| settings-focus | dark | 1 of 2 | 2 of 2 | 1.0000 | 1.0000 | +0.0551 | 0 |
+| settings-focus | light | 1 of 2 | 2 of 2 | 1.0000 | 1.0000 | +0.0346 | 0 |
+| settings-light | dark | 3 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0226 | 0 |
+| settings | dark | 4 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0373 | 0 |
+| settings | light | 4 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0213 | 0 |
+| setup-four | dark | 5 of 6 | 5 of 6 | 0.9388 | 1.0000 | +0.0000 | 0 |
+| setup-four | light | 5 of 6 | 5 of 6 | 0.9306 | 1.0000 | +0.0000 | 0 |
+| setup-marked-four | dark | 5 of 6 | 5 of 6 | 0.9387 | 1.0000 | +0.0000 | 0 |
+| setup-marked-four | light | 5 of 6 | 5 of 6 | 0.9311 | 1.0000 | +0.0000 | 0 |
+| setup-marked | dark | 4 of 6 | 4 of 6 | 0.9054 | 1.0000 | +0.0000 | 0 |
+| setup-marked | light | 4 of 6 | 4 of 6 | 0.8755 | 1.0000 | +0.0000 | 0 |
+| setup | dark | 4 of 6 | 4 of 6 | 0.9238 | 1.0000 | +0.0000 | 0 |
+| setup | light | 4 of 6 | 4 of 6 | 0.9218 | 1.0000 | +0.0000 | 0 |
+| win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+
 ## Run 12 (after update-setup-sheet, G2 block B, rebased onto block A)
 
 `docs/qa/g2/check-visual-run-12.txt`, 2026-10-12 07:57 to 07:59 (UTC+5:30), exit 1: **142 of 170 at 0.98** (run 11: 106). Session B, branch `claude/magical-nash-setup` rebased onto `main` (block A `2230704` merged first, then session C's process stream `361ce2a`, task 10.2); an earlier run 12 on the tree before C's rebase (01:12-01:15) gave the same 170 scores; the capture lock was held and nothing listened on 4173, 4174, 4176 or 4177 before or after.

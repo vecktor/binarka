@@ -1,0 +1,41 @@
+# Smoke test in a real browser: update-settings-panel (task 6.1)
+
+Date: 2026-10-12, from 13:33 to 13:36 (UTC+5:30; `date` read before step 1 at 13:33:18 and after step 10 at 13:36:25; the steps ran in order between the two, so no per-step time is claimed beyond that span).
+Browser: the Claude desktop app's built-in browser pane (Chromium), viewport and `prefers-color-scheme` set by its emulation; real mouse clicks and real key presses (Tab, Shift+Tab, Enter, Escape) through the pane. Values were read with `getBoundingClientRect()` and `getComputedStyle()` in the page and looked at in screenshots and zooms.
+Tree: `claude/musing-bhaskara-settings` at `18e5f3f` plus the uncommitted port (`src/ui/style.css`), built by `npm run build` at 13:25 (the battery) and not changed since.
+Who: the settings session itself (the author of the port); the independent look is the vision judge of task 8.1.
+
+## Step 1. Port check and servers
+lsof of 6473 to 6477 and 6480 printed nothing (free). The page: `node node_modules/vite/bin/vite.js preview --port 6476 --strictPort` (this session's page port), opened at http://localhost:6476/ ; the design: `python3 -m http.server 6480 -d design/v0/out --bind 127.0.0.1` (step 9; 6480 is outside the five ports, and the dialog session's are 6373 to 6377). Light scheme, 1366×650.
+
+## Step 2. Open the panel (1366×650, light)
+Pressed the gear. The panel hangs under the header at the right, about 22rem wide (352px), with a shadow: «Тема» and the three theme options, «Мова» and the two language options, then «Закрити». The chosen options («Як у системі», «Українська») are framed in orange on a soft orange fill and bold; the others muted. The two language options are equal halves (153.5 and 153.5 px). «Закрити» has a visible grey border, rounded like the cards. Seen in the screenshot.
+
+## Step 3. Theme and language presses
+«Темна»: the page turned dark (`data-theme="dark"`), the panel stayed open, «Темна» checked (weight 700, fill rgb(61, 43, 30)); the others weight 500 on the card rgb(36, 32, 27). «Як у системі»: checked, `data-theme` light (the emulated scheme is light). «Світла»: checked, light. "English": the page switched to English (`lang="en"`, «Закрити» reads "Close", the labels "Theme", "Language"), the halves stay equal (153.5 / 153.5); «Українська»: back (`lang="uk"`).
+
+## Step 4. Tab through the panel (1366×650)
+From the gear, Tab: «Світла» (chosen) focused, `:focus-visible`, ring `solid 3px rgb(30, 33, 38)`, `outline-offset: -1px`: the dark ring runs over the orange frame and its outer band is clear on the light card (the accepted adjacency, A-61), zoomed and seen. «Темна» (unchosen): the ring fully visible. «Українська» (chosen): as «Світла». «Закрити»: the button ring (offset 2px) fully visible around it. Every ring whole.
+
+## Step 5. 1024×768, 1440×900, 768×1024 (light)
+The same shape at each: the panel 352px wide, its top at 96 (the header ends at 88: 0.5rem below), its right edge on the header's right edge (1024: 369 + 352 = 721 = header right 721; 1440: 601 + 352 = 953; 768: 289 + 352 = 641), «Закрити» 44px tall and sticky, the halves equal, the panel not scrolling. Boxes equal to the design's frozen ones (`quality/design-geometry.json` settingsPanel: 369,96,352×270.5 / 601,96 / 289,96).
+
+## Step 6. Phones (light)
+375×812: a bottom sheet 0,534.5,375×277.5 (the design's box), top padding 24px, «Закрити» 17,752,341×44 (44px tall), halves 165 / 165. 320×700: 0,430.5,320×269.5 (the design's), top padding 16px (the tighter 22.5rem rule), «Закрити» 44px, halves 137.5 / 137.5. Seen in screenshots: whole, nothing cut.
+
+## Step 7. Short windows, a real keyboard walk (light)
+- 667×375 (sheet): the panel scrolls (scrollHeight 277 > clientHeight 205). Gear focused, Enter opened it, then Tab ×6. At every step «Закрити» lies inside the panel, its bottom 16px above the panel's bottom (stuck), its top at 315. Each focused option's ring bottom is above the mask's top (the button's top less 16px) by 31, 31, 31, 9.8, 9.8 px (Світла, Темна, Як у системі, Українська, English); the panel scrolled to 71 for the language row. Screenshot: "English" focused with its whole ring above «Закрити»'s mask.
+- 568×320 (sheet): scrolls (277 > 175). Every step: «Закрити» inside, 16px above the bottom (stuck), top 260. The rings clear the mask by 53.3 ×3 and 0 ×2: the language row's ring ends exactly at the mask's top, the bound the scroll padding is built for (`calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom))` = 78px). Screenshot: whole ring above the mask.
+  Observation (not a requirement of this block; recorded so it is not lost): the first walk at this window started from a panel that had been hidden by a script and resized while closed, and it scrolled to 53, which puts «Світла»'s ring about 2px above the panel's inner top edge (computed, not seen in a shot). Repeated by the user's own flow (Tab to "English", Escape, Enter on the gear, Tab): the reopened panel keeps its scroll (101.5), Tab to «Світла» scrolls it to 26 and the ring is 24px below the panel's top, whole (zoomed). Shift+Tab back up from the language row gives the same 24px. So no clipping was found in a real flow; the top edge is not covered by any scenario (the walk checks the bottom mask only).
+- 1024×360 (dropdown), a fresh load: scrolls (269 > 246). Every step: «Закрити» inside, 17px above the bottom (the 1rem padding plus the 1px border; stuck). Rings clear the mask by 79.8 ×3 and 0 ×2; every ring 42.3 px or more below the panel's top.
+
+## Step 8. Dark (the emulated scheme dark, «Як у системі» chosen)
+1366×650: `data-theme="dark"`; the chosen option rgb(241, 237, 228) on rgb(61, 43, 30) with the frame rgb(243, 154, 91), weight 700; the unchosen rgb(184, 176, 164) on the card rgb(36, 32, 27), weight 500, transparent frame (the design's dark values, `quality/design-geometry.json` 375-light-settings-dark); «Закрити» border rgb(138, 127, 113); the boxes as in light. «Світла» turned the page light, «Як у системі» back to dark. 375×812 and 320×700: the same boxes as in light (277.5 and 269.5 tall), «Закрити» 44px, halves equal. Screenshot at 375: whole, readable.
+
+## Step 9. The design build by eye
+http://localhost:6480/settings/ at 375×812 dark, and /settings-dark/ at 375×812: the design's panel 0,534.5,375×277.5, «Закрити» 17,752,341×44, the chosen fill rgb(61, 43, 30): the same as the page in step 8, by numbers and by eye (the board differs: the design shows its fixture puzzle, the page its own; the panel is the comparison). Server stopped after.
+
+## Step 10. Console, errors, ports
+The page's console: one `info` line, "Autofocus processing was blocked because a document already has a focused element." (the browser's note on the popover opening while the gear keeps focus; not an error); no warning, no error, no raw error text on the page at any step (`get_page_text` read the page's text: the board, the buttons, the idle line, the panel's labels and options). Both servers stopped; lsof of 6473 to 6477 and 6480 printed nothing (free) at 13:36:25.
+
+Coverage: sampled (the viewports and windows named above); the instruments that decide are the e2e of `e2e/nfr-14-settings-panel.spec.ts`, `visual-block --block settings` and `check:visual` run 13.

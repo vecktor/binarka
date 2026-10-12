@@ -1,0 +1,118 @@
+{
+  "shot": "1440-dark-settings",
+  "block": "settings",
+  "geometry": [
+    {
+      "sel": "[data-section=\"settings\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 601,
+        "y": 96,
+        "w": 352,
+        "h": 270.5
+      },
+      "product": {
+        "x": 601,
+        "y": 96,
+        "w": 352,
+        "h": 270.5
+      }
+    },
+    {
+      "sel": "[data-control=\"theme\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 618,
+        "y": 137.25,
+        "w": 318,
+        "h": 52
+      },
+      "product": {
+        "x": 618,
+        "y": 137.25,
+        "w": 318,
+        "h": 52
+      }
+    },
+    {
+      "sel": "[data-control=\"language\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 618,
+        "y": 229.5,
+        "w": 318,
+        "h": 52
+      },
+      "product": {
+        "x": 618,
+        "y": 229.5,
+        "w": 318,
+        "h": 52
+      }
+    },
+    {
+      "sel": "[data-control=\"theme\"] button[aria-checked=\"true\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 798.5546875,
+        "y": 141.25,
+        "w": 133.4453125,
+        "h": 44
+      },
+      "product": {
+        "x": 798.5546875,
+        "y": 141.25,
+        "w": 133.4453125,
+        "h": 44
+      }
+    },
+    {
+      "sel": "[data-control=\"language\"] button[aria-checked=\"true\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 622,
+        "y": 233.5,
+        "w": 153.5,
+        "h": 44
+      },
+      "product": {
+        "x": 622,
+        "y": 233.5,
+        "w": 153.5,
+        "h": 44
+      }
+    },
+    {
+      "sel": "[data-action=\"settings-close\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 618,
+        "y": 305.5,
+        "w": 318,
+        "h": 44
+      },
+      "product": {
+        "x": 618,
+        "y": 305.5,
+        "w": 318,
+        "h": 44
+      }
+    }
+  ],
+  "geometryOff": 0,
+  "unpaired": 0,
+  "maxDelta": 0,
+  "region": {
+    "x": 1202,
+    "y": 192,
+    "w": 704,
+    "h": 541
+  },
+  "pixel": 1
+}
