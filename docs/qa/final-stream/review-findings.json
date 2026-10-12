@@ -1,0 +1,274 @@
+{
+  "generatedBy": "review-gate (wf_9bab3694-f50), persisted by stream F (the global review returns reviewEvidence null)",
+  "scope": "whole codebase, Phase 7 global review before release (Бінарка, main dcc82c5 + stream F evidence commit 652d753)",
+  "baseRef": null,
+  "headRef": "652d753",
+  "round": 1,
+  "generatedAt": "2026-10-12T16:21:02.330Z",
+  "counts": {
+    "confirmed": 11,
+    "contested": 3,
+    "rejected": 3
+  },
+  "clean": false,
+  "confirmed": [
+    {
+      "title": "CLI test suite times out under machine load (30 s per cold npm/tsx spawn), producing a red battery unrelated to product code",
+      "file": "tests/cli.test.ts",
+      "line": 9,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`const TIMEOUT = 30_000;` is passed to every `spawnSync('npm', ['run','--silent','cli',...])` (line 23). In this review the full `vitest run` failed 1 of 1998 tests ('only the seed given: a 6x6 puzzle equal to --size 6 --seed 5', 31908 ms, `expected null to be +0`, so status was null from the timeout), and running cli.test.ts alone failed 4 of 45. The same command (`npm run -s cli -- --seed 5`) took about 1 s on its own, with load average 18, so the harness is fragile, not the CLI.",
+      "suggestion": "Cut cold spawns (call `node --import tsx` once per case directly, or share one warmed child per describe), or make the per-spawn budget adapt to load. Keep the `status !== null` assertion so a real hang still fails. Record the flake in the battery evidence instead of re-running until green.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The cited code matches the finding. tests/cli.test.ts line 9 sets `TIMEOUT = 30_000`. Line 23 passes it to `spawnSync('npm', ...)`, and nothing else guards it. `spawnSync` returns `status: null` when the timeout kills the child, which gives the reported `expected null to be +0` failure. The helper caches results by command, so each distinct command pays a cold npm plus tsx start. Under heavy load a start can pass 30 s, and the reported 31908 ms failure fits that. I did not reproduce the load-induced failure myself, so the load behaviour rests on the reviewer's evidence. The mechanism is real, but the impact is limited to an environment-dependent flake in the test harness. The product code is not wrong, so this stays minor.",
+        "The mechanism is confirmed in the code. tests/cli.test.ts line 9 sets TIMEOUT to 30_000 and line 23 passes it to spawnSync('npm', ...). spawnSync returns status null when the timeout kills the child, so a later `expect(status).toBe(0)` fails with \"expected null to be +0\". That matches the reported failure text. The CLI itself is fast: a single run took about 0.5 s here at load average 6.5. So a 30 s timeout is hit only when the machine is heavily loaded (the finding cites load 18), and the failure comes from the harness, not product code. I did not reproduce a timeout, which would need that load, and the finding gives no run-to-run failure rate. The impact is limited to a flaky test battery on a loaded machine, which is why I kept it minor. I judged the problem real but low severity, so it is not refuted, and I recommend a downgrade."
+      ]
+    },
+    {
+      "title": "Reset on an untouched board clears the hint message (FR-58 says it changes nothing)",
+      "file": "src/ui/play-page.ts",
+      "line": 417,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "The spec (openspec/specs/play-page/spec.md:670, Reset button) says: 'on an untouched board it SHALL act at once, with no dialog, and change no cell text, no class and no message (FR-58)'. docs/requirements.md:110 FR-58 says the same: 'on an untouched board it acts at once, with no dialog, and changes nothing'. In the code, requestAction (play-page.ts:398-401) runs resetBoard() straight away when hasEntries() is false, and resetBoard always runs `shownHint = null; hintMessage.textContent = ''` (lines 417-418). You can reach this state: press Hint (it fills cell X and shows the sentence), then click X until it is empty. The board has no entries again, and the hint sentence stays on screen, as 'Hint message stays until the next hint or a new puzzle' requires. I ran this in jsdom with seed 42 and the real engine. Before Reset the message was «Два нулі поспіль у стовпці 2, …». After Reset it was \"\", and showModal was called 0 times. The scenario 'Reset on an untouched board changes nothing and asks nothing' only covers a page with no player action at all, so the suite does not test this path.",
+      "suggestion": "In the reset handler, skip resetBoard when hasEntries() is false (an untouched board has nothing to reset), or make resetBoard leave the messages alone in that case. Add a scenario for this path: hint, then undo the hinted cell by clicks, then Reset, and assert the hint message is unchanged and showModal is not called. If the intended behaviour is to clear the message, change FR-58 and the Reset requirement instead.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed by reading play-page.ts. The reset button calls requestAction(resetBoard) at line 495. requestAction runs the action at once when hasEntries() is false (lines 398-401). resetBoard unconditionally sets hintMessage.textContent = '' and shownHint = null (lines 417-418). The path is reachable. A hint fills a cell, and onBoardClick (lines 310-327) lets the player cycle that cell 0, then 1, then empty. That click handler never touches hintMessage, so the sentence stays on screen. hasEntries() is then false, since it only counts non-given cells with a value. Pressing Reset then clears the message with no dialog. The spec says that on an untouched board Reset must act at once and \"change no cell text, no class and no message (FR-58)\". The code clears the message, which breaks that wording. The defect is real, though minor in effect.",
+        "Confirmed by reading play-page.ts. The reset button calls requestAction(resetBoard). requestAction runs the action at once when hasEntries() is false, with no dialog. resetBoard always sets shownHint = null and hintMessage.textContent = '' (lines 417-418). Nothing else clears the hint message: the only writes are at lines 382 (new hint), 418, 425 and 433 (new puzzle / size change). So after a hint fills a cell and the player clicks that cell back to empty, the board has no entries and the hint sentence stays on screen. Pressing Reset then clears the message without a dialog. The spec (Reset button requirement) and FR-58 say an untouched board changes no message, so the behaviour contradicts the spec. A player can reach this state with ordinary clicks. The impact is small, since only the message text is lost, so the major severity is probably too high. The defect itself is real."
+      ]
+    },
+    {
+      "title": "CLI tests fail under parallel load (30 s spawnSync timeout); the FR-52/FR-53 checks are unreliable",
+      "file": "tests/cli.test.ts",
+      "line": 9,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "`const TIMEOUT = 30_000;` is used as both the spawnSync timeout and the Vitest timeout. In my full `npx vitest run`, 1 of 1998 tests failed. Running tests/cli.test.ts again, '@trace FR-52 … seed 2147483647 with size 4: exit 0' failed with `expected null to be +0` after 30009 ms: status null means spawnSync killed the process. The same command run directly (`npm run --silent cli -- --size 4 --seed 2147483647`) takes 0.47 s and exits 0. A concurrent session's docs/qa/final-stream/qa-verify-2.txt:236-308 records 'tests/cli.test.ts (45 tests | 4 failed)': FR-52 non-numeric seed, FR-53 '--seed 007', FR-53 '6.5', and others. Its total is 'Tests 4 failed | 1994 passed (1998)', while battery-1.txt:19 shows 1998 passed. Which tests fail changes from run to run. So the CLI itself is correct, but the scenarios 'Lowest and highest valid seeds', 'Leading zeros in the seed' and 'Invalid seed tokens' do not have a reliable green proof, and `npm run test:run` (and qa:verify) can go red when nothing is wrong. tests/cli-level.test.ts:16 already uses 60_000.",
+      "suggestion": "Make the CLI suite robust: raise TIMEOUT (at least match cli-level's 60 s), run the CLI files serially (for example `describe.sequential` or a separate Vitest project with poolOptions singleFork), or call `tsx src/cli.ts` directly instead of going through `npm run`. Do not weaken any assertion. Re-run the full battery after the change and commit the result.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. tests/cli.test.ts:9 sets TIMEOUT = 30_000 and uses it as the spawnSync timeout (line 23). A spawnSync kill returns status null, which matches the reported failure `expected null to be +0`. docs/qa/final-stream/qa-verify-2.txt:236 records 'tests/cli.test.ts (45 tests | 4 failed) 186812ms'. The failing tests include FR-52 non-numeric seed, FR-53 '--seed 007' and FR-53 '6.5'. The CLI is correct and fast when run alone, so the cause is load-related flakiness. tests/cli-level.test.ts:16 already uses 60_000, so the 30 s value is inconsistent. There is no serialization config. The suite is real and can go red under parallel load without any product defect. I did not re-run the failure myself. I rely on the recorded failure evidence and the code, which fit together.",
+        "tests/cli.test.ts:9 does set TIMEOUT = 30_000 and passes it to spawnSync, so a killed child gives status null. Each test shells out to `npm run cli`, and results are cached per command. docs/qa/final-stream/qa-verify-2.txt:236 shows this file taking 186812 ms with 4 of 45 tests failed, and line 308 shows 4 failed of 1998 overall. Those failures are on seed-handling tests (FR-52 non-numeric seed, FR-53 `--seed 007` and `6.5`, NFR-8). The CLI itself is correct and takes about 0.5 s when run alone, so the failures come from load. They can recur whenever the full suite runs in parallel, and a red `npm run test:run` or qa:verify results. I did not re-run the suite. I only read the code and the recorded log. The severity is probably moderate (flaky test infrastructure, not a product defect), but the mechanism holds."
+      ]
+    },
+    {
+      "title": "FR-70's English hint suffix (\", hint\") differs from the spec and code (\", hinted\")",
+      "file": "docs/requirements.md",
+      "line": 122,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "FR-70 says: 'The English format is \"Row R, column C, V\" … suffix \", given\" or \", hint\"'. The play-page spec (spec.md:1234, 1251) says '(\", hinted\")' and 'Row 5, column 6, 0, hinted', and src/ui/strings.ts:152 has `hint: 'hinted'`. This is recorded as CQ-6 and listed under 'Scope NOT delivered' in docs/current-state.md:138, but the signed requirement still contradicts the shipped behaviour.",
+      "suggestion": "Amend the FR-70 row to \", hinted\" (signed amendment), or change strings.ts, the spec and the tests to \", hint\". One source must win before release.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The FR-70 row in docs/requirements.md says the English suffix is \", given\" or \", hint\". The play-page spec uses \", hinted\" in lines 1234, 1251, 1334, 3735, 3749 and 3777. src/ui/strings.ts:152 has `hint: 'hinted'`, and tests/play-page-helpers.test.ts:1142 expects \"Row 5, column 6, 0, hinted\". docs/current-state.md:138 lists the mismatch under \"Scope NOT delivered\" as CQ-6, so it is a known, unresolved inconsistency between the signed requirement and the shipped behaviour. The finding is accurate, and minor severity fits because it is a one-word doc/spec discrepancy.",
+        "The discrepancy is real. docs/requirements.md line 122 (FR-70) gives the English suffix as \", given\" or \", hint\". src/ui/strings.ts line 152 has `hint: 'hinted'` in EN_CELL, and cellLabel at line 163 builds the label from it. Every hint-filled cell in English mode therefore gets the aria-label \"Row R, column C, V, hinted\", which contradicts the signed requirement. The play-page spec also says \"hinted\", so the spec and the requirements disagree with each other. The impact is only a one-word wording difference in an English aria-label, so the severity stays minor. I did not check the CQ-6 and current-state references in the finding."
+      ]
+    },
+    {
+      "title": "NFR-17 still says the hint budget is 'not yet measured', but it is measured and enforced",
+      "file": "docs/requirements.md",
+      "line": 188,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "NFR-17 says: 'The 100 ms budget was accepted by the user with the defaults (autonomy-log row 86) and is not yet measured.' tests/hint-budget.test.ts:52 and :68 measure 549 boards and assert `worst.ms … toBeLessThan(100)`. The engine spec has 'One hint is fast' (puzzle-engine/spec.md:1284) with scenarios. The requirement text is stale.",
+      "suggestion": "Amend the NFR-17 row to point at tests/hint-budget.test.ts and the recorded timing evidence, and remove 'not yet measured'.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. docs/requirements.md line 188 (NFR-17) still says the 100 ms budget \"is not yet measured\". tests/hint-budget.test.ts, tagged @trace NFR-17, measures 549 boards at ceilings 1 to 4 and asserts the worst time is under 100 ms (line 68). It was added in commit 5038c70, so the \"not yet measured\" text is stale. This is a minor documentation inconsistency, and the finding's severity is accurate. I did not run the test, so I have not confirmed that it passes.",
+        "Confirmed by reading the files. Line 188 of docs/requirements.md (NFR-17) says the 100 ms budget \"is not yet measured\". tests/hint-budget.test.ts exists and is tagged \"@trace NFR-17\". It builds 549 boards and times `hint()` at ceilings 1 to 4. It then asserts `worst.ms` is under 100. The \"not yet measured\" wording is stale. No runtime impact; the stale requirement text is a documentation inconsistency, so minor severity fits."
+      ]
+    },
+    {
+      "title": "Ticked task names a battery file that was never committed (add-difficulty-engine 3.5)",
+      "file": "openspec/changes/archive/2026-10-09-add-difficulty-engine/tasks.md",
+      "line": 55,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Task 3.5 is checked: '[x] … Save the output of 3.1 to 3.5 to `docs/qa/add-difficulty-engine-battery.txt`.' That file does not exist and appears in no commit (`git log --all -- docs/qa/add-difficulty-engine-battery.txt` is empty). The same results are in docs/qa/add-difficulty-engine-green-run.txt:6 (build, openspec, eval, traceability).",
+      "suggestion": "Add a note on the archived task (or in current-state) pointing to add-difficulty-engine-green-run.txt as the evidence. Do not edit the archived folder silently; record it as a correction or disposition.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed by reading the repo. Task 3.5 at tasks.md:55 is ticked [x] and says to save the output to `docs/qa/add-difficulty-engine-battery.txt`. `ls docs/qa` shows only add-difficulty-engine/, add-difficulty-engine-green-run.txt and add-difficulty-engine-red-run.txt, so the battery file does not exist. `git log --all -- docs/qa/add-difficulty-engine-battery.txt` printed nothing, so it was never committed. The same results (openspec validate --all --strict, check-eval-ratchet, check-traceability, lint, build) are in add-difficulty-engine-green-run.txt, so the evidence exists under a different name. The ticked task therefore points at a missing artifact. This is a minor documentation and evidence-pointer defect and the severity is right.",
+        "Task 3.5 in the archived tasks.md is checked and says to save the output to docs/qa/add-difficulty-engine-battery.txt. That file is not in docs/qa. That directory has only add-difficulty-engine-green-run.txt and add-difficulty-engine-red-run.txt for this change. `git log --all` for the battery path returns nothing. So the ticked task names a file that was never committed. The mismatch is real and reproducible. It is a documentation and evidence-pointer gap only, with no runtime effect, so minor severity fits. The green-run file may hold the equivalent evidence, but I did not open it, so I did not check that."
+      ]
+    },
+    {
+      "title": "Ticked task names an evidence file that was never created (add-violation-cause 4.1)",
+      "file": "openspec/changes/archive/2026-10-11-add-violation-cause/tasks.md",
+      "line": 30,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Task 4.1 lists as evidence '`docs/qa/add-violation-cause/english-string-gate.txt` (the question put and the answer, with the time in UTC+5:30)'. docs/qa/add-violation-cause/ has no such file. Only autonomy-log row 164 (docs/autonomy-log.md:178) records the user's choice.",
+      "suggestion": "Accept autonomy-log row 164 as the evidence and record that, or add the gate file with the question and answer.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Task 4.1 in tasks.md (line 30) lists `docs/qa/add-violation-cause/english-string-gate.txt` as evidence. That file does not exist. `ls docs/qa/add-violation-cause/` shows battery.txt, design-mirror.txt, folder-audit.md, green-run.txt, label-sweep.txt, red-run.txt, refreeze.txt, run9-vs-run8.txt, smoke-boards.json, the smoke scripts, smoke-test.txt, snapshot-sweep.txt and stills, with no gate file. The ticked \"Done\" note on the same line cites only autonomy-log row 164, so the named file was never created and the substitution is not explained. I did not open the autonomy log, so I did not check row 164 itself. The finding is accurate and minor.",
+        "Confirmed. Task 4.1 in the archived tasks.md (line 30) lists `docs/qa/add-violation-cause/english-string-gate.txt` as evidence. The directory listing has no such file, and a repo-wide find for english-string-gate* found nothing. The task text itself ends with \"Evidence: autonomy-log row 164\". Row 164 is in docs/autonomy-log.md and does record the gate, so the user's choice is documented. The stated evidence path is still missing from disk, though. The task is ticked and archived, so the finding stands as a minor traceability gap. It does not affect any user or runtime behaviour."
+      ]
+    },
+    {
+      "title": "Ticked review-gate task points to a review-findings path that does not exist (update-setup-sheet-design-margin 3.1)",
+      "file": "openspec/changes/archive/2026-10-12-update-setup-sheet-design-margin/tasks.md",
+      "line": 18,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Task 3.1 says: 'Evidence: `docs/qa/design-stream/review-findings.json`, `docs/qa/design-stream/fix-round-1.txt`.' The first file is missing from docs/qa/design-stream/ and from git history. The file exists at openspec/changes/archive/2026-10-12-update-setup-sheet-design-margin/review-findings.json, which is the location PD-10 requires.",
+      "suggestion": "Correct the evidence pointer to the archive-folder path, through a correction or disposition entry.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. Task 3.1 (line 18 of the archived tasks.md) cites `docs/qa/design-stream/review-findings.json` as evidence. That path does not exist: `ls docs/qa/design-stream/` has no review file, and `git log --all` shows no commit that ever added or deleted it. The file is at `openspec/changes/archive/2026-10-12-update-setup-sheet-design-margin/review-findings.json`, and a signed disposition exists at `docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json`. So a ticked task cites a dangling evidence pointer, which breaks the project rule that done-claims carry resolvable evidence paths. The severity is minor. The real evidence is in the archive, the disposition is signed, and `fix-round-1.txt` resolves. The remaining gap is that the pointer is wrong. I did not check whether any script validates the pointer. The finding's suggestion to fix it through a correction or disposition entry fits the rule against editing archived files.",
+        "Task 3.1 in the archived tasks.md names `docs/qa/design-stream/review-findings.json` as evidence. `ls docs/qa/design-stream/` shows only fix-round-1.txt among the review-related files, and `git log --all` finds no history for that path. The review-findings.json file does exist in the archive folder `openspec/changes/archive/2026-10-12-update-setup-sheet-design-margin/`. So the ticked task points to a path that does not exist, and a reader following the pointer finds nothing. The impact is low: it is a stale documentation pointer, the evidence file is nearby, and nothing breaks at runtime. Minor severity is right."
+      ]
+    },
+    {
+      "title": "The spec disagrees with itself on whether Reset clears the hint message",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 350,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "'Hint message stays until the next hint or a new puzzle' (spec.md:350) says the page SHALL keep the hint text 'until the next press of the hint button, the next press of the new puzzle button, or a press of «Почати» whose new puzzle was shown'. Reset is not in that list. The Reset requirement (spec.md:670) says reset SHALL 'empty `[data-message=\"hint\"]`', and play-page.ts:418 does so. Taken alone, the first requirement would forbid reset from clearing the message.",
+      "suggestion": "Amend 'Hint message stays…' to add 'a performed «Скинути» (on a board with entries)' to the list of actions that clear the message, in line with FR-58 and the finding above.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The cited text exists as described. The requirement \"Hint message stays until the next hint or a new puzzle\" (spec.md:350) lists the events that end the message: a hint press, a new puzzle press, or a «Почати» whose puzzle was shown. Reset is not on that list. The Reset requirement (spec.md ~670) says reset SHALL empty `[data-message=\"hint\"]`, and `resetBoard()` in play-page.ts (~418) does exactly that with `hintMessage.textContent = ''`. The code matches the Reset spec, so there is no code defect. The two spec texts do read as inconsistent, and the title \"stays until...\" is stricter than the Reset behaviour. The first requirement's operative sentence is scoped to \"when the player clicks a cell\". That scoping softens the conflict, so reset does not clearly violate it. This is a minor wording gap in the spec, not a behavioural bug, so I downgrade it.",
+        "I read the spec and the code. The \"Hint message stays until the next hint or a new puzzle\" requirement (spec.md ~line 350) says the hint text stays unchanged on a cell click until the next hint press, the next new puzzle press, or a «Почати» that shows a new puzzle. Reset is not in that list. The Reset requirement (~line 670) says reset SHALL \"empty `[data-message=\"hint\"]`\". resetBoard() in src/ui/play-page.ts (~line 418) does clear it with `hintMessage.textContent = ''`. The two requirements therefore disagree in their wording. Read literally, the first would forbid reset from clearing the message. The code follows the more specific Reset requirement, so no user sees wrong behaviour. This is only an internal spec-wording inconsistency. It is a documentation fix with no runtime impact, so it stays minor."
+      ]
+    },
+    {
+      "title": "NFR-7 says a failing e2e run fails the gate, but CI runs only 6 of the 14 e2e specs (NFR-10 fit and the geometry specs run locally only)",
+      "file": ".github/workflows/ci.yml",
+      "line": 86,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "NFR-7 (requirements.md:178) says: 'Playwright browser tests … carry the layout, accessibility and pixel requirements NFR-10 to NFR-14; a failing run fails the gate.' ci.yml:86-89 runs only nfr-12-targets, nfr-14-backdrop, nfr-14-cause-mark, nfr-14-palette, nfr-14-panel-shell and nfr-18-flash, plus check:a11y. CI never runs e2e/nfr-10-fit.spec.ts, nfr-10-header-fit.spec.ts, nfr-14-layout-geometry, nfr-14-rules-panel, nfr-14-settings-panel, nfr-14-setup-sheet or nfr-14-confirm-dialog. This is documented as P's undelivered scope in docs/current-state.md ('the seven geometry and fit e2e files … run only locally'), but NFR-10 has no CI enforcement point.",
+      "suggestion": "Either record a signed waiver on NFR-7/NFR-10 for CI (local-only, with the evidence path of the latest local run), or make the fit specs font-independent and add them to the browser job.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The cited code matches the finding. ci.yml lines 86-89 run only six e2e specs: nfr-12-targets, nfr-14-backdrop, nfr-14-cause-mark, nfr-14-palette, nfr-14-panel-shell and nfr-18-flash. The a11y spec runs separately through check:a11y. The e2e directory also holds nfr-10-fit, nfr-10-header-fit, nfr-14-layout-geometry, nfr-14-rules-panel, nfr-14-settings-panel, nfr-14-setup-sheet and nfr-14-confirm-dialog, and CI does not run any of them. NFR-7 says a failing Playwright run fails the gate and that these tests carry NFR-10 to NFR-14. NFR-10's only verification is e2e/nfr-10-fit.spec.ts, so CI has no enforcement point for it. docs/current-state.md line 44 admits the gap: 'the seven geometry and fit e2e files (163 tests) and check:visual run only locally'. That makes it a documented, self-acknowledged scope gap, not a hidden defect. The finding's \"6 of 14\" is slightly loose, because the a11y spec is also CI-covered and the exact count is 6 of 13 non-helper specs plus a11y. The finding's own minor severity fits, since the gap is deliberate and recorded.",
+        "The mechanism is real. ci.yml lines 86-89 run only six specs (nfr-12-targets, nfr-14-backdrop, nfr-14-cause-mark, nfr-14-palette, nfr-14-panel-shell, nfr-18-flash), plus check:a11y. The e2e/ directory holds 14 spec files. Seven fit and geometry specs are never run in CI: nfr-10-fit, nfr-10-header-fit, nfr-14-layout-geometry, nfr-14-rules-panel, nfr-14-settings-panel, nfr-14-setup-sheet and nfr-14-confirm-dialog. NFR-7 in requirements.md says the Playwright tests carry NFR-10 to NFR-14 and that a failing run fails the gate. NFR-10 therefore has no CI enforcement point. docs/current-state.md line 44 admits this (\"the seven geometry and fit e2e files (163 tests) ... run only locally\"). That makes the gap a disclosed scope limit and not a hidden defect, so the severity is minor. It is still a gap against the spec wording."
+      ]
+    },
+    {
+      "title": "15 of 16 demo stills show the old sun logo, and the committed FR-72 vision verdict was judged on it",
+      "file": "docs/qa/demo-recordings/01-play-board.png",
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "In stills 01-play-board.png through 15-cell-states-dark.png the header logo is the old drawing: an orange circle with 0/1 rays around it. These stills include 11-theme.png (dark mode) and 12-english.png (English mode). They were last committed in d21e5e5 and b970f35 (2026-10-12, 16:24 to 16:46). The shipped logo, drawing G in src/ui/logo.ts, landed later in 2b45f3c (17:31). It is a 2x2 board on a rounded square tile with no rays. Only 16-logo-40.png (33f6c74) shows it. `git diff --stat d21e5e5..HEAD -- src/` shows that src/ui/logo.ts is the only product file changed since the stills were recorded. So the stills are stale for the logo only; the rest of the UI they show still matches. FR-72 (docs/requirements.md:124, amended 2026-10-12) now requires the board 'on a rounded square tile' and explicitly retires 'in a circle with 0/1 rays'. Even so, 01-play-board lists FR-72 in its proof. Its committed vision verdict in docs/qa/vision-report.md:22 and docs/qa/demo-recordings/manifest.json reads 'sun-like orange circle logo ... the logo is acceptable'. So the committed page-level proof of FR-72 was judged on a drawing the current requirement forbids. check-recordings --check-fresh only compares the report text with itself, not the stills with the source, so nothing catches this.",
+      "suggestion": "Re-run scripts/record-demos.mjs for all 16 clips against the current build so stills 01 to 15 show the drawing G tile. Then re-run vision-verify (check:vision) so the verdicts in manifest.json and vision-report.md describe the shipped logo, and refresh recordings-report.md. You could also have the recordings freshness check compare each still's commit with the last change to src/ui/, so a stale proof fails the gate instead of passing.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The finding holds up against the repo. Git history for 01-play-board.png and src/ui/logo.ts shows the stills were committed at 17:16 (d21e5e5, b970f35). Logo drawings B and G landed later, at 18:16 and 18:17 (9fb0f80, 2b45f3c). `git diff --stat d21e5e5..HEAD -- src/` lists only src/ui/logo.ts. FR-72 at docs/requirements.md:124 now says \"on a rounded square tile\" and records that \"in a circle with 0/1 rays\" was removed. The vision-report row for 01-play-board still reads \"sun-like orange circle logo ... 2x2 mini board\" and lists FR-72 in its proof. So the recorded stills and their vision verdict describe the retired sun drawing. I did not open the PNGs, so the claim that stills 02 to 15 show the old logo rests on the commit timing and the vision text, not on looking at each image. The timestamps in the finding differ from git's by timezone, but the ordering is the same.",
+        "I checked this with git and the docs, and the mechanism holds. The stills 01 to 15 were last committed in d21e5e5 and b970f35 (2026-10-12 17:16 +0530). The logo drawing G landed later, in 2b45f3c at 18:17, and src/ui/logo.ts changed after the stills were taken. The committed vision report (docs/qa/vision-report.md, clip 01-play-board) describes a \"sun-like orange circle logo with a 2x2 mini board\" and calls it acceptable. 01-play-board lists FR-72 as proven. FR-72 in docs/requirements.md now requires the board on a rounded square tile and retires the \"circle with 0/1 rays\" wording. The page-level FR-72 proof was therefore judged against a logo the current requirement forbids. I did not open the PNG files to see the old logo myself. The vision report's own text describing the sun circle supports the claim. The impact is stale evidence in the recorded proofs, not a user-facing product defect."
+      ]
+    }
+  ],
+  "contested": [
+    {
+      "title": "startNewPuzzle and changeTo have identical bodies",
+      "file": "src/ui/play-page.ts",
+      "line": 422,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`function startNewPuzzle(): void { if (newPuzzle(size, level)) { shownHint = null; hintMessage.textContent = ''; clearWin(); } }` (422-428) is the same as `changeTo(nextSize, nextLevel)` (430-436) called with `(size, level)`. If the post-success clearing (FR-42/FR-88: clear the messages) changes, one copy can easily be missed.",
+      "suggestion": "Make startNewPuzzle `() => changeTo(size, level)`, or keep one function that takes the size and level.",
+      "dimension": "correctness",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The duplication is real. `startNewPuzzle` (lines 422-428) and `changeTo` (430-436) have identical bodies when `changeTo` is called with `(size, level)`. `startNewPuzzle` is used once, at line 496, and `changeTo` at lines 470 and 472. But this is only a maintainability nit, and the correctness lens asks whether the code is wrong. It behaves correctly today. Both functions apply the same post-success clearing (`shownHint`, `hintMessage`, `clearWin`), so nothing diverges now. The claimed mechanism is a hypothetical future edit that misses one copy. `resetBoard` repeats the same three-line clearing, so the finding also understates the duplication. No wrong behavior, crash or spec violation exists, so I refute it as a correctness finding. It could stand as a minor simplification suggestion.",
+        "Confirmed at lines 422-436 of play-page.ts: startNewPuzzle() and changeTo(nextSize, nextLevel) have identical bodies, so startNewPuzzle() equals changeTo(size, level). The duplication is real and the cited line numbers and code are accurate. There is no runtime exploit, because both copies behave the same today. The claimed risk is only that a future edit could update one copy and miss the other. That is a maintainability issue, and 'minor' fits it. The finding is mislabeled as 'correctness', so I'm downgrading it."
+      ]
+    },
+    {
+      "title": "svgEl helper duplicated between gear.ts and logo.ts",
+      "file": "src/ui/gear.ts",
+      "line": 3,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "gear.ts:3 `function svgEl(tag: string, attrs: Record<string, string>): SVGElement` and logo.ts:3 `function svgEl<K extends keyof SVGElementTagNameMap>(tag: K, attrs...)` have the same body (createElementNS plus a setAttribute loop), and each file declares its own `const SVG_NS`. gear.ts:12 also repeats the attribute loop inline for the root svg.",
+      "suggestion": "Move the typed generic version from logo.ts and SVG_NS into one shared module (e.g. src/ui/svg.ts) and import it in both files.",
+      "dimension": "correctness",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The factual claim holds. gear.ts:3 and logo.ts:3 both define svgEl with the same createElementNS plus setAttribute loop. Each file declares its own SVG_NS. gear.ts:12 repeats the attribute loop inline for the root svg. The generic typing in logo.ts is the only difference. This is duplication, not a correctness defect. Both copies produce correct SVG elements, nothing diverges, and no input or state gives a wrong result. The finding is filed under the correctness dimension, but it describes a maintainability or simplification issue. With no wrong behavior to confirm, I'm refuting it as a correctness finding. At most it is a minor cleanup suggestion.",
+        "I read both files. The duplication is real. gear.ts:1-7 and logo.ts:1-7 each declare their own `SVG_NS` and an `svgEl` helper with the same createElementNS plus setAttribute-loop body. The only difference is that logo.ts types it generically. gear.ts:12 also repeats the attribute loop inline for the root svg. The cited lines and the description are accurate. However, this is purely a maintainability and duplication issue. Nothing a user or attacker could trigger follows from it: both copies behave identically and produce correct SVG. It is not a correctness defect, so the \"correctness\" dimension is mislabeled. The finding stands as a minor cleanup suggestion, so I downgrade its severity."
+      ]
+    },
+    {
+      "title": "isSolved returns true for an empty grid",
+      "file": "src/engine/rules.ts",
+      "line": 63,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "`isSolved(board)` loops over rows (none for `[]`) and then returns `findViolations([]).length === 0`, which is true, so `isSolved([])` is true. The page never reaches this: the hint button and resetBoard check `board.length === 0`, and updateWin runs only after a board exists. It is a trap in the public engine API exported from engine/index.ts.",
+      "suggestion": "Return false when `board.length === 0` (or when the grid is not N x N with even N >= 4), and add a rules.test.ts case.",
+      "dimension": "correctness",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The mechanism is real. In rules.ts, isSolved iterates no rows for [] and then returns findViolations([]).length === 0. With n = 0 the loops don't run, so the result is true, and isSolved([]) is true. It is exported from engine/index.ts. The finding itself says the page doesn't hit this path, and the only non-test caller, play-page.ts updateWin, runs after a board exists, so the impact is a latent API trap only. The claimed behavior is accurate, but the severity is minor and confidence is low.",
+        "The mechanism is real: `isSolved([])` skips the loop and `findViolations([])` returns no violations, so it returns true. But a real user or attacker can't reach it. The only production caller is `updateWin` in play-page.ts. It runs only after a board exists: after a cell click, after a hint fill, or after `newPuzzle` or capture-board setup populates `board`. The initial `board = []` is never passed to `isSolved`. The other callers are tests that pass real solved grids. So the claim is a latent API trap, not a reproducible problem. If the finding is kept, treat it as a minor hardening note."
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "title": "Page size list [4, 6, 8] defined twice",
+      "file": "src/ui/capture-board.ts",
+      "line": 13,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "capture-board.ts:13 `const SIZES = [4, 6, 8];` and play-page.ts:27 `const SIZES = [4, 6, 8];` are separate copies. The capture-board validation (FR-119: 'Its size is 4, 6 or 8') and the size control (FR-43) can drift apart if FR-18 (sizes 10-16) is delivered later. The same applies to the 4x4-means-level-1 rule, which is written out in capture-board.ts:48, play-page.ts:220/500 and generator.ts:18.",
+      "suggestion": "Export one `PAGE_SIZES` constant (and a level-allowed predicate) from a shared UI module and use it in both files.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The duplication is real. capture-board.ts:13 and play-page.ts:27 both declare `const SIZES = [4, 6, 8];`. As of this code, though, the two copies are identical and behave consistently. capture-board.ts:47 validates against its copy, and play-page.ts:86 builds the size control from its copy. The finding's failure scenario depends on a future change, delivering FR-18 sizes 10-16, that someone updates in only one file. That is a maintainability or DRY concern, not a wrong mechanism in this code, so it fails the correctness lens. I did not check the other claimed locations, such as the 4x4-means-level-1 rule in play-page.ts:220/500 and generator.ts:18. At best this is a minor refactor suggestion and should be downgraded out of the correctness dimension.",
+        "The duplication is real: `const SIZES = [4, 6, 8];` appears at capture-board.ts:13 and play-page.ts:27. Both copies are used consistently today. capture-board.ts:47 validates size against its copy, and play-page.ts:86 builds the size control from its own copy. No input or user action makes them disagree now, so nothing can be reproduced or exploited. The claimed problem depends on a future change (FR-18, sizes 10-16) that someone would have to make while updating only one file. That is a hypothetical maintainability concern, not an existing bug, and it is mislabelled as a correctness issue. I did not check the other cited spots (the 4x4 level-1 rule at capture-board.ts:48, play-page.ts:220/500 and generator.ts:18)."
+      ]
+    },
+    {
+      "title": "EMPTY sentinel and line-indexing helpers duplicated across solver.ts and techniques.ts",
+      "file": "src/engine/solver.ts",
+      "line": 4,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "solver.ts:4 `const EMPTY = -1;` and techniques.ts:35 `const EMPTY = -1;` each define the flat-board encoding. Each file also has its own row/column index helper (solver.ts:16 `lineIndex`, techniques.ts:112 `at`) and its own violation scan (solver `propagate`/`hasDuplicateLines` vs techniques `localViolation`) over the same Int8Array layout.",
+      "suggestion": "Export EMPTY and one index helper from a small engine module (e.g. flat.ts) so both files share one encoding.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The duplication exists (EMPTY = -1 in both files, similar line-index logic). But the finding is filed under the correctness dimension, and no incorrect behavior follows from it. Both EMPTY constants are -1, so the encodings are identical today. The helpers are not the same function: techniques.ts `at` adds bounds checking that returns an OUT sentinel (-2) and falls back to EMPTY, while solver.ts `lineIndex` is a bare index calculation, and solver.ts deliberately avoids an EMPTY fallback in `set`. The two files are also not interchangeable duplicates on the violation scan. No wrong output, crash or contradiction results from this. At most it is a maintainability and drift-risk remark, not a correctness defect, so the claimed mechanism is not wrong.",
+        "The duplication is real. solver.ts:4 and techniques.ts:35 each declare `const EMPTY = -1`, and each file has its own line-index helper. This is only a maintainability smell, not a correctness problem. Both constants hold the same value and neither is exported, so there is no current divergence and no wrong behaviour for a user. The two files also use different data shapes: solver.ts works on a raw flat cell array, while techniques.ts wraps one in a `Flat` interface. A bug would need someone to edit one constant without the other in a future change. I did not trace that path. I only grepped the declarations and did not read the callers or the violation-scan functions. The finding is labelled a correctness issue, but the claimed problem cannot occur for a real user today. I am refuting it as a correctness finding and treating it as a low-value refactor suggestion."
+      ]
+    },
+    {
+      "title": "fillGrid retry loop has no cap",
+      "file": "src/engine/generator.ts",
+      "line": 94,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "`while (solution === null) solution = fillGrid(size, rng);` keeps retrying with no bound, while the carving phase is capped at MAX_ATTEMPTS and throws GenerationRunOutError (FR-84). validate() accepts sizes up to 16 and the CLI exposes them. Timed runs at N=10, 12 and 16 (levels 1 and 4) finished in 1 s or less, so no hang was seen; the loop's termination still rests on luck and the seed rather than on a bound.",
+      "suggestion": "Cap fill restarts (e.g. reuse MAX_ATTEMPTS) and throw GenerationRunOutError when the cap is reached, so every generator path ends with the distinct error.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The loop at generator.ts:94 is unbounded, but I found no input where it fails to terminate. Each fillGrid call is bounded by FILL_NODE_BUDGET (20000 nodes) and returns null on exhaustion. The shared RNG stream keeps advancing, so each retry is a fresh randomized attempt, and there is no cycle or fixed point. Randomized backtracking fill for this grid type succeeds with high probability within the budget at every valid size, which matches the finding's own timed runs at N=10, 12 and 16 (1 s or less). The finding concedes that no hang was seen and offers no seed or size where it fails. What remains is a stylistic or defensive point about the missing bound, not a demonstrated defect. FR-84 caps the carving attempts; a fill that never succeeds would be a different, unobserved failure. Because the mechanism cannot be positively confirmed as wrong, I default to refuted. If it is kept at all, it should stay low-severity or be downgraded to a hardening suggestion.",
+        "The unbounded `while (solution === null)` loop exists at generator.ts line 94. But each fillGrid call is bounded by FILL_NODE_BUDGET (20000 nodes), and a restart continues the RNG stream, so each retry is a fresh attempt. I could not show a seed or size where the loop fails to end. I ran generate() at N=12, 14 and 16 (level 1) over 40 seeds each, 120 runs in total. All finished in about 6.7 s in total, with no hang and no GenerationRunOutError. The finding itself admits it saw no hang. The input space is also small: size is validated as even and at most 16, seed is a bounded integer, and the same seed always gives the same result. This is a missing defensive cap, not a reproducible problem for a real user or attacker. Capping fill restarts would be consistent with FR-84 but is not needed to prevent an observable failure."
+      ]
+    }
+  ]
+}

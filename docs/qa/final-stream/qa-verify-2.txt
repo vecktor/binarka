@@ -1,0 +1,321 @@
+
+> binarka@0.1.0 qa:verify
+> node scripts/qa-verify.mjs
+
+qa-verify: product code present; claimed phase unknown — post-phase strictness ON (emptiness renders NOT-EARNED)
+
+==> traceability
+
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+
+==> trajectory
+WARN  [in-scope] src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift
+
+Scope: 33 archived slice(s)
+wrote docs/qa/trajectory-report.md and trace/trajectory.json
+Result: PASS, 1 warning(s)
+
+==> recordings
+
+Scope: 16 clip(s) across 1 manifest(s)
+Result: PASS
+
+==> acceptance-artifacts
+Scope: 134 tagged requirement(s)
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+acceptance (artifact): 134 contract(s) across 134 requirement(s) — 0 failure(s), 1 warning(s), 0 pending
+Result: PASS, 1 warning(s)
+
+==> visual-fidelity
+(adapters injected from scripts/check-visual-parity-adapters.mjs)
+PASS  [1024-dark-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-rules] score 0.9951 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-settings-light] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-default] score 0.9991 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-rules] score 0.9951 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-settings-dark] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1024-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-rules-techniques] score 0.9956 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-rules] score 0.9956 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-settings-focus] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-dark-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-default] score 0.9996 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-rules-techniques] score 0.9956 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-rules] score 0.9956 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-settings-focus] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1366-light-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-rules-techniques] score 0.997 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-rules] score 0.997 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-settings-light] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-default] score 0.9993 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-rules-techniques] score 0.997 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-rules] score 0.997 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-settings-dark] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [1440-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-rules-techniques] score 0.9913 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-rules] score 0.9913 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-settings-focus] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-settings-light] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-default] score 0.9985 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-rules-techniques] score 0.9913 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-rules] score 0.9913 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-settings-dark] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-settings-focus] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [320-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-rules-techniques] score 0.9925 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-rules] score 0.9925 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-settings-light] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-default] score 0.9985 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-rules-techniques] score 0.9925 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-rules] score 0.9925 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-settings-dark] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [375-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-rules] score 0.9959 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-settings-light] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-dark-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-confirm] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-default] score 0.9987 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-eight] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-hint] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-level] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-rules] score 0.9959 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-settings-dark] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-settings] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-setup-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-setup-marked-four] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-setup-marked] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-setup] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [768-light-win] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [logo-dark] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [logo-light] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+WARN  [visual] threshold 0.98 is below the 0.99 default (NFR-19) — make sure the requirement actually allows this
+
+Scope: 170 breakpoint(s)
+Result: PASS, 1 warning(s)
+
+==> process-ratchet
+
+Scope: 4 guard(s) (phase 3, product code: yes)
+Result: PASS
+
+==> factory-integrity
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+
+Scope: 28 locked file(s)
+Result: PASS, 1 warning(s)
+
+==> unit-tests
+
+> binarka@0.1.0 test:run
+> vitest run
+
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-lederberg-32628c
+
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+ ❯ tests/cli.test.ts (45 tests | 4 failed) 186812ms
+   ❯ @trace FR-52 CLI rejects an invalid seed (6)
+     × non-numeric seed: one English sentence on stderr, non-zero exit, empty stdout 30044ms
+   ❯ @trace FR-53 CLI number grammar (14)
+     × leading zeros in the seed: --seed 007 equals --seed 7 31765ms
+     × invalid seed token "6.5" is rejected 30047ms
+   ❯ @trace NFR-8 CLI errors are English (6)
+     × non-numeric seed: Latin letters, no Cyrillic, one line, one terminal mark 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-52 CLI rejects an invalid seed > non-numeric seed: one English sentence on stderr, non-zero exit, empty stdout
+AssertionError: stderr must hold something: expected '' not to be '' // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:66:92
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+     66|   expect(text.endsWith('\n') ? text.slice(0, -1) : text, 'stderr must …
+       |                                                                                            ^
+     67|   const line = text.endsWith('\n') ? text.slice(0, -1) : text;
+     68|   expect(line.includes('\n'), `stderr must be a single line: ${JSON.st…
+ ❯ tests/cli.test.ts:143:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > leading zeros in the seed: --seed 007 equals --seed 7
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ expectSuccess tests/cli.test.ts:53:22
+     51|
+     52| function expectSuccess(run: Run, n: number): string[][] {
+     53|   expect(run.status).toBe(0);
+       |                      ^
+     54|   expect(run.stderr).toBe('');
+     55|   return expectPuzzleStdout(run, n);
+ ❯ tests/cli.test.ts:164:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/cli.test.ts > @trace FR-53 CLI number grammar > invalid seed token "6.5" is rejected
+AssertionError: stderr must hold something: expected '' not to be '' // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:66:92
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+     66|   expect(text.endsWith('\n') ? text.slice(0, -1) : text, 'stderr must …
+       |                                                                                            ^
+     67|   const line = text.endsWith('\n') ? text.slice(0, -1) : text;
+     68|   expect(line.includes('\n'), `stderr must be a single line: ${JSON.st…
+ ❯ tests/cli.test.ts:173:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/cli.test.ts > @trace NFR-8 CLI errors are English > non-numeric seed: Latin letters, no Cyrillic, one line, one terminal mark
+AssertionError: stderr must hold something: expected '' not to be '' // Object.is equality
+ ❯ expectCliError tests/cli.test.ts:66:92
+     64|   expect(run.stdout).toBe('');
+     65|   const text = run.stderr;
+     66|   expect(text.endsWith('\n') ? text.slice(0, -1) : text, 'stderr must …
+       |                                                                                            ^
+     67|   const line = text.endsWith('\n') ? text.slice(0, -1) : text;
+     68|   expect(line.includes('\n'), `stderr must be a single line: ${JSON.st…
+ ❯ tests/cli.test.ts:212:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 81 passed (82)
+      Tests  4 failed | 1994 passed (1998)
+   Start at  21:33:58
+   Duration  203.68s (tests 88%, environment 10%, import 2%)
+
+    Isolate  82 workers spawned · ~1.60s startup each (spawn + environment, per file)
+             at least ~12.98s faster with isolate: false — reuses workers across files instead of one per file
+
+Command failed: unit-tests
+
+Wrote /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/friendly-lederberg-32628c/docs/qa/automated-verification-latest.md
+
+Scope: 8 battery member(s)
+Overall result: Fail
+exit 1
