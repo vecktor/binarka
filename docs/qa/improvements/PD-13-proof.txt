@@ -1,31 +1,36 @@
-# PD-13 red proof: scripts/check-vision.mjs is gate-bearing but not in factory-lock.json
+# PD-13 red proof, 2026-10-12 17:34 +0530 (design stream DS part 2). No port, no capture, nothing written.
+# Probe: docs/qa/improvements/PD-13-reference-probe.mjs (the config must name the reference of the NFR-14 row, and its SHA1SUMS must match on disk).
 
-Mon Oct 12 17:17:18 +0530 2026
-HEAD 5262ab5 (claude/wilbur-recordings rebased onto origin/main d25ca3c, P merged)
+## 1. On this branch: the NFR-14 row names review-set-15 (the user's move, session log DS6); the locked config still names review-set-14
+NFR-14 row:  design/v0-screenshots/review-set-15 c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+config:      design/v0-screenshots/review-set-14 e89badbf4bdbe29478563e9f2edef91fcc5c853f
+on disk:     design/v0-screenshots/review-set-14/SHA1SUMS e89badbf4bdbe29478563e9f2edef91fcc5c853f
+FAIL config.referenceDir design/v0-screenshots/review-set-14 is not the NFR-14 row's design/v0-screenshots/review-set-15
+FAIL config.referenceSha1sums e89badbf4bdbe29478563e9f2edef91fcc5c853f is not the NFR-14 row's c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+FAIL: 2 mismatch(es)
+exit=1
 
-## 1. Integrity today (untampered)
-WARN  [scripts/check-vision.mjs] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
-WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
-Scope: 27 locked file(s)
-Result: PASS, 2 warning(s)
-exit 0
+## 2. Control: the same probe over origin/main's requirements row (review-set-14) and the same config: PASS, so the probe is not vacuous
+NFR-14 row:  design/v0-screenshots/review-set-14 e89badbf4bdbe29478563e9f2edef91fcc5c853f
+config:      design/v0-screenshots/review-set-14 e89badbf4bdbe29478563e9f2edef91fcc5c853f
+on disk:     design/v0-screenshots/review-set-14/SHA1SUMS e89badbf4bdbe29478563e9f2edef91fcc5c853f
+PASS: the config names the NFR-14 reference, and its SHA1SUMS matches
+exit=0  (run in a scratch directory holding origin/main's docs/requirements.md, this config and a link to review-set-14)
 
-## 2. Tamper: check-vision forced to a vacuous PASS (verdict FAIL turned into PASS, exit 0), uncommitted
- scripts/check-vision.mjs | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-$ node scripts/check-vision.mjs --manifest docs/qa/vision-probe/probe-verdicts.json --requirements docs/qa/vision-probe/requirements-probe.md   (the red-run probe: must FAIL)
-Result: PASS
-exit 0
-
-$ node scripts/check-factory-integrity.mjs   (does the lock notice the tamper?)
-WARN  [scripts/check-vision.mjs] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
-WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
-Scope: 27 locked file(s)
-Result: PASS, 2 warning(s)
-exit 0
-
-## 3. Restored (git checkout of the committed file)
-(clean)
-
-RED: the tampered gate prints PASS over a failing verdict and the integrity check still exits 0 (only the "not in factory-lock.json" WARN), so a change to check:vision is not tamper-evident.
+## 3. The measured consequence today (committed run-14 reports, the product against review-set-14): the 12 phone setup shots below 0.98
+320-dark-setup-four          1
+320-dark-setup-marked-four   1
+320-dark-setup-marked        0.9054  below 0.98
+320-dark-setup               0.9238  below 0.98
+320-light-setup-four         1
+320-light-setup-marked-four  1
+320-light-setup-marked       0.8755  below 0.98
+320-light-setup              0.9218  below 0.98
+375-dark-setup-four          0.9388  below 0.98
+375-dark-setup-marked-four   0.9387  below 0.98
+375-dark-setup-marked        0.9315  below 0.98
+375-dark-setup               0.9315  below 0.98
+375-light-setup-four         0.9306  below 0.98
+375-light-setup-marked-four  0.9311  below 0.98
+375-light-setup-marked       0.923  below 0.98
+375-light-setup              0.923  below 0.98

@@ -16,11 +16,9 @@
 // The product side shows the design's fixture board through FR-119 (captureBoardFor, exported by the adapter). Geometry is
 // measured only for states whose look is reached at mount (GEOMETRY_STATES) or by opening the setup sheet (SHEET_STATES: the design routes
 // /setup/ and /setup-four/ are open at load, the page side presses the summary button, as e2e/nfr-14-setup-sheet.spec.ts replays
-// afterLoad "open-setup"); other states have the pixel channel only. For the sheet states the design page gets the one recorded deviation of
-// quality/design-geometry.json setupSheet injected before its geometry is measured (geometry only: the pixel region and the calibration shot use the unmodified design; the level group's 28px margin, A-60/SQ-5, as the freeze script's
-// `expected` boxes), so geometry 0 is reachable; without it the content-decided cases would always be off by the margin (4 px from 48rem at the
-// bottom; on phones the bottom sheet grows upward, moving the top and the description; never past max-height, e.g. 2.31 px at 320x700).
-// The pixel channel still scores against the frozen reference (the unmodified design), so that residual stays visible there.
+// afterLoad "open-setup"); other states have the pixel channel only. For the sheet states the design page is measured as it is: since design
+// iteration 17 it has the level group's 28px bottom margin at every width (A-60 as amended and signed on 2026-10-12; the reference is the
+// config's referenceDir, review-set-15 onward), so nothing is injected. A guard throws if the design's margin is not 28px (scripts/setup-sheet.mjs, LEVEL_MARGIN).
 // Sampling: the shots given (default: the default state at every reference viewport and scheme); coverage is `sampled`.
 //
 // Blocks: layout (16 elements, states reached at mount) and rules (the open rules panel and «Зрозуміло», state `rules`: geometry
@@ -47,7 +45,7 @@ import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import { capturePorts } from './capture-ports.mjs';
 import { capture, captureBoardFor, close as closeAdapter, parseShot, stopOnExit } from './check-visual-parity-adapters.mjs';
-import { SETUP_DEVIATION_CSS, SETUP_SELECTORS, designLevelMargin } from './setup-sheet-deviation.mjs';
+import { LEVEL_MARGIN, SETUP_SELECTORS } from './setup-sheet.mjs';
 import { CONFIRM_SELECTORS } from './confirm-dialog.mjs';
 
 const TOLERANCE_PX = 0.5;
@@ -198,23 +196,15 @@ async function designBoxes(shot) {
     if (blockName === 'settings') await page.waitForSelector('[data-section="settings"]:popover-open'); // open at load on /settings*/; never press
     const sheetState = SHEET_STATES.has(parseShot(shot.name).state);
     if (sheetState) await page.locator('[data-section="setup"]:popover-open').waitFor();
-    // The unmodified design: the pixel region and the calibration shot (the frozen reference is the unmodified design).
+    // The design as it is: the pixel region, the geometry and the calibration shot (the frozen reference is this design).
     const own = await boxes(page);
     const png = calibrate ? await page.screenshot({ animations: 'disabled', caret: 'hide' }) : null;
-    // The geometry of the sheet states compares with the design plus the recorded deviation (the freeze script's `expected` boxes), guarded like
-    // the freeze: the design's own margin must be the value the deviation replaces.
-    let geo = own;
+    // Guarded like the freeze: the design's level margin must be the signed 28px (A-60), or the build is not the reference's design.
     if (sheetState && blockName === 'setup') {
       const margin = await page.locator('[data-section="setup"] [data-control="level"]').evaluate((el) => getComputedStyle(el).marginBottom);
-      if (margin !== designLevelMargin(shot.width)) throw new Error(`${shot.name}: the design's level margin-bottom is ${margin}, not ${designLevelMargin(shot.width)}; the recorded deviation is stale`);
-      await page.evaluate((css) => {
-        const el = document.createElement('style');
-        el.textContent = css;
-        document.head.append(el);
-      }, SETUP_DEVIATION_CSS);
-      geo = await boxes(page);
+      if (margin !== LEVEL_MARGIN) throw new Error(`${shot.name}: the design's level margin-bottom is ${margin}, not ${LEVEL_MARGIN} (A-60); rebuild design/v0 (design/README.md)`);
     }
-    return { boxes: own, geoBoxes: geo, png };
+    return { boxes: own, png };
   } finally {
     await ctx.close();
   }
@@ -319,7 +309,7 @@ try {
     // settings states only; no other block measures those states
     const own = blockName === 'rules' ? state === 'rules' : blockName === 'confirm' ? state === 'confirm' : blockName === 'settings' ? SETTINGS_STATES.has(state) : state !== 'rules' && state !== 'confirm' && !SETTINGS_STATES.has(state);
     if (GEOMETRY_STATES.has(state) && own) {
-      entry.geometry = geometry(d.geoBoxes, await pageBoxes(shot, preview.url));
+      entry.geometry = geometry(d.boxes, await pageBoxes(shot, preview.url));
       entry.geometryOff = entry.geometry.filter((g) => g.off).length;
       entry.unpaired = entry.geometry.filter((g) => g.unpaired).length;
       entry.maxDelta = Math.max(0, ...entry.geometry.filter((g) => !g.unpaired).map((g) => g.delta));

@@ -1,0 +1,31 @@
+# PD-13 red proof: scripts/check-vision.mjs is gate-bearing but not in factory-lock.json
+
+Mon Oct 12 17:17:18 +0530 2026
+HEAD 5262ab5 (claude/wilbur-recordings rebased onto origin/main d25ca3c, P merged)
+
+## 1. Integrity today (untampered)
+WARN  [scripts/check-vision.mjs] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 27 locked file(s)
+Result: PASS, 2 warning(s)
+exit 0
+
+## 2. Tamper: check-vision forced to a vacuous PASS (verdict FAIL turned into PASS, exit 0), uncommitted
+ scripts/check-vision.mjs | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+$ node scripts/check-vision.mjs --manifest docs/qa/vision-probe/probe-verdicts.json --requirements docs/qa/vision-probe/requirements-probe.md   (the red-run probe: must FAIL)
+Result: PASS
+exit 0
+
+$ node scripts/check-factory-integrity.mjs   (does the lock notice the tamper?)
+WARN  [scripts/check-vision.mjs] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 27 locked file(s)
+Result: PASS, 2 warning(s)
+exit 0
+
+## 3. Restored (git checkout of the committed file)
+(clean)
+
+RED: the tampered gate prints PASS over a failing verdict and the integrity check still exits 0 (only the "not in factory-lock.json" WARN), so a change to check:vision is not tamper-evident.

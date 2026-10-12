@@ -1,0 +1,27 @@
+# PD-14 green proof, 2026-10-12 18:04 +0530 (design stream DS part 2), after the user's approval «Approve (Recommended)» (DS14).
+
+## 1. The probe after the config edit
+NFR-14 row:  design/v0-screenshots/review-set-16 80eb8022d84e1962a7203747f13bc75931747da0
+config:      design/v0-screenshots/review-set-16 80eb8022d84e1962a7203747f13bc75931747da0
+on disk:     design/v0-screenshots/review-set-16/SHA1SUMS 80eb8022d84e1962a7203747f13bc75931747da0
+PASS: the config names the NFR-14 reference, and its SHA1SUMS matches
+exit=0
+
+## 2. Integrity
+before the re-seal: WARN quality-tier drift on quality/visual-parity.config.json; Result: PASS, 2 warning(s)
+re-seal: --init-lock --adaptation "PD-14: …" (gitHead e61e6a8); only the config's hash and the adaptations line changed in factory-lock.json
+after:
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)
+
+## 3 and 4: refreeze, the specs and check:visual: appended below when run
+
+## 3. Refreeze and the three specs (2026-10-12 18:08 to 18:09)
+- `docs/qa/design-stream/red-run-set16.txt`: 4 failed (the pin tests), 62 passed, before the refreeze.
+- `docs/qa/design-stream/refreeze-set16.txt`: all five case hashes UNCHANGED, as pre-registered; provenance names 521ce03, review-set-16, 80eb8022…, the set-16 calibration.
+- `docs/qa/design-stream/green-run-set16.txt`: 66 of 66.
+
+## 4. Fresh check:visual against review-set-16 (2026-10-12 18:09:54 to 18:12:18): PASS, 170 of 170
+`docs/qa/design-stream/check-visual-set16.txt`: `320-light-setup-marked` and `320-dark-setup-marked` 1.0000; the 168 shots byte-identical between sets 15 and 16 keep their set-15 score to four decimals.
+Battery (`docs/qa/design-stream/battery-set16.txt`): lint 0, unit 1993 of 1993, build 0, strict 2 of 2, eval ratchet PASS, integrity PASS (1 pre-existing warning), e2e 323 of 323, a11y 67 of 67.

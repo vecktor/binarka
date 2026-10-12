@@ -12,10 +12,13 @@ import { sel } from './helpers';
 // Part 1, the fixture: quality/design-geometry.json holds the key `setupSheet` (scripts/freeze-design-geometry.mjs, task 3.1) with 12 cases.
 // While the key is absent the tests FAIL with the freeze instruction; they are never skipped.
 // Part 2, the box: each case opens the page at the case's viewport with the case's capture board (FR-119, as the pixel capture does), presses the
-// summary button, asserts the sheet is `:popover-open`, and compares the four edges of the sheet with the case's `expected` box (the design with
-// the signed 28px margin of SQ-5), the left edge of the first level description with the case's `boxes` value (the design's own), the sheet's
-// computed line-height with the body's, and the computed margin-bottom of the level group with 28px. A miss prints the page's box, `expected`
-// and the design's own `boxes`.
+// summary button, asserts the sheet is `:popover-open`, and compares the four edges of the sheet and the left edge of the first level description
+// with the case's `boxes` (the design's own), the sheet's computed line-height with the body's, and the computed margin-bottom of the level group
+// with 28px. A miss prints the page's box and the design's.
+// DELIBERATE CHANGE (design stream DS of wave 3, 2026-10-12; A-60 amended and signed by the user: «The level group's bottom margin is 28px at every
+// width, as in the design (review-set-15, design iteration 17)»; the user moved the NFR-14 reference to review-set-15): the 28px was a recorded
+// deviation (SQ-5), injected into the design page to make an `expected` box. The design now has 28px itself, so the fixture records no deviation
+// and no `expected` box, each case records the design's own level margin (28px), and the page is compared with the design's own `boxes`.
 // Part 3, the page alone (no fixture, so a regression in the design's formula cannot hide in both sides): from 48rem the sheet ends at least
 // 0.5rem below the button row or at the window's limit, and at all six viewports no edge of the sheet cuts the idle line's text: its ink band,
 // from the first line's ink top to the last line's ink bottom, measured from the text's line boxes (Range.getClientRects) and the idle font's
@@ -44,8 +47,6 @@ interface Layout {
   minHeightPx: number;
   maxHeightPx: number;
   decidedBy: Decided;
-  /** Which bound decides the expected (product) box (review gate fix round 1): the margin's growth stops at max-height. */
-  expectedDecidedBy: Decided;
 }
 interface SetupCase {
   shot: string;
@@ -55,21 +56,14 @@ interface SetupCase {
   captureBoard: unknown;
   afterLoad?: string;
   boxes: Record<string, Box | null>;
-  expected: Record<string, Box | null>;
+  /** The design's computed margin-bottom of the level group (A-60: 28px at every width, as in the design). */
+  levelMarginBottom: string;
   layout: Layout;
-}
-interface Deviation {
-  rule: string;
-  design: string;
-  product: string;
-  reason: string;
-  contentDecidedCases: string[];
 }
 interface SetupSheetKey {
   selectors: string[];
   coverage: string;
   provenance: Record<string, unknown>;
-  deviations: Deviation[];
   cases: SetupCase[];
 }
 interface Fixture {
@@ -101,7 +95,10 @@ const shotOf = (width: number, state: State): string => `${width}-light-setup${s
 const EXPECTED_SHOTS = VIEWPORTS.flatMap((v) => STATES.map((s) => shotOf(v.width, s))).sort();
 const FROM_48REM = 768;
 
-// The top-level fixture as it stood before this change (design.md decision 9): the key is ADDED, nothing else moves.
+// The top-level fixture as it stood before this change (design.md decision 9): the key is ADDED, nothing else moves. The design hashes name the
+// design the fixture is measured from: DELIBERATE CHANGE (design stream DS, 2026-10-12): design iteration 17 (`41c5165`, the 28px level margin; the
+// user moved the reference to review-set-15) replaced `5e61bfd` / `d1b1255f…`, then iteration 18 (`521ce03`, the setup sheet's scroll padding; the
+// user moved the reference to review-set-16, row DS14); the refreeze writes this design's provenance into every key.
 const TOP_LEVEL_SELECTORS = [
   '.page-header',
   '.page-header h1',
@@ -120,8 +117,8 @@ const TOP_LEVEL_SELECTORS = [
   '[data-message="hint"]',
   '[data-message="win"]',
 ];
-const TOP_LEVEL_DESIGN_COMMIT = '5e61bfd14de56bff4b3726db4ddd624fcd3c2e04';
-const TOP_LEVEL_DESIGN_CSS_SHA1 = 'd1b1255f4dff205d15d64850096429cd377e5fbf';
+const TOP_LEVEL_DESIGN_COMMIT = '521ce035095b74d367ca326479c2b6ec77827448';
+const TOP_LEVEL_DESIGN_CSS_SHA1 = 'bef5279b57baeca456fa7a4c3ff0ddf0f9440e43';
 
 const isBox = (v: unknown): v is Box => {
   if (typeof v !== 'object' || v === null) return false;
@@ -135,16 +132,16 @@ const bottomOf = (b: Box): number => b.y + b.h;
 // Part 1: the fixture
 // ---------------------------------------------------------------------------------------------------------
 
-test('@trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED, nothing else changes)', () => {
+test('@trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 18, review-set-16)', () => {
   expect(fixture.cases, 'the top-level cases of quality/design-geometry.json').toHaveLength(32);
   expect(fixture.cases.some((c) => c.shot.includes('setup')), 'no setup shot is among the top-level cases').toBe(false);
   expect(fixture.tolerancePx).toBe(0.5);
   expect(fixture.selectors).toEqual(TOP_LEVEL_SELECTORS);
-  expect(fixture.provenance.designCommit, 'the top-level provenance keeps the design commit').toBe(TOP_LEVEL_DESIGN_COMMIT);
-  expect(fixture.provenance.designCssSha1, 'the top-level provenance keeps the design CSS hash').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 18').toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 18').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
 });
 
-test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, the recorded 28px deviation and the 12 cases', () => {
+test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, no deviation (the design has the 28px, A-60) and the 12 cases', () => {
   const key = fixture.setupSheet;
   expect(key, `quality/design-geometry.json has no key "setupSheet": ${FREEZE}`).toBeDefined();
   if (key === undefined) return;
@@ -157,16 +154,9 @@ test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors
   }
   expect(key.cases.map((c) => c.shot).sort(), 'the shots of setupSheet.cases').toEqual(EXPECTED_SHOTS);
 
-  const contentDecided = key.cases.filter((c) => c.layout.decidedBy === 'content').map((c) => c.shot).sort();
-  const deviation = key.deviations.find((d) => d.rule === '.setup .level-control { margin-bottom }');
-  expect(deviation, `setupSheet.deviations records the rule ".setup .level-control { margin-bottom }" (got ${JSON.stringify(key.deviations.map((d) => d.rule))})`).toBeDefined();
-  if (deviation !== undefined) {
-    expect(deviation.design, 'the recorded design value').toContain('24px');
-    expect(deviation.product, 'the recorded product value').toBe('28px');
-    expect(deviation.reason, 'the reason names A-60').toContain('A-60');
-    expect(deviation.reason, 'the reason names SQ-5').toContain('SQ-5');
-    expect([...deviation.contentDecidedCases].sort(), 'the deviation lists exactly the cases whose layout.decidedBy is "content"').toEqual(contentDecided);
-  }
+  // A-60 (amended 2026-10-12): the 28px is the design's own value, so nothing is injected and nothing is recorded as a departure.
+  const raw = key as unknown as Record<string, unknown>;
+  expect(raw.deviations, 'setupSheet records no deviation (A-60: the level margin is 28px in the design)').toBeUndefined();
 
   for (const shot of EXPECTED_SHOTS) {
     const c = key.cases.find((x) => x.shot === shot);
@@ -178,9 +168,9 @@ test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors
     expect(c.afterLoad, `${shot}: the recorded action after load`).toBe('open-setup');
     const board = c.captureBoard as { size?: unknown } | null;
     expect(board?.size, `${shot}: the capture board is the ${four ? '4x4' : '6x6'} fixture`).toBe(four ? 4 : 6);
-    for (const [name, boxes] of [['boxes', c.boxes], ['expected', c.expected]] as const) {
-      expect(isBox(boxes[SHEET]), `${shot}: ${name} holds the sheet's box (got ${JSON.stringify(boxes[SHEET])})`).toBe(true);
-    }
+    expect(isBox(c.boxes[SHEET]), `${shot}: boxes holds the sheet's box (got ${JSON.stringify(c.boxes[SHEET])})`).toBe(true);
+    expect((c as unknown as Record<string, unknown>).expected, `${shot}: no expected box (the page is compared with the design's own boxes)`).toBeUndefined();
+    expect(c.levelMarginBottom, `${shot}: the design's level margin-bottom (A-60: 28px at every width, as in the design)`).toBe('28px');
     expect(isBox(c.boxes[DESCRIPTION]), `${shot}: boxes holds the first description's box (got ${JSON.stringify(c.boxes[DESCRIPTION])})`).toBe(true);
     const l = c.layout;
     for (const f of ['scrollHeight', 'clientHeight', 'maxHeightPx'] as const) {
@@ -189,25 +179,7 @@ test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors
     // The phone regimes declare no min-height (computed `auto`), recorded as 0 (refreeze, docs/qa/update-setup-sheet/refreeze.txt).
     expect(Number.isFinite(l.minHeightPx) && l.minHeightPx >= 0, `${shot}: layout.minHeightPx is a number >= 0 (got ${JSON.stringify(l.minHeightPx)})`).toBe(true);
     expect(['min-height', 'max-height', 'content'], `${shot}: layout.decidedBy (got ${JSON.stringify(l.decidedBy)})`).toContain(l.decidedBy);
-    expect(['min-height', 'max-height', 'content'], `${shot}: layout.expectedDecidedBy (got ${JSON.stringify(l.expectedDecidedBy)})`).toContain(l.expectedDecidedBy);
-
-    // The expected box is the design's with the 28px margin: identical where the floor or the cap decides, taller by 4px (12px where the
-    // design has 1rem, at 22.5rem and narrower) where the content decides, but never past the cap: at 320x700 (6x6) the design's content-decided
-    // sheet is 2.31px under its max-height, so the expected sheet meets the cap (refreeze, docs/qa/update-setup-sheet/refreeze.txt).
-    const design = c.boxes[SHEET];
-    const want = c.expected[SHEET];
-    if (isBox(design) && isBox(want)) {
-      expect(Math.abs(want.w - design.w), `${shot}: expected width ${want.w} vs the design's ${design.w}`).toBeLessThanOrEqual(0.5);
-      if (l.decidedBy === 'content') {
-        const grow = Math.min(c.width <= 360 ? 12 : 4, l.maxHeightPx - design.h);
-        expect(Math.abs(want.h - design.h - grow), `${shot}: content-decided, expected height ${want.h} should be the design's ${design.h} + ${grow} (the margin's growth, capped by max-height ${l.maxHeightPx})`).toBeLessThanOrEqual(0.5);
-        expect(l.expectedDecidedBy, `${shot}: the expected box is decided by the cap exactly when the growth is capped`).toBe(grow < (c.width <= 360 ? 12 : 4) - 0.5 ? 'max-height' : 'content');
-      } else {
-        const delta = Math.max(Math.abs(want.x - design.x), Math.abs(want.y - design.y), Math.abs(bottomOf(want) - bottomOf(design)));
-        expect(delta, `${shot}: decided by ${l.decidedBy}, expected ${fmt(want)} should equal the design's ${fmt(design)}`).toBeLessThanOrEqual(0.5);
-        expect(l.expectedDecidedBy, `${shot}: a floor- or cap-decided case keeps its bound in the expected box`).toBe(l.decidedBy);
-      }
-    }
+    expect((l as unknown as Record<string, unknown>).expectedDecidedBy, `${shot}: no layout.expectedDecidedBy (no expected box)`).toBeUndefined();
   }
 });
 
@@ -349,10 +321,9 @@ for (const v of VIEWPORTS) {
       if (c === undefined) {
         problems.push(`quality/design-geometry.json has no setupSheet case ${shot}: ${FREEZE}`);
       } else {
-        const want = c.expected[SHEET] ?? null;
-        const design = c.boxes[SHEET] ?? null;
+        const want = c.boxes[SHEET] ?? null;
         if (want === null || m.sheet === null) {
-          problems.push(`${SHEET}: ${want === null ? 'no expected box in the fixture' : 'missing on the page'}`);
+          problems.push(`${SHEET}: ${want === null ? 'no design box in the fixture' : 'missing on the page'}`);
         } else {
           const edges = [
             ['left', m.sheet.x, want.x],
@@ -362,7 +333,7 @@ for (const v of VIEWPORTS) {
           ] as const;
           const off = edges.filter(([, got, exp]) => Math.abs(got - exp) > tolerance).map(([name, got, exp]) => `${name} ${got.toFixed(2)} vs ${exp.toFixed(2)}`);
           if (off.length > 0) {
-            problems.push(`${shot} ${SHEET}: page ${fmt(m.sheet)}, expected ${fmt(want)}, design's own boxes ${fmt(design)} (decided by ${c.layout.decidedBy}); off at ${off.join(', ')}`);
+            problems.push(`${shot} ${SHEET}: page ${fmt(m.sheet)}, design's ${fmt(want)} (decided by ${c.layout.decidedBy}); off at ${off.join(', ')}`);
           }
         }
         const wantLeft = c.boxes[DESCRIPTION]?.x;

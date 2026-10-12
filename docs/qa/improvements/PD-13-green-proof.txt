@@ -1,37 +1,30 @@
-# PD-13 green proof
+# PD-13 green proof, 2026-10-12 17:36 +0530 (design stream DS part 2), after the user's approval «Approve (Recommended)» (session log DS10).
 
-Mon Oct 12 17:17:50 +0530 2026
+## 1. The probe after the config edit
+NFR-14 row:  design/v0-screenshots/review-set-15 c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+config:      design/v0-screenshots/review-set-15 c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+on disk:     design/v0-screenshots/review-set-15/SHA1SUMS c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+PASS: the config names the NFR-14 reference, and its SHA1SUMS matches
+exit=0
 
-## 1. git diff --stat factory-lock.json (the re-seal changes only check-vision, createdAt, gitHead, adaptations)
--  "createdAt": "2026-10-12T11:34:06.641Z",
--  "gitHead": "1ae4f34dc6543ecf4b971532e7f40abb86d4a86d",
-+  "createdAt": "2026-10-12T11:47:39.468Z",
-+  "gitHead": "5262ab5e7f35a044a5706725635c1507b496890b",
-+    "scripts/check-vision.mjs": "d257c6e0d2f897ba24d71b306c5d05e84cffa6035cf4de1a6aba7cab23d65669",
--    "PD-12: check-trajectory counts Slice: trailers on HEAD's history instead of every ref, so the committed report is fresh in a clean clone (approved by the user 2026-10-12)"
-+    "PD-13: scripts/check-vision.mjs (Phase H, the vision-verify mechanism) joins the lock so a change to it is tamper-evident (approved by the user 2026-10-12)"
-
-## 2. Integrity after the re-seal
+## 2. Integrity: before the re-seal (the config drifted) and after
+before: WARN  [quality/visual-parity.config.json] quality-tier drift (hash drift) vs factory-lock.json; Result: PASS, 2 warning(s)
+re-seal: node scripts/check-factory-integrity.mjs --init-lock --adaptation "PD-13: …" -> Locked 27 gate-bearing file(s) (gitHead fd8557f); only the config's hash and the adaptations line changed in factory-lock.json
+after:
 WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
-Scope: 28 locked file(s)
+Scope: 27 locked file(s)
 Result: PASS, 1 warning(s)
-exit 0
 
-## 3. The same tamper probe (uncommitted)
-$ node scripts/check-factory-integrity.mjs
-FAIL  [scripts/check-vision.mjs] gate-bearing file drift (hash drift) vs factory-lock.json with NO commit touching it whose message contains "Refs: PD-<n>". Gate scripts may only change through an approved improvement (executed red-to-green proof + human approval). Restore the locked file or land th
-Scope: 28 locked file(s)
-Result: FAIL, 1 warning(s)
-exit 1
+## 3. Refreeze and the three specs: see docs/qa/design-stream/refreeze.txt and green-run.txt (appended below when run)
+## 4. Fresh check:visual against review-set-15: docs/qa/design-stream/check-visual-set15.txt (appended below when run)
 
-## 4. Restored; integrity and the gate
-Scope: 28 locked file(s)
-Result: PASS, 1 warning(s)
-$ npm run check:vision
+## 3. Refreeze and the three specs (2026-10-12 17:38 to 17:39)
+- `docs/qa/design-stream/refreeze.txt`: provenance.reference review-set-15, referenceSha1sums c561f87d…, standIn the set-15 calibration;
+  the four pre-registered case hashes UNCHANGED; setupSheet's 12 design boxes equal the old injected `expected` boxes at 0.00 px.
+- `docs/qa/design-stream/green-run.txt`: 66 of 66 passed (red-run.txt: 13 failed, 53 passed).
 
-Scope: 15 judged still(s) of 15 clip(s) in 1 manifest(s); 1 vision-verify requirement(s)
-Result: PASS
-exit 0
-$ node scripts/check-vision.mjs --manifest docs/qa/vision-probe/probe-verdicts.json --requirements docs/qa/vision-probe/requirements-probe.md
-Result: FAIL
-exit 1
+## 4. Fresh check:visual against review-set-15 (2026-10-12 17:43 to 17:46): FAIL, 168 of 170
+`docs/qa/design-stream/check-visual-set15.txt`. The config re-point works: 28 of the 30 changed setup shots now score 1.0000, and the
+140 identical shots are unchanged. Not earned: `320-light-setup-marked` 0.8853 and `320-dark-setup-marked` 0.9069. Cause: the design has
+no scroll-padding-bottom, so it does not scroll on focus (`docs/qa/design-stream/setup-marked-320/root-cause.txt`). This is not the config:
+the page against the design with the product's scroll-padding scores 1.0000. Open with the user (session log DS11).
