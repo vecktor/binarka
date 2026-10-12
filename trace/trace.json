@@ -1181,6 +1181,7 @@
         "tests/play-page-palette-stylesheet.test.ts",
         "tests/play-page-panel-shell-stylesheet.test.ts",
         "tests/play-page-rules-panel-stylesheet.test.ts",
+        "tests/play-page-settings-panel-stylesheet.test.ts",
         "tests/play-page-setup-sheet-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-stylesheet.test.ts",
@@ -1283,6 +1284,7 @@
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts",
+        "tests/play-page-settings-panel-stylesheet.test.ts",
         "tests/play-page-settings.test.ts",
         "tests/ui-strings.test.ts"
       ],
@@ -1854,6 +1856,7 @@
         "tests/play-page-rendering.test.ts",
         "tests/play-page-semantics.test.ts",
         "tests/play-page-semantics.test.ts",
+        "tests/play-page-settings-panel-stylesheet.test.ts",
         "tests/play-page-settings.test.ts",
         "tests/play-page-theme-stylesheet.test.ts",
         "tests/play-page-wcag.test.ts"

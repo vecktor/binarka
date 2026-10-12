@@ -355,13 +355,13 @@ Traces: FR-68, FR-65, FR-117, NFR-14, NFR-12, NFR-13, A-61, A-57
 - **WHEN** the test reads `.theme-control button`, `.theme-control button[aria-checked='true']`, `.language-control button` and `.language-control button[aria-checked='true']`
 - **THEN** each plain rule declares `min-width: 0`, `min-height: 2.75rem`, `padding: 0 0.5rem`, `border-width: 2px`, `border-style: solid`, `border-color: transparent`, `border-radius: calc(var(--radius-m) - 0.1875rem)`, `background-color: var(--color-control-bg)`, `color: var(--color-text-muted)`, `font-size: 0.9375rem`, `font-weight: 500`, `line-height: 1.2` and `white-space: nowrap`
 - **AND** each checked rule declares `border-color: var(--color-primary)`, `background-color: var(--color-primary-soft)`, `color: var(--color-text)` and `font-weight: 700`
-- **AND** neither checked rule declares `box-shadow`, and no rule of the two controls declares `--color-focus` or `--color-given-bg` as a fill or a border colour
+- **AND** neither checked rule declares `box-shadow`, and no rule of the two controls (selector containing `.theme-control` or `.language-control`) names `--color-focus` or `--color-given-bg` in a `background`, `background-color`, `border`, `border-color` or `border-*-color` declaration (the `:focus-visible` rules' `outline-color` is the ring, not a fill or a frame)
 
 #### Scenario: The three segmented option rules agree
 
 - **GIVEN** the parsed `src/ui/style.css`
 - **WHEN** the test reads `.size-control button`, `.theme-control button` and `.language-control button`, and their three `[aria-checked='true']` rules
-- **THEN** the three plain rules declare the same value, written the same way, for `min-height`, `padding`, `border-width`, `border-radius`, `font-size`, `font-weight`, `line-height`, `color` and `background-color`
+- **THEN** the three plain rules declare the same value, written the same way, for `min-width`, `min-height`, `padding`, `border-width`, `border-style`, `border-color`, `border-radius`, `font-size`, `font-weight`, `line-height`, `white-space`, `color` and `background-color` (a declaration missing from one rule is a difference)
 - **AND** the three checked rules declare the same value for `border-color`, `background-color`, `color` and `font-weight`, so a change in one of the three rules that the other two do not follow fails this test
 
 #### Scenario: The theme options grow by content and the language options are equal halves
@@ -382,7 +382,7 @@ Traces: FR-68, FR-65, FR-117, NFR-14, NFR-12, NFR-13, A-61, A-57
 
 - **GIVEN** the parsed `src/ui/style.css`
 - **WHEN** the test reads the rule that is exactly `.settings:popover-open`
-- **THEN** it declares `scroll-padding-bottom` with a length of at least `calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom))`, and declares no `display`
+- **THEN** it declares `scroll-padding-bottom` with a length of at least `calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom))`, read as: the value contains the term `env(safe-area-inset-bottom)` and its other terms (rem at 16px, px) sum to at least 78px; and it declares no `display`
 
 #### Scenario: The settings paint adds no colour literal, token or pair
 

@@ -32,3 +32,25 @@
 | 11 | note | The walk's "at most 17px" is the exact stuck value; a subpixel position could fail it | 17.5px |
 | 12 | note | "selector contains `.settings`" also matches `.settings-button` and `::backdrop`; "six viewports, both schemes" suggests 48 shots, there are 26 | Exact selectors; "the 26 settings shots of `review-set-14`" |
 | 13 | note | `min-width: 0` in the prose but not in the scenario; the ADDED requirement traces NFR-12 and NFR-13 with no new test carrying those tags | `min-width: 0` added to the scenario; the Traces kept (the existing NFR-12 and NFR-13 e2e must stay green, task 4.4) |
+
+---
+
+# Re-audit at `18e5f3f` (the settings session, task 1.1)
+
+- **Who:** a fresh spec-compliance-auditor subagent, read-only (maker ≠ checker: neither it nor the settings session wrote the folder), dispatched by the settings session (worktree `musing-bhaskara-342556`, branch `claude/musing-bhaskara-settings`) on 2026-10-12 about 13:01 to 13:06 (UTC+5:30). The dialog block is not in `main` (`ls openspec/changes/archive | grep confirm-dialog` empty), so the cross-folder check compared the two change folders' headers.
+- **Verified:** the four MODIFIED headers occur once each in the baseline and the ADDED header not at all; every quoted baseline sentence occurs exactly once (baseline lines 4647, 4718, 4713, 4651, 3417, 2964, 1941); the word diff of each MODIFIED block against the baseline (three match `proposal.md` fully; the fourth has one unnamed edit, F1); the ADDED requirement against A-61 (`docs/requirements.md:355`) value by value; no overlap with `update-confirm-dialog` (its MODIFIED headers are «Borders…», «Main column layout geometry…», «The panels take the shared surface paint», «The rules panel…» and «Confirmation before discarding…»); the Impact line numbers (with F3's corrections).
+
+| # | Severity | Finding | Disposition (the settings session, 2026-10-12 about 13:06) |
+|---|---|---|---|
+| F1 | major | The delta rewords the setup-sheet requirement's not-delivered item (1) ("(the second wave)" → "(delivered by `update-settings-panel`, …)"), as the prep audit's finding 5 asked, but `proposal.md` and `design.md` still said it was left as history; the edit is beyond the two signed sentences | Prose fixed: `proposal.md` (the requirement row and Scope NOT delivered), `design.md` (the split, open point 2). The delta is kept. **The user chose «keep the reword»** in chat on 2026-10-12 at by 13:11 (the `date` read when it was recorded) (`session-log.md` row 3) |
+| F2 | minor | `tasks.md` 2.4 said "at most 17px"; the spec says 17.5px | Fixed to 17.5px |
+| F3 | minor | Impact ranges slightly off: the setup-sheet GUARD is 599-607 (comment at 599); the theme cue test ends at 244 and its reading comment is 225-227 | Fixed in `proposal.md`, `tasks.md` 2.2 and `design.md` |
+| F4 | minor | «The three segmented option rules agree» left `min-width`, `border-style`, `border-color` and `white-space` out of the equality set | Added to the scenario (this folder's own ADDED requirement); a missing declaration is a difference |
+| F5 | minor | Two loose wordings: how a length with `env()` compares; which properties count as "a fill or a border colour" | Spelled out in the two scenarios (the `env()` term present and the other terms at least 78px at 16px/rem; `background`, `background-color`, `border`, `border-color`, `border-*-color`) |
+| F6 | note | «The settings shots of the gate rise» is checked by a comparison file (task 7.3), not an exit-coded check | Accepted as written: task 7.3 stops the block on any shot that does not rise |
+
+## Task 1.2: `npx openspec validate update-settings-panel --strict` (after the fold)
+
+```
+Change 'update-settings-panel' is valid
+```
