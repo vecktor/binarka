@@ -1,0 +1,26 @@
+# Battery after the drawing-B vision verdict (2026-10-12 17:15 +0530), HEAD bafb463 + the held evidence (uncommitted at run time).
+# NFR-15 is NOT moved: the fresh vision-judge of run wf_ae715072-b48 found drawing B not met; NFR-15 stays held, NOT-EARNED, and 16-logo-40 stays held.
+
+## npm run check:vision
+
+> binarka@0.1.0 check:vision
+> node scripts/check-vision.mjs
+
+met        NFR-11 (14-cell-states-light, 15-cell-states-dark)
+
+Scope: 15 judged still(s) of 15 clip(s) in 1 manifest(s); 1 vision-verify requirement(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-recordings.mjs --require-vision
+
+Scope: 15 clip(s) across 1 manifest(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+FAIL  [active-changes] active change "update-logo-legibility" is not archived
+
+traceability: 115 MVP FRs checked — 1 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit: 1

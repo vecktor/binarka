@@ -1,6 +1,6 @@
 {
   "kind": "held-evidence",
-  "note": "NFR-15 at 40x40 CSS px, judged by fresh vision-judges: device pixel ratio 1 in vision-verify run wf_8838166c-9f7, ratio 2 in wf_d236b692-54b (2026-10-12). Both not met. The user chose (2026-10-12, question form) to judge at ratio 2 and keep the ratio 1 result as evidence; after ratio 2 also failed, to keep NFR-15 held and fix the logo in its own slice. The clip is held in scripts/record-demos.mjs (16-logo-40, held: true). Not a recording manifest.",
+  "note": "NFR-15 at 40x40 CSS px, judged by fresh vision-judges: device pixel ratio 1 in vision-verify run wf_8838166c-9f7, ratio 2 in wf_d236b692-54b (2026-10-12). Both not met. The user chose (2026-10-12, question form) to judge at ratio 2 and keep the ratio 1 result as evidence; after ratio 2 also failed, to keep NFR-15 held and fix the logo in its own slice. The clip is held in scripts/record-demos.mjs (16-logo-40, held: true). Not a recording manifest. Drawing B (change update-logo-legibility: a bigger 2x2 board, r 24 circle, shorter rays; the user's choice of 2026-10-12) was recorded with --only 16-logo-40 at ratio 2 and judged once by a fresh vision-judge in run wf_ae715072-b48: not met. Not re-judged (no judge shopping); the clip stays held and NFR-15 stays held.",
   "results": [
     {
       "id": "16-logo-40-dpr1",
@@ -26,6 +26,20 @@
         "notes": "At native size the logo (an orange-brown rounded square with sun-like rays, left of the dark title «Бінарка») carries no text. However, the four digits inside the 2×2 board show only as tiny pale marks. I could not clearly tell bars from rings, or confirm the order 1 0 / 0 1. The image also looks smaller than a DPR-2 capture would be. Re-record at true DPR 2 with a tight crop, and make the bar and ring strokes thicker with more contrast against the orange tile. The title is legible.",
         "judgedAt": "2026-10-12T11:15:20Z",
         "judge": "vision-verify (fresh vision-judge)"
+      }
+    },
+    {
+      "id": "16-logo-40-drawB",
+      "proof": "NFR-15, FR-72",
+      "screenshot": "docs/qa/vision-probe/logo-40-drawB-dpr2.png",
+      "video": "docs/qa/vision-probe/logo-40-drawB-dpr2.webm",
+      "asserted": true,
+      "vision": {
+        "met": false,
+        "readable": true,
+        "notes": "The still shows the orange sunburst logo, about 80 px wide, with a 2x2 board in cream marks on brown, next to the dark title «Бінарка». The title is crisp. The four marks inside the board all read as similar small rounded outlines. I could not clearly tell the two bars (1) from the two rings (0), or confirm the «1 0 / 0 1» layout. The sun rays add clutter around the board. Fix: make the digits much larger and heavier, either by enlarging the board and dropping the rays or by using the «01» shape fallback. A bar must then be a solid filled stroke and a ring a clearly hollow circle, with strong contrast. Then re-record the clip.",
+        "judgedAt": "2026-10-12T11:45:07Z",
+        "judge": "vision-verify (fresh vision-judge), run wf_ae715072-b48"
       }
     }
   ]
