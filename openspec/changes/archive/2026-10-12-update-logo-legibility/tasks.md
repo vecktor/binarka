@@ -21,7 +21,7 @@ Order of work: section 1 (tests) is written FIRST from the delta spec and seen r
 
 - [x] 3.1 `design/v0/components/binarka-page.tsx`: `Logo` and `LogoDigit` get the same coordinates; nothing else changes. `design/README.md` gains the iteration entry. Evidence: commit `04b3036`.
 - [x] 3.2 Build the design (`design/v0`, `pnpm build`), serve `out/` on 127.0.0.1:4173, write the prediction (every shot with the header or the logo sheet changes; every other shot is byte-identical), capture `design/v0-screenshots/logo-drawing-b/` twice with `design/tools/capture-review-set.sh` and compare (`SHA1SUMS`, `run-2.SHA1SUMS`, `CHANGES` against `review-set-14`). Evidence: `design/v0-screenshots/logo-drawing-b/PREDICTION.txt`, `CHANGES`.
-- [ ] 3.3 Ask the user whether to move the NFR-14 reference to a new set that carries drawing G (`design/v0-screenshots/logo-drawing-g/`) together with the DS stream's 28px design (`review-set-15`); only the user moves it. Open; until then the logo shots stay NOT-EARNED and the page differs from `review-set-14` in the logo's box (`battery-2.txt`).
+- [x] 3.3 Ask the user whether to move the NFR-14 reference to a new set that carries drawing G (`design/v0-screenshots/logo-drawing-g/`) together with the DS stream's 28px design (`review-set-15`); only the user moves it. Open; until then the logo shots stay NOT-EARNED and the page differs from `review-set-14` in the logo's box (`battery-2.txt`). Answered by the user on 2026-10-12 (question form, session-log row 23): «Later: combined set after DS» — the reference stays `review-set-14` now; the next set (after DS's `review-set-15`) is captured from a design with both the 28px margin and drawing G, and the user moves the reference once.
 
 ## 4. Recording and vision (after the rebase)
 
@@ -34,8 +34,8 @@ Order of work: section 1 (tests) is written FIRST from the delta spec and seen r
 ## 5. Review and archive
 
 - [x] 5.1 Review-gate on the slice diff: run 1 `wf_991ccf83-223` (13 confirmed, 4 contested, 2 rejected), fix round 1 (`566e8b7`), confirming run `wf_597cee36-2dc` (8 confirmed, 1 contested, all minor wording), fix round 2; no product defect. Evidence: `openspec/changes/update-logo-legibility/review-findings.json`.
-- [ ] 5.2 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`.
-- [ ] 5.3 Archive only after 4, 5.1 and 6 pass: `npx openspec archive update-logo-legibility --yes`; in the same commit fix the baseline Exclusions bullet that still says «Legibility of the logo at 40 px and its look are not specified (held NFR-15, NFR-14)»; then `node scripts/check-traceability.mjs --release --strict-tests --strict-recordings`, `npm run check:vision`, `node scripts/check-recordings.mjs --require-vision`; update `docs/current-state.md` with evidence paths.
+- [x] 5.2 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`. Evidence: `docs/qa/update-logo-legibility/battery-3.txt` (lint, 1995 tests, build, validate --all --strict: exit 0).
+- [x] 5.3 Archive only after 4, 5.1 and 6 pass: `npx openspec archive update-logo-legibility --yes`; in the same commit fix the baseline Exclusions bullet that still says «Legibility of the logo at 40 px and its look are not specified (held NFR-15, NFR-14)»; then `node scripts/check-traceability.mjs --release --strict-tests --strict-recordings`, `npm run check:vision`, `node scripts/check-recordings.mjs --require-vision`; update `docs/current-state.md` with evidence paths. Done: archived as `2026-10-12-update-logo-legibility`; baseline Exclusions bullet fixed; checks in `battery-3.txt`.
 
 ## 6. Round 2: drawing G (the user's choice and signed FR-72 amendment of 2026-10-12)
 

@@ -2027,7 +2027,7 @@ Traces: FR-65, NFR-9
 
 ### Requirement: Logo
 
-The page header SHALL show exactly one inline `<svg>` logo inside its heading, drawn as shapes in the page source: a 2×2 mini board with the digits «1 0 / 0 1» in a circle with 0/1 rays, and no text (FR-72). The mini board SHALL be four cell shapes `.logo-cell` (`rect`) in a 2×2 arrangement, each holding one digit shape: a bar for 1 (a `rect` with the class `logo-digit`) and a ring for 0 (an `ellipse` with the class `logo-digit-ring`), so that in reading order (top-left, top-right, bottom-left, bottom-right) the four digits are 1, 0, 0, 1. The circle SHALL be a `circle` element and the rays SHALL be shapes around it: bars (`rect`) for 1 and rings (`ellipse`) for 0, at least one of each. The SVG SHALL hold no `<text>` element, no `<title>`, no `<desc>`, no `<foreignObject>`, no text node of any kind (not even whitespace) and no word; its text content is empty. It SHALL be decorative: `aria-hidden="true"`; the title in the header remains the page's text heading, with the text «Бінарка». It SHALL NOT use an image file: no `<img>`, no `<image>`, no `<use>` and no `href` or `xlink:href` on any element of the SVG, no `src` attribute anywhere on the page (TC-14). The logo SHALL be created once at mount with the header, so a new puzzle, a size change and a win leave exactly one logo, the same element. The logo adds no page text, so NFR-5 is unaffected. The header holds one more inline `svg`, the drawn gear inside the settings button `[data-action="settings"]` (see «Settings button and panel»): it has `aria-hidden="true"`, no `<text>`, `<title>`, `<desc>`, `<foreignObject>`, `<use>`, `href` or `xlink:href` and no text node, and it is not the logo; these two are the only `svg` elements of the root (TC-14 and FR-72, amended 2026-10-10, autonomy-log rows 120 and 121: the logo and the gear are the two inline graphics allowed, and FR-72 describes the logo only). In the rest of this requirement «the svg» means the logo. Legibility of the four digits at 40 px and the look of the mark are covered by the held NFR-15 (and NFR-14), see `docs/requirements-held.md`; the classes, the tag choices and "the same element after a board change" above are spec-made proxies for FR-72 and TC-14, taken from the frozen design (`design/v0/components/binarka-page.tsx`, the source of A-30) and the mount-once structure of the page so that the shapes are checkable in jsdom; they are not requirements of FR-72 itself.
+The page header SHALL show exactly one inline `<svg>` logo inside its heading, drawn as shapes in the page source: a 2×2 mini board with the digits «1 0 / 0 1» on a rounded square tile, and no text (FR-72, amended 2026-10-12). The mini board SHALL be four cell shapes `.logo-cell` (`rect`) in a 2×2 arrangement, each holding one digit shape: a bar for 1 (a `rect` with the class `logo-digit`) and a ring for 0 (an `ellipse` with the class `logo-digit-ring`), so that in reading order (top-left, top-right, bottom-left, bottom-right) the four digits are 1, 0, 0, 1. The tile SHALL be one `rect` with the class `logo-tile`, the first child of the `svg`, covering the whole `viewBox` (`x` 0, `y` 0, `width` 64, `height` 64) with rounded corners (`rx` at least 8); besides the tile, the four cells and the four digit shapes the logo holds no other shape (no `circle`, no rays). The SVG SHALL hold no `<text>` element, no `<title>`, no `<desc>`, no `<foreignObject>`, no text node of any kind (not even whitespace) and no word; its text content is empty. It SHALL be decorative: `aria-hidden="true"`; the title in the header remains the page's text heading, with the text «Бінарка». It SHALL NOT use an image file: no `<img>`, no `<image>`, no `<use>` and no `href` or `xlink:href` on any element of the SVG, no `src` attribute anywhere on the page (TC-14). The logo SHALL be created once at mount with the header, so a new puzzle, a size change and a win leave exactly one logo, the same element. The logo adds no page text, so NFR-5 is unaffected. The header holds one more inline `svg`, the drawn gear inside the settings button `[data-action="settings"]` (see «Settings button and panel»): it has `aria-hidden="true"`, no `<text>`, `<title>`, `<desc>`, `<foreignObject>`, `<use>`, `href` or `xlink:href` and no text node, and it is not the logo; these two are the only `svg` elements of the root (TC-14 and FR-72, amended 2026-10-10, autonomy-log rows 120 and 121: the logo and the gear are the two inline graphics allowed, and FR-72 describes the logo only). In the rest of this requirement «the svg» means the logo. So that the four digits can be told apart at 40×40 CSS px (NFR-15, verified by vision-verify on clip `16-logo-40`), the logo SHALL keep the `viewBox` `0 0 64 64` and draw its board at least this large, in viewBox units (one unit is 0.625 CSS px at 40 px): each `.logo-cell` at least 24 wide and 24 tall and inside the tile with a margin of at least 3 (`x` and `y` at least 3, `x` + `width` and `y` + `height` at most 61); each bar `rect.logo-digit` at least 6 wide and 16 tall with square ends (`rx` at most 1), wholly inside the cell that holds its `x` and `y`; each ring `ellipse.logo-digit-ring` with a `stroke-width` attribute of at least 4.5 and an open hole at least 6.4 wide and 9.6 tall (2 × (`rx` − `stroke-width` / 2) and 2 × (`ry` − `stroke-width` / 2)), with its outer edge (`cx` ± (`rx` + `stroke-width` / 2), `cy` ± (`ry` + `stroke-width` / 2)) inside its cell. These numbers are spec-made proxies taken from the drawing the user chose on 2026-10-12 (drawing G, the board on a rounded square tile, change `update-logo-legibility`; an earlier drawing B with a bigger board in the sun failed the vision check, run `wf_ae715072-b48`); they do not prove legibility, which only the vision check of NFR-15 decides (clip `16-logo-40`), and the look of the mark is covered by NFR-14. The classes, the tag choices and "the same element after a board change" above are spec-made proxies for FR-72 and TC-14, taken from the frozen design (`design/v0/components/binarka-page.tsx`, the source of A-30) and the mount-once structure of the page so that the shapes are checkable in jsdom; they are not requirements of FR-72 itself.
 
 Traces: FR-72, TC-14, FR-117
 
@@ -2061,12 +2061,13 @@ Traces: FR-72, TC-14, FR-117
 - **AND** reading order means the cells ordered by (`y`, then `x`) ascending, the values read with `getAttribute` and compared as numbers
 - **AND** each digit shape lies inside its cell: for a `rect.logo-digit` its `x` and `y` (and for an `ellipse.logo-digit-ring` its `cx` and `cy`) are within the cell's `x` to `x` + `width` and `y` to `y` + `height`, and exactly one digit shape lies in each cell
 
-#### Scenario: Circle and 0/1 rays
+#### Scenario: Rounded square tile, no rays
 
 - **GIVEN** the page has just been mounted
 - **WHEN** the test reads the `svg`
-- **THEN** it contains exactly one `circle` element
-- **AND** it contains at least one `rect` and at least one `ellipse` that carry none of the classes `logo-cell`, `logo-digit` and `logo-digit-ring` (the rays: bars for 1, rings for 0)
+- **THEN** its first child is the only element with the class `logo-tile`: a `rect` with `x` 0, `y` 0, `width` 64, `height` 64 and `rx` at least 8
+- **AND** it contains no `circle` element
+- **AND** every shape (`rect`, `ellipse`, `circle`, `path`, `line`, `polygon`, `polyline`) of the `svg` carries one of the classes `logo-tile`, `logo-cell`, `logo-digit` and `logo-digit-ring` (no ray)
 
 #### Scenario: No image file is used
 
@@ -2100,6 +2101,21 @@ Traces: FR-72, TC-14, FR-117
 - **GIVEN** the page is mounted with a seed source returning 987654 and the logo present
 - **WHEN** the test inspects every text node under the page root, `document.title` and every attribute value of every element in the root, including those of the `svg` and its shapes, each as a separate string
 - **THEN** none of those strings contains `987654` and none matches `/9\D?8\D?7\D?6\D?5\D?4/` (so no shape coordinate or `viewBox` accidentally spells the seed)
+
+#### Scenario: The digits are large enough to read at 40 px
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the attributes of the logo with `getAttribute`, compared as numbers
+- **THEN** the `viewBox` is `0 0 64 64`
+- **AND** each of the four `.logo-cell` shapes is at least 24 wide and at least 24 tall
+- **AND** each of the two `rect.logo-digit` bars is at least 6 wide and at least 16 tall, with `rx` at most 1, and lies wholly inside the cell that holds its `x` and `y`
+- **AND** each of the two `ellipse.logo-digit-ring` rings has a `stroke-width` of at least 4.5, a hole of 2 × (`rx` − `stroke-width` / 2) at least 6.4 and 2 × (`ry` − `stroke-width` / 2) at least 9.6, and its outer edge inside the cell that holds its centre
+
+#### Scenario: The board sits inside the tile
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads the four `.logo-cell` shapes
+- **THEN** each has `x` and `y` at least 3 and `x` + `width` and `y` + `height` at most 61
 
 ### Requirement: Summary button
 
@@ -5002,7 +5018,7 @@ The following are intentionally unsupported in MVP; testers must not report them
 - No persistence of game state (TC-12): reloading the page starts a fresh puzzle; no game state is stored; the only stored data are the preferences of FR-113. No network calls: puzzles are generated in the browser.
 - A timer (FR-45), saved progress (FR-46), undo (FR-47) and a daily puzzle (FR-48) are Future; reset (FR-58) returns to the givens only and is not undo.
 - Real-browser tests (NFR-7) are Future; the page is tested in jsdom only (TC-13). Rendering defects that jsdom cannot see are not caught.
-- Image files and bitmap or other graphics assets are intentionally unsupported (TC-14); the only graphics are the inline SVG logo of FR-72 and the inline SVG gear of the settings button (TC-14 as amended 2026-10-10). Legibility of the logo at 40 px and its look are not specified (held NFR-15, NFR-14).
+- Image files and bitmap or other graphics assets are intentionally unsupported (TC-14); the only graphics are the inline SVG logo of FR-72 and the inline SVG gear of the settings button (TC-14 as amended 2026-10-10). The logo's legibility at 40 px is NFR-15, verified by vision-verify on clip `16-logo-40` (the jsdom floors of «Logo» are proxies only), and its look is NFR-14 (update-logo-legibility, 2026-10-12).
 - Keyboard play and the roles, names and states screen readers use are MVP requirements (NFR-9, FR-59 to FR-65; A-20 reconciled 2026-10-09). Real screen-reader output and real-browser rendering are not tested (A-28, TC-13).
 - The puzzle state in the URL, declined by the user (autonomy-log rows 43 and 66), is not provided. The 44 px touch targets declined in those rows are required since the 2026-10-05 amendment by NFR-12 (see «Action buttons meet the touch-target floor»; change fix-action-button-targets, 2026-10-09).
 - Arrow, Home, End, PageUp and PageDown are not handled. A repeated identical hint sentence is not announced again.

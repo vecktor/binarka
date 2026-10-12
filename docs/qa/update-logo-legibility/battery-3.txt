@@ -1,0 +1,67 @@
+# Battery after the archive of update-logo-legibility (2026-10-12 18:03 +0530), HEAD 260cbdb + the archive (uncommitted at run time).
+
+## npm run lint
+> binarka@0.1.0 lint
+> eslint .
+exit: 0
+
+## npm run test:run
+ Test Files  81 passed (81)
+      Tests  1995 passed (1995)
+   Start at  18:03:36
+   Duration  65.33s (tests 74%, environment 20%, import 5%, transform 1%)
+    Isolate  81 workers spawned · ~1.13s startup each (spawn + environment, per file)
+             at least ~9.05s faster with isolate: false — reuses workers across files instead of one per file
+exit: 0
+
+## npm run build
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-DIwVvqnQ.css  24.37 kB │ gzip:  4.92 kB
+dist/assets/index-CwxmSTGb.js   35.06 kB │ gzip: 12.69 kB
+✓ built in 34ms
+exit: 0
+
+## npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+Totals: 2 passed, 0 failed (2 items)
+exit: 0
+
+## npm run check:vision
+> binarka@0.1.0 check:vision
+> node scripts/check-vision.mjs
+met        NFR-11 (14-cell-states-light, 15-cell-states-dark)
+met        NFR-15 (16-logo-40)
+Scope: 16 judged still(s) of 16 clip(s) in 1 manifest(s); 2 vision-verify requirement(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-recordings.mjs --require-vision
+Scope: 16 clip(s) across 1 manifest(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+FAIL  [tasks-complete] openspec/changes/archive/2026-10-12-update-logo-legibility/tasks.md has 3 unchecked task(s) but is archived
+traceability: 115 MVP FRs checked — 1 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit: 1
+
+## re-run after ticking 3.3 (answered), 5.2 and 5.3 (18:05)
+## node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit: 0
+## npm run check:vision
+met        NFR-11 (14-cell-states-light, 15-cell-states-dark)
+met        NFR-15 (16-logo-40)
+Scope: 16 judged still(s) of 16 clip(s) in 1 manifest(s); 2 vision-verify requirement(s)
+Result: PASS
+exit: 0
+## node scripts/check-recordings.mjs --require-vision
+Scope: 16 clip(s) across 1 manifest(s)
+Result: PASS
+exit: 0

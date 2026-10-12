@@ -291,6 +291,16 @@
       "designWaived": false
     },
     {
+      "slice": "2026-10-12-update-logo-legibility",
+      "reviewEvidence": "clean",
+      "trailerCommits": 13,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true,
+      "designWaived": false
+    },
+    {
       "slice": "2026-10-12-update-settings-panel",
       "reviewEvidence": "dispositioned",
       "trailerCommits": 12,

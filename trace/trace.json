@@ -1492,8 +1492,7 @@
     {
       "id": "FR-72",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-logo-legibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -2051,8 +2050,7 @@
     {
       "id": "FR-117",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-logo-legibility/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -2152,10 +2150,5 @@
     }
   ],
   "failures": [],
-  "warnings": [
-    {
-      "check": "active-changes",
-      "msg": "active change \"update-logo-legibility\" is not archived"
-    }
-  ]
+  "warnings": []
 }
