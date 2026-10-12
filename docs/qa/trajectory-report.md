@@ -9,7 +9,7 @@ It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
 Scope: 34 archived slice(s).
-Result: PASS, 2 warning(s)
+Result: PASS, 1 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
 |---|---|---|---|---|
@@ -41,7 +41,7 @@ Result: PASS, 2 warning(s)
 | 2026-10-11-update-page-backdrop | dispositioned | 6 | yes | ui |
 | 2026-10-11-update-panel-shell | dispositioned | 1 | yes | ui |
 | 2026-10-11-update-rules-panel | dispositioned | 6 | yes | ui |
-| 2026-10-12-fix-reset-keeps-hint | **unclean** | 4 | yes | ui |
+| 2026-10-12-fix-reset-keeps-hint | dispositioned | 4 | yes | ui |
 | 2026-10-12-update-confirm-dialog | clean | 5 | yes | ui |
 | 2026-10-12-update-logo-legibility | clean | 17 | yes | ui |
 | 2026-10-12-update-settings-panel | dispositioned | 12 | yes | ui |
@@ -58,5 +58,4 @@ None.
 
 ## Warnings
 
-- **review-evidence**: 2026-10-12-fix-reset-keeps-hint: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-12-fix-reset-keeps-hint.json is not signed (signature is null) (review must have run clean before archive, or its findings be dispositioned and signed)
 - **in-scope**: src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift

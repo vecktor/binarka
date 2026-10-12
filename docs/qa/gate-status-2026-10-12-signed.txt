@@ -1,0 +1,38 @@
+# npm run test:coverage && BINARKA_PORT_BASE=6873 npm run gate:status (after the disposition signature)
+# Mon Oct 12 22:44:27 +0530 2026
+test:coverage exit 0
+
+> binarka@0.1.0 gate:status
+> node scripts/gate-status.mjs
+
+Gate status (three-valued deterministic checks — judgment criteria sit on top, verify those by hand):
+
+  G0  PASS           scaffold + loop installed
+  G1  needs sign-off requirements signed off
+  G2  PASS           baseline specs  [traceability]
+  G3  needs sign-off capability plan + acceptance methods exist  [acceptance-methods --mode=existence]
+  G4  PASS           per-slice  [traceability · trajectory · acceptance-methods --mode=artifact · factory-integrity]
+  G5  PASS           hardening (coverage)  [coverage-ratchet]
+  G6  PASS           QA proof  [recordings · eval-ratchet · acceptance-methods --mode=artifact · visual-fidelity]
+  G7  PASS           release  [traceability --release --strict-tests --strict-recordings · trajectory --release --check-fresh · recordings · acceptance-methods --mode=artifact · factory-integrity]
+  G8  PASS           UAT (trace regressions)  [traceability]
+
+Deterministic checks (ladder rung from RULES-CHANGELOG.md; unlisted = experimental):
+  traceability         PASS           [experimental]
+  trajectory           PASS           [experimental]  Scope: 34
+  recordings           PASS           [experimental]  Scope: 16
+  coverage             PASS           [experimental]  Scope: 4
+  evals                PASS           [experimental]  Scope: 6
+  acceptanceExistence  PASS           [experimental]  Scope: 134
+  acceptanceArtifact   PASS           [experimental]  Scope: 134
+  visual               PASS           [experimental]  Scope: 170
+  processRatchet       PASS           [experimental]  Scope: 4
+  integrity            PASS           [experimental]  Scope: 28
+  traceabilityRelease  PASS           [experimental]
+  trajectoryRelease    PASS           [experimental]  Scope: 34
+
+(Reviews, sign-offs, and vision-verify are judgment gates — confirm them in docs/qa + the gate checklist.)
+
+Scope: 9 gate(s)
+Result: PASS
+exit 0

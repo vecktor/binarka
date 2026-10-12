@@ -22,5 +22,17 @@
     }
   ],
   "openProductDefects": 0,
-  "signature": null
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T22:43+05:30",
+    "channel": "chat, question form, stream F of wave 3 (claude/friendly-lederberg-final); docs/qa/final-stream/session-log.md row F19",
+    "words": "«Sign as compiled (Recommended)», to the question «Sign the review disposition of the new slice fix-reset-keeps-hint? One entry: the confirmed finding … is fixed by fe87c4f (spec only); 0 product defects open; 1 contested no-action summary and 4 rejected excluded.»",
+    "scope": "every entry of this file as compiled on 2026-10-12 (1 entry, fixed by fe87c4f) and its exclusion"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-12-fix-reset-keeps-hint/review-findings.json",
+    "git show fe87c4f",
+    "docs/qa/fix-reset-keeps-hint/fix-round-1.txt"
+  ],
+  "compilerNotes": "Compiled by stream F. The spec fix takes effect in the living spec at the archive (ae9b8a9)."
 }
