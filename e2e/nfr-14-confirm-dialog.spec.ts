@@ -71,8 +71,8 @@ interface Fixture {
   tolerancePx: number;
   selectors: string[];
   cases: { shot: string; state: string; captureBoard: unknown }[];
-  rulesPanel?: { cases: unknown[] };
-  setupSheet?: { cases: unknown[] };
+  rulesPanel?: { selectors: string[]; coverage: string; cases: unknown[] };
+  setupSheet?: { selectors: string[]; coverage: string; cases: unknown[] };
   confirmDialog?: ConfirmKey;
 }
 
@@ -302,6 +302,14 @@ test('@trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, toler
   expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 18').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
   expect(fixture.rulesPanel?.cases, 'rulesPanel keeps its 8 cases').toHaveLength(8);
   expect(fixture.setupSheet?.cases, 'setupSheet keeps its 12 cases').toHaveLength(12);
+  // Review gate of the design stream DS (run wf_b4f0e083-6e6, contested finding): the case pins below do not cover the keys' selectors and
+  // coverage, which the whole-key pins did, so they are asserted here.
+  expect(fixture.rulesPanel?.selectors, 'rulesPanel keeps its selectors').toEqual(['[data-section="rules"]', '[data-section="rules"] .rules-close']);
+  expect(fixture.setupSheet?.selectors, 'setupSheet keeps its selectors').toEqual([
+    '[data-section="setup"]',
+    '[data-section="setup"] [data-control="level"] button:first-of-type .level-text',
+  ]);
+  expect([fixture.rulesPanel?.coverage, fixture.setupSheet?.coverage], 'both keys declare sampled coverage').toEqual(['sampled', 'sampled']);
   for (const key of ['rulesPanel', 'setupSheet'] as const) {
     const sha1 = createHash('sha1').update(JSON.stringify(fixture[key]?.cases)).digest('hex');
     expect(sha1, `${key}.cases are the pinned ones (rulesPanel: main 18e5f3f; setupSheet: the iteration-17 refreeze)`).toBe(UNCHANGED_CASES_SHA1[key]);

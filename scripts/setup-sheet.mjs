@@ -3,7 +3,7 @@
 // e2e/nfr-14-setup-sheet.spec.ts reads the same selectors from the fixture and asserts them.
 // It replaces scripts/setup-sheet-deviation.mjs (design stream DS of wave 3, 2026-10-12): the level group's 28px bottom margin was a recorded
 // deviation (SQ-5) injected into the design page; since design iteration 17 the design has it at every width (A-60 as amended and signed;
-// the NFR-14 reference is review-set-15), so nothing is injected and the value is a guard.
+// the NFR-14 reference is the config's referenceDir, review-set-15 onward), so nothing is injected and the value is a guard.
 
 /** The sheet and the left edge of its first level description. */
 export const SETUP_SELECTORS = ['[data-section="setup"]', '[data-section="setup"] [data-control="level"] button:first-of-type .level-text'];

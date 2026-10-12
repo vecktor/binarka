@@ -17,8 +17,8 @@
 // measured only for states whose look is reached at mount (GEOMETRY_STATES) or by opening the setup sheet (SHEET_STATES: the design routes
 // /setup/ and /setup-four/ are open at load, the page side presses the summary button, as e2e/nfr-14-setup-sheet.spec.ts replays
 // afterLoad "open-setup"); other states have the pixel channel only. For the sheet states the design page is measured as it is: since design
-// iteration 17 it has the level group's 28px bottom margin at every width (A-60 as amended and signed on 2026-10-12; the reference is
-// review-set-15), so nothing is injected. A guard throws if the design's margin is not 28px (scripts/setup-sheet.mjs, LEVEL_MARGIN).
+// iteration 17 it has the level group's 28px bottom margin at every width (A-60 as amended and signed on 2026-10-12; the reference is the
+// config's referenceDir, review-set-15 onward), so nothing is injected. A guard throws if the design's margin is not 28px (scripts/setup-sheet.mjs, LEVEL_MARGIN).
 // Sampling: the shots given (default: the default state at every reference viewport and scheme); coverage is `sampled`.
 //
 // Blocks: layout (16 elements, states reached at mount) and rules (the open rules panel and «Зрозуміло», state `rules`: geometry

@@ -2,8 +2,8 @@
 // geometry test (e2e/nfr-14-layout-geometry.spec.ts, change update-page-layout-geometry). Not a gate.
 //
 // The design build (design/v0/out, `pnpm build` in design/v0, design/README.md) stands in for the frozen reference
-// (config.referenceDir; review-set-16 since design iteration 18): captured at a real device scale it reproduces all 170 reference shots exactly
-// (docs/qa/design-stream/harness-calibration-set16.txt; earlier sets: harness-calibration-set15.txt, docs/qa/g2/harness-calibration.txt). The boxes are
+// (config.referenceDir): captured at a real device scale it reproduces all 170 reference shots exactly (the calibration of each set is named in
+// scripts/reference-calibration.mjs, which fails the freeze for a set without one). The boxes are
 // measured with the SAME browser setup as the e2e test that reads
 // them (playwright.config.ts: Playwright's "Desktop Chrome" device, the viewport set per case, reduced motion, light
 // scheme), so the test compares like with like. Box edges are CSS px as getBoundingClientRect gives them.
@@ -60,6 +60,7 @@ import { chromium, devices } from 'playwright';
 import { captureBoardFor, parseShot } from './check-visual-parity-adapters.mjs';
 import { capturePorts } from './capture-ports.mjs';
 import { LEVEL_MARGIN, SETUP_SELECTORS } from './setup-sheet.mjs';
+import { standInFor } from './reference-calibration.mjs';
 import { CONFIRM_SELECTORS } from './confirm-dialog.mjs';
 
 export const LAYOUT_SELECTORS = [
@@ -346,9 +347,7 @@ const freshProvenance = {
     designBuild: 'design/v0/out from `pnpm build` in design/v0 (design/README.md), not committed; designBuildSha1 covers every file of it',
     reference: config.referenceDir,
     referenceSha1sums: config.referenceSha1sums,
-    // The calibration of the build against the reference the config names (review-set-15: docs/qa/design-stream/harness-calibration-set15.txt;
-    // review-set-14: docs/qa/g2/harness-calibration.txt).
-    standIn: 'docs/qa/design-stream/harness-calibration-set16.txt (the design build reproduces all 170 reference shots at 1.0000)',
+    standIn: standInFor(config.referenceDir),
     browser: `Playwright chromium ${browser.version()}, devices["Desktop Chrome"], reducedMotion reduce, colorScheme light`,
   };
 // Keep the recorded provenance while the design is unchanged (designBuildSha1 differs between worktrees); otherwise write this run's.

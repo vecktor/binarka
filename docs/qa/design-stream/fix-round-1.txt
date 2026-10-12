@@ -1,0 +1,140 @@
+# Fix round 1 checks (design stream DS, review gate wf_b4f0e083-6e6). First pass: build exit 2 (TS2322 in the new tests/nfr-14-reference-pins.test.ts, a possibly-undefined regex group); fixed, then the second pass below.
+2026-10-12 18:28 +0530
+=== npm run lint
+
+> binarka@0.1.0 lint
+> eslint .
+
+exit=0
+=== npm run test:run
+
+> binarka@0.1.0 test:run
+> vitest run
+
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e
+
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+
+ Test Files  82 passed (82)
+      Tests  1996 passed (1996)
+   Start at  18:29:01
+   Duration  63.40s (tests 76%, environment 18%, import 5%, transform 1%)
+
+    Isolate  82 workers spawned · ~932ms startup each (spawn + environment, per file)
+             at least ~7.56s faster with isolate: false — reuses workers across files instead of one per file
+
+exit=0
+=== npm run build
+
+> binarka@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 23 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-DIwVvqnQ.css  24.37 kB │ gzip:  4.92 kB
+dist/assets/index-JzGe6bUF.js   35.36 kB │ gzip: 12.80 kB
+
+✓ built in 36ms
+exit=0
+=== npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+✓ change/update-setup-sheet-design-margin
+Totals: 3 passed, 0 failed (3 items)
+exit=0
+=== npx playwright test e2e/nfr-14-setup-sheet.spec.ts e2e/nfr-14-settings-panel.spec.ts e2e/nfr-14-confirm-dialog.spec.ts --reporter=line
+
+Running 66 tests using 5 workers
+
+[1/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:274:1 › @trace NFR-14 the design build is required and the coverage is declared: sampling dimensions, coverage sampled, the stricter instruments named, nothing beyond a sample claimed
+[2/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:377:3 › @trace NFR-14 @trace FR-67 375-light-confirm (375x812): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[3/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:377:3 › @trace NFR-14 @trace FR-67 320-light-confirm (320x700): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[4/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:297:1 › @trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes; the design hashes name design iteration 18
+[5/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:321:1 › @trace NFR-14 @trace FR-67 the fixture holds the key confirmDialog: the four selectors, sampled coverage, its own provenance and the 5 cases with the recorded structure
+[6/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:377:3 › @trace NFR-14 @trace FR-67 768-light-confirm (768x1024): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[7/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:377:3 › @trace NFR-14 @trace FR-67 1024-light-confirm (1024x768): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[8/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:377:3 › @trace NFR-14 @trace FR-67 1440-light-confirm (1440x900): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[9/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:552:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 320x700: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[10/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:552:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 375x812: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[11/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:552:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 768x1024: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[12/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:552:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 1024x768: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[13/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:552:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 1440x900: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[14/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:487:3 › paint: both buttons against the design build › @trace NFR-14 the design server listens on a port chosen by the operating system, not on one the page preview or the capture tools bind
+[15/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:500:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border
+[16/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:500:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border
+[17/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:500:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border
+[18/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:500:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border
+[19/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:151:1 › @trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 18, review-set-16)
+[20/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:162:1 › @trace NFR-14 @trace FR-68 adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet, and settingsPanel names the same design
+[21/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:178:1 › @trace NFR-14 @trace FR-68 the fixture holds the key settingsPanel: selectors, sampled coverage, its own provenance and exactly the 7 cases
+[22/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:257:5 › 320-light-settings (320x700) › @trace NFR-14 @trace FR-68 320-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[23/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:279:5 › 320-light-settings (320x700) › @trace NFR-14 @trace FR-68 320-light-settings: the two language options are equal halves (widths within 0.5 px)
+[24/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:257:5 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[25/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:279:5 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: the two language options are equal halves (widths within 0.5 px)
+[26/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:288:7 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: an unchosen and a chosen option of each control have the design's computed paint
+[27/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:257:5 › 768-light-settings (768x1024) › @trace NFR-14 @trace FR-68 768-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[28/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:279:5 › 768-light-settings (768x1024) › @trace NFR-14 @trace FR-68 768-light-settings: the two language options are equal halves (widths within 0.5 px)
+[29/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:257:5 › 1024-light-settings (1024x768) › @trace NFR-14 @trace FR-68 1024-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[30/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:279:5 › 1024-light-settings (1024x768) › @trace NFR-14 @trace FR-68 1024-light-settings: the two language options are equal halves (widths within 0.5 px)
+[31/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:257:5 › 1366-light-settings (1366x650) › @trace NFR-14 @trace FR-68 1366-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[32/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:279:5 › 1366-light-settings (1366x650) › @trace NFR-14 @trace FR-68 1366-light-settings: the two language options are equal halves (widths within 0.5 px)
+[33/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:257:5 › 1440-light-settings (1440x900) › @trace NFR-14 @trace FR-68 1440-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[34/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:279:5 › 1440-light-settings (1440x900) › @trace NFR-14 @trace FR-68 1440-light-settings: the two language options are equal halves (widths within 0.5 px)
+[35/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:257:5 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[36/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:279:5 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: the two language options are equal halves (widths within 0.5 px)
+[37/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:288:7 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: an unchosen and a chosen option of each control have the design's computed paint
+[38/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:376:5 › 667x375 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 667x375: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port)
+[39/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:376:5 › 568x320 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 568x320: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port)
+[40/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:376:5 › 1024x360 (dropdown) short-window focus walk › @trace NFR-14 @trace FR-65 1024x360: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port)
+[41/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:135:1 › @trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 18, review-set-16)
+[42/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:144:1 › @trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, no deviation (the design has the 28px, A-60) and the 12 cases
+[43/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 320-light-setup-four (320x700): the open setup sheet matches the design's box within the fixture's tolerance
+[44/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 320-light-setup (320x700): the open setup sheet matches the design's box within the fixture's tolerance
+[45/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 375-light-setup (375x812): the open setup sheet matches the design's box within the fixture's tolerance
+[46/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 375-light-setup-four (375x812): the open setup sheet matches the design's box within the fixture's tolerance
+[47/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 768-light-setup (768x1024): the open setup sheet matches the design's box within the fixture's tolerance
+[48/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 768-light-setup-four (768x1024): the open setup sheet matches the design's box within the fixture's tolerance
+[49/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 1024-light-setup (1024x768): the open setup sheet matches the design's box within the fixture's tolerance
+[50/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 1024-light-setup-four (1024x768): the open setup sheet matches the design's box within the fixture's tolerance
+[51/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 1366-light-setup (1366x650): the open setup sheet matches the design's box within the fixture's tolerance
+[52/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 1366-light-setup-four (1366x650): the open setup sheet matches the design's box within the fixture's tolerance
+[53/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 1440-light-setup (1440x900): the open setup sheet matches the design's box within the fixture's tolerance
+[54/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:314:5 › @trace NFR-14 @trace FR-96 1440-light-setup-four (1440x900): the open setup sheet matches the design's box within the fixture's tolerance
+[55/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 320x700 default: the open setup sheet cuts no idle line
+[56/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 320x700 four: the open setup sheet cuts no idle line
+[57/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 375x812 default: the open setup sheet cuts no idle line
+[58/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 375x812 four: the open setup sheet cuts no idle line
+[59/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 768x1024 default: the open setup sheet ends below the button row and cuts no idle line
+[60/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 768x1024 four: the open setup sheet ends below the button row and cuts no idle line
+[61/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 1024x768 default: the open setup sheet ends below the button row and cuts no idle line
+[62/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 1024x768 four: the open setup sheet ends below the button row and cuts no idle line
+[63/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 1366x650 default: the open setup sheet ends below the button row and cuts no idle line
+[64/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 1366x650 four: the open setup sheet ends below the button row and cuts no idle line
+[65/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 1440x900 default: the open setup sheet ends below the button row and cuts no idle line
+[66/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:368:5 › @trace NFR-14 @trace FR-96 1440x900 four: the open setup sheet ends below the button row and cuts no idle line
+  66 passed (7.5s)
+exit=0
+=== node scripts/check-factory-integrity.mjs
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)
+exit=0
+=== node -e 'import("./scripts/reference-calibration.mjs").then(m=>{const g=require("./quality/design-geometry.json"),c=require("./quality/visual-parity.config.json");console.log(m.standInFor(c.referenceDir)===g.provenance.standIn?"standInFor equals the fixture standIn verbatim (no refreeze needed)":"DIFFERS")})'
+standInFor equals the fixture standIn verbatim (no refreeze needed)
+exit=0
