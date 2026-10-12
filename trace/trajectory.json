@@ -283,7 +283,7 @@
     {
       "slice": "2026-10-12-fix-reset-keeps-hint",
       "reviewEvidence": "unclean",
-      "trailerCommits": 3,
+      "trailerCommits": 4,
       "libDomains": [
         "ui"
       ],

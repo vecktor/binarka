@@ -41,7 +41,7 @@ Result: PASS, 2 warning(s)
 | 2026-10-11-update-page-backdrop | dispositioned | 6 | yes | ui |
 | 2026-10-11-update-panel-shell | dispositioned | 1 | yes | ui |
 | 2026-10-11-update-rules-panel | dispositioned | 6 | yes | ui |
-| 2026-10-12-fix-reset-keeps-hint | **unclean** | 3 | yes | ui |
+| 2026-10-12-fix-reset-keeps-hint | **unclean** | 4 | yes | ui |
 | 2026-10-12-update-confirm-dialog | clean | 5 | yes | ui |
 | 2026-10-12-update-logo-legibility | clean | 17 | yes | ui |
 | 2026-10-12-update-settings-panel | dispositioned | 12 | yes | ui |

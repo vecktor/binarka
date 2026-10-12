@@ -1,0 +1,1235 @@
+{
+  "generatedAt": "2026-10-12T16:31:17Z",
+  "threshold": 70,
+  "dimensions": {
+    "process-order": 66.8,
+    "test-integrity": 86.5,
+    "in-scope": 84.8,
+    "craft": 86.1
+  },
+  "sliceRollup": {
+    "add-capture-board": 60,
+    "add-difficulty-engine": 60,
+    "add-english-version": 68,
+    "add-hinted-cell": 67,
+    "add-level-selector": 60,
+    "add-logo": 62,
+    "add-page-accessibility": 84,
+    "add-play-page": 88,
+    "add-puzzle-engine": 65,
+    "add-rule-solvable-generator": 58,
+    "add-rules-and-reset": 64,
+    "add-size-selector": 84,
+    "add-theme-switch": 63,
+    "add-violation-cause": 68,
+    "fix-action-button-targets": 60,
+    "fix-size-option-focus-ring": 57,
+    "reconcile-ux-accessibility": 61,
+    "update-confirm-dialog": 87,
+    "update-controls-accessibility": 51,
+    "update-hint-sentences": 87,
+    "update-logo-legibility": 78,
+    "update-page-backdrop": 61,
+    "update-page-layout-geometry": 57,
+    "update-page-layout": 62,
+    "update-page-palette": 61,
+    "update-panel-shell": 61,
+    "update-rules-panel": 67,
+    "update-segmented-focus-ring-wording": 55,
+    "update-settings-panel": 60,
+    "update-setup-sheet-design-margin": 29,
+    "update-setup-sheet-start": 62,
+    "update-setup-sheet": 82,
+    "update-win-apostrophe": 84
+  },
+  "units": [
+    {
+      "id": "add-capture-board:process-order",
+      "slice": "add-capture-board",
+      "dimension": "process-order",
+      "score": 60,
+      "pass": false,
+      "judges": 2,
+      "notes": "The test-first order is well evidenced. The red test commit f6961ff comes before the impl commit 2aa39ac, its assertions follow the spec's scenarios, and both fix rounds have red commits ahead of their fixes. So the critical criterion is met. The review stage is not: review-findings.json records clean:false after two runs, the last fix was archived without another review, and one minor item is still open. That misses the second criterion's explicit clean:true requirement. Missing half the rubric puts the score below the pass bar. | The critical test-first criterion is met. The red test commit f6961ff comes before the implementation commit 2aa39ac, its assertions follow the eight spec scenarios, and each fix round started with its own red test commit. The second criterion is not met. The review-findings.json in the archive says clean:false after 2 runs, and the slice was archived a minute after the last fix with no review run to confirm it was clean. With one of two criteria missed the score is 62, below the pass bar of 70."
+    },
+    {
+      "id": "add-capture-board:test-integrity",
+      "slice": "add-capture-board",
+      "dimension": "test-integrity",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The process ran test-first: the red commit f6961ff came before impl 2aa39ac, and both review fix rounds added red tests (5487adc, d3dc83c with -0 deletions) before their fixes. I found no skipped, tautological or deleted assertions in tests/play-page-capture-board.test.ts. Edge-case coverage is extensive across 30+ invalid-value cases, plus level and size boundaries and locale strings. Points come off for the 52db0de test rewrite (+32/-25) made in the same commit as the fix. It is justified and still strict, but it changed an expectation without a separate red step."
+    },
+    {
+      "id": "add-capture-board:in-scope",
+      "slice": "add-capture-board",
+      "dimension": "in-scope",
+      "score": 83,
+      "pass": true,
+      "judges": 2,
+      "notes": "The product code changes are tightly scoped: one new UI module and an edit to play-page.ts for the mount hook, both under FR-119. The engine is imported, not edited. Points come off for two things: an unexplained 'drop a duplicate refreshHighlights' cleanup inside a fix commit, and a truncated file list of 34 non-src files that I couldn't fully check. | The slice meets both criteria. The src changes are limited to a new src/ui/capture-board.ts and the mount path in play-page.ts. The engine is not touched. The design fixture move to boards.json is set out in the proposal and tasks and the user signed it off. The locked adapter is explicitly deferred. I took points off for two things: the 'drop a duplicate refreshHighlights' cleanup bundled into a fix commit (most likely the slice's own duplicate, but not proven), and the truncated list of other files, which I could not fully check for drift."
+    },
+    {
+      "id": "add-capture-board:craft",
+      "slice": "add-capture-board",
+      "dimension": "craft",
+      "score": 85,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met in the final state. The slice leaves no TODO/FIXME or commented-out code, and its history moves forward without reverts or abandoned work. Points come off because the impl commit added a duplicate refreshHighlights that was only removed in fix round 2. A second deduction is for two review-driven fix rounds that included rewriting existing test lines. That is small rework, not thrash."
+    },
+    {
+      "id": "add-difficulty-engine:process-order",
+      "slice": "add-difficulty-engine",
+      "dimension": "process-order",
+      "score": 60,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical criterion is met. The red-test commit 1f8af34, tagged with the slice's FR IDs, comes before the implementation commit 5038c70. A red-run artifact exists, and the assertions track the spec scenarios. Criterion 2 is not met: review-findings.json says clean:false in every round, yet the slice was archived. A signed disposition is a partial mitigation, not clean:true. Tests were also changed after implementation, including +23 lines in the archive commit. With half the rubric missed, the score is 62, which is below the 70 pass threshold. | The test-first part is well evidenced. A trailer-less red commit came before the first src commit, and a red-run artifact shows src/ untouched with 162 FR-traced red tests, so the critical criterion is met. The second criterion explicitly requires review-findings.json with clean:true. Instead it shows clean:false over two rounds, the slice was archived with 2 findings waived rather than fixed, and a test file gained 23 lines inside the archive commit. With one of two criteria clearly missed, the score lands below the pass line."
+    },
+    {
+      "id": "add-difficulty-engine:test-integrity",
+      "slice": "add-difficulty-engine",
+      "dimension": "test-integrity",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The tests were committed red before the implementation. Only two test edits came after the impl commit, and neither weakens anything. The run-out test edit strengthened a self-referential assertion (per the disposition evidence). The rule-solvable edit only adds 23 lines. The assertions I read in generator-run-out.test.ts and the cli-level hunk cover boundaries (attempt limits 1 and 100, invalid levels 5 and size 4 with level 2), the English-only and one-sentence message rules, and CLI error exits. I deducted a little because I checked only part of the 110 spec scenarios directly."
+    },
+    {
+      "id": "add-difficulty-engine:in-scope",
+      "slice": "add-difficulty-engine",
+      "dimension": "in-scope",
+      "score": 85,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product code changes stay inside the engine modules plus the CLI '--level' flag, and the spec (FR-85) explicitly requires the CLI change. The test-helper edits are planned in design.md and tasks.md (task 2.8a, removing the shim). I found no opportunistic refactor in the src hunks. I took points off because the bundle does not attribute the many non-src files (including .claude/agents/designer.md) to specific commits, and because the archive/handoff commit also adds a +23 test edit, which I graded down where unclear."
+    },
+    {
+      "id": "add-difficulty-engine:craft",
+      "slice": "add-difficulty-engine",
+      "dimension": "craft",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met on the evidence. Grep of the current src/engine/ and src/cli.ts shows no TODO/FIXME or commented-out code, and the commit sequence is linear (tests, then impl, then one review fix round, then archive) with no reverts and all tasks ticked. Points come off for test edits after the impl commit, especially the 23 test lines added in a 'chore: archive' commit. The fix round with 17 fixed findings, including a smoke bound changed so a check could be marked PASS, also counts against the slice: it is mild rework, not thrash. The bundle was truncated in places, so I checked the absence of TODOs against the current repository state."
+    },
+    {
+      "id": "add-english-version:process-order",
+      "slice": "add-english-version",
+      "dimension": "process-order",
+      "score": 68,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical test-first criterion is met. The red test commit a75e3cf comes before the implementation commit 9e2e442, red-run files exist, and the assertions match spec scenario wording. The fix round was also done red-first. Criterion 2 is not met as written: the archived review-findings.json says clean:false after two runs. A signed disposition (13 fixed, 1 waived) covers the findings but does not equal clean:true, so the score loses a large chunk. | The critical criterion is clearly met. The red tests were committed before the src commit, a detailed red-run artifact shows 293 assertion failures with src untouched, and the assertions track the spec scenarios. Criterion 2 explicitly requires review-findings.json with clean:true. The archived file says clean:false: the confirming run still had 6 confirmed findings, and the slice was archived on a signed disposition (one finding waived) instead of a clean review. 2ccb938 also changed tests and src after that run. That misses half of the rubric, so the score falls below the pass line."
+    },
+    {
+      "id": "add-english-version:test-integrity",
+      "slice": "add-english-version",
+      "dimension": "test-integrity",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "Tests were written first, as red tests (a75e3cf before 9e2e442). Every later test edit was additive or a comment, and changed-tests.md records the spec source of each changed existing test and says nothing was weakened (toEqual became toStrictEqual). play-page-language.test.ts asserts exact literals and covers locale and boundary edges: a bad stored value 'EN', navigator en-US ignored, pressing the language already shown, a byte-exact switch back, cleared messages, the 4x4 reason, and the no-rule and broken-rule sentences. A few points are deducted only because the 1-line post-impl change to nfr-13 could not be checked directly."
+    },
+    {
+      "id": "add-english-version:in-scope",
+      "slice": "add-english-version",
+      "dimension": "in-scope",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "Every src file in the bundle (engine hint/sentences/types/index, ui play-page/preferences/strings/style.css) is named in the proposal's Affected code. The engine contract change was decided in an ADR (0005) before the implementation commit, so the cross-module edit is not silent drift. The only fix outside the main feature commit repairs a regression this slice caused, found by its own review gate and fixed test-first. A few points come off because the 'docs:'-labelled commit 2ccb938 changes src and e2e code whose hunk the bundle does not show."
+    },
+    {
+      "id": "add-english-version:craft",
+      "slice": "add-english-version",
+      "dimension": "craft",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The bundle and a grep of src/ show no TODO/FIXME markers and no commented-out code. The commit history goes forward from ADR to red tests to implementation to archive with no reverts, and every task is ticked. Points come off because the slice needed a review fix round for a product defect (productCodeDefect true=1) plus a later after-run fix that edited a test. The bundle only shows part of the diffs, so I cannot fully rule out dead code beyond what the greps checked; that uncertainty also keeps the score below 90."
+    },
+    {
+      "id": "add-hinted-cell:process-order",
+      "slice": "add-hinted-cell",
+      "dimension": "process-order",
+      "score": 67,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical test-first criterion is clearly met. Red tests that track the spec scenarios were committed a minute before the implementation, a red-run artifact exists, and no tests were edited after the implementation. Criterion 2 is only partly met. The review found two real process gaps: task 3.7 was ticked without full browser-check evidence. They were fixed and dispositioned, but review-findings.json stays clean:false at archive, and the rubric asks for clean:true. That gives a pass with a meaningful deduction. | The test-first part is strong and well evidenced. Tests were committed before src, and a recorded red run shows 28 assertion-only failures named after the spec scenarios, with no test edits after the impl commit. So the critical criterion is met. But the review gate's own artifact is clean:false with 2 confirmed findings, and the slice was archived about a minute after the fixes with no clean re-review. That fails the second criterion as written, and a signed disposition only partly makes up for it. With one of the two criteria missed, the score drops below the pass bar."
+    },
+    {
+      "id": "add-hinted-cell:test-integrity",
+      "slice": "add-hinted-cell",
+      "dimension": "test-integrity",
+      "score": 92,
+      "pass": true,
+      "judges": 1,
+      "notes": "The tests were written and committed first, and the run was confirmed red: 28 assertion failures, all on the missing marker. After the impl commit no test file was edited, and the test count only grew, from 475 to 493. All 13 spec scenarios are covered by specific assertions, including failed generation, the win, two mounts, no-op actions, the 4 and 8 size boundaries and the Ukrainian UI labels. A small deduction for the non-clean review round, which was about browser-check evidence rather than the tests."
+    },
+    {
+      "id": "add-hinted-cell:in-scope",
+      "slice": "add-hinted-cell",
+      "dimension": "in-scope",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice's product changes are tightly scoped: two play-page UI files carry exactly the marker state and its CSS cue, and each maps to the added and modified play-page requirements. The test and fix commits stay on the slice. Nothing points to opportunistic rewrites. I took a few points off because part of the 23-file 'other' list is cut off and the archive commit includes baseline text edits I could not inspect in full."
+    },
+    {
+      "id": "add-hinted-cell:craft",
+      "slice": "add-hinted-cell",
+      "dimension": "craft",
+      "score": 92,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met. The diff is small and clean, with no TODOs, dead code or commented-out blocks, and the history shows no revert churn or abandoned work. A small deduction remains: the one review round confirmed 2 minor findings about incomplete browser-check evidence for task 3.7, which was ticked early, and both were fixed. Also, I only saw a summary of fix commit 47f9442's src changes, not the hunk, so I cannot confirm its contents and graded it slightly down."
+    },
+    {
+      "id": "add-level-selector:process-order",
+      "slice": "add-level-selector",
+      "dimension": "process-order",
+      "score": 60,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical criterion is met. The test commit comes before the implementation commit, no tests were edited after the implementation, there is a recorded red run with 257 failing tests, and the mutation evidence ties the assertions to spec scenarios. Criterion 2 is missed because both review-gate runs ended clean=false, with 4 confirmed findings left after the confirming run. Fixing them later in a signed disposition does not make review-findings.json clean:true. With one of two criteria missed, the score is below 70 and pass is false. | The critical criterion is met. There is a separate red-test commit before the implementation, a recorded red run with src untouched (257 failures), test names that track the spec scenarios, and no test edits after the implementation commit. The second criterion fails on its own explicit condition: both review-gate runs are clean=false, and the slice was archived without a clean confirming run. A signed disposition does not replace that. One of the two criteria is missed, which puts the score below the pass threshold."
+    },
+    {
+      "id": "add-level-selector:test-integrity",
+      "slice": "add-level-selector",
+      "dimension": "test-integrity",
+      "score": 86,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice was test-first: red commit 92de28f comes before implementation commit 041c183, no tests were edited after the implementation commit, and there are no skip markers or tautological assertions. The tests assert boundary cases (the 4x4 level limit, three run-outs at mount and on change, errors that must not be retried, wrong-size results) and exact Ukrainian text. Mutation evidence shows the tests catch regressions. Points come off because the per-test justification for changed existing tests was missing until review flagged it, and because the truncated diff leaves some doubt about the modified pre-existing test files."
+    },
+    {
+      "id": "add-level-selector:in-scope",
+      "slice": "add-level-selector",
+      "dimension": "in-scope",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Product code changes are limited to src/ui (play-page.ts, strings.ts, style.css). The engine is only used, not edited. The behaviours that look like scope creep (page retry FR-88, hint ceiling 4 FR-77) are named in the proposal. I saw no smuggled refactor in the visible hunks or the commit structure. Points come off because the impl diff and the many edits to existing test files are truncated in the bundle, so I could not fully confirm they contain no unrelated rewrite."
+    },
+    {
+      "id": "add-level-selector:craft",
+      "slice": "add-level-selector",
+      "dimension": "craft",
+      "score": 85,
+      "pass": true,
+      "judges": 1,
+      "notes": "The final state has no TODO/FIXME/AMBIGUITY markers and no commented-out code in src/ui or the slice's tests (grep confirmed). The history is short and linear: red tests, implementation, archive, with no test edits after the implementation commit and no reverts. Points come off because the craft was not clean the first time. A stale AMBIGUITY comment was committed in the red commit and only removed after review run 2. The two review runs both came back not clean, and the fix-round edits were folded into one large implementation commit, so the history does not show them separately."
+    },
+    {
+      "id": "add-logo:process-order",
+      "slice": "add-logo",
+      "dimension": "process-order",
+      "score": 62,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical test-first criterion is met. The red-test commit 5ffa9ec comes before the implementation commit 7e483fe, and the test names and assertions copy the 8 spec scenarios directly. The second criterion fails. It explicitly requires review-findings.json with clean:true, but the archived file shows \"clean\": false in both review rounds. The last round still has a confirmed finding that was fixed after the run and never re-reviewed before archiving. One of the two rubric criteria is unmet, which puts the score below the pass threshold. | The critical test-first criterion is met. The red tests (5ffa9ec) were committed before the implementation (7e483fe), their names match the spec scenarios, and the failing red run is on record in docs/qa/add-logo-red-run.txt. The second criterion requires review-findings.json with clean:true, but the archived file shows clean:false in both review rounds. The last confirmed finding was fixed during archiving and never re-reviewed, so the slice was archived over a review that was not clean. That leaves half of the rubric unmet against an explicit requirement, so the score falls below the pass line."
+    },
+    {
+      "id": "add-logo:test-integrity",
+      "slice": "add-logo",
+      "dimension": "test-integrity",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The red tests (5ffa9ec) came before the implementation (7e483fe). The one test edit after implementation (14a6398) made the tests stronger: it split the size case in two and removed a vacuous guard, and the red run was redone. Nothing was weakened, skipped or removed. The spec's boundary cases are asserted with specific checks: every kind of board change, seed leaks including split digits, all image and reference paths, and a scan guard that cannot pass on an empty file list. The score loses a few points because some design attributes were knowingly left untested."
+    },
+    {
+      "id": "add-logo:in-scope",
+      "slice": "add-logo",
+      "dimension": "in-scope",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met. Every src change in this slice is limited to the three ui files that tasks.md names in advance, and the engine and strings files were left untouched as planned. The new code is narrowly about the logo, and no unrelated rewrite is visible. Points come off because the list of non-src files is truncated in the bundle and the fix-round diff was not shown, so I cannot fully confirm there was no small drift outside the slice."
+    },
+    {
+      "id": "add-logo:craft",
+      "slice": "add-logo",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice's src diff is clean. It adds a small, fully used logo module, with no TODO/FIXME, dead code or commented-out code. The commits go tests, then implementation, then one review fix, then archive, with no reverts and every task ticked. I took points off because the tests were changed after the implementation commit, which left the red-run evidence mismatched (a confirmed spec-compliance finding). That is minor rework, not thrash."
+    },
+    {
+      "id": "add-page-accessibility:process-order",
+      "slice": "add-page-accessibility",
+      "dimension": "process-order",
+      "score": 86,
+      "pass": true,
+      "judges": 1,
+      "notes": "The git history shows the full order: signed spec/OpenSpec change, a red test commit with 137 assertion failures, the implementation, a review fix round, then archive. review-findings.json is clean=true after 3 rounds. The test assertions quote spec-level behavior (grid role, Ukrainian accessible names, Tab-stop rules), so they track the spec scenarios rather than the code. Points come off because the three commits a minute apart suggest batch-committing, so the red state is only claimed in a commit message, and because the review fix removed 19 test lines from play-page-page-text.test.ts with no spec reason given."
+    },
+    {
+      "id": "add-page-accessibility:test-integrity",
+      "slice": "add-page-accessibility",
+      "dimension": "test-integrity",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "Tests were written first and red, with 137 failures on assertions, before the impl commit. The only test deletion after the impl commit is the documented F6 merge of duplicates: the cell-name assertions were folded in and the trace tags restored. The other changes add tests or renumber tags, and no tautological or skipped tests exist. Edge and locale scenarios are asserted with specific values. Points are deducted because some boundary tests arrived only through the review round, not in the first red set."
+    },
+    {
+      "id": "add-page-accessibility:in-scope",
+      "slice": "add-page-accessibility",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The only product code touched is three UI files, and each one maps to the slice's spec requirements (keyboard navigation, accessible names, contrast). The engine was not touched and there is no sign of an opportunistic rewrite. The renumbering commits that follow change only this slice's own FR and assumption IDs. I took points off because the 35 'other' files and the renumber commit's file list are cut off in the bundle, so I could not confirm all of them are in scope."
+    },
+    {
+      "id": "add-page-accessibility:craft",
+      "slice": "add-page-accessibility",
+      "dimension": "craft",
+      "score": 85,
+      "pass": true,
+      "judges": 1,
+      "notes": "I found no TODO/FIXME, dead code or commented-out blocks. A grep of src/ui came back clean, and the impl hunk has only purposeful doc comments. The commits follow a clean spec -> red -> green -> review-fix -> archive order, with no reverts and no abandoned work, since all 43 tasks are ticked. I took points off because two ID-renumbering commits rewrote test files after the archive, and the review fix removed 19 lines from a test. That is churn after the slice was called done, though it is not a revert or a half-finished implementation."
+    },
+    {
+      "id": "add-play-page:process-order",
+      "slice": "add-play-page",
+      "dimension": "process-order",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The git history shows the full order: spec commit, then red tests against a stub that renders nothing, then the impl, then the review round, clean review evidence and the archive. No test was edited after the impl commit. The test assertions and names track the spec scenarios, and a saved red-run file (docs/qa/add-play-page-red-run.txt) backs the red step. I took a few points off for the 2-minute gap between the test and impl commits and because the tasks say both were written in parallel. Together these weaken, but do not disprove, the claim that the implementation was written independently of the tests."
+    },
+    {
+      "id": "add-play-page:test-integrity",
+      "slice": "add-play-page",
+      "dimension": "test-integrity",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The tests came first: commit 5b8696e added the red tests plus a stub that renders nothing, and the impl followed in e35d114. No test was edited after the impl commit, and the play-page tests contain no skip, todo, only or tautological assertion. The spec's boundary scenarios are asserted with exact values: two equal digits, exactly N/2, and the given-cell no-op. So is the locale case, with the exact Ukrainian win text and its U+02BC apostrophe. I deducted a little because the bundle was truncated. I could not see every assertion for all 46 scenarios, so I checked a sample of them in the repository."
+    },
+    {
+      "id": "add-play-page:in-scope",
+      "slice": "add-play-page",
+      "dimension": "in-scope",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice's code changes stay in the play-page area: src/ui plus a 2-line wiring change in src/main.ts, which AGENTS.md lists as part of the page. The engine is untouched and only imported. The commit subjects and the implementation hunk show no opportunistic rewrite. The score is not higher because the list of 21 non-src files is truncated, so I could not check every edited file for drift."
+    },
+    {
+      "id": "add-play-page:craft",
+      "slice": "add-play-page",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met. The temporary red-stage stub is fully removed in the impl commit, and src/ui currently has no TODO/FIXME or commented-out code. The commit history moves forward in a straight line with no reverts and no test edits after the implementation. Points are taken off because the bundle cuts off the impl hunk ('[+5832]') and the grep checked today's tree rather than the slice's exact end state, so not every introduced line could be inspected."
+    },
+    {
+      "id": "add-puzzle-engine:process-order",
+      "slice": "add-puzzle-engine",
+      "dimension": "process-order",
+      "score": 65,
+      "pass": false,
+      "judges": 2,
+      "notes": "The test-first evidence is strong. Red tests and stubs were committed in 5595e74 before the implementation commit cb45d4e, and no tests were edited after it. The assertions are tagged @trace FR-x and follow the spec scenarios, so the critical criterion is met. The second criterion fails as written: the archived openspec/changes/archive/2026-10-04-add-puzzle-engine/review-findings.json has clean:false with one confirmed finding. That finding was minor and fixed under a signed disposition, but the slice was archived without a clean re-review. With one of two criteria missed, the score is below the pass bar. | The order of commits is strong evidence that the tests came first. The tests were committed with red-stage stubs before the implementation, assertions are tagged with FR ids and follow the spec, and no test was edited after the implementation. So the critical criterion is met. The second criterion explicitly requires review-findings.json with clean:true, but the archived file shows clean:false, and the one confirmed finding was fixed without a confirming re-run before archiving. The signed disposition and the minor, documentation-only nature of the finding soften this gap but do not close it. Missing one of the two criteria puts the score below the pass line."
+    },
+    {
+      "id": "add-puzzle-engine:test-integrity",
+      "slice": "add-puzzle-engine",
+      "dimension": "test-integrity",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The tests were written first and were not edited after the implementation commit. No skips, focused tests (.only) or tautological assertions were found. The single review finding was a stale tasks.md pointer, not a test problem. The tests that were checked go well past the happy path: N/2 boundaries, a threshold that changes with N, incomplete rows and columns never being compared, and English-only error text in the CLI. The small deduction is because the full list of 111 scenarios was not checked against the tests."
+    },
+    {
+      "id": "add-puzzle-engine:in-scope",
+      "slice": "add-puzzle-engine",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "All 8 source files are in src/engine/ or src/cli.ts, which AGENTS.md assigns to this slice, and every commit maps to a step in the slice process. The only dependency change is @types/node, and its commit says the user approved it. The score is held back because the list of 24 non-src changed files is truncated, so I could not confirm all of them are in scope, and because the type-shim churn shows up as a review finding."
+    },
+    {
+      "id": "add-puzzle-engine:craft",
+      "slice": "add-puzzle-engine",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice follows a clean red-to-green order. Red-stage stubs are replaced as planned in the impl commit, no tests change after the impl, and there are no reverts or abandoned work. A grep of the current source finds no TODO, FIXME or commented-out code. The bundle is truncated, so this check uses the current tree rather than the slice-end state. One small deduction: the shim file src/node-env.d.ts was created and later deleted, and tasks.md still pointed to it until the review gate caught it."
+    },
+    {
+      "id": "add-rule-solvable-generator:process-order",
+      "slice": "add-rule-solvable-generator",
+      "dimension": "process-order",
+      "score": 58,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical criterion is met. Red tests (6247183) came before the implementation (f077dd4), and their describe blocks and assertions follow the four spec scenarios. The process criterion is not met: the archived review-findings.json says clean:false after 2 rounds, and the slice was archived on a signed disposition with 3 waivers instead of a clean review. Tests were also edited after the impl, and a review finding says the green-run header still claims they are unchanged. With one of two criteria missed and a further process-honesty issue, the score is 55, below the pass bar of 70. | The order shows real test-first work. Spec and audit docs come first, then red tests whose titles track the four spec scenarios, then the implementation 3 minutes later. The later test edit added assertions taken from the spec, so the critical criterion is met. The review side falls short. review-findings.json is clean:false after two rounds, and the last round's 3 confirmed findings (minor, docs only) were dispositioned and fixed after the run. They were never re-reviewed, and the slice was archived anyway. That fails the explicit clean:true requirement, which holds the score below the pass line."
+    },
+    {
+      "id": "add-rule-solvable-generator:test-integrity",
+      "slice": "add-rule-solvable-generator",
+      "dimension": "test-integrity",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The red tests (6247183) came before the implementation (f077dd4). The one test edit after that (760c3e5) swapped a dynamic-import scaffold for a static import and added findViolations/isSolved assertions, which made the tests stronger. Nothing was skipped, deleted or made tautological, so the critical criterion is met. Edge coverage is strong: three grid sizes, a pinned negative fixture, invalid full boards, a non-vacuity guard and the exact Ukrainian sentence. Points are deducted because the 'always available' scenario is only sampled and the determinism/uniqueness/timing scenario is left to tests outside this slice."
+    },
+    {
+      "id": "add-rule-solvable-generator:in-scope",
+      "slice": "add-rule-solvable-generator",
+      "dimension": "in-scope",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product changes are tightly scoped. src/engine/generator.ts swaps in the rule-solvability check the spec requires, src/engine/rule-solve.ts is new, and there is one dedicated test file. No hunk shows an opportunistic refactor. I deducted points for docs commits that bundle another slice's change folder, and for the truncated list of non-src files, which I could not fully check."
+    },
+    {
+      "id": "add-rule-solvable-generator:craft",
+      "slice": "add-rule-solvable-generator",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The implementation diff is small and clean. It swaps the budgeted solver check for the new `solveByRules` predicate and deletes the unused constant and import in the same commit, and it adds no TODOs or commented-out code. The commit history moves forward with no reverts. I took points off for the three rewrites of the proposal folder and the post-implementation test edit (+7/-15) in the review fix round. These are mild churn, not abandoned work."
+    },
+    {
+      "id": "add-rules-and-reset:process-order",
+      "slice": "add-rules-and-reset",
+      "dimension": "process-order",
+      "score": 64,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical test-first criterion is clearly met. Tests were committed before the code, red-run evidence was recorded (24 failed), no tests were edited after the implementation commit, and the assertions follow the spec scenarios. The order of steps was also correct. However, the committed review-findings.json says clean=false, and the archive commit both fixed the confirmed finding and archived the slice, with no confirming re-run. A signed disposition records the fix, but it does not replace the clean:true the rubric asks for. With one of the two criteria fully missed, the score is 62, below the 70 pass mark. | The critical criterion is clearly met. Tests and red-run evidence were committed before the implementation, the tests were not edited afterwards, and each test maps to one of the spec scenarios. The process order was followed. However, the review gate evidence, openspec/changes/archive/2026-10-04-add-rules-and-reset/review-findings.json, shows clean:false with one confirmed finding and one unresolved contested finding. The slice was archived without a clean re-review, so the explicit 'clean:true' requirement of criterion 2 is not met. A signed disposition marking the one minor docs finding as fixed counts only as partial credit, so the score lands below the pass line."
+    },
+    {
+      "id": "add-rules-and-reset:test-integrity",
+      "slice": "add-rules-and-reset",
+      "dimension": "test-integrity",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The test commit came first, red-run evidence was recorded, and no test was edited after the impl commit. The assertions check concrete DOM state, givens, seed and generator counts, and Ukrainian text, not tautologies. The spec's edge cases are covered: three sizes, untouched board, after a win, violations in the givens, cancel, and no Latin letters. I took points off because the FR-57 assertions were removed later by a separate, documented change, and the bundle truncates the original rules-block hunk, so not all of the slice's rules-block coverage could be checked directly."
+    },
+    {
+      "id": "add-rules-and-reset:in-scope",
+      "slice": "add-rules-and-reset",
+      "dimension": "in-scope",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Product code changes are limited to two play-page UI files, and they line up with the spec's two requirements (rules block, reset button). The single edit to a shared CSS rule, flex-wrap on .buttons, is written up in tasks.md 2.4 as needed for the third button at 375 px. Points come off because the bundle's list of 34 'other' files is cut off and includes a framework lesson doc plus several commits that only deal with handoff and signing, so I could not fully confirm there was no drift outside the slice in non-product files."
+    },
+    {
+      "id": "add-rules-and-reset:craft",
+      "slice": "add-rules-and-reset",
+      "dimension": "craft",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product code in this slice is clean. It has no TODO/FIXME or commented-out blocks, no reverts, no tests edited after the implementation commit, and only one review-gate fix round, which closed a single minor finding. Points come off for the run of corrective handoff commits at the end, including one that admits the previous commit's replacement 'did not run'. That is visible churn, though it touches only docs and not the implementation."
+    },
+    {
+      "id": "add-size-selector:process-order",
+      "slice": "add-size-selector",
+      "dimension": "process-order",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The bundle shows a clean spec → red tests → impl → review → archive order. The red-test commits (47b25bd, ca12f12) come before the only src commit (d7613cf), and no test was edited after the implementation. The test names match the spec scenarios closely, which shows they came from the spec and not from the shape of the final code. The review is clean on all four dimensions and tasks.md is fully ticked. I deducted a little because the red evidence is only claimed in commit subjects, the impl landed one minute after the last test commit, and review round 1 needed a process fix (tasks.md unticked)."
+    },
+    {
+      "id": "add-size-selector:test-integrity",
+      "slice": "add-size-selector",
+      "dimension": "test-integrity",
+      "score": 86,
+      "pass": true,
+      "judges": 1,
+      "notes": "The order was test-first: red-test commits 47b25bd and ca12f12 come before impl d7613cf, and the bundle shows zero test edits after the impl. A mutant-closing test was also added before implementation. There are no skipped or tautological assertions anywhere in tests/. Each spec edge case (bad generator results, out-of-range values, the 4 and 8 boundaries, the last-column count violation, no persistence) maps to a concrete assertion. I took off a few points because the slice-era test hunks were truncated in the bundle, and the current file has been changed by later slices."
+    },
+    {
+      "id": "add-size-selector:in-scope",
+      "slice": "add-size-selector",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product change is tightly scoped. Only src/ui/play-page.ts and style.css change, and each hunk maps to a scenario in the ADDED 'Grid size selector' requirement or the MODIFIED size-dependent requirements, with no edits to the engine. The test-helper generalisation is needed to test the new sizes. Points are taken off because commit 81dd435 bundles an NFR-6 hint-quality eval result (hint-quality.eval.ts and evals/results) into the slice under its trailer. That is mild drift into another capability's evidence, not a code refactor."
+    },
+    {
+      "id": "add-size-selector:craft",
+      "slice": "add-size-selector",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The commit history is linear: a critiqued spec, then red tests, then one implementation commit, then a single small review fix (ticking tasks.md), then the archive. There are no reverts and no test edits after the implementation commit, so there is no visible thrash. The visible diff hunks and a grep of the repository show no TODO/FIXME or commented-out code. The score drops a little because the bundle truncates the impl diff, so part of the slice's diff could not be read directly."
+    },
+    {
+      "id": "add-theme-switch:process-order",
+      "slice": "add-theme-switch",
+      "dimension": "process-order",
+      "score": 63,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical test-first criterion is met. The red-test commit e14511c comes before impl commit fb511ba, red-run artifacts exist on disk, and the assertions follow the spec's settings-panel scenarios. Every fix round repeated the red-then-fix order. The second criterion fails on its explicit condition: review-findings.json is clean=false, and the slice was archived with run-4 fixes that were never re-reviewed. Dispositions do not stand in for a clean review, so the score is held below 70 and the verdict is fail. | The critical test-first criterion is clearly met. The red-test commit comes before the implementation commit, the red-run artifact shows 87 assertion failures with src untouched, and the test names follow the spec scenarios. Each review fix round was also driven red-first. Criterion 2 explicitly requires review-findings.json with clean:true, but the file has clean:false. The slice was archived after the last review run's confirmed findings were fixed without another review. That misses half the rubric, which puts the score below the pass line."
+    },
+    {
+      "id": "add-theme-switch:test-integrity",
+      "slice": "add-theme-switch",
+      "dimension": "test-integrity",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Every test change after the first implementation commit adds lines and removes none, and each review round's red tests came before its fix. No skips or tautological assertions were found. The theme and preferences tests cover failure and boundary cases well: matchMedia that throws or is missing, bad stored values, storage that throws, several mounts, a missing meta tag, the English locale and small-phone widths. Points come off because the review found a missing assertion that was only fixed after the last review run and never re-checked, and because a header-fit boundary scenario was specified wrongly at first."
+    },
+    {
+      "id": "add-theme-switch:in-scope",
+      "slice": "add-theme-switch",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "All source edits stay in src/ui. The proposal lists every file outside that folder (index.html, playwright.config.ts, tests/helpers/css.ts) and confirms that src/engine is untouched. The phone header fix done in round 2 is backed by a spec scenario, and I found no commit that looks like an unrelated refactor. Points are deducted because many existing test files changed with no visible reason in the bundle, and because the archive commit also edits the add-english-version change."
+    },
+    {
+      "id": "add-theme-switch:craft",
+      "slice": "add-theme-switch",
+      "dimension": "craft",
+      "score": 79,
+      "pass": true,
+      "judges": 2,
+      "notes": "I found no TODO/FIXME or commented-out code in the 5 src files this slice touched, and the history has no reverts or half-built work: 16 commits, all moving forward, with all 27 tasks ticked. I took points off because the same theme-choice persistence logic needed three follow-up fix rounds after the first implementation (4 confirmed product-code defects). The last round's fixes were never re-reviewed. That is mild churn, though not revert-style thrash. | I found no TODO/FIXME, dead code or commented-out blocks in the slice's src files: grep came back empty, and preferences.ts reads clean. There are no reverts and no abandoned work, since all post-impl test edits only add lines and tasks.md is fully ticked. Points come off criterion 2 because the slice kept reworking itself: three review-driven fix rounds, the same theme-choice defect fixed twice, and run-4 findings fixed without a re-review. That is iteration, not revert churn, so it lowers the score without failing it."
+    },
+    {
+      "id": "add-violation-cause:process-order",
+      "slice": "add-violation-cause",
+      "dimension": "process-order",
+      "score": 68,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical criterion is met. The red test commit came 34 minutes before the first src commit, and the test titles copy the FR-120 scenario names word for word, which shows the tests were written from the spec and not fitted to the code. The process order was also followed. However, the archived review-findings.json records clean=false with 5 confirmed findings (4 fixed, 1 waived in the dispositions), and the rubric requires clean:true. That miss puts the score below the 70 pass line. | The test-first evidence is strong. The red commit precedes the implementation by about 30 minutes, red-run.txt shows real failures against an unchanged src/, and the tests map one to one onto the named spec scenarios (P1-P8 and the rest). So the gating criterion is met. Criterion 2 is only partly met: the order spec → red → green → review → archive holds, but review-findings.json is archived with clean:false. Two confirmed findings were deferred rather than resolved, and no clean re-review was recorded. That missed non-critical criterion keeps the score just above the pass line."
+    },
+    {
+      "id": "add-violation-cause:test-integrity",
+      "slice": "add-violation-cause",
+      "dimension": "test-integrity",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The bundle shows the tests were written red before the implementation. Only one test was edited after the implementation: a regex in play-page-page-text.test.ts was widened, openly tied to the spec delta and a confirmed review finding. That is a deliberate change, not a silent weakening. The dedicated test file covers the spec's negative, mount-time, solved-board, given, language-switch and size cases (4, 6 and 8, via it.each) with exact assertions. The small deduction is for the widened regex being admittedly green by construction."
+    },
+    {
+      "id": "add-violation-cause:in-scope",
+      "slice": "add-violation-cause",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "Product edits are confined to the three src/ui files the proposal names. Every test-helper and design-file edit is listed in the proposal's impact table or design.md with an FR reason. The commit subjects all map to slice tasks, review fixes or archive and ledger chores, with no opportunistic rewrite. Points come off because the 57-file 'other' list is truncated and can't be fully checked, and because the refreeze commit's contents aren't shown."
+    },
+    {
+      "id": "add-violation-cause:craft",
+      "slice": "add-violation-cause",
+      "dimension": "craft",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The history is linear and follows test-first order: red tests in b1f9dbb come before the implementation in da6736d, there are no reverts or abandoned work, and all tasks are ticked. The only test edit after the implementation is a documented review fix. The added src code has no TODO/FIXME markers and no commented-out blocks. I took points off because the duplicated cause-suffix logic in strings.ts was waived, not fixed, so the slice ships known duplication."
+    },
+    {
+      "id": "fix-action-button-targets:process-order",
+      "slice": "fix-action-button-targets",
+      "dimension": "process-order",
+      "score": 60,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical criterion is met. The red test commit ef513a1 comes before the impl commit 057a57e, a red-run file exists, and the assertions follow the spec scenarios for the 44 px declaration and for a below-floor value failing. The second criterion fails. Review-findings.json says clean=false after 2 runs, and the slice was archived with 3 waived findings. The browser scenario's test also only arrived in a post-implementation review-fix commit. With the review gate missed, the score is 58 and the slice does not pass. | The critical criterion is met with solid evidence: the test commit comes before the source commit, a recorded red run shows src/ untouched with 6 unit failures and 8 e2e failures, and the test assertions follow the spec scenario text. Criterion 2 is not met: the archived review-findings.json says clean:false, the change was archived without a clean review run, and the after-run fixes were never re-reviewed. The waivers are documented and signed, but that does not satisfy a rubric that asks for clean:true. One of the two rubric items is missed, so the score is below 70 and the slice does not pass."
+    },
+    {
+      "id": "fix-action-button-targets:test-integrity",
+      "slice": "fix-action-button-targets",
+      "dimension": "test-integrity",
+      "score": 83,
+      "pass": true,
+      "judges": 1,
+      "notes": "Test-first order is shown: ef513a1 (red test) comes before 057a57e (style.css fix). The test edits made after the impl are net additions that make the checks stricter (part (d) pseudo/at-rule matching and the unparsable-selector guard). Nothing was skipped, deleted or made tautological, so the critical criterion is met. Boundary cases are thoroughly asserted: 2.5rem/0/auto/empty below the floor, unsizable units, at-rule placement, !important and pseudo-state overrides. Points are taken off for the documented, waived :not() blind spot and the review that did not end clean, and because I could not directly link the phone-fit scenario to an assertion in this slice."
+    },
+    {
+      "id": "fix-action-button-targets:in-scope",
+      "slice": "fix-action-button-targets",
+      "dimension": "in-scope",
+      "score": 92,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product-code change is one 4-line CSS rule scoped to '.buttons button'. It is paired with one new test file, and both match what the proposal declared. The proposal names the out-of-scope stale text and leaves it alone. Its one extra edit, the Exclusions line, is written into the plan as task 6.4, so it is not silent drift. I lowered the score slightly because I could not inspect the cut-off list of non-code files."
+    },
+    {
+      "id": "fix-action-button-targets:craft",
+      "slice": "fix-action-button-targets",
+      "dimension": "craft",
+      "score": 85,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product change is minimal and clean: one CSS rule with an explanatory comment. It adds no TODOs, dead code or commented-out blocks. The commit sequence goes in one direction with no reverts or abandoned work. Points come off because the test file changed substantially twice after the implementation commit, the review never came back clean across two runs, and one finding was a wrong claim in a test header comment. That points to imperfect first-pass craft, even though all of it was resolved through recorded dispositions."
+    },
+    {
+      "id": "fix-size-option-focus-ring:process-order",
+      "slice": "fix-size-option-focus-ring",
+      "dimension": "process-order",
+      "score": 57,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical criterion is met. The test commit comes before the implementation commit, the assertions follow the spec scenario text, and red-run.txt records a timed failing run (13:15) from before the CSS fix. The GPG lock explains why all three commits landed in the same minute. The second criterion fails. review-findings.json says clean:false and includes a major spec-compliance finding. The review ran against the archive commit, which means the order was archive and then review, and the fixes were made after archiving. With one of the two criteria clearly missed, the score lands below the pass threshold. | The red-then-green part of the slice holds up. The test commit 95d58d5 comes before the implementation commit 10ba3e5, red-run.txt records the expected failure before the CSS fix, and the test's assertions match the spec scenarios exactly, so the critical criterion is met. The review-and-archive part of the process was not followed. The slice was archived (7ac61df) before its only review run, review-findings.json is clean=false with 7 confirmed findings including a major one, and that major finding was settled after the fact by changing the spec wording to match the code, with no confirming review run. One of the two criteria is fully missed, so the score falls below the pass bar."
+    },
+    {
+      "id": "fix-size-option-focus-ring:test-integrity",
+      "slice": "fix-size-option-focus-ring",
+      "dimension": "test-integrity",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The order was test first, then the fix, and no test was edited after the fix commit. The new assertions are concrete and cover all three segmented controls and the !important clause, and a follow-up commit added stricter checks. So the critical criterion is clearly met. Points come off because the main real-world boundary, whether the ring actually stays inside the option, was never asserted: the review's major finding was closed by rewording the spec rather than by a test."
+    },
+    {
+      "id": "fix-size-option-focus-ring:in-scope",
+      "slice": "fix-size-option-focus-ring",
+      "dimension": "in-scope",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product change is a single 4-line CSS rule in src/ui/style.css that does what the spec requires. It comes with one targeted stylesheet test. There is no sign of edits to other modules or of opportunistic rewrites. I took a few points off because the 'other files' list is truncated, so not every non-code change could be checked."
+    },
+    {
+      "id": "fix-size-option-focus-ring:craft",
+      "slice": "fix-size-option-focus-ring",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice diff is small and clean. The CSS change is 4 lines with one explanatory comment and no TODO or FIXME. The commits run red test, fix, archive, with no reverts and no test edits after the impl commit. I took points off because commit cc91685, made after the archive, reworked the tests and spec wording in response to 7 review findings (one major). That is mild late iteration, not abandoned work or revert churn."
+    },
+    {
+      "id": "reconcile-ux-accessibility:process-order",
+      "slice": "reconcile-ux-accessibility",
+      "dimension": "process-order",
+      "score": 61,
+      "pass": false,
+      "judges": 2,
+      "notes": "Test-first discipline is shown: a separate red commit (402ef42, '22 failing') comes before the green commit (85485ac), and tasks.md traces each rewritten test to delta-spec requirements and scenarios, so the critical criterion is met. The review requirement is not met: review-findings.json has clean=false with 11 confirmed findings, including ticked tasks whose cited evidence was missing, and the change was archived with fixes and waivers instead of a clean re-review. The score is below 70, so pass is false. | The critical test-first criterion is met. A dedicated red test commit (402ef42, 22 failing) came before the green implementation (85485ac), a red-run artifact was saved, and the tests are tied to spec scenario ids. Two things weaken it: both commits are timestamped the same minute, and many of the rewritten tests were already green at the start. The second criterion fails outright, because review-findings.json records clean:false. Neither the first review run nor the confirming run was clean, and the slice was archived on dispositions alone, including findings that tasks had been ticked without their evidence. With one of two criteria missed, the score lands below the pass line."
+    },
+    {
+      "id": "reconcile-ux-accessibility:test-integrity",
+      "slice": "reconcile-ux-accessibility",
+      "dimension": "test-integrity",
+      "score": 78,
+      "pass": true,
+      "judges": 2,
+      "notes": "The 563-line keyboard test deletion is backed by a requirement REMOVED in the signed amendment, and the status-role assertions were moved and tightened, not dropped, so the critical criterion holds. One real weakening (ss-19, the :has( check) did get in. The review flagged it as confirmed and 3d4e488 fixed it, so the final test suite is sound, but the process slipped once. Edge, per-size and given-cell scenarios are explicitly asserted. Pass at 76, with points taken off for the weakening that needed a reviewer to catch it and for the waived contrast findings. | The big test deletions follow the spec: the arrow-key requirement was REMOVED, and its tests were replaced by negative tests run at N=4, 6 and 8. Moved assertions such as role=status are still in the semantics tests. There are no tautological or skipped tests, and edge cases (sizes, givens, modifier keys) are well covered. One weakening did happen during the slice (the dropped raw-text :has( check). The review gate caught it, it was fixed, and the check is in the tests today, so the critical criterion is met, with points taken off for this lapse."
+    },
+    {
+      "id": "reconcile-ux-accessibility:in-scope",
+      "slice": "reconcile-ux-accessibility",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "Every src edit (play-page.ts, style.css, deleting grid.ts) and the large removal of keyboard code and tests is declared in proposal.md and design.md and tied to a REMOVED or MODIFIED requirement. src/engine/ is untouched. The score is lowered because the slice starts with a whole-branch merge commit (603b631) carrying a large, truncated set of files. That blurs the slice boundary and weakens the evidence that nothing unrelated slipped in."
+    },
+    {
+      "id": "reconcile-ux-accessibility:craft",
+      "slice": "reconcile-ux-accessibility",
+      "dimension": "craft",
+      "score": 80,
+      "pass": true,
+      "judges": 2,
+      "notes": "I found no TODO or FIXME markers, commented-out blocks, or skipped tests in the files this slice changed. Removed behaviour was deleted outright, as the spec's REMOVED requirement asked. The history moves forward with no reverts and one small fix round that only adds lines, and tasks.md is fully ticked. I took points off for a large test rewrite (-563 lines) right after the merge commit had already added stubs, for 16 review findings that had to be fixed after green, and for diff hunks the bundle cut off, which I could not inspect. | I found no TODO/FIXME, commented-out code or orphaned helpers in src after the slice, and the large deletions follow from a declared REMOVED requirement, so they are not abandoned work. The history goes in order from red to green to review fix to archive, with no reverts. Points come off because the review found 11 confirmed issues, among them a check that a rewrite had dropped, and because red-stage stubs went in through the merge commit. Both show some rework, but neither is real thrash."
+    },
+    {
+      "id": "update-confirm-dialog:process-order",
+      "slice": "update-confirm-dialog",
+      "dimension": "process-order",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The git timeline shows the expected order. The spec was audited before any tests, red tests (03c8f13) came before the only src commit (f5a5582), and the test assertions match the spec scenarios rather than the final code shape. Three review rounds ended in a clean review-findings.json, followed by the archive. Points come off for the two review-driven test edits after the implementation, for the round-2 clean relying on the user accepting a contested finding, and for the lack of a captured red run."
+    },
+    {
+      "id": "update-confirm-dialog:test-integrity",
+      "slice": "update-confirm-dialog",
+      "dimension": "test-integrity",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The red tests were committed seven minutes before the only src change. The two later test edits came from review findings and made the visual-block e2e test stricter rather than looser. The unit tests assert exact, spec-derived values: single declarations, exact contrast ratios in both the light and dark token sets, and pinned hex values. The e2e test covers five viewports, both colour schemes and the 320px stacked layout. I deducted a little because many tests are GUARD pins of state that was already green and because viewport coverage is sampled."
+    },
+    {
+      "id": "update-confirm-dialog:in-scope",
+      "slice": "update-confirm-dialog",
+      "dimension": "in-scope",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product change is limited to src/ui/style.css and covers only the dialog block and the one token the spec requires. Every edit to another module's test (the 32-to-33 token and 41-to-42 pair counts) is listed in advance in proposal.md and tasks.md with a reason tied to the spec. The only scope drift is the set of harness and tooling fixes made during review rounds 1 and 2. They respond to review findings and touch no product code, but they go beyond the dialog's own domain, so I deducted a modest amount."
+    },
+    {
+      "id": "update-confirm-dialog:craft",
+      "slice": "update-confirm-dialog",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met. The slice has a single src commit (f5a5582, style.css only), and a grep of the touched src and test files finds no TODO/FIXME markers or commented-out code. The history moves straight through red tests, implementation, evidence and three review rounds to the archive, with no reverts or abandoned work. Points come off for two things. The bundle truncates the full diff, so I could only check the current state of the touched files, not every line ever added. Two review rounds also had to correct the e2e harness after the implementation. That is not thrash, but it does show the first pass at the harness had gaps."
+    },
+    {
+      "id": "update-controls-accessibility:process-order",
+      "slice": "update-controls-accessibility",
+      "dimension": "process-order",
+      "score": 51,
+      "pass": false,
+      "judges": 2,
+      "notes": "The slice has a clear red commit before the implementation, a red-run evidence file, and test assertions written from the spec. But two of the spec's scenarios only got tests after the implementation, in fix commit a4ac9af, and those tests landed in the same commit as the src fix, so their red/green order cannot be confirmed. Under strict reading, the critical criterion is therefore not cleanly met. The archived review-findings.json says clean:false, with 6 confirmed findings (5 fixed, 1 waived), and the slice was still archived, so criterion 2 fails too. Because the critical criterion is only partly met, the score is capped at 49, and I set it to 40. | The critical criterion is met. A dedicated red test commit with a saved red-run file comes before the implementation commit by 3 minutes, and its assertions follow the spec scenarios. The second criterion fails on its explicit condition: review-findings.json says clean=false with 6 confirmed findings, one of them a task ticked without being done. The slice was archived despite that, relying on a disposition file that fixed 5 findings and waived 1. With one of only two criteria missed, the score falls below the 70 pass line."
+    },
+    {
+      "id": "update-controls-accessibility:test-integrity",
+      "slice": "update-controls-accessibility",
+      "dimension": "test-integrity",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The test history is clean. Red tests were committed before the implementation (1612a73, then fba3bea), every later test edit only adds lines, and the one removed assertion (select tagName) was replaced with stricter checks because the spec changed the control. Most edge cases are really asserted: Escape, hint-filled cells, cleared entries, cancelled actions dropped, the late close event, and no free value. Points are off because the no-board aria-checked clause slipped through until review caught it, and I could not find a direct test for the solved-board scenario (A-29) in this slice."
+    },
+    {
+      "id": "update-controls-accessibility:in-scope",
+      "slice": "update-controls-accessibility",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product changes stay within the UI layer ('src/ui/play-page.ts', 'strings.ts', 'style.css'), and every visible impl hunk maps to one of the slice's ADDED play-page requirements. Engine and CLI are untouched, and none of the visible changes look opportunistic. The slice did edit many existing play-page test files beyond its new tests. That is likely forced by the spec-driven change from select to radiogroup and to button cells, but the truncated hunks keep me from fully confirming the scope, so the score is held below 90."
+    },
+    {
+      "id": "update-controls-accessibility:craft",
+      "slice": "update-controls-accessibility",
+      "dimension": "craft",
+      "score": 85,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice took a straight path: red tests, implementation, one review-fix commit, docs, archive. It has no reverts, and test edits made after the implementation only add lines, so there is no sign of thrash or abandoned work. Searching src/ui now turns up no TODO/FIXME or commented-out code, and the visible impl hunk replaces the select control cleanly. I took points off because the evidence hunks are truncated and a fix commit was needed to address review findings."
+    },
+    {
+      "id": "update-hint-sentences:process-order",
+      "slice": "update-hint-sentences",
+      "dimension": "process-order",
+      "score": 91,
+      "pass": true,
+      "judges": 1,
+      "notes": "The bundle shows a clean order: signed spec amendment and OpenSpec change (a901620), red tests (2c08c44) with red-run evidence (77111fb), then the implementation (675f4c5), a review round, an eval re-run and the archive. The test hunks follow the spec scenarios, including the plural-ending scenario. review-findings.json is clean=true with zero findings, and tasks.md is fully ticked. The only deduction is one test added after the implementation during review (column plural). It adds coverage rather than weakening anything, but it means that case was not in the first red set."
+    },
+    {
+      "id": "update-hint-sentences:test-integrity",
+      "slice": "update-hint-sentences",
+      "dimension": "test-integrity",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "The test changes in this slice were deliberate rewrites of exact expected sentences, made to match a signed amendment, and were run red before the implementation. The only test edit after the implementation added a case (+6/-0); nothing was deleted or skipped, and there are no tautological assertions. The boundary and locale cases are asserted with exact full-sentence matches: N=4, N=8, the singular vs plural ending, and the plural ending for both row and column. Small deduction: the column plural case was added only after the review gate found it was missing."
+    },
+    {
+      "id": "update-hint-sentences:in-scope",
+      "slice": "update-hint-sentences",
+      "dimension": "in-scope",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "This slice changed one source file, src/engine/hint.ts. The visible diff only adds what the amendment asks for: the reason clauses and the singular/plural ending for the count hint. The two page test edits follow directly from the changed sentences. Nothing suggests a refactor was slipped in. The score is held below 90 only because the bundle cuts off the rest of the implementation diff and part of the list of other files, so those parts could not be confirmed in scope."
+    },
+    {
+      "id": "update-hint-sentences:craft",
+      "slice": "update-hint-sentences",
+      "dimension": "craft",
+      "score": 92,
+      "pass": true,
+      "judges": 1,
+      "notes": "The implementation hunk is a clean replacement of the sentence templates. It adds a parameter that is actually used, and it leaves no commented-out code or TODO/FIXME markers, which a grep of src/engine/hint.ts confirms. The commit history runs straight through with no reverts and no abandoned work. The only change after implementation is one test added in review-gate round 1, which adds coverage. I took a few points off because the bundle truncates parts of the diff ('…[+349]'), so I could not see every line of the slice's hunks."
+    },
+    {
+      "id": "update-logo-legibility:process-order",
+      "slice": "update-logo-legibility",
+      "dimension": "process-order",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The red-first order is well supported. In both cycles a test commit with '(red)' in the subject comes before the src commit, and each cycle has a saved red run on disk with exit 1 and a failing assertion. The assertions follow the spec scenario names and the measurable thresholds the spec sets. The review finished clean after two rounds, and the change was archived only after that. Points are taken off for test edits made during review fixes after the implementation, which the bundle does not tie to a spec change, and for the long tail of stale-pointer findings."
+    },
+    {
+      "id": "update-logo-legibility:test-integrity",
+      "slice": "update-logo-legibility",
+      "dimension": "test-integrity",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The test-first order holds: red commit 454cb85 comes before implementation commit 9fb0f80. The test edit made after implementation (0db03d6) tightened every floor instead of loosening it. The one replaced scenario (rays changed to 'Rounded square tile, no rays') follows a signed spec amendment and is documented in the test file. The assertions are concrete: containment, margins, counts, sizes, the same element across board changes, and seed leaks in split form. All 11 scenarios are covered. Points are deducted because 40 px legibility is checked only through geometric floors, and because the diffs of two review-round test edits are not visible."
+    },
+    {
+      "id": "update-logo-legibility:in-scope",
+      "slice": "update-logo-legibility",
+      "dimension": "in-scope",
+      "score": 79,
+      "pass": true,
+      "judges": 2,
+      "notes": "Product code changes are limited to src/ui/logo.ts, and the test edits are logo tests plus one spec-driven comment about NFR-15. The design, fixture and docs commits all follow from the logo redraw. Points come off because 577 'other' files are not broken down (most likely mixed with the merge from main), so I cannot confirm the slice's own footprint. Points also come off for the post-archive commit 0e78c49, which edits acceptance contracts and token wording without a stated link to the spec. | The product code and tests stay tightly scoped: one src file (src/ui/logo.ts) that the logo requirement owns, logo tests, and a one-line comment change in the layout test that the NFR-15 status change requires. Most of the design, fixture and doc commits (design/v0, paint fixture, requirements) follow from the logo redesign. Points are taken off because the 577 'other' files cannot be checked from the bundle, and because a few commits (acceptance-contract e2e pointer, token rewording, baseline Exclusions bullet) look like opportunistic cross-cutting doc edits rather than spec-driven ones."
+    },
+    {
+      "id": "update-logo-legibility:craft",
+      "slice": "update-logo-legibility",
+      "dimension": "craft",
+      "score": 78,
+      "pass": true,
+      "judges": 2,
+      "notes": "The final product code is clean: logo.ts has no TODO/FIXME, no dead code and no commented-out blocks. There are no reverts and no half-built work left behind. However, the history shows one whole design (drawing B) was built, failed NFR-15, and was swapped for drawing G with a test rewrite. Two review fix rounds and a fix after archiving followed. That is iteration churn rather than abandoned code, so it costs points without failing criterion 2. | The finished product code is clean: logo.ts has no TODO/FIXME, no dead code and no commented-out blocks, so criterion 1 is met. Criterion 2 is only partly met. Drawing B was fully built and measured, then dropped about 30 minutes later for drawing G, which forced a test rewrite and a fixture re-freeze. On top of that came two review rounds of stale-pointer fixes and one fix after archiving. The pivot was a deliberate design iteration, with the user's drawing, red-then-green tests and recorded evidence, not a messy revert, so I score it just above the pass line rather than failing it."
+    },
+    {
+      "id": "update-page-backdrop:process-order",
+      "slice": "update-page-backdrop",
+      "dimension": "process-order",
+      "score": 61,
+      "pass": false,
+      "judges": 2,
+      "notes": "The test-first evidence is strong. A separate red commit comes before the CSS port, red-run.txt shows 13 failing assertions keyed to the spec's composite values and token counts, and the e2e cases follow the spec's 10 sampled cases. That satisfies the critical criterion. Criterion 2 fails on its explicit condition: review-findings.json has no clean:true, the disposition file says reviewClean=false, and the file says 'No confirming run' before the archive. With half the rubric unmet, the score is below the pass bar. | The test-first evidence is strong. red-run.txt shows 11 unit failures and 10 e2e failures against unchanged src/, each traced to a spec scenario, and the commit order is spec, then test, then implementation. That satisfies the critical criterion. The second criterion fails on its stated marker: review-findings.json has no clean:true, it says 'No confirming run' after 8 confirmed findings (2 major), and the disposition records reviewClean=false, so the slice was archived without a clean review. With half the rubric missed on its explicit condition, the score falls below the pass line."
+    },
+    {
+      "id": "update-page-backdrop:test-integrity",
+      "slice": "update-page-backdrop",
+      "dimension": "test-integrity",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "Tests were written first. The new backdrop tests assert exact composite colours, the rules about which selectors and media queries apply, and negative cases, with explicit guards against vacuous passes. The one test edit after implementation made the e2e PNG reader stricter. Points are taken off because the edits to six existing test files could not be checked line by line from the bundle, so dropped assertions cannot be ruled out, though the surviving comments point to deliberate changes tied to the spec."
+    },
+    {
+      "id": "update-page-backdrop:in-scope",
+      "slice": "update-page-backdrop",
+      "dimension": "in-scope",
+      "score": 86,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product change stays inside src/ui/style.css and covers only the backdrop tokens and rules the slice is about. Each of the 8 neighbouring stylesheet test files touched carries an in-file note saying it is a deliberate change, citing the specific spec delta and scenario that forces it, because the shared token list and token reader now include the two translucent backdrop tokens. I found no sign of an opportunistic refactor. The score is held below 90 because the large, truncated set of non-code files could not be fully checked."
+    },
+    {
+      "id": "update-page-backdrop:craft",
+      "slice": "update-page-backdrop",
+      "dimension": "craft",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The src change is a clean token swap. It deletes the old opacity and dark-override rules instead of commenting them out, and the touched files contain no TODO/FIXME markers or skipped tests. The commit history runs straight through with no reverts, and every task is ticked. Points come off for the review round's 8 confirmed findings, which forced a claim to be withdrawn and the e2e spec to be edited after the impl commit. That is mild rework, not thrash."
+    },
+    {
+      "id": "update-page-layout-geometry:process-order",
+      "slice": "update-page-layout-geometry",
+      "dimension": "process-order",
+      "score": 57,
+      "pass": false,
+      "judges": 2,
+      "notes": "The test-first order is shown: the red test commit predates the implementation, there is a red-run artifact, and the assertions map to the spec's scenarios (fixture states, solved state, colours unchanged). So the critical criterion is met. However, the slice was archived while review-findings.json shows clean:false after 2 runs. The run-2 fixes were folded into the archive commit with no confirming clean review, so criterion 2 fails. With one of two rubric criteria missed, the score is 55, which is below the pass bar. | The critical test-first criterion is met. The red commit 726d04a comes before the impl commit b883f36, and red-run.txt shows real assertion failures against spec-derived fixture cases with no src change. Some scenarios (hint, settings panel, setup sheet) were only tested in later fix rounds, which counts against the score. Criterion 2 fails outright: review-findings.json is clean:false and the slice was archived anyway. A signed disposition does not satisfy the rubric's clean:true requirement, so the score falls below the 70 pass line."
+    },
+    {
+      "id": "update-page-layout-geometry:test-integrity",
+      "slice": "update-page-layout-geometry",
+      "dimension": "test-integrity",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both test edits made after the implementation commit made the tests stricter: an exact list of shots replaced a minimum count, and new paths and guards were added. No test was skipped, deleted or reduced to a tautology, so the critical criterion is met. The spec's boundary cases are asserted, including 4x4 and 8x8, solved, hint, the settings panel from 48rem and the 1366x650 sheet. Points come off for the soft-null early return, the 0x0 skip, and the reviewer (not the tests) finding the empty-hint-line edge case."
+    },
+    {
+      "id": "update-page-layout-geometry:in-scope",
+      "slice": "update-page-layout-geometry",
+      "dimension": "in-scope",
+      "score": 82,
+      "pass": true,
+      "judges": 2,
+      "notes": "The product code changes stay inside src/ui (play-page.ts, style.css), and each one traces to a spec scenario (the solved-state marker, geometry-only CSS that leaves colours alone). I found no unrelated refactor. Points come off for two reasons. First, the review-driven security fix to the pre-existing scripts/visual-block.mjs is outside the slice's domain; it is recorded in tasks 4.2, but the reason is a review finding, not the spec. Second, most of the 52 'other' files are hidden by the bundle's truncation, so their scope can't be fully checked. | Product-code changes are confined to the two play-page UI files, and every edit maps to the proposal: the CSS geometry port, the data-solved hook, and the declared setup-sheet side effects. The test-config change was explicitly approved by the user. I deducted points because the dev-server hardening in scripts/visual-block.mjs went beyond the slice's spec: it was approved by the user and driven by review, but it is not part of the geometry requirement. I also could not fully audit the truncated list of 52 other files."
+    },
+    {
+      "id": "update-page-layout-geometry:craft",
+      "slice": "update-page-layout-geometry",
+      "dimension": "craft",
+      "score": 86,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met in substance. The bundle shows no TODO/FIXME or commented-out code, the repository grep found none, and the history goes red to green to fix to archive with no reverts and all tasks ticked. Points are taken off because the 'chore: archive' commit carries src and test changes that belong in a labeled fix round, and because review run 2 still caught a leftover CSS override on the hint line. That is mild churn, not real thrash."
+    },
+    {
+      "id": "update-page-layout:process-order",
+      "slice": "update-page-layout",
+      "dimension": "process-order",
+      "score": 62,
+      "pass": false,
+      "judges": 2,
+      "notes": "The test-first evidence is strong. The red test commit comes before the implementation commit, the red-run file shows 73 assertion failures with src unchanged, and the test names map one to one to the spec scenarios. That meets the critical criterion. However, the rubric explicitly requires review-findings.json to show clean:true. The archived file shows clean=false with 5 confirmed findings, and the slice was archived on a signed disposition (4 fixed, 1 waived) instead of a clean review. That misses half of the rubric, which puts the score below the 70 pass line. | The critical test-first criterion is clearly met. The test commit came 3 minutes before the implementation commit, a red-run file records 73 assertion-only failures against unchanged src/, and the test names follow the spec scenario titles one by one. Criterion 2 explicitly requires review-findings.json with clean:true. The archived file says clean:false, one finding was waived, and the slice was archived anyway. That miss on the only non-critical criterion puts the score below the 70 pass line."
+    },
+    {
+      "id": "update-page-layout:test-integrity",
+      "slice": "update-page-layout",
+      "dimension": "test-integrity",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Every test change after the impl commit only adds lines (+13/-0, +14/-0, +17/-0), and the test file has no skip, todo, or tautological assertions, so the critical criterion is met. The spec's edge cases are asserted directly: exact code points for the NBSP and Cyrillic і, two mounts in one document, survival through it.each over every board action, and a no-script popover with spies that are checked to be real. Points come off because review had to add some edge assertions after the fact (dialog role, autofocus, unique heading ids), and because the bundle cuts off part of the scenario list."
+    },
+    {
+      "id": "update-page-layout:in-scope",
+      "slice": "update-page-layout",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product-code footprint is tight: three src/ui files, each change traceable to a spec requirement (the strings module, the rules panel, page order, the idle line), and no engine edits or opportunistic rewrites. Points come off because a slice commit also carries process docs for other slices (folder audits for B, C, E and possibly D/F), and because the 31 'other' files are truncated, so I can't verify all of them."
+    },
+    {
+      "id": "update-page-layout:craft",
+      "slice": "update-page-layout",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met. The slice removed the old inline constants instead of leaving dead code, and src/ui contains no TODO/FIXME or commented-out code. The commits move forward in order with no reverts: red tests, then the implementation, then two review-round fixes that only add test lines. Points come off for some follow-up churn: three review rounds touched the tests after the implementation. The review also caught a docs-process slip, where task 3.7 was ticked before its record in current-state.md existed. That finding was later fixed, and none of this is code thrash."
+    },
+    {
+      "id": "update-page-palette:process-order",
+      "slice": "update-page-palette",
+      "dimension": "process-order",
+      "score": 61,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical criterion is met. The commit order is spec folder, then the red test commit b882849, then the implementation commit 676ee03, and the test assertions follow the spec scenarios (the 10 sampled paint cases and the three deviation groups), so the tests came from the spec. Criterion 2 fails. The archived review-findings.json has no clean:true, and its one run lists 8 confirmed findings (7 fixed, 1 waived per the disposition, which says reviewClean=false). The slice was archived without a recorded clean re-review. Missing that non-critical criterion puts the score below the pass threshold of 70. | The order holds up for the gating criterion. Spec-tracking red tests, with red counts recorded, were committed before the implementation, and the only later test edit was small and came from a review finding. The review step is incomplete. The one review run found 8 issues, reviewClean is false, one finding was waived, and review-findings.json never reaches clean:true. The slice was archived anyway. The critical criterion is met but the non-critical one is clearly missed, which puts the score below the pass bar."
+    },
+    {
+      "id": "update-page-palette:test-integrity",
+      "slice": "update-page-palette",
+      "dimension": "test-integrity",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The tests went in red first (b882849) before the implementation (676ee03). The only later test edit (2fc41d5) makes the deviation check stricter and does not weaken anything. Test names and assertions cover both colour schemes, the contrast boundaries (4.5:1 and 3:1, stripe below 3:1) and GUARD checks against vacuous passes. I did not inspect every edge scenario's assertions directly, so the score is 88 rather than higher."
+    },
+    {
+      "id": "update-page-palette:in-scope",
+      "slice": "update-page-palette",
+      "dimension": "in-scope",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "Only two source files changed (src/ui/style.css and src/ui/preferences.ts). Both are in the UI/page domain, and proposal.md, tasks 2.5 and a spec scenario all name the preferences.ts edit. Every test change is listed with a delta source, and the scope fence explicitly excludes the sheet, panels, dialog and backdrops. Points come off because the 209 'other' files are truncated in the bundle and could not all be checked, and because the fix round included a small cleanup. That cleanup was review-driven and stays in the domain."
+    },
+    {
+      "id": "update-page-palette:craft",
+      "slice": "update-page-palette",
+      "dimension": "craft",
+      "score": 82,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria hold for the final state of the slice. There are no TODOs, no commented-out blocks and no reverts, and the commit order is linear: red tests, then the implementation, then one review-driven fix round. Points come off because the impl commit itself added a stale comment and a duplicate CSS rule. Review confirmed both, and they were removed only in fix round faf0b91, along with a small test adjustment after the implementation. So the craft was good, not something I would ship unchanged."
+    },
+    {
+      "id": "update-panel-shell:process-order",
+      "slice": "update-panel-shell",
+      "dimension": "process-order",
+      "score": 61,
+      "pass": false,
+      "judges": 2,
+      "notes": "The commits are in the right order (spec, then tests, then implementation), and the test assertions follow the spec scenarios, so the critical criterion is met. Criterion 2 is not met. The archived review-findings.json says clean=false with 8 confirmed findings, and the slice was archived on a signed disposition (7 fixed, 1 waived) rather than a clean review. The spec, test and implementation commits share the timestamp 17:33, so there is little evidence of a separate red phase. With criterion 2 missed, the score stays below the pass bar. | The critical criterion is met. Spec-driven tests were committed before the implementation, and a timestamped red run shows 26 assertion failures against the unchanged code. Criterion 2 is not met: the archived review-findings.json is clean:false, with 8 findings confirmed and fixed in a single round, and the slice was archived without a clean re-review. Two smaller points also cost score: the e2e file had no red run, and the review found test gaps against the scenarios. With one of the two criteria missed, the score is 64, which is below the pass line."
+    },
+    {
+      "id": "update-panel-shell:test-integrity",
+      "slice": "update-panel-shell",
+      "dimension": "test-integrity",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The one test edit after the implementation commit (d176042) makes the tests stronger: toBeDefined() becomes exact clamp values, a missing scenario step (openSheet) is added, and the shadow is checked against the spec literal. Changes to existing tests are marked DELIBERATE CHANGE and point to proposal Impact rows; they extend the expected lists and remove nothing. Edge cases are asserted with specific checks: failed generation, failure at mount, cancelling the confirm dialog, capture boards, independent mounts, and exact media-block values. Points come off for the presence-only GUARD assertions, the 48rem values being pinned only after review, and one partial scenario that the review does not identify."
+    },
+    {
+      "id": "update-panel-shell:in-scope",
+      "slice": "update-panel-shell",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product code is limited to two files in src/ui, and both hunks match the spec's shell tokens and board-size hook, so I saw no cross-module drift. Most of the non-code footprint is the slice's own QA evidence folder and its OpenSpec change. I took points off because the file list is cut off and I could not see the diffs for the extra edits to existing tests and the README. Those edits look justified but are not shown, so I graded them down rather than up."
+    },
+    {
+      "id": "update-panel-shell:craft",
+      "slice": "update-panel-shell",
+      "dimension": "craft",
+      "score": 90,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both craft criteria are met. The src diff adds no TODO/FIXME, no dead code and no commented-out code, and the repository grep confirms it. The commit history has no reverts and no half-finished work. I took points off because the bundle shows the src and CSS diffs only in truncated form, so I could not confirm the whole CSS hunk. The review also needed a fix round on the tests (8 minor findings: 7 fixed, 1 waived). That round counts as small rework, but it is not thrash."
+    },
+    {
+      "id": "update-rules-panel:process-order",
+      "slice": "update-rules-panel",
+      "dimension": "process-order",
+      "score": 67,
+      "pass": false,
+      "judges": 2,
+      "notes": "The order is right: spec first (7564ae3, 02b710c), then the red-test commit 347736d, then the impl commit 16d42ad. The tests trace to FR-57/NFR-14 scenarios, so the critical criterion is met. Criterion 2 explicitly requires review-findings.json with clean:true, but the file says clean:false with 10 confirmed findings. The fixes in 30514e8 were dispositioned but never re-reviewed to a clean verdict before the archive. The same-minute test and impl commits also weaken the evidence that the tests were red first, so the score falls below the pass bar. | The critical test-first criterion is clearly met. A red-run artifact records 32 assertion failures before any src edit. The test names track the spec scenarios word for word, and the expected values come from the spec, not the code. The process criterion fails on its explicit condition: review-findings.json is clean=false. All 5 findings were fixed and a disposition file was signed, but no clean re-review result exists before the archive. That one non-critical miss puts the score just above the pass line."
+    },
+    {
+      "id": "update-rules-panel:test-integrity",
+      "slice": "update-rules-panel",
+      "dimension": "test-integrity",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The tests were committed red (347736d) before the implementation (16d42ad). The only later test change was a review-driven commit that added negative and containment checks (+40/-3), and the review found productCodeDefect 0. The assertions are concrete: scrollTop goes from 120 to 0, the popover state does not change, and the sampling declaration is explicit. The spec's breakpoint, locale and mount-independence cases are covered. The score is lowered because the review had to point out missing negative cases, and the 3 deleted e2e lines are not visible in the evidence."
+    },
+    {
+      "id": "update-rules-panel:in-scope",
+      "slice": "update-rules-panel",
+      "dimension": "in-scope",
+      "score": 76,
+      "pass": true,
+      "judges": 2,
+      "notes": "The product code stays within the play-page UI module, and the visible implementation hunk lines up with the spec scenarios. I found no evidence of a refactor or rewrite. The score is reduced because commit 7564ae3 also carries another slice's spec folder (update-setup-sheet) and has no trailer. It is reduced further because most of the 68 non-src files, plus the edits to the per-block tool and the shared test helpers, can't be seen in the bundle, so I could not confirm their scope. | Product code is confined to src/ui/play-page.ts and src/ui/style.css. Every visible impl change traces to FR-57/A-59 and the design CSS, which supports both criteria. Points come off because one spec commit without a trailer bundles another slice's folder (update-setup-sheet). The shared test-helper edits have no stated reason. Most of the 68 'other' files and the merge commit's contents are truncated and can't be checked, so per the rubric I graded the uncertainty down."
+    },
+    {
+      "id": "update-rules-panel:craft",
+      "slice": "update-rules-panel",
+      "dimension": "craft",
+      "score": 92,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both craft criteria are met. The diff and my repo greps show no TODO/FIXME or commented-out code, and the src change is a clean swap of old values for new ones. The history is linear with a single review-fix round that only adds to tests, and no revert churn. A few points are taken off because the bundle truncates parts of the diff (the CSS hunk and the 68 'other' files), so I could only confirm the visible spans plus the current state of src/ui and the rules tests, not every line the slice touched."
+    },
+    {
+      "id": "update-segmented-focus-ring-wording:process-order",
+      "slice": "update-segmented-focus-ring-wording",
+      "dimension": "process-order",
+      "score": 55,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical criterion is met. The only test assertion matches the wording of the spec scenario, and with no src change, a mutation run shows the test can fail instead of a red run. Criterion 2 is not met: the slice was archived before any review, and the review held later has clean=false, with the 6 findings waived rather than fixed. Because one of the two rubric criteria is missed, the score is 55, below the pass bar of 70. | The critical criterion is met. This slice only changes wording and adds no implementation. Its one new assertion copies the spec scenario word for word, and the committed mutation run shows it catching the outline-color and outline-width violations the spec forbids. Criterion 2 is clearly unmet: the change was archived before any review, the later review has clean:false, and all 6 findings were waived rather than resolved. Without a clean review before archive, the score drops below the 70 pass line."
+    },
+    {
+      "id": "update-segmented-focus-ring-wording:test-integrity",
+      "slice": "update-segmented-focus-ring-wording",
+      "dimension": "test-integrity",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice's only test change is additive and meaningful. The new test enumerates the three segmented selectors and rejects all four outline properties, including the shorthand. No assertion was removed or loosened, and there were no test edits after implementation. Two of the three spec scenarios are asserted precisely. The third, 'Other buttons keep the outset ring', is backed only by a generic-selector check that would not catch another button rule with a non-positive offset, so I took points off the edge-case criterion."
+    },
+    {
+      "id": "update-segmented-focus-ring-wording:in-scope",
+      "slice": "update-segmented-focus-ring-wording",
+      "dimension": "in-scope",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The slice was very small and stayed on scope. It touched no src/ files and made one assertion-only test addition that maps to the spec's new scenario. The rest was spec wording, evidence and the archive, all of which proposal.md and tasks.md declare. I deducted a little because the full list of 21 'other' files is truncated and cannot be fully confirmed, and because evidence was filed under the predecessor slice's directory. That placement is declared and justified, so it is not a miss on its own."
+    },
+    {
+      "id": "update-segmented-focus-ring-wording:craft",
+      "slice": "update-segmented-focus-ring-wording",
+      "dimension": "craft",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "This was a small wording-only change: one test commit and one archive commit, with no src changes, no reverts, no test edits after implementation, and all tasks ticked. That meets both rubric criteria. I took points off because the slice left an old CSS comment that still says the ring stays 'inside', which now contradicts the corrected spec wording. The review confirmed this and it was waived as minor. A slice I would ship unchanged would have fixed that comment."
+    },
+    {
+      "id": "update-settings-panel:process-order",
+      "slice": "update-settings-panel",
+      "dimension": "process-order",
+      "score": 60,
+      "pass": false,
+      "judges": 2,
+      "notes": "The critical test-first criterion is clearly met: the test commit comes before the src commit, a recorded red run shows unchanged CSS and assertion-only failures, and the tests are named after spec scenarios. Criterion 2 fails on its explicit condition. review-findings.json has no clean:true, the disposition records reviewClean=false with 7 findings (2 major), and no clean re-review is shown before the archive commit. That is a substantial non-critical miss, so the score falls below the 70 pass bar. | The critical criterion is met. The red test commit comes before the implementation, red-run.txt holds failing assertions that follow the spec scenarios, and the later test edits are small and explained by the review and the rebase. Criterion 2 is not met. The rubric asks for review-findings.json with clean:true, but the file has no clean value ('clean=undefined') and the disposition says 'reviewClean=false'. The fix round was never confirmed clean by a second review, and one finding was recorded as not delivered. With half the rubric missed, the score falls below the pass line."
+    },
+    {
+      "id": "update-settings-panel:test-integrity",
+      "slice": "update-settings-panel",
+      "dimension": "test-integrity",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "Test commit e4ec2c7 comes before the first source commit 4a13277 and states 'red first ... three deliberate test changes'. Each change is annotated in the code with its spec source and makes the check stricter, not weaker. The edits made after the implementation add checks (+26/-0 e2e from the review gate) or refresh baseline lists after the rebase, and nothing skipped or tautological was found. Edge cases are covered: the small phone, the 48rem breakpoint, scroll-padding minimums with rejection guards, the short-window walk. Points come off for two reasons. First, the exact one-line change in 0946310 and the -2 lines in 71108fd could not be seen directly, so that part is graded slightly down. Second, about 5 of the 49 scenarios were checked by direct quote."
+    },
+    {
+      "id": "update-settings-panel:in-scope",
+      "slice": "update-settings-panel",
+      "dimension": "in-scope",
+      "score": 76,
+      "pass": true,
+      "judges": 2,
+      "notes": "The product change stays inside the slice's area: only src/ui/style.css changed, with settings-panel rules. Every edit to neighbouring tests is declared in proposal.md with spec references. Points are lost for two scope problems. First, the refreeze silently rewrote the provenance of the rulesPanel and setupSheet keys, which the spec forbids; the review caught it and it was fixed. Second, an untrailered commit bundles the update-confirm-dialog slice's folders with this slice's. Both are drift, but they were caught or are minor, so the slice passes with deductions. | The product change is limited to one stylesheet, and every edit to another module's tests is named and justified in proposal.md (lines 45-47). That is good scope discipline, and nothing points to an opportunistic rewrite. The score is held back by drift that did happen: the refreeze silently changed the provenance of two other blocks' keys against the spec. The review gate caught it as a confirmed major finding and it was later fixed, but the slice did not prevent it. A minor point: the first spec commit has no trailer and mixes in a sibling slice's change folder."
+    },
+    {
+      "id": "update-settings-panel:craft",
+      "slice": "update-settings-panel",
+      "dimension": "craft",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "Neither rubric criterion is critical. The diff evidence and greps show no TODO/FIXME or commented-out code, and there are no revert commits or unfinished tasks. Points are taken off for small follow-up corrections: a 2px padding fix right after the feat commit, and a review round that found the freeze commit had rewritten provenance for keys outside its scope. Those are rework, but not thrash in the revert or abandon sense."
+    },
+    {
+      "id": "update-setup-sheet-design-margin:process-order",
+      "slice": "update-setup-sheet-design-margin",
+      "dimension": "process-order",
+      "score": 29,
+      "pass": false,
+      "judges": 2,
+      "notes": "This slice only updated a spec, after the work was already done. Its two commits change no tests and no src, and its own tasks.md and proposal say the code and tests came first and the spec only \"catches the living spec up\". There was a red run before the script changes, traced to the signed A-60 requirement. But the spec scenarios this slice owns did not exist when the tests were written, so the critical test-from-spec criterion is unmet. The review was not clean (clean=false, no confirming run after the fix round), so criterion 2 also fails. | tasks.md says this folder is a spec catch-up written after 'The code and the tests were done first', and the slice's only commit is the archive (10d2816), with zero test or src files. So there is no slice-level evidence that tests followed the spec or existed before the implementation, and the critical criterion fails. The review evidence is clean=false with no confirming run after the fix round, so the second criterion also fails. The tasks are fully ticked and the disposition is signed, but neither satisfies the rubric."
+    },
+    {
+      "id": "update-setup-sheet-design-margin:test-integrity",
+      "slice": "update-setup-sheet-design-margin",
+      "dimension": "test-integrity",
+      "score": 79,
+      "pass": true,
+      "judges": 2,
+      "notes": "This slice only aligns the spec with A-60 and has no test or src edits, so nothing was weakened. The earlier e2e changes it depends on are deliberate, traced to the signed A-60 and backed by red and green runs, and their assertions are concrete ('28px', no deviations). Boundary coverage exists in the existing tests, which check widths, at-rule guards and the scroll-padding minimum. But the slice's own evidence does not tie its 15 scenarios to tests, and the review closed without a confirming run, so criterion 2 is only partly met. | There is no evidence of a weakened test. The one test change that removed an assertion (the `expected` box) is marked as deliberate, traced to the signed A-60 amendment, and replaced by stricter checks: no deviation recorded and a 28px level margin both in the fixture and on the live page. The 320px and 48rem boundaries and the short-window cases are asserted. Points come off because this slice holds no test commits of its own, and several paint and motion scenarios were not shown to be asserted."
+    },
+    {
+      "id": "update-setup-sheet-design-margin:in-scope",
+      "slice": "update-setup-sheet-design-margin",
+      "dimension": "in-scope",
+      "score": 78,
+      "pass": true,
+      "judges": 2,
+      "notes": "The slice's own commit only archives the spec and docs, and touches no src or test files. The cross-module script edits (freeze-design-geometry.mjs, freeze-design-paint.mjs, the new reference-calibration.mjs and the header comments) each map to a confirmed review finding with fixCommit a93262f, so they don't look like silent drift. The score is lower because those edits sit in a stream-wide review commit with no slice trailer, and the truncated file list leaves part of the change scope unseen. | The slice is a spec catch-up. Its own commit only archives the delta to the play-page requirement, which keeps it in scope. Every script, e2e and test edit in the fix commit a93262f traces to a confirmed or contested review finding in the signed disposition file, so nothing looks like silent drift or an opportunistic rewrite. I took points off because a93262f covers the whole design stream without the slice trailer. It also adds things the slice's spec does not ask for (the NFR-14 reference-pin test, a new calibration helper module), and those are justified by review findings rather than by the spec, as criterion 1 requires."
+    },
+    {
+      "id": "update-setup-sheet-design-margin:craft",
+      "slice": "update-setup-sheet-design-margin",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both craft criteria are met. The only code change, the fix round in a93262f, replaces hard-coded standIn strings with the small, complete helper standInFor() in scripts/reference-calibration.mjs. It also deletes stale comments and adds no TODOs or commented-out code. The history is two commits (one fix, one archive) with no reverts. Points come off because the evidence is thin. The slice's own trailer commit is just the archive. The code change only shows up in a commit that names the slice in its body, not in a trailer. The review is also recorded as clean=false with 'no confirming run'. That leaves some doubt about whether the fix round settled cleanly."
+    },
+    {
+      "id": "update-setup-sheet-start:process-order",
+      "slice": "update-setup-sheet-start",
+      "dimension": "process-order",
+      "score": 62,
+      "pass": false,
+      "judges": 2,
+      "notes": "The gating criterion is met. The red test commit 5835437 comes before the implementation commit 4f95922, its assertions follow the spec scenarios, and tasks.md 2.6 records that the red run was confirmed. The process criterion is not met. review-findings.json says clean=false after 3 runs, and the slice was archived on a signed waiver/disposition file instead of a clean review. With one of two criteria missed, the score is below 70, so the verdict is fail. | The critical test-first criterion is strongly met. The red test commit predates the implementation, the red-run file was written before any src/ change and lists spec-phrased failures, and test names copy the spec scenarios. The second criterion fails: the change was archived with review-findings.json at clean=false after three runs (12 findings confirmed in run 3), and a signed waiver disposition does not equal clean:true. With one of two criteria missed, the score lands below the pass line."
+    },
+    {
+      "id": "update-setup-sheet-start:test-integrity",
+      "slice": "update-setup-sheet-start",
+      "dimension": "test-integrity",
+      "score": 85,
+      "pass": true,
+      "judges": 1,
+      "notes": "Tests came first: the red commit 5835437 precedes the impl 4f95922. The only deleted assertions checked behaviour the signed spec amendment changed, and that change is logged in the 'S changed-tests list'. Every later test edit adds or tightens checks: the scroll-padding floor went from 60 to 92px and the 320x568 viewport was added. The marked-choice suite asserts the owned edge scenarios, including every close route, 4×4 forcing «Розминка», mount values with no board, and choices not being remembered. Points come off because the first-pass floor and viewport gaps were found by review, not by the tests."
+    },
+    {
+      "id": "update-setup-sheet-start:in-scope",
+      "slice": "update-setup-sheet-start",
+      "dimension": "in-scope",
+      "score": 80,
+      "pass": true,
+      "judges": 2,
+      "notes": "Product code is tightly in scope. The three src files match the proposal's declared affected code one for one, the engine is untouched, and every fix commit addresses the footer or focus scope and review findings. Points come off for the slice-tagged amendment and design-gate commits. They bundle the other two changes' folders plus edits to AGENTS.md, .claude/rules/frontend.md and the conventions docs, and nothing in the evidence ties those edits to this slice's spec. That is non-code scope bleed rather than a smuggled refactor, so the slice passes with deductions. | The product code stayed tightly in scope. Only the three src/ui files named in proposal.md changed, src/engine was untouched, and the impl hunk is limited to marked-choice and «Почати» behaviour. The broad test churn is tied to a changed-tests list with a source row per test (tasks 1.2/2.3), not silent drift. Points come off because the slice's commits also carry docs for the whole phase-S amendment, including the sibling slices' change folders and edits to AGENTS.md and the frontend rules. That is cross-slice bundling that the slice spec does not justify, although none of it is a code refactor."
+    },
+    {
+      "id": "update-setup-sheet-start:craft",
+      "slice": "update-setup-sheet-start",
+      "dimension": "craft",
+      "score": 82,
+      "pass": true,
+      "judges": 1,
+      "notes": "The src files the slice touched contain no TODO/FIXME or commented-out code, and the bundle's impl hunk shows only live code, so criterion 1 is met. No commits were reverted and every task is ticked. Still, three review runs, two fix rounds, a quick follow-up CSS grid fix and three test edits after implementation mean the slice took several passes. I counted that as partial satisfaction of criterion 2 rather than a clean pass, which is why the score is lowered."
+    },
+    {
+      "id": "update-setup-sheet:process-order",
+      "slice": "update-setup-sheet",
+      "dimension": "process-order",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "Both criteria are met. The red step is well documented: red-run.txt shows tests failing on assertions against the unchanged stylesheet, the assertions are tied to spec and proposal rows, and the test commit comes before the implementation commit. The slice has the full spec, red, green, review (clean:true, findings resolved or rejected) and archive sequence. Points come off because the rebase gave the test and implementation commits the same timestamp, so the test-first order depends on red-run.txt rather than git history. Four commits also edited tests after the implementation, though each edit is small and has a stated reason."
+    },
+    {
+      "id": "update-setup-sheet:test-integrity",
+      "slice": "update-setup-sheet",
+      "dimension": "test-integrity",
+      "score": 82,
+      "pass": true,
+      "judges": 2,
+      "notes": "The order was test-first: the red commit 572f31e comes before the feat commit a14e861. Test edits made after the implementation are additions, apart from one single-line removal in the a11y e2e spec that the bundle does not explain. The setup-sheet stylesheet suite asserts exact values across the phone, small-phone, 48rem and tall-window regimes, the dvh fallback, both themes, and the disabled and checked states, with no tautologies or skips. I took points off because I could not see what the a11y-spec deletion removed, and because the geometry tool passes only with a recorded deviation, which may be a tolerance the slice accepted. | Tests came first (572f31e before a14e861). Test edits after impl only add lines, except one viewport change that is documented as a user decision and keeps the premise of the test. I found no tautological or skipped tests. The setup-sheet unit suite checks many regime boundaries, the dvh fallback, light and dark contrast values, and card states. Points come off because the red commit's edits to roughly 10 older test files cannot be verified from the bundle, and because the viewport change was made after impl."
+    },
+    {
+      "id": "update-setup-sheet:in-scope",
+      "slice": "update-setup-sheet",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The only product code changed is src/ui/style.css, the slice's own module, and the commit subjects stay on the setup-sheet capability. That supports both criteria at their core. Points come off for three things: the first commit bundles another slice's change folder and lacks a Slice trailer; the edits to many other blocks' stylesheet tests are probably caused by the token count change but are not justified in the evidence; and the shared contract module from review round 1 widens the slice's footprint."
+    },
+    {
+      "id": "update-setup-sheet:craft",
+      "slice": "update-setup-sheet",
+      "dimension": "craft",
+      "score": 82,
+      "pass": true,
+      "judges": 1,
+      "notes": "No TODO/FIXME markers or commented-out code are visible in the src or test changes, and there are no reverts or abandoned half-implementations, so both criteria are broadly met. Points come off because the review round 1 fix was done in two passes (4a21674 'completed after the re-verify'). The review also found a stale, misleading header comment and an inconsistency in the freeze script. On top of that, two rebases forced repeated re-spec and docs commits and four test edits after the impl commit. That is moderate churn, but not revert-level thrash."
+    },
+    {
+      "id": "update-win-apostrophe:process-order",
+      "slice": "update-win-apostrophe",
+      "dimension": "process-order",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The git log shows the order the rubric asks for: three spec drafts, then a red-test commit, then a one-line constant change in src/ui/strings.ts, then a review fix round, then the archive. review-findings.json is clean=true after 2 rounds, and a red-run artifact exists on disk. The test assertions follow the spec's U+02BC scenario (U+0027 and U+2019 excluded, length 32, Cyrillic script) rather than just repeating the constant's value. Points come off for the test edit after the implementation and for the missing slice trailers on the test and fix commits."
+    },
+    {
+      "id": "update-win-apostrophe:test-integrity",
+      "slice": "update-win-apostrophe",
+      "dimension": "test-integrity",
+      "score": 87,
+      "pass": true,
+      "judges": 1,
+      "notes": "The red commit replaced the U+0027 expectations with stricter U+02BC ones. It added checks that exclude U+0027 and U+2019, pin the code point and length, and check script (Cyrillic, no Latin), on both the click and hint win routes. Nothing was skipped or turned into a tautology, and the tests came before the implementation commit. The only deduction is that a small post-implementation test edit (80e752b, +2/-2) is not shown in the evidence, though the current test file has no sign of weakening."
+    },
+    {
+      "id": "update-win-apostrophe:in-scope",
+      "slice": "update-win-apostrophe",
+      "dimension": "in-scope",
+      "score": 84,
+      "pass": true,
+      "judges": 1,
+      "notes": "The product and test changes are tightly scoped. There is a one-constant edit in src/ui/strings.ts and edits to play-page win-message tests, all traceable to the FR-41 U+02BC scenario. Nothing touches other modules and there is no refactor. Points come off because the slice's commit history bundles another slice's OpenSpec drafts (add-rule-solvable-generator, in f03c074) and includes baseline/renumbering docs churn, which blurs the slice boundary at the docs level."
+    },
+    {
+      "id": "update-win-apostrophe:craft",
+      "slice": "update-win-apostrophe",
+      "dimension": "craft",
+      "score": 88,
+      "pass": true,
+      "judges": 1,
+      "notes": "The src diff is a clean one-line change. It removes the placeholder comment that said the code was temporary and adds no TODOs and no dead or commented-out code; grep of the touched files confirms this. The history has no reverts or abandoned implementation. Points come off only because the tests were edited again (+2/-2) after the impl commit and the docs folder was reworked twice. That is minor review-driven churn, not real thrash."
+    }
+  ]
+}
