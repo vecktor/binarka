@@ -580,6 +580,11 @@ body {
   grid-template-rows: auto auto minmax(2.75rem, 1fr);
   column-gap: var(--space-2);
   align-content: start;
+  /* Iteration 18: focus scrolling keeps a focused option and its ring above the footer strip
+     (A-60, FR-65, WCAG 2.4.11), the product's value: the strip is 2.75rem + 16px tall, the
+     sticky row sits on the sheet's 16px bottom padding, and the ring reaches 5px beyond the
+     option. */
+  scroll-padding-bottom: calc(2.75rem + 48px);
 }
 
 .setup > .size-control,
@@ -597,8 +602,10 @@ body {
   grid-row: 2;
 }
 
+/* Iteration 17: 28px (1.75rem) at every width, the product's signed value (A-60, SQ-5):
+   room for the last level's focus ring above the footer. */
 .setup .level-control {
-  margin-bottom: var(--space-5);
+  margin-bottom: 1.75rem;
 }
 
 .setup-start,
@@ -987,9 +994,11 @@ body {
     margin-top: 1rem;
   }
 
-  /* Iteration 14: the footer row starts 1rem under the levels (was «Закрити»'s margin). */
+  /* Iteration 14: the footer row starts under the levels (was «Закрити»'s margin).
+     Iteration 17: 28px (1.75rem), was 1rem, the product's signed value at every width
+     (A-60, SQ-5): room for the last level's focus ring above the footer. */
   .setup .level-control {
-    margin-bottom: 1rem;
+    margin-bottom: 1.75rem;
   }
 }
 
@@ -1032,8 +1041,10 @@ body {
     margin-top: 0;
   }
 
+  /* Iteration 17: 28px (1.75rem) at every width, the product's signed value (A-60, SQ-5):
+     room for the last level's focus ring above the footer. */
   .setup .level-control {
-    margin-bottom: var(--space-5);
+    margin-bottom: 1.75rem;
   }
 
   .rules-close,

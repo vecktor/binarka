@@ -2,12 +2,13 @@
 // geometry test (e2e/nfr-14-layout-geometry.spec.ts, change update-page-layout-geometry). Not a gate.
 //
 // The design build (design/v0/out, `pnpm build` in design/v0, design/README.md) stands in for the frozen reference
-// review-set-14: captured at a real device scale it reproduces all 170 reference shots exactly
-// (docs/qa/g2/harness-calibration.txt). The boxes are measured with the SAME browser setup as the e2e test that reads
+// (config.referenceDir): captured at a real device scale it reproduces all 170 reference shots exactly (the calibration of each set is named in
+// scripts/reference-calibration.mjs, which fails the freeze for a set without one). The boxes are
+// measured with the SAME browser setup as the e2e test that reads
 // them (playwright.config.ts: Playwright's "Desktop Chrome" device, the viewport set per case, reduced motion, light
 // scheme), so the test compares like with like. Box edges are CSS px as getBoundingClientRect gives them.
 //
-// Sampling: the light shots of review-set-14 whose state is reached at mount (default, four, eight, level, win) or by one press of the hint
+// Sampling: the light shots of the reference set whose state is reached at mount (default, four, eight, level, win) or by one press of the hint
 // button (hint), at the reference viewports; geometry does not depend on the scheme. Coverage: sampled, never continuum.
 //
 // Rules panel (change update-rules-panel, key `rulesPanel`, read by e2e/nfr-14-rules-panel.spec.ts): 8 explicit cases, the open
@@ -28,11 +29,13 @@
 // at the six reference viewports, in the states setup (6×6 fixture) and setup-four (4×4 fixture, which checks the board side B); read by
 // e2e/nfr-14-setup-sheet.spec.ts. The design's /setup/ and /setup-four/ routes are open at load (a press would close them); the page side replays
 // the recorded afterLoad "open-setup" (press the summary button, wait for :popover-open). Each case records the design's own boxes (`boxes`) and
-// the expected product boxes (`expected`): the same design page with the one recorded deviation injected in the browser, the level group's 28px
-// bottom margin of A-60 and SQ-5 (nothing is written to design/v0). Sampling: 12 cases, coverage sampled, never continuum.
+// its computed level margin (`levelMarginBottom`). Since design iteration 17 the design has the level group's 28px bottom margin at every width
+// (A-60 as amended and signed on 2026-10-12), so nothing is injected and the key records no deviation and no `expected` box (they were the
+// SQ-5 departure, design stream DS of wave 3); a design margin other than 28px fails the freeze. Sampling: 12 cases, coverage sampled, never
+// continuum.
 //
 // The key confirmDialog (update-confirm-dialog, G2 dialog block): the open confirmation dialog, its text and its two buttons, at the five confirm
-// viewports of review-set-14 (<w>-light-confirm at 320x700, 375x812, 768x1024, 1024x768, 1440x900; the set has no 1366 confirm shot); read by
+// viewports of the reference set (<w>-light-confirm at 320x700, 375x812, 768x1024, 1024x768, 1440x900; the set has no 1366 confirm shot); read by
 // e2e/nfr-14-confirm-dialog.spec.ts. The design's /confirm/ route shows the dialog open at load, so the freeze waits for dialog[open] and presses
 // nothing; the page side replays the recorded afterLoad "open-confirm" (press «Нова головоломка» on the capture board, which has entries, so it asks
 // first; wait for dialog[open]), as the adapter's `confirm` driver does. No deviation: the key holds the design's `boxes` only. Its own provenance.
@@ -56,7 +59,8 @@ import { extname, join, relative, resolve, sep } from 'node:path';
 import { chromium, devices } from 'playwright';
 import { captureBoardFor, parseShot } from './check-visual-parity-adapters.mjs';
 import { capturePorts } from './capture-ports.mjs';
-import { SETUP_DEVIATION_CSS, SETUP_SELECTORS, designLevelMargin } from './setup-sheet-deviation.mjs';
+import { LEVEL_MARGIN, SETUP_SELECTORS } from './setup-sheet.mjs';
+import { standInFor } from './reference-calibration.mjs';
 import { CONFIRM_SELECTORS } from './confirm-dialog.mjs';
 
 export const LAYOUT_SELECTORS = [
@@ -232,24 +236,13 @@ try {
       }, SETUP_SELECTORS);
       const design = await measure();
       if (!design) throw new Error(`${name}: the design page lacks ${SETUP_SELECTORS.join(' or ')}`);
-      // Guard the injection (as e2e/nfr-14-palette.spec.ts guards its deviations): the override must replace the design value the key records.
-      const designMargin = designLevelMargin(bp.width);
-      if (design.levelMarginBottom !== designMargin) throw new Error(`${name}: the design's level margin-bottom is ${design.levelMarginBottom}, not ${designMargin}; the recorded deviation is stale`);
-      await page.evaluate((css) => {
-        const el = document.createElement('style');
-        el.textContent = css;
-        document.head.append(el);
-      }, SETUP_DEVIATION_CSS);
-      const product = await measure();
-      if (product?.levelMarginBottom !== '28px') throw new Error(`${name}: the injected deviation did not apply (${product?.levelMarginBottom})`);
+      // The design must have the signed 28px (A-60), or this build is not the reference's design.
+      if (design.levelMarginBottom !== LEVEL_MARGIN) throw new Error(`${name}: the design's level margin-bottom is ${design.levelMarginBottom}, not ${LEVEL_MARGIN} (A-60); rebuild design/v0 (design/README.md)`);
       const sheetH = design.boxes[SETUP_SELECTORS[0]].h;
       const minHeightPx = Number.parseFloat(design.minHeight) || 0;
       const maxHeightPx = design.maxHeight === 'none' ? null : Number.parseFloat(design.maxHeight);
       const decide = (h) => (maxHeightPx !== null && Math.abs(h - maxHeightPx) <= 0.5 ? 'max-height' : Math.abs(h - minHeightPx) <= 0.5 ? 'min-height' : 'content');
       const decidedBy = decide(sheetH);
-      // Which bound decides the expected (product) box: the margin's growth stops at max-height (320x700, 6x6: content in the design, the cap
-      // in the expected box; review gate fix round 1).
-      const expectedDecidedBy = decide(product.boxes[SETUP_SELECTORS[0]].h);
       setupOut.push({
         shot: name,
         width: bp.width,
@@ -258,8 +251,8 @@ try {
         captureBoard: captureBoardFor(state),
         afterLoad: 'open-setup',
         boxes: design.boxes,
-        expected: product.boxes,
-        layout: { scrollHeight: design.scrollHeight, clientHeight: design.clientHeight, minHeightPx, maxHeightPx, decidedBy, expectedDecidedBy },
+        levelMarginBottom: design.levelMarginBottom,
+        layout: { scrollHeight: design.scrollHeight, clientHeight: design.clientHeight, minHeightPx, maxHeightPx, decidedBy },
       });
       await ctx.close();
     }
@@ -354,7 +347,7 @@ const freshProvenance = {
     designBuild: 'design/v0/out from `pnpm build` in design/v0 (design/README.md), not committed; designBuildSha1 covers every file of it',
     reference: config.referenceDir,
     referenceSha1sums: config.referenceSha1sums,
-    standIn: 'docs/qa/g2/harness-calibration.txt (the design build reproduces all 170 reference shots at 1.0000)',
+    standIn: standInFor(config.referenceDir),
     browser: `Playwright chromium ${browser.version()}, devices["Desktop Chrome"], reducedMotion reduce, colorScheme light`,
   };
 // Keep the recorded provenance while the design is unchanged (designBuildSha1 differs between worktrees); otherwise write this run's.
@@ -389,7 +382,7 @@ const keyProvenance = (key, cases) => {
   return recorded.provenance;
 };
 const fixture = {
-  $comment: 'Layout geometry of the design build, the stand-in for review-set-14 (NFR-14). Generated by scripts/freeze-design-geometry.mjs; do not edit by hand. Read by e2e/nfr-14-layout-geometry.spec.ts.',
+  $comment: `Layout geometry of the design build, the stand-in for ${config.referenceDir.split('/').pop()} (NFR-14). Generated by scripts/freeze-design-geometry.mjs; do not edit by hand. Read by e2e/nfr-14-layout-geometry.spec.ts.`,
   provenance: provenance,
   tolerancePx: 0.5,
   selectors: LAYOUT_SELECTORS,
@@ -405,15 +398,6 @@ const fixture = {
     selectors: SETUP_SELECTORS,
     coverage: 'sampled',
     provenance: keyProvenance('setupSheet', setupOut),
-    deviations: [
-      {
-        rule: '.setup .level-control { margin-bottom }',
-        design: '24px; 1rem at 22.5rem and narrower',
-        product: '28px',
-        reason: 'A-60, SQ-5: the focus ring of the last option under the footer strip',
-        contentDecidedCases: setupOut.filter((c) => c.layout.decidedBy === 'content').map((c) => c.shot),
-      },
-    ],
     cases: setupOut,
   },
   confirmDialog: {
@@ -430,4 +414,4 @@ const fixture = {
   },
 };
 writeFileSync(OUT, `${JSON.stringify(fixture, null, 2)}\n`);
-console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors; setupSheet ${setupOut.length} cases (content-decided: ${fixture.setupSheet.deviations[0].contentDecidedCases.join(', ') || 'none'}); confirmDialog ${confirmOut.length} cases x ${CONFIRM_SELECTORS.length} selectors; settingsPanel ${settingsOut.length} cases x ${SETTINGS_SELECTORS.length} selectors`);
+console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors; setupSheet ${setupOut.length} cases (content-decided: ${setupOut.filter((c) => c.layout.decidedBy === 'content').map((c) => c.shot).join(', ') || 'none'}); confirmDialog ${confirmOut.length} cases x ${CONFIRM_SELECTORS.length} selectors; settingsPanel ${settingsOut.length} cases x ${SETTINGS_SELECTORS.length} selectors`);

@@ -1,0 +1,30 @@
+# PD-13 green proof, 2026-10-12 17:36 +0530 (design stream DS part 2), after the user's approval «Approve (Recommended)» (session log DS10).
+
+## 1. The probe after the config edit
+NFR-14 row:  design/v0-screenshots/review-set-15 c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+config:      design/v0-screenshots/review-set-15 c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+on disk:     design/v0-screenshots/review-set-15/SHA1SUMS c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+PASS: the config names the NFR-14 reference, and its SHA1SUMS matches
+exit=0
+
+## 2. Integrity: before the re-seal (the config drifted) and after
+before: WARN  [quality/visual-parity.config.json] quality-tier drift (hash drift) vs factory-lock.json; Result: PASS, 2 warning(s)
+re-seal: node scripts/check-factory-integrity.mjs --init-lock --adaptation "PD-13: …" -> Locked 27 gate-bearing file(s) (gitHead fd8557f); only the config's hash and the adaptations line changed in factory-lock.json
+after:
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)
+
+## 3. Refreeze and the three specs: see docs/qa/design-stream/refreeze.txt and green-run.txt (appended below when run)
+## 4. Fresh check:visual against review-set-15: docs/qa/design-stream/check-visual-set15.txt (appended below when run)
+
+## 3. Refreeze and the three specs (2026-10-12 17:38 to 17:39)
+- `docs/qa/design-stream/refreeze.txt`: provenance.reference review-set-15, referenceSha1sums c561f87d…, standIn the set-15 calibration;
+  the four pre-registered case hashes UNCHANGED; setupSheet's 12 design boxes equal the old injected `expected` boxes at 0.00 px.
+- `docs/qa/design-stream/green-run.txt`: 66 of 66 passed (red-run.txt: 13 failed, 53 passed).
+
+## 4. Fresh check:visual against review-set-15 (2026-10-12 17:43 to 17:46): FAIL, 168 of 170
+`docs/qa/design-stream/check-visual-set15.txt`. The config re-point works: 28 of the 30 changed setup shots now score 1.0000, and the
+140 identical shots are unchanged. Not earned: `320-light-setup-marked` 0.8853 and `320-dark-setup-marked` 0.9069. Cause: the design has
+no scroll-padding-bottom, so it does not scroll on focus (`docs/qa/design-stream/setup-marked-320/root-cause.txt`). This is not the config:
+the page against the design with the product's scroll-padding scores 1.0000. Open with the user (session log DS11).

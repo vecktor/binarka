@@ -1,0 +1,166 @@
+{
+  "slice": "2026-10-12-update-setup-sheet-design-margin",
+  "reviewFile": "openspec/changes/archive/2026-10-12-update-setup-sheet-design-margin/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_b4f0e083-6e6 (d25ca3c..4fe210a; the user's yes «after green», DS10): 10 confirmed, 2 contested, 7 rejected"
+  ],
+  "excluded": "contested, not an entry: «Checklist areas not exercised by this diff» (suggestion «None»). Rejected: 7.",
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_b4f0e083-6e6",
+      "title": "OpenSpec play-page spec still requires the 28px departure, the recorded deviation, the `expected` boxes and `expectedDecidedBy`, which the changed tests and fixture now forbid",
+      "severity": "major",
+      "verdict": "confirmed",
+      "dimension": "correctness",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "openspec/changes/update-setup-sheet-design-margin/specs/play-page/spec.md (MODIFIED); the living spec takes it at the archive; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "openspec/specs/play-page/spec.md"
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_b4f0e083-6e6",
+      "title": "freeze-design-geometry.mjs: `standIn` is a hard-coded set-16 path, not derived from config.referenceDir. The same stale-string bug already hit this stream once",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "dimension": "correctness",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "scripts/reference-calibration.mjs; both freezes call standInFor(config.referenceDir), which fails for a set without a calibration; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "scripts/freeze-design-geometry.mjs"
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_b4f0e083-6e6",
+      "title": "Stale 'the reference is review-set-15' in script header comments after the move to review-set-16",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "dimension": "correctness",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "scripts/setup-sheet.mjs and scripts/visual-block.mjs name the config's referenceDir, review-set-15 onward; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "scripts/setup-sheet.mjs"
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_b4f0e083-6e6",
+      "title": "Living OpenSpec scenario «The sheet matches the design's box in a real browser» contradicted: spec still requires the `expected` box and an asserted 28px deviation, the test now asserts the opposite",
+      "severity": "critical",
+      "verdict": "confirmed",
+      "dimension": "spec-compliance",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "the scenario compares with the case's boxes and asserts no deviation, no expected box and levelMarginBottom 28px (spec delta); the living spec takes it at the archive; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "openspec/specs/play-page/spec.md"
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_b4f0e083-6e6",
+      "title": "Living OpenSpec scenario «The fixture adds one key and changes nothing else» contradicted: still requires recorded deviation, `expected` boxes, `expectedDecidedBy` and unchanged design hashes",
+      "severity": "critical",
+      "verdict": "confirmed",
+      "dimension": "spec-compliance",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "the scenario says a design change rewrites every key's provenance and the guard is each key's cases SHA-1; the key holds levelMarginBottom and no deviation (spec delta); the living spec takes it at the archive; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "openspec/specs/play-page/spec.md"
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_b4f0e083-6e6",
+      "title": "Requirement body of the setup-sheet requirement still describes the 28px as a departure, the 24px/1rem guard and the injected rule",
+      "severity": "major",
+      "verdict": "confirmed",
+      "dimension": "spec-compliance",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "the requirement body follows the signed A-60 wording; item (4) of the not-delivered list is withdrawn; the design's scroll padding since iteration 18 (spec delta); the living spec takes it at the archive; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "openspec/specs/play-page/spec.md"
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_b4f0e083-6e6",
+      "title": "Stale reference-set mentions in the new and edited scripts' comments (review-set-15 where the reference is now 16)",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "dimension": "spec-compliance",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "the same comment fix as entry 3; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "scripts/setup-sheet.mjs"
+    },
+    {
+      "id": "R1-F8",
+      "run": "wf_b4f0e083-6e6",
+      "title": "freeze-design-geometry.mjs `standIn` is still a hard-coded set-16 path although the rest of the provenance derives from the config",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "dimension": "spec-compliance",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "the same fix as entry 2; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "scripts/freeze-design-geometry.mjs"
+    },
+    {
+      "id": "R1-F9",
+      "run": "wf_b4f0e083-6e6",
+      "title": "No checker verifies `referenceSha1sums` against the reference set's SHA1SUMS (NFR-14 pin without a mechanism)",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "dimension": "spec-compliance",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "tests/nfr-14-reference-pins.test.ts (@trace NFR-14): the NFR-14 row, the config and the set's SHA1SUMS agree, with a negative case; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "quality/visual-parity.config.json"
+    },
+    {
+      "id": "R1-F10",
+      "run": "wf_b4f0e083-6e6",
+      "title": "Focusing the sticky «Почати» button scrolls the 320px setup sheet 10px, cutting its top padding from about 16px to about 6px",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "dimension": "visual",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "A-60 is signed: the open setup sheet keeps a scroll-padding-bottom for the focus ring. The user moved the design to the same rule (iteration 18) and the reference to review-set-16 (DS12, DS14) with the reviewer's minor note (the 320 top gap of about 6px) in front of them. The side effect is written down for readers of the set (design/README.md, Iteration 18, commit a93262f). Whether a focused footer button should scroll the sheet at all is a later design question, outside this stream.",
+      "file": "docs/qa/design-stream/setup-marked-320/320-light-setup-marked-design-left-page-right.png"
+    },
+    {
+      "id": "R1-C1",
+      "run": "wf_b4f0e083-6e6",
+      "title": "Geometry pins weakened from whole-key to cases-only, and are self-referential",
+      "severity": "minor",
+      "verdict": "contested",
+      "dimension": "security",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a93262f",
+      "evidence": "e2e/nfr-14-confirm-dialog.spec.ts asserts the selectors and the sampled coverage of rulesPanel and setupSheet beside the case pins; checks: docs/qa/design-stream/fix-round-1.txt",
+      "file": "e2e/nfr-14-confirm-dialog.spec.ts"
+    }
+  ],
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T18:34+05:30",
+    "channel": "chat, question form, design stream DS of wave 3 (claude/youthful-bhabha-design28); docs/qa/design-stream/session-log.md row DS17",
+    "words": "«Sign as compiled (Recommended)», to the question «Sign the review disposition of the design stream (PD-10)? … 11 entries, all fixed by a93262f except one waived …»",
+    "scope": "every entry of this file as compiled on 2026-10-12 (11 entries: 10 fixed by a93262f, 1 waived) and its exclusion"
+  },
+  "compiledFrom": [
+    "openspec/changes/update-setup-sheet-design-margin/review-findings.json",
+    "git show a93262f",
+    "docs/qa/design-stream/fix-round-1.txt"
+  ],
+  "compilerNotes": "Compiled by the design stream DS session. reviewFile names the archive path: the change folder is archived only on the user's yes, and until then the file is openspec/changes/update-setup-sheet-design-margin/review-findings.json. The spec fixes (entries 1, 4, 5 and 6) take effect in the living spec at the archive."
+}

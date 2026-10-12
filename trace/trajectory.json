@@ -303,10 +303,18 @@
     {
       "slice": "2026-10-12-update-setup-sheet",
       "reviewEvidence": "clean",
-      "trailerCommits": 28,
+      "trailerCommits": 29,
       "libDomains": [
         "ui"
       ],
+      "processComplete": true,
+      "designWaived": false
+    },
+    {
+      "slice": "2026-10-12-update-setup-sheet-design-margin",
+      "reviewEvidence": "dispositioned",
+      "trailerCommits": 1,
+      "libDomains": [],
       "processComplete": true,
       "designWaived": false
     }
