@@ -127,3 +127,38 @@ Block rules: 20 shot(s), geometry within 0.5px (coverage: sampled)
 - The refreeze reproduced every key byte for byte except A's `rulesPanel.provenance.designBuildSha1` (A's script records the local build hash, which differs between worktrees, as A's requirement says); the committed fixture was restored, so A's recorded value stands.
 - The sweep: the same two design-inherited groups as `sweep.txt` (700 default 768-1440; 1024 four 672-752), recorded as not delivered.
 - `check:visual` run 12: `docs/qa/g2/check-visual-run-12.txt`, 142 of 170 (run 11: 106); `run-vs-previous.txt` § After the rebase.
+
+## After the second rebase, onto session C's process stream (task 10.2; HEAD 7f9895d on local main 361ce2a)
+
+Local `main` had moved to `361ce2a` (session C's PD-4 to PD-6 and ADRs merged after block A, unpushed; autonomy-log rows 181-185). On the user's word (session-log row 33) B was rebased onto it (backup `backup/setup-prerebase2-28145f1`); conflicts only in the two shared scripts' import and usage lines (C's per-session capture ports and `stopOnExit` kept, B's shared-module import added) and the ledger (union). 13 commits re-signed (all `G`); B's hunks of `src/ui/style.css`, the tests, the e2e, `tests/helpers/css.ts`, `tests/play-page-rules-panel-stylesheet.test.ts`, `quality/design-geometry.json` and `scripts/setup-sheet-deviation.mjs` identical before and after.
+
+```
+# no lock (2026-10-12 07:53-07:54):
+lint exit=0
+ Test Files  79 passed (79)
+      Tests  1949 passed (1949)
+build exit=0
+Change 'update-setup-sheet' is valid
+Totals: 3 passed, 0 failed (3 items)
+Result: PASS
+traceability: 115 MVP FRs checked — 0 failure(s), 116 warning(s)
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+# under the capture lock (2026-10-12 07:54:50-07:59:41; ports 4173/4174/4176/4177 empty before and after; default ports):
+$ npm run test:e2e -- --reporter=list > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb2-e2e.txt 2>&1; echo e2e_exit=$?; npm run check:a11y > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb2-a11y.txt 2>&1; echo a11y_exit=$?; node scripts/freeze-design-geometry.mjs; echo freeze_exit=$?; SETUP_SHEET_SWEEP=1 npx playwright test --project=layout e2e/nfr-14-setup-sheet.spec.ts --reporter=list > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb2-sweep.txt 2>&1; echo sweep_exit=$?; npm run build > /dev/null 2>&1; node scripts/visual-block.mjs --block setup --states setup,setup-four,setup-marked,setup-marked-four --out /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb2-vb-setup > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb2-vb-setup.txt 2>&1; echo vbs_exit=$?; node scripts/visual-block.mjs --block rules --states rules,rules-techniques --out /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb2-vb-rules > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/rb2-vb-rules.txt 2>&1; echo vbr_exit=$?; date '+%a %b %e %T %z %Y' > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/cv12b-start.txt; npm run check:visual > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/cv12b-run.txt 2>&1; echo cv_exit=$?; date '+%a %b %e %T %z %Y' > /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-magical-nash-606e66/ff8cf772-f9eb-430a-8c0d-80004e955532/scratchpad/cv12b-end.txt
+e2e_exit=0
+a11y_exit=0
+wrote quality/design-geometry.json: 32 cases x 16 selectors, rulesPanel: 8 cases x 2 selectors; setupSheet 12 cases (content-decided: 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four)
+freeze_exit=0
+sweep_exit=1
+vbs_exit=0
+vbr_exit=0
+cv_exit=1
+a11y.txt:  67 passed (13.2s)
+sweep.txt:  2 failed
+sweep.txt:  36 passed (12.9s)
+e2e.txt:  283 passed (26.4s)
+Block setup: 48 shot(s), geometry within 0.5px (coverage: sampled)
+Block rules: 20 shot(s), geometry within 0.5px (coverage: sampled)
+```
+
+- The refreeze reproduced every key except A's `rulesPanel.provenance.designBuildSha1` (per worktree); the committed fixture restored. The sweep: the same two recorded groups. `check:visual` run 12 rewritten on this tree: 142 of 170, all 170 scores equal to the first run 12 (01:12-01:15); no shot fell against run 11.

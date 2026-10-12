@@ -1,8 +1,8 @@
-# check:visual run 12 (update-setup-sheet after the rebase onto update-rules-panel, task 10.2).
-# Command: npm run check:visual (it builds first). Ran Mon Oct 12 01:13:20 +0530 2026 to Mon Oct 12 01:15:41 +0530 2026 (the shell's date before and after). Exit code: 1.
-# Tree: claude/magical-nash-setup at 0a66df1 (rebased onto main 2230704, which holds block A and its run 11) plus the uncommitted folder amendment of the re-audit (spec text and tests/play-page-rules-panel-stylesheet.test.ts copies; no src/ change), committed next.
-# Capture lock /tmp/binarka-capture.lock held (session B, 2026-10-12 01:11:05-01:15:41, with the refreeze, the sweep and visual-block --block setup and --block rules before this run). Orphan check right before and after: lsof -nP -iTCP:<port> -sTCP:LISTEN for 4173, 4174, 4176 and 4177 printed [nothing] before and [nothing] after.
-# 142 of 170 at 0.98.
+# check:visual run 12 (update-setup-sheet after the rebase onto block A and onto session C's process stream, task 10.2).
+# Command: npm run check:visual (it builds first). Ran Mon Oct 12 07:57:17 +0530 2026 to Mon Oct 12 07:59:41 +0530 2026 (the shell's date before and after). Exit code: 1.
+# Tree: claude/magical-nash-setup at 7f9895d, rebased onto local main 361ce2a (block A 2230704 plus session C's PD-4 to PD-6 and ADRs, unpushed); default capture ports (BINARKA_PORT_BASE unset).
+# Capture lock /tmp/binarka-capture.lock held (session B, 2026-10-12 07:54:50-07:59:41, with test:e2e, check:a11y, the refreeze, the sweep and visual-block --block setup and --block rules before this run). Orphan check right before and after: lsof -nP -iTCP:<port> -sTCP:LISTEN for 4173, 4174, 4176 and 4177 printed [nothing] before and [nothing] after.
+# 142 of 170 at 0.98. Every one of the 170 scores equals the first run 12 on the tree before session C's rebase (2026-10-12 01:12-01:15, 142 of 170).
 
 
 > binarka@0.1.0 check:visual
@@ -21,7 +21,7 @@ dist/index.html                  1.51 kB │ gzip:  0.63 kB
 dist/assets/index-GLYXyF64.css  23.39 kB │ gzip:  4.88 kB
 dist/assets/index-C6W0EmMp.js   35.36 kB │ gzip: 12.80 kB
 
-✓ built in 49ms
+✓ built in 34ms
 (adapters injected from scripts/check-visual-parity-adapters.mjs)
 PASS  [1024-dark-confirm] score 0.985 >= 0.98 (height delta 0%, 0 mask(s))
 PASS  [1024-dark-default] score 1 >= 0.98 (height delta 0%, 0 mask(s))

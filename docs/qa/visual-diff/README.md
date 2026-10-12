@@ -61,7 +61,7 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 
 ## Run 12 (after update-setup-sheet, G2 block B, rebased onto block A)
 
-`docs/qa/g2/check-visual-run-12.txt`, 2026-10-12 01:12 to 01:15 (UTC+5:30), exit 1: **142 of 170 at 0.98** (run 11: 106). Session B, branch `claude/magical-nash-setup` rebased onto `main` `2230704` (block A merged first, task 10.2); the capture lock was held and nothing listened on 4173, 4174, 4176 or 4177 before or after.
+`docs/qa/g2/check-visual-run-12.txt`, 2026-10-12 07:57 to 07:59 (UTC+5:30), exit 1: **142 of 170 at 0.98** (run 11: 106). Session B, branch `claude/magical-nash-setup` rebased onto `main` (block A `2230704` merged first, then session C's process stream `361ce2a`, task 10.2); an earlier run 12 on the tree before C's rebase (01:12-01:15) gave the same 170 scores; the capture lock was held and nothing listened on 4173, 4174, 4176 or 4177 before or after.
 
 - **All 48 setup shots rose against run 11**, each to exactly its score of session B's pre-rebase run (section below), so the rebase changed no setup pixel; 36 reach 0.98. **No shot of any state fell, and no shot of another state changed** (all 20 rules shots still at 0.98). Per block (`docs/qa/update-setup-sheet/run-vs-previous.txt` § After the rebase): `visual-block --block setup` 48 shots and `--block rules` 20 shots, geometry within 0.5px.
 - **The residual** of the 12 phone setup shots under 0.98 is the signed 28px departure (SQ-5, A-60), as measured in the pre-rebase section below.
