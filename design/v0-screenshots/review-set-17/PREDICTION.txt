@@ -1,0 +1,13 @@
+Prediction for review-set-17 (design iteration 20: DS iteration 18 + the logo of FR-72 as amended, drawing G), written 2026-10-12 19:53 +0530
+BEFORE any capture.
+
+Change against review-set-16: only Logo and LogoDigit of design/v0/components/binarka-page.tsx (git diff 44f4c8b..7cb84b1 -- design/v0
+touches that file only). The logo's box, colours and layout do not change.
+
+Rule (as measured for the working sets logo-drawing-b and logo-drawing-g against review-set-14): every one of the 170 shots shows the logo
+(no opaque panel covers the whole header in any state), so every shot changes, and within each shot the differing device pixels lie inside the
+logo's box only (at most 128 x 128 device px for the header logo at 64 CSS px; the two logo-sheet shots across the three marks, 40/56/64).
+Nothing outside the logo's box changes in any shot.
+
+Precondition (capture determinism): a control capture of the design at 44f4c8b (the sun logo) with the same harness must equal
+review-set-16 on 170 of 170; the two captures of drawing G must be byte-identical. If either fails, that is a harness finding, reported.
