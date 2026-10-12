@@ -1,0 +1,18 @@
+# PD-14 green proof, 2026-10-12 18:04 +0530 (design stream DS part 2), after the user's approval «Approve (Recommended)» (DS14).
+
+## 1. The probe after the config edit
+NFR-14 row:  design/v0-screenshots/review-set-16 80eb8022d84e1962a7203747f13bc75931747da0
+config:      design/v0-screenshots/review-set-16 80eb8022d84e1962a7203747f13bc75931747da0
+on disk:     design/v0-screenshots/review-set-16/SHA1SUMS 80eb8022d84e1962a7203747f13bc75931747da0
+PASS: the config names the NFR-14 reference, and its SHA1SUMS matches
+exit=0
+
+## 2. Integrity
+before the re-seal: WARN quality-tier drift on quality/visual-parity.config.json; Result: PASS, 2 warning(s)
+re-seal: --init-lock --adaptation "PD-14: …" (gitHead e61e6a8); only the config's hash and the adaptations line changed in factory-lock.json
+after:
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)
+
+## 3 and 4: refreeze, the specs and check:visual: appended below when run

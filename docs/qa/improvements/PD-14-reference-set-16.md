@@ -1,6 +1,6 @@
 # PD-14: the NFR-14 config follows the reference to review-set-16
 
-Status: **PROPOSED**, drafted 2026-10-12 at 17:59 (UTC+5:30) by the design stream DS of wave 3 (`claude/youthful-bhabha-design28`, port base 6773), after PD-13. It waits for the user's approval, asked in the same form as the move of the reference to review-set-16.
+Status: **APPROVED by the user** in the question form on 2026-10-12 at about 18:03 (UTC+5:30): «Approve (Recommended)» (session log DS14). Executed in the commit with `Refs: PD-14`; green proof in `PD-14-green-proof.txt`. Drafted 2026-10-12 at 17:59 (UTC+5:30) by the design stream DS of wave 3 (`claude/youthful-bhabha-design28`, port base 6773), after PD-13. It waits for the user's approval, asked in the same form as the move of the reference to review-set-16.
 
 ## Defect (once the user moves the reference)
 
