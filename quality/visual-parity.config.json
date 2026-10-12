@@ -1,10 +1,10 @@
 {
-  "$comment": "NFR-14 (phase G2). Per shot against the FROZEN reference design/v0-screenshots/review-set-14/ (170 shots; moved by the user 2026-10-10, autonomy-log row 142; before that review-set-13, row 134). Each breakpoint is one reference shot (<width>-<scheme>-<state>); scripts/check-visual-parity-adapters.mjs reads the reference PNG and drives the built page into the state (named by \"adapters\" here since PD-5, so qa-verify and gate:status measure NFR-14 too; npm run check:visual also sets CHECK_VISUAL_FIDELITY_ADAPTERS). referenceUrl names the served design the set was captured from (design/v0/out); the adapters do not fetch it. threshold 0.98 per shot (autonomy-log row 68; below the checker 0.99 default, so its warning is expected). Sampling: the 170 shots of the set (pages x viewports x schemes); coverage is sampled, never continuum; the escalation path is in docs/qa/visual-diff/README.md.",
+  "$comment": "NFR-14 (phase G2). Per shot against the FROZEN reference design/v0-screenshots/review-set-15/ (170 shots; design iteration 17, the level group's 28px margin; moved by the user 2026-10-12, design stream DS session log row DS6, PD-13; before that review-set-14, row 142, and review-set-13, row 134). Each breakpoint is one reference shot (<width>-<scheme>-<state>); scripts/check-visual-parity-adapters.mjs reads the reference PNG and drives the built page into the state (named by \"adapters\" here since PD-5, so qa-verify and gate:status measure NFR-14 too; npm run check:visual also sets CHECK_VISUAL_FIDELITY_ADAPTERS). referenceUrl names the served design the set was captured from (design/v0/out); the adapters do not fetch it. threshold 0.98 per shot (autonomy-log row 68; below the checker 0.99 default, so its warning is expected). Sampling: the 170 shots of the set (pages x viewports x schemes); coverage is sampled, never continuum; the escalation path is in docs/qa/visual-diff/README.md.",
   "adapters": "scripts/check-visual-parity-adapters.mjs",
   "referenceUrl": "http://127.0.0.1:4175/",
   "localUrl": "http://localhost:4174/",
-  "referenceDir": "design/v0-screenshots/review-set-14",
-  "referenceSha1sums": "e89badbf4bdbe29478563e9f2edef91fcc5c853f",
+  "referenceDir": "design/v0-screenshots/review-set-15",
+  "referenceSha1sums": "c561f87dd67aba246e1f2dbd1014561b26f6ff0a",
   "deviceScaleFactor": 2,
   "seed": 1,
   "threshold": 0.98,

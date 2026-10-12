@@ -1,6 +1,6 @@
 # PD-13: the NFR-14 config still names review-set-14 after the user moved the reference to review-set-15
 
-Status: **PROPOSED**, drafted 2026-10-12 from 17:34 (UTC+5:30) by the design stream DS of wave 3 (`claude/youthful-bhabha-design28`, port base 6773), unit DS-2 of `docs/handoff/delivery-plan-2026-10-12.md`. Waits for the user's approval. The next free number after stream P's PD-8 to PD-12 (rows 211 to 217).
+Status: **APPROVED by the user** in the question form on 2026-10-12 at about 17:36 (UTC+5:30): «Approve (Recommended)» (session log DS10). Executed in the commit with `Refs: PD-13`; green proof in `PD-13-green-proof.txt`. Drafted 2026-10-12 from 17:34 (UTC+5:30) by the design stream DS of wave 3 (`claude/youthful-bhabha-design28`, port base 6773), unit DS-2 of `docs/handoff/delivery-plan-2026-10-12.md`. Waits for the user's approval. The next free number after stream P's PD-8 to PD-12 (rows 211 to 217).
 
 ## Defect
 

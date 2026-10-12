@@ -1,0 +1,19 @@
+# PD-13 green proof, 2026-10-12 17:36 +0530 (design stream DS part 2), after the user's approval «Approve (Recommended)» (session log DS10).
+
+## 1. The probe after the config edit
+NFR-14 row:  design/v0-screenshots/review-set-15 c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+config:      design/v0-screenshots/review-set-15 c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+on disk:     design/v0-screenshots/review-set-15/SHA1SUMS c561f87dd67aba246e1f2dbd1014561b26f6ff0a
+PASS: the config names the NFR-14 reference, and its SHA1SUMS matches
+exit=0
+
+## 2. Integrity: before the re-seal (the config drifted) and after
+before: WARN  [quality/visual-parity.config.json] quality-tier drift (hash drift) vs factory-lock.json; Result: PASS, 2 warning(s)
+re-seal: node scripts/check-factory-integrity.mjs --init-lock --adaptation "PD-13: …" -> Locked 27 gate-bearing file(s) (gitHead fd8557f); only the config's hash and the adaptations line changed in factory-lock.json
+after:
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)
+
+## 3. Refreeze and the three specs: see docs/qa/design-stream/refreeze.txt and green-run.txt (appended below when run)
+## 4. Fresh check:visual against review-set-15: docs/qa/design-stream/check-visual-set15.txt (appended below when run)
