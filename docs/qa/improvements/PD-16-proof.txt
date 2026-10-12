@@ -1,0 +1,16 @@
+# PD-16 red proof, 2026-10-12 20:16 +0530 (logo-fix session), after the user moved the reference to review-set-17 (session-log row 28) and the NFR-14 row was re-pointed; the locked config still names review-set-16. No port, nothing written.
+
+$ node docs/qa/improvements/PD-13-reference-probe.mjs
+NFR-14 row:  design/v0-screenshots/review-set-17 a33d4af34cf0282fd7087062bfd45ce629554424
+config:      design/v0-screenshots/review-set-16 80eb8022d84e1962a7203747f13bc75931747da0
+on disk:     design/v0-screenshots/review-set-16/SHA1SUMS 80eb8022d84e1962a7203747f13bc75931747da0
+FAIL config.referenceDir design/v0-screenshots/review-set-16 is not the NFR-14 row's design/v0-screenshots/review-set-17
+FAIL config.referenceSha1sums 80eb8022d84e1962a7203747f13bc75931747da0 is not the NFR-14 row's a33d4af34cf0282fd7087062bfd45ce629554424
+FAIL: 2 mismatch(es)
+exit=1
+
+$ npx vitest run tests/nfr-14-reference-pins.test.ts
+     × @trace NFR-14 the config, the NFR-14 row and the set on disk agree 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected [ …(2) ] to deeply equal []
+      Tests  1 failed | 2 passed (3)
