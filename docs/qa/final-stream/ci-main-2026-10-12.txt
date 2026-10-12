@@ -1,0 +1,12 @@
+# CI on main for the two pushes of 2026-10-12 (44f4c8b..b55be53, b55be53..dcc82c5)
+# Read 2026-10-12 21:13 +0530 by stream F in the GitHub web UI (built-in browser; no gh CLI, the GitHub connector has no Actions tool).
+
+ci #38  commit b55be53  https://github.com/vecktor/binarka/actions/runs/38269990512
+  verify   2m 48s  completed successfully
+  browser  2m 19s  completed successfully
+ci #39  commit dcc82c5  https://github.com/vecktor/binarka/actions/runs/38270826785
+  verify   1m 53s  completed successfully
+  browser  2m 14s  completed successfully
+
+(Earlier: ci #37 44f4c8b, #36 89716c5, #35 acf9155, #34 d25ca3c: completed successfully.)
+Verdict: CI on main is green at dcc82c5, both jobs (verify, browser = e2e + a11y in Chromium).

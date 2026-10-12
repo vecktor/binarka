@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-04T18:51:30.444Z",
+  "generatedAt": "2026-10-12T15:54:06.685Z",
   "ledger": {
     "path": "trace/ledger.jsonl",
     "present": true,
-    "eventCount": 121,
+    "eventCount": 857,
     "malformedLines": 0
   },
   "productCodePresent": true,
@@ -11,8 +11,8 @@
   "vacuousPasses": 0,
   "warningsByClass": {},
   "acceptanceCoverage": {
-    "covered": 54,
-    "declared": 54
+    "covered": 134,
+    "declared": 134
   },
   "metrics": {
     "vacuousPasses": {
@@ -21,24 +21,94 @@
     },
     "warningsByClass": {},
     "notEarned": {
-      "count": 0
+      "count": 1
     },
     "warningTrendByClass": {},
     "retriesPerCheck": {
       "pre-commit": {
-        "runs": 53,
+        "runs": 402,
         "failures": 5,
         "retries": 5
       },
       "commit-msg": {
-        "runs": 48,
+        "runs": 398,
+        "failures": 1,
+        "retries": 1
+      },
+      "gate-status": {
+        "runs": 37,
+        "failures": 36,
+        "retries": 36
+      },
+      "traceability": {
+        "runs": 1,
         "failures": 0,
         "retries": 0
       },
-      "gate-status": {
-        "runs": 20,
-        "failures": 20,
-        "retries": 19
+      "trajectory": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "recordings": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "acceptance-artifacts": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "visual-fidelity": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "process-ratchet": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "factory-integrity": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "unit-tests": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "eval-ratchet": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "lint": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "production-build": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "openspec-all": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "openspec-active-list": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "qa-verify": {
+        "runs": 1,
+        "failures": 1,
+        "retries": 0
       }
     },
     "redToGreenLatency": {
@@ -65,17 +135,99 @@
           "stillRed": false
         },
         "commit-msg": {
+          "episodes": [
+            {
+              "redAt": "2026-10-11T19:47:37.272Z",
+              "greenAt": "2026-10-11T19:48:13.151Z",
+              "ms": 35879
+            }
+          ],
+          "avgMs": 35879,
+          "stillRed": false
+        },
+        "gate-status": {
+          "episodes": [
+            {
+              "redAt": "2026-10-04T09:24:48.690Z",
+              "greenAt": "2026-10-12T15:46:25.411Z",
+              "ms": 714096721
+            }
+          ],
+          "avgMs": 714096721,
+          "stillRed": false
+        },
+        "traceability": {
           "episodes": [],
           "avgMs": null,
           "stillRed": false
         },
-        "gate-status": {
+        "trajectory": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "recordings": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "acceptance-artifacts": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "visual-fidelity": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "process-ratchet": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "factory-integrity": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "unit-tests": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "eval-ratchet": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "lint": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "production-build": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "openspec-all": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "openspec-active-list": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "qa-verify": {
           "episodes": [],
           "avgMs": null,
           "stillRed": true
         }
       },
-      "overallAvgMs": 83561
+      "overallAvgMs": 142876656
     },
     "waivers": {
       "ledgerEvents": 0,
@@ -89,18 +241,18 @@
       "total": 0
     },
     "uncommittedWork": {
-      "dirtyStreakEvents": 121,
+      "dirtyStreakEvents": 857,
       "since": "2026-10-04T09:24:28.113Z",
-      "ageMs": 33830283
+      "ageMs": 714463759
     },
     "corrections": {
-      "total": 0,
+      "total": 4,
       "open": 0,
       "openIds": []
     }
   },
   "inputs": {
-    "acceptanceContracts": 54,
-    "corrections": 0
+    "acceptanceContracts": 134,
+    "corrections": 4
   }
 }

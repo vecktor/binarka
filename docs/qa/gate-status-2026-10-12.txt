@@ -1,0 +1,77 @@
+# npm run test:coverage && BINARKA_PORT_BASE=6873 npm run gate:status
+# head dcc82c5, Mon Oct 12 21:12:25 +0530 2026
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+
+ Test Files  82 passed (82)
+      Tests  1998 passed (1998)
+   Start at  21:12:26
+   Duration  69.92s (tests 80%, environment 13%, import 5%, transform 1%, worker 1%)
+
+    Isolate  82 workers spawned · ~866ms startup each (spawn + environment, per file)
+             at least ~7.02s faster with isolate: false — reuses workers across files instead of one per file
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|------------------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s            
+-------------------|---------|----------|---------|---------|------------------------------
+All files          |    97.5 |    91.94 |   98.19 |   99.33 |                              
+ src               |   83.87 |    57.89 |      60 |      96 |                              
+  cli.ts           |   82.14 |    58.82 |      60 |   95.65 | 23                           
+  main.ts          |     100 |       50 |     100 |     100 | 5                            
+ src/engine        |   97.15 |    92.04 |   98.66 |   98.95 |                              
+  generator.ts     |   93.57 |     87.5 |     100 |     100 | 14,31-34,47-49,54,59,76-106  
+  hint.ts          |     100 |     87.5 |     100 |     100 | 20-24                        
+  rule-solve.ts    |   92.85 |    85.71 |     100 |     100 | 17                           
+  sentences.ts     |     100 |    96.82 |     100 |     100 | 49,97                        
+  solver.ts        |   94.64 |    86.41 |     100 |   96.51 | 73,117-118                   
+  techniques.ts    |   99.18 |    95.09 |     100 |     100 | 81,97-98,113,186,281,297-299 
+  types.ts         |      80 |      100 |      80 |      80 | 63-64                        
+ src/ui            |   98.48 |    94.25 |     100 |   99.81 |                              
+  play-page.ts     |   98.27 |    92.77 |     100 |   99.77 | 533                          
+  seed.ts          |   85.71 |      100 |     100 |     100 |                              
+  strings.ts       |     100 |     90.9 |     100 |     100 | 82,189                       
+-------------------|---------|----------|---------|---------|------------------------------
+
+=============================== Coverage summary ===============================
+Statements   : 97.5% ( 1291/1324 )
+Branches     : 91.94% ( 685/745 )
+Functions    : 98.19% ( 163/166 )
+Lines        : 99.33% ( 1045/1052 )
+================================================================================
+
+> binarka@0.1.0 gate:status
+> node scripts/gate-status.mjs
+
+Gate status (three-valued deterministic checks — judgment criteria sit on top, verify those by hand):
+
+  G0  PASS           scaffold + loop installed
+  G1  needs sign-off requirements signed off
+  G2  PASS           baseline specs  [traceability]
+  G3  needs sign-off capability plan + acceptance methods exist  [acceptance-methods --mode=existence]
+  G4  PASS           per-slice  [traceability · trajectory · acceptance-methods --mode=artifact · factory-integrity]
+  G5  PASS           hardening (coverage)  [coverage-ratchet]
+  G6  PASS           QA proof  [recordings · eval-ratchet · acceptance-methods --mode=artifact · visual-fidelity]
+  G7  PASS           release  [traceability --release --strict-tests --strict-recordings · trajectory --release --check-fresh · recordings · acceptance-methods --mode=artifact · factory-integrity]
+  G8  PASS           UAT (trace regressions)  [traceability]
+
+Deterministic checks (ladder rung from RULES-CHANGELOG.md; unlisted = experimental):
+  traceability         PASS           [experimental]
+  trajectory           PASS           [experimental]  Scope: 33
+  recordings           PASS           [experimental]  Scope: 16
+  coverage             PASS           [experimental]  Scope: 4
+  evals                PASS           [experimental]  Scope: 6
+  acceptanceExistence  PASS           [experimental]  Scope: 134
+  acceptanceArtifact   PASS           [experimental]  Scope: 134
+  visual               PASS           [experimental]  Scope: 170
+  processRatchet       NOT-EARNED     [experimental]  Scope: 3
+  integrity            PASS           [experimental]  Scope: 28
+  traceabilityRelease  PASS           [experimental]
+  trajectoryRelease    PASS           [experimental]  Scope: 33
+
+(Reviews, sign-offs, and vision-verify are judgment gates — confirm them in docs/qa + the gate checklist.)
+
+Scope: 9 gate(s)
+Result: PASS
+exit 0
