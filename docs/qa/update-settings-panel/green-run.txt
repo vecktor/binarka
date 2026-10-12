@@ -1,0 +1,237 @@
+# Green run: update-settings-panel (tasks 3.3 and 4.1 to 4.5)
+
+The port (`src/ui/style.css` only) was applied by the settings session itself on 2026-10-12 at about 13:21 (UTC+5:30), after the red run of `red-run.txt` (sections A to E). The test files were not touched by the port. One fix inside the port: its first comments held Cyrillic («Закрити», «Як у системі»), which four existing tests forbid in `src/ui/*.css` (the strings module holds the page text); the comments were reworded in English ("the close button", "the system option") and the four tests went green; no test was changed.
+
+## Task 3.3: dry run of the settings block
+
+```
+$ BINARKA_PORT_BASE=6473 node scripts/visual-block.mjs --block settings --shots 375-light-settings --out <scratch>/dry
+375-light-settings             pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+
+Block settings: 1 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+```
+
+(lsof of 6473 to 6477 printed nothing before or after; 2026-10-12 13:27.) The full run of the four states is `visual-block-settings.txt` (task 7.1).
+
+## Tasks 4.1 to 4.3: the unit suite after the port
+
+```
+$ npx vitest run
+ Test Files  80 passed (80)
+      Tests  1963 passed (1963)
+```
+
+Every test of `tests/play-page-settings-panel-stylesheet.test.ts` (14), the changed tests of `tests/play-page-theme-stylesheet.test.ts`, `tests/play-page-palette-stylesheet.test.ts` and `tests/play-page-setup-sheet-stylesheet.test.ts`, and the shell's `tests/play-page-panel-shell-stylesheet.test.ts` (unedited) pass: 80 files, 1963 tests, 0 failed (the 11 red of `red-run.txt` section C and B now green).
+
+## Task 4.4: the port stays in its share
+
+Hunks of `git diff -U0 src/ui/style.css` (all inside lines 1240 to 1405, the settings region from the `.settings` comment at 1235 to `.settings-close`; nothing in `:root`, `.confirm*`, `.size-control` or `.setup-*`):
+
+```
+@@ -1240,0 +1241,2 @@ button:focus-visible {
+@@ -1243 +1245 @@ button:focus-visible {
+@@ -1259,0 +1262,13 @@ button:focus-visible {
+@@ -1297,0 +1313 @@ button:focus-visible {
+@@ -1302 +1318 @@ button:focus-visible {
+@@ -1306,2 +1322 @@ button:focus-visible {
+@@ -1308,0 +1324,4 @@ button:focus-visible {
+@@ -1312 +1331 @@ button:focus-visible {
+@@ -1313,0 +1333,2 @@ button:focus-visible {
+@@ -1315,3 +1335,0 @@ button:focus-visible {
+@@ -1340,0 +1359 @@ button:focus-visible {
+@@ -1342 +1361 @@ button:focus-visible {
+@@ -1345 +1364 @@ button:focus-visible {
+@@ -1349,2 +1368 @@ button:focus-visible {
+@@ -1351,0 +1370,4 @@ button:focus-visible {
+@@ -1355 +1377 @@ button:focus-visible {
+@@ -1356,0 +1379,2 @@ button:focus-visible {
+@@ -1358,3 +1381,0 @@ button:focus-visible {
+@@ -1368,0 +1390,2 @@ button:focus-visible {
+@@ -1369,0 +1393,3 @@ button:focus-visible {
+@@ -1373 +1399,2 @@ button:focus-visible {
+@@ -1375 +1402,4 @@ button:focus-visible {
+```
+
+The changed lines (`git diff -U0 src/ui/style.css | grep '^[-+]' | grep -v '^+++\|^---'`):
+
+```
++  /* The design's phone rule (A-61): the vh fallback first for a browser without dvh. */
++  max-height: 60vh;
+-  padding: 24px 16px 16px;
++  padding: 1.5rem 1rem calc(1rem + env(safe-area-inset-bottom));
++/* Focus scrolling keeps a focused option and its ring clear of the sticky close button (FR-65, WCAG 2.4.11; A-61): the stuck button sits on the
++   panel's 1rem bottom padding, it is 2.75rem tall with a 1rem mask above it, and the ring reaches 2px below the option. */
++.settings:popover-open {
++  scroll-padding-bottom: calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom));
++}
++
++/* The design's small phone (A-61): a tighter top padding at 22.5rem and narrower; after the top-level rule, which has the same specificity. */
++@media (max-width: 22.5rem) {
++  .settings {
++    padding-top: 1rem;
++  }
++}
++
++/* The size options' segmented paint, in the same literal forms (A-61); the theme options grow by content so the system option never truncates. */
+-  padding: 0 8px;
++  padding: 0 0.5rem;
+-  border-radius: 7px;
+-  color: var(--color-text);
++  border-radius: calc(var(--radius-m) - 0.1875rem);
++  color: var(--color-text-muted);
++  font-size: 0.9375rem;
++  font-weight: 500;
++  line-height: 1.2;
+-/* The chosen option: a filled background and a frame in the focus colour, bold text and an inner ring (cues besides colour). */
++/* The chosen option: the size options' primary frame and soft fill, bold text (A-61; the cues besides colour are the weight and the frame). */
++  border-color: var(--color-primary);
++  background-color: var(--color-primary-soft);
+-  background-color: var(--color-given-bg);
+-  border-color: var(--color-focus);
+-  box-shadow: inset 0 0 0 1px var(--color-focus);
++/* The size options' segmented paint, in the same literal forms (A-61); the two language options are equal halves. */
+-  flex: 1 1 auto;
++  flex: 1 1 0;
+-  padding: 0 8px;
++  padding: 0 0.5rem;
+-  border-radius: 7px;
+-  color: var(--color-text);
++  border-radius: calc(var(--radius-m) - 0.1875rem);
++  color: var(--color-text-muted);
++  font-size: 0.9375rem;
++  font-weight: 500;
++  line-height: 1.2;
+-/* The chosen option: a filled background and a frame in the focus colour, bold text and an inner ring (cues besides colour). */
++/* The chosen option: the size options' primary frame and soft fill, bold text (A-61; the cues besides colour are the weight and the frame). */
++  border-color: var(--color-primary);
++  background-color: var(--color-primary-soft);
+-  background-color: var(--color-given-bg);
+-  border-color: var(--color-focus);
+-  box-shadow: inset 0 0 0 1px var(--color-focus);
++/* The close button stays at the bottom of the panel while it scrolls (A-61; the design's .settings-close): the two spread shadows in the raised fill
++   mask the options that scroll under it, as .rules-close does; .settings:popover-open reserves it in the scroll padding. */
++  position: sticky;
++  bottom: 0;
++  box-shadow: 0 0 0 1rem var(--color-surface-raised), 0 1rem 0 1rem var(--color-surface-raised);
+-  margin-top: 8px;
++  margin-top: 0.5rem;
++  padding: 0 0.5rem;
+-  font-weight: 700;
++  border-style: solid;
++  border-color: var(--color-control-border);
++  border-radius: var(--radius-m);
++  font-weight: 600;
+```
+
+Selectors whose rules the diff touches (`.settings`, `.settings:popover-open` (new), `@media (max-width: 22.5rem) .settings` (new block), `.theme-control button`, `.theme-control button[aria-checked='true']`, `.language-control button`, `.language-control button[aria-checked='true']`, `.settings-close`) and their comments only; no `!important`, no `:has(`, no colour literal, no new token (`grep -c '!important\|:has(' ` over the added lines: 0 ).
+
+`git diff --stat` (the whole working tree against `18e5f3f`):
+
+```
+ README.md                                          |    2 +-
+ docs/qa/a11y-report.json                           |  478 +-
+ docs/qa/e2e-report.json                            | 7823 +++++++++++++++++---
+ docs/qa/traceability-report.md                     |    6 +-
+ docs/qa/update-settings-panel/folder-audit.md      |   22 +
+ .../1024-dark-settings-light/report.json           |    2 +-
+ docs/qa/visual-diff/1024-dark-settings/report.json |    2 +-
+ .../1024-light-settings-dark/report.json           |    2 +-
+ .../qa/visual-diff/1024-light-settings/report.json |    2 +-
+ .../1366-dark-settings-focus/report.json           |    2 +-
+ docs/qa/visual-diff/1366-dark-settings/report.json |    2 +-
+ .../1366-light-settings-focus/report.json          |    2 +-
+ .../qa/visual-diff/1366-light-settings/report.json |    2 +-
+ .../1440-dark-settings-light/report.json           |    2 +-
+ docs/qa/visual-diff/1440-dark-settings/report.json |    2 +-
+ .../1440-light-settings-dark/report.json           |    2 +-
+ .../qa/visual-diff/1440-light-settings/report.json |    2 +-
+ .../320-dark-settings-focus/report.json            |    5 +-
+ .../320-dark-settings-light/report.json            |    5 +-
+ docs/qa/visual-diff/320-dark-settings/report.json  |    5 +-
+ .../320-light-settings-dark/report.json            |    5 +-
+ .../320-light-settings-focus/report.json           |    5 +-
+ docs/qa/visual-diff/320-light-settings/report.json |    5 +-
+ .../375-dark-settings-light/report.json            |    5 +-
+ docs/qa/visual-diff/375-dark-settings/report.json  |    5 +-
+ .../375-light-settings-dark/report.json            |    5 +-
+ docs/qa/visual-diff/375-light-settings/report.json |    5 +-
+ .../768-dark-settings-light/report.json            |    2 +-
+ docs/qa/visual-diff/768-dark-settings/report.json  |    2 +-
+ .../768-light-settings-dark/report.json            |    2 +-
+ docs/qa/visual-diff/768-light-settings/report.json |    2 +-
+ docs/qa/visual-diff/README.md                      |   45 +
+ openspec/changes/update-settings-panel/design.md   |    8 +-
+ openspec/changes/update-settings-panel/proposal.md |    8 +-
+ .../update-settings-panel/specs/play-page/spec.md  |    6 +-
+ openspec/changes/update-settings-panel/tasks.md    |    4 +-
+ quality/design-geometry.json                       | 1389 +++-
+ scripts/freeze-design-geometry.mjs                 |   85 +-
+ scripts/visual-block.mjs                           |   36 +-
+ src/ui/style.css                                   |   66 +-
+ tests/play-page-palette-stylesheet.test.ts         |   19 +-
+ tests/play-page-setup-sheet-stylesheet.test.ts     |   23 +-
+ tests/play-page-theme-stylesheet.test.ts           |   58 +-
+ trace/trace.json                                   |    3 +
+ 44 files changed, 8830 insertions(+), 1333 deletions(-)
+?? docs/qa/g2/check-visual-run-13.txt
+?? docs/qa/update-settings-panel/blocks/
+?? docs/qa/update-settings-panel/green-run.txt
+?? docs/qa/update-settings-panel/red-run.txt
+?? docs/qa/update-settings-panel/refreeze.txt
+?? docs/qa/update-settings-panel/run-vs-previous.txt
+?? docs/qa/update-settings-panel/session-log.md
+?? docs/qa/update-settings-panel/visual-block-settings.txt
+?? e2e/nfr-14-settings-panel.spec.ts
+?? tests/play-page-settings-panel-stylesheet.test.ts
+```
+
+No change to `design/v0`, `playwright.config.ts`, `factory-lock.json`, `scripts/check-visual-parity-adapters.mjs`, `src/ui/play-page.ts`, `openspec/specs/` or `docs/requirements.md` (none is in the stat). Files beyond task 4.4's list, each explained: the change folder (`openspec/changes/update-settings-panel/`, the re-audit fold of task 1.1), `docs/qa/visual-diff/README.md` (task 7.3), `docs/qa/g2/check-visual-run-13.txt` (task 7.2), and the tool-written reports kept as evidence of the battery: `docs/qa/a11y-report.json` (task 5.4), `docs/qa/e2e-report.json` (`npm run test:e2e`, task 5.4), `docs/qa/traceability-report.md` and `trace/trace.json` (`npm run check:trace`, task 5.3: the new tests' traces).
+
+## Task 4.5: the browser checks after the port
+
+`npm run build` (exit 0), then, ports 6473 to 6477 free before and after (lsof printed nothing), `BINARKA_PORT_BASE=6473 npx playwright test --project=layout`, 2026-10-12 13:23:24 to 13:24:07: **exit 0, 237 passed, 0 failed**. Tests per spec file in that run:
+
+```
+   3 nfr-10-fit.spec
+  18 nfr-10-header-fit.spec
+  16 nfr-12-targets.spec
+  11 nfr-14-backdrop.spec
+   3 nfr-14-cause-mark.spec
+  38 nfr-14-layout-geometry.spec
+  27 nfr-14-palette.spec
+  24 nfr-14-panel-shell.spec
+  38 nfr-14-rules-panel.spec
+  21 nfr-14-settings-panel.spec
+  26 nfr-14-setup-sheet.spec
+  12 nfr-18-flash.spec
+  237 passed (39.6s)
+```
+
+`nfr-14-settings-panel` (21, the short-window walk at 667×375, 568×320 and 1024×360 included, its premise holding at each), `nfr-14-layout-geometry` (its scenario «The settings panel follows the column from 48rem» included), `nfr-14-panel-shell`, `nfr-14-setup-sheet`, `nfr-14-palette`, `nfr-14-backdrop`, `nfr-12-targets` and `nfr-18-flash` all pass with no edit. `npm run check:a11y` (`nfr-13-a11y`, the theme and language controls focused): 67 passed (`battery.txt`, `docs/qa/a11y-report.json`).
+
+The settings-panel tests of that run:
+
+```
+✓  179 [layout] › e2e/nfr-14-settings-panel.spec.ts:140:1 › @trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED, nothing
+✓  180 [layout] › e2e/nfr-14-settings-panel.spec.ts:148:1 › @trace NFR-14 @trace FR-68 the fixture holds the key settingsPanel: selectors, sampled coverage, its own provenance and exactly the 7 
+✓  183 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: the open panel, the two controls, the chosen option of
+✓  181 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 320-light-settings (320x700) › @trace NFR-14 @trace FR-68 320-light-settings: the open panel, the two controls, the chosen option of
+✓  182 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 320-light-settings (320x700) › @trace NFR-14 @trace FR-68 320-light-settings: the two language options are equal halves (widths with
+✓  184 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: the two language options are equal halves (widths with
+✓  185 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 768-light-settings (768x1024) › @trace NFR-14 @trace FR-68 768-light-settings: the open panel, the two controls, the chosen option o
+✓  187 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 768-light-settings (768x1024) › @trace NFR-14 @trace FR-68 768-light-settings: the two language options are equal halves (widths wit
+✓  188 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 1024-light-settings (1024x768) › @trace NFR-14 @trace FR-68 1024-light-settings: the open panel, the two controls, the chosen option
+✓  186 [layout] › e2e/nfr-14-settings-panel.spec.ts:258:7 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: an unchosen and a chosen option of each control have t
+✓  189 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 1024-light-settings (1024x768) › @trace NFR-14 @trace FR-68 1024-light-settings: the two language options are equal halves (widths w
+✓  190 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 1366-light-settings (1366x650) › @trace NFR-14 @trace FR-68 1366-light-settings: the open panel, the two controls, the chosen option
+✓  191 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 1366-light-settings (1366x650) › @trace NFR-14 @trace FR-68 1366-light-settings: the two language options are equal halves (widths w
+✓  192 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 1440-light-settings (1440x900) › @trace NFR-14 @trace FR-68 1440-light-settings: the open panel, the two controls, the chosen option
+✓  193 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 1440-light-settings (1440x900) › @trace NFR-14 @trace FR-68 1440-light-settings: the two language options are equal halves (widths w
+✓  194 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: the open panel, the two controls, the chosen
+✓  195 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: the two language options are equal halves (w
+✓  196 [layout] › e2e/nfr-14-settings-panel.spec.ts:258:7 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: an unchosen and a chosen option of each cont
+✓  197 [layout] › e2e/nfr-14-settings-panel.spec.ts:346:5 › 667x375 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 667x375: Tab through the panel keeps «Закрити» 
+✓  198 [layout] › e2e/nfr-14-settings-panel.spec.ts:346:5 › 568x320 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 568x320: Tab through the panel keeps «Закрити» 
+✓  199 [layout] › e2e/nfr-14-settings-panel.spec.ts:346:5 › 1024x360 (dropdown) short-window focus walk › @trace NFR-14 @trace FR-65 1024x360: Tab through the panel keeps «Закрити» st
+```

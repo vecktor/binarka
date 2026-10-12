@@ -1,0 +1,259 @@
+# Battery: update-settings-panel (tasks 5.1 to 5.4; first run, before the rebase onto the dialog block)
+
+Run by the settings session on 2026-10-12, 13:24 to 13:26 (UTC+5:30), tree `claude/musing-bhaskara-settings` at `18e5f3f` plus the uncommitted port, tests, scripts and the `settingsPanel` key. Capture ports `BINARKA_PORT_BASE=6473`; lsof of 6473 to 6477 printed nothing before the e2e runs and nothing after. Each command with its date and exit code, then the key lines of its output (the full output is below the summary).
+
+| Task | Command | Exit | Result |
+|---|---|---|---|
+| 5.1 | `npm run lint` | 0 | clean |
+| 5.1 | `npm run test:run` | 0 | 80 files, 1963 tests passed |
+| 5.1 | `npm run build` | 0 | built |
+| 5.2 | `npx openspec validate update-settings-panel --strict` | 0 | "Change 'update-settings-panel' is valid" |
+| 5.2 | `npx openspec validate --all --strict` | 0 | 4 passed, 0 failed |
+| 5.3 | `node scripts/check-eval-ratchet.mjs` | 0 | Result: PASS |
+| 5.3 | `npm run check:trace` | 0 | 115 MVP FRs checked, 0 failures, 117 warnings (unchanged kinds: recording evidence, the two active changes not archived) |
+| 5.3 | `npm run check:acceptance` | 0 | Result: PASS |
+| 5.4 | `BINARKA_PORT_BASE=6473 npm run test:e2e` | 0 | 304 passed |
+| 5.4 | `BINARKA_PORT_BASE=6473 npm run check:a11y` | 0 | 67 passed (`docs/qa/a11y-report.json`) |
+
+## Full output (lines with ✓ removed for length; counts kept)
+
+```
+$ npm run lint
+Mon Oct 12 13:24:23 +0530 2026
+
+> binarka@0.1.0 lint
+> eslint .
+
+exit 0
+
+$ npm run test:run
+Mon Oct 12 13:24:47 +0530 2026
+
+> binarka@0.1.0 test:run
+> vitest run
+
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/musing-bhaskara-342556
+
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+
+ Test Files  80 passed (80)
+      Tests  1963 passed (1963)
+   Start at  13:24:47
+   Duration  66.17s (tests 74%, environment 20%, import 6%, transform 1%)
+
+    Isolate  80 workers spawned · ~1.07s startup each (spawn + environment, per file)
+             at least ~8.43s faster with isolate: false — reuses workers across files instead of one per file
+
+exit 0
+
+$ npm run build
+Mon Oct 12 13:25:54 +0530 2026
+
+> binarka@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-CZqsJGMk.css  23.90 kB │ gzip:  4.86 kB
+dist/assets/index-BEKM-GwD.js   35.36 kB │ gzip: 12.80 kB
+
+exit 0
+
+$ npx openspec validate update-settings-panel --strict
+Mon Oct 12 13:25:56 +0530 2026
+Change 'update-settings-panel' is valid
+exit 0
+
+$ npx openspec validate --all --strict
+Mon Oct 12 13:25:57 +0530 2026
+- Validating...
+Totals: 4 passed, 0 failed (4 items)
+exit 0
+
+$ node scripts/check-eval-ratchet.mjs
+Mon Oct 12 13:25:57 +0530 2026
+Scope: 6 eval case(s)
+OK    hint-clarity 92.7 (baseline 92.7)
+OK    hint-clarity-en 90 (baseline 90)
+Result: PASS
+exit 0
+
+$ npm run check:trace
+Mon Oct 12 13:25:57 +0530 2026
+
+> binarka@0.1.0 check:trace
+> node scripts/check-traceability.mjs
+
+WARN  [recording-evidence] FR-1 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-2 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-3 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-4 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-5 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-6 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-7 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-8 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-9 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-10 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-11 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-12 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-13 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-14 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-15 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-16 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-17 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-49 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-50 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-51 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-81 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-82 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-83 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-84 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-19 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-20 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-21 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-22 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-23 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-24 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-25 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-26 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-27 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-56 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-74 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-75 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-76 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-77 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-78 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-79 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-80 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-112 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-28 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-29 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-30 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-52 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-53 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-54 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-85 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-86 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-31 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-32 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-33 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-34 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-35 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-36 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-37 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-38 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-39 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-40 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-41 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-42 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-43 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-57 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-58 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-59 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-60 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-61 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-62 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-63 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-64 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-65 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-66 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-67 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-68 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-69 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-70 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-71 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-72 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-73 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-87 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-88 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-89 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-90 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-91 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-92 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-93 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-94 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-44 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-95 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-96 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-97 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-98 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-99 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-100 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-101 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-102 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-103 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-104 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-105 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-106 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-107 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-108 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-109 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-110 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-111 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-113 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-114 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-115 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-116 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-117 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-118 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-119 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-120 is not referenced by any recording manifest under docs/qa/
+WARN  [recording-evidence] FR-55 is not referenced by any recording manifest under docs/qa/
+WARN  [active-changes] active change "update-confirm-dialog" is not archived
+WARN  [active-changes] active change "update-settings-panel" is not archived
+
+traceability: 115 MVP FRs checked — 0 failure(s), 117 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit 0
+
+$ npm run check:acceptance
+Mon Oct 12 13:25:58 +0530 2026
+
+> binarka@0.1.0 check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+
+Scope: 132 tagged requirement(s)
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+Result: PASS
+exit 0
+
+$ BINARKA_PORT_BASE=6473 npm run test:e2e
+Mon Oct 12 13:25:59 +0530 2026
+
+> binarka@0.1.0 test:e2e
+> playwright test
+
+
+Running 304 tests using 5 workers
+
+
+  304 passed (34.1s)
+exit 0
+
+$ BINARKA_PORT_BASE=6473 npm run check:a11y
+Mon Oct 12 13:26:33 +0530 2026
+
+> binarka@0.1.0 check:a11y
+> PLAYWRIGHT_JSON_OUTPUT_FILE=docs/qa/a11y-report.json playwright test --project=a11y --reporter=list,json
+
+
+Running 67 tests using 5 workers
+
+
+  67 passed (15.8s)
+exit 0
+
+```

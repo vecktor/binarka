@@ -1256,9 +1256,11 @@ button:focus-visible {
   inset: auto 0 0 0;
   width: 100%;
   max-width: none;
+  /* The design's phone rule (A-61): the vh fallback first for a browser without dvh. */
+  max-height: 60vh;
   max-height: 55dvh;
   margin: 0;
-  padding: 24px 16px 16px;
+  padding: 1.5rem 1rem calc(1rem + env(safe-area-inset-bottom));
   box-sizing: border-box;
   overflow-y: auto;
   border-width: 1px 1px 0 1px;
@@ -1273,6 +1275,19 @@ button:focus-visible {
 
 .settings::backdrop {
   background-color: var(--color-backdrop-soft);
+}
+
+/* Focus scrolling keeps a focused option and its ring clear of the sticky close button (FR-65, WCAG 2.4.11; A-61): the stuck button sits on the
+   panel's 1rem bottom padding, it is 2.75rem tall with a 1rem mask above it, and the ring reaches 2px below the option. */
+.settings:popover-open {
+  scroll-padding-bottom: calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom));
+}
+
+/* The design's small phone (A-61): a tighter top padding at 22.5rem and narrower; after the top-level rule, which has the same specificity. */
+@media (max-width: 22.5rem) {
+  .settings {
+    padding-top: 1rem;
+  }
 }
 
 @media (min-width: 48rem) {
@@ -1313,26 +1328,29 @@ button:focus-visible {
   background-color: var(--color-control-bg);
 }
 
+/* The size options' segmented paint, in the same literal forms (A-61); the theme options grow by content so the system option never truncates. */
 .theme-control button {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 2.75rem;
-  padding: 0 8px;
+  padding: 0 0.5rem;
   border-width: 2px;
   border-style: solid;
   border-color: transparent;
-  border-radius: 7px;
-  color: var(--color-text);
+  border-radius: calc(var(--radius-m) - 0.1875rem);
   background-color: var(--color-control-bg);
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
-/* The chosen option: a filled background and a frame in the focus colour, bold text and an inner ring (cues besides colour). */
+/* The chosen option: the size options' primary frame and soft fill, bold text (A-61; the cues besides colour are the weight and the frame). */
 .theme-control button[aria-checked='true'] {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
   color: var(--color-text);
-  background-color: var(--color-given-bg);
-  border-color: var(--color-focus);
-  box-shadow: inset 0 0 0 1px var(--color-focus);
   font-weight: 700;
 }
 
@@ -1356,26 +1374,29 @@ button:focus-visible {
   background-color: var(--color-control-bg);
 }
 
+/* The size options' segmented paint, in the same literal forms (A-61); the two language options are equal halves. */
 .language-control button {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   min-height: 2.75rem;
-  padding: 0 8px;
+  padding: 0 0.5rem;
   border-width: 2px;
   border-style: solid;
   border-color: transparent;
-  border-radius: 7px;
-  color: var(--color-text);
+  border-radius: calc(var(--radius-m) - 0.1875rem);
   background-color: var(--color-control-bg);
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
-/* The chosen option: a filled background and a frame in the focus colour, bold text and an inner ring (cues besides colour). */
+/* The chosen option: the size options' primary frame and soft fill, bold text (A-61; the cues besides colour are the weight and the frame). */
 .language-control button[aria-checked='true'] {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
   color: var(--color-text);
-  background-color: var(--color-given-bg);
-  border-color: var(--color-focus);
-  box-shadow: inset 0 0 0 1px var(--color-focus);
   font-weight: 700;
 }
 
@@ -1384,13 +1405,22 @@ button:focus-visible {
   outline-offset: -1px;
 }
 
+/* The close button stays at the bottom of the panel while it scrolls (A-61; the design's .settings-close): the two spread shadows in the raised fill
+   mask the options that scroll under it, as .rules-close does; .settings:popover-open reserves it in the scroll padding. */
 .settings-close {
+  position: sticky;
+  bottom: 0;
+  box-shadow: 0 0 0 1rem var(--color-surface-raised), 0 1rem 0 1rem var(--color-surface-raised);
   background-color: var(--color-surface-raised);
   width: 100%;
   min-height: 2.75rem;
-  margin-top: 8px;
+  margin-top: 0.5rem;
+  padding: 0 0.5rem;
   border-width: 2px;
-  font-weight: 700;
+  border-style: solid;
+  border-color: var(--color-control-border);
+  border-radius: var(--radius-m);
+  font-weight: 600;
 }
 
 /* The win glow (design @keyframes glow; the colour-mixed ring is the translucent token). Only without reduced motion. */
