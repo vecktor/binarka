@@ -121,9 +121,10 @@ const FORBIDDEN_PORTS = [0, 1, 3, 4].map((offset) => PORT_BASE + offset);
 
 // The top-level fixture as it stood before this change: the key is ADDED, nothing else moves (tasks.md 3.1). DELIBERATE CHANGE (design stream DS
 // of wave 3, 2026-10-12; A-60 amended and signed, the user moved the NFR-14 reference to review-set-15): the design hashes name design iteration
-// 17 (`41c5165`, the level group's 28px margin), which replaced `5e61bfd` / `d1b1255f…`; the refreeze writes this design's provenance into every key.
-const TOP_LEVEL_DESIGN_COMMIT = '41c51651e832cae79b58ce7b492a3550e43f19da';
-const TOP_LEVEL_DESIGN_CSS_SHA1 = '8115024412a8e6c6d135136183fae458489597d0';
+// 17 (`41c5165`, the level group's 28px margin), which replaced `5e61bfd` / `d1b1255f…`, then 18 (`521ce03`, the setup sheet's scroll padding; the
+// reference moved to review-set-16, row DS14); the refreeze writes this design's provenance into every key.
+const TOP_LEVEL_DESIGN_COMMIT = '521ce035095b74d367ca326479c2b6ec77827448';
+const TOP_LEVEL_DESIGN_CSS_SHA1 = 'bef5279b57baeca456fa7a4c3ff0ddf0f9440e43';
 // SHA-1 of JSON.stringify of the CASES of the keys rulesPanel and setupSheet. It was the whole key (cases, selectors, provenance, deviations) as
 // main 18e5f3f recorded it, so that the refreeze adding confirmDialog left both byte-identical (review gate of update-confirm-dialog, fix round 1).
 // DELIBERATE CHANGE (design stream DS, 2026-10-12): a design change rewrites every key's provenance, so a whole-key pin can only be re-recorded,
@@ -292,13 +293,13 @@ test('@trace NFR-14 the design build is required and the coverage is declared: s
 // ---------------------------------------------------------------------------------------------------------
 
 // GUARD. The key is ADDED; the 32 top-level shots, the selectors, the tolerance and the other two keys' cases do not move; the design hashes name
-// design iteration 17 (design stream DS, 2026-10-12).
-test('@trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes; the design hashes name design iteration 17', () => {
+// design iteration 18 (design stream DS, 2026-10-12).
+test('@trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes; the design hashes name design iteration 18', () => {
   expect(fixture.cases, 'the top-level cases of quality/design-geometry.json').toHaveLength(32);
   expect(fixture.cases.some((c) => c.shot.includes('confirm')), 'no confirm shot is among the top-level cases').toBe(false);
   expect(fixture.tolerancePx).toBe(0.5);
-  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 17').toBe(TOP_LEVEL_DESIGN_COMMIT);
-  expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 17').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 18').toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 18').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
   expect(fixture.rulesPanel?.cases, 'rulesPanel keeps its 8 cases').toHaveLength(8);
   expect(fixture.setupSheet?.cases, 'setupSheet keeps its 12 cases').toHaveLength(12);
   for (const key of ['rulesPanel', 'setupSheet'] as const) {

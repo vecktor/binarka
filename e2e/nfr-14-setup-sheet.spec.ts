@@ -97,7 +97,8 @@ const FROM_48REM = 768;
 
 // The top-level fixture as it stood before this change (design.md decision 9): the key is ADDED, nothing else moves. The design hashes name the
 // design the fixture is measured from: DELIBERATE CHANGE (design stream DS, 2026-10-12): design iteration 17 (`41c5165`, the 28px level margin; the
-// user moved the reference to review-set-15) replaced `5e61bfd` / `d1b1255f…`; the refreeze writes this design's provenance into every key.
+// user moved the reference to review-set-15) replaced `5e61bfd` / `d1b1255f…`, then iteration 18 (`521ce03`, the setup sheet's scroll padding; the
+// user moved the reference to review-set-16, row DS14); the refreeze writes this design's provenance into every key.
 const TOP_LEVEL_SELECTORS = [
   '.page-header',
   '.page-header h1',
@@ -116,8 +117,8 @@ const TOP_LEVEL_SELECTORS = [
   '[data-message="hint"]',
   '[data-message="win"]',
 ];
-const TOP_LEVEL_DESIGN_COMMIT = '41c51651e832cae79b58ce7b492a3550e43f19da';
-const TOP_LEVEL_DESIGN_CSS_SHA1 = '8115024412a8e6c6d135136183fae458489597d0';
+const TOP_LEVEL_DESIGN_COMMIT = '521ce035095b74d367ca326479c2b6ec77827448';
+const TOP_LEVEL_DESIGN_CSS_SHA1 = 'bef5279b57baeca456fa7a4c3ff0ddf0f9440e43';
 
 const isBox = (v: unknown): v is Box => {
   if (typeof v !== 'object' || v === null) return false;
@@ -131,13 +132,13 @@ const bottomOf = (b: Box): number => b.y + b.h;
 // Part 1: the fixture
 // ---------------------------------------------------------------------------------------------------------
 
-test('@trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 17, review-set-15)', () => {
+test('@trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 18, review-set-16)', () => {
   expect(fixture.cases, 'the top-level cases of quality/design-geometry.json').toHaveLength(32);
   expect(fixture.cases.some((c) => c.shot.includes('setup')), 'no setup shot is among the top-level cases').toBe(false);
   expect(fixture.tolerancePx).toBe(0.5);
   expect(fixture.selectors).toEqual(TOP_LEVEL_SELECTORS);
-  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 17').toBe(TOP_LEVEL_DESIGN_COMMIT);
-  expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 17').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 18').toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 18').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
 });
 
 test('@trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, no deviation (the design has the 28px, A-60) and the 12 cases', () => {
