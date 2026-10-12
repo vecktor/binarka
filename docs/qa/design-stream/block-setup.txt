@@ -1,0 +1,28 @@
+# visual-block --block setup --states setup,setup-four, 2026-10-12 17:39 +0530, BINARKA_PORT_BASE 6773, after the refreeze: the design measured as it is (no injection).
+
+1024-dark-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1024-dark-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1024-light-setup-four          pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1024-light-setup               pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-dark-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-dark-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-light-setup-four          pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1366-light-setup               pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1440-dark-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1440-dark-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1440-light-setup-four          pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+1440-light-setup               pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-setup-four            pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-dark-setup                 pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-light-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+320-light-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+375-dark-setup-four            pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+375-dark-setup                 pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+375-light-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+375-light-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+768-dark-setup-four            pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+768-dark-setup                 pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup-four           pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+
+Block setup: 24 shot(s), geometry within 0.5px (coverage: sampled)
