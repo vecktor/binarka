@@ -25,14 +25,14 @@ This is block C of the second wave of the parallel G2 plan (`docs/handoff/parall
 
 | Baseline requirement (`openspec/specs/play-page/spec.md`) | Action |
 |---|---|
-| Borders, cues and focus rings have enough contrast | MODIFIED (33 tokens, 28 `#rrggbb`, 42 pairs, 17 text; the row `--color-violation-ink`; the role column of seven rows; the "later" sentence; one scenario added; Traces + FR-67, A-62, NFR-14) |
+| Borders, cues and focus rings have enough contrast | MODIFIED (33 tokens, 28 `#rrggbb`, 42 pairs, 17 text; the row `--color-violation-ink`; the role column of seven rows; the "later" sentence; the frame-is-decoration sentence after the table (design.md decision 4); one scenario added; Traces + FR-67, A-62, NFR-14) |
 | Main column layout geometry follows the design reference | MODIFIED, count only (the scenario «Colours are the G2 palette»: 32 to 33 tokens, the dialog token named; Traces + A-62) |
 | The panels take the shared surface paint | MODIFIED, count only (the scenario «The raised fill is covered by pairs»: 41 to 42 pairs; Traces + A-62) |
 | The rules panel takes the design's size, place and paint | MODIFIED, count only (the clause "32 tokens and 41 pairs since `update-setup-sheet`" becomes "33 tokens and 42 pairs since `update-confirm-dialog`"; Traces + A-62) |
 | Confirmation before discarding player entries | MODIFIED, one sentence ("covered by the held NFR-13 and NFR-14" → A-62, NFR-13 and NFR-14 not held; the user's word on the folder audit, 2026-10-12) |
 | The confirmation dialog takes the design's size, place and paint | ADDED |
 
-Checked and not modified (their text stays true): «Confirmation before discarding player entries» (DQ-4: the presentation sentence is in FR-67 and the ADDED requirement only), «The backdrops take the design's translucent tokens» (its item (2) says `--color-violation-ink` is "not declared by this requirement or by the shell", still true of that requirement), «The main column takes the design palette», «The panels take the shared surface paint» apart from its count (its "not delivered by the shell" list names the dialog's token as a later block's, a statement about the shell change).
+Checked and not modified (their text stays true): «The backdrops take the design's translucent tokens» (its item (2) says `--color-violation-ink` is "not declared by this requirement or by the shell", still true of that requirement), «The main column takes the design palette», «The panels take the shared surface paint» apart from its count (its "not delivered by the shell" list names the dialog's token as a later block's, a statement about the shell change).
 
 ## Impact
 
@@ -40,7 +40,7 @@ Line numbers are those of this branch at `019808f` (`main` plus the signed wave-
 
 | File | Lines | What | Source |
 |---|---|---|---|
-| `tests/helpers/css.ts` | comments 402, 409; `TOKEN_NAMES` 412-444; `PALETTE_LIGHT` 458-491; `PALETTE_DARK` 493-526; comment 647; `CONTRAST_PAIRS` 664-678 | 33rd name after `--color-focus`, its two values; `pairs('text', 'violation-ink', ['violation-bg'], 4.5)`; 41 to 42; no new `PairGroup`; `TRANSLUCENT_TOKENS` unchanged; comments follow | Borders |
+| `tests/helpers/css.ts` | comments 402, 409, 448; `TOKEN_NAMES` 412-444; `PALETTE_LIGHT` 458-491; `PALETTE_DARK` 493-526; comment 647; `CONTRAST_PAIRS` 664-678 | 33rd name after `--color-focus`, its two values; `pairs('text', 'violation-ink', ['violation-bg'], 4.5)`; 41 to 42; no new `PairGroup`; `TRANSLUCENT_TOKENS` unchanged; comments follow | Borders |
 | `tests/play-page-helpers.test.ts` | `DESIGN_TOKENS` 404-437, 483, 491-492 (`… + 16` to `… + 17`, 41 to 42), `DARK_SAMPLE` 1503-1536, 1551 | the fixture gains the row; `toHaveLength(32)` to 33; the dark sample gains the row | Borders |
 | `tests/play-page-theme-stylesheet.test.ts` | 168, 171, 180 | 32 to 33 | Borders |
 | `tests/play-page-cause-stylesheet.test.ts` | 216, 217 | 41 to 42, 32 to 33 | Borders |
@@ -50,8 +50,8 @@ Line numbers are those of this branch at `019808f` (`main` plus the signed wave-
 | `tests/play-page-stylesheet.test.ts` | 99, 101, 112 | 32 to 33 (the `#rrggbbaa` list stays five names) | Borders |
 | `tests/play-page-panel-shell-stylesheet.test.ts` | 182, 189 | 41 pairs to 42 (still exactly four on the raised fill) | Panels |
 | `tests/play-page-setup-sheet-stylesheet.test.ts` | 807 (`'41 pairs'`), 812 (`TOKEN_NAMES.at(-1)`) | 807: 41 to 42; 812 unchanged, a GUARD | Borders |
-| `tests/play-page-rules-panel-stylesheet.test.ts` | 482-532 (`BASELINE_TOKEN_NAMES`, `BASELINE_PAIRS`, the literal lists), 560-561 | the two literal baseline lists gain the name and the pair (a deliberate change, the source named); the guard still compares the helper's lists with them | Rules panel |
-| `e2e/nfr-12-targets.spec.ts` (78-80), `e2e/nfr-13-a11y.spec.ts` (the confirmation state), `e2e/nfr-14-panel-shell.spec.ts`, `e2e/nfr-14-backdrop.spec.ts` | n/a | unchanged in text; they must stay green | NFR-12, NFR-13, NFR-14 |
+| `tests/play-page-rules-panel-stylesheet.test.ts` | comment 476-481; 482-532 (`BASELINE_TOKEN_NAMES`, `BASELINE_PAIRS`, the literal lists), 560-561 | the two literal baseline lists gain the name and the pair (a deliberate change, the source named); the guard still compares the helper's lists with them | Rules panel |
+| `e2e/nfr-12-targets.spec.ts` (79-81), `e2e/nfr-13-a11y.spec.ts` (the confirmation state), `e2e/nfr-14-panel-shell.spec.ts`, `e2e/nfr-14-backdrop.spec.ts` | n/a | unchanged in text; they must stay green | NFR-12, NFR-13, NFR-14 |
 | `quality/design-geometry.json` | new top-level key `confirmDialog` | cases added only; `cases`, `rulesPanel`, `setupSheet`, `selectors`, `tolerancePx`, `designCommit` and `designCssSha1` stay; the key carries its own provenance | NFR-14 |
 
 New tests (red first, by the test-engineer of the implementing session): `tests/play-page-confirm-dialog-stylesheet.test.ts` (`@trace FR-67`, `@trace FR-65`, `@trace NFR-14`) and `e2e/nfr-14-confirm-dialog.spec.ts` (`@trace NFR-14`, `@trace FR-67`, project `layout`; `playwright.config.ts` is not edited). No test names the token other than through the pins above. Locked files: `scripts/check-visual-parity-adapters.mjs` is not edited; `scripts/freeze-design-geometry.mjs` and `scripts/visual-block.mjs` are ordinary edits.

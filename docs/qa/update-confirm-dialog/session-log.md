@@ -1,0 +1,9 @@
+# Session log: update-confirm-dialog (the dialog session of wave 2)
+
+Times are UTC+5:30 (the user's zone), each taken from `date` before it was written.
+
+| # | Date, time | What happened | The user's words | Evidence |
+|---|---|---|---|---|
+| 1 | 2026-10-12 12:57 | Session start. Worktree `/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976`, branch `claude/laughing-snyder-dialog`, fast-forwarded to `origin/main` `18e5f3f` («docs: wave-2 hand-off notes: the raised scroll-padding figure on the signed draft; scratchpad rule in the start prompts»). Prerequisites of task 0.1: `openspec/changes/update-confirm-dialog/` on `main`; `grep -c "A-62" docs/requirements.md` = 6; `openspec/changes/archive/2026-10-12-update-setup-sheet` present. `npm ci`, then in `design/v0` `pnpm install --frozen-lockfile` and `pnpm build`: exit 0, `design/v0/out/index.html` and `design/v0/out/confirm/index.html` exist. `BINARKA_PORT_BASE=6373`: `node scripts/capture-ports.mjs` shows 6373-6377 free. | The start prompt (wave-2 dialog session) | this file; `git log -1 origin/main` |
+| 2 | 2026-10-12 12:59 | Task 1.1: a fresh spec-compliance-auditor (read-only, not the folder's author) dispatched against `main` `18e5f3f`. | — | `docs/qa/update-confirm-dialog/folder-audit.md` (section «Re-audit at the session's `main`») |
+| 3 | 2026-10-12 13:08 | Re-audit back: 0 major, 7 minor, 6 notes, all prose or line citations; no signed value differs, no scenario dropped, no overlap with the settings folder. The 7 minor and note 8 folded in `proposal.md`, `design.md`, `tasks.md`; notes 9, 10, 12, 13 no change; note 11 goes into the test brief (quote style normalised). No finding touches another block's requirement or a test outside this share, so nothing goes to the user. Task 1.2: `npx openspec validate update-confirm-dialog --strict` valid after the fold. | — | `folder-audit.md` (findings table and validate output) |
