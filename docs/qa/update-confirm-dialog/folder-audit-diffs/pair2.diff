@@ -1,0 +1,18 @@
+--- /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-laughing-snyder-018976/425d4faa-c788-4f81-be6f-2afea712aff1/scratchpad/audit/base2.md	2026-10-12 12:59:12
++++ /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-laughing-snyder-018976/425d4faa-c788-4f81-be6f-2afea712aff1/scratchpad/audit/delta2.md	2026-10-12 12:59:12
+@@ -6,7 +6,7 @@
+ 
+ While the board is solved (the win line shows, FR-38), the board host `.board-host` SHALL carry `data-solved="true"`, and at no other time; the stylesheet reads it for the button row (after a win the new-puzzle button takes the bold weight from the hint button), because a has-selector is allowed only in the idle-line rule (FR-65). The setup sheet's own size, place and line height are pinned by «The setup sheet takes the design's size, place and paint»; here the scenario «The setup sheet keeps its levels in view at 1366×650» remains. This requirement covers geometry only. The page's colours, shadows and backdrops, the panels' and the dialog's own geometry, and the pixel score of each shot are outside it. The settings panel stays under the header, its right edge on the column's right edge from 48rem, as the column changes.
+ 
+-Traces: NFR-14, NFR-10, NFR-12, FR-68, FR-119, A-60
++Traces: NFR-14, NFR-10, NFR-12, FR-68, FR-119, A-60, A-62
+ 
+ #### Scenario: The default page matches the design's column at every sampled viewport
+ 
+@@ -57,5 +57,5 @@
+ 
+ - **GIVEN** the stylesheet after this change
+ - **WHEN** its `:root` and dark token sets are read
+-- **THEN** both sets equal the 32 tokens and values of the table of «Borders, cues and focus rings have enough contrast» (the 25 block-2 tokens, the 2 backdrop tokens, the 4 shell tokens and the 1 setup-sheet token of the appendix to A-57, that the last three changes bind), and no other `--color-*` token is declared
++- **THEN** both sets equal the 33 tokens and values of the table of «Borders, cues and focus rings have enough contrast» (the 25 block-2 tokens, the 2 backdrop tokens, the 4 shell tokens, the 1 setup-sheet token and the 1 dialog token `--color-violation-ink` of the appendix to A-57, that the last four changes bind), and no other `--color-*` token is declared
+ 

@@ -1,0 +1,72 @@
+[-32-]
+{+33+}
+[-update-panel-shell) and-]
+{+update-panel-shell),+}
+{+the 1 dialog token (G2 dialog block, update-confirm-dialog)+}
+{+appendix assigns to the confirmation dialog, which the+}
+[-three-]
+{+four+}
+{+option; in the settings panel the text of an unchosen theme or language+}
+{+(A-61)+}
+{+border; in the settings panel the frame of the chosen theme or language option (A-61); in the confirmation dialog the fill and+}
+{+of «Скасувати» (A-62)+}
+[-cells-]
+{+cells; in the confirmation dialog the text of «Скасувати» (A-62)+}
+{+fill; in the settings panel the+}
+{+of the chosen theme or language option (A-61)+}
+{+fill; in the confirmation dialog the+}
+{+of «Так, почати» (A-62)+}
+[-border-]
+{+border; in the confirmation dialog the 2px frame of «Так, почати» (decoration there, A-62: not a contrast pair)+}
+{+| `--color-violation-ink` | `#8f1d17` | `#ffb4ab` | text of «Так, почати» in the confirmation dialog (A-62) |+}
+[-and-]
+{+update-setup-sheet binds, and the one dialog row that the appendix marks "later" and that+}
+[-(update-setup-sheet)-]
+{+(update-confirm-dialog)+}
+[-paint»). The "later"-]
+{+paint»; the role column of the dialog row, and the roles of `--color-primary`, `--color-primary-text`, `--color-violation-bg` and `--color-violation-border` in the dialog, say what they paint in it, see «The confirmation dialog takes the design's size, place and paint»; the roles of `--color-text-muted`, `--color-primary` and `--color-primary-soft` in the settings panel are worded from A-61). `--color-violation-ink` was the last+}
+[-remains is `--color-violation-ink` (the-]
+{+no+}
+[-of the confirmation dialog); it is NOT declared by-]
+{+had bound (the appendix still marks six bound rows "later"):+}
+[-requirement:-]
+{+requirement declares it, with its one pair, and «The confirmation dialog takes+}
+[-block that-]
+{+design's size, place and paint»+}
+[-it adds it by its own delta,-]
+{+it,+}
+[-token.-]
+{+token and no appendix row remains that this table does not declare.+}
+{+2px `--color-violation-border` frame of «Так, почати» in the confirmation dialog is decoration in the same way and in no pair (A-62): the button is identified by its text, which is a pair (`--color-violation-ink` on `--color-violation-bg`), and the frame's ratio against the dialog fill, 6.43 in light and 6.54 in dark, is recorded and not relied on; `--color-violation-border` stays in its existing pairs and gains none. The+}
+{+- `--color-violation-ink` against `--color-violation-bg` (the text of «Так, почати» in the confirmation dialog, A-62);+}
+{+FR-67,+}
+{+A-62,+}
+{+NFR-14,+}
+[-32-]
+{+33+}
+[-27-]
+{+28+}
+[-32-]
+{+33+}
+[-32-]
+{+33+}
+[-32-]
+{+33+}
+[-41-]
+{+42+}
+[-`--color-surface-raised` and-]
+{+`--color-surface-raised`,+}
+{+change and the 1 pair of the dialog+}
+[-32-]
+{+33+}
+{+`--color-violation-ink` against `--color-violation-bg`;+}
+[-41-]
+{+42+}
+[-16-]
+{+17+}
+{+#### Scenario: The dialog's warning text has 4.5:1 and its frame is decoration+}
+{+- **GIVEN** the resolved colours of the tokens of each token set (light, then dark) and `CONTRAST_PAIRS` of the test helpers+}
+{+- **WHEN** the test computes the ratio of `--color-violation-ink` against `--color-violation-bg` (the text of «Так, почати» on its fill) and of `--color-violation-border` against `--color-surface-raised` (the button's frame on the dialog fill), and looks for the token and the frame pair in the list+}
+{+- **THEN** the text ratio is 7.34 in light and 8.40 in dark, each at least 4.5, and the frame ratio is 6.43 in light and 6.54 in dark (recorded)+}
+{+- **AND** `--color-violation-ink` is a `#rrggbb` value (`#8f1d17` light, `#ffb4ab` dark) and not in the translucent set, the pair (`--color-violation-ink`, `--color-violation-bg`) is in `CONTRAST_PAIRS` in the group `text`, and no pair of `CONTRAST_PAIRS` names `--color-violation-border` with `--color-surface-raised`+}
+{+- **AND** the stylesheet binds the token: at least one declaration outside `:root` has the value `var(--color-violation-ink)` (the `color` of «Так, почати»)+}

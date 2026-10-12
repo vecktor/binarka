@@ -37,7 +37,7 @@
 
 - **Who:** a fresh spec-compliance-auditor subagent, read-only, dispatched by the dialog session (`laughing-snyder-018976`, branch `claude/laughing-snyder-dialog`) on 2026-10-12 from about 12:59 to 13:07 (UTC+5:30). Not the author of the folder, not the prep auditor.
 - **Tree:** `18e5f3f` (`main`). `git diff --stat 019808f HEAD` over `openspec/specs`, `docs/requirements.md`, `tests`, `e2e`, `src`, `scripts`, `design/v0/app` and `playwright.config.ts` is empty, so every baseline and pin line is the same text as at the prep audit; the folder itself changed after the prep audit (the «Confirmation before discarding…» delta).
-- **Result:** 0 major, 7 minor, 6 notes. Scratch (outside the repo): the session scratchpad `audit/` (`base1-5.md`, `delta1-5.md`, `wd1.txt`, `applied-spec.md`, `apply.mjs`, `cr.mjs`).
+- **Result:** 0 major, 7 minor, 6 notes. The pair diffs are kept in `docs/qa/update-confirm-dialog/folder-audit-diffs/` (`pair1.diff` to `pair5.diff`: `diff -u` of each baseline requirement, extracted by `extract.awk`, against its MODIFIED block; `pair1-word-diff.txt`: the auditor's word diff of «Borders…»; `apply.mjs`: the hand application of item 4). The applied 4895-line spec copy stayed in the session scratchpad (outside the repo).
 
 ## Item 1: each MODIFIED pair against the baseline
 

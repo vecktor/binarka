@@ -319,3 +319,8 @@ lsof 6377:
 
 Reading: the fixture-key test now passes (4 passed: the three GUARDs and the key test); the five box cases fail on the box assertions (the old dialog is
 288px wide and 210 tall at 320, 156 tall from 375; its text 8px wider; the buttons 46px), not on a missing fixture; targets and paint still red.
+
+NOTE (the parent, after the green run): e2e/nfr-14-confirm-dialog.spec.ts carries, beyond its header tags NFR-14 and FR-67, `@trace NFR-12` in the titles of the
+five target tests and `@trace FR-65` in the four paint tests. Kept on purpose: the targets are NFR-12's floor and the paint is FR-65's dialog clause;
+`npm run check:trace` and `npm run check:acceptance` pass with them (battery.txt). The fixture-unchanged test pins the top-level designCommit and
+designCssSha1 as literals, as e2e/nfr-14-setup-sheet.spec.ts:143-144 already does (house style): a future move of the reference fails it on purpose.

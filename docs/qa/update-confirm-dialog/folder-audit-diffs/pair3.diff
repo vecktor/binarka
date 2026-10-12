@@ -1,0 +1,20 @@
+--- /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-laughing-snyder-018976/425d4faa-c788-4f81-be6f-2afea712aff1/scratchpad/audit/base3.md	2026-10-12 12:59:12
++++ /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-laughing-snyder-018976/425d4faa-c788-4f81-be6f-2afea712aff1/scratchpad/audit/delta3.md	2026-10-12 12:59:12
+@@ -18,7 +18,7 @@
+ 
+ The mechanism is a stylesheet test, test first, and a browser test. `tests/play-page-panel-shell-stylesheet.test.ts` (`@trace NFR-14`, `@trace FR-65`) reads the parsed `src/ui/style.css`. `e2e/nfr-14-panel-shell.spec.ts` (`@trace NFR-14`, in the existing `layout` project, whose `testMatch` already includes `nfr-14-*`, so `playwright.config.ts` is not changed) compares the computed fill, border colour and shadow of the four surfaces with the design build, read live: the test serves `design/v0/out` itself with a static file server on a free port chosen by the operating system (never 4173, 4174, 4176 or 4177, which the page preview and the capture tools bind), with the path guard of `scripts/freeze-design-geometry.mjs` (nothing outside the build folder is served), and opens the design's routes `/rules/`, `/setup/`, `/settings/` and `/confirm/`, which show each surface open at load. The other `nfr-14-*` e2e tests read frozen files (`quality/design-geometry.json`, `quality/design-paint.json`) and do not serve the design build; this one does, because the shell adds no freeze case. If `design/v0/out/index.html` is missing, the test FAILS with the build instruction of `design/README.md` (`pnpm build` in `design/v0`); it is never skipped. The page side is the built page of `playwright.config.ts`, with the design's fixture board (FR-119) and the surface opened by the press the capture uses (`e2e/nfr-14-backdrop.spec.ts`). Both sides use the browser setup of `playwright.config.ts` (Playwright "Desktop Chrome", reduced motion, the scheme on the browser context, no stored preference). The sampling is declared: the surfaces (rules, setup sheet, settings, confirmation), the schemes (light, dark) and the viewports 375×812 and 1024×768, 16 cases; coverage is `sampled`, never continuum. Nothing between the two viewports, no hover, no focus state, no other board is looked at. The stricter instruments that run before a block-done claim are the per-block pixel crop of `scripts/visual-block.mjs` and the per-shot gate `npm run check:visual` over the rules, rules-techniques, confirm, setup and settings shots, and then the full computed-style diff of every element of the surfaces (the escalation path of `docs/qa/visual-diff/README.md`). This requirement claims no pixel floor for any shot.
+ 
+-Traces: NFR-14, FR-65, A-57, A-60
++Traces: NFR-14, FR-65, A-57, A-60, A-62
+ 
+ #### Scenario: The three panels take the raised fill, the overlay border and the sheet shadow below 48rem
+ 
+@@ -62,7 +62,7 @@
+ - **GIVEN** `CONTRAST_PAIRS` of the test helpers and the four surfaces that bind `--color-surface-raised`
+ - **WHEN** the test lists the pairs whose background is `--color-surface-raised`
+ - **THEN** there are exactly four: `--color-text` and `--color-text-muted` at 4.5:1 (group `text`), `--color-focus` at 3:1 (group `focus-ring`) and `--color-primary` at 3:1 (group `hinted-cue`, the checked level card's border on the sheet, added by update-setup-sheet), and each ratio holds in the light and in the dark token set
+-- **AND** no pair names `--color-overlay-border`, `--color-shadow-panel`, `--color-shadow-sheet` or `--color-option-border`, and the list holds 41 pairs
++- **AND** no pair names `--color-overlay-border`, `--color-shadow-panel`, `--color-shadow-sheet` or `--color-option-border`, and the list holds 42 pairs
+ 
+ #### Scenario: The shell moves no box
+ 

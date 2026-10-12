@@ -1,0 +1,20 @@
+--- /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-laughing-snyder-018976/425d4faa-c788-4f81-be6f-2afea712aff1/scratchpad/audit/base4.md	2026-10-12 12:59:12
++++ /private/tmp/claude-501/-Users-vecktor-projects-fwdays-exam-binarka--claude-worktrees-laughing-snyder-018976/425d4faa-c788-4f81-be6f-2afea712aff1/scratchpad/audit/delta4.md	2026-10-12 12:59:12
+@@ -28,7 +28,7 @@
+ 
+ In the stylesheet scenarios below, a declared value is compared with whitespace removed and with a bare zero equal to `0px` (jsdom serialises a zero length as `0px`, so `inset: 0` reads `0px` and `padding: 0.3125rem 0` reads `0.3125rem 0px`).
+ 
+-Traces: NFR-14, FR-57, FR-65, A-59, A-26, A-20
++Traces: NFR-14, FR-57, FR-65, A-59, A-26, A-20, A-62
+ 
+ #### Scenario: Below 48rem the panel is a bottom sheet with the design's size
+ 
+@@ -94,7 +94,7 @@
+ 
+ - **GIVEN** the parsed `src/ui/style.css` and the colour scan of «Borders, cues and focus rings have enough contrast»
+ - **WHEN** the test applies the scan to every declaration of the panel's rules
+-- **THEN** it finds no colour literal, no named colour and no `color-mix(`; every `box-shadow` colour is a `var(--color-...)` token; `TOKEN_NAMES` and `CONTRAST_PAIRS` of `tests/helpers/css.ts` were unchanged by `update-rules-panel` and equal the lists of «Borders, cues and focus rings have enough contrast» (32 tokens and 41 pairs since `update-setup-sheet`; the test holds literal copies of the two baseline lists and compares the exported lists with them, not with numbers, so the rules panel adds no token and no pair of its own)
++- **THEN** it finds no colour literal, no named colour and no `color-mix(`; every `box-shadow` colour is a `var(--color-...)` token; `TOKEN_NAMES` and `CONTRAST_PAIRS` of `tests/helpers/css.ts` were unchanged by `update-rules-panel` and equal the lists of «Borders, cues and focus rings have enough contrast» (33 tokens and 42 pairs since `update-confirm-dialog`; the test holds literal copies of the two baseline lists and compares the exported lists with them, not with numbers, so the rules panel adds no token and no pair of its own)
+ - **AND** the stylesheet has no `!important`, the raw text contains `:has(` exactly once (the idle-line rule), and no rule of the panel is inside `@media (prefers-reduced-motion: no-preference)` or `@starting-style`
+ 
+ #### Scenario: The rules panel in a real browser has the design's box at the sampled viewports
