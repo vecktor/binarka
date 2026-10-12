@@ -1276,10 +1276,8 @@ const CLIPS = [
   {
     id: '16-logo-40',
     title: 'NFR-15: the header logo at 40×40 CSS px',
-    // HELD (the user's decision, 2026-10-12): vision-judges found the 40 px logo not legible at ratio 1 and 2, so NFR-15 stays held and this
-    // clip is not in the default run or the manifest; its stills and verdicts are in docs/qa/vision-probe/. The logo-fix slice records it
-    // with `--only 16-logo-40` and moves NFR-15 when a fresh judge passes it.
-    held: true,
+    // Held until 2026-10-12: the sun drawing and drawing B failed the vision-judge at 40 px (docs/qa/vision-probe/logo-40-verdicts.json);
+    // drawing G (FR-72 amended) passed in run wf_a5ad04e1-c59, so the logo-fix slice update-logo-legibility removed `held` and moved NFR-15.
     proof: ['NFR-15', 'FR-72'],
     // device pixel ratio 2, the project's capture standard (quality/visual-parity.config.json): the user's decision of 2026-10-12;
     // the ratio 1 still failed the vision-judge and is kept as a known limitation (docs/qa/vision-probe/logo-40-dpr1*)

@@ -1,0 +1,26 @@
+# Battery after the drawing-G vision verdict and the NFR-15 move (2026-10-12 17:36 +0530), HEAD ea96c82 + the move (uncommitted at run time).
+
+## npm run check:vision
+
+> binarka@0.1.0 check:vision
+> node scripts/check-vision.mjs
+
+met        NFR-11 (14-cell-states-light, 15-cell-states-dark)
+met        NFR-15 (16-logo-40)
+
+Scope: 16 judged still(s) of 16 clip(s) in 1 manifest(s); 2 vision-verify requirement(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-recordings.mjs --require-vision
+
+Scope: 16 clip(s) across 1 manifest(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+FAIL  [active-changes] active change "update-logo-legibility" is not archived
+
+traceability: 115 MVP FRs checked — 1 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit: 1

@@ -256,6 +256,23 @@
         "judgedAt": "2026-10-12T11:01:06Z",
         "judge": "vision-verify (fresh vision-judge)"
       }
+    },
+    {
+      "id": "16-logo-40",
+      "title": "NFR-15: the header logo at 40×40 CSS px",
+      "proof": "NFR-15, FR-72",
+      "video": "docs/qa/demo-recordings/16-logo-40.webm",
+      "screenshot": "docs/qa/demo-recordings/16-logo-40.png",
+      "explainer": "docs/qa/demo-recordings/16-logo-40.md",
+      "asserted": true,
+      "assertions": 2,
+      "vision": {
+        "met": true,
+        "readable": true,
+        "notes": "The header logo is a rust-orange rounded square tile with four white glyphs in a 2x2 grid. The top-left and bottom-right glyphs are solid vertical bars (1), and the top-right and bottom-left glyphs are open rings (0), so the board reads «1 0 / 0 1». Bars and rings are clearly distinguishable by shape, with strong white-on-orange contrast. The logo has no text, and «Бінарка» beside it is page text. The image looks smaller than the stated 80x80 device px, but that doesn't change the verdict.",
+        "judgedAt": "2026-10-12T12:04:51Z",
+        "judge": "vision-verify (fresh vision-judge)"
+      }
     }
   ]
 }

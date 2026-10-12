@@ -975,7 +975,7 @@
       {
         "method": "e2e",
         "mechanism": "npm:test:e2e",
-        "artifact": "docs/qa/e2e-report.json",
+        "artifact": "test-results/.last-run.json",
         "status": "artifact-ok"
       }
     ],
@@ -999,7 +999,7 @@
       {
         "method": "e2e",
         "mechanism": "npm:test:e2e",
-        "artifact": "docs/qa/e2e-report.json",
+        "artifact": "test-results/.last-run.json",
         "status": "artifact-ok"
       }
     ],
@@ -1015,7 +1015,7 @@
       {
         "method": "e2e",
         "mechanism": "npm:test:e2e",
-        "artifact": "docs/qa/e2e-report.json",
+        "artifact": "test-results/.last-run.json",
         "status": "artifact-ok"
       }
     ],
@@ -1033,6 +1033,14 @@
         "mechanism": "npm:check:visual",
         "artifact": null,
         "status": "failing-artifact"
+      }
+    ],
+    "NFR-15": [
+      {
+        "method": "vision-verify",
+        "mechanism": "npm:check:vision",
+        "artifact": "docs/qa/vision-report.md",
+        "status": "artifact-ok"
       }
     ],
     "NFR-16": [
@@ -1055,7 +1063,7 @@
       {
         "method": "e2e",
         "mechanism": "npm:test:e2e",
-        "artifact": "docs/qa/e2e-report.json",
+        "artifact": "test-results/.last-run.json",
         "status": "artifact-ok"
       }
     ],
