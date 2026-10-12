@@ -24,7 +24,7 @@
     {
       "slice": "2026-10-04-add-rules-and-reset",
       "reviewEvidence": "dispositioned",
-      "trailerCommits": 20,
+      "trailerCommits": 11,
       "libDomains": [
         "ui"
       ],
@@ -34,7 +34,7 @@
     {
       "slice": "2026-10-04-add-size-selector",
       "reviewEvidence": "clean",
-      "trailerCommits": 15,
+      "trailerCommits": 9,
       "libDomains": [
         "ui"
       ],
@@ -54,7 +54,7 @@
     {
       "slice": "2026-10-06-add-hinted-cell",
       "reviewEvidence": "dispositioned",
-      "trailerCommits": 6,
+      "trailerCommits": 3,
       "libDomains": [
         "ui"
       ],
@@ -64,7 +64,7 @@
     {
       "slice": "2026-10-06-update-controls-accessibility",
       "reviewEvidence": "dispositioned",
-      "trailerCommits": 8,
+      "trailerCommits": 4,
       "libDomains": [
         "ui"
       ],
@@ -74,7 +74,7 @@
     {
       "slice": "2026-10-06-update-page-layout",
       "reviewEvidence": "dispositioned",
-      "trailerCommits": 17,
+      "trailerCommits": 11,
       "libDomains": [
         "ui"
       ],
@@ -185,7 +185,7 @@
     {
       "slice": "2026-10-10-add-theme-switch",
       "reviewEvidence": "dispositioned",
-      "trailerCommits": 18,
+      "trailerCommits": 14,
       "libDomains": [
         "ui"
       ],
@@ -233,7 +233,7 @@
     {
       "slice": "2026-10-10-update-setup-sheet-start",
       "reviewEvidence": "dispositioned",
-      "trailerCommits": 22,
+      "trailerCommits": 14,
       "libDomains": [
         "ui"
       ],
@@ -293,7 +293,7 @@
     {
       "slice": "2026-10-12-update-settings-panel",
       "reviewEvidence": "dispositioned",
-      "trailerCommits": 20,
+      "trailerCommits": 12,
       "libDomains": [
         "ui"
       ],
@@ -303,7 +303,7 @@
     {
       "slice": "2026-10-12-update-setup-sheet",
       "reviewEvidence": "clean",
-      "trailerCommits": 56,
+      "trailerCommits": 28,
       "libDomains": [
         "ui"
       ],

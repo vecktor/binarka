@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-12T11:14:42.457Z",
-  "gitHead": "6fef448247ac5cd46992300f9230d22caccb8218",
+  "createdAt": "2026-10-12T11:34:06.641Z",
+  "gitHead": "1ae4f34dc6543ecf4b971532e7f40abb86d4a86d",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -24,13 +24,13 @@
     "scripts/check-process-ratchet.mjs": "a824c3bf4a36e4c1979c09d899242dbe4ac1cdf6e08bf227fca5b4772f331a03",
     "scripts/check-recordings.mjs": "447628eccba1a88860d5b2cfb8f4fff9b09050edd0141476a31bcddc66fe3a54",
     "scripts/check-traceability.mjs": "10dfdb95743c685e31f0a1cdb2d4cbef0d728315097efd93544346330250fadf",
-    "scripts/check-trajectory.mjs": "04a6d28cdbfb252c3d2fbd18e40eba4046395d06419238073e54e1c908b6cc6e",
+    "scripts/check-trajectory.mjs": "ed3f32aa3b26537d24f2748ae587fb835dc3053639c460ed6503cde0631dfcd6",
     "scripts/check-visual-fidelity.mjs": "1fe3a499c1e4074b370496148cc27bc9a99de0d06580ac42059363c869a62c91",
     "scripts/check-visual-parity-adapters.mjs": "cdd70e852f21767c136356472aa9e75e7f1a6ab0f1c22d5c39367689d2d54680",
     "scripts/gate-status.mjs": "07617acbbd6ae513bcc7675478e920bd86ff2c765ae1b2ebc2ab27dad50e5fae",
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-11: CI gains a browser job (ubuntu) running check:a11y and the font-independent e2e files, with the design built on the runner; the geometry specs stay local (approved by the user 2026-10-12)"
+    "PD-12: check-trajectory counts Slice: trailers on HEAD's history instead of every ref, so the committed report is fresh in a clean clone (approved by the user 2026-10-12)"
   ]
 }

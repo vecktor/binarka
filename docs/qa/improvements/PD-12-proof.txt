@@ -1,0 +1,18 @@
+# PD-12 proof, 2026-10-12 16:58 +0530, stream P (claude/feynman-process, HEAD 1ae4f34)
+
+## 1. Red: CI run 38242058245 (draft PR 1), job verify: FAILURE at "Trajectory process audit (and freshness)" (annotation "Process completed with exit code 1").
+
+## 2. Reproduced in a clean clone (git clone of origin, full history, as actions/checkout with fetch-depth 0)
+- at refs/pull/1/merge (2648f66): node scripts/check-trajectory.mjs --check-fresh -> FAIL [freshness] docs/qa/trajectory-report.md is stale
+- at origin/main 2762e31 (before stream P): the same FAIL [freshness] (Result: FAIL, 28 warning(s)): the defect is pre-existing; CI on main was already red at this step
+- regenerating in the clone changes only the "Trailer commits" column of 10 slices, e.g. add-rules-and-reset 20 -> 11, update-setup-sheet 56 -> 28
+- cause: scripts/check-trajectory.mjs:199 counts trailers with git log --all; this machine has 75 local branches (backups and rebased copies of the same commits), a clone has only the remote's
+
+## 3. Pre-measure of the fix (a scratch copy with git log HEAD instead of --all; no locked file changed)
+- report generated here == report generated in the clean clone at the branch head 1ae4f34 == at the PR merge commit (byte-identical, diff empty)
+- no slice has 0 trailer commits; Result PASS, 1 warning (the src/engine overlap)
+
+## 4. Integrity before the re-seal
+Result: PASS, 2 warning(s)  (a WARN, not a FAIL: the drifted script already has a commit with "Refs: PD-10"; the integrity checker only fails a gate-script drift that no Refs: PD commit ever touched)
+## 5. After the re-seal
+Result: PASS, 1 warning(s)

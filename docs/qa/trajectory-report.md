@@ -15,12 +15,12 @@ Result: PASS, 1 warning(s)
 |---|---|---|---|---|
 | 2026-10-04-add-play-page | clean | 6 | yes | ui |
 | 2026-10-04-add-puzzle-engine | dispositioned | 8 | yes | engine |
-| 2026-10-04-add-rules-and-reset | dispositioned | 20 | yes | ui |
-| 2026-10-04-add-size-selector | clean | 15 | yes | ui |
+| 2026-10-04-add-rules-and-reset | dispositioned | 11 | yes | ui |
+| 2026-10-04-add-size-selector | clean | 9 | yes | ui |
 | 2026-10-04-update-hint-sentences | clean | 8 | yes | engine |
-| 2026-10-06-add-hinted-cell | dispositioned | 6 | yes | ui |
-| 2026-10-06-update-controls-accessibility | dispositioned | 8 | yes | ui |
-| 2026-10-06-update-page-layout | dispositioned | 17 | yes | ui |
+| 2026-10-06-add-hinted-cell | dispositioned | 3 | yes | ui |
+| 2026-10-06-update-controls-accessibility | dispositioned | 4 | yes | ui |
+| 2026-10-06-update-page-layout | dispositioned | 11 | yes | ui |
 | 2026-10-08-add-page-accessibility | clean | 7 | yes | ui |
 | 2026-10-08-reconcile-ux-accessibility | dispositioned | 5 | yes | ui |
 | 2026-10-08-update-win-apostrophe | clean | 2 | yes | ui |
@@ -31,19 +31,19 @@ Result: PASS, 1 warning(s)
 | 2026-10-09-fix-action-button-targets | dispositioned | 5 | yes | ui |
 | 2026-10-10-add-capture-board | dispositioned | 8 | waived | ui |
 | 2026-10-10-add-english-version | dispositioned | 9 | yes | engine, ui |
-| 2026-10-10-add-theme-switch | dispositioned | 18 | yes | ui |
+| 2026-10-10-add-theme-switch | dispositioned | 14 | yes | ui |
 | 2026-10-10-fix-size-option-focus-ring | dispositioned | 3 | waived | ui |
 | 2026-10-10-update-page-layout-geometry | dispositioned | 5 | yes | ui |
 | 2026-10-10-update-page-palette | dispositioned | 7 | yes | ui |
 | 2026-10-10-update-segmented-focus-ring-wording | dispositioned | 2 | waived | - |
-| 2026-10-10-update-setup-sheet-start | dispositioned | 22 | yes | ui |
+| 2026-10-10-update-setup-sheet-start | dispositioned | 14 | yes | ui |
 | 2026-10-11-add-violation-cause | dispositioned | 9 | yes | ui |
 | 2026-10-11-update-page-backdrop | dispositioned | 6 | yes | ui |
 | 2026-10-11-update-panel-shell | dispositioned | 1 | yes | ui |
 | 2026-10-11-update-rules-panel | dispositioned | 6 | yes | ui |
 | 2026-10-12-update-confirm-dialog | clean | 5 | yes | ui |
-| 2026-10-12-update-settings-panel | dispositioned | 20 | yes | ui |
-| 2026-10-12-update-setup-sheet | clean | 56 | yes | ui |
+| 2026-10-12-update-settings-panel | dispositioned | 12 | yes | ui |
+| 2026-10-12-update-setup-sheet | clean | 28 | yes | ui |
 
 ## Cross-slice module overlap
 

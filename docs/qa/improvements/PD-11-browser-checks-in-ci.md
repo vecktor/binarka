@@ -1,6 +1,6 @@
 # PD-11: CI runs no browser check
 
-Status: **APPROVED by the user** in chat on 2026-10-12 at about 16:35 (UTC+5:30), through the question form: «A + push + draft PR (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row P11). Executed in the commit with `Refs: PD-11`; **green pending the branch CI run** (`PD-11-proof.txt` § 6). Drafted from 16:25 by stream P of wave 3 (`claude/feynman-process`). Unit P-CI of `docs/handoff/delivery-plan-2026-10-12.md` (section 2.8); the user chose «Add e2e + a11y to CI (Recommended)» on 2026-10-12 (plan section 7, Q4), with the instruction to measure first which specs depend on fonts and report before approving.
+Status: **APPROVED by the user** in chat on 2026-10-12 at about 16:35 (UTC+5:30), through the question form: «A + push + draft PR (Recommended)» (session log `docs/qa/process-stream/session-log.md`, row P11). Executed in the commit with `Refs: PD-11`; **green earned**: the `browser` job passed on the branch CI run of draft PR 1 (2026-10-12, 11:20 to 11:22 UTC, `PD-11-proof.txt` § 6). The same run's `verify` job failed on a pre-existing defect (PD-12). Drafted from 16:25 by stream P of wave 3 (`claude/feynman-process`). Unit P-CI of `docs/handoff/delivery-plan-2026-10-12.md` (section 2.8); the user chose «Add e2e + a11y to CI (Recommended)» on 2026-10-12 (plan section 7, Q4), with the instruction to measure first which specs depend on fonts and report before approving.
 
 ## Defect (red)
 

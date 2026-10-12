@@ -18,4 +18,6 @@ Result: FAIL, 1 warning(s)
 ## 5. After the re-seal
 Result: PASS, 1 warning(s)
 
-## 6. Green: the branch CI run (pending: push and draft PR on the user's word, given 16:35)
+## 6. GREEN: the branch CI run (draft PR https://github.com/vecktor/binarka/pull/1, opened by the user; run https://github.com/vecktor/binarka/actions/runs/38242058245)
+job browser (114786825503): started 2026-10-12T11:20:54Z, completed 11:22:48Z, conclusion SUCCESS (read through the GitHub connector, check runs of PR 1).
+job verify (114786826032): conclusion FAILURE at step "Trajectory process audit (and freshness)" (annotation: "Process completed with exit code 1"; the log needs a sign-in). Not caused by PD-11: reproduced in a clean clone, the committed trajectory report's "Trailer commits" column counts `git log --all`, which differs between this machine (75 local branches) and a clone; origin/main 2762e31 fails the same step in a clean clone. Filed as PD-12.

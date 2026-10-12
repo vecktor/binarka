@@ -196,7 +196,9 @@ for (const slice of slices) {
   let trailerCommits = 0;
   let libDomains = [];
   if (isRepo) {
-    const { ok, out } = git(["log", "--all", `--grep=Slice: ${trailerName}`, "--name-only", "--pretty=format:commit %H"]);
+    // HEAD's history, not --all (PD-12): the count must not depend on the local branches (backups, rebased copies), or a
+    // report written on one machine is never fresh in a clean clone (CI).
+    const { ok, out } = git(["log", "HEAD", `--grep=Slice: ${trailerName}`, "--name-only", "--pretty=format:commit %H"]);
     if (ok) {
       const files = new Set();
       for (const line of out.split("\n")) {
