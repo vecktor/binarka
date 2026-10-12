@@ -7166,7 +7166,7 @@
     "provenance": {
       "designCommit": "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04",
       "designCssSha1": "d1b1255f4dff205d15d64850096429cd377e5fbf",
-      "designBuildSha1": "c3f5f81e5dacbad72f6f26085a4750d4e695598c",
+      "designBuildSha1": "ca1291317754c6daff1643241e8d5d7270968a8b",
       "browser": "Playwright chromium 156.0.8078.4, devices[\"Desktop Chrome\"], reducedMotion reduce, colorScheme light"
     },
     "cases": [
@@ -8197,7 +8197,7 @@
     "provenance": {
       "designCommit": "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04",
       "designCssSha1": "d1b1255f4dff205d15d64850096429cd377e5fbf",
-      "designBuildSha1": "d1193198f7b4e58f412f0ad576ca32683f99e1c4",
+      "designBuildSha1": "ca1291317754c6daff1643241e8d5d7270968a8b",
       "browser": "Playwright chromium 156.0.8078.4, devices[\"Desktop Chrome\"], reducedMotion reduce, colorScheme light"
     },
     "deviations": [
@@ -9693,6 +9693,708 @@
           "maxHeightPx": 728,
           "decidedBy": "content",
           "expectedDecidedBy": "content"
+        }
+      }
+    ]
+  },
+  "confirmDialog": {
+    "selectors": [
+      "dialog[data-dialog=\"confirm\"]",
+      "dialog[data-dialog=\"confirm\"] p",
+      "[data-confirm=\"yes\"]",
+      "[data-confirm=\"no\"]"
+    ],
+    "coverage": "sampled",
+    "provenance": {
+      "designCommit": "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04",
+      "designCssSha1": "d1b1255f4dff205d15d64850096429cd377e5fbf",
+      "designBuildSha1": "ca1291317754c6daff1643241e8d5d7270968a8b",
+      "browser": "Playwright chromium 156.0.8078.4, devices[\"Desktop Chrome\"], reducedMotion reduce, colorScheme light"
+    },
+    "cases": [
+      {
+        "shot": "320-light-confirm",
+        "width": 320,
+        "height": 700,
+        "state": "confirm",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-confirm",
+        "boxes": {
+          "dialog[data-dialog=\"confirm\"]": {
+            "x": 12,
+            "y": 241,
+            "w": 296,
+            "h": 218
+          },
+          "dialog[data-dialog=\"confirm\"] p": {
+            "x": 37,
+            "y": 266,
+            "w": 246,
+            "h": 48
+          },
+          "[data-confirm=\"yes\"]": {
+            "x": 37,
+            "y": 390,
+            "w": 246,
+            "h": 44
+          },
+          "[data-confirm=\"no\"]": {
+            "x": 37,
+            "y": 338,
+            "w": 246,
+            "h": 44
+          }
+        }
+      },
+      {
+        "shot": "375-light-confirm",
+        "width": 375,
+        "height": 812,
+        "state": "confirm",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-confirm",
+        "boxes": {
+          "dialog[data-dialog=\"confirm\"]": {
+            "x": 16,
+            "y": 323,
+            "w": 343,
+            "h": 166
+          },
+          "dialog[data-dialog=\"confirm\"] p": {
+            "x": 41,
+            "y": 348,
+            "w": 293,
+            "h": 48
+          },
+          "[data-confirm=\"yes\"]": {
+            "x": 41,
+            "y": 420,
+            "w": 146.734375,
+            "h": 44
+          },
+          "[data-confirm=\"no\"]": {
+            "x": 195.734375,
+            "y": 420,
+            "w": 138.265625,
+            "h": 44
+          }
+        }
+      },
+      {
+        "shot": "768-light-confirm",
+        "width": 768,
+        "height": 1024,
+        "state": "confirm",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-confirm",
+        "boxes": {
+          "dialog[data-dialog=\"confirm\"]": {
+            "x": 208,
+            "y": 429,
+            "w": 352,
+            "h": 166
+          },
+          "dialog[data-dialog=\"confirm\"] p": {
+            "x": 233,
+            "y": 454,
+            "w": 302,
+            "h": 48
+          },
+          "[data-confirm=\"yes\"]": {
+            "x": 233,
+            "y": 526,
+            "w": 151.234375,
+            "h": 44
+          },
+          "[data-confirm=\"no\"]": {
+            "x": 392.234375,
+            "y": 526,
+            "w": 142.765625,
+            "h": 44
+          }
+        }
+      },
+      {
+        "shot": "1024-light-confirm",
+        "width": 1024,
+        "height": 768,
+        "state": "confirm",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-confirm",
+        "boxes": {
+          "dialog[data-dialog=\"confirm\"]": {
+            "x": 336,
+            "y": 301,
+            "w": 352,
+            "h": 166
+          },
+          "dialog[data-dialog=\"confirm\"] p": {
+            "x": 361,
+            "y": 326,
+            "w": 302,
+            "h": 48
+          },
+          "[data-confirm=\"yes\"]": {
+            "x": 361,
+            "y": 398,
+            "w": 151.234375,
+            "h": 44
+          },
+          "[data-confirm=\"no\"]": {
+            "x": 520.234375,
+            "y": 398,
+            "w": 142.765625,
+            "h": 44
+          }
+        }
+      },
+      {
+        "shot": "1440-light-confirm",
+        "width": 1440,
+        "height": 900,
+        "state": "confirm",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-confirm",
+        "boxes": {
+          "dialog[data-dialog=\"confirm\"]": {
+            "x": 544,
+            "y": 367,
+            "w": 352,
+            "h": 166
+          },
+          "dialog[data-dialog=\"confirm\"] p": {
+            "x": 569,
+            "y": 392,
+            "w": 302,
+            "h": 48
+          },
+          "[data-confirm=\"yes\"]": {
+            "x": 569,
+            "y": 464,
+            "w": 151.234375,
+            "h": 44
+          },
+          "[data-confirm=\"no\"]": {
+            "x": 728.234375,
+            "y": 464,
+            "w": 142.765625,
+            "h": 44
+          }
         }
       }
     ]

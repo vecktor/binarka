@@ -24,10 +24,13 @@
 // Sampling: the shots given (default: the default state at every reference viewport and scheme); coverage is `sampled`.
 //
 // Blocks: layout (16 elements, states reached at mount) and rules (the open rules panel and «Зрозуміло», state `rules`: geometry
-// plus pixels; state `rules-techniques`: pixels only).
+// plus pixels; state `rules-techniques`: pixels only); setup (the setup sheet); confirm (update-confirm-dialog: the open confirmation dialog, its
+// text and its two buttons, state `confirm`: geometry plus pixels; the design route /confirm/ is open at load, the page side presses
+// «Нова головоломка» on the capture board and waits for dialog[open], as e2e/nfr-14-confirm-dialog.spec.ts replays afterLoad "open-confirm").
 //
 // Usage: npm run build && node scripts/visual-block.mjs --block layout [--shots a,b] [--states default,four] [--calibrate]
 //        node scripts/visual-block.mjs --block rules --shots 1366-light-rules   (or --states rules,rules-techniques)
+//        node scripts/visual-block.mjs --block confirm --states confirm
 //        [--out docs/qa/g2/blocks/<block>]
 // Ports (PD-4): BINARKA_PORT_BASE (default 4173) + 4 for the design build, + 3 for the page preview (geometry), + 1 for the
 // adapter's own preview (pixels); scripts/capture-ports.mjs lists them. Neither preview outlives this process (stopOnExit).
@@ -73,12 +76,15 @@ const BLOCKS = {
   rules: ['[data-section="rules"]', '[data-section="rules"] .rules-close'],
   // The setup sheet (update-setup-sheet): the same two selectors as the key setupSheet of quality/design-geometry.json.
   setup: SETUP_SELECTORS,
+  // The confirmation dialog (update-confirm-dialog): the same four selectors as the key confirmDialog of quality/design-geometry.json.
+  confirm: ['dialog[data-dialog="confirm"]', 'dialog[data-dialog="confirm"] p', '[data-confirm="yes"]', '[data-confirm="no"]'],
 };
 // States whose geometry is measured on top of the pixels. `rules` (block rules only) opens the panel first: the design route
 // /rules/ is open at load (a press would close it), the product presses «Правила» and waits for :popover-open.
 // `rules-techniques` stays pixel-only: its design route is scrolled to the end by a script.
 const SHEET_STATES = new Set(['setup', 'setup-four']);
-const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules', ...SHEET_STATES]);
+// `confirm` (block confirm only) opens the dialog: the design route /confirm/ is open at load, the product presses «Нова головоломка».
+const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules', 'confirm', ...SHEET_STATES]);
 
 const args = process.argv.slice(2);
 const flag = (name, d) => {
@@ -164,6 +170,7 @@ async function designBoxes(shot) {
     await page.goto(`http://127.0.0.1:${DESIGN_PORT}${designRoute(parseShot(shot.name).state)}`, { waitUntil: 'load' });
     await page.locator('[data-board]').waitFor();
     if (blockName === 'rules') await page.waitForSelector('[data-section="rules"]:popover-open'); // open at load on /rules/; never press
+    if (parseShot(shot.name).state === 'confirm') await page.locator('dialog[data-dialog="confirm"][open]').waitFor(); // open at load on /confirm/; never press
     const sheetState = SHEET_STATES.has(parseShot(shot.name).state);
     if (sheetState) await page.locator('[data-section="setup"]:popover-open').waitFor();
     // The unmodified design: the pixel region and the calibration shot (the frozen reference is the unmodified design).
@@ -208,6 +215,11 @@ async function pageBoxes(shot, url) {
     if (blockName === 'rules') {
       await page.locator('[data-action="rules"]').click();
       await page.waitForSelector('[data-section="rules"]:popover-open');
+    }
+    if (state === 'confirm') {
+      // The capture board has entries, so «Нова головоломка» asks first (FR-67), as the adapter's `confirm` driver.
+      await page.locator('[data-action="new"]').click();
+      await page.locator('dialog[data-dialog="confirm"][open]').waitFor();
     }
     if (SHEET_STATES.has(state)) {
       await page.locator('[data-action="setup"]').click();
@@ -273,8 +285,8 @@ try {
       const live = PNG.sync.read(d.png);
       entry.calibration = live.width === ref.width && live.height === ref.height ? score(ref, live) : 'size differs';
     }
-    // the rules block measures state `rules` only (the panel is open there); no other block measures state `rules`
-    if (GEOMETRY_STATES.has(state) && (blockName === 'rules') === (state === 'rules')) {
+    // the rules block measures state `rules` only (the panel is open there); no other block measures state `rules`; the same for confirm
+    if (GEOMETRY_STATES.has(state) && (blockName === 'rules') === (state === 'rules') && (blockName === 'confirm') === (state === 'confirm')) {
       entry.geometry = geometry(d.geoBoxes, await pageBoxes(shot, preview.url));
       entry.geometryOff = entry.geometry.filter((g) => g.off).length;
       entry.unpaired = entry.geometry.filter((g) => g.unpaired).length;

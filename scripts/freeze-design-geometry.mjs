@@ -29,6 +29,13 @@
 // the expected product boxes (`expected`): the same design page with the one recorded deviation injected in the browser, the level group's 28px
 // bottom margin of A-60 and SQ-5 (nothing is written to design/v0). Sampling: 12 cases, coverage sampled, never continuum.
 //
+// The key confirmDialog (update-confirm-dialog, G2 dialog block): the open confirmation dialog, its text and its two buttons, at the five confirm
+// viewports of review-set-14 (<w>-light-confirm at 320x700, 375x812, 768x1024, 1024x768, 1440x900; the set has no 1366 confirm shot); read by
+// e2e/nfr-14-confirm-dialog.spec.ts. The design's /confirm/ route shows the dialog open at load, so the freeze waits for dialog[open] and presses
+// nothing; the page side replays the recorded afterLoad "open-confirm" (press «Нова головоломка» on the capture board, which has entries, so it asks
+// first; wait for dialog[open]), as the adapter's `confirm` driver does. No deviation: the key holds the design's `boxes` only. Its own provenance.
+// Sampling: 5 cases, light scheme, coverage sampled, never continuum.
+//
 // Usage: node scripts/freeze-design-geometry.mjs   (design/v0/out must be built; port BINARKA_PORT_BASE + 4 must be free, 4177 by default; scripts/capture-ports.mjs)
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
@@ -72,6 +79,8 @@ const PORT = capturePorts().design;
 const OUT = 'quality/design-geometry.json';
 
 const SETUP_WIDTHS = [320, 375, 768, 1024, 1366, 1440];
+const CONFIRM_SELECTORS = ['dialog[data-dialog="confirm"]', 'dialog[data-dialog="confirm"] p', '[data-confirm="yes"]', '[data-confirm="no"]'];
+const CONFIRM_WIDTHS = ['320', '375', '768', '1024', '1440'];
 const SETUP_STATES = ['setup', 'setup-four'];
 
 const config = JSON.parse(readFileSync('quality/visual-parity.config.json', 'utf8'));
@@ -84,6 +93,8 @@ const RULES_CASES = [
   { shot: '768-light-rules-four', width: 768, height: 1024, route: '/four/', press: true, board: 'four' },
   { shot: '800-light-rules-short', width: 800, height: 600, route: '/rules/', press: false, board: 'rules' },
 ];
+
+const CONFIRM_CASES = CONFIRM_WIDTHS.map((w) => ({ shot: `${w}-light-confirm`, width: bp(`${w}-light-confirm`).width, height: bp(`${w}-light-confirm`).height }));
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain' };
 const root = 'design/v0/out';
@@ -115,6 +126,7 @@ const browser = await chromium.launch();
 const out = [];
 const rulesOut = [];
 const setupOut = [];
+const confirmOut = [];
 try {
   for (const c of cases) {
     const ctx = await browser.newContext({ ...devices['Desktop Chrome'], viewport: { width: c.width, height: c.height }, reducedMotion: 'reduce', colorScheme: 'light' });
@@ -228,6 +240,23 @@ try {
       await ctx.close();
     }
   }
+  for (const c of CONFIRM_CASES) {
+    const ctx = await browser.newContext({ ...devices['Desktop Chrome'], viewport: { width: c.width, height: c.height }, reducedMotion: 'reduce', colorScheme: 'light' });
+    const page = await ctx.newPage();
+    await page.goto(`http://127.0.0.1:${PORT}/confirm/`, { waitUntil: 'load' });
+    await page.locator('[data-board]').waitFor();
+    await page.locator(`${CONFIRM_SELECTORS[0]}[open]`).waitFor(); // open at load; press nothing
+    const boxes = await page.evaluate((sels) => Object.fromEntries(sels.map((s) => {
+      const el = document.querySelector(s);
+      if (!el) return [s, null];
+      const r = el.getBoundingClientRect();
+      return [s, { x: r.x, y: r.y, w: r.width, h: r.height }];
+    })), CONFIRM_SELECTORS);
+    const missing = CONFIRM_SELECTORS.filter((s) => !boxes[s]);
+    if (missing.length) throw new Error(`${c.shot}: the design page lacks ${missing.join(', ')}`);
+    confirmOut.push({ shot: c.shot, width: c.width, height: c.height, state: 'confirm', captureBoard: captureBoardFor('confirm'), afterLoad: 'open-confirm', boxes });
+    await ctx.close();
+  }
 } finally {
   await browser.close();
   server.close();
@@ -310,6 +339,17 @@ const fixture = {
     ],
     cases: setupOut,
   },
+  confirmDialog: {
+    selectors: CONFIRM_SELECTORS,
+    coverage: 'sampled',
+    provenance: {
+      designCommit: freshProvenance.designCommit,
+      designCssSha1: freshProvenance.designCssSha1,
+      designBuildSha1: freshProvenance.designBuildSha1,
+      browser: freshProvenance.browser,
+    },
+    cases: confirmOut,
+  },
 };
 writeFileSync(OUT, `${JSON.stringify(fixture, null, 2)}\n`);
-console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors; setupSheet ${setupOut.length} cases (content-decided: ${fixture.setupSheet.deviations[0].contentDecidedCases.join(', ') || 'none'})`);
+console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors; setupSheet ${setupOut.length} cases (content-decided: ${fixture.setupSheet.deviations[0].contentDecidedCases.join(', ') || 'none'}); confirmDialog ${confirmOut.length} cases x ${CONFIRM_SELECTORS.length} selectors`);

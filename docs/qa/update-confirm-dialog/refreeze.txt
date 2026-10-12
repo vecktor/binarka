@@ -1,0 +1,77 @@
+update-confirm-dialog: refreeze of the geometry cases (task 3.1) and the per-block tool block (task 3.2), the dialog session, 2026-10-12 (UTC+5:30)
+Tree: 03c8f13 (the red tests) plus the edits of scripts/freeze-design-geometry.mjs and scripts/visual-block.mjs; design/v0/out built in this worktree.
+Locks: grep -c freeze-design-geometry factory-lock.json -> 0; grep -c visual-block factory-lock.json -> 0
+
+================ TASK 3.1: the freeze ================
+== port check before
+2026-10-12 13:32:28
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+== ls design/v0/out/index.html
+design/v0/out/index.html
+== BINARKA_PORT_BASE=6373 node scripts/freeze-design-geometry.mjs
+wrote quality/design-geometry.json: 32 cases x 16 selectors, rulesPanel: 8 cases x 2 selectors; setupSheet 12 cases (content-decided: 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four); confirmDialog 5 cases x 4 selectors
+exit 0
+== port check after
+2026-10-12 13:32:35
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+== git diff --stat quality/design-geometry.json
+ quality/design-geometry.json | 706 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 704 insertions(+), 2 deletions(-)
+
+== filter: only the key confirmDialog was added (node, the file before the run against after)
+keys before: $comment,provenance,tolerancePx,selectors,coverage,cases,rulesPanel,setupSheet
+keys after:  $comment,provenance,tolerancePx,selectors,coverage,cases,rulesPanel,setupSheet,confirmDialog
+$comment     unchanged
+provenance   unchanged
+tolerancePx  unchanged
+selectors    unchanged
+coverage     unchanged
+cases        unchanged
+designCommit unchanged | designCssSha1 unchanged
+rulesPanel   unchanged (provenance.designBuildSha1 not compared) | its designBuildSha1 differs (this worktree build; not compared, task 3.1)
+setupSheet   unchanged (provenance.designBuildSha1 not compared) | its designBuildSha1 differs (this worktree build; not compared, task 3.1)
+confirmDialog selectors ["dialog[data-dialog=\"confirm\"]","dialog[data-dialog=\"confirm\"] p","[data-confirm=\"yes\"]","[data-confirm=\"no\"]"] coverage sampled
+confirmDialog provenance {"designCommit":"5e61bfd14de56bff4b3726db4ddd624fcd3c2e04","designCssSha1":"d1b1255f4dff205d15d64850096429cd377e5fbf","designBuildSha1":"ca1291317754c6daff1643241e8d5d7270968a8b","browser":"Playwright chromium 156.0.8078.4, devices[\"Desktop Chrome\"], reducedMotion reduce, colorScheme light"}
+  320-light-confirm 320x700 state confirm afterLoad open-confirm captureBoard size 6 level 1 | 12,241 296x218 | 37,266 246x48 | 37,390 246x44 | 37,338 246x44
+  375-light-confirm 375x812 state confirm afterLoad open-confirm captureBoard size 6 level 1 | 16,323 343x166 | 41,348 293x48 | 41,420 146.734375x44 | 195.734375,420 138.265625x44
+  768-light-confirm 768x1024 state confirm afterLoad open-confirm captureBoard size 6 level 1 | 208,429 352x166 | 233,454 302x48 | 233,526 151.234375x44 | 392.234375,526 142.765625x44
+  1024-light-confirm 1024x768 state confirm afterLoad open-confirm captureBoard size 6 level 1 | 336,301 352x166 | 361,326 302x48 | 361,398 151.234375x44 | 520.234375,398 142.765625x44
+  1440-light-confirm 1440x900 state confirm afterLoad open-confirm captureBoard size 6 level 1 | 544,367 352x166 | 569,392 302x48 | 569,464 151.234375x44 | 728.234375,464 142.765625x44
+== the only removed lines of git diff quality/design-geometry.json
+-      "designBuildSha1": "c3f5f81e5dacbad72f6f26085a4750d4e695598c",
+-      "designBuildSha1": "d1193198f7b4e58f412f0ad576ca32683f99e1c4",
+Reading: the dialog 296x218 at 320, 343x166 at 375, 352x166 from 768; at 320 «Скасувати» (y 338) above «Так, почати» (y 390), both 246x44; elsewhere side by side, «Так, почати» left. Equal to the ADDED requirement and docs/qa/prep-g2-wave2/classify.txt.
+
+================ TASK 3.2: dry run of the block confirm (on the OLD page, before the port; output to the session scratchpad, not committed) ================
+== port check before
+2026-10-12 13:32:54
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+== npm run build && node scripts/visual-block.mjs --block confirm --shots 375-light-confirm --out <scratchpad>/vb-dry (dry run on the OLD page, before the port)
+375-light-confirm              pixel 0.7765 geometry off 4/4, unpaired 0, max delta 5px
+
+Block confirm: 1 shot(s), geometry NOT within 0.5px (coverage: sampled)
+exit 1
+  dialog[data-dialog="confirm"]      delta 5 OFF design {"x":16,"y":323,"w":343,"h":166} page {"x":16,"y":328,"w":343,"h":156}
+  dialog[data-dialog="confirm"] p    delta 4 OFF design {"x":41,"y":348,"w":293,"h":48} page {"x":37,"y":349,"w":301,"h":48}
+  [data-confirm="yes"]               delta 4 OFF design {"x":41,"y":420,"w":146.734375,"h":44} page {"x":37,"y":417,"w":150.734375,"h":46}
+  [data-confirm="no"]                delta 4 OFF design {"x":195.734375,"y":420,"w":138.265625,"h":44} page {"x":195.734375,"y":417,"w":142.265625,"h":46}
+== port check after
+2026-10-12 13:32:59
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+Reading: the block opens on both sides (geometry measured, 0 unpaired) and is off on the old page as expected (the dialog 10px shorter, the text 8px wider, the buttons 46px).

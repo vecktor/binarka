@@ -267,3 +267,55 @@ No failure is an import, syntax or type error.
 RED RUN CONFIRMED BY THE PARENT (task 2.5), 2026-10-12 13:31: `npx vitest run` 24 failed | 1955 passed (1979), 7 files failed of 80, every failure an
 AssertionError (the parent's own run, the same 24 as section B and C); the e2e above 15 failed, 3 passed. Task 3.3 re-runs the geometry part after the freeze.
 
+
+======================================================================================================
+SECTION E (task 3.3, the parent): the e2e after the freeze (quality/design-geometry.json holds confirmDialog), before the port, BINARKA_PORT_BASE=6373
+======================================================================================================
+2026-10-12 13:33:06
+lsof 6373: 
+lsof 6374: 
+lsof 6375: 
+lsof 6376: 
+lsof 6377: 
+== npx playwright test --project=layout e2e/nfr-14-confirm-dialog.spec.ts (after the freeze, before the port)
+  ✓   1 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:278:1 › @trace NFR-14 @trace FR-67 the fixture holds the key confirmDialog: the four selectors, sampled coverage, its own provenance and the 5 cases with the recorded structure (6ms)
+  ✓   2 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:244:1 › @trace NFR-14 the design build is required and the coverage is declared: sampling dimensions, coverage sampled, the stricter instruments named, nothing beyond a sample claimed (7ms)
+  ✓   3 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:266:1 › @trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes (5ms)
+  ✘   7 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 1024-light-confirm (1024x768): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (213ms)
+  ✘   6 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 768-light-confirm (768x1024): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (215ms)
+  ✘   8 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 1440-light-confirm (1440x900): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (228ms)
+  ✘   5 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 375-light-confirm (375x812): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (227ms)
+  ✘   4 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:334:3 › @trace NFR-14 @trace FR-67 320-light-confirm (320x700): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance (220ms)
+  ✘  12 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 1440x900: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (247ms)
+  ✘   9 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 768x1024: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (256ms)
+  ✘  10 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 1024x768: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (274ms)
+  ✘  13 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 375x812: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (274ms)
+  ✘  11 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:504:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 320x700: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance) (298ms)
+  ✓  16 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:439:3 › paint: both buttons against the design build › @trace NFR-14 the design server listens on a port chosen by the operating system, not on one the page preview or the capture tools bind (5ms)
+  ✘  15 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:452:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (489ms)
+  ✘  17 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:452:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (491ms)
+  ✘  18 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:452:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (507ms)
+  ✘  14 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:452:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (514ms)
+  14 failed
+  4 passed (7.1s)
+    +   "1024-light-confirm the dialog (dialog[data-dialog=\"confirm\"]): page 336.00,306.00 352.00x156.00, design 336.00,301.00 352.00x166.00 (top 306.00 vs 301.00; bottom 462.00 vs 467.00)",
+    +   "1024-light-confirm its text (dialog[data-dialog=\"confirm\"] p): page 357.00,327.00 310.00x48.00, design 361.00,326.00 302.00x48.00 (left 357.00 vs 361.00; top 327.00 vs 326.00; right 667.00 vs 663.00; bottom 375.00 vs 374.00)",
+    +   "1024-light-confirm «Так, почати» ([data-confirm=\"yes\"]): page 357.00,395.00 155.23x46.00, design 361.00,398.00 151.23x44.00 (left 357.00 vs 361.00; top 395.00 vs 398.00; bottom 441.00 vs 442.00)",
+    +   "1024-light-confirm «Скасувати» ([data-confirm=\"no\"]): page 520.23,395.00 146.77x46.00, design 520.23,398.00 142.77x44.00 (top 395.00 vs 398.00; right 667.00 vs 663.00; bottom 441.00 vs 442.00)",
+    +   "768-light-confirm the dialog (dialog[data-dialog=\"confirm\"]): page 208.00,434.00 352.00x156.00, design 208.00,429.00 352.00x166.00 (top 434.00 vs 429.00; bottom 590.00 vs 595.00)",
+    +   "768-light-confirm its text (dialog[data-dialog=\"confirm\"] p): page 229.00,455.00 310.00x48.00, design 233.00,454.00 302.00x48.00 (left 229.00 vs 233.00; top 455.00 vs 454.00; right 539.00 vs 535.00; bottom 503.00 vs 502.00)",
+    +   "768-light-confirm «Так, почати» ([data-confirm=\"yes\"]): page 229.00,523.00 155.23x46.00, design 233.00,526.00 151.23x44.00 (left 229.00 vs 233.00; top 523.00 vs 526.00; bottom 569.00 vs 570.00)",
+    +   "768-light-confirm «Скасувати» ([data-confirm=\"no\"]): page 392.23,523.00 146.77x46.00, design 392.23,526.00 142.77x44.00 (top 523.00 vs 526.00; right 539.00 vs 535.00; bottom 569.00 vs 570.00)",
+    +   "320-light-confirm the dialog (dialog[data-dialog=\"confirm\"]): page 16.00,245.00 288.00x210.00, design 12.00,241.00 296.00x218.00 (left 16.00 vs 12.00; top 245.00 vs 241.00; right 304.00 vs 308.00; bottom 455.00 vs 459.00)",
+    +   "320-light-confirm «Так, почати» ([data-confirm=\"yes\"]): page 37.00,388.00 246.00x46.00, design 37.00,390.00 246.00x44.00 (top 388.00 vs 390.00)",
+    +   "320-light-confirm «Скасувати» ([data-confirm=\"no\"]): page 37.00,334.00 246.00x46.00, design 37.00,338.00 246.00x44.00 (top 334.00 vs 338.00; bottom 380.00 vs 382.00)",
+    +   "1440-light-confirm the dialog (dialog[data-dialog=\"confirm\"]): page 544.00,372.00 352.00x156.00, design 544.00,367.00 352.00x166.00 (top 372.00 vs 367.00; bottom 528.00 vs 533.00)",
+2026-10-12 13:33:20
+lsof 6373: 
+lsof 6374: 
+lsof 6375: 
+lsof 6376: 
+lsof 6377: 
+
+Reading: the fixture-key test now passes (4 passed: the three GUARDs and the key test); the five box cases fail on the box assertions (the old dialog is
+288px wide and 210 tall at 320, 156 tall from 375; its text 8px wider; the buttons 46px), not on a missing fixture; targets and paint still red.
