@@ -580,6 +580,11 @@ body {
   grid-template-rows: auto auto minmax(2.75rem, 1fr);
   column-gap: var(--space-2);
   align-content: start;
+  /* Iteration 18: focus scrolling keeps a focused option and its ring above the footer strip
+     (A-60, FR-65, WCAG 2.4.11), the product's value: the strip is 2.75rem + 16px tall, the
+     sticky row sits on the sheet's 16px bottom padding, and the ring reaches 5px beyond the
+     option. */
+  scroll-padding-bottom: calc(2.75rem + 48px);
 }
 
 .setup > .size-control,
