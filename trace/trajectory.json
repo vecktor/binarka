@@ -303,7 +303,7 @@
     {
       "slice": "2026-10-12-update-setup-sheet",
       "reviewEvidence": "clean",
-      "trailerCommits": 28,
+      "trailerCommits": 29,
       "libDomains": [
         "ui"
       ],
@@ -313,7 +313,7 @@
     {
       "slice": "2026-10-12-update-setup-sheet-design-margin",
       "reviewEvidence": "dispositioned",
-      "trailerCommits": 0,
+      "trailerCommits": 1,
       "libDomains": [],
       "processComplete": true,
       "designWaived": false
@@ -333,10 +333,6 @@
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "trailer",
-      "msg": "2026-10-12-update-setup-sheet-design-margin: no commit carries a \"Slice: update-setup-sheet-design-margin\" trailer"
-    },
     {
       "check": "in-scope",
       "msg": "src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift"

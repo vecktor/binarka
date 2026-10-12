@@ -6,9 +6,23 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-12 17:11 (UTC+5:30; Kyiv 14:41)
-- **Working branch:** `main` (stream P of wave 3, worktree `.claude/worktrees/amazing-feynman-337579`, branch `claude/feynman-process`, merged by the user as PR 1 `0cfc35f` and pushed with this handoff; rows 211 to 217).
-- **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 wave 3, stream P (process; rows 211 to 217), START HERE:**
+- **Date and time:** 2026-10-12 18:37 (UTC+5:30; Kyiv 16:07)
+- **Working branch:** `main` (stream DS of wave 3, worktree `.claude/worktrees/youthful-bhabha-16df8e`, branch `claude/youthful-bhabha-design28`, merged into `main` with a merge commit and pushed on the user's word with this handoff; rows 218 to 223).
+- **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 wave 3, stream DS (design 28px; rows 218 to 223), START HERE:**
+  - **The NFR-14 reference is `design/v0-screenshots/review-set-16/`** (`SHA1SUMS` `80eb8022…`), moved by the user twice on 2026-10-12. First to `review-set-15` (design iteration 17: the level group's 28px margin at every width, in all three rules that set it). Then to set 16 (iteration 18: the design's open setup sheet gets the page's `scroll-padding-bottom`). A-60 was amended and signed: the 28px is no longer a departure (`design/README.md` § «Iteration 17», § «Iteration 18», § «Pixel reference: moved to review-set-16»).
+  - **NFR-14 on the branch: PASS, 170 of 170** in a fresh `check:visual` on port base 6773 (`docs/qa/design-stream/check-visual-set16.txt`). The 12 phone setup shots reach 1.0000 (were 0.8755 to 0.9388), and the 18 other setup shots 1.0000 (were 0.990 to 0.995). The committed `docs/qa/visual-diff/*/report.json` are still run 14's: only F commits a full run.
+  - **PD-13 and PD-14 DONE** (`docs/qa/improvements/PD-13-*`, `PD-14-*`): the locked `quality/visual-parity.config.json` names set 16; lock re-sealed after P's PD-12. `tests/nfr-14-reference-pins.test.ts` now checks the row, the config and the set's SHA1SUMS against each other.
+  - **The recorded deviation is gone:** `scripts/setup-sheet.mjs` (selectors and `LEVEL_MARGIN` 28px) replaces `scripts/setup-sheet-deviation.mjs`. The freeze and `visual-block.mjs` inject nothing and fail on a design margin other than 28px. `quality/design-geometry.json` was refrozen with its case hashes pre-registered (`docs/qa/design-stream/refreeze*.txt`). `scripts/reference-calibration.mjs` names each set's calibration (`docs/qa/design-stream/harness-calibration-set16.txt`: 170 of 170 at 1.0000).
+  - **Archived:** `openspec/changes/archive/2026-10-12-update-setup-sheet-design-margin/` (the living setup-sheet requirement follows A-60). Review gate `wf_b4f0e083-6e6`: 10 confirmed and one fix round (`a93262f`); disposition signed (`docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json`). `check-trajectory --release` PASS.
+  - **Battery on the branch** (`docs/qa/design-stream/battery-set16.txt`, `fix-round-1.txt`): lint 0, unit 1996 of 1996, build 0, strict 2 of 2, eval PASS, integrity PASS, e2e 323 of 323, a11y 67 of 67.
+  - **The design commit `521ce03` is pinned** by the fixture's provenance and three e2e specs. Any rebase or squash of it means a refreeze and re-pins.
+  - **Scope NOT delivered by DS (accepted open by the user):**
+    - the 1024×768 sheet edge 1 to 2 px above the first hint line;
+    - the 320×700 sheet scrolling about 8px at rest (in `setup-marked` it opens scrolled, so the top gap is about 6px);
+    - the two repeated media rules in the design.
+    - `quality/design-paint.json` was not refrozen: no colour changed, and its provenance still names the old design.
+  - **Next:** R's lock re-seal rebases onto this `main`; then F (port base 6873), which commits a full `check:visual` run's 170 reports.
+  Earlier: **2026-10-12 wave 3, stream P (process; rows 211 to 217):**
   - **Done, each with a red proof, the user's approval, a `Refs: PD-n` commit and a lock re-seal** (`docs/qa/improvements/`, session log `docs/qa/process-stream/session-log.md` P1 to P18):
     - **PD-8:** the acceptance check reads 0.98 for NFR-14 pixel-diff (`PD-8-green-proof.txt`). A 0.985 report now passes; 0.975 fails.
     - **PD-9:** a `logo` driver in the capture adapter; logo-dark 1 and logo-light 1 on base 6573 (`PD-9-proof.txt` § 4). The committed `docs/qa/visual-diff/logo-*` reports still say `score: null`: only F commits the 170 reports.
@@ -17,7 +31,7 @@
     - **PD-12:** trajectory trailer counts follow HEAD's history; CI `verify` was red on `main` at `2762e31` (freshness) and passed on run `38243572936` (`PD-12-proof.txt` § 6).
     - **ADRs 0006 to 0009 ACCEPTED** by the user.
   - **Scope NOT delivered by P:** the seven geometry and fit e2e files (163 tests) and `check:visual` run only locally (they compare text-sized boxes with values frozen on macOS); the segmented slice's six findings are waived, not fixed (a CSS comment in `src/ui/style.css` that still says «keep it inside» could be reworded by F); no gate PASS is claimed by P.
-  - **Next:** DS part 2 and R's lock re-seal rebase onto this `main` (P's re-seals are in); then F. The process ratchet, coverage `--update`, `gate:status` and the sign-offs are F's.
+  - **Next (then):** DS part 2 and R's lock re-seal rebase onto this `main` (P's re-seals are in); then F. The process ratchet, coverage `--update`, `gate:status` and the sign-offs are F's.
   Earlier: **2026-10-12 delivery-planning session (rows 206 to 209), START HERE:**
   - **The plan for the rest of the app:** `docs/handoff/delivery-plan-2026-10-12.md`; section 0 holds the re-measurement after wave 2. Start prompts for wave 3: `docs/handoff/delivery-wave3-start-prompts-2026-10-12.md` (P process, DS design 28px, R recordings and vision: all three can start now; F final, last).
   - **Measured on `0ed5550`** (`docs/qa/delivery-plan/after-wave2/*.txt`; the first measurement on `9304d2c` is in `docs/qa/delivery-plan/*.txt`):
