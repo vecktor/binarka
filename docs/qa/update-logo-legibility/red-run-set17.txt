@@ -1,0 +1,15 @@
+# Red run for the set-17 refreeze (2026-10-12 20:22 +0530): the three NFR-14 specs re-pinned to the design commit e0d1a5d (iteration 20); quality/design-geometry.json still records 521ce03 (iteration 18).
+  ✘   3 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:299:1 › @trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes; the design hashes name design iteration 18 (6ms)
+  ✘  19 [layout] › e2e/nfr-14-settings-panel.spec.ts:153:1 › @trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 18, review-set-16) (4ms)
+  ✘  33 [layout] › e2e/nfr-14-settings-panel.spec.ts:164:1 › @trace NFR-14 @trace FR-68 adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet, and settingsPanel names the same design (15ms)
+  ✘  40 [layout] › e2e/nfr-14-setup-sheet.spec.ts:137:1 › @trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 18, review-set-16) (4ms)
+    Expected: "e0d1a5d324105ea3360199da2d42dcfde571ac47"
+    Received: "521ce035095b74d367ca326479c2b6ec77827448"
+    Expected: "e0d1a5d324105ea3360199da2d42dcfde571ac47"
+    Received: "521ce035095b74d367ca326479c2b6ec77827448"
+    Expected: "e0d1a5d324105ea3360199da2d42dcfde571ac47"
+    Received: "521ce035095b74d367ca326479c2b6ec77827448"
+    Expected: "e0d1a5d324105ea3360199da2d42dcfde571ac47"
+    Received: "521ce035095b74d367ca326479c2b6ec77827448"
+  4 failed
+  62 passed (7.7s)

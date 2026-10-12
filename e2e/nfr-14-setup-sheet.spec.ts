@@ -117,7 +117,9 @@ const TOP_LEVEL_SELECTORS = [
   '[data-message="hint"]',
   '[data-message="win"]',
 ];
-const TOP_LEVEL_DESIGN_COMMIT = '521ce035095b74d367ca326479c2b6ec77827448';
+// update-logo-legibility / PD-16 DELIBERATE CHANGE: design iteration 20 (the tile logo of FR-72 as amended, merged at `e0d1a5d`; the user moved
+// the reference to review-set-17, logo-fix session log row 28). The CSS is unchanged (only the logo's TSX), so the CSS hash stays.
+const TOP_LEVEL_DESIGN_COMMIT = 'e0d1a5d324105ea3360199da2d42dcfde571ac47';
 const TOP_LEVEL_DESIGN_CSS_SHA1 = 'bef5279b57baeca456fa7a4c3ff0ddf0f9440e43';
 
 const isBox = (v: unknown): v is Box => {
@@ -137,7 +139,7 @@ test('@trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selec
   expect(fixture.cases.some((c) => c.shot.includes('setup')), 'no setup shot is among the top-level cases').toBe(false);
   expect(fixture.tolerancePx).toBe(0.5);
   expect(fixture.selectors).toEqual(TOP_LEVEL_SELECTORS);
-  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 18').toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 20').toBe(TOP_LEVEL_DESIGN_COMMIT);
   expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 18').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
 });
 

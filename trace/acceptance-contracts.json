@@ -1031,8 +1031,8 @@
       {
         "method": "pixel-diff",
         "mechanism": "npm:check:visual",
-        "artifact": null,
-        "status": "failing-artifact"
+        "artifact": "docs/qa/visual-diff/1024-dark-confirm/report.json",
+        "status": "artifact-ok"
       }
     ],
     "NFR-15": [
@@ -1071,8 +1071,8 @@
       {
         "method": "pixel-diff",
         "mechanism": "npm:check:visual",
-        "artifact": null,
-        "status": "failing-artifact"
+        "artifact": "docs/qa/visual-diff/1024-dark-confirm/report.json",
+        "status": "artifact-ok"
       }
     ]
   }

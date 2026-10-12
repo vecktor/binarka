@@ -1,12 +1,11 @@
 {
   "breakpoint": "375-dark-setup",
-  "score": 0.9315,
+  "score": 1,
   "threshold": 0.98,
   "heightDelta": 0,
   "refHeight": 812,
   "localHeight": 812,
   "masked": 0,
-  "pass": false,
-  "reason": "pixel score 0.9315 below threshold 0.98",
+  "pass": true,
   "generatedBy": "scripts/check-visual-fidelity.mjs"
 }

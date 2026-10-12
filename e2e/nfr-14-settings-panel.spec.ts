@@ -123,7 +123,9 @@ const TOP_LEVEL_SELECTORS = [
   '[data-message="hint"]',
   '[data-message="win"]',
 ];
-const TOP_LEVEL_DESIGN_COMMIT = '521ce035095b74d367ca326479c2b6ec77827448';
+// update-logo-legibility / PD-16 DELIBERATE CHANGE: design iteration 20 (the tile logo of FR-72 as amended, merged at `e0d1a5d`; the user moved
+// the reference to review-set-17, logo-fix session log row 28). The CSS is unchanged (only the logo's TSX), so the CSS hash stays.
+const TOP_LEVEL_DESIGN_COMMIT = 'e0d1a5d324105ea3360199da2d42dcfde571ac47';
 const TOP_LEVEL_DESIGN_CSS_SHA1 = 'bef5279b57baeca456fa7a4c3ff0ddf0f9440e43';
 // Review gate fix round 1, finding A: the other blocks' keys, pinned as their recorded cases (SHA-1 of JSON.stringify of the parsed cases,
 // read from main's quality/design-geometry.json at 18e5f3f) and recorded provenance, so adding settingsPanel can change neither.
@@ -132,8 +134,9 @@ const TOP_LEVEL_DESIGN_CSS_SHA1 = 'bef5279b57baeca456fa7a4c3ff0ddf0f9440e43';
 // build) into every key. rulesPanel keeps the cases of 18e5f3f (the 28px moves no rules panel box); setupSheet's cases are the iteration-17
 // refreeze's, unchanged by iteration 18 (docs/qa/design-stream/refreeze.txt, refreeze-set16.txt).
 const OTHER_KEYS = [
-  { key: 'rulesPanel', count: 8, casesSha1: 'f70bb8c08a4415002cdd011efb40153047b4a75d', designBuildSha1: 'e9519d4885cd5fdeedf94a183a6419df2f810ec7' },
-  { key: 'setupSheet', count: 12, casesSha1: '6b0660d41c74152933cec0c605b95d057bf874db', designBuildSha1: 'e9519d4885cd5fdeedf94a183a6419df2f810ec7' },
+  // update-logo-legibility / PD-16: the build of design iteration 20 (e0d1a5d, the tile logo; reference review-set-17); the cases are unchanged.
+  { key: 'rulesPanel', count: 8, casesSha1: 'f70bb8c08a4415002cdd011efb40153047b4a75d', designBuildSha1: '5d68fcd34050aaca76f9916fbf101de2e052eea5' },
+  { key: 'setupSheet', count: 12, casesSha1: '6b0660d41c74152933cec0c605b95d057bf874db', designBuildSha1: '5d68fcd34050aaca76f9916fbf101de2e052eea5' },
 ] as const;
 
 const isBox = (v: unknown): v is Box => {
@@ -152,7 +155,7 @@ test('@trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selec
   expect(fixture.cases, 'the top-level cases of quality/design-geometry.json').toHaveLength(32);
   expect(fixture.tolerancePx).toBe(TOLERANCE);
   expect(fixture.selectors).toEqual(TOP_LEVEL_SELECTORS);
-  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 18').toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 20').toBe(TOP_LEVEL_DESIGN_COMMIT);
   expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 18').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
 });
 

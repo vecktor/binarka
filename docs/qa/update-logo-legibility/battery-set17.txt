@@ -1,0 +1,51 @@
+# Battery after the reference move to review-set-17 (PD-16) (2026-10-12 20:26 +0530), HEAD 542e81b + the refreeze and the e2e pins (uncommitted at run time), BINARKA_PORT_BASE=6873
+
+## npm run lint
+exit: 0
+
+## npm run test:run
+ Test Files  82 passed (82)
+      Tests  1998 passed (1998)
+exit: 0
+
+## npm run build
+exit: 0
+
+## npx openspec validate --all --strict
+exit: 0
+
+## npm run check:vision
+Result: PASS
+exit: 0
+
+## node scripts/check-recordings.mjs --require-vision
+Result: PASS
+exit: 0
+
+## node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+exit: 0
+
+## npm run check:integrity
+Result: PASS, 1 warning(s)
+exit: 0
+
+## npm run check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+acceptance (existence): 134 contract(s) across 134 requirement(s) — 0 failure(s), 1 warning(s), 0 pending
+Result: PASS, 1 warning(s)
+exit: 0
+
+## node scripts/check-acceptance-methods.mjs --mode=artifact
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+acceptance (artifact): 134 contract(s) across 134 requirement(s) — 0 failure(s), 1 warning(s), 0 pending
+Result: PASS, 1 warning(s)
+exit: 0
+
+## node scripts/check-trajectory.mjs --release
+Result: PASS, 1 warning(s)
+exit: 0
+
+## npm run check:visual (run before the battery): Result PASS, exit 0, 170 of 170 at 0.98 against review-set-17; logo-light and logo-dark score 1; lowest 0.9913 (check-visual-set17.txt)
+## npx playwright test (all projects): 323 passed, exit 0

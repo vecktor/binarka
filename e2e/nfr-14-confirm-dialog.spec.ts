@@ -123,7 +123,9 @@ const FORBIDDEN_PORTS = [0, 1, 3, 4].map((offset) => PORT_BASE + offset);
 // of wave 3, 2026-10-12; A-60 amended and signed, the user moved the NFR-14 reference to review-set-15): the design hashes name design iteration
 // 17 (`41c5165`, the level group's 28px margin), which replaced `5e61bfd` / `d1b1255f…`, then 18 (`521ce03`, the setup sheet's scroll padding; the
 // reference moved to review-set-16, row DS14); the refreeze writes this design's provenance into every key.
-const TOP_LEVEL_DESIGN_COMMIT = '521ce035095b74d367ca326479c2b6ec77827448';
+// update-logo-legibility / PD-16 DELIBERATE CHANGE: design iteration 20 (the tile logo of FR-72 as amended, merged at `e0d1a5d`; the user moved
+// the reference to review-set-17, logo-fix session log row 28). The CSS is unchanged (only the logo's TSX), so the CSS hash stays.
+const TOP_LEVEL_DESIGN_COMMIT = 'e0d1a5d324105ea3360199da2d42dcfde571ac47';
 const TOP_LEVEL_DESIGN_CSS_SHA1 = 'bef5279b57baeca456fa7a4c3ff0ddf0f9440e43';
 // SHA-1 of JSON.stringify of the CASES of the keys rulesPanel and setupSheet. It was the whole key (cases, selectors, provenance, deviations) as
 // main 18e5f3f recorded it, so that the refreeze adding confirmDialog left both byte-identical (review gate of update-confirm-dialog, fix round 1).
@@ -298,7 +300,7 @@ test('@trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, toler
   expect(fixture.cases, 'the top-level cases of quality/design-geometry.json').toHaveLength(32);
   expect(fixture.cases.some((c) => c.shot.includes('confirm')), 'no confirm shot is among the top-level cases').toBe(false);
   expect(fixture.tolerancePx).toBe(0.5);
-  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 18').toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 20').toBe(TOP_LEVEL_DESIGN_COMMIT);
   expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 18').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
   expect(fixture.rulesPanel?.cases, 'rulesPanel keeps its 8 cases').toHaveLength(8);
   expect(fixture.setupSheet?.cases, 'setupSheet keeps its 12 cases').toHaveLength(12);
