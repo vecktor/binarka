@@ -131,7 +131,7 @@ const TOP_LEVEL_DESIGN_CSS_SHA1 = '8115024412a8e6c6d135136183fae458489597d0';
 // setupSheet's are the iteration-17 refreeze's (no deviation, the design's own boxes; docs/qa/design-stream/refreeze.txt).
 const UNCHANGED_CASES_SHA1: Record<'rulesPanel' | 'setupSheet', string> = {
   rulesPanel: 'f70bb8c08a4415002cdd011efb40153047b4a75d',
-  setupSheet: 'PENDING-REFREEZE',
+  setupSheet: '6b0660d41c74152933cec0c605b95d057bf874db',
 };
 
 const isBox = (v: unknown): v is Box => {

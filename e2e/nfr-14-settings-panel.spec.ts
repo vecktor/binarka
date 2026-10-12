@@ -131,8 +131,8 @@ const TOP_LEVEL_DESIGN_CSS_SHA1 = '8115024412a8e6c6d135136183fae458489597d0';
 // iteration 17 changed the design, so the refreeze writes its provenance (designBuildSha1 of that build) into every key. rulesPanel keeps the cases
 // of 18e5f3f (the 28px moves no rules panel box); setupSheet's cases are the iteration-17 refreeze's (docs/qa/design-stream/refreeze.txt).
 const OTHER_KEYS = [
-  { key: 'rulesPanel', count: 8, casesSha1: 'f70bb8c08a4415002cdd011efb40153047b4a75d', designBuildSha1: 'PENDING-REFREEZE' },
-  { key: 'setupSheet', count: 12, casesSha1: 'PENDING-REFREEZE', designBuildSha1: 'PENDING-REFREEZE' },
+  { key: 'rulesPanel', count: 8, casesSha1: 'f70bb8c08a4415002cdd011efb40153047b4a75d', designBuildSha1: '80a0ac97673a11806926647c73cea86a06e40674' },
+  { key: 'setupSheet', count: 12, casesSha1: '6b0660d41c74152933cec0c605b95d057bf874db', designBuildSha1: '80a0ac97673a11806926647c73cea86a06e40674' },
 ] as const;
 
 const isBox = (v: unknown): v is Box => {

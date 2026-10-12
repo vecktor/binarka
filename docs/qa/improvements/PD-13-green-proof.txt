@@ -17,3 +17,8 @@ Result: PASS, 1 warning(s)
 
 ## 3. Refreeze and the three specs: see docs/qa/design-stream/refreeze.txt and green-run.txt (appended below when run)
 ## 4. Fresh check:visual against review-set-15: docs/qa/design-stream/check-visual-set15.txt (appended below when run)
+
+## 3. Refreeze and the three specs (2026-10-12 17:38 to 17:39)
+- `docs/qa/design-stream/refreeze.txt`: provenance.reference review-set-15, referenceSha1sums c561f87d…, standIn the set-15 calibration;
+  the four pre-registered case hashes UNCHANGED; setupSheet's 12 design boxes equal the old injected `expected` boxes at 0.00 px.
+- `docs/qa/design-stream/green-run.txt`: 66 of 66 passed (red-run.txt: 13 failed, 53 passed).

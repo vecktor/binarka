@@ -346,7 +346,8 @@ const freshProvenance = {
     designBuild: 'design/v0/out from `pnpm build` in design/v0 (design/README.md), not committed; designBuildSha1 covers every file of it',
     reference: config.referenceDir,
     referenceSha1sums: config.referenceSha1sums,
-    standIn: 'docs/qa/g2/harness-calibration.txt (the design build reproduces all 170 reference shots at 1.0000)',
+    // The calibration of the build against the reference the config names (review-set-14: docs/qa/g2/harness-calibration.txt).
+    standIn: 'docs/qa/design-stream/harness-calibration-set15.txt (the design build reproduces all 170 reference shots at 1.0000)',
     browser: `Playwright chromium ${browser.version()}, devices["Desktop Chrome"], reducedMotion reduce, colorScheme light`,
   };
 // Keep the recorded provenance while the design is unchanged (designBuildSha1 differs between worktrees); otherwise write this run's.
