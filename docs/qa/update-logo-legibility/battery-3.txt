@@ -65,3 +65,21 @@ exit: 0
 Scope: 16 clip(s) across 1 manifest(s)
 Result: PASS
 exit: 0
+
+## after the contracts fix (18:09)
+## node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit: 0
+## npm run check:vision
+Scope: 16 judged still(s) of 16 clip(s) in 1 manifest(s); 2 vision-verify requirement(s)
+Result: PASS
+exit: 0
+## node scripts/check-recordings.mjs --require-vision
+Scope: 16 clip(s) across 1 manifest(s)
+Result: PASS
+exit: 0
+## node scripts/check-acceptance-methods.mjs --mode=existence
+acceptance (existence): 134 contract(s) across 134 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+Result: PASS
+exit: 0
