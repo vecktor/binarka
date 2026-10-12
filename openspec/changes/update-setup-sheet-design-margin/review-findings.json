@@ -1,8 +1,8 @@
 {
   "generatedBy": "review-gate workflow (run wf_b4f0e083-6e6), persisted by hand by the design stream DS",
-  "persistedBy": "design stream DS of wave 3 (claude/youthful-bhabha-design28), 2026-10-12, from the workflow result (reviewEvidence was null: the scope names no active change folder)",
-  "change": null,
-  "archiveFolder": null,
+  "persistedBy": "design stream DS of wave 3 (claude/youthful-bhabha-design28), 2026-10-12, from the workflow result (reviewEvidence was null: the scope names no active change folder); moved into the change folder so the archive carries it (docs/qa/review-dispositions/README.md, «Where a review file belongs»)",
+  "change": "update-setup-sheet-design-margin",
+  "archiveFolder": "openspec/changes/archive/2026-10-12-update-setup-sheet-design-margin (after the archive)",
   "runId": "wf_b4f0e083-6e6",
   "scope": "design stream DS of wave 3 (branch claude/youthful-bhabha-design28): design iterations 17 and 18 (design/v0/app/binarka.css), review-set-15 and review-set-16, PD-13 and PD-14 (quality/visual-parity.config.json re-pointed, factory-lock.json re-sealed), removal of the recorded setup-sheet deviation (scripts/setup-sheet-deviation.mjs -> scripts/setup-sheet.mjs; scripts/visual-block.mjs; scripts/freeze-design-geometry.mjs), the refrozen quality/design-geometry.json, the three changed e2e specs (e2e/nfr-14-setup-sheet.spec.ts, e2e/nfr-14-settings-panel.spec.ts, e2e/nfr-14-confirm-dialog.spec.ts), docs/requirements.md (NFR-14 row, A-60 signed wording), design/tools/capture-review-set.sh (port from BINARKA_PORT_BASE). Spec sources: docs/requirements.md A-60 and NFR-14; docs/handoff/delivery-plan-2026-10-12.md units DS-1 and DS-2; docs/qa/design-stream/session-log.md. Large binary review sets under design/v0-screenshots/ need no line review.",
   "baseRef": "d25ca3c",
@@ -27,7 +27,7 @@
     "Checklist areas not exercised by this diff"
   ],
   "clean": false,
-  "cleanNote": "10 confirmed and 2 contested findings; one fix round follows (session log DS16). No re-run of the gate is planned unless the user asks.",
+  "cleanNote": "10 confirmed and 2 contested findings. One fix round, commit a93262f (session log DS16); no confirming run. The findings are dispositioned in docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json (PD-10), which counts only once the user signs it.",
   "confirmed": [
     {
       "title": "OpenSpec play-page spec still requires the 28px departure, the recorded deviation, the `expected` boxes and `expectedDecidedBy`, which the changed tests and fixture now forbid",

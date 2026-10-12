@@ -326,6 +326,10 @@
   "failures": [],
   "warnings": [
     {
+      "check": "review-evidence",
+      "msg": "docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json names no archived slice"
+    },
+    {
       "check": "in-scope",
       "msg": "src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift"
     }
