@@ -239,3 +239,9 @@ The settings-panel tests of that run:
 ## Addendum, 2026-10-12 13:43 (UTC+5:30): the 2px margin on the user's word (session-log row 9)
 
 `.settings:popover-open { scroll-padding-bottom }` changed from `calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom))` to `calc(2.75rem + 2rem + 4px + env(safe-area-inset-bottom))` (the smoke test's walk had 0px to spare at 568×320 and 1024×360). Re-run after the change: `npx vitest run` 80 files, 1963 tests passed (the scroll-padding scenario reads "at least" 78px plus the inset: 80px passes); `npm run build` exit 0; ports 6473-6477 free before and after; `BINARKA_PORT_BASE=6473 npx playwright test --project=layout` exit 0, 237 passed (the walk at the three windows included); `docs/qa/e2e-report.json` restored. No gate shot scrolls the panel, so no shot's pixels can move; the fresh `check:visual` after the rebase (task 10.2) re-checks it.
+
+## Post-merge check of the hand-merged `scripts/visual-block.mjs` (2026-10-12 15:03 to 15:04 UTC+5:30, tree `33f0a3d` = local `main`)
+
+The merged tool (this block's `BLOCK_STATES` and `OPEN_STATES`, the dialog's "NOTHING MEASURED" exit, one `own` rule for the rules, confirm and settings blocks) run once on the rebased tree, after `npm run build`, ports 6473-6477 free before and after:
+- `BINARKA_PORT_BASE=6473 node scripts/visual-block.mjs --block settings --out <scratch>` (no `--states`: the block's own default): exit 0, 26 shots, each "pixel 1 geometry off 0/6", "Block settings: 26 shot(s), geometry within 0.5px".
+- `BINARKA_PORT_BASE=6473 node scripts/visual-block.mjs --block confirm --states confirm --out <scratch>`: exit 0, 10 shots, each "pixel 1 geometry off 0/4", "Block confirm: 10 shot(s), geometry within 0.5px" (the dialog block's result, unchanged by the merge).
