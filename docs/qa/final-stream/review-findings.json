@@ -270,5 +270,21 @@
         "The unbounded `while (solution === null)` loop exists at generator.ts line 94. But each fillGrid call is bounded by FILL_NODE_BUDGET (20000 nodes), and a restart continues the RNG stream, so each retry is a fresh attempt. I could not show a seed or size where the loop fails to end. I ran generate() at N=12, 14 and 16 (level 1) over 40 seeds each, 120 runs in total. All finished in about 6.7 s in total, with no hang and no GenerationRunOutError. The finding itself admits it saw no hang. The input space is also small: size is validated as even and at most 16, seed is a bounded integer, and the same seed always gives the same result. This is a missing defensive cap, not a reproducible problem for a real user or attacker. Capping fill restarts would be consistent with FR-84 but is not needed to prevent an observable failure."
       ]
     }
-  ]
+  ],
+  "dispositions": {
+    "C1+C3 CLI test suite times out under load (tests/cli.test.ts:9)": "FIXED in 4155b57: TIMEOUT 30 s -> 120 s, no assertion changed (the user approved, session log F14).",
+    "C2 Reset on an untouched board clears the hint message (src/ui/play-page.ts:417)": "FIXED by change fix-reset-keeps-hint (fed0090 red, da3e7b5 green); the user chose «Keep the message».",
+    "C9 The spec disagrees with itself on whether Reset clears the hint message": "FIXED by the same change: MODIFIED «Reset button» defines the untouched board and scopes the clearing to a board with entries.",
+    "C4 FR-70 English suffix \", hint\" vs \", hinted\"": "FIXED in 9f9a329: FR-70 amended to \", hinted\" (the user signed in the question form).",
+    "C5 NFR-17 says the hint budget is not yet measured": "OPEN by the user's choice: offered as a wording fix, not chosen (session log F14). The budget is measured and enforced by a test; only the requirement sentence is stale.",
+    "C6 add-difficulty-engine task 3.5 names an uncommitted battery file": "ACKNOWLEDGED, not fixable here: archived change folders are never edited.",
+    "C7 add-violation-cause task 4.1 names an evidence file never created": "ACKNOWLEDGED, not fixable here: archived change folders are never edited.",
+    "C8 update-setup-sheet-design-margin task 3.1 points to a missing review-findings path": "ACKNOWLEDGED, not fixable here: archived change folders are never edited (the review evidence is docs/qa/design-stream/review-findings.json).",
+    "C10 NFR-7: CI runs 6 of the 14 e2e specs": "OPEN by the user's choice: the CI subset is stream P's measured P-CI decision (font-dependent geometry and fit specs run locally; current-state lists it as P's undelivered scope); a note in NFR-7 was offered and not chosen. Every e2e spec runs locally in the battery (323 passed, battery-1.txt).",
+    "C11 15 of 16 demo stills show the old sun logo; FR-72 vision verdict judged on it": "FIX IN PROGRESS: re-record (npm run qa:record-demos, port base 6873) and a fresh vision-verify run (the user: «Re-record + re-judge»).",
+    "contested: startNewPuzzle and changeTo identical; svgEl duplicated; isSolved on an empty grid": "NO CHANGE: minor maintainability items with no behaviour defect (isSolved is never called on an empty grid by the page or the CLI).",
+    "rejected x3": "No action (rejected by the verifiers)."
+  },
+  "fixRound": 1,
+  "dispositionsBy": "stream F, 2026-10-12, from the user's answers (session log F14)"
 }

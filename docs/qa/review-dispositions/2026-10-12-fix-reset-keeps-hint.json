@@ -1,0 +1,26 @@
+{
+  "slice": "2026-10-12-fix-reset-keeps-hint",
+  "reviewFile": "openspec/changes/archive/2026-10-12-fix-reset-keeps-hint/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_2b1c80fe-f30 (6b08d5a..da3e7b5; the user's yes «Review, then archive (Recommended)», stream F session log F16): 1 confirmed, 1 contested, 4 rejected"
+  ],
+  "excluded": "contested, not an entry: «Coverage summary: the new scenario and the guard match the spec» (suggestion «No action needed»). Rejected: 4.",
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_2b1c80fe-f30",
+      "title": "Unmodified «Confirmation» requirement still says «Так, почати» performs the action 'exactly as it would on an untouched board', which for Reset now means doing nothing",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "dimension": "correctness",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "fe87c4f",
+      "evidence": "openspec/changes/archive/2026-10-12-fix-reset-keeps-hint/specs/play-page/spec.md (MODIFIED «Confirmation before discarding player entries»), applied to the living spec at the archive; checks: docs/qa/fix-reset-keeps-hint/fix-round-1.txt",
+      "file": "openspec/specs/play-page/spec.md"
+    }
+  ],
+  "openProductDefects": 0,
+  "signature": null
+}

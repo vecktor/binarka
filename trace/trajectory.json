@@ -281,6 +281,16 @@
       "designWaived": false
     },
     {
+      "slice": "2026-10-12-fix-reset-keeps-hint",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 3,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true,
+      "designWaived": false
+    },
+    {
       "slice": "2026-10-12-update-confirm-dialog",
       "reviewEvidence": "clean",
       "trailerCommits": 5,
@@ -343,6 +353,10 @@
   ],
   "failures": [],
   "warnings": [
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-12-fix-reset-keeps-hint: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-12-fix-reset-keeps-hint.json is not signed (signature is null) (review must have run clean before archive, or its findings be dispositioned and signed)"
+    },
     {
       "check": "in-scope",
       "msg": "src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift"
