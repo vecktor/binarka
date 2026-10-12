@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-12T10:37:36.235Z",
-  "gitHead": "2762e31d830caf4a09231636e7f8eab240eb19cd",
+  "createdAt": "2026-10-12T10:42:01.799Z",
+  "gitHead": "c57d927364dcffd16bb8ab489c9f28102bd8d46e",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -26,11 +26,11 @@
     "scripts/check-traceability.mjs": "10dfdb95743c685e31f0a1cdb2d4cbef0d728315097efd93544346330250fadf",
     "scripts/check-trajectory.mjs": "2b4e0ba839c639c0da160d74ef204bd9fae09f264404a8342beea815b8ebafc1",
     "scripts/check-visual-fidelity.mjs": "1fe3a499c1e4074b370496148cc27bc9a99de0d06580ac42059363c869a62c91",
-    "scripts/check-visual-parity-adapters.mjs": "5dbef1099c87e30e4df84212b282bc5b8ba357ddfc85d89ac8edae05ddabb013",
+    "scripts/check-visual-parity-adapters.mjs": "cdd70e852f21767c136356472aa9e75e7f1a6ab0f1c22d5c39367689d2d54680",
     "scripts/gate-status.mjs": "07617acbbd6ae513bcc7675478e920bd86ff2c765ae1b2ebc2ab27dad50e5fae",
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-8: the acceptance check reads 0.98 for pixel-diff (NFR-14) from acceptance.tokens in quality/telemetry.config.json; the unread acceptanceArtifacts block removed (approved by the user 2026-10-12)"
+    "PD-9: the NFR-14 capture adapter has a logo driver that lays the page's own header logo out as the design's /logo/ sheet at 40, 56 and 64 px (approved by the user 2026-10-12)"
   ]
 }

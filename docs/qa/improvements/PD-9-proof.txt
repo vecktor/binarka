@@ -1,0 +1,58 @@
+# PD-9 proof, 2026-10-12 16:01 +0530, stream P (claude/feynman-process, HEAD 2762e31, origin/main 2762e31), BINARKA_PORT_BASE=6573 (gate preview 6574).
+# A temporary two-shot config (.pd9-probe.config.json = quality/visual-parity.config.json with only logo-dark and logo-light, removed after),
+# passed as --config and VISUAL_PARITY_CONFIG. npm run build first. Ports 6573-6577 free before and after each run.
+# The committed logo reports hold score null, so PD-6 lets each run copy its reports; they were restored with git checkout after each run.
+
+## 1. Red: today's adapter (the locked scripts/check-visual-parity-adapters.mjs)
+$ VISUAL_PARITY_CONFIG=.pd9-probe.config.json node scripts/check-visual-fidelity.mjs --config .pd9-probe.config.json
+(adapters injected from scripts/check-visual-parity-adapters.mjs)
+FAIL  [logo-dark] capture failed: no state driver for "logo" (shot logo-dark); the page has no such state yet
+FAIL  [logo-light] capture failed: no state driver for "logo" (shot logo-light); the page has no such state yet
+WARN  [visual] threshold 0.98 is below the 0.99 default (NFR-19) — make sure the requirement actually allows this
+
+Scope: 2 breakpoint(s)
+Result: FAIL, 1 warning(s)
+
+## 2. Pre-measure of the proposed driver: an untracked copy of the adapter (scripts/.pd9-logo-adapters.mjs, removed after) with the logo driver of PD-9 § Fix added, nothing else changed
+$ CHECK_VISUAL_FIDELITY_ADAPTERS=scripts/.pd9-logo-adapters.mjs VISUAL_PARITY_CONFIG=.pd9-probe.config.json node scripts/check-visual-fidelity.mjs --config .pd9-probe.config.json
+(adapters injected from scripts/.pd9-logo-adapters.mjs)
+PASS  [logo-dark] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [logo-light] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+WARN  [visual] threshold 0.98 is below the 0.99 default (NFR-19) — make sure the requirement actually allows this
+
+Scope: 2 breakpoint(s)
+Result: PASS, 1 warning(s)
+
+## 3. Negative control: the same copy with the sizes 40, 56, 60 instead of 64 (the comparison must see a wrong sheet)
+(adapters injected from scripts/.pd9-logo-control.mjs)
+FAIL  [logo-dark] pixel score 0.9716 below threshold 0.98
+FAIL  [logo-light] pixel score 0.9717 below threshold 0.98
+WARN  [visual] threshold 0.98 is below the 0.99 default (NFR-19) — make sure the requirement actually allows this
+
+Scope: 2 breakpoint(s)
+Result: FAIL, 1 warning(s)
+# the diff (gitignored diff.png, viewed, then deleted) marks every mark and caption: a 60 px third mark shifts the centred row.
+
+## 4. GREEN, 2026-10-12 16:11 +0530: the real adapter with the PD-9 driver (scripts/check-visual-parity-adapters.mjs, before the re-seal), the same two-shot config, base 6573
+$ VISUAL_PARITY_CONFIG=.pd9-probe.config.json node scripts/check-visual-fidelity.mjs --config .pd9-probe.config.json
+(adapters injected from scripts/check-visual-parity-adapters.mjs)
+PASS  [logo-dark] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+PASS  [logo-light] score 1 >= 0.98 (height delta 0%, 0 mask(s))
+WARN  [visual] threshold 0.98 is below the 0.99 default (NFR-19) — make sure the requirement actually allows this
+
+Scope: 2 breakpoint(s)
+Result: PASS, 1 warning(s)
+# reports written:
+logo-dark score 1 pass true
+logo-light score 1 pass true
+# restored: git status --porcelain docs/qa/visual-diff -> ''; ports 6573-6577 free before and after
+
+## 5. Integrity before the re-seal
+FAIL  [scripts/check-visual-parity-adapters.mjs] gate-bearing file drift (hash drift) vs factory-lock.json with NO commit touching it whose message contains "Refs: PD-<n>". Gate scripts may only change through an approved improvement (executed red-to-green proof + human approval). Restore the locked file or land the approved "Refs: PD-<n>" commit.
+
+Scope: 27 locked file(s)
+Result: FAIL, 1 warning(s)
+## 6. After the re-seal (--init-lock --adaptation "PD-9: …")
+
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)

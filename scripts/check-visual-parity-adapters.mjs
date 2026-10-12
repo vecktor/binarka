@@ -15,7 +15,8 @@
 //   diff              -> the checker's default pixelmatch adapter (threshold 0.1 per pixel).
 //
 // A shot is named <width>-<scheme>-<state> (review-set-14/SHA1SUMS). A state with no driver below throws, so the shot
-// FAILS with "capture failed: no state driver"; it is never skipped. pageHeight is the viewport height in CSS px on both
+// FAILS with "capture failed: no state driver"; it is never skipped. The two logo shots (logo-<scheme>) are the design's
+// review-only /logo/ sheet, not a page state: their driver lays the page's own header logo out as that sheet (PD-9). pageHeight is the viewport height in CSS px on both
 // sides (the reference PNG height / 2), so the checker's page-height pre-gate is inert for viewport-cropped shots: a
 // structural mismatch shows up in the pixel score instead.
 //
@@ -184,6 +185,32 @@ const drivers = {
   'settings-focus': async (page) => {
     await openSettings(page);
     await keyboardFocus(page, sel.theme('dark'));
+  },
+  // As the design's /logo/ route (design/v0/app/logo/page.tsx, `.logo-sheet` in design/v0/app/binarka.css): the logo at
+  // 40, 56 and 64 px over its size as a caption, alone on the page (PD-9). The marks are clones of the page's own header
+  // logo (FR-89), painted by the page's `.logo` rules on the page's body; the sheet and the captions are this driver's.
+  // The page keeps its space tokens on #app, which is hidden, so the sheet's spacing is written out in rem.
+  logo: async (page) => {
+    await page.evaluate((sizes) => {
+      const source = document.querySelector('.page-header h1 svg.logo');
+      if (!source) throw new Error('the page has no header logo');
+      const sheet = document.createElement('div');
+      sheet.style.cssText = 'display:flex;align-items:flex-end;justify-content:center;gap:1.5rem;padding:1.5rem 1rem';
+      for (const size of sizes) {
+        const figure = document.createElement('figure');
+        figure.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:0.5rem;margin:0';
+        const mark = source.cloneNode(true);
+        mark.setAttribute('width', String(size));
+        mark.setAttribute('height', String(size));
+        const caption = document.createElement('figcaption');
+        caption.textContent = String(size);
+        caption.style.cssText = 'color:var(--color-text-muted);font-size:0.875rem;font-variant-numeric:tabular-nums';
+        figure.append(mark, caption);
+        sheet.append(figure);
+      }
+      document.querySelector('#app').style.display = 'none';
+      document.body.append(sheet);
+    }, [40, 56, 64]);
   },
 };
 
