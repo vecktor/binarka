@@ -1,0 +1,38 @@
+Mon Oct 12 16:27:16 +0530 2026
+
+> binarka@0.1.0 qa:record-demos
+> npm run build && node scripts/record-demos.mjs
+
+
+> binarka@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 23 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-DIwVvqnQ.css  24.37 kB │ gzip:  4.92 kB
+dist/assets/index-JzGe6bUF.js   35.36 kB │ gzip: 12.80 kB
+
+✓ built in 36ms
+✓ 01-play-board (FR-13, FR-14, FR-15, FR-31, FR-32, FR-33, FR-34, FR-63, FR-68, FR-71, FR-72)
+✓ 02-keyboard-a11y (FR-59, FR-60, FR-61, FR-62, FR-65, FR-69, FR-70)
+✓ 03-violations (FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-35, FR-36, FR-37, FR-38, FR-64, FR-120)
+✓ 04-capture-board-and-win (FR-8, FR-9, FR-10, FR-11, FR-12, FR-41, FR-119)
+✓ 05-hints-basic (FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, FR-26, FR-27, FR-39, FR-40, FR-66)
+✓ 06-hints-advanced (FR-74, FR-75, FR-76, FR-77, FR-78, FR-79, FR-80)
+✓ 07-levels-generator (FR-14, FR-15, FR-44, FR-82, FR-83, FR-88)
+✓ 08-setup-sheet (FR-43, FR-73, FR-87, FR-89, FR-91, FR-92, FR-95, FR-96, FR-97, FR-99, FR-100, FR-101)
+✓ 09-confirm-actions (FR-42, FR-58, FR-67, FR-90, FR-98)
+✓ 10-rules-panel (FR-57, FR-93, FR-94)
+✓ 11-theme (FR-102, FR-103, FR-104, FR-105, FR-106, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118)
+✓ 12-english (FR-22, FR-40, FR-55, FR-56, FR-107, FR-108, FR-109, FR-110, FR-111, FR-112)
+✓ 13-cli-engine (FR-16, FR-17, FR-25, FR-28, FR-29, FR-30, FR-49, FR-50, FR-51, FR-52, FR-53, FR-54, FR-81, FR-84, FR-85, FR-86)
+✓ 14-cell-states-light (NFR-11, FR-32, FR-64, FR-66)
+✓ 15-cell-states-dark (NFR-11, FR-32, FR-64, FR-66)
+✓ 16-logo-40 (NFR-15, FR-72)
+
+wrote 16 clip(s) to docs/qa/demo-recordings (manifest: 16). Validate: node scripts/check-recordings.mjs
+exit 0

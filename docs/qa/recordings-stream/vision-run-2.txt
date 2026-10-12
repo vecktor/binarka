@@ -1,0 +1,13 @@
+Mon Oct 12 16:37:46 +0530 2026
+vision-verify re-judge of 11-theme (re-recorded still); verdict generatedAt 2026-10-12T11:03:46Z; then npm run check:vision
+FAIL  [16-logo-40] vision verdict is not met+readable (met false, readable true): The still is a small header crop with an orange sun-like badge left of the bold title "Бінарка". The title is crisp, but at native size the four mini-board digits inside the badge blur into small light marks. I could not tell that the top row is bar then ring, or that the bottom row is ring then bar, so I can't confirm 1 as a vertical bar and 0 as a ring. The badge itself shows no text. Judged down because the legibility the requirement asks for isn't visible. Fix: re-record with a larger crop or a clear 1:1 capture of the logo at 40x40, and check that the badge's inner board has enough contrast and stroke weight.
+
+Scope: 16 judged still(s) of 16 clip(s) in 1 manifest(s); 0 vision-verify requirement(s)
+Result: FAIL
+exit=1
+--- node scripts/check-recordings.mjs
+FAIL  [16-logo-40] 16-logo-40: vision verdict is not met+readable ({"met":false,"readable":true,"notes":"The still is a small header crop with an orange sun-like badge left of the bold title \"Бінарка\". The title is crisp, but at native size the four mini-board digits inside the badge blur into small light marks. I could not tell that the top row is bar then ring, or that the bottom row is ring then bar, so I can't confirm 1 as a vertical bar and 0 as a ring. The badge itself shows no text. Judged down because the legibility the requirement asks for isn't visible. Fix: re-record with a larger crop or a clear 1:1 capture of the logo at 40x40, and check that the badge's inner board has enough contrast and stroke weight.","judgedAt":"2026-10-12T11:01:06Z","judge":"vision-verify (fresh vision-judge)"})
+
+Scope: 16 clip(s) across 1 manifest(s)
+Result: FAIL
+exit=1

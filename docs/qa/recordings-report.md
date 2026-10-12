@@ -5,30 +5,30 @@ is a REAL artifact (video exists + >= 10000B, screenshot exists, flow
 asserted, vision met) — not just an id mentioned in a manifest.
 
 Scope: 16 clip(s) across 1 manifest(s).
-Result: PASS
+Result: FAIL (1)
 
 | Clip | Proves | Video bytes | Shot | Asserted | Vision |
 |---|---|---|---|---|---|
-| 01-play-board | FR-13, FR-14, FR-15, FR-31, FR-32, FR-33, FR-34, FR-63, FR-68, FR-71, FR-72 | 152655 | yes | yes | - |
-| 02-keyboard-a11y | FR-59, FR-60, FR-61, FR-62, FR-65, FR-69, FR-70 | 420823 | yes | yes | - |
-| 03-violations | FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-35, FR-36, FR-37, FR-38, FR-64, FR-120 | 529599 | yes | yes | - |
-| 04-capture-board-and-win | FR-8, FR-9, FR-10, FR-11, FR-12, FR-41, FR-119 | 440450 | yes | yes | - |
-| 05-hints-basic | FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, FR-26, FR-27, FR-39, FR-40, FR-66 | 947708 | yes | yes | - |
-| 06-hints-advanced | FR-74, FR-75, FR-76, FR-77, FR-78, FR-79, FR-80 | 395633 | yes | yes | - |
-| 07-levels-generator | FR-14, FR-15, FR-44, FR-82, FR-83, FR-88 | 483618 | yes | yes | - |
-| 08-setup-sheet | FR-43, FR-73, FR-87, FR-89, FR-91, FR-92, FR-95, FR-96, FR-97, FR-99, FR-100, FR-101 | 717676 | yes | yes | - |
-| 09-confirm-actions | FR-42, FR-58, FR-67, FR-90, FR-98 | 1035287 | yes | yes | - |
-| 10-rules-panel | FR-57, FR-93, FR-94 | 234384 | yes | yes | - |
-| 11-theme | FR-102, FR-103, FR-104, FR-105, FR-106, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118 | 865157 | yes | yes | - |
-| 12-english | FR-22, FR-40, FR-55, FR-56, FR-107, FR-108, FR-109, FR-110, FR-111, FR-112 | 675351 | yes | yes | - |
-| 13-cli-engine | FR-16, FR-17, FR-25, FR-28, FR-29, FR-30, FR-49, FR-50, FR-51, FR-52, FR-53, FR-54, FR-81, FR-84, FR-85, FR-86 | 1793824 | yes | yes | - |
-| 14-cell-states-light | NFR-11, FR-32, FR-64, FR-66 | 123258 | yes | yes | - |
-| 15-cell-states-dark | NFR-11, FR-32, FR-64, FR-66 | 114161 | yes | yes | - |
-| 16-logo-40 | NFR-15, FR-72 | 149456 | yes | yes | - |
+| 01-play-board | FR-13, FR-14, FR-15, FR-31, FR-32, FR-33, FR-34, FR-63, FR-68, FR-71, FR-72 | 152040 | yes | yes | met |
+| 02-keyboard-a11y | FR-59, FR-60, FR-61, FR-62, FR-65, FR-69, FR-70 | 438243 | yes | yes | met |
+| 03-violations | FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-35, FR-36, FR-37, FR-38, FR-64, FR-120 | 576141 | yes | yes | met |
+| 04-capture-board-and-win | FR-8, FR-9, FR-10, FR-11, FR-12, FR-41, FR-119 | 403282 | yes | yes | met |
+| 05-hints-basic | FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, FR-26, FR-27, FR-39, FR-40, FR-66 | 917858 | yes | yes | met |
+| 06-hints-advanced | FR-74, FR-75, FR-76, FR-77, FR-78, FR-79, FR-80 | 359199 | yes | yes | met |
+| 07-levels-generator | FR-14, FR-15, FR-44, FR-82, FR-83, FR-88 | 487136 | yes | yes | met |
+| 08-setup-sheet | FR-43, FR-73, FR-87, FR-89, FR-91, FR-92, FR-95, FR-96, FR-97, FR-99, FR-100, FR-101 | 676863 | yes | yes | met |
+| 09-confirm-actions | FR-42, FR-58, FR-67, FR-90, FR-98 | 1124395 | yes | yes | met |
+| 10-rules-panel | FR-57, FR-93, FR-94 | 235130 | yes | yes | met |
+| 11-theme | FR-102, FR-103, FR-104, FR-105, FR-106, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118 | 997632 | yes | yes | met |
+| 12-english | FR-22, FR-40, FR-55, FR-56, FR-107, FR-108, FR-109, FR-110, FR-111, FR-112 | 680931 | yes | yes | met |
+| 13-cli-engine | FR-16, FR-17, FR-25, FR-28, FR-29, FR-30, FR-49, FR-50, FR-51, FR-52, FR-53, FR-54, FR-81, FR-84, FR-85, FR-86 | 1703000 | yes | yes | met |
+| 14-cell-states-light | NFR-11, FR-32, FR-64, FR-66 | 119769 | yes | yes | met |
+| 15-cell-states-dark | NFR-11, FR-32, FR-64, FR-66 | 114385 | yes | yes | met |
+| 16-logo-40 | NFR-15, FR-72 | 137290 | yes | yes | **FAIL** |
 
 ## Failures
 
-None.
+- **16-logo-40**: 16-logo-40: vision verdict is not met+readable ({"met":false,"readable":true,"notes":"At native size the logo (an orange-brown rounded square with sun-like rays, left of the dark title «Бінарка») carries no text. However, the four digits inside the 2×2 board show only as tiny pale marks. I could not clearly tell bars from rings, or confirm the order 1 0 / 0 1. The image also looks smaller than a DPR-2 capture would be. Re-record at true DPR 2 with a tight crop, and make the bar and ring strokes thicker with more contrast against the orange tile. The title is legible.","judgedAt":"2026-10-12T11:15:20Z","judge":"vision-verify (fresh vision-judge)"})
 
 ## Warnings
 

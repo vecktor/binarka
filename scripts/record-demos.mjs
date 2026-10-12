@@ -390,6 +390,7 @@ function makeDriver(page, clip, log) {
     /** Settle and take the clip's still (once; a later call replaces it). `element` crops to that element plus a margin. */
     async still({ element = null, margin = 16, fullPage = true } = {}) {
       await page.evaluate(() => document.getElementById('rec-caption')?.remove());
+      await page.mouse.move(0, 0); // no hover outline left by the last click (a wrong-moment frame)
       await settle(page);
       let clipRect;
       if (element) {
@@ -1070,8 +1071,9 @@ const CLIPS = [
       t.check('FR-117', (await t.focused()) === 'dark', 'Enter and Space act as native button activation; the focus stays on the option');
       await page.emulateMedia({ colorScheme: 'light' });
       t.check('FR-105', (await html()).theme === 'dark', 'while the choice is dark, a system change does nothing');
-      await t.still();
       await page.locator(sel.settingsClose).click();
+      // the still is the dark page itself: the open panel's backdrop dims the page on purpose, so it is not a legibility frame
+      await t.still();
       await t.say('A reload: the stored theme is on <html> before the body is parsed');
       await page.reload();
       await page.locator(CELL).first().waitFor();
@@ -1274,7 +1276,9 @@ const CLIPS = [
     id: '16-logo-40',
     title: 'NFR-15: the header logo at 40×40 CSS px',
     proof: ['NFR-15', 'FR-72'],
-    dpr: 1,
+    // device pixel ratio 2, the project's capture standard (quality/visual-parity.config.json): the user's decision of 2026-10-12;
+    // the ratio 1 still failed the vision-judge and is kept as a known limitation (docs/qa/vision-probe/logo-40-dpr1*)
+    dpr: 2,
     async run(t) {
       const { page } = t;
       await t.open({ seed: 61 });
@@ -1283,7 +1287,7 @@ const CLIPS = [
       await t.pause();
       const box = await page.locator('header h1 svg.logo').boundingBox();
       const logo = await page.evaluate(() => { const svg = document.querySelector('header h1 svg.logo'); return { texts: svg.querySelectorAll('text').length, words: svg.textContent.trim(), bars: svg.querySelectorAll('.logo-digit').length, rings: svg.querySelectorAll('.logo-digit-ring').length, dpr: devicePixelRatio }; });
-      t.check('NFR-15', Math.round(box.width) === 40 && Math.round(box.height) === 40 && logo.dpr === 1, 'the logo is drawn at 40×40 CSS px, device pixel ratio 1');
+      t.check('NFR-15', Math.round(box.width) === 40 && Math.round(box.height) === 40 && logo.dpr === 2, 'the logo is drawn at 40×40 CSS px, device pixel ratio 2');
       t.check('FR-72', logo.texts === 0 && logo.words === '' && logo.bars === 2 && logo.rings === 2, 'the logo carries no text; its digits «1 0 / 0 1» are two bars and two rings');
       await t.still({ element: 'header h1', margin: 12 });
     },

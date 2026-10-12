@@ -1,0 +1,156 @@
+{
+  "generatedBy": "scripts/check-vision.mjs",
+  "met": false,
+  "result": "FAIL",
+  "scope": {
+    "clips": 16,
+    "judged": 16,
+    "requirements": 1
+  },
+  "requirements": [
+    {
+      "id": "NFR-11",
+      "status": "met",
+      "clips": [
+        "14-cell-states-light",
+        "15-cell-states-dark"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "id": "01-play-board",
+      "proof": "FR-13, FR-14, FR-15, FR-31, FR-32, FR-33, FR-34, FR-63, FR-68, FR-71, FR-72",
+      "screenshot": "docs/qa/demo-recordings/01-play-board.png",
+      "met": true,
+      "readable": true,
+      "notes": "The page renders fully. Header: sun-like orange circle logo with a 2×2 mini board and no text, title «Бінарка», gear button and «Правила». Below it: the «6×6 · Розминка» summary, a 6×6 board whose givens (1/0 on tan fill) clearly differ from the empty off-white cells, and the buttons «Підказка», «Скинути», «Нова головоломка». The idle two-line hint text sits underneath. The logo's inner digits are small, so «1 0 / 0 1» is only just discernible at this size, but the logo is acceptable. The grey idle text is a bit light but still legible."
+    },
+    {
+      "id": "02-keyboard-a11y",
+      "proof": "FR-59, FR-60, FR-61, FR-62, FR-65, FR-69, FR-70",
+      "screenshot": "docs/qa/demo-recordings/02-keyboard-a11y.png",
+      "met": true,
+      "readable": true,
+      "notes": "Cell (row 1, col 2) holds an orange player \"1\" and has a thick dark outline well outside its normal thin border. It is the only focused cell. Givens (dark, bold digits on tan cells) are clearly bolder than player entries (thinner orange digits). Row 3 shows three adjacent \"0\" cells with red hatched fill, red border and underlined digits, so the violation is visible. Text is legible with good contrast. The faint hint text at the bottom is small but readable."
+    },
+    {
+      "id": "03-violations",
+      "proof": "FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-35, FR-36, FR-37, FR-38, FR-64, FR-120",
+      "screenshot": "docs/qa/demo-recordings/03-violations.png",
+      "met": true,
+      "readable": true,
+      "notes": "The top row shows three adjacent \"1\" cells, each with a heavier red border, pink diagonal hatching, dark-red digit and underline, so the marks do not rely on color alone. The third cell (the one whose click caused the violation) has an extra filled dark-red triangle in its top-right inner corner. No other cell is highlighted: the remaining 1s and 0s are plain beige and the empty cells are plain white. Text (title, buttons, hint footer) is legible, with adequate contrast on the dark digits and the footer text only slightly lighter than the rest."
+    },
+    {
+      "id": "04-capture-board-and-win",
+      "proof": "FR-8, FR-9, FR-10, FR-11, FR-12, FR-41, FR-119",
+      "screenshot": "docs/qa/demo-recordings/04-capture-board-and-win.png",
+      "met": true,
+      "readable": true,
+      "notes": "The 6x6 board is fully filled with 0s and 1s. The board has a green border and no red violation highlights. Given cells are bold dark on a tan background, and player cells are rust-orange digits. Below the buttons (Підказка, Скинути, Нова головоломка) a green banner reads «Вітаємо, головоломку розв'язано!» in dark bold text with strong contrast. Everything is legible. The only weak spot is the grey \"Підказка\" and \"Скинути\" labels, which are somewhat muted but still readable."
+    },
+    {
+      "id": "05-hints-basic",
+      "proof": "FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, FR-26, FR-27, FR-39, FR-40, FR-66",
+      "screenshot": "docs/qa/demo-recordings/05-hints-basic.png",
+      "met": true,
+      "readable": true,
+      "notes": "The 6×6 «Розминка» board is fully filled with no violations. I checked every row and column: 3 zeros and 3 ones each, no three equal in a row, and no duplicate rows or columns. The last cell (row 6, column 6) has a dashed border, a tinted fill and an italic 0, so it reads as hinted. The hint sentence \"У рядку 6 вже три одиниці…\" names row 6. The green «Вітаємо, головоломку розвʼязано!» banner is shown, and the board has a green border. All text is high contrast and legible, including the grey underlined «Скинути»."
+    },
+    {
+      "id": "06-hints-advanced",
+      "proof": "FR-74, FR-75, FR-76, FR-77, FR-78, FR-79, FR-80",
+      "screenshot": "docs/qa/demo-recordings/06-hints-advanced.png",
+      "met": true,
+      "readable": true,
+      "notes": "The hint banner reads «Якщо поставити 0 у рядку 1, стовпці 3, за кілька кроків порушиться правило, тож тут 1.» This is the required look-ahead form, in Ukrainian. Row 1, column 3 shows an italic \"1\" in a pale orange cell with a dashed orange border. The other cells are solid-bordered, so the hinted cell is distinct. Text is dark on a cream or pale-orange background with good contrast. The orange digits on white are acceptable at their large size."
+    },
+    {
+      "id": "07-levels-generator",
+      "proof": "FR-14, FR-15, FR-44, FR-82, FR-83, FR-88",
+      "screenshot": "docs/qa/demo-recordings/07-levels-generator.png",
+      "met": true,
+      "readable": true,
+      "notes": "The summary button reads «6×6 · Головоломка» above a 6×6 grid. The grid shows only shaded given cells (0/1 digits) and empty white cells, with no player entries. No dialog or sheet is open. Text is dark on cream with good contrast, and the secondary hint text at the bottom is gray but legible."
+    },
+    {
+      "id": "08-setup-sheet",
+      "proof": "FR-43, FR-73, FR-87, FR-89, FR-91, FR-92, FR-95, FR-96, FR-97, FR-99, FR-100, FR-101",
+      "screenshot": "docs/qa/demo-recordings/08-setup-sheet.png",
+      "met": true,
+      "readable": true,
+      "notes": "The setup sheet is open and matches the requirement. «Поле 4×4» is marked with a highlighted peach fill and orange border, next to «Поле 6×6» and «Поле 8×8». The reason line «Для поля 4×4 є лише рівень «Розминка».» is shown. «Розминка» has a filled radio and a solid orange border. «Задачка», «Головоломка» and «Мозколамка» each show a dashed border, a dashed-circle icon and a muted tone, so unavailability is not signalled by colour alone. Each option has a name and a description, «Почати» and «Закрити» are present, and the summary behind reads «6×6 · Розминка». Text is legible with good contrast. The muted unavailable items are still readable. The footer hint behind the sheet is partly clipped by the sheet's bottom edge, but that is background content."
+    },
+    {
+      "id": "09-confirm-actions",
+      "proof": "FR-42, FR-58, FR-67, FR-90, FR-98",
+      "screenshot": "docs/qa/demo-recordings/09-confirm-actions.png",
+      "met": true,
+      "readable": true,
+      "notes": "A centred white modal shows «Почати заново? Ваші ходи на цьому полі буде втрачено.» in dark text. Below it are two buttons: «Так, почати» (dark red on pale pink, red border) and «Скасувати» (white on solid orange-brown). The page behind (header, grid, controls, hint) is visibly dimmed by a brown scrim, and the grid is partly covered by the dialog. The text and both buttons have adequate contrast, and nothing is clipped."
+    },
+    {
+      "id": "10-rules-panel",
+      "proof": "FR-57, FR-93, FR-94",
+      "screenshot": "docs/qa/demo-recordings/10-rules-panel.png",
+      "met": true,
+      "readable": true,
+      "notes": "The rules modal is open over a dimmed page. It shows the «Правила» heading and all three rules with the exact required text, each with a small example of 0/1 cells. Below them are the «Складніші прийоми» heading with three items (Баланс рядка, Однакові рядки, Хід наперед) and the full-width orange «Зрозуміло» close button. Dark text on the cream panel is high contrast, and the white-on-orange button text is legible. The dimmed background footer text is low contrast, but it is behind the overlay and not part of the requirement."
+    },
+    {
+      "id": "11-theme",
+      "proof": "FR-102, FR-103, FR-104, FR-105, FR-106, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118",
+      "screenshot": "docs/qa/demo-recordings/11-theme.png",
+      "met": true,
+      "readable": true,
+      "notes": "The page renders in a dark scheme: near-black brown background, dark cells and summary select, and the settings panel is closed. The header shows the logo, «Бінарка», the gear and «Правила». The summary reads «6×6 · Розминка», and the 6×6 board has light 0 and 1 digits on slightly lighter given cells. The orange «Підказка», the underlined «Скинути» and the outlined «Нова головоломка» are all visible. The idle text, split over two lines, is the muted grey line «Натискайте клітинки, щоб ставити 0 і 1. Правила — кнопка «Правила» вгорі.». All text has adequate contrast on the dark background and nothing is clipped."
+    },
+    {
+      "id": "12-english",
+      "proof": "FR-22, FR-40, FR-55, FR-56, FR-107, FR-108, FR-109, FR-110, FR-111, FR-112",
+      "screenshot": "docs/qa/demo-recordings/12-english.png",
+      "met": true,
+      "readable": true,
+      "notes": "The page renders fully in English. It shows the title \"Binarka\", the \"Rules\", \"Hint\", \"Reset\" and \"New puzzle\" buttons, and the summary \"6×6 · Teaser\". The message area holds a single sentence beginning \"Column 3 has room for only one more 1…\". The hinted cell (row 6, column 3) has a dashed orange border, a peach fill and an italic \"0\". No Ukrainian text is visible. Contrast is good throughout. The gear icon has no visible label, which is minor. The \"Reset\" link is slightly muted grey but still legible."
+    },
+    {
+      "id": "13-cli-engine",
+      "proof": "FR-16, FR-17, FR-25, FR-28, FR-29, FR-30, FR-49, FR-50, FR-51, FR-52, FR-53, FR-54, FR-81, FR-84, FR-85, FR-86",
+      "screenshot": "docs/qa/demo-recordings/13-cli-engine.png",
+      "met": true,
+      "readable": true,
+      "notes": "I read the screenshot and it is a dark terminal transcript with light text and good contrast. The `--size 6 --seed 42` output is six lines of six tokens (0, 1, .). Each invalid size, seed, level and option prints one English sentence with exit 1: size 5, 2, 18, 6.5, +6, -2, seed overflow, missing --size value, unknown --colour, level 0, level 5 and size 4 with level 2. A level 3 puzzle is printed. The run-out error is shown for seed 1422 with level 2. Engine calls for 4.5, NaN and Infinity each print InvalidSizeError. The no-rule hint appears in Ukrainian and in English. The only small text is the engine-calls note, which is still legible. Nothing is clipped."
+    },
+    {
+      "id": "14-cell-states-light",
+      "proof": "NFR-11, FR-32, FR-64, FR-66",
+      "screenshot": "docs/qa/demo-recordings/14-cell-states-light.png",
+      "met": true,
+      "readable": true,
+      "notes": "All four states are distinguishable without colour. Givens (e.g. r1c1, r1c5) have a dark filled tan background and bold upright dark digits. The violation (r3c1-3) has a diagonal stripe pattern, a thick solid border and underlined bold digits. The hinted cell (r2c1) has a dashed border and an italic digit on a pale tint. Player entries (r5c6 \"0\", r6c4 \"1\") sit on a plain white background with a lighter-weight, non-bold digit and no special border. Each state differs from the other three by at least one shape or texture cue: fill, stripes with underline, dashed border with italic, or a plain light digit. The digits are large and legible, and contrast is adequate. The player-entry orange digits are the lightest in weight but still readable."
+    },
+    {
+      "id": "15-cell-states-dark",
+      "proof": "NFR-11, FR-32, FR-64, FR-66",
+      "screenshot": "docs/qa/demo-recordings/15-cell-states-dark.png",
+      "met": true,
+      "readable": true,
+      "notes": "The board renders in a dark scheme with legible digits. Each of the four states has a non-colour cue. Violation (row 3, columns 1-3): diagonal hatch fill, underlined digits and a solid border. Hinted cell (row 2, column 1): dashed border and an italic digit. Givens: lighter raised fill with bold upright digits. Player entries (row 5 column 6, row 6 column 4): thin-weight upright digits on a plain dark cell with no fill change. Each state differs from the other three by at least one of weight, border style, hatching, underline or italic. The thin orange player digits are the weakest, but they are still legible."
+    },
+    {
+      "id": "16-logo-40",
+      "proof": "NFR-15, FR-72",
+      "screenshot": "docs/qa/demo-recordings/16-logo-40.png",
+      "met": false,
+      "readable": true,
+      "notes": "At native size the logo (an orange-brown rounded square with sun-like rays, left of the dark title «Бінарка») carries no text. However, the four digits inside the 2×2 board show only as tiny pale marks. I could not clearly tell bars from rings, or confirm the order 1 0 / 0 1. The image also looks smaller than a DPR-2 capture would be. Re-record at true DPR 2 with a tight crop, and make the bar and ring strokes thicker with more contrast against the orange tile. The title is legible."
+    }
+  ],
+  "failures": [
+    {
+      "id": "16-logo-40",
+      "msg": "vision verdict is not met+readable (met false, readable true): At native size the logo (an orange-brown rounded square with sun-like rays, left of the dark title «Бінарка») carries no text. However, the four digits inside the 2×2 board show only as tiny pale marks. I could not clearly tell bars from rings, or confirm the order 1 0 / 0 1. The image also looks smaller than a DPR-2 capture would be. Re-record at true DPR 2 with a tight crop, and make the bar and ring strokes thicker with more contrast against the orange tile. The title is legible."
+    }
+  ]
+}

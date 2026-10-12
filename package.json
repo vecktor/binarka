@@ -18,6 +18,7 @@
     "check:eval": "node scripts/check-eval-ratchet.mjs",
     "check:trajectory": "node scripts/check-trajectory.mjs",
     "check:recordings": "node scripts/check-recordings.mjs",
+    "check:vision": "node scripts/check-vision.mjs",
     "check:a11y": "PLAYWRIGHT_JSON_OUTPUT_FILE=docs/qa/a11y-report.json playwright test --project=a11y --reporter=list,json",
     "gate:status": "node scripts/gate-status.mjs",
     "correct": "node scripts/correct.mjs",
