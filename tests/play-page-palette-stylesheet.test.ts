@@ -96,7 +96,10 @@ describe('Borders, cues and focus rings have enough contrast (the G2 palette)', 
     expect(declared(parsed, '.message-idle').get('color'), '.message-idle { color }').toBe('var(--color-text-muted)');
   });
 
-  it('The ring keeps its accepted adjacencies: --color-focus against the plate, the violation border, the primary and the success border (light and dark)', () => {
+  // DELIBERATE CHANGE (update-settings-panel, delta «Cells and buttons show a visible, unobscured focus indicator», scenario «The ring's accepted adjacencies are recorded»; proposal.md
+  // Impact row tests/play-page-palette-stylesheet.test.ts:97, source FR-65, A-61): the title gains the card fill under a chosen segmented option, and the body gains three assertions (marked
+  // GUARD below: they pass today by design, because the tokens and the pair list already satisfy them, and they pin the adjacency so that a change that moves it is deliberate).
+  it('The ring keeps its accepted adjacencies: --color-focus against the plate, the violation border, the primary and the success border, and its outer band on the card fill under a chosen segmented option (light and dark)', () => {
     const parsed = readStyles();
     const listed: Record<string, number[]> = { light: [11.72, 2.47, 2.94, 2.53], dark: [10.65, 1.96, 1.88, 1.53] };
     for (const set of themeTokenSets(parsed)) {
@@ -110,6 +113,20 @@ describe('Borders, cues and focus rings have enough contrast (the G2 palette)', 
       (pair) => pair.fg === '--color-focus' && ['--color-violation-border', '--color-primary', '--color-success'].includes(pair.bg),
     );
     expect(accepted, 'the accepted adjacencies are not listed as contrast pairs').toEqual([]);
+    // GUARD (passes today): the outer band of the ring of a chosen segmented option lies on the card fill --color-control-bg, 15.88 light and 13.85 dark (at least 13.85 in each set);
+    // --color-control-bg and --color-cell-bg resolve to one value in each set; and no pair of the requirement names --color-focus against --color-control-bg (--color-cell-bg is paired).
+    const onCard: Record<string, number> = { light: 15.88, dark: 13.85 };
+    for (const set of themeTokenSets(parsed)) {
+      const card = tokenIn(set, '--color-control-bg');
+      const ratio = ratio2(tokenIn(set, '--color-focus'), card);
+      expect(ratio, `${set.label}: the ring on the card fill --color-control-bg`).toBe(onCard[set.label]);
+      expect(ratio, `${set.label}: the ring on the card fill is at least 13.85`).toBeGreaterThanOrEqual(13.85);
+      expect(card, `${set.label}: --color-control-bg equals --color-cell-bg`).toBe(tokenIn(set, '--color-cell-bg'));
+    }
+    expect(
+      CONTRAST_PAIRS.filter((pair) => pair.fg === '--color-focus' && pair.bg === '--color-control-bg'),
+      'no pair names --color-focus against --color-control-bg (--color-cell-bg, the same value, is paired)',
+    ).toEqual([]);
   });
 
   it('The hinted cue and the primary colour have 3:1 against the soft fill, the plate and the page (light and dark)', () => {

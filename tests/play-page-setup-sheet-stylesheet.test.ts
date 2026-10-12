@@ -581,7 +581,8 @@ describe('The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-
     expect(accent.flatMap((r) => r.selectors).filter((s) => !s.includes('[data-level-reason]')), 'selectors of the accent rule that do not name [data-level-reason]').toEqual([]);
   });
 
-  // Scenario «Only the size options in the sheet take the primary paint», first clause. Red today: checked is --color-focus on --color-given-bg; unchecked has no muted ink or weight.
+  // Scenario «The size options in the sheet take the primary paint and the other two segmented controls agree» (renamed from «Only the size options in the sheet take the
+  // primary paint» by update-settings-panel, the user's decision of 2026-10-12, design.md open point 5), first clause. Red today: checked is --color-focus on --color-given-bg; unchecked has no muted ink or weight.
   it('The size options take the primary paint: the checked option and the unchecked option (muted ink, weight 500, control fill)', () => {
     const raw = RAW();
     const plain = topRules(raw, '.size-control button');
@@ -596,13 +597,21 @@ describe('The setup sheet takes the design paint (update-setup-sheet, FR-96, FR-
     declares('.size-control button', merged(plain), 'font-weight', '500');
   });
 
-  // Scenario «Only the size options in the sheet take the primary paint», last clause. GUARD: the theme and language options are not changed by this change.
-  it('GUARD: the theme and language options still declare border-color var(--color-focus) and background-color var(--color-given-bg)', () => {
+  // DELIBERATE CHANGE (update-settings-panel, delta «The setup sheet takes the design's size, place and paint», scenario «The size options in the sheet take the primary paint and the
+  // other two segmented controls agree»; proposal.md Impact row tests/play-page-setup-sheet-stylesheet.test.ts:599-607, source A-61): the GUARD "the theme and language options still
+  // declare border-color var(--color-focus) and background-color var(--color-given-bg)" is replaced; the scenario's last clause now says the three checked rules agree (the values
+  // are compared as written, whitespace aside). Red today: the theme and language checked rules declare --color-focus and --color-given-bg, the size rule --color-primary and --color-primary-soft.
+  it('The size options in the sheet take the primary paint and the other two segmented controls agree: the three checked rules declare the same border-color, background-color, color and font-weight', () => {
     const raw = RAW();
-    for (const selector of [".theme-control button[aria-checked='true']", ".language-control button[aria-checked='true']"]) {
-      const rule = only(topRules(raw, selector), selector);
-      declares(selector, merged([rule]), 'border-color', 'var(--color-focus)');
-      declares(selector, merged([rule]), 'background-color', 'var(--color-given-bg)');
+    const selectors = [".size-control button[aria-checked='true']", ".theme-control button[aria-checked='true']", ".language-control button[aria-checked='true']"];
+    const rules = selectors.map((selector) => only(topRules(raw, selector), selector));
+    for (const property of ['border-color', 'background-color', 'color', 'font-weight']) {
+      const values = rules.map((rule) => merged([rule]).get(property));
+      const [size, theme, language] = values;
+      const describe3 = selectors.map((selector, i) => `${selector} { ${property}: ${values[i] ?? 'missing'} }`).join('; ');
+      expect.soft(size, `the size option declares ${property}`).toBeDefined();
+      expect.soft(theme, `the theme and the size checked rules agree on ${property}: ${describe3}`).toBe(size);
+      expect.soft(language, `the language and the size checked rules agree on ${property}: ${describe3}`).toBe(size);
     }
   });
 

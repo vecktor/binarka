@@ -1,0 +1,136 @@
+# Red run: update-settings-panel (tasks 2.1 to 2.5)
+
+Tests written by a test-engineer subagent (maker of the tests, not of the port); the red run below was run and read by the parent (the settings session) on 2026-10-12 at 13:18 (UTC+5:30, `date`), tree `claude/musing-bhaskara-settings` at `18e5f3f` plus the uncommitted tests, `src/ui/style.css` unchanged from `main`. Every failure is an AssertionError (53 assertion lines in the unit output, 0 TypeError, ReferenceError or SyntaxError).
+
+## A. Task 2.1: what the port must keep green (read, not changed)
+
+`tests/play-page-panel-shell-stylesheet.test.ts` (green today):
+- :25 `PANELS` includes `.settings`.
+- :58-77 exactly one top-level `.settings` rule; it declares `background-color: var(--color-surface-raised)`, `border-color: var(--color-overlay-border)` and `box-shadow: 0 -0.5rem 2rem var(--color-shadow-sheet)`, each written once in that first block, so the 22.5rem block must come after it and repeat none of the three.
+- :79-101 the `.settings` rule in `@media (min-width: 48rem)` declares `box-shadow: 0 1rem 2.5rem var(--color-shadow-panel)`; no exact `.settings` rule at any width declares another border colour or fill (a `padding-top`-only rule at 22.5rem is safe).
+- :139-145 exactly one top-level `.settings-close` rule, `background-color: var(--color-surface-raised)`.
+- :149-160 seven shadow rules among the exact `.rules`, `.setup-sheet`, `.settings` and `.confirm` rules (`.settings-close`'s mask and `.settings:popover-open` are outside that set).
+
+`e2e/nfr-14-panel-shell.spec.ts` (not edited): :210-225 and :236-250 the open panel's `background-color`, `border-top-color` and `box-shadow` against the design's; :247 and :378 the computed fill of `[data-action="settings-close"]` against the design's at 375×812 and 1024×768, light and dark; :394-415 the five layout variables on the panel.
+
+## B. Task 2.2: the changed tests (each with a `DELIBERATE CHANGE (update-settings-panel, …)` comment)
+
+| Test | Source | Result today |
+|---|---|---|
+| `tests/play-page-theme-stylesheet.test.ts` «The chosen option has a cue besides colour» (reading comment 225-227 rewritten; new helper `cueProblems`) | FR-117, A-61; delta of «The theme options set their own colours» | RED: "`.theme-control button` { font-weight } is at most 500 (is missing)" |
+| same file, «The language options declare their colours and a cue» (the cue half; the 4.5:1 and colour assertions unchanged) | same | RED: "`.language-control button` { font-weight } is at most 500 (is missing)" |
+| `tests/play-page-palette-stylesheet.test.ts` :97 «The ring keeps its accepted adjacencies» gains `--color-focus` on `--color-control-bg` (15.88 / 13.85, at least 13.85), `--color-control-bg` = `--color-cell-bg` per set, no such pair in `CONTRAST_PAIRS` | FR-65, A-61; delta of «Cells and buttons show a visible, unobscured focus indicator» | **GUARD**: green today (the values are the tokens' own) |
+| `tests/play-page-setup-sheet-stylesheet.test.ts` 599-607: the GUARD "the theme and language options still declare border-color var(--color-focus) and background-color var(--color-given-bg)" **replaced** by "the three checked rules declare the same border-color, background-color, color and font-weight"; comments at :584 and :599 cite the renamed scenario | A-61; delta of «The setup sheet takes the design's size, place and paint» | RED: "the theme and the size checked rules agree on border-color: … `.size-control` var(--color-primary); `.theme-control` var(--color-focus)" (and the language rule; and `background-color` var(--color-given-bg) against var(--color-primary-soft)) |
+
+## C. Task 2.3: `tests/play-page-settings-panel-stylesheet.test.ts` (new; `@trace NFR-14`, `FR-68`, `FR-65`, `FR-117`)
+
+14 tests: 8 red, 6 GUARD (green by design).
+
+RED (first failing assertion of each, as printed):
+1. «The phone regime and the small-phone padding»: `.settings { max-height } … exactly twice, 60vh then 55dvh` (is `['55dvh']`); `padding … (is 24px 16px 16px)`; ".settings inside @media (max-width: 22.5rem): the rule exists in src/ui/style.css".
+2. «The theme and language options take the segmented paint» (literal forms): ".language-control button { padding: 0 0.5rem } (is 0 8px)", "{ border-radius: calc(var(--radius-m) - 0.1875rem) } (is 7px)", "{ color: var(--color-text-muted) } (is var(--color-text))", "{ font-size: 0.9375rem } (is missing)", "{ font-weight: 500 } (is missing)", "{ line-height: 1.2 } (is missing)", ".language-control button[aria-checked='true'] { border-color: var(--color-primary) } (is var(--color-focus))", "{ background-color: var(--color-primary-soft) } (is var(--color-given-bg))" (the theme rules the same).
+3. same scenario: "neither checked rule declares box-shadow (the inner ring goes)".
+4. same scenario: no rule of the two controls names `--color-focus` or `--color-given-bg` in a fill or frame declaration (4 offenders).
+5. «The three segmented option rules agree»: "the theme rule agrees with the size rule on padding: `0 8px` … `0 0.5rem`" (and border-radius, font-size, font-weight, line-height, color; checked border-color, background-color).
+6. «The theme options grow by content and the language options are equal halves»: ".language-control button { flex: 1 1 0 } (is 1 1 auto)".
+7. ««Закрити» is sticky with the mask»: position, bottom, the mask box-shadow, padding, border-style, border-color, border-radius missing; "font-weight: 600 (is 700)".
+8. «The open panel reserves «Закрити» in its scroll padding»: ".settings:popover-open: the rule exists in src/ui/style.css" (an assertion, not a TypeError).
+
+GUARD: «From 48rem the dropdown keeps its place»; `.setup-close` declares no box-shadow; the scroll-padding reader accepts the spec's value and rejects bad ones (a check of the evaluator); the colour scan of the settings rules (exact selectors: `.settings-button` and `.settings::backdrop` are not scanned); `TOKEN_NAMES` and `CONTRAST_PAIRS` equal the baseline copies as lists (32 names, 41 pairs; copied from `git show main:tests/helpers/css.ts` at `18e5f3f`); hover, press and motion are not ported.
+
+### The parent's unit run
+
+Command: `npx vitest run` (the whole suite), 2026-10-12 about 13:15.
+
+```
+ Test Files  3 failed | 77 passed (80)
+      Tests  11 failed | 1952 passed (1963)
+```
+
+The 11 red tests:
+
+```
+× The phone regime and the small-phone padding 14ms
+× The theme and language options take the segmented paint: each plain rule and each checked rule declares the size options' literal forms 5ms
+× The theme and language options take the segmented paint: neither checked rule declares box-shadow (the inner ring goes) 2ms
+× The theme and language options take the segmented paint: no rule of the two controls names --color-focus or --color-given-bg as a fill or a frame 2ms
+× The three segmented option rules agree: the plain rules declare the same value, written the same way, for the thirteen declarations; the checked rules for the four 3ms
+× The theme options grow by content and the language options are equal halves: flex 1 1 auto and flex 1 1 0 1ms
+× «Закрити» is sticky with the mask: the one .settings-close rule outside any at-rule declares the design's sticky button 4ms
+× The open panel reserves «Закрити» in its scroll padding: .settings:popover-open declares scroll-padding-bottom of at least calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom)) and no display 1ms
+× The chosen option has a cue besides colour 18ms
+× The language options declare their colours and a cue 26ms
+× The size options in the sheet take the primary paint and the other two segmented controls agree: the three checked rules declare the same border-color, background-color, color and font-weight 18ms
+```
+
+## D. Task 2.4: `e2e/nfr-14-settings-panel.spec.ts` (new; `@trace NFR-14`, `FR-68`, `FR-65`; project `layout`, `playwright.config.ts` not edited)
+
+21 tests: the fixture's top-level pins (green), the key's shape (1), per case the boxes (7) and the language halves (7), the paint at 375 light and dark (2), and the short-window walk at 667×375, 568×320 and 1024×360 (3). Sampling, `coverage: sampled` and the stricter instruments are declared in the file's header.
+
+Finding of the test-engineer, confirmed by the run: the walk is not a pure GUARD before the port. Its "«Закрити» is inside the panel and stuck at the bottom" clause fails today because the button is not sticky; only its "ring clear of the mask" clause passes (no option problem is listed). The premise (the panel scrolls) HOLDS at all three windows (no premise failure in the output).
+
+Commands (task 2.5): `npm run build` (exit 0); `ls design/v0/out/index.html` (exists); ports 6473-6477 free before (`lsof -nP -iTCP:<p> -sTCP:LISTEN` printed nothing for each); `BINARKA_PORT_BASE=6473 npx playwright test --project=layout e2e/nfr-14-settings-panel.spec.ts` → exit 1, **20 failed, 1 passed**; ports 6473-6477 free after (nothing printed). The run rewrote `docs/qa/e2e-report.json`; restored with `git checkout` (a tool-rewritten report, not this task's evidence).
+
+What fails, by message:
+- the key test and every per-case boxes and paint test: "quality/design-geometry.json has no key settingsPanel: run BINARKA_PORT_BASE=<base> node scripts/freeze-design-geometry.mjs after building design/v0 (design/README.md)" (the freeze instruction; never a skip);
+- the language halves (they need no fixture), e.g. "375-light-settings: the language options' widths 183.8125 and 146.1875", "768-light-settings: … 172.3125 and 134.6875";
+- the walk, e.g. at 667×375: "step 1 (theme #0 «Світла»): «Закрити» (386.3 to 434.3) is not inside the panel (168.8 to 375.0)", the same at steps 2 to 5 (the button is below the scrolled panel, not stuck).
+
+```
+✓   1 [layout] › e2e/nfr-14-settings-panel.spec.ts:140:1 › @trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED, nothing else changes) (6ms)
+✘   5 [layout] › e2e/nfr-14-settings-panel.spec.ts:148:1 › @trace NFR-14 @trace FR-68 the fixture holds the key settingsPanel: selectors, sampled coverage, its own provenance and exactly the 7 cases (4ms)
+✘   2 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px (376ms)
+✘   4 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: the two language options are equal halves (widths within 0.5 px) (369ms)
+✘   6 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 320-light-settings (320x700) › @trace NFR-14 @trace FR-68 320-light-settings: the two language options are equal halves (widths within 0.5 px) (372ms)
+✘   3 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 320-light-settings (320x700) › @trace NFR-14 @trace FR-68 320-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px (374ms)
+✘   7 [layout] › e2e/nfr-14-settings-panel.spec.ts:258:7 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: an unchosen and a chosen option of each control have the design's computed paint (191ms)
+✘  11 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 1024-light-settings (1024x768) › @trace NFR-14 @trace FR-68 1024-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px (218ms)
+✘  10 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 768-light-settings (768x1024) › @trace NFR-14 @trace FR-68 768-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px (243ms)
+✘   9 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 768-light-settings (768x1024) › @trace NFR-14 @trace FR-68 768-light-settings: the two language options are equal halves (widths within 0.5 px) (232ms)
+✘   8 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 1024-light-settings (1024x768) › @trace NFR-14 @trace FR-68 1024-light-settings: the two language options are equal halves (widths within 0.5 px) (226ms)
+✘  12 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 1366-light-settings (1366x650) › @trace NFR-14 @trace FR-68 1366-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px (169ms)
+✘  13 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 1440-light-settings (1440x900) › @trace NFR-14 @trace FR-68 1440-light-settings: the two language options are equal halves (widths within 0.5 px) (236ms)
+✘  14 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 1366-light-settings (1366x650) › @trace NFR-14 @trace FR-68 1366-light-settings: the two language options are equal halves (widths within 0.5 px) (239ms)
+✘  15 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 1440-light-settings (1440x900) › @trace NFR-14 @trace FR-68 1440-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px (240ms)
+✘  16 [layout] › e2e/nfr-14-settings-panel.spec.ts:227:5 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px (245ms)
+✘  17 [layout] › e2e/nfr-14-settings-panel.spec.ts:249:5 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: the two language options are equal halves (widths within 0.5 px) (184ms)
+✘  21 [layout] › e2e/nfr-14-settings-panel.spec.ts:258:7 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: an unchosen and a chosen option of each control have the design's computed paint (228ms)
+✘  20 [layout] › e2e/nfr-14-settings-panel.spec.ts:346:5 › 667x375 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 667x375: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port) (248ms)
+✘  18 [layout] › e2e/nfr-14-settings-panel.spec.ts:346:5 › 1024x360 (dropdown) short-window focus walk › @trace NFR-14 @trace FR-65 1024x360: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port) (248ms)
+✘  19 [layout] › e2e/nfr-14-settings-panel.spec.ts:346:5 › 568x320 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 568x320: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port) (252ms)
+```
+
+## E. Task 3.4: the e2e after the freeze (the key now present)
+
+2026-10-12 about 13:19 (UTC+5:30). Ports 6473-6477 free before and after (lsof printed nothing). `BINARKA_PORT_BASE=6473 npx playwright test --project=layout e2e/nfr-14-settings-panel.spec.ts` → exit 1, **19 failed, 2 passed** (the two fixture tests now pass). `docs/qa/e2e-report.json` restored with `git checkout`. The per-case tests now fail on the box and paint assertions, not on the missing key:
+
+```
+"375-light-settings [data-section=\"settings\"]: page 0.00,530.50 375.00x281.50, design 0.00,534.50 375.00x277.50; off at y 530.50 vs 534.50, h 281.50 vs 277.50",
+"375-light-settings [data-control=\"theme\"]: page 17.00,579.75 341.00x52.00, design 17.00,583.75 341.00x52.00; off at y 579.75 vs 583.75",
+"375-light-settings [data-control=\"language\"]: page 17.00,672.00 341.00x52.00, design 17.00,676.00 341.00x52.00; off at y 672.00 vs 676.00",
+"375-light-settings [data-control=\"theme\"] button[aria-checked=\"true\"]: page 210.23,583.75 143.77x44.00, design 212.88,587.75 141.13x44.00; off at x 210.23 vs 212.88, y 583.75 vs 587.75, w 143.77 vs 141.13",
+"375-light-settings [data-control=\"language\"] button[aria-checked=\"true\"]: page 21.00,676.00 183.81x44.00, design 21.00,680.00 165.00x44.00; off at y 676.00 vs 680.00, w 183.81 vs 165.00",
+"375-light-settings [data-action=\"settings-close\"]: page 17.00,748.00 341.00x48.00, design 17.00,752.00 341.00x44.00; off at y 748.00 vs 752.00, h 48.00 vs 44.00",
+"320-light-settings [data-section=\"settings\"]: page 0.00,418.50 320.00x281.50, design 0.00,430.50 320.00x269.50; off at y 418.50 vs 430.50, h 281.50 vs 269.50",
+Error: 1024-light-settings: 4 problem(s)
+Error: 1024-light-settings: the language options' widths 172.3125 and 134.6875
+Error: 1024x360: 5 problem(s) in the focus walk
+Error: 1366-light-settings: 4 problem(s)
+Error: 1366-light-settings: the language options' widths 172.3125 and 134.6875
+Error: 1440-light-settings: 4 problem(s)
+Error: 1440-light-settings: the language options' widths 172.3125 and 134.6875
+Error: 320-light-settings: 6 problem(s)
+Error: 320-light-settings: the language options' widths 156.3125 and 118.6875
+Error: 375-light-settings-dark: 12 paint difference(s)
+Error: 375-light-settings-dark: 6 problem(s)
+Error: 375-light-settings-dark: the language options' widths 183.8125 and 146.1875
+Error: 375-light-settings: 12 paint difference(s)
+Error: 375-light-settings: 6 problem(s)
+Error: 375-light-settings: the language options' widths 183.8125 and 146.1875
+Error: 568x320: 5 problem(s) in the focus walk
+Error: 667x375: 5 problem(s) in the focus walk
+Error: 768-light-settings: 4 problem(s)
+Error: 768-light-settings: the language options' widths 172.3125 and 134.6875
+```
+
+So the phone sheet is 4px too tall at 375 (281.5 against 277.5) and 12px at 320 (see the 320 line), as `proposal.md` and `classify.txt` say; the paint tests differ in 12 values per case; the language halves and the walk fail as in section D.

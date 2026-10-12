@@ -54,6 +54,29 @@ function hexOf(set: TokenSet, name: string): string {
   return value;
 }
 
+/**
+ * The cue besides colour of a chosen option (WCAG 1.4.1), the reading of update-settings-panel (A-61, FR-117): the checked rule declares a `font-weight` of at least 700
+ * and a `border-color` other than the plain rule's, and the plain rule declares a `font-weight` of at most 500 and a transparent `border-color`. One message per
+ * missing or wrong declaration, so a red run names it. `bold` is 700 and `normal` 400.
+ */
+function cueProblems(parsed: ParsedStyles, plainSelector: string, checkedSelector: string): string[] {
+  const plain = declarationsFor(parsed, plainSelector);
+  const checked = declarationsFor(parsed, checkedSelector);
+  const weight = (value: string | undefined): number | undefined => (value === undefined ? undefined : value === 'bold' ? 700 : value === 'normal' ? 400 : Number(value));
+  const isTransparent = (value: string | undefined): boolean => value !== undefined && /^(transparent|rgba\(\s*0,\s*0,\s*0,\s*0\s*\))$/i.test(value.trim());
+  const out: string[] = [];
+  const checkedWeight = weight(checked.get('font-weight'));
+  if (checkedWeight === undefined || !(checkedWeight >= 700)) out.push(`${checkedSelector} { font-weight } is at least 700 (is ${checked.get('font-weight') ?? 'missing'})`);
+  const plainWeight = weight(plain.get('font-weight'));
+  if (plainWeight === undefined || !(plainWeight <= 500)) out.push(`${plainSelector} { font-weight } is at most 500 (is ${plain.get('font-weight') ?? 'missing'})`);
+  const checkedBorder = checked.get('border-color');
+  if (checkedBorder === undefined || checkedBorder === plain.get('border-color')) {
+    out.push(`${checkedSelector} { border-color } differs from the plain rule's (is ${checkedBorder ?? 'missing'}, plain ${plain.get('border-color') ?? 'missing'})`);
+  }
+  if (!isTransparent(plain.get('border-color'))) out.push(`${plainSelector} { border-color } is transparent (is ${plain.get('border-color') ?? 'missing'})`);
+  return out;
+}
+
 describe('Effective theme on the document (the stylesheet half)', () => {
   it('The stylesheet sets color-scheme for each theme', () => {
     const parsed = readStyles();
@@ -225,25 +248,15 @@ describe('The theme options set their own colours', () => {
     expect(ratios, 'four ratios were computed: plain and checked in the light and in the dark set').toHaveLength(4);
   });
 
-  // Reading of "declares a border-style, border-width, box-shadow or text-decoration that the plain rule does not": the checked rule has
-  // one of them with a real value (not none / 0) that the plain rule lacks or declares with another value. The `border` shorthand counts
-  // by its width and style only (a changed colour inside it is the colour cue the scenario says is not enough).
+  // DELIBERATE CHANGE (update-settings-panel, delta «The theme options set their own colours», scenario «The chosen option has a cue besides colour»; proposal.md Impact row
+  // tests/play-page-theme-stylesheet.test.ts:228-241, source FR-117, A-61): the reading changes. It was "the checked rule declares a border-style, border-width, box-shadow or
+  // text-decoration that the plain rule does not"; it is now "the checked rule declares a font-weight of at least 700 and a border-color other than the plain rule's, and the plain
+  // rule declares a font-weight of at most 500 and a transparent border-color" (the design's cues: the weight and the appearing frame; the inner ring goes). The 4.5:1 test above
+  // and the colour declarations stay. Red today: the plain rule declares no font-weight.
   it('The chosen option has a cue besides colour', () => {
     const parsed = readStyles();
     expect(rulesWithSelector(parsed, CHECKED).length, `a rule for ${CHECKED}`).toBeGreaterThan(0);
-    const plain = declarationsFor(parsed, PLAIN);
-    const checked = declarationsFor(parsed, CHECKED);
-    const shape = (property: string, value: string | undefined): string | undefined =>
-      value === undefined ? undefined : property === 'border' ? value.replace(/var\([^)]*\)/g, '').replace(/\s+/g, ' ').trim() : value.trim();
-    const cues = ['border-style', 'border-width', 'border', 'box-shadow', 'text-decoration', 'text-decoration-line'].filter((property) => {
-      const own = shape(property, checked.get(property));
-      if (own === undefined || /^(none|0|0px|medium)$/i.test(own)) return false;
-      return own !== shape(property, plain.get(property));
-    });
-    expect(
-      cues,
-      `the checked rule declares a border-style, border-width, box-shadow or text-decoration that the plain rule does not (checked: ${[...checked.keys()].join(', ')})`,
-    ).not.toEqual([]);
+    expect(cueProblems(parsed, PLAIN, CHECKED), 'the cue of the chosen theme option (weight 700 against at most 500, a frame that appears)').toEqual([]);
   });
 });
 
@@ -280,14 +293,9 @@ describe('The theme options set their own colours (the language options)', () =>
     }
     expect(ratios, 'four ratios were computed').toBe(4);
 
-    // the checked rule declares a cue the plain rule does not (the reading of the theme test above)
-    const shape = (property: string, value: string | undefined): string | undefined =>
-      value === undefined ? undefined : property === 'border' ? value.replace(/var\([^)]*\)/g, '').replace(/\s+/g, ' ').trim() : value.trim();
-    const cues = ['border-style', 'border-width', 'border', 'box-shadow', 'text-decoration', 'text-decoration-line'].filter((property) => {
-      const own = shape(property, declarationsFor(parsed, LANGUAGE_CHECKED).get(property));
-      if (own === undefined || /^(none|0|0px|medium)$/i.test(own)) return false;
-      return own !== shape(property, plain.get(property));
-    });
-    expect(cues, 'the checked rule declares a border-style, border-width, box-shadow or text-decoration that the plain rule does not').not.toEqual([]);
+    // DELIBERATE CHANGE (update-settings-panel, delta «The theme options set their own colours», scenario «The language options declare their colours and a cue»; proposal.md Impact
+    // row tests/play-page-theme-stylesheet.test.ts:249-288, source FR-117, A-61): the cue is the weight and the appearing frame (the reading of the theme test above). Red today: the
+    // plain rule declares no font-weight.
+    expect(cueProblems(parsed, LANGUAGE_PLAIN, LANGUAGE_CHECKED), 'the cue of the chosen language option (weight 700 against at most 500, a frame that appears)').toEqual([]);
   });
 });
