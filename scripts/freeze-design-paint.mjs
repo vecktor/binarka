@@ -43,8 +43,8 @@ const ELEMENTS = {
   body: { selector: 'body', group: 'html' },
   title: { selector: '.page-header h1', group: 'html' },
   logo: { selector: '.page-header .logo', group: 'svg-root' },
-  'logo-tooth': { selector: '.page-header .logo g > rect', group: 'svg' },
-  'logo-disc': { selector: '.page-header .logo circle', group: 'svg' },
+  // The logo's tile replaced its rays and disc (FR-72 amended 2026-10-12, drawing G, change update-logo-legibility).
+  'logo-tile': { selector: '.page-header .logo .logo-tile', group: 'svg' },
   'logo-cell': { selector: '.page-header .logo .logo-cell', group: 'svg' },
   'logo-digit': { selector: '.page-header .logo .logo-digit', group: 'svg' },
   'logo-ring': { selector: '.page-header .logo .logo-digit-ring', group: 'svg' },

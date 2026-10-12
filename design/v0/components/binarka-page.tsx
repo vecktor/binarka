@@ -45,7 +45,6 @@ export type ThemeChoice = 'light' | 'dark' | 'auto'
 
 export type Level = 1 | 2 | 3 | 4
 
-const RAY_COUNT = 12
 const SIZES = [4, 6, 8] as const
 // FR-87 (names) and FR-89 (descriptions, the user's final wording, each at most 80 characters).
 const LEVELS: ReadonlyArray<{ level: Level; name: string; description: string }> = [
@@ -92,24 +91,24 @@ const LANGUAGES = [
 // Non-breaking spaces keep «0 і 1» on one line (finding 11).
 const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 0\u00a0і\u00a01. Правила — кнопка «Правила» вгорі.'
 
-// A "1" drawn as a bar and a "0" drawn as a ring, the same shapes as the rays,
+// A "1" drawn as a square-ended bar and a "0" drawn as a ring,
 // so the logo needs no font.
 function LogoDigit({ digit, cx, cy }: { digit: 0 | 1; cx: number; cy: number }) {
   return digit === 1 ? (
-    <rect className="logo-digit" x={cx - 2.25} y={cy - 5.5} width="4.5" height="11" rx="2.25" />
+    <rect className="logo-digit" x={cx - 3.5} y={cy - 9} width="7" height="18" rx="0.8" />
   ) : (
-    <ellipse className="logo-digit-ring" cx={cx} cy={cy} rx="3.5" ry="5" strokeWidth="3" />
+    <ellipse className="logo-digit-ring" cx={cx} cy={cy} rx="6" ry="8" strokeWidth="5" />
   )
 }
 
 export function Logo({ size = 56 }: { size?: number }) {
-  // 2×2 mini board «1 0 / 0 1» inside the sun. Iteration 17 (update-logo-legibility, the user's drawing B
-  // of 2026-10-12): 16-unit cells in an r 24 circle and short rays, so the digits read at 40 px (NFR-15).
+  // 2×2 mini board «1 0 / 0 1» on a rounded square tile. Iteration 18 (update-logo-legibility, the user's
+  // drawing G of 2026-10-12, FR-72 amended): no sun; 26-unit cells, so the digits read at 40 px (NFR-15).
   const cells: Array<{ x: number; y: number; digit: 0 | 1 }> = [
-    { x: 15, y: 15, digit: 1 },
-    { x: 33, y: 15, digit: 0 },
-    { x: 15, y: 33, digit: 0 },
-    { x: 33, y: 33, digit: 1 },
+    { x: 4, y: 4, digit: 1 },
+    { x: 34, y: 4, digit: 0 },
+    { x: 4, y: 34, digit: 0 },
+    { x: 34, y: 34, digit: 1 },
   ]
   return (
     <svg
@@ -120,31 +119,11 @@ export function Logo({ size = 56 }: { size?: number }) {
       width={size}
       height={size}
     >
-      {Array.from({ length: RAY_COUNT }, (_, index) => {
-        const angle = (360 / RAY_COUNT) * index
-        return (
-          <g key={angle} transform={`rotate(${angle} 32 32)`}>
-            {index % 2 === 0 ? (
-              <rect x="30.4" y="0.5" width="3.2" height="6" rx="1.6" fill="currentColor" />
-            ) : (
-              <ellipse
-                cx="32"
-                cy="3.6"
-                rx="2.1"
-                ry="2.7"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-              />
-            )}
-          </g>
-        )
-      })}
-      <circle cx="32" cy="32" r="24" fill="currentColor" />
+      <rect className="logo-tile" x="0" y="0" width="64" height="64" rx="14" fill="currentColor" />
       {cells.map(({ x, y, digit }) => (
         <g key={`${x}-${y}`}>
-          <rect className="logo-cell" x={x} y={y} width="16" height="16" rx="3" />
-          <LogoDigit digit={digit} cx={x + 8} cy={y + 8} />
+          <rect className="logo-cell" x={x} y={y} width="26" height="26" rx="4" />
+          <LogoDigit digit={digit} cx={x + 13} cy={y + 13} />
         </g>
       ))}
     </svg>
