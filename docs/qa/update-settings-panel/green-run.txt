@@ -235,3 +235,7 @@ The settings-panel tests of that run:
 ✓  198 [layout] › e2e/nfr-14-settings-panel.spec.ts:346:5 › 568x320 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 568x320: Tab through the panel keeps «Закрити» 
 ✓  199 [layout] › e2e/nfr-14-settings-panel.spec.ts:346:5 › 1024x360 (dropdown) short-window focus walk › @trace NFR-14 @trace FR-65 1024x360: Tab through the panel keeps «Закрити» st
 ```
+
+## Addendum, 2026-10-12 13:43 (UTC+5:30): the 2px margin on the user's word (session-log row 9)
+
+`.settings:popover-open { scroll-padding-bottom }` changed from `calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom))` to `calc(2.75rem + 2rem + 4px + env(safe-area-inset-bottom))` (the smoke test's walk had 0px to spare at 568×320 and 1024×360). Re-run after the change: `npx vitest run` 80 files, 1963 tests passed (the scroll-padding scenario reads "at least" 78px plus the inset: 80px passes); `npm run build` exit 0; ports 6473-6477 free before and after; `BINARKA_PORT_BASE=6473 npx playwright test --project=layout` exit 0, 237 passed (the walk at the three windows included); `docs/qa/e2e-report.json` restored. No gate shot scrolls the panel, so no shot's pixels can move; the fresh `check:visual` after the rebase (task 10.2) re-checks it.

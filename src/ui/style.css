@@ -1278,9 +1278,10 @@ button:focus-visible {
 }
 
 /* Focus scrolling keeps a focused option and its ring clear of the sticky close button (FR-65, WCAG 2.4.11; A-61): the stuck button sits on the
-   panel's 1rem bottom padding, it is 2.75rem tall with a 1rem mask above it, and the ring reaches 2px below the option. */
+   panel's 1rem bottom padding, it is 2.75rem tall with a 1rem mask above it, and the ring reaches 2px below the option; 2px more keep the
+   ring off the mask's edge (the signed minimum fits it exactly). */
 .settings:popover-open {
-  scroll-padding-bottom: calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom));
+  scroll-padding-bottom: calc(2.75rem + 2rem + 4px + env(safe-area-inset-bottom));
 }
 
 /* The design's small phone (A-61): a tighter top padding at 22.5rem and narrower; after the top-level rule, which has the same specificity. */
