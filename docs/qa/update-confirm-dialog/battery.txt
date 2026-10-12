@@ -1,0 +1,124 @@
+update-confirm-dialog: the battery (section 5), the dialog session, tree f5a5582 (f5a5582: red tests, freeze, port), BINARKA_PORT_BASE=6373
+== port check before
+2026-10-12 13:40:02
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+
+######## 5.1
+
+== $ npm run lint
+> binarka@0.1.0 lint
+> eslint .
+exit 0
+
+== $ npm run test:run
+> vitest run
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976
+ Test Files  80 passed (80)
+      Tests  1979 passed (1979)
+   Start at  13:40:25
+   Duration  60.81s (tests 76%, environment 18%, import 5%, transform 1%)
+    Isolate  80 workers spawned · ~852ms startup each (spawn + environment, per file)
+             at least ~6.72s faster with isolate: false — reuses workers across files instead of one per file
+exit 0
+
+== $ npm run build
+transforming...
+✓ 23 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-CWsnA5EF.css  23.86 kB │ gzip:  4.94 kB
+dist/assets/index-D4WnM0mv.js   35.36 kB │ gzip: 12.80 kB
+✓ built in 34ms
+exit 0
+
+######## 5.2
+
+== $ npx openspec validate update-confirm-dialog --strict
+Change 'update-confirm-dialog' is valid
+exit 0
+
+== $ npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+✓ change/update-confirm-dialog
+✓ change/update-settings-panel
+Totals: 4 passed, 0 failed (4 items)
+exit 0
+
+######## 5.3
+
+== $ node scripts/check-eval-ratchet.mjs
+Scope: 6 eval case(s)
+OK    hint-clarity 92.7 (baseline 92.7)
+OK    hint-clarity-en 90 (baseline 90)
+Result: PASS
+exit 0
+
+== $ npm run check:trace
+> binarka@0.1.0 check:trace
+> node scripts/check-traceability.mjs
+traceability: 115 MVP FRs checked — 0 failure(s), 117 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit 0
+
+== $ npm run check:acceptance
+> binarka@0.1.0 check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+Scope: 132 tagged requirement(s)
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+Result: PASS
+exit 0
+
+######## 5.4
+
+== $ npm run test:e2e
+  ✓  292 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 1280x800 manual dark on a light system › NFR-13 axe: no violation with the settings panel closed (510ms)
+  ✓  289 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 375x812 manual dark on a light system › NFR-13 axe: no violation with the settings panel open (664ms)
+  ✓  297 [a11y] › e2e/nfr-13-a11y.spec.ts:311:3 › the rendered colours follow the effective theme › NFR-13 theme: dark stored on a light system gives the dark background and color-scheme dark (117ms)
+  ✓  296 [a11y] › e2e/nfr-13-a11y.spec.ts:278:3 › manual themes against auto on the same system › NFR-13 theme: a manual theme resolves the same colours as auto on that system (255ms)
+  ✓  298 [a11y] › e2e/nfr-13-a11y.spec.ts:324:3 › the rendered colours follow the effective theme › NFR-13 theme: auto follows a live change of the system scheme without a reload (132ms)
+  ✓  300 [a11y] › e2e/nfr-13-a11y.spec.ts:355:3 › the rendered colours follow the effective theme › NFR-13 theme: light stored by the test on a dark system is light after a reload (155ms)
+  ✓  294 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 1280x800 manual light on a dark system › NFR-13 axe: no violation with the settings panel closed (566ms)
+  ✓  293 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 1280x800 manual dark on a light system › NFR-13 axe: no violation with the settings panel open (622ms)
+  ✓  299 [a11y] › e2e/nfr-13-a11y.spec.ts:340:3 › the rendered colours follow the effective theme › NFR-13 theme: a press stores the theme, a reload keeps it and a light dismiss keeps the choice (264ms)
+  ✓  301 [a11y] › e2e/nfr-13-a11y.spec.ts:367:3 › the focused theme option › NFR-13 focus: Tab from the settings button reaches a theme option with a solid outline of at least 2px (139ms)
+  ✓  295 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 1280x800 manual light on a dark system › NFR-13 axe: no violation with the settings panel open (663ms)
+  301 passed (27.3s)
+exit 0
+
+== $ npm run check:a11y
+  ✓  57 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 375x812 manual light on a dark system › NFR-13 axe: no violation with the settings panel open (597ms)
+  ✓  58 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 1280x800 manual dark on a light system › NFR-13 axe: no violation with the settings panel closed (524ms)
+  ✓  63 [a11y] › e2e/nfr-13-a11y.spec.ts:311:3 › the rendered colours follow the effective theme › NFR-13 theme: dark stored on a light system gives the dark background and color-scheme dark (119ms)
+  ✓  62 [a11y] › e2e/nfr-13-a11y.spec.ts:278:3 › manual themes against auto on the same system › NFR-13 theme: a manual theme resolves the same colours as auto on that system (226ms)
+  ✓  64 [a11y] › e2e/nfr-13-a11y.spec.ts:324:3 › the rendered colours follow the effective theme › NFR-13 theme: auto follows a live change of the system scheme without a reload (126ms)
+  ✓  60 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 1280x800 manual light on a dark system › NFR-13 axe: no violation with the settings panel closed (549ms)
+  ✓  66 [a11y] › e2e/nfr-13-a11y.spec.ts:355:3 › the rendered colours follow the effective theme › NFR-13 theme: light stored by the test on a dark system is light after a reload (131ms)
+  ✓  59 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 1280x800 manual dark on a light system › NFR-13 axe: no violation with the settings panel open (623ms)
+  ✓  65 [a11y] › e2e/nfr-13-a11y.spec.ts:340:3 › the rendered colours follow the effective theme › NFR-13 theme: a press stores the theme, a reload keeps it and a light dismiss keeps the choice (252ms)
+  ✓  61 [a11y] › e2e/nfr-13-a11y.spec.ts:264:9 › 1280x800 manual light on a dark system › NFR-13 axe: no violation with the settings panel open (619ms)
+  ✓  67 [a11y] › e2e/nfr-13-a11y.spec.ts:367:3 › the focused theme option › NFR-13 focus: Tab from the settings button reaches a theme option with a solid outline of at least 2px (143ms)
+  67 passed (13.3s)
+exit 0
+
+== port check after
+2026-10-12 13:42:12
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+
+== NFR-13 coverage of the confirmation state (docs/qa/a11y-report.json, kept as evidence of 5.4):
+  nfr-13-a11y.spec.ts › 375x812 light › NFR-13 axe: no violation in the confirmation state :: passed
+  nfr-13-a11y.spec.ts › 375x812 dark › NFR-13 axe: no violation in the confirmation state :: passed
+  nfr-13-a11y.spec.ts › 1280x800 light › NFR-13 axe: no violation in the confirmation state :: passed
+  nfr-13-a11y.spec.ts › 1280x800 dark › NFR-13 axe: no violation in the confirmation state :: passed
+  The keyboard sweep (e2e/nfr-13-a11y.spec.ts l. 96-106) opens the dialog by the keyboard and expects the focus rings of 'confirm yes' and 'confirm no' among the reached controls: passed (in the 67).
+Output filtered: the per-FR WARN lines of check:trace (recording-evidence, review-evidence, process, in-scope, active-changes) and jsdom's 'Could not parse CSS stylesheet' noise are left out; every exit code is shown. docs/qa/e2e-report.json (reporter output) reverted; docs/qa/traceability-report.md and trace/trace.json regenerated with no change.

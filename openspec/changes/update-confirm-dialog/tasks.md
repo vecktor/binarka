@@ -44,11 +44,11 @@ For the dialog session of the second wave of `docs/handoff/parallel-g2-plan-2026
 
 ## 5. Battery, validation and docs
 
-- [ ] 5.1 `npm run lint`, `npm run test:run`, `npm run build`. Evidence: `docs/qa/update-confirm-dialog/battery.txt`.
-- [ ] 5.2 `npx openspec validate update-confirm-dialog --strict` and `npx openspec validate --all --strict`. Evidence: `battery.txt`.
-- [ ] 5.3 `node scripts/check-eval-ratchet.mjs`, `npm run check:trace` (the new and changed `@trace` tags, plain ids), `npm run check:acceptance` (the confirm-dialog check is a real e2e test, not a stub). Evidence: `battery.txt`.
-- [ ] 5.4 `npm run test:e2e` (every project the default run has, own ports) and `npm run check:a11y` (NFR-13: axe on the confirmation state, light and dark, with the new paint; the keyboard sweep sees the focus rings of both buttons). Evidence: `battery.txt`; `docs/qa/a11y-report.json`.
-- [ ] 5.5 Update `README.md` (the new tests, the key `confirmDialog`, the `confirm` block of the per-block tool, the 33-token and 42-pair counts); no claim about pixel movement is written yet. Do not edit `docs/current-state.md` (task 10.3). Evidence: `README.md` in the diff.
+- [x] 5.1 `npm run lint`, `npm run test:run`, `npm run build`. Evidence: `docs/qa/update-confirm-dialog/battery.txt`.
+- [x] 5.2 `npx openspec validate update-confirm-dialog --strict` and `npx openspec validate --all --strict`. Evidence: `battery.txt`.
+- [x] 5.3 `node scripts/check-eval-ratchet.mjs`, `npm run check:trace` (the new and changed `@trace` tags, plain ids), `npm run check:acceptance` (the confirm-dialog check is a real e2e test, not a stub). Evidence: `battery.txt`.
+- [x] 5.4 `npm run test:e2e` (every project the default run has, own ports) and `npm run check:a11y` (NFR-13: axe on the confirmation state, light and dark, with the new paint; the keyboard sweep sees the focus rings of both buttons). Evidence: `battery.txt`; `docs/qa/a11y-report.json`.
+- [x] 5.5 Update `README.md` (the new tests, the key `confirmDialog`, the `confirm` block of the per-block tool, the 33-token and 42-pair counts); no claim about pixel movement is written yet. Do not edit `docs/current-state.md` (task 10.3). Evidence: `README.md` in the diff.
 
 ## 6. Smoke test in a real browser (no database exists; the page keeps no state, TC-12)
 
