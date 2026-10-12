@@ -10,6 +10,7 @@ export const CALIBRATIONS = {
   'review-set-14': 'docs/qa/g2/harness-calibration.txt',
   'review-set-15': 'docs/qa/design-stream/harness-calibration-set15.txt',
   'review-set-16': 'docs/qa/design-stream/harness-calibration-set16.txt',
+  'review-set-17': 'docs/qa/update-logo-legibility/harness-calibration-set17.txt',
 };
 
 /** The provenance `standIn` for a config's referenceDir; throws when no calibration exists for that set or its file does not name the set. */

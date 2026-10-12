@@ -1,0 +1,13 @@
+# PD-16 green proof, 2026-10-12 20:21 +0530 (logo-fix session)
+calibration: docs/qa/update-logo-legibility/harness-calibration-set17.txt — flag 170 of 170 at exactly 1.0000 (emulated min 0.9765, 5 below 0.98, as for earlier sets)
+re-seal: --init-lock --adaptation "PD-16: …" (gitHead 0383cc5); only the config's hash and the adaptations line changed in factory-lock.json
+
+$ node docs/qa/improvements/PD-13-reference-probe.mjs
+config:      design/v0-screenshots/review-set-17 a33d4af34cf0282fd7087062bfd45ce629554424
+on disk:     design/v0-screenshots/review-set-17/SHA1SUMS a33d4af34cf0282fd7087062bfd45ce629554424
+PASS: the config names the NFR-14 reference, and its SHA1SUMS matches
+exit=0
+$ npx vitest run tests/nfr-14-reference-pins.test.ts
+      Tests  3 passed (3)
+$ npm run check:integrity
+Result: PASS, 1 warning(s)
