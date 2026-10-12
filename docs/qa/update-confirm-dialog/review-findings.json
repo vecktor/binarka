@@ -1,0 +1,169 @@
+{
+  "generatedBy": "review-gate",
+  "scope": "update-confirm-dialog (G2 dialog block, wave 2): src/ui/style.css port + tests + e2e/nfr-14-confirm-dialog.spec.ts + scripts/freeze-design-geometry.mjs + scripts/visual-block.mjs + quality/design-geometry.json + openspec/changes/update-confirm-dialog",
+  "change": "update-confirm-dialog",
+  "baseRef": "18e5f3f",
+  "headRef": "ea36535",
+  "dimensions": {
+    "correctness": {
+      "confirmed": 2,
+      "contested": 1,
+      "rejected": 1
+    },
+    "spec-compliance": {
+      "confirmed": 1,
+      "contested": 2,
+      "rejected": 1
+    }
+  },
+  "confirmedTitles": [
+    "visual-block --block confirm passes vacuously (exit 0, 'geometry within') when run without --states confirm, and design.md tells readers to run it that way",
+    "The confirm selector list is copied in three places instead of being shared like SETUP_SELECTORS",
+    "The refreeze rewrote designBuildSha1 in rulesPanel and setupSheet, so the scenario's 'unchanged' clause is false and no test checks it"
+  ],
+  "contestedTitles": [
+    "The refreeze rewrote rulesPanel and setupSheet provenance.designBuildSha1, though the spec says those keys are unchanged",
+    "The e2e test titles carry @trace FR-65 and @trace NFR-12, which the spec's mechanism paragraph does not list",
+    "No test checks that the design server is closed after the run"
+  ],
+  "clean": false,
+  "generatedAt": "2026-10-12T14:09:31+05:30",
+  "summary": "Review gate for update-confirm-dialog: 3 confirmed, 3 contested (treat as confirmed unless trivially wrong), 2 rejected.",
+  "findings": [
+    {
+      "title": "visual-block --block confirm passes vacuously (exit 0, 'geometry within') when run without --states confirm, and design.md tells readers to run it that way",
+      "file": "scripts/visual-block.mjs",
+      "line": 322,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "`--states` defaults to `default` (line 99). For any non-confirm state the geometry gate `(blockName === 'confirm') === (state === 'confirm')` (line 289) is false, so no geometry is measured. The dialog is closed (`display:none`), so its four boxes are 0x0 and `region()` returns null (`return x1 > x0 && y1 > y0 ? … : null`, line 253), so no pixel crop either. Then `const done = results.every((e) => (e.geometry ? … : true))` is true, and the script prints 'Block confirm: N shot(s), geometry within 0.5px' and exits 0 without having measured anything. openspec/changes/update-confirm-dialog/design.md:72 says “`node scripts/visual-block.mjs --block confirm` localises any residual”, with no --states, which triggers exactly this path. Under AGENTS.md 'absence of evidence is NEVER success' this is a NOT-EARNED pass reported as a pass. The setup block has the same latent pattern (pre-existing); this change adds a new block that shows it.",
+      "suggestion": "Make `done` require that every entry measured something (an `entry.pixel` or an `entry.geometry`), and fail non-zero with 'nothing measured for block X on state Y' otherwise. Or give each block its required states (confirm: ['confirm']) and default or validate `--states` per block. Also fix the invocation in design.md:72 to `--block confirm --states confirm`.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism holds in the code. `--states` defaults to `default` (line 99), so only default-state shots run. For `--block confirm` with state `default`, the geometry gate at line 289 needs `(blockName==='confirm')===(state==='confirm')`, which is `true===false`, so no geometry is measured. The confirm dialog is closed in default state, so its boxes are null or 0x0 and `region()` returns null, which means no pixel crop either. Each entry then has neither geometry nor pixel. Line 322, `results.every(e => e.geometry ? ... : true)`, is vacuously true. The script prints 'geometry within' and exits 0 having measured nothing. design.md line 72 does tell readers to run `--block confirm` without `--states confirm`, although the script header (line 33) shows the correct invocation. I did not run the script. I did not check whether the closed dialog's boxes come back null or 0x0, but both end in the same vacuous pass.",
+        "The code matches the finding. `--states` defaults to `default` (line 99), so only default-state shots are selected. The geometry gate `(blockName==='confirm') === (state==='confirm')` is false for the confirm block in a non-confirm state, so no geometry is measured. With the dialog closed, `region()` returns null for zero-size boxes, so no pixel crop is made either. The entries then have neither `geometry` nor `pixel`. `done = results.every(e => e.geometry ? ... : true)` is vacuously true, so the script prints \"geometry within 0.5px\" and exits 0. design.md:72 gives exactly the invocation `node scripts/visual-block.mjs --block confirm` with no `--states`, so a reader following the doc hits this path. The cost is a false green with no measurement, which AGENTS.md calls NOT-EARNED. It can't harm an attacker-facing surface and the fix is cheap, so I'd keep \"major\" or lower it to moderate. I did not run the script, but the control flow is unambiguous."
+      ]
+    },
+    {
+      "title": "The confirm selector list is copied in three places instead of being shared like SETUP_SELECTORS",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 82,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`CONFIRM_SELECTORS` is written out literally in freeze-design-geometry.mjs:82, again as `BLOCKS.confirm` in scripts/visual-block.mjs:80, and a third time as `SELECTORS = [DIALOG, TEXT, YES, NO]` in e2e/nfr-14-confirm-dialog.spec.ts:83. The comment in visual-block says 'the same four selectors as the key confirmDialog', but nothing enforces that. The setup block already does this correctly: both scripts import `SETUP_SELECTORS` from scripts/setup-sheet-deviation.mjs. The layout and rules lists are duplicated too (pre-existing), so this follows existing debt rather than creating a new kind of it.",
+      "suggestion": "Export the four selectors from one module (for example a small scripts/confirm-dialog.mjs, or freeze-design-geometry.mjs, which already exports LAYOUT_SELECTORS) and import them in visual-block.mjs. The e2e already asserts `key.selectors` equals its own list, so the fixture ties it to the freeze.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "I read the code and the duplication is real. freeze-design-geometry.mjs:82 defines CONFIRM_SELECTORS as a literal list. visual-block.mjs:80 repeats the same four selectors as BLOCKS.confirm. e2e/nfr-14-confirm-dialog.spec.ts:83 defines SELECTORS = [DIALOG, TEXT, YES, NO]. The setup block does import SETUP_SELECTORS from scripts/setup-sheet-deviation.mjs in both scripts, so the contrast the finding draws is accurate. The e2e spec does tie its own list to the freeze, since line 284 asserts key.selectors equals SELECTORS. The visual-block.mjs copy has no equivalent check, so only a comment keeps it in step. This is a maintainability issue, not a correctness bug: the lists match today and nothing currently misbehaves. That is why I downgrade the severity.",
+        "The duplication is real and I confirmed it by reading the code. The same four confirm selectors are written out literally in scripts/freeze-design-geometry.mjs:82 (CONFIRM_SELECTORS), scripts/visual-block.mjs:80 (BLOCKS.confirm), and e2e/nfr-14-confirm-dialog.spec.ts:83 (SELECTORS built from DIALOG, TEXT, YES, NO). The setup block does share SETUP_SELECTORS from scripts/setup-sheet-deviation.mjs, which both scripts import, so the contrast in the finding holds. The e2e spec checks its own list against the frozen fixture. Nothing ties visual-block's list to the freeze script, only a comment. Nothing breaks for a user today, because the lists are identical now. The only failure is future drift between the freeze script and visual-block, and a drift check would not catch that. That makes this a minor maintainability point, not a correctness defect, and the finding's \"correctness\" dimension is a mislabel."
+      ]
+    },
+    {
+      "title": "The refreeze rewrote designBuildSha1 in rulesPanel and setupSheet, so the scenario's 'unchanged' clause is false and no test checks it",
+      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/quality/design-geometry.json",
+      "line": 0,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "Spec scenario «The dialog's boxes equal the design's at the five confirm widths» (spec.md ~l.682) says: \"AND the key `confirmDialog` carries its own provenance ... and `cases`, `rulesPanel`, `setupSheet`, `selectors`, `designCommit`, `designCssSha1` and `tolerancePx` of the file are unchanged by its refreeze\". In reality, comparing 18e5f3f to ea36535 gives: rulesPanel.provenance.designBuildSha1 \"c3f5f81e…\" -> \"ca129131…\" and setupSheet.provenance.designBuildSha1 \"d1193198…\" -> \"ca129131…\". The boxes are identical; only the provenance hashes changed. tasks.md 3.1 and refreeze.txt:39-40 record this exception ('designBuildSha1 may differ … not compared'), but the spec scenario has no such exception. The e2e guard test titled '… the key is ADDED, nothing else changes' (e2e/nfr-14-confirm-dialog.spec.ts ~l.262) only checks the number of cases (32/8/12), the tolerance and the two top-level hashes. It never compares the rulesPanel or setupSheet objects, so nothing tests this clause. The provenance of the rules and setup cases now names a build they were not frozen from.",
+      "suggestion": "Pick one. (a) Amend the scenario to match tasks.md 3.1: '… unchanged by its refreeze, bar each key's `provenance.designBuildSha1`'. (b) Make scripts/freeze-design-geometry.mjs carry over the existing rulesPanel and setupSheet provenance when their cases come out identical, restore the two old hashes, and extend the e2e guard to deep-compare the two keys apart from that field.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The spec scenario (play-page/spec.md:682) says `rulesPanel` and `setupSheet` are \"unchanged by its refreeze\", with no exception for provenance. The git diff between 18e5f3f and ea36535 shows `rulesPanel.provenance.designBuildSha1` changed from c3f5f81e to ca129131 and `setupSheet.provenance.designBuildSha1` changed from d1193198 to ca129131. Only tasks.md 3.1 carves out \"designBuildSha1 may differ\", and the spec does not. The e2e guard test (nfr-14-confirm-dialog.spec.ts:266-275) only checks case counts (32/8/12), the tolerance, the two top-level hashes and that the selectors lack the dialog. It never deep-compares the rulesPanel or setupSheet objects, so the unchanged clause is untested. The mismatch is real. The impact is limited to provenance metadata, because the boxes are identical, so \"major\" is arguably a bit high.",
+        "Confirmed by reading files. rulesPanel and setupSheet provenance.designBuildSha1 changed from c3f5f81e and d1193198 to ca129131 after the refreeze. The spec scenario at spec.md line 682 says rulesPanel and setupSheet are unchanged, with no exception for that field. tasks.md 3.1 does carve out the exception ('designBuildSha1 may differ ... not compared'), so the spec and tasks disagree. The e2e guard at line 266 only checks case counts, tolerance, and top-level hashes, so nothing tests the clause. This is a spec/doc inconsistency and a provenance accuracy issue, not a user-facing runtime problem. The boxes are unchanged. The severity should be lower than major."
+      ]
+    },
+    {
+      "title": "The refreeze rewrote rulesPanel and setupSheet provenance.designBuildSha1, though the spec says those keys are unchanged",
+      "file": "quality/design-geometry.json",
+      "line": 7169,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "The diff changes `rulesPanel.provenance.designBuildSha1` from c3f5f81e… and `setupSheet.provenance.designBuildSha1` from d1193198… to this worktree's ca129131…. The ADDED scenario says '`cases`, `rulesPanel`, `setupSheet` … are unchanged by its refreeze'. task 3.1 and refreeze.txt:39-40 explicitly exclude designBuildSha1 from the comparison, so this is documented. Still, it is churn in keys this block does not own, and design.md lists this file as a known rebase conflict for the settings block. The e2e guard checks only case counts and the top-level hashes, so it would not catch a real change in those keys either.",
+      "suggestion": "Have the freeze script keep each existing key's recorded provenance when its measured cases are byte-identical, as it already does for the top-level provenance, so only confirmDialog carries the fresh build hash. Or reword the scenario to say that designBuildSha1 of the other keys may change.",
+      "dimension": "correctness",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The mechanism is real. In scripts/freeze-design-geometry.mjs, rulesPanel.provenance (line ~317) and setupSheet.provenance (line ~328) are rebuilt from freshProvenance.designBuildSha1 on every run. They are not kept from the recorded values the way the top-level provenance is (lines 287-300). So a refreeze in another worktree rewrites those two hashes. The spec scenario (update-confirm-dialog spec.md:682) says `rulesPanel` and `setupSheet` are \"unchanged by its refreeze\". Task 3.1 says to keep those keys \"as they are\", but it also says designBuildSha1 may differ between worktrees and is not compared. So the churn is documented and has no behavioral effect; it is only a wording mismatch between the spec and the script. The finding is accurate but minor.",
+        "The refreeze did change designBuildSha1 under rulesPanel and setupSheet. But this is documented and intended. The script (scripts/freeze-design-geometry.mjs lines 23 and 287) says designBuildSha1 differs between worktrees. Task 3.1 says it \"may differ between worktrees and is not compared\". Per-key provenance is by design, since each key records the build of the run that froze it. The spec scenario at spec.md:682 lists the unchanged keys without naming designBuildSha1, so it is slightly loose. That is a wording nit, not a defect. No user or attacker can reach anything: the build hash is provenance metadata, and every measured case in those keys is unchanged. The finding concedes the exclusion is documented and rates itself minor with low confidence."
+      ]
+    },
+    {
+      "title": "The e2e test titles carry @trace FR-65 and @trace NFR-12, which the spec's mechanism paragraph does not list",
+      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/e2e/nfr-14-confirm-dialog.spec.ts",
+      "line": 443,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The spec (ADDED requirement, mechanism paragraph) says: \"`e2e/nfr-14-confirm-dialog.spec.ts` (`@trace NFR-14`, `@trace FR-67`, …)\". In reality the file header has only those two tags, but the paint test titles add '@trace FR-65' (~l.443) and the target tests add '@trace NFR-12' (~l.500). That raises the traceability counts for FR-65 and NFR-12. Session-log row 14 and red-run.txt call the tags deliberate, but the spec does not mention them.",
+      "suggestion": "Either amend the mechanism paragraph to say that the paint tests also trace FR-65 and the target tests trace NFR-12 (the requirement's own Traces line lists both), or drop the extra tags from the titles.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The facts hold. The file header (lines 1-2) has only `@trace NFR-14` and `@trace FR-67`. The paint test title at line 452 adds `@trace FR-65`, and the target-size test title at line 504 adds `@trace NFR-12`. The mechanism paragraph (spec.md line 635) lists only NFR-14 and FR-67 for this file. The extra tags are not wrong in substance: the same requirement's `Traces:` line (spec.md line 637) lists FR-65 and NFR-12, and those tests do check paint and the 44px target floor. So this is a small wording gap between the paragraph and the file, with no functional defect. It is only a documentation mismatch, so I downgrade it.",
+        "The extra tags exist (FR-65 at line 452, NFR-12 at line 504). But the spec's mechanism paragraph lists the e2e file's tags as \"(`@trace NFR-14`, `@trace FR-67`, …)\". The trailing ellipsis leaves the list open, so the extra tags don't contradict it. The finding also concedes that the requirement's own Traces line lists FR-65 and NFR-12, so the tags are consistent with the spec's traced requirements. Neither a real user nor an attacker can trigger any failure from this. It is at most a wording nit, and the \"deliberate\" tags are already documented in the session log and red-run.txt. I'm not confirming it as a defect."
+      ]
+    },
+    {
+      "title": "No test checks that the design server is closed after the run",
+      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/e2e/nfr-14-confirm-dialog.spec.ts",
+      "line": 395,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Scenario «The sampled coverage and the design build are declared and required» says: \"the design server listens on a port chosen by the operating system and is closed after the run\". The OS-chosen port is asserted, and the test also checks it is not one of the forbidden ports. Closing is done in `test.afterAll(() => stopDesignServer(...))`, which calls closeAllConnections and close, but no test checks it. The empty lsof checks in green-run.txt after the run are only indirect evidence, because those checks cover the five capture ports and not the ephemeral port.",
+      "suggestion": "Accept the closing as implementation-only and note it in the scenario, or record server.listening === false after stopDesignServer (for example in an afterAll expect) so the clause has a check.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The close is implemented. The code is stopDesignServer, called from afterAll. It calls closeAllConnections() and then awaits server.close()'s callback, so afterAll finishes only after the server has closed. The spec clause \"closed after the run\" is satisfied by the mechanism. The missing in-file assertion is a verification-style note. A test cannot observe its own afterAll teardown. The sibling test does assert that the server is listening and uses an ephemeral port. The same finding was raised and judged non-defect in the archived update-panel-shell review. No defect in the code is confirmed.",
+        "The spec file at e2e/nfr-14-confirm-dialog.spec.ts (around lines 187-196 and 434-445) shows the closing is done only in afterAll via stopDesignServer. The only test on the server (line 441) asserts listening === true and an ephemeral port. Nothing asserts the server is closed after the run. The finding's description is accurate. It is a minor test-coverage gap. The closing is implemented and awaited, so there is no functional defect."
+      ]
+    },
+    {
+      "title": "The dialog port uses literal rem lengths where the design and the neighbouring rule use the spacing tokens",
+      "file": "src/ui/style.css",
+      "line": 619,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "`.confirm { padding: 1.5rem; }` (619), `.confirm p { margin: 0 0 1.5rem; }` (636) and `.confirm-buttons button { padding: 0 1rem; }` (651) are literals. The design source (binarka.css 1342, 1356, 1371) uses `var(--space-5)` and `var(--space-4)`, and the adjacent `.buttons button` rule in the same file uses `padding: 0 var(--space-4)`. The dialog is a child of #app, where the --space-* variables are declared, so the tokens resolve. The spec accepts either form, so this is convention drift, not a defect: a later change to the spacing scale would silently skip the dialog.",
+      "suggestion": "Use `var(--space-5)` for the dialog padding and the text margin and `0 var(--space-4)` for the button padding, as the design and `.buttons button` do. The stylesheet test already accepts `var(--space-5)` for the padding. The text margin and the button padding currently accept only the literal, so widen their accepted values in the same edit.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The cited facts are accurate. .confirm uses padding 1.5rem, .confirm p uses margin 0 0 1.5rem, and .confirm-buttons button uses padding 0 1rem. The --space-4 and --space-5 tokens exist (1rem and 1.5rem), and .buttons button uses var(--space-4). The literals are numerically identical to the tokens, so the rendered output is the same. The finding itself says the spec accepts either form and that this is not a defect. As a correctness claim there is no wrong behavior, no failing path and no incorrect output. The only risk is hypothetical: a future change to the spacing scale would skip the dialog. That is a style-consistency matter, so I refute it as a correctness finding.",
+        "The cited lines exist as described. `.confirm` has `padding: 1.5rem` at line 619, `.confirm p` has `margin: 0 0 1.5rem`, and `.confirm-buttons button` has `padding: 0 1rem`. The tokens `--space-5: 1.5rem` and `--space-4: 1rem` are defined in the same file, so the literals compute to exactly the same values the tokens would give. Nothing renders differently for any user today. The finding itself says the spec accepts either form and that this is convention drift, not a defect. The only harm it names is hypothetical: a later change to the spacing scale would skip the dialog. I did not check the design source or the stylesheet test, which the finding cites. No real user or attacker can hit a failure from this, so there is no exploitable or reproducible problem. At most it is a style nit."
+      ]
+    },
+    {
+      "title": "Coverage summary: 15 scenarios: 14 implemented, 1 partial, 0 missing, 0 contradicted",
+      "file": "/Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/laughing-snyder-018976/openspec/changes/update-confirm-dialog/specs/play-page/spec.md",
+      "line": 607,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Audited: the 10 scenarios of the ADDED requirement «The confirmation dialog takes the design's size, place and paint» (spec l.639-705); the new «The dialog's warning text has 4.5:1 and its frame is decoration» (l.198); «The dialog takes the raised fill and the panel shadow and keeps its control border» (l.323); and the three count-only MODIFIED scenarios (Tokens exist, Every declared token is bound, Colours are the G2 palette), which the 33-token and 42-pair pins in tests/helpers/css.ts:441,490,526,688 and tests/play-page-rules-panel-stylesheet.test.ts:492,537 check. Implementation is src/ui/style.css:31,68,614-667. The stylesheet scenarios are tested in tests/play-page-confirm-dialog-stylesheet.test.ts. The browser scenarios are tested in e2e/nfr-14-confirm-dialog.spec.ts (green-run.txt: 234 passed in the layout project; battery.txt: test:e2e 301 passed, a11y 67 passed). «Every confirm shot rises» is backed by run-vs-previous.txt: all ten shots went to 1.0000, none fell, geometry off 0/4 and 0 unpaired. Commit f5a5582 carries `Slice: update-confirm-dialog` and `Refs: FR-67, FR-65`. Every ticked task in tasks.md has its evidence file on disk. Task 8.3's tick and its evidence (session-log row 15) are consistent but not committed yet.",
+      "suggestion": "No action. This entry is only the coverage line.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding does not claim a defect. Its suggestion is \"No action. This entry is only the coverage line.\" It is a summary of audit coverage, with no wrong mechanism to check in the code. The title counts 1 partial scenario, but the evidence never says which scenario is partial. Every scenario it names is mapped to tests and evidence (stylesheet tests, e2e specs, run-vs-previous). The one open point it mentions, task 8.3's tick not being committed yet, is a process note and not a spec-compliance gap. I did not open the repo files. I am refuting because there is no concrete, confirmable defect.",
+        "The finding is an informational coverage summary, and its own suggestion says \"No action.\" It asserts no defect with a failure mechanism, so there is nothing a user or attacker could exploit or reproduce. I did not open the spec to check its counts, including the unnamed \"1 partial\". Refuted by default because no problem is claimed."
+      ]
+    }
+  ],
+  "fixRound": {
+    "round": 0,
+    "status": "findings reported to the user; a fix round needs the user approval (tasks.md 8.2)"
+  },
+  "visionJudge": "docs/qa/update-confirm-dialog/stills/vision-verdict.txt (10/10 met, readable, match)",
+  "reviewRun": {
+    "workflow": "review-gate",
+    "runId": "wf_f6680184-7e7",
+    "agents": 20,
+    "errors": 0,
+    "emptyResults": 2,
+    "userYes": "«Yes, run the gate» (session-log.md row 15)",
+    "persistNote": "the workflow returned reviewEvidence null and wrote no file; this file was written by the parent from the workflow result verbatim"
+  },
+  "productCodeDefect": false
+}

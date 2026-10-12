@@ -64,7 +64,7 @@ For the dialog session of the second wave of `docs/handoff/parallel-g2-plan-2026
 
 - [x] 8.1 Vision judge: a fresh vision judge (not the author) looks at the rendered stills of the open dialog in light and dark at 320, 375, 768, 1024 and 1440 next to the design's, and at the explanation of any fall from 7.3. Evidence: `docs/qa/update-confirm-dialog/stills/vision-verdict.txt`.
 - [ ] 8.2 Review gate on the block's commits (a fresh reviewer, not the author). Run ONLY with the user's yes; fix rounds need the user's approval. Evidence: `docs/qa/update-confirm-dialog/review-findings.json`; the user's yes recorded in `session-log.md`.
-- [ ] 8.3 Put to the user: the open points of `design.md` (the token's place, the beyond-the-draft edits to the 4.5:1 list and the new scenario, DQ-4). Evidence: `session-log.md`.
+- [x] 8.3 Put to the user: the open points of `design.md` (the token's place, the beyond-the-draft edits to the 4.5:1 list and the new scenario, DQ-4). Evidence: `session-log.md`.
 
 ## 9. Archive
 
