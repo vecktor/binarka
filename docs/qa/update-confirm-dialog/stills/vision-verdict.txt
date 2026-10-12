@@ -1,0 +1,19 @@
+Vision verdict: update-confirm-dialog confirm shots (task 8.1), saved verbatim from the judge's report, 2026-10-12 about 13:53 (UTC+5:30)
+Who: fresh vision-judge subagent. Looked at: all 10 page stills (docs/qa/update-confirm-dialog/stills/<w>-<scheme>-confirm.png) against their design references (design/v0-screenshots/review-set-14/<same name>.png), viewed side by side, plus docs/qa/update-confirm-dialog/run-vs-previous.txt. I did not open the per-block crops (blocks/confirm/<shot>/product.png, reference.png, diff.png, onion.png). Dialog size and padding were judged by eye from the stills, not measured.
+
+320-light-confirm: met=yes readable=yes matches-design=yes — Centred white dialog over a dimmed page; «Скасувати» (solid orange, white text, dark ring clear of the dialog edge) stacked above «Так, почати» (soft red fill, red frame, dark red text); the ring ends about 10px above the lower button.
+320-dark-confirm: met=yes readable=yes matches-design=yes — Dark dialog on a dark dimmed page; «Скасувати» is light orange with dark text and a light ring; «Так, почати» is dark red fill with light red text and frame; stacked, and the ring does not touch the lower button.
+375-light-confirm: met=yes readable=yes matches-design=yes — Side by side with «Так, почати» on the left and «Скасувати» on the right; the dark ring sits on the dialog fill and does not cover the left button (a small gap remains).
+375-dark-confirm: met=yes readable=yes matches-design=yes — Same arrangement in dark; light cream ring around the light-orange «Скасувати», dark-red «Так, почати» with light red text and frame; text is high contrast.
+768-light-confirm: met=yes readable=yes matches-design=yes — Centred dialog over a dimmed grid; buttons side by side in the correct order; the dark ring is clear of «Так, почати».
+768-dark-confirm: met=yes readable=yes matches-design=yes — Dark dialog with a thin light border, correct dark paints and light ring; the layout is identical to the reference.
+1024-light-confirm: met=yes readable=yes matches-design=yes — Centred dialog, correct paints and order, dark ring on the dialog fill; the page behind is dimmed.
+1024-dark-confirm: met=yes readable=yes matches-design=yes — Correct dark paints and arrangement, light ring, legible text; indistinguishable from the reference by eye.
+1440-light-confirm: met=yes readable=yes matches-design=yes — Smaller dialog centred over the dimmed 6x6 board; correct light paints, order and ring; matches the reference.
+1440-dark-confirm: met=yes readable=yes matches-design=yes — Dark dialog and buttons correct; the light ring clears «Так, почати»; matches the reference.
+
+Defects: none found. I saw no clipped or overlapping text and no ring covering the other button. The dimmed page behind the dialog (muted «Підказка», grid cells) is background and was not judged for contrast. By eye I found no difference from any reference. This agrees with run-vs-previous.txt (all ten confirm shots at 1.0000, no other state fell) and contradicts nothing in it. Coverage is sampled: 10 shots at 5 widths and 2 schemes, not a continuum.
+
+Overall: 10/10 met, 10/10 readable, 10/10 match
+
+Parent's note: the judge's "about 10px" gap at 320 is by eye; measured in the smoke test (smoke-test.txt step 6) the ring's outer edge is 3 px above «Так, почати» (y 387 against 390, CSS px). Either way it does not cover the lower button.
