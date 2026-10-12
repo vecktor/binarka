@@ -1,0 +1,47 @@
+update-confirm-dialog: manual smoke test of the built page in a real browser (task 6.1), the dialog session
+Date: 2026-10-12, from 13:43 to 13:46 (UTC+5:30, from `date`). Tree: ef23fe3 (the port f5a5582 plus the battery commit; src/ui/style.css as ported).
+Browser: the Claude desktop app's built-in browser pane (Chromium), viewport and colour scheme emulated per step (light scheme on the context;
+the page's own theme switched in step 8). Servers: `npm run build`, then `npx vite preview --port 6374 --strictPort` (BINARKA_PORT_BASE + 1) and,
+for step 9, `python3 -m http.server 6390 --bind 127.0.0.1 -d design/v0/out` (a free port outside 6373-6377), both started through a local,
+uncommitted .claude/launch.json (removed after). Boxes are getBoundingClientRect in CSS px (x,y,w,h); colours are getComputedStyle.
+The page started with the default 6x6 puzzle of seed 1 (no capture board), so «Нова головоломка» asks only after a move.
+
+(1) 13:43:03 port check before: 6373, 6374, 6375, 6376, 6377 and 6390 not listening (lsof -nP -iTCP:<port> -sTCP:LISTEN empty). Build ok. Preview
+    started on 6374; opened http://localhost:6374/ at 375x812, light.
+(2) A click in an empty cell entered 0 at row 2, column 1. «Нова головоломка» (mouse): the dialog opens, open = true, text
+    «Почати заново? Ваші ходи на цьому полі буде втрачено.»; dialog 16,323 343x166 (centred: 16 px each side), padding 24px, corners 16px;
+    text 41,348 293x48; «Так, почати» 41,420 146.73x44, colour rgb(143, 29, 23) on rgb(251, 228, 225), frame rgb(179, 38, 30) 2px (soft red fill,
+    red frame, dark red text); «Скасувати» 195.73,420 138.27x44, rgb(255, 253, 248) on rgb(180, 70, 13), frame rgb(180, 70, 13) 2px (filled orange,
+    light text); side by side, «Так, почати» on the left, 8px apart; both 44 px tall; radius 10px. The focus is on «Скасувати» (document.activeElement).
+    The ring: after a MOUSE press :focus-visible is false (Chromium's heuristic, unchanged by this block, so no ring); opened by the KEYBOARD (Enter on
+    «Нова головоломка», next step) :focus-visible is true and the ring is solid 3px rgb(30, 33, 38) at a 2px offset, seen in a zoomed screenshot.
+(3) Escape: open = false, the entry row 2, column 1 = 0 is still there; focus back on «Нова головоломка».
+(4) Enter on «Нова головоломка» reopens it with the ring on «Скасувати»; Enter on «Скасувати»: open = false, the entry is still there.
+(5) Reopened (mouse) and pressed «Так, почати»: open = false, the board's cells changed (".1.0..0.1..101....." to "....00..11..00....."), no entry left.
+(5a) Entered 0 at row 1, column 1, pressed «Скинути»: the same dialog opens (the same text, 16,323 343x166, the same buttons), focus on «Скасувати»;
+    Escape: closed, the entry still there.
+(5b) Opened the setup sheet from the summary button («6×6 · Розминка»; :popover-open true), pressed «Почати»: the sheet is closed (:popover-open
+    false) and the dialog is open, focus on «Скасувати»; Escape: dialog closed, sheet closed, focus on the summary button [data-action="setup"]
+    («Поле і складність: 6×6 · Розминка», FR-98), the entry still there.
+(6) 320x700, light: dialog 12,241 296x218; text 37,266 246x48; «Скасувати» 37,338 246x44 ABOVE «Так, почати» 37,390 246x44 (8 px gap); paint as
+    in step 2. Opened by the keyboard: ring on «Скасувати», its outer edge at y 387 (338 + 44 + 2 + 3), the lower button starts at 390, so the ring
+    does not cover «Так, почати» (zoomed screenshot looked at).
+(7) 768x1024: dialog 208,429 352x166, text 233,454 302x48, «Так, почати» 233,526 151.23x44 left of «Скасувати» 392.23,526 142.77x44.
+    1024x768: dialog 336,301 352x166, text 361,326 302x48, yes 361,398 151.23x44, no 520.23,398 142.77x44.
+    1440x900: dialog 544,367 352x166, text 569,392 302x48, yes 569,464 151.23x44, no 728.23,464 142.77x44. All light, side by side, focus on «Скасувати».
+(8) Settings panel → «Темна»: html[data-theme] = dark. Repeated at 375x812, 320x700, 768x1024, 1024x768, 1440x900 (opened by the keyboard):
+    the same boxes as steps 2, 6 and 7 at every size; «Скасувати» rgb(26, 16, 7) on rgb(243, 154, 91) = #f39a5b with frame rgb(243, 154, 91) 2px
+    (light orange, dark text); «Так, почати» rgb(255, 180, 171) on rgb(63, 35, 32), frame rgb(255, 138, 125) 2px (dark red fill, light red text and
+    frame); 320 stacked with «Скасувати» above and the ring clear of the lower button. Zoomed screenshots at 375 and 320 looked at.
+    Note: two full-pane screenshots at 375 dark came back without the dialog while the DOM said open = true with the boxes above; a zoom of the
+    same tab a moment later showed the open dialog. A stale pane frame, not a page state; the pixel evidence of this block is the per-block
+    tool and the gate (tasks 7.1, 7.2), which capture through Playwright.
+(9) Design build on 6390, http://localhost:6390/confirm/ at 375x812 light (open at load): dialog 16,323 343x166, text 41,348 293x48, «Так, почати»
+    41,420 146.73x44 rgb(143, 29, 23) on rgb(251, 228, 225) frame rgb(179, 38, 30) 2px, «Скасувати» 195.73,420 138.27x44 rgb(255, 253, 248) on
+    rgb(180, 70, 13) frame rgb(180, 70, 13) 2px, the same text: equal to the page in every number of step 2. By eye (screenshot of the design tab
+    next to the page's): the same dialog, the same buttons and colours; the design route shows no ring because nothing was pressed by keyboard.
+    The page's localStorage (the stored dark theme) was cleared after. Both servers stopped.
+(10) Console: read_console_messages on the page tab: "No console logs" (no error, no warning) through every step; no raw error text on the page.
+    13:46:09 port check after: 6373, 6374, 6375, 6376, 6377 and 6390 not listening.
+
+Coverage: sampled (five viewports, two themes, three openers, three closers); nothing between the viewports; Chromium only (NFR-7 not delivered).
