@@ -7,7 +7,7 @@
 ## Last Updated
 
 - **Date and time:** 2026-10-12 14:37 (UTC+5:30; Kyiv 12:07)
-- **Working branch:** `main` = `claude/laughing-snyder-dialog` (worktree `.claude/worktrees/laughing-snyder-018976`, the WAVE-2 DIALOG SESSION), merged into local `main` on the user's word (row 199), **not pushed**; every commit signed (`git log --format=%G? 18e5f3f..main`).
+- **Working branch:** `main` = `claude/laughing-snyder-dialog` (worktree `.claude/worktrees/laughing-snyder-018976`, the WAVE-2 DIALOG SESSION), merged into local `main` on the user's word (row 199; merge commit `a830d26`, `main` at `71f5629` before this hand-off commit, `docs/qa/update-confirm-dialog/session-log.md` row 24), **not pushed**; every commit signed (`git log --format=%G? 18e5f3f..main`).
 - **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 wave-2 dialog session (rows 196 to 199), START HERE:**
   - **Block C `update-confirm-dialog` is ARCHIVED and merged into local `main`, not pushed** (row 199): `openspec/changes/archive/2026-10-12-update-confirm-dialog/` (+1 ADDED «The confirmation dialog takes the design's size, place and paint», ~5 MODIFIED), with `review-findings.json` (`clean: true` after three rounds and two fix rounds approved by the user; one latent contested finding accepted; no finding in `src/`).
   - The dialog has the design's size, place and paint (A-62): width `min(22rem, 100vw − 2 × --page-pad)` (296 at 320), 1.5rem padding, `--radius-l`, 44px buttons with a 2px frame, «Скасувати» filled primary, «Так, почати» the violation colours with the new token `--color-violation-ink` (**33 tokens, 42 pairs**). `src/ui/style.css` only (`f5a5582`).
