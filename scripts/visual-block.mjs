@@ -43,6 +43,7 @@ import pixelmatch from 'pixelmatch';
 import { capturePorts } from './capture-ports.mjs';
 import { capture, captureBoardFor, close as closeAdapter, parseShot, stopOnExit } from './check-visual-parity-adapters.mjs';
 import { SETUP_DEVIATION_CSS, SETUP_SELECTORS, designLevelMargin } from './setup-sheet-deviation.mjs';
+import { CONFIRM_SELECTORS } from './confirm-dialog.mjs';
 
 const TOLERANCE_PX = 0.5;
 const PIXEL_THRESHOLD = 0.1;
@@ -77,7 +78,7 @@ const BLOCKS = {
   // The setup sheet (update-setup-sheet): the same two selectors as the key setupSheet of quality/design-geometry.json.
   setup: SETUP_SELECTORS,
   // The confirmation dialog (update-confirm-dialog): the same four selectors as the key confirmDialog of quality/design-geometry.json.
-  confirm: ['dialog[data-dialog="confirm"]', 'dialog[data-dialog="confirm"] p', '[data-confirm="yes"]', '[data-confirm="no"]'],
+  confirm: CONFIRM_SELECTORS,
 };
 // States whose geometry is measured on top of the pixels. `rules` (block rules only) opens the panel first: the design route
 // /rules/ is open at load (a press would close it), the product presses «Правила» and waits for :popover-open.
@@ -319,6 +320,10 @@ try {
 }
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, 'summary.json'), `${JSON.stringify({ block: blockName, tolerancePx: TOLERANCE_PX, pixelThreshold: PIXEL_THRESHOLD, coverage: 'sampled', shots: results.map(({ geometry: _g, ...rest }) => rest) }, null, 2)}\n`);
-const done = results.every((e) => (e.geometry ? e.geometryOff === 0 && e.unpaired === 0 : true));
-console.log(`\nBlock ${blockName}: ${results.length} shot(s), geometry ${done ? 'within' : 'NOT within'} ${TOLERANCE_PX}px (coverage: sampled)`);
+// A shot that measured nothing (no geometry and no pixel region, e.g. a closed dialog on a state that never opens it) is not a pass: absence of
+// evidence is never success (AGENTS.md; review gate of update-confirm-dialog, fix round 1).
+const empty = results.filter((e) => !e.geometry && e.pixel === undefined).map((e) => e.shot);
+const done = empty.length === 0 && results.every((e) => (e.geometry ? e.geometryOff === 0 && e.unpaired === 0 : true));
+if (empty.length) console.log(`\nNOTHING MEASURED for block ${blockName} on ${empty.length} shot(s): ${empty.join(', ')} (no geometry and no pixel region; pass the block's own state, e.g. --block confirm --states confirm)`);
+console.log(`\nBlock ${blockName}: ${results.length} shot(s), geometry ${done ? 'within' : 'NOT within'} ${TOLERANCE_PX}px${empty.length ? `, ${empty.length} measured nothing` : ''} (coverage: sampled)`);
 process.exit(done ? 0 : 1);

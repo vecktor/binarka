@@ -1,0 +1,132 @@
+update-confirm-dialog: review gate fix round 1 (the user's «Yes, fix all five», session-log.md row 17), the dialog session, 2026-10-12 (UTC+5:30)
+Round 0: docs/qa/update-confirm-dialog/review-findings.json (3 confirmed, 3 contested, 2 rejected; none in src/). No src/ change in this round.
+
+Fix 1 (major, confirmed): scripts/visual-block.mjs passed vacuously when a block measured nothing. Now a shot with no geometry and no pixel region
+  is NOTHING MEASURED and the run exits 1; design.md:72 and the ADDED requirement's mechanism name '--block confirm --states confirm'.
+Fix 2 (major, confirmed; and the contested duplicate): the refreeze rewrote designBuildSha1 of rulesPanel and setupSheet. scripts/freeze-design-geometry.mjs
+  now keeps each key's recorded provenance while the design is unchanged and the key's cases are byte-identical (as it already did for the top-level
+  provenance); the two hashes of main 18e5f3f restored; e2e/nfr-14-confirm-dialog.spec.ts checks a SHA-1 of each key against main's (the guard would
+  have failed on the round-0 file: rulesPanel 6039e860e0fe, setupSheet 409c820bea09 against 0f2164d58abe and 6dc8dda11015).
+Fix 3 (minor, confirmed): the four confirm selectors live in scripts/confirm-dialog.mjs, imported by the freeze script and visual-block (as SETUP_SELECTORS);
+  the e2e still asserts the fixture's selectors equal its own list.
+Fix 4 (contested): the ADDED requirement's mechanism sentence names the e2e's extra trace tags (FR-65 in the paint tests, NFR-12 in the target tests).
+Fix 5 (contested): the e2e's afterAll asserts server.listening === false after stopping the design server.
+
+================ the refreeze after fix 2 ================
+== port check before
+2026-10-12 14:15:51
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+== BINARKA_PORT_BASE=6373 node scripts/freeze-design-geometry.mjs (fix round 1)
+wrote quality/design-geometry.json: 32 cases x 16 selectors, rulesPanel: 8 cases x 2 selectors; setupSheet 12 cases (content-decided: 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four); confirmDialog 5 cases x 4 selectors
+exit 0
+== port check after
+2026-10-12 14:15:58
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+== cmp with the restored file (before the run)
+byte-identical: the run kept every recorded provenance
+== git diff 18e5f3f -- quality/design-geometry.json: removed lines
+       0
+$comment       unchanged
+provenance     unchanged
+tolerancePx    unchanged
+selectors      unchanged
+coverage       unchanged
+cases          unchanged
+rulesPanel     unchanged
+setupSheet     unchanged
+added keys: confirmDialog
+
+================ visual-block after fix 1 ================
+== port check before
+2026-10-12 14:16:59
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+build ok
+== (fix 1, the vacuous path) node scripts/visual-block.mjs --block confirm --shots 375-light-default --out <scratchpad>/vb-empty
+375-light-default              pixel n/a geometry n/a (state reached by a driver)
+
+NOTHING MEASURED for block confirm on 1 shot(s): 375-light-default (no geometry and no pixel region; pass the block's own state, e.g. --block confirm --states confirm)
+
+Block confirm: 1 shot(s), geometry NOT within 0.5px, 1 measured nothing (coverage: sampled)
+exit 1
+== (fix 1, the real path) node scripts/visual-block.mjs --block confirm --states confirm --out docs/qa/update-confirm-dialog/blocks/confirm
+1024-dark-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1024-light-confirm             pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1440-dark-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1440-light-confirm             pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+320-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+320-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+375-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+375-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+768-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+768-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+
+Block confirm: 10 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+== (no other block broken) node scripts/visual-block.mjs --block setup --shots 768-light-setup,375-light-setup-four --out <scratchpad>/vb-setup
+375-light-setup-four           pixel 0.907 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup                pixel 1 geometry off 0/2, unpaired 0, max delta 0px
+
+Block setup: 2 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+== port check after
+2026-10-12 14:17:19
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+The real run rewrote docs/qa/update-confirm-dialog/blocks/confirm/ byte-identically (git shows no change there).
+
+================ the battery after the round ================
+# fix round 1 battery, tree = 969078b + the fix round 1 working tree
+== port check before
+2026-10-12 14:17:30
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+
+== $ npm run lint
+exit 0
+
+== $ npx tsc --noEmit -p .
+exit 0
+
+== $ npm run test:run
+ Test Files  80 passed (80)
+      Tests  1979 passed (1979)
+exit 0
+
+== $ npm run build
+exit 0
+
+== $ npx openspec validate update-confirm-dialog --strict
+Change 'update-confirm-dialog' is valid
+exit 0
+
+== $ npx openspec validate --all --strict
+Totals: 4 passed, 0 failed (4 items)
+exit 0
+
+== $ node scripts/check-eval-ratchet.mjs
+Result: PASS
+exit 0
+
+== $ npm run check:trace
+> node scripts/check-traceability.mjs
+traceability: 115 MVP FRs checked — 0 failure(s), 117 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit 0
+
+== $ npm run check:acceptance
+> binarka@0.1.0 check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+Result: PASS
+exit 0
+
+== $ npm run test:e2e
+  ✓   49 [layout] › e2e/nfr-14-cause-mark.spec.ts:100:1 › @trace NFR-14 @trace FR-120 the sampling is declared (scheme, size, width; coverage sampled; 2 cases) and each capture value is valid and clean before the press (11ms)
+  301 passed (29.1s)
+exit 0
+
+== $ npm run check:a11y
+  67 passed (13.9s)
+exit 0
+== port check after
+2026-10-12 14:19:52
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+docs/qa/e2e-report.json (reporter output) reverted; docs/qa/a11y-report.json kept as the fresh a11y evidence.

@@ -1,5 +1,6 @@
 // @trace NFR-14
 // @trace FR-67
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import type { Server } from 'node:http';
@@ -120,6 +121,12 @@ const FORBIDDEN_PORTS = [0, 1, 3, 4].map((offset) => PORT_BASE + offset);
 // The top-level fixture as it stood before this change: the key is ADDED, nothing else moves (tasks.md 3.1).
 const TOP_LEVEL_DESIGN_COMMIT = '5e61bfd14de56bff4b3726db4ddd624fcd3c2e04';
 const TOP_LEVEL_DESIGN_CSS_SHA1 = 'd1b1255f4dff205d15d64850096429cd377e5fbf';
+// SHA-1 of JSON.stringify of the keys rulesPanel and setupSheet as main 18e5f3f records them (cases, selectors, provenance, deviations): the
+// refreeze that adds confirmDialog must leave both byte-identical, provenance included (review gate of update-confirm-dialog, fix round 1).
+const UNCHANGED_KEY_SHA1: Record<'rulesPanel' | 'setupSheet', string> = {
+  rulesPanel: '0f2164d58abec6e740d6da18d987dbc787c722ad',
+  setupSheet: '6dc8dda1101585031e93471a6d5f1fa885ebf32c',
+};
 
 const isBox = (v: unknown): v is Box => {
   if (typeof v !== 'object' || v === null) return false;
@@ -271,6 +278,10 @@ test('@trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, toler
   expect(fixture.provenance.designCssSha1, 'the top-level provenance keeps the design CSS hash').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
   expect(fixture.rulesPanel?.cases, 'rulesPanel keeps its 8 cases').toHaveLength(8);
   expect(fixture.setupSheet?.cases, 'setupSheet keeps its 12 cases').toHaveLength(12);
+  for (const key of ['rulesPanel', 'setupSheet'] as const) {
+    const sha1 = createHash('sha1').update(JSON.stringify(fixture[key])).digest('hex');
+    expect(sha1, `${key} is byte-identical to main 18e5f3f, provenance included (a refreeze keeps a key's recorded provenance while its cases are unchanged)`).toBe(UNCHANGED_KEY_SHA1[key]);
+  }
   expect(fixture.selectors, 'the top-level selectors name no confirm element').not.toContain(DIALOG);
 });
 
@@ -432,7 +443,10 @@ test.describe('paint: both buttons against the design build', () => {
   });
 
   test.afterAll(async () => {
-    await stopDesignServer(design?.server ?? null);
+    const server = design?.server ?? null;
+    await stopDesignServer(server);
+    // The scenario's clause "closed after the run" is checked, not assumed (review gate of update-confirm-dialog, fix round 1).
+    if (server !== null) expect(server.listening, 'the design server is closed after the run').toBe(false);
     design = null;
   });
 

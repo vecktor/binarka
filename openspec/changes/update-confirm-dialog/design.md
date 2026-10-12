@@ -69,7 +69,7 @@ Measured in `docs/qa/prep-g2-wave2/classify.txt` (device pixels; sampled; every 
 
 The shots from 768 pass today (0.9836 to 0.9904) because the paint and height causes act there too (`1024-light-confirm`: «Скасувати» 23,486 px, the dialog 18,558, «Так, почати» 5397, the text 4298) but the shots are 2.6 to 5.8 times larger than the phone shots, so the share is 0.96 to 1.64% instead of 4.1 to 8.2%; the width cause is 320's alone, from 768 both dialogs are 352 wide.
 
-**Expected, not measured: every one of the ten confirm shots rises against run 12.** The four phone shots should pass if the box and the paint match; the per-block tool decides, and there is no 0.98 claim per shot. `node scripts/visual-block.mjs --block confirm` localises any residual. **If a confirm shot does not rise, the block stops and explains it before the review gate.** A fall is reported as measured, never argued away.
+**Expected, not measured: every one of the ten confirm shots rises against run 12.** The four phone shots should pass if the box and the paint match; the per-block tool decides, and there is no 0.98 claim per shot. `node scripts/visual-block.mjs --block confirm --states confirm` localises any residual. **If a confirm shot does not rise, the block stops and explains it before the review gate.** A fall is reported as measured, never argued away.
 
 ## The split
 
