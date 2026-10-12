@@ -444,7 +444,8 @@ describe('«Закрити» of the settings panel is sticky with the mask (upda
 const SCAN_SELECTOR = /^\.(settings|settings-label|settings-close|theme-control|language-control)(?![\w-])/;
 const inScan = (selector: string): boolean => SCAN_SELECTOR.test(selector) && !selector.includes('::backdrop');
 
-// Copied from main's tests/helpers/css.ts at 18e5f3f; refreshed at the rebase onto main from `git show main:tests/helpers/css.ts`, never from this branch.
+// Copied from main's tests/helpers/css.ts at 18e5f3f; refreshed at the rebase onto main (27cef3e, after update-confirm-dialog: 33 names, `--color-violation-ink`
+// after `--color-focus`) from main's own change to the file (`git diff 18e5f3f main -- tests/helpers/css.ts`), never from this branch.
 const BASELINE_TOKEN_NAMES = [
   '--color-page',
   '--color-text',
@@ -471,6 +472,7 @@ const BASELINE_TOKEN_NAMES = [
   '--color-success-glow',
   '--color-win-text',
   '--color-focus',
+  '--color-violation-ink',
   '--color-backdrop-soft',
   '--color-backdrop-strong',
   '--color-surface-raised',
@@ -480,7 +482,8 @@ const BASELINE_TOKEN_NAMES = [
   '--color-option-border',
 ];
 
-// Copied from main's tests/helpers/css.ts at 18e5f3f (CONTRAST_PAIRS expanded, in order); refreshed at the rebase onto main from `git show main:tests/helpers/css.ts`, never from this branch.
+// Copied from main's tests/helpers/css.ts at 18e5f3f (CONTRAST_PAIRS expanded, in order); refreshed at the rebase onto main (27cef3e: 42 pairs, the text pair
+// `--color-violation-ink` on `--color-violation-bg` after the violation-text pairs) from main's own change to the file, never from this branch.
 const BASELINE_CONTRAST_PAIRS = [
   { group: 'cell-border', fg: '--color-cell-border', bg: '--color-page', min: 3 },
   { group: 'cell-border', fg: '--color-cell-border', bg: '--color-cell-bg', min: 3 },
@@ -521,6 +524,7 @@ const BASELINE_CONTRAST_PAIRS = [
   { group: 'text', fg: '--color-text-muted', bg: '--color-surface-raised', min: 4.5 },
   { group: 'text', fg: '--color-violation-text', bg: '--color-violation-bg', min: 4.5 },
   { group: 'text', fg: '--color-violation-text', bg: '--color-violation-stripe', min: 4.5 },
+  { group: 'text', fg: '--color-violation-ink', bg: '--color-violation-bg', min: 4.5 },
   { group: 'text', fg: '--color-primary-text', bg: '--color-primary', min: 4.5 },
   { group: 'text', fg: '--color-win-text', bg: '--color-success-bg', min: 4.5 },
 ];

@@ -79,10 +79,10 @@ Result: PASS, 116 warning(s)
 | FR-62 | yes | yes | 4 | - |
 | FR-63 | yes | yes | 6 | - |
 | FR-64 | yes | yes | 9 | - |
-| FR-65 | yes | yes | 50 | - |
+| FR-65 | yes | yes | 51 | - |
 | FR-66 | yes | yes | 15 | - |
 | FR-67 | yes | yes | 20 | - |
-| FR-68 | yes | yes | 8 | - |
+| FR-68 | yes | yes | 9 | - |
 | FR-69 | yes | yes | 3 | - |
 | FR-70 | yes | yes | 7 | - |
 | FR-71 | yes | yes | 4 | - |
@@ -118,7 +118,7 @@ Result: PASS, 116 warning(s)
 | FR-114 | yes | yes | 2 | - |
 | FR-115 | yes | yes | 2 | - |
 | FR-116 | yes | yes | 1 | - |
-| FR-117 | yes | yes | 13 | - |
+| FR-117 | yes | yes | 14 | - |
 | FR-118 | yes | yes | 2 | - |
 | FR-119 | yes | yes | 15 | - |
 | FR-120 | yes | yes | 8 | - |
