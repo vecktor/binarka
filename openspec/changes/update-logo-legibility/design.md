@@ -48,3 +48,16 @@ Why these floors: they sit just under the chosen drawing, so the test fails on t
 
 - The vision-judge still fails it: then NFR-15 stays held, the verdict is recorded, and the user decides (the «01» fallback or a further change). No second judge run on the same still.
 - The sibling work is not committed in this session: steps 4 and 5 wait; the handoff says so.
+
+## Round 2: drawing G
+
+| Shape | Drawing G (viewBox units) |
+|---|---|
+| tile | `rect.logo-tile` x 0, y 0, 64 × 64, `rx` 14, `fill` currentColor (the primary token through `.logo { color }`) |
+| cells | 26 × 26, `rx` 4, at x, y ∈ {4, 34} (gap 4, margin 4) |
+| bar (1) | 7 × 18, `rx` 0.8, centred in its cell |
+| ring (0) | `rx` 6, `ry` 8, `stroke-width` 5, centred |
+
+At 40 px: cell 16.3 px, bar 4.4 × 11.3 px, ring stroke 3.1 px, hole 4.4 × 6.9 px. Against the floors: cell 26 ≥ 24, margin 4 ≥ 3; bar 7 ≥ 6, 18 ≥ 16, `rx` 0.8 ≤ 1; stroke 5 ≥ 4.5; hole 7 ≥ 6.4 and 11 ≥ 9.6; outer ± 8.5 by ± 10.5 inside the ± 13 cell. Colours are unchanged (tile = the old disc's colour, cells and digits as before). The logo's CSS box is unchanged.
+
+NFR-14: the paint fixture loses `logo-tooth` and `logo-disc` and gains `logo-tile` (`fill`, `stroke`), re-frozen from the mirrored design; the e2e palette test reads it. The pixel reference stays `review-set-14` until the user moves it; the DS stream owns the next numbered set (`review-set-15`, the 28px design), so G's working set is `logo-drawing-g/`, and the reference move has to combine both.

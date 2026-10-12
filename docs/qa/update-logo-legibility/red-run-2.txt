@@ -1,0 +1,54 @@
+# Red run 2, drawing G (2026-10-12 17:29 +0530). Drawing under test: drawing B in src/ui/logo.ts at e8bc370. Command: npx vitest run tests/play-page-logo.test.ts
+# RED: «Rounded square tile, no rays» (no .logo-tile) and «The digits are large enough to read at 40 px» (cell 16 < 24; the later floors also fail on B:
+#   bar 4.5 < 6 and 11 < 16, bar rx 2.25 > 1, ring stroke 3 < 4.5, hole 4 < 6.4 and 7 < 9.6).
+# GUARD: «The board sits inside the tile» passes on B (cells 15..49 within 3..61); not red evidence.
+# Changed test (DELIBERATE): «Circle and 0/1 rays» -> «Rounded square tile, no rays», source: FR-72 amended 2026-10-12 (signed, commit e8bc370).
+
+
+ RUN  v5.0.3 /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/determined-heyrovsky-61ccb5
+
+ ❯ tests/play-page-logo.test.ts (13 tests | 2 failed) 192ms
+   ❯ @trace FR-72 the header shows one decorative inline SVG logo (13)
+     × Rounded square tile, no rays 14ms
+     × The digits are large enough to read at 40 px 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > Rounded square tile, no rays
+AssertionError: exactly one .logo-tile: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/play-page-logo.test.ts:160:52
+    158|     const svg = logoOf(root);
+    159|     const tiles = svg.querySelectorAll('.logo-tile');
+    160|     expect(tiles.length, 'exactly one .logo-tile').toBe(1);
+       |                                                    ^
+    161|     const tile = tiles[0];
+    162|     expect.assert(tile !== undefined, 'the logo has a tile');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/play-page-logo.test.ts > @trace FR-72 the header shows one decorative inline SVG logo > The digits are large enough to read at 40 px
+AssertionError: the cell at (15, 15) is at least 24 wide: expected 16 to be greater than or equal to 24
+ ❯ tests/play-page-logo.test.ts:183:71
+    181|     expect(cells.length).toBe(4);
+    182|     for (const c of cells) {
+    183|       expect(c.w, `the cell at (${c.x}, ${c.y}) is at least 24 wide`).…
+       |                                                                       ^
+    184|       expect(c.h, `the cell at (${c.x}, ${c.y}) is at least 24 tall`).…
+    185|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 11 passed (13)
+   Start at  17:29:36
+   Duration  890ms (environment 41%, tests 24%, import 21%, transform 14%)
+
+exit: 1

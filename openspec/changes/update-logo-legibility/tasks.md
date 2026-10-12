@@ -36,3 +36,11 @@ Order of work: section 1 (tests) is written FIRST from the delta spec and seen r
 - [ ] 5.1 Review-gate on the slice diff (one run, one fix round, one confirming run); findings in `openspec/changes/update-logo-legibility/review-findings.json`.
 - [ ] 5.2 `npm run lint`, `npm run test:run`, `npm run build`, `npx openspec validate --all --strict`.
 - [ ] 5.3 Archive only after 4 and 5.1 pass: `npx openspec archive update-logo-legibility --yes`; update `docs/current-state.md` with evidence paths.
+
+## 6. Round 2: drawing G (the user's choice and signed FR-72 amendment of 2026-10-12)
+
+- [x] 6.1 FR-72 amended in `docs/requirements.md` (signed in chat). Evidence: commit `e8bc370`, `session-log.md` row 13.
+- [x] 6.2 Delta re-cut for G; `npx openspec validate update-logo-legibility --strict` passes; tests changed (tile scenario, floors, board inside the tile) and seen red on drawing B. Evidence: `docs/qa/update-logo-legibility/red-run-2.txt`.
+- [ ] 6.3 `src/ui/logo.ts` drawing G; lint, tests, build. Evidence: `green-run-2.txt`.
+- [ ] 6.4 Design mirror; `scripts/freeze-design-paint.mjs` (`logo-tile` replaces `logo-tooth` and `logo-disc`) and the re-frozen `quality/design-paint.json`; working set `design/v0-screenshots/logo-drawing-g/` (two captures, `CHANGES`); NFR-14 measured (check:visual, e2e). Evidence: `battery-2.txt`.
+- [ ] 6.5 Record `16-logo-40` (`--only`), one vision-verify run with a fresh vision-judge; if met: remove `held`, move NFR-15 (one logged commit), run the three checks. Evidence: `battery-2.txt`.

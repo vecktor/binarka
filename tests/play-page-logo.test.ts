@@ -69,7 +69,7 @@ function num(el: Element, name: string): number {
   return value;
 }
 
-const LOGO_CLASSES = ['logo-cell', 'logo-digit', 'logo-digit-ring'];
+const LOGO_CLASSES = ['logo-tile', 'logo-cell', 'logo-digit', 'logo-digit-ring'];
 const hasLogoClass = (el: Element): boolean => LOGO_CLASSES.some((c) => el.classList.contains(c));
 
 describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
@@ -151,17 +151,27 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
     expect(shown).toEqual(['1', '0', '0', '1']);
   });
 
-  it('Circle and 0/1 rays', () => {
+  // update-logo-legibility DELIBERATE CHANGE (FR-72 amended 2026-10-12, signed in chat: «in a circle with 0/1 rays» became «on a rounded
+  // square tile»; delta scenario «Rounded square tile, no rays» replaces «Circle and 0/1 rays»).
+  it('Rounded square tile, no rays', () => {
     const root = mountFixture(WIN_PUZZLE);
     const svg = logoOf(root);
-    expect(svg.querySelectorAll('circle').length).toBe(1);
-    const rays = (tag: string): Element[] => Array.from(svg.querySelectorAll(tag)).filter((el) => !hasLogoClass(el));
-    expect(rays('rect').length, 'at least one bar ray').toBeGreaterThanOrEqual(1);
-    expect(rays('ellipse').length, 'at least one ring ray').toBeGreaterThanOrEqual(1);
+    const tiles = svg.querySelectorAll('.logo-tile');
+    expect(tiles.length, 'exactly one .logo-tile').toBe(1);
+    const tile = tiles[0];
+    expect.assert(tile !== undefined, 'the logo has a tile');
+    expect(svg.firstElementChild === tile, 'the tile is the first child of the svg').toBe(true);
+    expect(tile.localName).toBe('rect');
+    expect([num(tile, 'x'), num(tile, 'y'), num(tile, 'width'), num(tile, 'height')]).toEqual([0, 0, 64, 64]);
+    expect(num(tile, 'rx'), 'the tile has rounded corners').toBeGreaterThanOrEqual(8);
+    expect(svg.querySelectorAll('circle').length, 'no circle').toBe(0);
+    const unclassed = Array.from(svg.querySelectorAll('rect, ellipse, circle, path, line, polygon, polyline')).filter((el) => !hasLogoClass(el));
+    expect(unclassed.map((el) => el.localName), 'every shape is the tile, a cell or a digit (no ray)').toEqual([]);
   });
 
-  // update-logo-legibility DELIBERATE CHANGE (delta requirement «Logo», MODIFIED; the user's drawing B of 2026-10-12): two new scenarios with
-  // geometric floors in viewBox units, spec-made proxies for the held NFR-15 (legibility at 40 px is decided by the vision check, not here).
+  // update-logo-legibility DELIBERATE CHANGE (delta requirement «Logo», MODIFIED; the user's drawing G of 2026-10-12, after drawing B failed
+  // the vision check, run wf_ae715072-b48): two new scenarios with geometric floors in viewBox units, spec-made proxies for the held NFR-15
+  // (legibility at 40 px is decided by the vision check, not here).
   it('The digits are large enough to read at 40 px', () => {
     const root = mountFixture(WIN_PUZZLE);
     const svg = logoOf(root);
@@ -170,15 +180,16 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
     const cells = Array.from(svg.querySelectorAll('.logo-cell')).map((el) => ({ x: num(el, 'x'), y: num(el, 'y'), w: num(el, 'width'), h: num(el, 'height') }));
     expect(cells.length).toBe(4);
     for (const c of cells) {
-      expect(c.w, `the cell at (${c.x}, ${c.y}) is at least 15 wide`).toBeGreaterThanOrEqual(15);
-      expect(c.h, `the cell at (${c.x}, ${c.y}) is at least 15 tall`).toBeGreaterThanOrEqual(15);
+      expect(c.w, `the cell at (${c.x}, ${c.y}) is at least 24 wide`).toBeGreaterThanOrEqual(24);
+      expect(c.h, `the cell at (${c.x}, ${c.y}) is at least 24 tall`).toBeGreaterThanOrEqual(24);
     }
 
     const bars = Array.from(svg.querySelectorAll('rect.logo-digit'));
     expect(bars.length).toBe(2);
     for (const bar of bars) {
-      expect(num(bar, 'width'), 'a bar is at least 4 wide').toBeGreaterThanOrEqual(4);
-      expect(num(bar, 'height'), 'a bar is at least 10 tall').toBeGreaterThanOrEqual(10);
+      expect(num(bar, 'width'), 'a bar is at least 6 wide').toBeGreaterThanOrEqual(6);
+      expect(num(bar, 'height'), 'a bar is at least 16 tall').toBeGreaterThanOrEqual(16);
+      expect(num(bar, 'rx'), 'a bar has square ends').toBeLessThanOrEqual(1);
     }
 
     const rings = Array.from(svg.querySelectorAll('ellipse.logo-digit-ring'));
@@ -189,9 +200,9 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
       const rx = num(ring, 'rx');
       const ry = num(ring, 'ry');
       const sw = num(ring, 'stroke-width');
-      expect(sw, 'a ring stroke is at least 2.8').toBeGreaterThanOrEqual(2.8);
-      expect(2 * (rx - sw / 2), 'the ring hole is at least 3.2 wide').toBeGreaterThanOrEqual(3.2);
-      expect(2 * (ry - sw / 2), 'the ring hole is at least 5.6 tall').toBeGreaterThanOrEqual(5.6);
+      expect(sw, 'a ring stroke is at least 4.5').toBeGreaterThanOrEqual(4.5);
+      expect(2 * (rx - sw / 2), 'the ring hole is at least 6.4 wide').toBeGreaterThanOrEqual(6.4);
+      expect(2 * (ry - sw / 2), 'the ring hole is at least 9.6 tall').toBeGreaterThanOrEqual(9.6);
       const cell = cells.find((c) => cx >= c.x && cx <= c.x + c.w && cy >= c.y && cy <= c.y + c.h);
       expect.assert(cell !== undefined, `a cell holds the ring centred at (${cx}, ${cy})`);
       expect(cx - (rx + sw / 2), 'the ring stays inside its cell (left)').toBeGreaterThanOrEqual(cell.x);
@@ -201,34 +212,15 @@ describe('@trace FR-72 the header shows one decorative inline SVG logo', () => {
     }
   });
 
-  it('The board sits inside the circle and the rays outside it', () => {
+  it('The board sits inside the tile', () => {
     const root = mountFixture(WIN_PUZZLE);
     const svg = logoOf(root);
-    const circle = svg.querySelector('circle');
-    expect.assert(circle !== null, 'the logo has a circle');
-    expect([num(circle, 'cx'), num(circle, 'cy')]).toEqual([32, 32]);
-    const r = num(circle, 'r');
-
-    for (const el of Array.from(svg.querySelectorAll('.logo-cell'))) {
-      const [x, y, w, h, rx] = [num(el, 'x'), num(el, 'y'), num(el, 'width'), num(el, 'height'), num(el, 'rx')];
-      for (const px of [x + rx, x + w - rx]) {
-        for (const py of [y + rx, y + h - rx]) {
-          expect(Math.hypot(px - 32, py - 32), `the corner centre (${px}, ${py}) lies within r - rx of the centre`).toBeLessThanOrEqual(r - rx);
-        }
-      }
-    }
-
-    const rays = Array.from(svg.querySelectorAll('rect, ellipse')).filter((el) => !hasLogoClass(el));
-    expect(rays.length, 'the logo has rays').toBeGreaterThan(0);
-    for (const ray of rays) {
-      const group = ray.parentElement;
-      expect(group?.localName, 'a ray sits in a g').toBe('g');
-      expect(group?.children.length, 'a ray is the only child of its g').toBe(1);
-      expect(group?.getAttribute('transform') ?? '', 'the g rotates about the circle centre').toMatch(/^rotate\(-?[\d.]+ 32 32\)$/);
-      const inner = ray.localName === 'rect' ? num(ray, 'y') + num(ray, 'height') : num(ray, 'cy') + num(ray, 'ry') + num(ray, 'stroke-width') / 2;
-      const top = ray.localName === 'rect' ? num(ray, 'y') : num(ray, 'cy') - num(ray, 'ry') - num(ray, 'stroke-width') / 2;
-      expect(inner, `the ray's inner edge is outside the circle (at most ${32 - r - 0.5})`).toBeLessThanOrEqual(32 - r - 0.5);
-      expect(top, "the ray's top is inside the viewBox").toBeGreaterThanOrEqual(0);
+    const cells = Array.from(svg.querySelectorAll('.logo-cell'));
+    expect(cells.length).toBe(4);
+    for (const el of cells) {
+      const [x, y, w, h] = [num(el, 'x'), num(el, 'y'), num(el, 'width'), num(el, 'height')];
+      expect(Math.min(x, y), `the cell at (${x}, ${y}) keeps a margin of 3 from the tile's top and left`).toBeGreaterThanOrEqual(3);
+      expect(Math.max(x + w, y + h), `the cell at (${x}, ${y}) keeps a margin of 3 from the tile's bottom and right`).toBeLessThanOrEqual(61);
     }
   });
 
