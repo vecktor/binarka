@@ -1,0 +1,91 @@
+{
+  "slice": "2026-10-10-add-capture-board",
+  "reviewFile": "openspec/changes/archive/2026-10-10-add-capture-board/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_551a83f7-f44 (b035cf8..2aa39ac, review run 1, first run)",
+    "wf_aea0e7f9-1a1 (b035cf8..52db0de, confirming run after fix round 1, the user asked for it)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_551a83f7-f44",
+      "title": "readGrid checks `row.length` but builds the grid from the row's iterator, so a crafted row passes validation with the wrong number of cells (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "52db0de50216b08cc73a386ad6115288efcac374",
+      "evidence": "src/ui/capture-board.ts readGrid: `for (const row of value)` / `for (const cell of row)` replaced by index loops `for (let r = 0; r < n; r++)` with the per-row length check, so a replaced iterator no longer changes what is read. Red first in 5487adc; evidence docs/qa/add-capture-board/fix-round-1-check.txt, fix-round-1-green-run.txt. Mapping: dispositions[\"code defect (hostile value: an overridden Symbol.iterator, ...)\"] \"FIXED in fix round 1 (approved by the user)\"; autonomy-log row 144."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_551a83f7-f44",
+      "title": "Validator accepts a structurally invalid grid via an overridden iterator, then mount throws (contradicts 'invalid value ignored silently, no uncaught error') (major, spec-compliance)",
+      "severity": "major",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "52db0de50216b08cc73a386ad6115288efcac374",
+      "evidence": "Same fix: readGrid reads by index (an overridden iterator cannot smuggle a wrong-sized grid past validation) and readCaptureBoard wraps validate() in try/catch returning null, so mount falls back silently. Red 5487adc (5 red); fix-round-1-check.txt shows the fixed tests fail on the old loader and a try/catch-removed mutant is killed. Mapping: dispositions[\"code defect (hostile value ...)\"]; test change explained in dispositions[\"test change inside the round\"]."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_551a83f7-f44",
+      "title": "A throwing getter or Proxy in the capture value escapes the mount as an uncaught error (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "52db0de50216b08cc73a386ad6115288efcac374",
+      "evidence": "src/ui/capture-board.ts readCaptureBoard: `try { return validate(value); } catch { return null; }` with the comment \"A getter, a Proxy or a revoked Proxy inside the value may throw while it is read: that value is invalid too, and is ignored silently.\" Mapping: dispositions[\"code defect (hostile value ...)\"]. The residual case (a getter on window itself) was confirmed by run 2 and fixed in 4b26246 (entries R2-F1, R2-F2)."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_551a83f7-f44",
+      "title": "Design build claimed as passed with no evidence artifact (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "52db0de50216b08cc73a386ad6115288efcac374",
+      "evidence": "Adds docs/qa/add-capture-board/design-build.txt (32 lines, exit 0). Mapping: dispositions[\"design build claimed without an artifact\"] \"FIXED: docs/qa/add-capture-board/design-build.txt (exit 0)\"."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_aea0e7f9-1a1",
+      "title": "A throwing accessor on the global itself still escapes the mount: the window property is read outside the try/catch (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "4b262468c6cc15e6b8101433c2a2a9a13f9be0b0",
+      "evidence": "src/ui/capture-board.ts readCaptureBoard: the read of window.__binarkaCaptureBoard moves inside the try (`return validate((window as ...).__binarkaCaptureBoard)`), still read once. Red d3dc83c (1 red, docs/qa/add-capture-board/fix-round-2-red.txt); green fix-round-2-green-run.txt. Mapping: dispositions[\"run 2 code defect (a throwing getter on window itself ...)\"] \"FIXED in fix round 2 (approved by the user) ... Not re-reviewed\"."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_aea0e7f9-1a1",
+      "title": "A throwing getter on the global itself still escapes the mount: the read of window.__binarkaCaptureBoard sits outside the try/catch (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "4b262468c6cc15e6b8101433c2a2a9a13f9be0b0",
+      "evidence": "Duplicate of R2-F1 from the spec-compliance reviewer; same change in src/ui/capture-board.ts (global read inside the try). Mapping: dispositions[\"run 2 code defect ...\"]."
+    }
+  ],
+  "excluded": "wf_551a83f7-f44: 4 contested, 6 rejected; wf_aea0e7f9-1a1: 4 contested, 2 rejected. Run-1 contested items \"fixture mount loop checks only givens and entries\" (fixed by the session) and run-2 contested items (duplicate refreshHighlights fixed in 4b26246; try/catch hides engine bug and hinted iterator accepted; screenshot without manifest left OPEN, minor) are not entries",
+  "designWaiver": {
+    "reason": "Its design (the capture-only board of FR-119: the global value, its validation, the silent ignore, when it is read) was decided and signed in the amendment draft before the change folder was written (autonomy-log row 143); the folder has proposal.md, tasks.md and the spec delta. No archived folder is edited, so the waiver points at the signed draft.",
+    "pointsAt": "docs/handoff/capture-board-amendment-draft-2026-10-10.md"
+  },
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»; «Sign all three (Recommended)», to the question «Sign the three design.md waivers? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md, and its designWaiver"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-10-add-capture-board/review-findings.json",
+    "docs/autonomy-log.md rows 143, 144, 145",
+    "docs/qa/add-capture-board/ (design-build.txt, fix-round-1-check.txt, fix-round-1-green-run.txt, fix-round-2-green-run.txt)",
+    "git log --grep=\"Slice: add-capture-board\" (f6961ff, 2aa39ac, 5487adc, 52db0de, d3dc83c, 4b26246, 2b42c88)",
+    "git show 52db0de, 4b26246 (src/ui/capture-board.ts, src/ui/play-page.ts)"
+  ],
+  "compilerNotes": "All fix commits verified (cat-file, is-ancestor of HEAD, diff read). The review file says codeDefects: 2, counting defect clusters (run-1 hostile-value cluster, run-2 global getter); this file marks 5 titles productCodeDefect (R1-F1..F3, R2-F1, R2-F2), all fixed with a verified commit. Fix round 2 (4b26246) was not re-reviewed: the user chose \"fix now, then hand off\". Contested and not an entry, but open: \"Screenshot has no manifest or provenance, so vision-verify will not pick it up\" (session: OPEN, minor). Contested and accepted as is: the try/catch also swallows a countSolutions engine bug as a silent fallback."
+}

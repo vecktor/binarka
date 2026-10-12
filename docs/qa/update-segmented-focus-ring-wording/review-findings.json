@@ -1,0 +1,213 @@
+{
+  "generatedBy": "review-gate workflow (run wf_94ea915a-989), persisted by hand by stream P",
+  "persistedBy": "stream P of wave 3 (claude/feynman-process), 2026-10-12, from the workflow result: the workflow persists a file only for a scope that names an active change folder, and this change is archived (openspec/changes/archive/2026-10-10-update-segmented-focus-ring-wording/, which is never edited), so the file lives here and the disposition docs/qa/review-dispositions/2026-10-10-update-segmented-focus-ring-wording.json references it (PD-10)",
+  "change": "update-segmented-focus-ring-wording",
+  "archiveFolder": "openspec/changes/archive/2026-10-10-update-segmented-focus-ring-wording",
+  "runId": "wf_94ea915a-989",
+  "scope": "update-segmented-focus-ring-wording (archived 2026-10-10 without review; post-archive review requested by the user 2026-10-12)",
+  "baseRef": "ed03a83",
+  "headRef": "b864892",
+  "authorisedBy": "the user, 2026-10-12 about 16:05, question form: «Yes, run it (Recommended)» (docs/qa/process-stream/session-log.md row P5)",
+  "agentCount": 28,
+  "summary": "Review gate for update-segmented-focus-ring-wording (archived 2026-10-10 without review; post-archive review requested by the user 2026-10-12): 3 confirmed, 5 contested (treat as confirmed unless trivially wrong), 4 rejected.",
+  "confirmedTitles": [
+    "CSS comments still say the segmented ring is kept 'inside', which contradicts the corrected spec",
+    "green-run-2.txt test:run section has no pass/fail counts",
+    "Autonomy-log row 141 places the shots in ring-geometry.txt, but they are separate PNG files"
+  ],
+  "contestedTitles": [
+    "Coverage summary: 3 scenarios, 3 implemented, 0 partial, 0 missing, 0 contradicted. The new wording matches src/ui/style.css at b864892",
+    "The geometry the wording now states (3px ring, 3px gap and padding, 1px clear) is not pinned by any test. The base requirement still allows any width of 2px or more",
+    "The CSS comments still say the ring is kept 'inside', which contradicts the corrected spec wording",
+    "The browser geometry evidence covers only the size control. The wording also makes the geometry claim for the theme and language options",
+    "Focused unchecked option and checked option show the same colour frame 1px apart; telling focus from selection rests on a faint fill and bold text"
+  ],
+  "clean": false,
+  "cleanNote": "clean is false: the run confirmed 3 minor findings and contested 5; no product-code defect (the one finding in src/ is a CSS comment). Their outcomes are in the disposition, not here.",
+  "confirmed": [
+    {
+      "title": "CSS comments still say the segmented ring is kept 'inside', which contradicts the corrected spec",
+      "file": "src/ui/style.css",
+      "line": 266,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "All three rules (lines 266, 777 and 820 at b864892) still carry the comment '/* Inside the segmented card an outset ring would run into the neighbour: keep it inside. */'. The corrected requirement now says outright that the ring 'is not drawn wholly inside the option' and runs 2px outside it. The proposal ruled out CSS changes, so the source keeps the wording that the review gate found wrong.",
+      "suggestion": "Reword the three comments, for example 'pull the ring in (offset -1px): it stays 1px clear of the neighbour and the card frame'. A comment-only edit does not change the computed style or the pixel reference.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "At commit b864892 the style.css has the comment \"...an outset ring would run into the neighbour: keep it inside.\" verbatim at lines 266, 777 and 820 (the current branch has the same three comments at 609, 1358 and 1404). Each sits above a rule with `outline-offset: -1px`. The spec at openspec/specs/play-page/spec.md says the 3px ring runs from 1px inside to 2px outside the option and \"is not drawn wholly inside the option\". The comment's \"keep it inside\" therefore contradicts the corrected spec. The effect is limited to comment wording with no behavioural impact, so the severity is minor, and the finding is valid.",
+        "The comment \"Inside the segmented card an outset ring would run into the neighbour: keep it inside.\" exists verbatim in src/ui/style.css. In this worktree it is at lines 609, 1358 and 1404, not the cited 266/777/820, so the cited numbers belong to a different commit. The spec at openspec/specs/play-page/spec.md:3837 says the ring runs from 1px inside the option's border edge to 2px outside it, and that it \"is not drawn wholly inside the option\". So the comment's \"keep it inside\" is loose against the corrected wording, and the mechanism is confirmed. It is a comment-only wording issue with no runtime or user-visible effect, so it cannot be exploited or reproduced as a behavioural bug. \"Keep it inside\" can also be read as keeping the ring inside the card, which is roughly what the spec intends. I downgrade it to a nit."
+      ]
+    },
+    {
+      "title": "green-run-2.txt test:run section has no pass/fail counts",
+      "file": "docs/qa/fix-size-option-focus-ring/green-run-2.txt",
+      "line": 9,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The '## npm run test:run' section keeps only the 'Start at', 'Duration' and 'Isolate' lines and then 'exit: 0'. The 'Test Files' and 'Tests N passed' summary lines were filtered out, unlike green-run.txt, which records 1653 tests. Without them the file cannot show that the new FR-65 test ran, or how many tests passed.",
+      "suggestion": "Re-run, or re-capture without the filter, so the file keeps the 'Test Files' and 'Tests' summary lines with the total count, and note the expected count of 1654.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed by reading the file. In green-run-2.txt the test:run section (lines 8-15) lists only Start at, Duration, Isolate and exit: 0. It has no Test Files or Tests N passed lines. green-run.txt keeps those lines and records 1653 tests. So green-run-2.txt cannot show that the new FR-65 test ran or how many tests passed. This is an evidence-file gap, not a code defect, and exit 0 is still recorded, so minor severity fits.",
+        "I read docs/qa/fix-size-option-focus-ring/green-run-2.txt. Its \"## npm run test:run\" section has only the Start at, Duration and Isolate lines, then \"exit: 0\". There are no \"Test Files\" or \"Tests N passed\" lines, so the file cannot show how many tests ran or that the new FR-65 test was among them. This is a process-evidence gap rather than a runtime defect. The project rules require every \"done\" claim to carry evidence, so the gap is real, but its impact is low. I did not open green-run.txt, so I did not check the claimed 1653 count there."
+      ]
+    },
+    {
+      "title": "Autonomy-log row 141 places the shots in ring-geometry.txt, but they are separate PNG files",
+      "file": "docs/autonomy-log.md",
+      "line": 155,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Row 141 says 'Shots of an unchecked focused option are in `ring-geometry.txt`'. The shots are `size-focus-unchecked-{375,1366}-{light,dark}.png`, and ring-geometry.txt holds only the measured edges. The 'evidence path' rule in AGENTS.md expects pointers that resolve to the artifact being claimed.",
+      "suggestion": "Change the row to name `docs/qa/fix-size-option-focus-ring/size-focus-unchecked-*.png` (shots) and `ring-geometry.txt` (measurements).",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. Row 141 in docs/autonomy-log.md says shots of an unchecked focused option are in `ring-geometry.txt`. That file is a text file of measured edges (ringOuterRight, neighbourLeft, clearToNeighbour and so on). The shots are the separate PNGs `size-focus-unchecked-{375,1366}-{light,dark}.png` in docs/qa/fix-size-option-focus-ring/. The pointer is inaccurate, but only a minor documentation slip.",
+        "Confirmed. Row 141 (line 155 of docs/autonomy-log.md) says \"Shots of an unchecked focused option are in `ring-geometry.txt`\". The directory docs/qa/fix-size-option-focus-ring/ holds the shots as separate files, size-focus-unchecked-{375,1366}-{light,dark}.png. ring-geometry.txt is a separate text file. So the pointer names the wrong file, which is a minor documentation inaccuracy. It cannot be exploited by an attacker, and a reader who lists the directory can still find the PNGs. The finding is accurate but low impact, so the severity stays minor."
+      ]
+    }
+  ],
+  "contested": [
+    {
+      "title": "Coverage summary: 3 scenarios, 3 implemented, 0 partial, 0 missing, 0 contradicted. The new wording matches src/ui/style.css at b864892",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 3837,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Spec: 'outline-offset: -1px … no other outline property … (solid, 3px, var(--color-focus)) … runs from 1px inside the option's border edge to 2px outside it. The card's gap and padding are 3px … stays 1px clear'. CSS at b864892: button:focus-visible {outline-style: solid; outline-width: 3px; outline-color: var(--color-focus); outline-offset: 2px} (style.css:199-204). The three segmented rules declare only outline-offset: -1px (267-269, 778-780, 821-823). .size-control/.theme-control/.language-control have padding: 3px; gap: 3px (236-237, 744-745, 787-788), and no media query overrides them. The arithmetic is 3 - 1 = 2px outside and 3 - 2 = 1px clear, which agrees with ring-geometry.txt (clearToNeighbour 1, clearToFrame 1). Scenario 1 is tested at tests/play-page-stylesheet.test.ts:236-248, scenario 2 at :252-261 (new) and scenario 3 at :227-232.",
+      "suggestion": "No action. This entry records the coverage.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "I checked src/ui/style.css at commit b864892 and the cited mechanism holds. The base rule `button:focus-visible` (lines 199-204) sets a solid 3px `var(--color-focus)` outline with `outline-offset: 2px`. The three segmented rules (`.size-control`, `.theme-control` and `.language-control` buttons, at lines 267-269, 778-780 and 821-823) override only `outline-offset: -1px`. All three control containers declare `padding: 3px` and `gap: 3px`. The media queries at 654 and 667 don't touch these controls. So the ring runs 1px inside the option's border edge to 2px outside it, which is 3 - 1 = 2px. That leaves 3 - 2 = 1px clear to the neighbour and to the frame. This matches the finding's arithmetic. I did not re-check the test line references or ring-geometry.txt. The finding is an informational \"no action\" coverage record, and its factual claims are accurate.",
+        "The finding is a coverage note whose own suggestion is \"No action\". It claims no defect, and spec-wording-versus-CSS drift is not something a user or attacker can trigger. Under exploitability and reproducibility there is no problem to reproduce, so the finding is refuted by default. I did not re-read the cited files, so I did not check the CSS arithmetic or the test line references."
+      ]
+    },
+    {
+      "title": "The geometry the wording now states (3px ring, 3px gap and padding, 1px clear) is not pinned by any test. The base requirement still allows any width of 2px or more",
+      "file": "tests/play-page-stylesheet.test.ts",
+      "line": 252,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The modified requirement says the ring is '3px' and 'The card's gap and padding are 3px, so the ring … stays 1px clear of the neighbour and of the frame'. The test only checks that the segmented rules declare no outline-width. The base scenario «Focus-visible rules exist for the cell and the button» only asks for 'an outline-width of at least 2px' (test line 214: toBeGreaterThanOrEqual(2)), and no test asserts the 3px padding or gap of the three cards. If button:focus-visible moved to outline-width 4px, or a card's gap moved to 2px, every test would stay green. The ring would then touch or overlap the neighbour, the SHALL 'stays clear of the neighbouring option and of the frame' would be broken, and the spec prose would be false. The only backing is the one-time browser measurement in docs/qa/fix-size-option-focus-ring/ring-geometry.txt.",
+      "suggestion": "Add a scenario and a test that pin the relationship. One option: outline-width(button:focus-visible) + offset(segmented) < padding and < gap of each segmented card. The other: pin outline-width 3px and padding/gap 3px for the three cards. Or align the base requirement's 'at least 2px' with this requirement's '3px'.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The unit test file does not pin 3px width or 3px gap/padding, but the claim that \"every test would stay green\" is wrong. The size card's padding and gap of 0.1875rem (3px) are pinned in tests/play-page-setup-sheet-stylesheet.test.ts:703-715. e2e/nfr-14-palette.spec.ts:246 pins a 3px solid outline with a 2px offset. e2e/nfr-13-a11y.spec.ts:169-211 reads the computed ring width and checks that it isn't obscured, and e2e/nfr-14-settings-panel.spec.ts:333 encodes the ring geometry. The spec says explicitly that jsdom never matches :focus-visible, so unit tests cover declarations only and the visual ring is verified by NFR-13/14 in a real browser. Changing the ring to 4px, or the gap to 2px, would therefore be caught by the browser suites. The remaining gap is small: the unit tests don't pin the theme and language cards' padding and gap, and the base requirement still says \"at least 2px\". That is a minor test-depth preference, not a wrong mechanism or a broken SHALL.",
+        "The coverage gap is real. In tests/play-page-stylesheet.test.ts, the base focus test only requires outline-width of at least 2px (line 214). The segmented test only checks that no outline-width is declared, and it checks outline-offset -1px. No test asserts the 3px ring width or the 3px gap and padding of the size, theme and language cards. The CSS has outline-width 3px at lines 394 and 497. A later edit to 4px, or to a 2px gap, would pass every test. The ring could then touch the neighbouring option, which would break the spec's \"stays clear\" wording. This is a hypothetical future regression, not a current user-facing defect, so the severity is low."
+      ]
+    },
+    {
+      "title": "The CSS comments still say the ring is kept 'inside', which contradicts the corrected spec wording",
+      "file": "src/ui/style.css",
+      "line": 266,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The spec now says 'it is not drawn wholly inside the option' and 'A ring drawn wholly inside the option … is not required'. style.css:266, 777 and 820 still read '/* Inside the segmented card an outset ring would run into the neighbour: keep it inside. */'. The proposal says 'No CSS … change', so the stale comments came through unchanged. The comment at tests/play-page-stylesheet.test.ts:233-234 also still says 'pull it inside'.",
+      "suggestion": "Reword the three CSS comments and the older test comment. For example: 'pull the ring in by 1px: with a 3px ring it stays 1px clear of the neighbour and of the card frame'.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The comments exist, but at style.css lines 609, 1358 and 1404, not the cited 266, 777 and 820. The finding's central claim is that they contradict the spec. They don't. Each reads \"Inside the segmented card an outset ring would run into the neighbour: keep it inside.\" The \"it inside\" refers to the segmented card. The spec says the ring \"stays 1px clear of the neighbour and of the frame\", so the ring does stay within the card. What the spec says is \"not drawn wholly inside the option\", which is about the option, not the card. The test comment at tests/play-page-stylesheet.test.ts:297 (\"pull it inside\") matches the spec's own wording, \"pull their keyboard focus ring in\". At most the comments are loosely worded, and nothing in the code is wrong.",
+        "The stale comments exist. src/ui/style.css has the comment \"Inside the segmented card an outset ring would run into the neighbour: keep it inside.\" three times, at lines 609, 1358 and 1404 in this worktree. The finding cites 266, 777 and 820, so its line numbers are off, but the text matches. openspec/specs/play-page/spec.md:3837 now says the ring \"is not drawn wholly inside the option\" and that a ring drawn wholly inside is \"not required\". The rule uses outline-offset: -1px with a 3px ring, so the ring runs from 1px inside the border edge to 2px outside it. \"Keep it inside\" therefore contradicts the spec and the actual CSS behaviour. The test comment at tests/play-page-stylesheet.test.ts:297 says \"pull it inside\", which is looser and close to the spec's own \"pull ... in\" wording. This is only comment wording, with no runtime or user impact, so I would downgrade it to a nit."
+      ]
+    },
+    {
+      "title": "The browser geometry evidence covers only the size control. The wording also makes the geometry claim for the theme and language options",
+      "file": "docs/qa/fix-size-option-focus-ring/ring-geometry.txt",
+      "line": 1,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The requirement claims the 1px-inside / 2px-outside / 1px-clear geometry for all three segmented controls. ring-geometry.txt and the four size-focus-unchecked-*.png shots measure only '4x4 focused next to 6x6 checked' (size control). The theme and language options (flex: 1 1 auto, border-radius 7px, card radius 10px) are not measured. The CSS gives them the same 3px padding and gap, so the claim holds on paper but has no measurement.",
+      "suggestion": "Extend the ring-geometry probe to a focused unchecked theme option and a focused unchecked language option, or narrow the evidence claim in the proposal to the size control.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The spec requirement (update-segmented-focus-ring-wording/specs/play-page/spec.md) states the geometry (ring 1px inside to 2px outside the option, 1px clear of neighbour and frame) for all three controls: size, theme and language. The browser evidence in docs/qa/fix-size-option-focus-ring/ring-geometry.txt measures only the size control (4x4 focused unchecked next to 6x6 checked); the unit tests only check CSS declarations. Padding and gap are 3px for all three controls (style.css lines 575-576, 1322-1323, 1368-1369), so the claim likely holds. However, it is unmeasured for theme and language, so the finding's mechanism is accurate. It is minor and an evidence-coverage gap, not a code defect.",
+        "The factual observation is correct: ring-geometry.txt and the size-focus-unchecked shots measure only the size control (4x4 focused next to 6x6 checked). But the finding shows no real-user failure, and it overstates the claim. The archived proposals show the change's own scope is the size control. The theme and language rules already used `outline-offset: -1px` before this change. The stylesheet test pins the offset for all three controls. The wording-correction proposal says the theme option's inset ring is already covered by the review-set-13 `settings-focus` pixel reference. The geometry follows from identical padding, gap and offset, and the finding itself concedes it holds on paper. This is a documentation-completeness nit, not a reproducible defect. If kept at all, it should be a minor note, not a defect."
+      ]
+    },
+    {
+      "title": "Focused unchecked option and checked option show the same colour frame 1px apart; telling focus from selection rests on a faint fill and bold text",
+      "file": "docs/qa/fix-size-option-focus-ring/size-focus-unchecked-375-light.png",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "I sampled the pixel row at mid-height of all four new stills (device scale 2). The focused 4x4 ring is 6 device px of rgb(29,78,216) in light and rgb(243,154,91) in dark (x=224-229). Then come 2 device px of background (x=230-231), then the checked 6x6 frame in exactly the same colour (x=232-235). Between the two options this looks like a double rule in the focus colour, so both options look framed. Only two cues tell 'focused' from 'checked'. One is the checked fill, which in light mode is rgb(229,231,235) on white, about 1.2:1. The other is bold text. In dark mode the fill is rgb(77,68,56) on rgb(36,32,27), about 1.6:1. The same thing shows in size-focus-unchecked-1366-light.png and in both dark stills. The geometry matches the new wording: a 1px card frame, a 1px gap, then a 3px ring at offset -1px, about 1px clear of the neighbour and the frame. So the wording itself is not wrong. This is the review-findings.json item C7, deferred to the user, and the new unchecked-focus evidence shows it more clearly than the earlier checked-only shots did.",
+      "suggestion": "Keep C7 open and show the user these four stills as part of the deferred design decision. Give the checked option's frame a colour that differs from --color-focus, or give the checked fill more contrast. Then the focus ring and the selection frame cannot be confused when focus sits next to the checked option. Do not mark the deferral resolved by this wording change.",
+      "dimension": "visual",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The claimed mechanism is that the focus ring and the checked option's frame share one colour. The CSS does not support that. In src/ui/style.css the focus ring (`button:focus-visible`) uses `--color-focus`. That token is #1e2126 in light and #f1ede4 in dark, and tests/play-page-layout-geometry.test.ts pins both values. The checked option's frame (`.size-control button[aria-checked='true']`) uses `--color-primary`. That token is #b4460d in light and #f39a5b in dark. So the two colours differ in both themes: near-black against orange-brown in light, cream against orange in dark. The checked option also has a `--color-primary-soft` fill and bold text. `.size-control button:focus-visible` only sets `outline-offset: -1px`. Nothing in the source overrides the ring colour to match the frame.\n\nI read the pixel row of size-focus-unchecked-375-light.png at mid-height. Both the ring and the frame are rgb(29,78,216) on a white background. That blue is not any token in the app's stylesheet. The stills therefore come from a different or mocked stylesheet and do not show this code's rendering. I could not confirm the claimed colour collision from the code. The remaining issue is that the stills are unrepresentative evidence, which is a different finding from the one claimed.",
+        "The mechanism is real and reproducible by any keyboard user. The CSS shows `.size-control button[aria-checked='true']` takes `--color-primary` as its border. The focus ring uses the default focus colour with `outline-offset:-1px` and a 3px width. `ring-geometry.txt` records the ring colour as rgb(29,78,216) in light and rgb(243,154,91) in dark, with 1px clear to the neighbour. That matches the finding's geometry, and tabbing onto an unchecked option beside the checked one produces this state. I did not re-sample the pixels, and I did not confirm that the checked frame's colour equals the focus colour. The slice's own `review-findings.json` records that equality for C7 (\"ring merges with the same-colour checked frame\"), so it is a known, deliberately deferred design item rather than a new defect. The finding does not claim a new defect. It asks to keep C7 open and show these stills to the user. Focus is still distinguishable from selection by the fill and bold text, so severity stays minor and the confidence stays medium."
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "title": "Geometry wording depends on an exact 3px ring width that the referenced requirement and the tests only bound as 'at least 2px'",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 3572,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The modified requirement now says the inherited ring is 'solid, 3px' and that 'the ring runs from 1px inside ... to 2px outside it ... stays 1px clear of the neighbour and of the frame'. The requirement it points to (line 1704, «Cells and buttons show a visible, unobscured focus indicator») and its test only require 'outline-width of at least 2px'. Nothing pins the card's `gap: 3px` / `padding: 3px` either. If `button:focus-visible` went to 4px, which that requirement allows, the ring would touch the neighbour while every test stays green. That is the same kind of untested wording-versus-geometry drift this change was meant to fix.",
+      "suggestion": "Either word the geometry relative to the width (the ring reaches width-1 px outside the option, and the card's gap and padding must be at least that), or pin it with a test: assert that `button:focus-visible` outline-width plus the segmented outline-offset is no more than the gap and padding of `.size-control`, `.theme-control` and `.language-control`.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding's premise is wrong. The 3px width is pinned: the spec scenario at line 4041 requires each focus outline to be \"solid, 3px wide, 2px offset\", equal to the frozen design ring. `src/ui/style.css` declares `outline-width: 3px` and `outline-offset: 2px` (lines 396-398 and 499-501). The segmented rules (lines 611, 1360, 1406) set only `outline-offset: -1px`, and a test forbids them from declaring any other outline property. So a move to 4px would fail that scenario, not pass silently. The 3px gap and padding are real in the CSS (lines 1322-1323 and 1368-1369), and the spec text describes the real geometry. The NFR-14 `settings-focus` pixel reference also covers the focused theme option. What remains is a small wording point that gap and padding have no dedicated test, which is not a correctness defect. The finding also cites line 3572, which is the theme-option scenario and not the modified requirement.",
+        "The 3px width is pinned elsewhere, so the finding's drift scenario can't occur with tests green. style.css sets button:focus-visible to outline-width 3px and offset 2px. The spec scenario \"The focus rings have the design's paint\" (around line 4041) requires the computed outline to be \"3px wide, 2px offset\", matching the frozen design. The requirement text at line 1951 also says \"the 3px ring\", and the e2e specs nfr-14-palette and nfr-14-settings-panel mention 3px (I did not open them to confirm they pin the width). A change to 4px would fail those pixel scenarios, so the claimed \"ring touches neighbour while tests stay green\" does not happen. The finding is only a documentation-consistency point inside a spec, with no real-user or attacker path."
+      ]
+    },
+    {
+      "title": "'Change only the offset' test checks only the exact selector string, so the claim that the ring's width and colour come from button:focus-visible is not guaranteed",
+      "file": "tests/play-page-stylesheet.test.ts",
+      "line": 252,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The test gathers declarations through `rulesWithSelector(parsed, selector)`, which is `parsed.rules.filter((r) => r.selectors.includes(selector))`, an exact string match. A rule such as `.size-control button[aria-checked='true'] { outline-color: ... }` or `.size-control > button:focus-visible { outline-width: 1px }` has higher specificity than `button:focus-visible` and would override the ring's width or colour, and the test would still pass. The spec scenario at line 3587 concludes 'so the ring's style, width and colour come from `button:focus-visible`', which the test does not establish.",
+      "suggestion": "Either narrow the scenario's conclusion to 'these three rules declare no other outline property', or widen the test to every rule whose selector contains `.size-control`, `.theme-control` or `.language-control` together with `button`, and assert that none of them declares outline, outline-style, outline-width or outline-color.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The test does what the spec scenario says. The scenario at spec.md:3852 says \"none of them declares outline, outline-style, outline-width or outline-color\". \"Them\" means the three segmented rules, and the test checks exactly those three rules for those four properties. The scenario's trailing clause (\"so the ring's style, width and colour come from button:focus-visible\") is a consequence of that wording, not a separate claim. In src/ui/style.css the only outline declarations are the two focus-visible rules (lines 395-398 and 498-501) and the three offset-only segmented rules (lines 611, 1360, 1406). No higher-specificity rule overrides the ring's width or colour, so the mechanism the finding describes does not exist in this code. The finding is a hypothetical about a future rule. The test is also narrower by design (\"segmented rules change only the offset\"), and widening it to every `.size-control`/`.theme-control`/`.language-control` button rule would be a different test.",
+        "The test does what its title says: the three segmented rules declare no outline, outline-style, outline-width or outline-color. The finding is accurate that matching is by exact selector string, so a hypothetical future rule with higher specificity could override the ring's width or colour unnoticed. In the actual stylesheet (src/ui/style.css) the only outline declarations are at lines 395-398 and 498-501, which are .cell:focus-visible and button:focus-visible. The only other outline rules are the outline-offset: -1px lines at 611, 1360 and 1406. No rule overrides the ring's width or colour, so the spec claim holds in practice. No user or attacker can hit this, because it only matters if a future change adds an overriding rule. The existing \"Nothing removes the outline\" test also guards the worst case, a rule that removes the outline. The remaining point is a speculative hardening of the test and nothing more."
+      ]
+    },
+    {
+      "title": "Ring-geometry evidence measures only the size control, but the reworded requirement makes the claim for all three controls",
+      "file": "docs/qa/fix-size-option-focus-ring/ring-geometry.txt",
+      "line": 1,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Every measured row is for 'a focused UNCHECKED size option (4x4) next to the checked one (6x6)', so `clearToNeighbour 1` and `clearToFrame 1` come from `.size-control` only. The modified requirement states the 1px clearance for the theme and language controls as well. Those use different radii (card 10px, option 7px) and `flex: 1 1 auto` sizing, and none of their rows is measured. The archived review-findings disposition treats C1+C2+C6 as FIXED on this file alone.",
+      "suggestion": "Add measurements for a focused theme option and a focused language option, including a corner next to the rounded card, or limit the disposition and spec claim to what was measured.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding's factual premise does not hold. In src/ui/style.css all three controls use the same box geometry. Each has a 3px padding (0.1875rem equals 3px), a 3px gap and a 1px border on the card. Each option has a 2px border and radius calc(var(--radius-m) - 0.1875rem), and each focus rule sets the same offset. The claim of \"different radii (card 10px, option 7px)\" therefore describes shared values, not differences between the controls. The `flex: 1 1 auto` versus `1 1 0` difference (theme versus the other two) changes option widths only, not the gap, padding or border. The 1px clearance depends only on the 3px outline, the -1px offset, the 3px gap/padding and the 2px option border, so it is identical for all three controls. The spec also derives the clearance from those shared dimensions (\"gap and padding are 3px\"), and a stylesheet unit test pins the -1px offset on each of the three rules. The measurement file covers only the size control, so the evidence is narrower than the spec's claim. That is a thin-evidence observation, not an incorrect mechanism, and the finding's correctness claim is not confirmed.",
+        "The ring-geometry.txt rows do cover only the size control. But the 1px clearance follows from arithmetic that the theme and language controls share with the size control. All three cards use 3px padding, 3px gap and a 1px border. All three options have a 2px border, `outline-offset: -1px` and the inherited 3px outline. So the ring runs from 1px inside the option's border edge to 2px outside it, leaving 1px clear of the 3px gap and padding. The different corner radii (10px card, calc'd option radius) only change the corners. An outline follows the border-radius, so the corners keep at least that clearance. `flex: 1 1 auto` changes option widths, not the vertical or horizontal gap geometry. The finding names no theme or language case where the ring touches a neighbour or the frame. It is a gap in measurement evidence, not a defect a user can hit, so I could not confirm an actual problem."
+      ]
+    },
+    {
+      "title": "The 'only the offset' test matches exact selectors only, so an outline override through a sibling selector would not be caught",
+      "file": "tests/play-page-stylesheet.test.ts",
+      "line": 256,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "The scenario reads 'the rules for the three segmented button:focus-visible selectors'. The test uses rulesWithSelector, which matches a selector list entry exactly (tests/helpers/css.ts:243-245). The test therefore follows the scenario literally. However, a rule such as `.size-control button[aria-checked='true']:focus-visible { outline-width: 1px }` or `.theme-control > button:focus-visible { outline-color: … }` would change the ring's width or colour on a segmented option without failing the test. The requirement's intent, that the ring keeps the base style, width and colour, would then be broken.",
+      "suggestion": "Optional hardening: scan every rule whose selector contains `-control` together with `:focus-visible` (or every :focus-visible rule other than `button:focus-visible` and `.cell:focus-visible`) for outline-width, outline-color, outline-style and outline. Or record in the scenario that only these three selectors are checked.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The test (tests/play-page-stylesheet.test.ts, lines ~311-321) checks exactly the three `.size-control`, `.theme-control` and `.language-control` `button:focus-visible` rules. That matches the scenario wording, \"the rules for the three segmented button:focus-visible selectors\". style.css has only five focus-visible rules (lines 394, 497, 610, 1359, 1405). No sibling selector such as `button[aria-checked]:focus-visible` or `.theme-control > button:focus-visible` exists. Nothing in the current code overrides the outline, so the test does not miss a real defect. The finding describes a hypothetical future regression and makes no claim that the mechanism is wrong now. The reporter also marked it optional, low confidence and minor. The existing FR-65 tests already check the base `button:focus-visible` rule's style, width and colour, and the spec bans `outline: none` anywhere in the file. A speculative gap in test breadth is not a correctness defect.",
+        "The test matches the scenario literally: it checks the three `.size-control`, `.theme-control` and `.language-control` `button:focus-visible` rules. `grep` finds only five `:focus-visible` rules in src/ui/style.css: `.cell`, `button`, and the three segmented ones. No sibling selector overrides the outline, and the finding names none that exists. It describes a hypothetical future regression the test would not catch, not a defect a user or attacker can hit now. It also rates itself minor and low-confidence. The gap is a design choice, not a reproducible problem."
+      ]
+    }
+  ]
+}

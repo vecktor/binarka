@@ -1,0 +1,37 @@
+$ node docs/qa/improvements/PD-8-threshold-probe.mjs 1 0.985 0.975
+# run 2026-10-12 15:59 +0530 on 2762e31 (origin/main 2762e31), today's checker and config
+# docs/qa/visual-diff/1024-dark-confirm/report.json on HEAD: score 1
+
+## probe score 1: exit 1
+acceptance (artifact): 132 contract(s) across 132 requirement(s) — 2 failure(s), 0 warning(s), 0 pending
+Result: FAIL
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.99
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.99
+trace NFR-14 pixel-diff: failing-artifact
+trace TC-13 pixel-diff: failing-artifact
+
+## probe score 0.985: exit 1
+acceptance (artifact): 132 contract(s) across 132 requirement(s) — 2 failure(s), 0 warning(s), 0 pending
+Result: FAIL
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/1024-dark-confirm/report.json: score 0.985 is below threshold 0.99
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/1024-dark-confirm/report.json: score 0.985 is below threshold 0.99
+trace NFR-14 pixel-diff: failing-artifact
+trace TC-13 pixel-diff: failing-artifact
+
+## probe score 0.975: exit 1
+acceptance (artifact): 132 contract(s) across 132 requirement(s) — 2 failure(s), 0 warning(s), 0 pending
+Result: FAIL
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/1024-dark-confirm/report.json: score 0.975 is below threshold 0.99
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/1024-dark-confirm/report.json: score 0.975 is below threshold 0.99
+trace NFR-14 pixel-diff: failing-artifact
+trace TC-13 pixel-diff: failing-artifact
+
+# restored: git status --porcelain docs/qa/visual-diff/1024-dark-confirm/report.json trace/acceptance-contracts.json -> (empty)
+
+# Pre-measure of the proposed config (no repo file changed): a scratch copy of the checker whose CONFIG_PATH names a scratch
+# copy of quality/telemetry.config.json with "acceptance": {"tokens": {"pixel-diff": {"threshold": 0.98}}}; probe score 1:
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review <scratch config>)
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+Result: FAIL, 1 warning(s)
+# => the 0.99 comes from the token default (spec.threshold), not from the requirement text: parseThreshold finds nothing in NFR-14 or TC-13.

@@ -1,0 +1,280 @@
+{
+  "slice": "2026-10-10-update-page-layout-geometry",
+  "reviewFile": "openspec/changes/archive/2026-10-10-update-page-layout-geometry/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_1c7326da-0c4 (6ccaf8c..b883f36, review run 1, first run)",
+    "wf_aa7e0963-7b7 (6ccaf8c..4cc25dd, confirming run after fix round 1)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_1c7326da-0c4",
+      "title": "An empty hint line is 4px x 0, not 0x0: the hint rule's border-left-width overrides .message:empty (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "4cc25dd6675edec674f731c89a5c1a62e4586015",
+      "evidence": "src/ui/style.css: `.message[data-message='hint']` becomes `.message[data-message='hint']:not(:empty)`, so the 4px accent applies only to a shown hint and an empty hint is 0x0; design.md decision 6 updated. Red first: the hint line as 16th fixture element, red at 4x0 (docs/qa/update-page-layout-geometry/fix-round-1-hint-red.txt, test commit 84aacdf). Listed in the file's codeDefects. Mapping: dispositions[\"An empty hint line is 4px x 0\"] \"fixed\"; autonomy-log row 152."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_1c7326da-0c4",
+      "title": "The data-solved unit tests skip the click-solve path and the size/level-change path that the spec scenario names (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "84aacdf9678903d50bb8355fe92be998287f9dbc",
+      "evidence": "tests/play-page-layout-geometry.test.ts adds \"the last move by a click solves the board\", \"a click that un-solves a solved board removes data-solved\", \"a new size and level after the win removes data-solved\"; mutation check 3 of 3 killed (fix-round-1-mutation.txt). Mapping: dispositions[\"The data-solved unit tests skip the click-solve path\"]."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_1c7326da-0c4",
+      "title": "The --column formula repeats the 6x6 gap and padding as literals, and the #app copies of --board-gap/--board-pad are never read (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "4cc25dd6675edec674f731c89a5c1a62e4586015",
+      "evidence": "src/ui/style.css: #app declares --board-gap-6/--board-pad-6 (the unused #app --board-gap/--board-pad removed); .board defaults and both --column formulas read them instead of the literals 0.25rem/0.375rem. Mapping: dispositions[\"The --column formula repeats\"]. (The remaining clamp/cap duplication was confirmed by run 2, entry R2-F4.)"
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_1c7326da-0c4",
+      "title": "design.md says the 8x8 phone bleed is on .board-host, but the code puts it on .board (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "4cc25dd6675edec674f731c89a5c1a62e4586015",
+      "evidence": "openspec/changes/update-page-layout-geometry/design.md Risks line rewritten: the bleed sits on `.board[data-size='8']` (negative inline margins), as decision 5 says. Mapping: dispositions[\"design.md says the 8x8 phone bleed\"] \"fixed in design.md\"."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_1c7326da-0c4",
+      "title": "The freeze script's provenance does not identify the build it measures (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "84aacdf9678903d50bb8355fe92be998287f9dbc",
+      "evidence": "scripts/freeze-design-geometry.mjs writes designBuildSha1: buildSha1(root) and designBuild into the fixture provenance (quality/design-geometry.json). Mapping: dispositions[\"The freeze script's provenance\"] \"fixed: designBuildSha1 and designBuild in the fixture's provenance\"."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_1c7326da-0c4",
+      "title": "Dev-only static server in freeze script decodes the URL path and joins it without a root check (path traversal) (minor, security)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "84aacdf9678903d50bb8355fe92be998287f9dbc",
+      "evidence": "scripts/freeze-design-geometry.mjs: resolve(rootAbs, ...) then `if (p !== rootAbs && !p.startsWith(rootAbs + sep)) { res.writeHead(403) }`; the same guard in scripts/visual-block.mjs came with 4cc25dd6675edec674f731c89a5c1a62e4586015; evidence docs/qa/update-page-layout-geometry/fix-round-1-path-guard.txt. Dev tooling only (127.0.0.1), not product code. Mapping: dispositions[\"Dev-only static server\"] \"fixed in both dev servers\"."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_1c7326da-0c4",
+      "title": "Scenario 'The board host marks the solved state' is only partly tested: the click solve, the new size and level, and the click that un-solves are not tested (major, spec-compliance)",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "84aacdf9678903d50bb8355fe92be998287f9dbc",
+      "evidence": "Same tests as R1-F2 (click solve, click un-solve, new size and level), tests/play-page-layout-geometry.test.ts. Mapping: dispositions[\"Scenario 'The board host marks the solved state'\"] \"fixed: the click solve, the click that un-solves and the new size and level are tested\"."
+    },
+    {
+      "id": "R1-F8",
+      "run": "wf_1c7326da-0c4",
+      "title": "The settings panel placement clause (SHALL) has no scenario and no check (major, spec-compliance)",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "84aacdf9678903d50bb8355fe92be998287f9dbc",
+      "evidence": "Spec delta gains «Scenario: The settings panel follows the column from 48rem»; e2e/nfr-14-layout-geometry.spec.ts gains a check at 768, 1024, 1366, 1440 (panel right edge on the column's right edge, under the header), red against the old 420 px placement (fix-round-1-settings-red.txt). No CSS change was needed. Mapping: dispositions[\"The settings panel placement clause\"]."
+    },
+    {
+      "id": "R1-F9",
+      "run": "wf_1c7326da-0c4",
+      "title": "Task 3.4 was ticked at the reviewed commit, but its artifact landed in a later commit (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "4cc25dd6675edec674f731c89a5c1a62e4586015",
+      "evidence": "Process annotation, not a code change (the reviewer's own suggestion: \"No change is needed at HEAD; note it in the review record\"): tasks.md 3.4 gains \"(Run against the uncommitted port; the evidence landed in b342d87, one commit after the ticked task at b883f36: review run 1.)\". The early tick itself remains a historical lapse. Mapping: dispositions[\"Task 3.4 was ticked\"] \"noted in tasks.md\"."
+    },
+    {
+      "id": "R1-F10",
+      "run": "wf_1c7326da-0c4",
+      "title": "The sheet margin change (24 -> 28 px) and the global box-sizing/line-height side effects on the panels are not in the proposal or design (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "4cc25dd6675edec674f731c89a5c1a62e4586015",
+      "evidence": "proposal.md gains \"Side effects outside the main column, deliberate\" (box model, body line height, level-group margin 24 -> 28 px for NFR-13); design.md gains the section \"Side effects outside the main column (deliberate, measured)\". Mapping: dispositions[\"The sheet margin change\"]."
+    },
+    {
+      "id": "R1-F11",
+      "run": "wf_1c7326da-0c4",
+      "title": "Properties outside design.md decision 2's 'geometry only' list were ported (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "4cc25dd6675edec674f731c89a5c1a62e4586015",
+      "evidence": "design.md decision 2 rewritten to list every ported property (position, flex longhands, margin-block/inline, font-variant-numeric, the text layout that decides line breaks, ...). Mapping: dispositions[\"Properties outside design.md decision 2\"] \"fixed: decision 2 lists every ported property\"."
+    },
+    {
+      "id": "R1-F12",
+      "run": "wf_1c7326da-0c4",
+      "title": "The fixture coverage test does not pin the per-state viewport matrix the spec lists (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "84aacdf9678903d50bb8355fe92be998287f9dbc",
+      "evidence": "e2e/nfr-14-layout-geometry.spec.ts: EXPECTED_SHOTS and test \"the fixture covers exactly the sampled layout cases of the spec\" asserting the sorted shot list toEqual(EXPECTED_SHOTS). Mapping: dispositions[\"The fixture coverage test does not pin\"]."
+    },
+    {
+      "id": "R1-F13",
+      "run": "wf_1c7326da-0c4",
+      "title": "Setup sheet at 375 px got taller and covers most of the board; level descriptions lost their indent next to the radio (minor, visual)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "4cc25dd6675edec674f731c89a5c1a62e4586015",
+      "evidence": "src/ui/style.css: `.setup-sheet { line-height: normal }` until the sheet block (the body's 1.5 had grown the sheet ~95 px over the board at 375 and slid the fourth level under the footer at 1366x650); fix-round-1-sheet.txt and docs/qa/g2/check-visual-run-6.txt (setup shots back above run 4); e2e guard added later in 7ad7785 (R2-F8). The level-description indent the title also names was left for the sheet block and is ported in a14e861f60cfff04081489b3aa99842863f83ba7 (update-setup-sheet, \"the indent\"). Mapping: dispositions[\"Setup sheet at 375 px got taller\"] \"fixed beyond recording ... The level-description indent stays for the sheet block\"."
+    },
+    {
+      "id": "R1-F14",
+      "run": "wf_1c7326da-0c4",
+      "title": "No rendered stills of the page after the change; the only visual evidence is difference masks (minor, visual)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "4cc25dd6675edec674f731c89a5c1a62e4586015",
+      "evidence": "Adds 14 PNG stills under docs/qa/update-page-layout-geometry/stills/ (375/1366/1440, light and dark, default, hint, win, setup, plus before-block-1 and review-run-1 comparisons), judged by a fresh vision judge (tasks.md 4.4). Mapping: dispositions[\"No rendered stills\"]."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_aa7e0963-7b7",
+      "title": "The spec delta was not updated when fix round 1 added the hint line to the fixture: its element list and its 0x0 clause still name only the win line (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "Spec delta (archived at openspec/changes/archive/2026-10-10-update-page-layout-geometry/specs/play-page/spec.md, merged into openspec/specs/play-page/spec.md in the same commit): the element list now names `[data-message=\"hint\"]` (absent at 4cc25dd) and the 0x0 clause covers both the hint and the win line; scenario «A shown hint keeps the design's geometry» added. Mapping: dispositionsConfirmingRun[\"spec delta element list and 0x0 clause (two findings)\"] \"fixed: 16 elements named\"; autonomy-log row 153."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_aa7e0963-7b7",
+      "title": "A shown hint line's geometry (the ported 4px accent, padding, radius and the message area with a hint) is never checked against the design (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "scripts/freeze-design-geometry.mjs STATES gains 'hint' with AFTER_LOAD { hint: 'press-hint' }; quality/design-geometry.json grows to 32 cases; e2e/nfr-14-layout-geometry.spec.ts presses «Підказка» once for afterLoad press-hint and checks the boxes. Mapping: dispositionsConfirmingRun[\"shown hint geometry never checked\"] \"fixed: 5 hint cases in the fixture (32)\"."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_aa7e0963-7b7",
+      "title": "Both dev static servers still crash on a malformed percent escape: decodeURIComponent throws inside the request handler (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "scripts/freeze-design-geometry.mjs and scripts/visual-block.mjs: decodeURIComponent wrapped in try/catch, `res.writeHead(400).end()` on a malformed escape; evidence docs/qa/update-page-layout-geometry/review-2-escape.txt. Dev tooling only (codeDefectsConfirmingRun: \"none in product code\"). Mapping: dispositionsConfirmingRun[\"dev servers crash on a malformed escape (two findings)\"]."
+    },
+    {
+      "id": "R2-F4",
+      "run": "wf_aa7e0963-7b7",
+      "title": "The --column formulas still repeat the board's cell-size clamp and its caps; the run-1 fix only removed the gap/pad duplication (minor, correctness)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "src/ui/style.css: --cell-cap on #app (5rem; 4.5rem from 64rem) feeds --column and both .board --cell-max formulas; the repeated 64rem .board / .board[data-size='8'] formulas removed. Mapping: dispositionsConfirmingRun[\"--column repeats the cell-size clamp and caps\"]."
+    },
+    {
+      "id": "R2-F5",
+      "run": "wf_aa7e0963-7b7",
+      "title": "Dev static servers can crash on a malformed percent-escape in the URL (minor, security)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "Duplicate of R2-F3 (security dimension): same try/catch and 400 answer in both dev servers. Mapping: dispositionsConfirmingRun[\"dev servers crash on a malformed escape (two findings)\"]."
+    },
+    {
+      "id": "R2-F6",
+      "run": "wf_aa7e0963-7b7",
+      "title": "Task 4.5 is ticked at 4cc25dd, but its run-6 artifact is not in that commit (the run-1 Task 3.4 pattern again) (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "Process annotation, not a code change: tasks.md 4.5 gains \"(ticked with the fix commit 4cc25dd; run 6 and its README landed in 389080b: review run 2)\", as the reviewer suggested. The early tick itself remains a historical lapse. Mapping: dispositionsConfirmingRun[\"task 4.5 ticked before its artifact\"] \"noted in tasks.md\"."
+    },
+    {
+      "id": "R2-F7",
+      "run": "wf_aa7e0963-7b7",
+      "title": "The spec's element list and 0×0 clause leave out the hint line, which is the 16th element in the fixture and the e2e test (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "Duplicate of R2-F1 (spec-compliance dimension): the element list names `[data-message=\"hint\"]` as the 16th element and the 0x0 clause covers the hint line. Mapping: dispositionsConfirmingRun[\"spec delta element list and 0x0 clause (two findings)\"]."
+    },
+    {
+      "id": "R2-F8",
+      "run": "wf_aa7e0963-7b7",
+      "title": "The setup-sheet line-height regression fix has no automated guard; its only evidence is a vision judgement (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "e2e/nfr-14-layout-geometry.spec.ts adds test \"1366x650: the open setup sheet shows all four levels above the footer strip without scrolling\", red without the fix (docs/qa/update-page-layout-geometry/review-2-sheet-guard-red.txt); spec scenario «The setup sheet keeps its levels in view at 1366×650». Mapping: dispositionsConfirmingRun[\"sheet line-height fix has no automated guard\"]."
+    },
+    {
+      "id": "R2-F9",
+      "run": "wf_aa7e0963-7b7",
+      "title": "design.md says borders take an existing colour token, but the new .board and .message borders use the `transparent` keyword (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "design.md decision 2 now mentions the `transparent` keyword for the borders whose paint belongs to the palette block (the word is absent from design.md at 4cc25dd, present in the archived design.md). Mapping: dispositionsConfirmingRun[\"design.md borders vs transparent\"] \"fixed in design.md\"."
+    },
+    {
+      "id": "R2-F10",
+      "run": "wf_aa7e0963-7b7",
+      "title": "The cross-check instrument measures 11 elements, while the gate test measures 16 (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7ad77859ce356623c9f025461eacef088773ec38",
+      "evidence": "scripts/visual-block.mjs layout block measures the same 16 elements as quality/design-geometry.json (adds .page-header h1, .page-header .logo, .messages, [data-message=\"hint\"], [data-message=\"win\"]) with the 0x0 rule; review-2-block-layout.txt: 54 of 54 shots, 0 off. Mapping: dispositionsConfirmingRun[\"cross-check measures 11 elements\"]."
+    },
+    {
+      "id": "R2-F11",
+      "run": "wf_aa7e0963-7b7",
+      "title": "At 1366x650 dark, the idle footer line now shows half-clipped just below the setup dialog's bottom edge (minor, visual)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "a14e861f60cfff04081489b3aa99842863f83ba7",
+      "evidence": "Not fixed in this slice: dispositionsConfirmingRun[\"idle line peeks under the sheet at 1366x650\"] \"recorded in design.md for the sheet block (not fixed here)\" (archived design.md line 27). Closed later by slice update-setup-sheet, commit a14e861 (src/ui/style.css .setup-sheet regimes: full cover from 48rem, margin 6rem auto auto): openspec/changes/archive/2026-10-12-update-setup-sheet/design.md:12 \"the cut line at 1366×650 is gone\"; docs/qa/update-setup-sheet/smoke-test.txt:9 at 1366x650 \"idle line 554.3-594.9 wholly covered by the sheet (bottom 617.2), no cut line under the edge\". Mapping found by the compiler."
+    }
+  ],
+  "excluded": "wf_1c7326da-0c4: 0 contested, 5 rejected; wf_aa7e0963-7b7: 2 contested, 0 rejected",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-10-update-page-layout-geometry/review-findings.json (runs, findings, codeDefects, dispositions, fixRound1, confirmingRunFindings, codeDefectsConfirmingRun, dispositionsConfirmingRun, closedBy)",
+    "openspec/changes/archive/2026-10-10-update-page-layout-geometry/design.md, tasks.md, specs/play-page/spec.md",
+    "docs/autonomy-log.md rows 148, 151, 152, 153",
+    "docs/qa/update-page-layout-geometry/ (fix-round-1-*.txt, review-2-*.txt, stills/)",
+    "openspec/changes/archive/2026-10-12-update-setup-sheet/design.md, proposal.md; docs/qa/update-setup-sheet/smoke-test.txt",
+    "git log --grep=\"Slice: update-page-layout-geometry\" (726d04a, b883f36, 84aacdf, 4cc25dd, 7ad7785) plus 389080b, 273b4e1",
+    "git show 84aacdf, 4cc25dd, 7ad7785 (-M), a14e861"
+  ],
+  "compilerNotes": "All fix commits verified (cat-file, is-ancestor of HEAD, diff read). Entry ids follow runs[].confirmedTitles order (titles taken from there, with their parentheticals; findings[] and confirmingRunFindings[] hold the same items without the parenthetical, in the same order; the two contested items of run 2 are confirmingRunFindings[11] and [12]). Run 2 was closed by after-run fixes in 7ad7785 on the user's choice, without a third review run (closedBy). (1) productCodeDefect: R1-F1 is the file's listed codeDefect. The compiler also marks R1-F13 (setup sheet grew and covered the board, a visible regression from src/ui/style.css) and R2-F11 (the idle line half-clipped under the sheet at 1366x650) as product defects, although the file lists only R1-F1 and says \"none in product code\" for run 2; both have verified fix commits, so nothing is open. (2) R2-F11 is fixed by the later update-setup-sheet slice (a14e861) for the 1366x650 case the finding names; that slice's proposal.md:74 records other idle-line cuts the sweep found between samples (700 px tall windows 768-1440 wide; the 4x4 state at 1024 px tall, 672-752 wide), left to a later design question by the user's decision of 2026-10-11: the instance is closed, the class is not. (3) R1-F9 and R2-F6 (tasks ticked before their artifacts) are marked fixed by the annotations the reviewers asked for; reclassify as waived if early ticks should count as unrepairable. (4) R1-F6 and R2-F3/F5 concern dev-only servers (scripts/), not product code."
+}

@@ -1,0 +1,109 @@
+{
+  "slice": "2026-10-11-update-panel-shell",
+  "reviewFile": "openspec/changes/archive/2026-10-11-update-panel-shell/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_6f799240-65c (64c2d7d..0f4f5ab, review run 1, the only run; fix round 1 approved by the user «Fix the minors now, then archive (Recommended)», fix commit d176042, archive defc5e5; no confirming re-run)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_6f799240-65c",
+      "title": "The 'Two mounts are independent' test skips opening the sheet on the first root, which the scenario requires",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "d17604240aa1d3f2c2b66bdaba8294d39d920931",
+      "evidence": "tests/play-page-root-size.test.ts adds `openSheet(first);` with the comment \"Review fix round 1 (wf_6f799240-65c, finding 1)\". Mapping: review file disposition (\"fixed in fix round 1: openSheet(first) added\"), commit message of d176042."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_6f799240-65c",
+      "title": "Task 5.1 is ticked as a manual smoke test but was scripted",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Accepted by the user, not changed: the review file's disposition is \"accepted by the user («Accept the scripted smoke test (Recommended)»); recorded in smoke-test.txt and autonomy-log row 174\". docs/qa/update-panel-shell/smoke-test.txt (commit d176042) records that the scripted form was accepted in chat on 2026-10-11; task 5.1's text was left as it is."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_6f799240-65c",
+      "title": "The evidence for task 6.3 (docs/qa/g2/blocks/panel-shell/) is untracked",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "defc5e5aa782410767692a0217a0651ad3c2baaa",
+      "evidence": "Task 6.3 evidence in the archived tasks.md now reads \"`docs/qa/update-panel-shell/run10-vs-run9.txt` (it holds the per-block tool's summary lines; the tool's output folder `docs/qa/g2/blocks/panel-shell/` is local and untracked, as for every block)\" instead of citing the untracked folder. The edit is in the archive commit defc5e5 (git diff 0f4f5ab defc5e5 -M on tasks.md), not in d176042. Mapping: review file disposition (\"fixed: task 6.3 now points at the tracked run10-vs-run9.txt\")."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_6f799240-65c",
+      "title": "'Every fall explained per pixel' is backed by a sample of 7 of the 42 falling shots",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "d17604240aa1d3f2c2b66bdaba8294d39d920931",
+      "evidence": "docs/qa/update-panel-shell/run10-vs-run9.txt adds \"Coverage of this explanation ... SAMPLED, 7 of the 42 falling shots ... The stricter instrument ... is the same classification over all 42\"; docs/qa/visual-diff/README.md § Run 10 says \"on a SAMPLE of 7 of the 42\" and that the confirm rise did not happen. Mapping: review file disposition, commit message of d176042 (\"the run-10 explanation labelled sampled\")."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_6f799240-65c",
+      "title": "The test for the moved variables checks only that the 48rem --cell-max values exist",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "d17604240aa1d3f2c2b66bdaba8294d39d920931",
+      "evidence": "tests/play-page-root-size.test.ts: the two `toBeDefined()` checks of --cell-max from 48rem replaced by exact `toBe('clamp(2.75rem,calc((100dvh-var(--reserve))/var(--n)),var(--cell-cap))')` and `toBe('clamp(1.5rem,calc((100dvh-var(--reserve))/8),var(--cell-cap))')` (comment: \"Review fix round 1 (wf_6f799240-65c, finding 5)\"). Mapping: review file disposition, commit message of d176042."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_6f799240-65c",
+      "title": "Rules panel opens scrolled to the bottom: the heading and the first rules are cut off at the top edge",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "16d42ad7a7b30ce699dc19678bb0926b34b133b0",
+      "evidence": "Fixed later by slice update-rules-panel (block A), the owner named in the review file's disposition (\"known and owned by block A (update-rules-panel, FR-57 as amended, A-59); not this change\"): commit 16d42ad adds to src/ui/play-page.ts (after line 148) a `beforetoggle` listener that sets rulesPanel.scrollTop = 0 when newState is closed and a `toggle` listener that does so when newState is open; its message says \"it opens at its top\". The pre-change cause was the autofocused close button at the end of the scrollable popover (verifier notes)."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_6f799240-65c",
+      "title": "On tablet and desktop the setup sheet covers and cuts through the size-picker trigger",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "a14e861f60cfff04081489b3aa99842863f83ba7",
+      "evidence": "Fixed later by slice update-setup-sheet (block B), the owner named in the review file's disposition (\"known and owned by block B (update-setup-sheet, FR-96 as amended, A-60); not this change\"): commit a14e861 (the copy of the block-B feat that is an ancestor of HEAD; two rebased duplicates exist off-branch) adds to src/ui/style.css `@media (min-width: 48rem) and (min-height: 44rem) { .setup-sheet { inset: 0 0 auto 0; width: var(--column); ... margin: 9.75rem auto 0; } }`, replacing the viewport-centred `inset: 0` placement the verifiers blamed. 1024x768 (48rem tall) falls in this regime; the archived block-B spec says the sheet then \"hangs under the summary button ... 0.5rem below the summary\" (openspec/changes/archive/2026-10-12-update-setup-sheet/specs/play-page/spec.md:847, scenario at :902)."
+    },
+    {
+      "id": "R1-F8",
+      "run": "wf_6f799240-65c",
+      "title": "e2e shell test pins fill and border to the spec values, but never checks the design's shadow against the spec's rgba(0,0,0,0.18)/0.25",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "d17604240aa1d3f2c2b66bdaba8294d39d920931",
+      "evidence": "e2e/nfr-14-panel-shell.spec.ts adds an assertion that the design's surface shadow equals the spec literal, `rgba(0, 0, 0, 0.18) 0px -8px 32px 0px` for the sheets below 768px and `rgba(0, 0, 0, 0.25) 0px 16px 40px 0px` otherwise (comment \"Review fix round 1 (wf_6f799240-65c, contested finding)\"). Mapping: review file disposition (\"contested, treated as confirmed and fixed ... 24 of 24 green\"), commit message of d176042 (\"the design's shadow anchored\"). Verdict in the file is contested; it is an entry because the file lists it in confirmedTitles."
+    }
+  ],
+  "excluded": "wf_6f799240-65c: 0 contested excluded (the 1 contested finding, the design's shadow, is an entry R1-F8 because the file lists it in confirmedTitles as \"treated as confirmed and fixed\"), 5 rejected (rejected by the verifiers). Per the file's dimensions: correctness 1/1/2, spec-compliance 4/0/2, visual 2/0/1 (confirmed/contested/rejected).",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-11-update-panel-shell/review-findings.json",
+    "docs/autonomy-log.md row 174",
+    "git show d17604240aa1d3f2c2b66bdaba8294d39d920931 (fix round 1)",
+    "git diff 0f4f5ab defc5e5 -M (archive commit, tasks.md 6.3)",
+    "git show 16d42ad7a7b30ce699dc19678bb0926b34b133b0 -- src/ui/play-page.ts (block A)",
+    "git show a14e861f60cfff04081489b3aa99842863f83ba7 -- src/ui/style.css (block B)",
+    "openspec/changes/archive/2026-10-12-update-setup-sheet/proposal.md and specs/play-page/spec.md",
+    "docs/qa/update-panel-shell/smoke-test.txt, run10-vs-run9.txt, docs/qa/visual-diff/README.md (as changed by d176042)"
+  ],
+  "compilerNotes": "productCodeDefect: the review file says `productCodeDefect: \"none confirmed\"`, meaning no defect INTRODUCED by this slice (both verifiers note the two visual findings predate update-panel-shell). The two visual findings (rules panel opening scrolled to its end; setup sheet across the summary trigger at 1024) do describe product behaviour under src/ (autofocus in src/ui/play-page.ts, `inset: 0` centring in src/ui/style.css), so they are marked productCodeDefect: true here, and each is fixed by a verified later-slice commit (16d42ad block A, a14e861 block B). The block-B fix is inferred from the CSS rule and the spec text; I did not re-capture 1024-dark-setup to see the trigger clear of the sheet (no captures allowed). The task 6.3 fix landed in the archive commit defc5e5 rather than in d176042. R1-F8 (the shadow check) has verdict contested in the file but is listed in confirmedTitles and dispositioned \"treated as confirmed and fixed\", so it is an entry (fixed, d176042) so that every confirmedTitles string has an entry; 7 entries are verdict confirmed, 1 contested. The d176042 fix commit carries no Slice trailer. All commits pass cat-file -e and merge-base --is-ancestor HEAD."
+}

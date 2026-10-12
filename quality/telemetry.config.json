@@ -1,7 +1,7 @@
 {
   "_comment": [
     "Telemetry + process-quality configuration. Copy to quality/telemetry.config.json in the target project.",
-    "Consumed by: scripts/check-process-ratchet.mjs (warningBudgets), scripts/check-acceptance-methods.mjs (acceptanceArtifacts), scripts/ledger.mjs (telemetry).",
+    "Consumed by: scripts/check-process-ratchet.mjs (warningBudgets), scripts/check-acceptance-methods.mjs (acceptance), scripts/ledger.mjs (telemetry).",
     "Keys starting with '_' are documentation and are ignored by all scripts.",
     "Design: docs/field-reports/2026-07-02-reflection-mechanism-design.md (mechanisms 1, 2 and 5)."
   ],
@@ -10,19 +10,14 @@
     "ledger": "trace/ledger.jsonl",
     "killSwitchEnv": "FACTORY_TELEMETRY"
   },
-  "acceptanceArtifacts": {
+  "acceptance": {
     "_comment": [
-      "Verification-class token -> artifact resolution table for check-acceptance-methods --mode=artifact.",
-      "Tokens are the closed vocabulary from docs/requirements.template.md. Each declared method must resolve to a fresh, threshold-passing artifact — a declared method with no mechanism is the pixel-perfect failure class."
+      "Read by scripts/check-acceptance-methods.mjs: per-token entries merge over its built-in defaults (a lower threshold prints a [config] WARN on every run).",
+      "pixel-diff 0.98: NFR-14 says each shot scores at least 0.98 (threshold set by the user 2026-10-05, autonomy-log row 68; the checker's default is 0.99, so its below-default warning is expected). The requirement text has no '%' or 'score >=', so the checker cannot parse it and needs this entry (PD-8, approved by the user 2026-10-12)."
     ],
-    "local-verifiable": { "glob": "docs/qa/automated-verification-latest.md" },
-    "vision-verify": { "glob": "docs/qa/**/manifest.json", "require": "vision.met == true && vision.readable == true" },
-    "recording": { "glob": "docs/qa/**/manifest.json", "require": "asserted == true" },
-    "visual-diff": { "glob": "docs/qa/visual-diff/*/report.json", "threshold": { "path": "score", "gte": 0.99 } },
-    "e2e": { "glob": "docs/qa/e2e-report.*" },
-    "a11y": { "glob": "docs/qa/a11y-report.*" },
-    "eval": { "glob": "evals/results/*.json" },
-    "deploy-gated": { "glob": "docs/qa/deploy-verification.md" }
+    "tokens": {
+      "pixel-diff": { "threshold": 0.98 }
+    }
   },
   "warningBudgets": {
     "_comment": [

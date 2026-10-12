@@ -1,0 +1,78 @@
+{
+  "slice": "2026-10-06-update-page-layout",
+  "reviewFile": "openspec/changes/archive/2026-10-06-update-page-layout/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_319f4046-80b (fc897ac..HEAD, review run 3, pre-approved by the user (autonomy-log row 71); persisted by the orchestrator in fd3db66 from the run's result because the run's persist agent returned empty)"
+  ],
+  "findings": [
+    {
+      "id": "R3-F1",
+      "run": "wf_319f4046-80b",
+      "title": "docs/current-state.md still describes the stopped run: it says the user decisions, the fix and the 3.7 re-run are pending, but all three are done",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "fd3db665719e9a420b9db27d486279376ec5177c",
+      "evidence": "fd3db66 rewrites docs/current-state.md: header updated to 2026-10-06 09:21, the 'STOPPED' Next task 0 (decisions pending, fix pending, 3.7 re-run pending) is replaced by a Progress entry recording the user's decisions (row 62/71), fix 1723234 and the 3.7 run 2 evidence, and the new Next task 0 item '1. and 3. This file was stale after the fix and the 3.7 re-run (task 3.7 step g): fixed by this update.' Mapping from that item, the fd3db66 commit message ('docs/current-state.md refreshed (decisions, fix 1723234, 3.7 run 2 evidence, no literal U+00A0)') and docs/autonomy-log.md row 72 ('fixes: current-state refreshed')."
+    },
+    {
+      "id": "R3-F2",
+      "run": "wf_319f4046-80b",
+      "title": "current-state.md Next task 0.3 has a literal NBSP where the escape was meant, so the M19 note reads wrongly",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "fd3db665719e9a420b9db27d486279376ec5177c",
+      "evidence": "fd3db66 deletes the old Next task item 0.3 (the M19 note with the literal U+00A0 in its backticks) from docs/current-state.md and adds item '2. This file held literal U+00A0 bytes in the M19 note: removed in this update (now written in words; a perl scan for U+00A0 here prints nothing).' Mapping from that item and the fd3db66 commit message ('no literal U+00A0')."
+    },
+    {
+      "id": "R3-F3",
+      "run": "wf_319f4046-80b",
+      "title": "Task 3.7 is ticked, but its step (g) record is missing: docs/current-state.md is stale and contradicts HEAD",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "fd3db665719e9a420b9db27d486279376ec5177c",
+      "evidence": "fd3db66 adds to docs/current-state.md the 3.7 run 2 record required by step (g): 'Real-browser check re-run at 1723234 (tasks 3.7, run 2): evidence docs/qa/update-page-layout/README.md with stills docs/qa/update-page-layout/375-mount-1723234.jpg, 375-rules-open-1723234.jpg ..., 1280-rules-open-1723234.jpg; layout observed, not verified (held NFR-9, NFR-13)'. Mapping from the Next task item '1. and 3. ... (task 3.7 step g): fixed by this update' added in fd3db66."
+    },
+    {
+      "id": "R3-F4",
+      "run": "wf_319f4046-80b",
+      "title": "Per-mount uniqueness of the panel heading id is required but not tested",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "fd3db665719e9a420b9db27d486279376ec5177c",
+      "evidence": "fd3db66 adds the test 'each panel is named by the h2 «Правила» inside its own panel, and the two heading ids differ' in tests/play-page-layout.test.ts (after line 277, describe '@trace FR-57 two mounts stay independent'), green from the start, with a fixed-id mutant failing it per the commit message. Mapping from the fd3db66 commit message, current-state Next task item 4 added in fd3db66, and autonomy-log row 72 ('new test (a fixed-id mutant fails it)')."
+    },
+    {
+      "id": "R3-F5",
+      "run": "wf_319f4046-80b",
+      "title": "Idle line wraps with the em dash starting the second line at 375 px",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Accepted, not fixed, by the session: docs/current-state.md (Next task item 5, added in fd3db66, still present at line 219) says the string matches the signed FR-64 (now FR-71) text pinned code point by code point and the frozen design's string (design/v0/components/binarka-page.tsx:24); 'A non-breaking space before the dash would change the signed text: the user's call, best looked at in G2.' Autonomy-log row 72: 'The em-dash break is accepted, not fixed: the text is the signed FR-71 string and the frozen design's string; changing it is the user's call.'"
+    }
+  ],
+  "excluded": "wf_319f4046-80b: 0 contested, 1 rejected (spec-compliance). Earlier runs wf_e90d3ea5-de4 (round 1: 1 confirmed, 1 contested, 2 rejected; fix f784701) and wf_912df3de-71f (confirming run 2: 5 confirmed minor including one code defect, the popover not moving focus, fixed by 1723234 per current-state) were recorded in earlier versions of this file (f784701, 276baa9) and overwritten by fd3db66; they are not in the archived file and are not dispositioned here.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-06-update-page-layout/review-findings.json",
+    "openspec/changes/archive/2026-10-06-update-page-layout/tasks.md (3.7) and RENUMBERED.md",
+    "docs/autonomy-log.md rows 70, 71, 72",
+    "docs/current-state.md line 219",
+    "src/ui/strings.ts:46 (IDLE string, unchanged since 1b50a88 apart from the U+00A0 escapes)",
+    "git show fd3db665719e9a420b9db27d486279376ec5177c (docs/current-state.md, tests/play-page-layout.test.ts, review file)",
+    "git log of the review file (f784701, 276baa9, fd3db66, archive d43f0ec)"
+  ],
+  "compilerNotes": "(1) Severity of run 3's findings is not stated anywhere I found (row 70's 'minor' is about run 2); current-state classes them as '3 handoff-doc, 1 test gap now closed, 1 accepted typography note; no code defect', so all are 'unknown'. (2) R3-F5 concerns how product text renders at 375 px (IDLE in src/ui/strings.ts:46, still 'Натискайте клітинки, щоб ставити 0\\u00A0і\\u00A01. Правила — кнопка «Правила» вгорі.' with no NBSP before the em dash). The session classed it as a typography note, not a code defect, and waived it as signed requirement text; I kept productCodeDefect false. If the caller treats it as a product defect it is OPEN: I found no later commit changing the string, and I did not check whether the G2 geometry work (update-page-layout-geometry) changed the wrap at 375 px. (3) fixCommit fd3db66 verified: cat-file -e ok, ancestor of HEAD (pre-rebase copy 6ed4fcc is not). Commit messages cite pre-renumbering ids (FR-64 → FR-71, row 62/63 → rows 71/72)."
+}

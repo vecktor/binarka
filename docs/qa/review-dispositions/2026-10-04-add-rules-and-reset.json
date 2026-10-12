@@ -1,0 +1,36 @@
+{
+  "slice": "2026-10-04-add-rules-and-reset",
+  "reviewFile": "openspec/changes/archive/2026-10-04-add-rules-and-reset/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_95cbf0a5-060 (step-31-s4-red..HEAD, third review run, approved by the user as a deviation from the one-confirming-run brief; the file has no runId field, the run is named in docs/autonomy-log.md row 37 and in docs/current-state.md of archive commit cff4bdb as the source of the committed file)"
+  ],
+  "findings": [
+    {
+      "id": "R3-F1",
+      "run": "wf_95cbf0a5-060",
+      "title": "docs/current-state.md was not updated for slice 4: it still says no change is active and slices 1 to 3 are archived",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "cff4bdb1e7cabec536cf575e5931390428381929",
+      "evidence": "Archive commit cff4bdb changes docs/current-state.md: 'Active change: none (slices 1 to 3 are archived)' becomes 'none (slices 1 to 4 are archived)', a Progress entry for slice 4 add-rules-and-reset and a slice 4 Claims entry (red, green, three review runs, browser check) are added, and the stale 'Next task' item about the rules/reset request is replaced. Mapping from docs/autonomy-log.md row 37 ('1 confirmed minor (docs/current-state.md not updated for slice 4) ... no code defect; both handled in the archive commit') and the current-state Claims line added in cff4bdb ('third run ... wf_95cbf0a5-060 (not clean: 1 confirmed minor, this file not updated, fixed in the archive commit ...)')."
+    }
+  ],
+  "excluded": "wf_95cbf0a5-060: 1 contested (correctness; autonomy-log row 37 says it was the row 36 wording, handled in the archive commit by row 37's correction), 1 rejected (spec-compliance). Earlier runs wf_bbba93da-6bd (round 1, 2 confirmed minor fixed in 30f5df2) and wf_1fee835f-514 (confirming run, 2 confirmed minor fixed in b4fb41c) are not recorded in this file and are not dispositioned here.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-04-add-rules-and-reset/review-findings.json",
+    "docs/autonomy-log.md rows 36, 37, 38",
+    "git show cff4bdb1e7cabec536cf575e5931390428381929 (docs/current-state.md diff)",
+    "git log of the review file (30f5df2, b4fb41c, cff4bdb and their pre-re-sign copies 6491011, c91c884, 30044ec)"
+  ],
+  "compilerNotes": "The slice 4 commits were re-signed by a forced rebase (autonomy-log row 38); the unsigned originals (6491011, c91c884, 30044ec) are NOT ancestors of HEAD, the re-signed copies (30f5df2, b4fb41c, cff4bdb) are. fixCommit cff4bdb verified: cat-file -e ok, ancestor of HEAD. Note the current-state text added in cff4bdb itself still cites the pre-re-sign SHAs 6491011/c91c884 (updated by the later re-sign commits, row 38/M14); this does not affect the finding. No re-run after the fix (the session stopped at three runs, row 37)."
+}

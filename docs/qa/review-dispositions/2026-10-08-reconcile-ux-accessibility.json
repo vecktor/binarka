@@ -1,0 +1,209 @@
+{
+  "slice": "2026-10-08-reconcile-ux-accessibility",
+  "reviewFile": "openspec/changes/archive/2026-10-08-reconcile-ux-accessibility/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_0cb9028b-e5e (b4d338e..85485ac, review run 1, before fix round 3d4e488)",
+    "wf_fba99710-0a3 (b4d338e..3d4e488, confirming run after fix round 3d4e488; closed after the run in archive commit 9e8a9c7, not re-reviewed)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_0cb9028b-e5e",
+      "title": "ss-19 rewrite dropped the raw-text :has( check, so the one-exception rule can be bypassed by rules css-tree fails to parse",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "tests/play-page-stylesheet.test.ts (FR-65 focus group) adds expect(readStyleText().match(/:has\\(/gi)).toHaveLength(1); delta spec play-page adds «the raw text of the file contains `:has(` exactly once»; tasks.md ss-19 row notes the restore. mapped by the compiler from dispositions.fixed[0] «ss-19 raw-text :has( count restored (test + delta scenario)» + commit body of 3d4e488."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_0cb9028b-e5e",
+      "title": "frontend-conventions gap table still lists G3, G4 and G6 as open, though the code now closes them",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "docs/frontend-conventions.md: status line now «G1 to G6 and G9 … done, G8 partly»; gap-table rows G3, G4, G5, G6 marked **done**. mapped by the compiler from dispositions.fixed[1] + 3d4e488 diff."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_0cb9028b-e5e",
+      "title": "tasks.md 1.8 tally of the 81 failing tests does not match the 1.4 table (sem-23 moved from U to R; sem-24 is not among the red)",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "openspec/changes/reconcile-ux-accessibility/tasks.md task 1.8: semantics now «17 R, 2 X, 5 U; sem-23 became R after the red run, sem-24 is green and not among the 81», totals «47 R, 24 X, 10 U». mapped by the compiler from dispositions.fixed[2] + 3d4e488 diff."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_0cb9028b-e5e",
+      "title": "T5 lost three modifier cases from kb-21 (Ctrl+Arrow, Alt+Home, Shift+Home) that the requirement sentence still covers",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "tests/play-page-keyboard.test.ts T5 table gains ['ArrowRight', {ctrlKey}], ['Home', {altKey}], ['Home', {shiftKey}]; tasks.md T5 and kb-21 rows updated. mapped by the compiler from dispositions.fixed[3] + 3d4e488 diff."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_0cb9028b-e5e",
+      "title": "Idle-line and mini-sep text use a border token, so their text contrast is not covered by the FR-65 contrast tests",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Declined by the session: «idle-line and rule-separator text contrast test: text contrast (WCAG 1.4.3) is not in the signed NFR-9 list, so a new test would not derive from a changed requirement (the user's rule); measured 4.63:1 on the page, unchanged value under D2; noted for G2 in docs/frontend-conventions.md» (review-findings.json dispositions.declined[0]; autonomy-log row 80). The note was added in 3d4e488 (frontend-conventions «Already fine» line names the 4.63:1)."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_0cb9028b-e5e",
+      "title": "Scenario 'A new board has fresh names' is only partly tested: no test covers a size change on a board with entries followed by a confirm",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "tests/play-page-semantics.test.ts (sem-11) adds clickCell(root, 1, 1) before the size change so selectSize confirms «Так, почати» (FR-67); tasks.md sem-11 row records it. mapped by the compiler from dispositions.fixed[4] «sem-11 now has a player entry before the size change, so the confirm path of the scenario is tested (major)»; autonomy-log row 80 «1 major: the confirmed size change untested»."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_0cb9028b-e5e",
+      "title": "Tasks 3.5, 3.6a and 3.7 are ticked, but the evidence they name (section 5) is unticked, uncommitted and partly missing",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "3d4e488 committed docs/qa/reconcile-ux-accessibility/README.md and five 375/1280 screenshots and ticked tasks 5.1 to 5.5 (5.4a), with the 5.3 DOM-read deviation recorded. mapped by the compiler from dispositions.fixed[7] «section 5 evidence committed with the fix round; 5.3 deviation recorded». Closure was only partial at 3d4e488 (the confirming run found the 1280 shots and drift notes still missing, entries R2-F1/R2-F4); completed in 9e8a9c7f923321bf046b920908e3f40306667a7f."
+    },
+    {
+      "id": "R1-F8",
+      "run": "wf_0cb9028b-e5e",
+      "title": "Scenario 'The same elements carry every message' does not say 'and confirms', but sem-23 now confirms through startNewPuzzle",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "openspec/changes/reconcile-ux-accessibility/specs/play-page/spec.md scenario WHEN now reads «… presses the new puzzle button and confirms «Так, почати» (the board has entries, FR-67) …». mapped by the compiler from dispositions.fixed[5] «sem-23 scenario says 'and confirms'»."
+    },
+    {
+      "id": "R1-F9",
+      "run": "wf_0cb9028b-e5e",
+      "title": "sem-10's second change (pressNew to startNewPuzzle) is missing from its own tasks.md row",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "tasks.md sem-10 row: «… and FR-67 «… ask for confirmation only when the board has player entries …»: the press becomes `startNewPuzzle` …». mapped by the compiler from dispositions.fixed[6] «sem-10 row gives the FR-67 reason»."
+    },
+    {
+      "id": "R1-F10",
+      "run": "wf_0cb9028b-e5e",
+      "title": "D2 mapping puts a border token on text (.message-idle, .mini-sep use --color-control-border), and no test guards its 4.5:1 text contrast",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Same as R1-F5 (the second reviewer's wording of the idle-line/mini-sep text-contrast finding): declined by the session because WCAG 1.4.3 text contrast is not in the signed NFR-9 list, measured 4.63:1, noted for G2 in docs/frontend-conventions.md (review-findings.json dispositions.declined[0]; autonomy-log row 80)."
+    },
+    {
+      "id": "R1-F11",
+      "run": "wf_0cb9028b-e5e",
+      "title": "frontend-conventions.md gap table still lists G3 (and the G4/G6 'Now' column) as open after this change fixed them",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d4e488f10561bc398a9f981b4295e1166a66e2f",
+      "evidence": "Duplicate of R1-F2: docs/frontend-conventions.md gap table G3 to G6 «done», status line updated. mapped by the compiler from dispositions.fixed[1] + 3d4e488 diff."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_fba99710-0a3",
+      "title": "Tasks 5.1, 5.2 and 5.4 are ticked, but five screenshots and the drift-notes file they name do not exist; only the 5.3 deviation is recorded",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "9e8a9c7f923321bf046b920908e3f40306667a7f",
+      "evidence": "9e8a9c7 adds docs/qa/reconcile-ux-accessibility/1280-mount-3d4e488.jpg, 1280-8x8-3d4e488.jpg, 1280-focus-cell-3d4e488.jpg, 1280-focus-button-3d4e488.jpg and 375-drift-notes.md; README rows 5.1/5.2 cite them. mapped by the compiler from confirmingRun.dispositions «1280-mount, 1280-8x8, 1280-focus-cell, 1280-focus-button taken at scale 1 … 375-drift-notes.md written»."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_fba99710-0a3",
+      "title": "5.4 asks for ArrowRight, Home and End on a cell, but the README records them only on a given cell",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "9e8a9c7f923321bf046b920908e3f40306667a7f",
+      "evidence": "docs/qa/reconcile-ux-accessibility/README.md row 5.4 adds «Re-run on 3d4e488: on the empty player cell (1,1) … ArrowRight, ArrowDown, Home and End changed no cell, focus stayed …». mapped by the compiler from confirmingRun.dispositions «arrows, Home and End re-checked on an empty player cell»."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_fba99710-0a3",
+      "title": "ss-19 row in the tasks.md 1.4 table has an extra trailing cell, which breaks the table",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "9e8a9c7f923321bf046b920908e3f40306667a7f",
+      "evidence": "tasks.md ss-19 row (archived path): the stray «|» before the appended sentence moved to the row end, so the row has the table's column count (git diff --word-diff 3d4e488 vs 9e8a9c7). mapped by the compiler from confirmingRun.dispositions «the ss-19 row fixed»."
+    },
+    {
+      "id": "R2-F4",
+      "run": "wf_fba99710-0a3",
+      "title": "Tasks 5.1, 5.2 and 5.4 are ticked, but five of the screenshots they name do not exist, and 5.6 says to tick them only with their files in place",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "9e8a9c7f923321bf046b920908e3f40306667a7f",
+      "evidence": "Duplicate of R2-F1 (four 1280 shots + drift notes added in 9e8a9c7; task 5.6 ticked with «done: docs/current-state.md»). mapped by the compiler from confirmingRun.dispositions."
+    },
+    {
+      "id": "R2-F5",
+      "run": "wf_fba99710-0a3",
+      "title": "5.4: the browser check pressed arrow, Home and End only on a given cell, never on a player cell",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "9e8a9c7f923321bf046b920908e3f40306667a7f",
+      "evidence": "Duplicate of R2-F2: README row 5.4 re-run on the empty player cell (1,1). mapped by the compiler from confirmingRun.dispositions."
+    },
+    {
+      "id": "R2-F6",
+      "run": "wf_fba99710-0a3",
+      "title": "docs/current-state.md still says the change is 'to be written', though it is implemented and has been through one fix round",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "9e8a9c7f923321bf046b920908e3f40306667a7f",
+      "evidence": "docs/current-state.md: «Active change … (to be written …)» replaced by the reconciled-branch state (9e8a9c7 diff). mapped by the compiler from confirmingRun.dispositions «docs/current-state.md updated at archive»."
+    },
+    {
+      "id": "R2-F7",
+      "run": "wf_fba99710-0a3",
+      "title": "The 1280 px still is too small and off-centre to show what the README says it shows",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "9e8a9c7f923321bf046b920908e3f40306667a7f",
+      "evidence": "README row 5.4a now says «1280-enter-space-cell-85485ac.jpg is too small to read (taken at a 0.6 scale) and is kept only as a record; the ring is legible in 1280-focus-cell-3d4e488.jpg», a new scale-1 shot added in 9e8a9c7. mapped by the compiler from confirmingRun.dispositions «the small 1280 still kept as a record only»."
+    }
+  ],
+  "excluded": "wf_0cb9028b-e5e: 3 contested (aria-invalid on native button; coverage summary; FR-60 real-key path on browser step 5.4a), 1 rejected (security). wf_fba99710-0a3: 0 contested, 0 rejected.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-08-reconcile-ux-accessibility/review-findings.json",
+    "docs/autonomy-log.md rows 78, 80",
+    "docs/qa/reconcile-ux-accessibility/README.md",
+    "docs/qa/reconcile-ux-accessibility/375-drift-notes.md",
+    "docs/frontend-conventions.md",
+    "git show 3d4e488f10561bc398a9f981b4295e1166a66e2f",
+    "git show 9e8a9c7f923321bf046b920908e3f40306667a7f",
+    "git diff 3d4e488:openspec/changes/reconcile-ux-accessibility/tasks.md 9e8a9c7:openspec/changes/archive/2026-10-08-reconcile-ux-accessibility/tasks.md"
+  ],
+  "compilerNotes": "Severity: only sem-11 (R1-F6) is tagged major (dispositions.fixed[4], row 80 «1 major»); no other finding carries a severity in any source, so they are \"unknown\" (row 80 implies the other ten of run 1 are not major). The confirming run is described only as «7 evidence/doc findings, 0 code defects». No finding touches src/: 3d4e488 changed tests and docs only (src unchanged since 85485ac per README re-run note); confirmingRun.codeDefects = 0. No productCodeDefect. R1-F7 is fixed in 3d4e488 only partially; the remaining missing evidence was the subject of the confirming run and closed in 9e8a9c7. If a single closing commit is wanted, use 9e8a9c7. R2-F1/R2-F4 say «five screenshots» are missing; 9e8a9c7 adds four 1280 jpgs plus 375-drift-notes.md. Which fifth file the reviewer counted is not recorded (possibly the 5.3 accessibility-pane screenshot, replaced by the user-accepted DOM-read deviation). Marked fixed because the README no longer names a missing file; the compiler did not re-verify every path the README names. Mapping from finding titles to the orchestrator's disposition phrases is the compiler's; the review file's dispositions are paraphrases, not titles. The review file for run 1 was persisted by the orchestrator by hand (the run wrote no review-findings.json)."
+}

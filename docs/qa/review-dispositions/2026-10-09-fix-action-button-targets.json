@@ -1,0 +1,133 @@
+{
+  "slice": "2026-10-09-fix-action-button-targets",
+  "reviewFile": "openspec/changes/archive/2026-10-09-fix-action-button-targets/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_435b26a3-62a (d6d3891..057a57e, review run 1, first run)",
+    "wf_2da18d60-f88 (d6d3891..0a8fbd2, confirming run)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_435b26a3-62a",
+      "title": "The user's desktop request (wider and taller, no vertical scroll) is not handled by this change (major, low confidence)",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "16d42ad7a7b30ce699dc19678bb0926b34b133b0",
+      "evidence": "Out of scope for this slice by the session's disposition (review-findings.json dispositions[\"run 1, desktop request not handled (major)\"]: \"goes to its own change ... the frozen design already caps the desktop panel at calc(100dvh - 7rem) ... which G2 ports\"; autonomy-log row 114). Closed later by slice update-rules-panel, commit 16d42ad: src/ui/style.css .rules from 48rem goes from width 28rem / margin auto to width calc(var(--column) + 1rem), max-height calc(100dvh - 7rem), min-height min(calc(100dvh - 7rem), ...), and width 40rem from 64rem (today src/ui/style.css:706 and :713). docs/qa/update-rules-panel/session-log.md:29 records that the panel cannot scroll at 768x1024 and 1366x650. Mapping found by the compiler (disposition text + row 114 + update-rules-panel design.md), not named by the session."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_435b26a3-62a",
+      "title": "Rules with a pseudo-class are skipped, so a :hover/:active override that lowers min-height would go unnoticed (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0a8fbd29b91a540d83c8d7101b3d6e8ab036881d",
+      "evidence": "tests/play-page-action-buttons-stylesheet.test.ts gains part (d): stripPseudos() and a check that every min-height rule matching an action button once pseudo-classes are stripped, in any at-rule, declares >= 44 px (probe `.buttons button:active { min-height: 2rem }` turns 3 tests red). Mapping: review-findings.json dispositions[\"run 1, pseudo-class blind spot (minor)\"] \"fixed in 0a8fbd2\"; autonomy-log row 113."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_435b26a3-62a",
+      "title": "Comment says 'the three that must fail' but the loop lists five values (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0a8fbd29b91a540d83c8d7101b3d6e8ab036881d",
+      "evidence": "tests/play-page-action-buttons-stylesheet.test.ts: comment \"// the three that must fail the floor\" becomes \"// the five values that must fail the floor\". Mapping: dispositions[\"run 1, comment count and assertion message (minor)\"] \"fixed in 0a8fbd2\"."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_435b26a3-62a",
+      "title": "Review item 4.2: PASS. The style.css diff adds only the action-button rule, and the other controls keep min-height 2.75rem (informational)",
+      "severity": "nit",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Informational PASS verdict, not a defect: the reviewer confirms review item 4.2 (the style.css diff adds only the action-button rule; the other controls keep min-height 2.75rem). Nothing to fix; the session ticked task 4.2 on it (tasks.md, commit 472022c). The session's dispositions do not list it because it needs no action."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_435b26a3-62a",
+      "title": "Minor issues in the evidence file and the test messages (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0a8fbd29b91a540d83c8d7101b3d6e8ab036881d",
+      "evidence": "tests/play-page-action-buttons-stylesheet.test.ts: the assertion message \"at least one top-level rule declares min-height ...\" corrected to \"at least one rule declares min-height ...\"; docs/qa/fix-action-button-targets/mutation-run.txt: the stray count annotated (1 line changed). Mapping: dispositions[\"run 1, comment count and assertion message (minor)\"] \"fixed in 0a8fbd2\" and [\"run 1, stray count in mutation-run.txt (minor)\"] \"annotated in 0a8fbd2\"."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_2da18d60-f88",
+      "title": "stripPseudos narrows, not widens, inside :not()/:has(); the header's 'only ever widens' claim is false and part (d) misses negated-state rules (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "evidence": "Comments only: the test header of tests/play-page-action-buttons-stylesheet.test.ts and the stripPseudos JSDoc no longer claim stripping \"only widens\"; they state it can narrow inside :not(). NOT closed: the double-negation bypass `.buttons :not(:not(:hover)) { min-height: 2rem }` is recorded as a KNOWN BLIND SPOT of part (d) (test header; docs/qa/fix-action-button-targets/mutation-run.txt mutation (g) stays green, 13 of 13), not fixed; the simple `:not(...:hover)` form is caught by part (a) (mutation (f)). Mapping: dispositions[\"run 2, false 'only widens' claim (two findings, minor)\"]: \"fixed after the run, comments only ... recorded as a KNOWN BLIND SPOT, not fixed (contrived; the stylesheet has no such rule)\". Not re-reviewed.",
+      "partialFixCommit": "472022c59c2edd629f8e26346f24d895aefc8994",
+      "waiver": "Partly fixed: 472022c corrected the false «only widens» claim in the test header and the stripPseudos JSDoc. The bypass the title names (a double-negated state rule such as :not(:not(:hover)) slips past part (d)) stays open, recorded as a known blind spot of the test (docs/qa/fix-action-button-targets/mutation-run.txt, mutation (g)). Test tooling, not product code."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_2da18d60-f88",
+      "title": "The pseudo-class probe of the fix round has no evidence file; mutation-run.txt still shows the old 8-test file (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "472022c59c2edd629f8e26346f24d895aefc8994",
+      "evidence": "docs/qa/fix-action-button-targets/mutation-run.txt gains a \"Fix-round re-run against the 13-test file\" section, mutations (a) to (g) with counts, including the part (d) probes (d) and (d'). Mapping: dispositions[\"run 2, fix-round probes without evidence (two findings, minor)\"]. Not re-reviewed."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_2da18d60-f88",
+      "title": "Header says pseudo stripping 'only WIDENS' matching; false inside :not(), so the part (d) blind-spot check can be bypassed (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "evidence": "Same change as R2-F1 (duplicate finding from another reviewer): header and JSDoc corrected to say stripping can narrow inside :not(). The bypass the title names (part (d) can be bypassed by a negated-state rule) stays a recorded KNOWN BLIND SPOT, not closed (mutation-run.txt (g)). Mapping: dispositions[\"run 2, false 'only widens' claim (two findings, minor)\"]. Not re-reviewed.",
+      "partialFixCommit": "472022c59c2edd629f8e26346f24d895aefc8994",
+      "waiver": "Partly fixed: 472022c corrected the false «only widens» claim in the test header and the stripPseudos JSDoc. The bypass the title names (a double-negated state rule such as :not(:not(:hover)) slips past part (d)) stays open, recorded as a known blind spot of the test (docs/qa/fix-action-button-targets/mutation-run.txt, mutation (g)). Test tooling, not product code."
+    },
+    {
+      "id": "R2-F4",
+      "run": "wf_2da18d60-f88",
+      "title": "The fix-round tests (part d and the unparsable guard) have no red evidence; mutation-run.txt still reflects the 8-test file (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "472022c59c2edd629f8e26346f24d895aefc8994",
+      "evidence": "Same change as R2-F2 (duplicate finding): mutation-run.txt fix-round section against the 13-test file, (d)/(d') red on part (d), (e) red on the unparsable-selector guard. Mapping: dispositions[\"run 2, fix-round probes without evidence (two findings, minor)\"]. Not re-reviewed."
+    },
+    {
+      "id": "R2-F5",
+      "run": "wf_2da18d60-f88",
+      "title": "README of the browser check gives two values for the 375x812 content bottom (629 and 630) (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "472022c59c2edd629f8e26346f24d895aefc8994",
+      "evidence": "docs/qa/fix-action-button-targets/README.md: the built-in browser pane reading is now described as \"that instrument read the content bottom as 629 against 630 here (sub-pixel rounding of the same layout)\". Mapping: dispositions[\"run 2, README 629 vs 630 (minor)\"]."
+    }
+  ],
+  "excluded": "wf_435b26a3-62a: 1 contested, 5 rejected; wf_2da18d60-f88: 1 contested, 1 rejected",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-09-fix-action-button-targets/review-findings.json",
+    "docs/autonomy-log.md rows 113, 114, 115",
+    "docs/qa/fix-action-button-targets/mutation-run.txt",
+    "docs/qa/fix-action-button-targets/README.md",
+    "tests/play-page-action-buttons-stylesheet.test.ts",
+    "openspec/changes/archive/2026-10-11-update-rules-panel/design.md, specs/play-page/spec.md",
+    "docs/qa/update-rules-panel/session-log.md",
+    "git log --grep=\"Slice: fix-action-button-targets\" (ef513a1, 057a57e, 0a8fbd2, 472022c, 0eca385)",
+    "git show 0a8fbd2, 472022c, 16d42ad"
+  ],
+  "compilerNotes": "All fix commits verified (cat-file, is-ancestor of HEAD 2762e31, diff read). (1) R2-F1 and R2-F3 are marked fixed because the false claim they name was corrected (comments only), but the bypass they also describe (double negation inside :not() escapes part (d)) is NOT closed: it is a documented KNOWN BLIND SPOT, judged contrived by the session; if the signer reads \"fixed\" as \"bypass closed\", reclassify these two as waived. (2) R1-F1 (major, low confidence, the user's desktop request) was declared out of scope by the session; the compiler maps it to the later update-rules-panel commit 16d42ad, which ports the design's wider/taller desktop panel; \"no inner scroll at every desktop size\" was not re-measured by the compiler (only the session-log line for 768x1024 and 1366x650). (3) R1-F4 is an informational PASS verdict recorded as confirmed; severity set to \"nit\" (the file says \"informational\"). (4) The run-2 after-run fixes were not re-reviewed (verdict in the dispositions). No product-code defect in either run (dispositions.verdict). | Main session: R2-F1 and R2-F3 re-classified from fixed to waived, because their titles name the bypass, which is not closed."
+}

@@ -1,0 +1,49 @@
+{
+  "slice": "2026-10-06-add-hinted-cell",
+  "reviewFile": "openspec/changes/archive/2026-10-06-add-hinted-cell/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_88d3903c-ecf (2446162..HEAD, confirming run after review round 1 wf_8df9dfcf-f5d; the file has no runId field, the run is named in commit 51e8aae, which rewrote the file to this run's content, and in docs/autonomy-log.md row 73 (was row 64 before the 2026-10-08 renumbering))"
+  ],
+  "findings": [
+    {
+      "id": "R2-F1",
+      "run": "wf_88d3903c-ecf",
+      "title": "Task 3.7 is ticked, but the browser-check evidence leaves out steps (d), (f) and (h), and step (d) asks for an action the spec now says cannot happen",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "51e8aae76a7a89be4ebe5404374267d1d52fe849",
+      "evidence": "51e8aae adds 'Run 2' to docs/qa/add-hinted-cell/README.md observing step (d) (no-target hint keeps the marker, still 375-no-rule-hint-keeps-marker-ad2712d.jpg) and step (f) (rules panel keeps the marker), and rewrites tasks.md 3.7(d) so it follows the spec ('a violation made by a click removes the cue, so the broken-board case is the jsdom HINT_BREAKS test only'). Step (h) (screenshot paths recorded in docs/current-state.md) was completed in the archive commit 857c7c7377884d3e18b3cc1c44eadda16e7760f0, whose current-state 'Phase B add-hinted-cell' line lists the three stills and 'observed, not verified (held NFR-10, NFR-13)'; the README's run 2 says '(h) ... is done with task 3.6 at archive'. Mapping from the 51e8aae commit message ('Confirming run wf_88d3903c-ecf (2 confirmed minor, evidence only, no code defect): 3.7 had been ticked with steps (d), (f), (g) unobserved'), docs/autonomy-log.md row 73 and the current-state line of 857c7c7 ('fixed by browser run 2')."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_88d3903c-ecf",
+      "title": "Task 3.7 is ticked, but the browser check skipped steps (d), (f), the size-change removal in (g), and step (h)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "51e8aae76a7a89be4ebe5404374267d1d52fe849",
+      "evidence": "Same fix as R2-F1: 51e8aae's docs/qa/add-hinted-cell/README.md Run 2 table covers (d), (f) and (g) ('«Нова головоломка», «Підказка», then size 4: marker on (2,6), then no marker on the 16-cell board'); step (h) closed in archive commit 857c7c7377884d3e18b3cc1c44eadda16e7760f0 (still paths in docs/current-state.md). Mapping as for R2-F1; the two titles are the same defect reported by two lenses (dimensions: correctness 1 confirmed, spec-compliance 1 confirmed)."
+    }
+  ],
+  "excluded": "wf_88d3903c-ecf: 0 contested, 2 rejected (spec-compliance). Round 1 wf_8df9dfcf-f5d (4 confirmed minor, 1 contested, 5 rejected; fixed in 47f9442) was recorded in an earlier version of this file (commit 47f9442) and overwritten by 51e8aae; it is not in the archived file and is not dispositioned here.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-06-add-hinted-cell/review-findings.json",
+    "openspec/changes/archive/2026-10-06-add-hinted-cell/tasks.md (3.7) and RENUMBERED.md",
+    "docs/qa/add-hinted-cell/README.md (runs 1 and 2)",
+    "docs/autonomy-log.md row 73",
+    "git show 47f94428295e41342f11cbf10861459ee00f6d2d (round 1 fix, earlier file version)",
+    "git show 51e8aae76a7a89be4ebe5404374267d1d52fe849",
+    "git show 857c7c7377884d3e18b3cc1c44eadda16e7760f0 (docs/current-state.md diff)"
+  ],
+  "compilerNotes": "Each finding is closed by two commits: 51e8aae (steps d, f, g observed; 3.7(d) reworded) and 857c7c7 (step h, paths in current-state). fixCommit names 51e8aae as the main fix; 857c7c7 is cited in evidence. Both verified: cat-file -e ok and ancestors of HEAD. The pre-rebase copies 4741e3e, 070c2eb, ad2712d are NOT ancestors of HEAD. Step (d)'s broken-board half was not run in the browser; the session records it as reachable only through the hint's own fill and covered by the jsdom HINT_BREAKS test (README run 2), and the task text was changed to say so. No re-run of the review after the fix. The autonomy-log row number cited in the commits (64) is the pre-renumbering id of row 73."
+}

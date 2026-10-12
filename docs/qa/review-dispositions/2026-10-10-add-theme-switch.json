@@ -1,0 +1,263 @@
+{
+  "slice": "2026-10-10-add-theme-switch",
+  "reviewFile": "openspec/changes/archive/2026-10-10-add-theme-switch/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_dfa2a0c3-9a9 (d2be569..fb511ba, first run)",
+    "wf_6e154572-16a (d2be569..f74022c, confirming run after fix round 1: red bfd306e, fix f74022c)",
+    "wf_aa7a4a9e-9da (d2be569..65a0f11, second confirming run after fix round 2: red 36be736, fix 1446856, docs 65a0f11)",
+    "wf_19ff9129-b85 (d2be569..30016a3, third confirming run after fix round 3: red b3f05c6, fix b3fdab9, docs 30016a3)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_dfa2a0c3-9a9",
+      "title": "THEME_CHOICES is never used in src/, and the list of three theme values is written out three times (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "evidence": "f74022c: src/ui/preferences.ts isThemeChoice now returns `(THEME_CHOICES as readonly unknown[]).includes(value)`; src/ui/strings.ts THEME_OPTIONS gains `satisfies readonly { value: ThemeChoice; name: string }[]`. Mapping: the f74022c message ('isThemeChoice uses THEME_CHOICES and THEME_OPTIONS is checked against ThemeChoice by satisfies (finding 1)') and autonomy-log row 129. Partial: the 'written out three times' half was raised again in run 2 as a contested finding and was rejected in another form; see compilerNotes.",
+      "partialFixCommit": "f74022cab610fc931b6af11b1909857bc7867cc8",
+      "waiver": "Partly fixed: f74022c makes isThemeChoice use THEME_CHOICES and checks THEME_OPTIONS against ThemeChoice with satisfies, so a wrong value no longer compiles. The three values are still written out in more than one place; a later run contested that half and nothing more was changed."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_dfa2a0c3-9a9",
+      "title": "Dark-theme backdrop rules for the rules panel, setup sheet, settings panel and confirm dialog have no requirement behind them (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "bfd306e8ab9a9ce9972d792759b813bef82ee0df",
+      "evidence": "bfd306e adds the delta scenario «In dark every backdrop dims the page» under «Effective theme on the document» (openspec/changes/add-theme-switch/specs/play-page/spec.md) and its test in tests/play-page-theme-stylesheet.test.ts. Mapping: the f74022c message ('the dark backdrops are covered by a delta scenario and a test (finding 2, in 04443ed)'), with 04443ed -> bfd306e by the re-sign map of autonomy-log row 130."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_dfa2a0c3-9a9",
+      "title": "Two mounts share one <html data-theme>, and a stale mount's system listener can override the other mount's manual choice (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "f74022cab610fc931b6af11b1909857bc7867cc8",
+      "evidence": "f74022c introduces a module-level `documentTheme` in src/ui/play-page.ts that every mount reads and writes, so a mount still on auto no longer undoes another mount's press; red test in bfd306e (tests/play-page-theme.test.ts). That fix regressed (run 2, R2-F2), finally closed in 1446856 and b3fdab9. Mapping: f74022c message ('finding 3') and autonomy-log row 129."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_dfa2a0c3-9a9",
+      "title": "Section 1 tasks (1.1 to 1.4) are unticked while sections 2 to 4 are ticked, and task 1.2's artifact exists (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "f74022cab610fc931b6af11b1909857bc7867cc8",
+      "evidence": "f74022c ticks tasks 1.1 to 1.4 in openspec/changes/add-theme-switch/tasks.md and adds the re-check evidence as section 11 of docs/qa/add-theme-switch/changed-tests.md. Mapping: f74022c message ('finding 4')."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_6e154572-16a",
+      "title": "Section 1 evidence is under a duplicate '## 11.' heading in changed-tests.md (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a0c3adb9c12d3fa8bdc1a949ffbdb1297ad894fd",
+      "evidence": "a0c3adb renumbers the heading in docs/qa/add-theme-switch/changed-tests.md: '## 11. Section 1 closed ...' -> '## 12. Section 1 closed ...'. Mapping: autonomy-log row 129 ('Done after the stop, docs only: the duplicate section heading renumbered'); a09777a -> a0c3adb by the re-sign map of row 130."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_6e154572-16a",
+      "title": "Fix for finding 3 shares the theme choice across mounts but not each mount's aria-checked: the other mount shows a stale radio and its press does nothing (regression) (major)",
+      "severity": "major",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "1446856bd489f17809fd6bfe84646e77d4afe178",
+      "evidence": "1446856 adds the module-level `themeMounts` set in src/ui/play-page.ts; a press or system change calls `mount.sync()` on every mount so each shows the one choice and a press on any mount acts (FR-103). Red tests «Two mounts show one choice» etc. in 36be736 (docs/qa/add-theme-switch/fix-round-2-red.txt). Mapping: autonomy-log rows 129 (the defect) and 130 (fix round 2: red 36be736, fix 1446856), the file's run-3 'kind' field."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_6e154572-16a",
+      "title": "Battery tasks 4.1 to 4.6 are ticked on green-run evidence taken before the fix round changed src/ (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "65a0f1159dd7e827795ab610575242ba04f942c0",
+      "evidence": "65a0f11 adds docs/qa/add-theme-switch-fix-round-2-green-run.txt and points tasks 4.1 to 4.6 at it in openspec/changes/add-theme-switch/tasks.md ('Evidence of 4.1 to 4.6 after the second review fix round (1446856) ...'). An earlier battery at f74022c was saved in a0c3adb (docs/qa/add-theme-switch-fix-round-green-run.txt). Run 3 rejected a follow-up saying 'tasks 4.1 to 4.6 are now backed by fresh evidence'. Mapping: 65a0f11 message and autonomy-log rows 129-130."
+    },
+    {
+      "id": "R3-F1",
+      "run": "wf_aa7a4a9e-9da",
+      "title": "Remounting on the same root (or after every mount has gone) reads storage again and drops a session-only theme choice (FR-115) (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "b3fdab9bf1507f46aea89549b07b6bd2a89efb17",
+      "evidence": "b3fdab9: src/ui/preferences.ts keeps a failed write in `sessionValues` and readTheme() returns it first; src/ui/play-page.ts reads `documentTheme = readTheme()` on every mount (the `if (themeMounts.size === 0)` guard removed). Red test «A remount on the same root keeps a session-only choice» in b3f05c6 (tests/play-page-preferences.test.ts; docs/qa/add-theme-switch/fix-round-3-red.txt). Mapping: autonomy-log rows 130 ('One is a code defect (a remount on the same root drops a session-only choice, FR-115, minor)') and 131 (fix b3fdab9)."
+    },
+    {
+      "id": "R3-F2",
+      "run": "wf_aa7a4a9e-9da",
+      "title": "No test covers pruning a disconnected mount or removing its system listener (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "b3f05c668d9c16fd3a59eec65735d5ec1f97c98f",
+      "evidence": "b3f05c6 adds the test «A removed mount is dropped at the next mount» in tests/play-page-theme.test.ts (stub.listeners length 1 after the root is removed and a new mount runs; the removed mount's options no longer update). Mapping: b3f05c6 message ('a guard that a removed mount is dropped at the next mount (two mutants kill it)') and autonomy-log row 131."
+    },
+    {
+      "id": "R3-F3",
+      "run": "wf_aa7a4a9e-9da",
+      "title": "'The stored choice survives a remount' test no longer reaches storage: the first mount is still connected, so the shared in-memory documentTheme answers (major)",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "b3f05c668d9c16fd3a59eec65735d5ec1f97c98f",
+      "evidence": "b3f05c6 changes tests/play-page-preferences.test.ts: `first.remove()` before the remount, then `localStorage.setItem(THEME_KEY, 'light')` and a third mount must show 'light' (the mount reads storage); the delta scenario is amended to match. Mapping: b3f05c6 message ('the remount test now removes the first root and must read a value stored directly') and autonomy-log row 130 ('a major test-integrity finding')."
+    },
+    {
+      "id": "R3-F4",
+      "run": "wf_aa7a4a9e-9da",
+      "title": "Pruning a mount whose theme control left the document, and removing its system listener, has no requirement and no test (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "b3f05c668d9c16fd3a59eec65735d5ec1f97c98f",
+      "evidence": "b3f05c6 adds the delta scenario «A removed mount is dropped at the next mount» (spec.md, '... removed at the new mount, not before: the drop is lazy') and the matching jsdom test. Mapping: b3f05c6 message ('Delta scenarios added or amended')."
+    },
+    {
+      "id": "R3-F5",
+      "run": "wf_aa7a4a9e-9da",
+      "title": "A remount on the same root after a failing setItem still drops the session-only choice (FR-115 'for the rest of the session') (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "b3fdab9bf1507f46aea89549b07b6bd2a89efb17",
+      "evidence": "Same mechanism as R3-F1: b3fdab9 keeps the session-only value in src/ui/preferences.ts (`sessionValues.set(THEME_KEY, choice)` when setItem fails) and every mount reads readTheme(); the delta scenario «A remount on the same root keeps a session-only choice» and its test are in b3f05c6. Mapping: autonomy-log rows 130-131."
+    },
+    {
+      "id": "R3-F6",
+      "run": "wf_aa7a4a9e-9da",
+      "title": "Header-fit behaviour (no overflow, no sideways scroll at 320 to 800 px) and the 30rem/22.5rem header CSS have no requirement or scenario in the delta (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "b3f05c668d9c16fd3a59eec65735d5ec1f97c98f",
+      "evidence": "b3f05c6 adds the delta scenario «The header fits its column on phones» (sampled widths, the 1 px sweep as the stricter instrument, the 30rem and 22.5rem values); its CSS wording was corrected in 8199682 (run 4, R4-F3). The finding's rename suggestion was not applied: the user chose 'Keep the name' for e2e/nfr-10-header-fit.spec.ts (autonomy-log row 130). Mapping: b3f05c6 message ('including the header fit')."
+    },
+    {
+      "id": "R3-F7",
+      "run": "wf_aa7a4a9e-9da",
+      "title": "docs/qa/add-theme-switch/README.md still describes the header overflow and the run-2 defect as unfixed (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7beb84945097c69a5abd2889a3dc0a8b1da7859c",
+      "evidence": "7beb849 rewrites docs/qa/add-theme-switch/README.md: 'Status at f74022c: no test covered this' + 'Fixed in 1446856 ...' for the header; the heading 'Open defect from the review gate (not fixed)' becomes 'Defect from the review gate run wf_6e154572-16a (fixed in 1446856; a follow-on defect is open)'. The README was refreshed again after round 3 in 8199682 (R4-F1). Mapping: 7beb849 message ('the QA README now separate the before-fix stills from the current ones')."
+    },
+    {
+      "id": "R3-F8",
+      "run": "wf_aa7a4a9e-9da",
+      "title": "Phone-width stills that are still listed show the old overflowing header, and the QA README still calls the header fix and the theme defect unapplied (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "7beb84945097c69a5abd2889a3dc0a8b1da7859c",
+      "evidence": "7beb849 adds 320-header-light-fix-round-2.png, 320-header-dark-fix-round-2.png, 320-panel-dark-fix-round-2.png and browser-check-run-fix-round-2.txt (62 PASS), and the README marks 320-header-light/dark.png as '**before the fix** (f74022c)' and lists the fix-round-2 stills as current. Mapping: 7beb849 message and diff."
+    },
+    {
+      "id": "R4-F1",
+      "run": "wf_19ff9129-b85",
+      "title": "QA README still lists the round-2 defect and the missing header requirement as open after fix round 3 (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "8199682c841a8fbb710dcdbe8651e1e25dfb7ea5",
+      "evidence": "8199682 changes the README status to 'the review gate passed with no code defect at the fourth run ...' and adds the 'Third fix round (b3fdab9, red b3f05c6)' note. Mapping: run-4 dispositions[0] ('fixed after the run (README status, round-3 note, evidence paths)') and the 8199682 message."
+    },
+    {
+      "id": "R4-F2",
+      "run": "wf_19ff9129-b85",
+      "title": "current-state.md was not updated for fix rounds 2 and 3 and still shows the header overflow and the defect as undelivered (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "9f82cd7e49de4bbea79d882030d041fa3ee5f462",
+      "evidence": "9f82cd7 rewrites the add-theme-switch block of docs/current-state.md (ARCHIVED; the four runs; fix rounds 2 and 3; battery at b3fdab9; header e2e and sweep) and drops the stale 'Observed, not verified: the header overflows' and 'Scope NOT delivered: the fix of the confirming-run defect; the header fix' lines. Mapping: run-4 dispositions[1] ('fixed at the hand-off (docs/current-state.md add-theme-switch block)') and the 8199682 message ('current-state.md follows at the hand-off')."
+    },
+    {
+      "id": "R4-F3",
+      "run": "wf_19ff9129-b85",
+      "title": "The new header-fit scenario gives the wrong small-phone CSS: at 320 px the title is 1.5rem and the «Правила» padding is reduced (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "8199682c841a8fbb710dcdbe8651e1e25dfb7ea5",
+      "evidence": "8199682 edits the AND line of «The header fits its column on phones» in openspec/changes/add-theme-switch/specs/play-page/spec.md. Mapping: run-4 dispositions[2] ('scenario names the 1.5rem title, the padding and which gap overflowed') and the 8199682 message."
+    },
+    {
+      "id": "R4-F4",
+      "run": "wf_19ff9129-b85",
+      "title": "«Effective theme on the document» says only a press, a system change and the head step change data-theme, but a mount changes it too, and the amended remount scenario depends on that (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "8199682c841a8fbb710dcdbe8651e1e25dfb7ea5",
+      "evidence": "8199682 edits the requirement text of «Effective theme on the document» in the delta spec. Mapping: run-4 dispositions[3] ('a mount added to the list of what changes data-theme') and the 8199682 message."
+    },
+    {
+      "id": "R4-F5",
+      "run": "wf_19ff9129-b85",
+      "title": "design.md was not updated for the round-2/3 theme architecture: one choice shared by the document, lazy drop of removed mounts, session-only values in the preferences module (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "8199682c841a8fbb710dcdbe8651e1e25dfb7ea5",
+      "evidence": "8199682 adds design.md decisions 6a ('One theme choice per document') and 6b ('A failed write is kept in memory for the page session'), amends decision 6 and the error-handling line. Mapping: run-4 dispositions[4]."
+    },
+    {
+      "id": "R4-F6",
+      "run": "wf_19ff9129-b85",
+      "title": "forgetSessionPreferences() is a production export used only by the test lifecycle, and no requirement or design note records it (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "8199682c841a8fbb710dcdbe8651e1e25dfb7ea5",
+      "evidence": "8199682: design.md decision 6b records the export and why (jsdom cannot reload), and «Failing storage does not stop the page» now says 'until the page is reloaded'. Mapping: run-4 dispositions[5]. The export itself stays (the user chose 'Exported reset', autonomy-log row 130)."
+    },
+    {
+      "id": "R4-F7",
+      "run": "wf_19ff9129-b85",
+      "title": "«A removed mount is dropped at the next mount»: the test never checks the scenario's 'not before: the drop is lazy' clause (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "8199682c841a8fbb710dcdbe8651e1e25dfb7ea5",
+      "evidence": "8199682 adds to tests/play-page-theme.test.ts `expect(stub.listeners, 'the drop is lazy: the listener stays until the next mount').toHaveLength(1);` after remove(). Mapping: run-4 dispositions[6] ('the lazy assertion added after remove(); green, a strengthening')."
+    },
+    {
+      "id": "R4-F8",
+      "run": "wf_19ff9129-b85",
+      "title": "The selected theme option and the keyboard focus ring are the same colour, so a focused option that is not selected looks selected too (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "4a13277029445b02d874696a627d73b61673ee84",
+      "evidence": "Fixed by a LATER slice, update-settings-panel (G2 wave 2): 4a13277 changes `.theme-control button[aria-checked='true']` in src/ui/style.css from `border-color: var(--color-focus); box-shadow: inset 0 0 0 1px var(--color-focus)` to `border-color: var(--color-primary); background-color: var(--color-primary-soft)`, so the chosen frame (--color-primary, #b4460d light) no longer shares the focus ring's colour (--color-focus, #1e2126 light). At archive time the session left it open: run-4 dispositions[7] ('not fixed: a visual design question for the user (README «Open visual note»)'). Decision trail: autonomy-log row 135 (the user: 'doesn't matter for now, maybe later adjust the border colour'), row 170 (5) (placed in the settings-panel block), row 193 / docs/requirements.md note (OQ-1 «Accept adjacency»: the design's paint, the ring over the orange frame recorded as an accepted adjacency); docs/handoff/settings-panel-amendment-draft-2026-10-12.md OQ-1."
+    }
+  ],
+  "excluded": "Run wf_dfa2a0c3-9a9: 0 contested, 5 rejected. Run wf_6e154572-16a: 2 contested (stale aria-checked across mounts, the duplicate of R2-F2, fixed in 1446856; theme value list still duplicated), 1 rejected. Run wf_aa7a4a9e-9da: 1 contested (pruning only at mount time), 2 rejected. Run wf_19ff9129-b85: 0 contested, 5 rejected.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-10-add-theme-switch/review-findings.json",
+    "docs/autonomy-log.md rows 128, 129, 130, 131, 135, 170, 193",
+    "docs/requirements.md (2026-10-12 settings-panel amendment note, OQ-1)",
+    "docs/handoff/settings-panel-amendment-draft-2026-10-12.md (OQ-1)",
+    "git show bfd306e8ab9a9ce9972d792759b813bef82ee0df, f74022cab610fc931b6af11b1909857bc7867cc8, a0c3adb9c12d3fa8bdc1a949ffbdb1297ad894fd, 36be7360e68dbb97a291ae8bca4480a9b8e006d0, 1446856bd489f17809fd6bfe84646e77d4afe178, 65a0f1159dd7e827795ab610575242ba04f942c0, 7beb84945097c69a5abd2889a3dc0a8b1da7859c, b3f05c668d9c16fd3a59eec65735d5ec1f97c98f, b3fdab9bf1507f46aea89549b07b6bd2a89efb17, 30016a32d15cfa0b3772b2722cc5954b5da63a3c, 8199682c841a8fbb710dcdbe8651e1e25dfb7ea5, 3532b42907cd1d9fa5839832c12198efb11b53e3, 9f82cd7e49de4bbea79d882030d041fa3ee5f462",
+    "git log -L on .theme-control button[aria-checked='true'] in src/ui/style.css (4a13277029445b02d874696a627d73b61673ee84)",
+    "src/ui/style.css at HEAD (tokens --color-primary, --color-focus)"
+  ],
+  "compilerNotes": "Titles are the confirmedTitles strings verbatim, including the ' (minor)'/' (major)' suffix (run 3's confirmedDetail and run 4's dispositions use the suffix-less form). R1-F1 is partly fixed: THEME_CHOICES is now used (f74022c), but the 'written out three times' half was contested in run 2 and not changed further. R4-F8 was an open user question at archive; it is cited as fixed by the later slice update-settings-panel (4a13277, Slice: update-settings-panel), whose chosen-option frame is --color-primary, not --color-focus; the user's signed decision OQ-1 «Accept adjacency» (row 193) is the policy behind it. If the signer prefers, R4-F8 can instead be waived on row 135/193. R4-F2's fix lives in the hand-off commit 9f82cd7, after the archive commit 3532b42 (same slice trailer). Old ids in the review file (04443ed, 5c6281b, a09777a, 00b66eb) map through autonomy-log row 130 to bfd306e, f74022c, a0c3adb, 7ba51d0; only new ids are cited. All four product-code defects (R1-F3, R2-F2, R3-F1, R3-F5) have verified fix commits; the R1-F3 fix regressed and was superseded by 1446856 and b3fdab9. Run-4 fixes were not re-reviewed (the file's cleanNote). | Main session: R1-F1 re-classified from fixed to waived (only part of its title is closed)."
+}

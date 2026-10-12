@@ -1,0 +1,87 @@
+{
+  "slice": "2026-10-09-add-logo",
+  "reviewFile": "openspec/changes/archive/2026-10-09-add-logo/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_c61dbc19-566 (f05f676..7e483fe, review run 1, before fix round 14a6398)",
+    "wf_ddf2a2af-900 (f05f676..14a6398, confirming run after 14a6398; its one finding fixed in archive commit d4b83d3, not re-reviewed)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_c61dbc19-566",
+      "title": "Size-change case runs 4 then 8 on one mount; the spec requires a fresh mount for each",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "14a6398eb47bfb3b61d5176746acf1aa341f2753",
+      "evidence": "tests/play-page-logo.test.ts: «changes the size to 4 and to 8» on one mount -> it.each([4, 8])('changes the size to %i') each from a fresh mount (seedQueue([1, 2])). mapped by the compiler from rounds[0].dispositions[\"size change one mount (confirmed x2, minor and major)\"]."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_c61dbc19-566",
+      "title": "The href/xlink:href checks in «No image file is used» pass with nothing to check when there is no svg",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "14a6398eb47bfb3b61d5176746acf1aa341f2753",
+      "evidence": "tests/play-page-logo.test.ts «No image file is used» first calls logoOf(root) («the logo is mounted, so the href checks below run on it»). mapped by the compiler from rounds[0].dispositions[\"href checks vacuous without svg (confirmed x2)\"]."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_c61dbc19-566",
+      "title": "Size-change scenario requires a separate fresh run for 4 and for 8, but the test does both in one run",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "14a6398eb47bfb3b61d5176746acf1aa341f2753",
+      "evidence": "Duplicate of R1-F1: it.each([4, 8]) fresh-mount runs in tests/play-page-logo.test.ts. mapped by the compiler from rounds[0].dispositions[\"size change one mount (confirmed x2, minor and major)\"]."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_c61dbc19-566",
+      "title": "'No id' and 'mount-once' are enforced only indirectly; the requirement text has no 'no id' clause",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Accepted, no change (session disposition, rounds[0].dispositions[\"no id / mount-once only indirect (confirmed, minor)\"]): FR-72 and the delta have no \"no id\" sentence; the baseline id rule (play-page spec, DOM contract) and tests/play-page-semantics.test.ts (6 ids in the document) cover it; mount-once is pinned by «The logo survives every board change». A new spec sentence would go beyond FR-72 (user rule)."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_c61dbc19-566",
+      "title": "Some href/xlink:href checks in 'No image file is used' would pass if the svg were absent",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "14a6398eb47bfb3b61d5176746acf1aa341f2753",
+      "evidence": "Duplicate of R1-F2: logoOf(root) asserted first in «No image file is used». mapped by the compiler from rounds[0].dispositions[\"href checks vacuous without svg (confirmed x2)\"]."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_ddf2a2af-900",
+      "title": "Red-run evidence no longer matches the test set after the fix round (size case split in two, «No image file is used» no longer a vacuous guard)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "d4b83d3f93d7d12158e655707e26be03a6a90602",
+      "evidence": "docs/qa/add-logo-red-run.txt gains «## Addendum, 2026-10-09 11:41 (UTC+5:30): red re-run after the review fix round» (tests of 14a6398, src of f05f676: 10 failed, 673 passed, 683, all logo tests listed). Mapped by the compiler from dispositions[\"red-run evidence stale after the fix round (confirmed, minor, docs)\"]; d4b83d3 body."
+    }
+  ],
+  "excluded": "wf_c61dbc19-566: 3 contested («as SVGSVGElement» cast x2, fixed in 14a6398 src/ui/logo.ts; design-only attributes untested, accepted), 2 rejected. wf_ddf2a2af-900: 1 contested (global h1 inline-flex, accepted), 3 rejected.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-09-add-logo/review-findings.json",
+    "docs/autonomy-log.md row 83",
+    "docs/qa/add-logo-red-run.txt",
+    "git show 14a6398eb47bfb3b61d5176746acf1aa341f2753",
+    "git show d4b83d3f93d7d12158e655707e26be03a6a90602"
+  ],
+  "compilerNotes": "No confirmed finding is a product-code defect: 14a6398 says «all on tests or traceability; no product defect». The only src/ change (src/ui/logo.ts svgEl generic, cast removed) answers a CONTESTED finding, not an entry. Severity: 14a6398 body says «1 major, 4 minor»; the disposition key «size change one mount (confirmed x2, minor and major)» does not say which of R1-F1/R1-F3 is the major one, so both are \"unknown\"; the other three of run 1 are minor. Mapping from titles to disposition keys is the compiler's."
+}

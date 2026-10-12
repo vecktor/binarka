@@ -1,0 +1,101 @@
+{
+  "slice": "2026-10-10-fix-size-option-focus-ring",
+  "reviewFile": "openspec/changes/archive/2026-10-10-fix-size-option-focus-ring/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_a93ad2d1-bf4 (d3d3f07..7ac61df, review run 1, the only run, requested by the user (autonomy-log row 140))"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_a93ad2d1-bf4",
+      "title": "Inset ring still spills 2px outside the option; spec says \"inside the option\" but only offset is pinned (minor, security)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "cc9168524653d0d0c7f318037b38aa3e9e7f7469",
+      "evidence": "Resolved by correcting the spec wording to the measured geometry, NOT by moving the ring: change update-segmented-focus-ring-wording (commit cc91685) MODIFIES «Segmented options keep the focus ring inside the card» to \"the ring runs from 1px inside the option's border edge to 2px outside it ... stays 1px clear of the neighbour and of the frame; it is not drawn wholly inside the option\" and adds the scenario «The segmented rules change only the offset» with its test (tests/play-page-stylesheet.test.ts); measurement docs/qa/fix-size-option-focus-ring/ring-geometry.txt. Archived into openspec/specs/play-page/spec.md by b864892d070e7790ccd7d04e18b6e1e165baf0aa. Mapping: dispositions[\"C1+C2+C6 (geometry vs wording ...)\"] \"FIXED by change update-segmented-focus-ring-wording ... A -3px ring was not chosen: it would change the settings-focus shots of the pixel reference review-set-13\"; autonomy-log row 141."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_a93ad2d1-bf4",
+      "title": "Spec says the ring is drawn 'inside the option' and 'does not run over the gap', but outline-offset -1px with a 3px outline puts 2px of the ring outside the option (major, spec-compliance)",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "cc9168524653d0d0c7f318037b38aa3e9e7f7469",
+      "evidence": "Same resolution as R1-F1 (spec wording changed to the real geometry, the -1px offset kept): the MODIFIED requirement no longer says \"inside the option\" / \"does not run over the gap\". ring-geometry.txt: clearToNeighbour 1, clearToFrame 1 at 375 and 1366, light and dark. Merged into the main spec by b864892. Mapping: dispositions[\"C1+C2+C6 ...\"]."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_a93ad2d1-bf4",
+      "title": "The mutation run skips the !important clause and the theme selector (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "cc9168524653d0d0c7f318037b38aa3e9e7f7469",
+      "evidence": "Adds docs/qa/fix-size-option-focus-ring/mutation-run-2.txt (kills important-size, delete-theme, colour-size, width-language) and green-run-2.txt. Mapping: dispositions[\"C3 + contested (mutation run skips !important and the theme rule)\"] \"FIXED\"."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_a93ad2d1-bf4",
+      "title": "The browser shots only show a focused checked size option, and on the size control the focus ring is the same colour as the checked frame (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "cc9168524653d0d0c7f318037b38aa3e9e7f7469",
+      "evidence": "Adds size-focus-unchecked-{375,1366}-{light,dark}.png (4x4 focused, 6x6 checked) under docs/qa/fix-size-option-focus-ring/, with ring-geometry.txt. The same-colour half of the title is the R1-F7 matter (fixed later by a14e861). Mapping: dispositions[\"C4 + contested x2 (shots only show a checked focused option)\"] \"FIXED\"."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_a93ad2d1-bf4",
+      "title": "Task 4.1 is ticked but docs/current-state.md does not change in the slice's commits (minor, spec-compliance)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "ed03a83b0596255d2c6d98a152574178f0641728",
+      "evidence": "Process annotation, not a code change: task 4.1 (archive, validate, update docs/current-state.md and an autonomy-log row) was ticked in 7ac61df before current-state changed; ed03a83 (same session, next commit after the slice) adds the «Slice fix-size-option-focus-ring» bullet to docs/current-state.md (red/green/mutation evidence and the review-gate pointer) and an autonomy-log row. The early tick itself remains a historical lapse. Mapping: dispositions[\"C5 (task 4.1 ticked before current-state changed)\"] \"ACKNOWLEDGED, process note: the current-state update landed in the following handoff commit ed03a83, in the same session.\""
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_a93ad2d1-bf4",
+      "title": "Ring is not inside the option: 2 of its 3 CSS px sit outside the button, over the gap and the card padding, contrary to the ADDED requirement text (minor, visual)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "cc9168524653d0d0c7f318037b38aa3e9e7f7469",
+      "evidence": "Same resolution as R1-F1 (visual-dimension duplicate): the requirement text now states the ring is 1px inside to 2px outside the option, not wholly inside; ring-geometry.txt measures it. Merged into the main spec by b864892. Mapping: dispositions[\"C1+C2+C6 ...\"]."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_a93ad2d1-bf4",
+      "title": "On the checked option the ring merges with the same-colour selection frame and reads as a thicker border, not as a separate focus ring (minor, visual)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a14e861f60cfff04081489b3aa99842863f83ba7",
+      "evidence": "The session deferred it to the user (dispositions[\"C7 (ring merges with the same-colour checked frame)\"]: \"DEFERRED to the user ... autonomy-log row 135 ('the checked option's frame shares the focus colour; maybe adjust the border colour later')\"). Closed later by slice update-setup-sheet, commit a14e861: src/ui/style.css `.size-control button[aria-checked='true']` border-color goes from var(--color-focus) to var(--color-primary) (light #b4460d vs focus #1e2126; dark #f39a5b vs #f1ede4), so the ring no longer shares the checked frame's colour. Mapping found by the compiler (git log -L on the rule), not named by the session."
+    }
+  ],
+  "excluded": "wf_a93ad2d1-bf4: 8 contested, 2 rejected",
+  "designWaiver": {
+    "reason": "One CSS rule (.size-control button:focus-visible { outline-offset: -1px }) and one stylesheet test: no design decision beyond what proposal.md and the spec delta state. OpenSpec does not require design.md for such a change (openspec/config.yaml)."
+  },
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»; «Sign all three (Recommended)», to the question «Sign the three design.md waivers? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md, and its designWaiver"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-10-fix-size-option-focus-ring/review-findings.json",
+    "openspec/changes/archive/2026-10-10-fix-size-option-focus-ring/tasks.md",
+    "openspec/changes/archive/2026-10-10-update-segmented-focus-ring-wording/ (via git show cc91685, b864892)",
+    "docs/autonomy-log.md rows 135, 139, 140, 141",
+    "docs/qa/fix-size-option-focus-ring/ (ring-geometry.txt, mutation-run-2.txt, green-run-2.txt, size-focus-unchecked-*.png)",
+    "git log --grep=\"Slice: fix-size-option-focus-ring\" (95d58d5, 10ba3e5, 7ac61df) and --grep=\"Slice: update-segmented-focus-ring-wording\" (cc91685, b864892)",
+    "git show ed03a83 -- docs/current-state.md; git show a14e861 -- src/ui/style.css; src/ui/style.css:602-612"
+  ],
+  "compilerNotes": "All fix commits verified (cat-file, is-ancestor of HEAD, diff read). codeDefects: 0 in the review file; no entry is a product-code defect. (1) R1-F1, R1-F2 (major), R1-F6 are \"fixed\" by changing the requirement text to the measured geometry (ring 1px inside to 2px outside the option), not by changing the CSS; the signer should read \"fixed\" that way. (2) R1-F5 (task ticked early) is marked fixed by ed03a83, which made the ticked claim true one commit later; reclassify as waived if early ticks should count as unrepairable process lapses. (3) R1-F7 was deferred by the user (row 135) and closed by the later update-setup-sheet slice (a14e861); this mapping is the compiler's, from git log -L. Only one review run; there was no confirming run (the session ran a follow-up change instead)."
+}

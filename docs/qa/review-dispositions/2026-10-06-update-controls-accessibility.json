@@ -1,0 +1,89 @@
+{
+  "slice": "2026-10-06-update-controls-accessibility",
+  "reviewFile": "openspec/changes/archive/2026-10-06-update-controls-accessibility/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_388c10c0-f21 (2e38207..HEAD, confirming run after review round 1 wf_c621c8e9-bc8 and fix 25aa306; the file was persisted by the orchestrator from the run's result in commit 3ef7338 because the run wrote none)"
+  ],
+  "findings": [
+    {
+      "id": "R2-F1",
+      "run": "wf_388c10c0-f21",
+      "title": "aria-checked stays on «Поле 6×6» when no board is shown, but the new clause says no size is shown",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3ef7338732623533ac5fab88211e4fe9582bc57d",
+      "evidence": "Resolved by changing the spec to match the code, not the code: 3ef7338 rewrites the clause in openspec/changes/update-controls-accessibility/specs/play-page/spec.md («Pressing the shown size changes nothing») from 'when no board is shown ..., no size is shown' to 'When no board is shown ..., the no-op rule does not apply: «Поле 6×6» keeps aria-checked=\"true\" from mount ..., and a press of any size button, «Поле 6×6» included, generates a board of that size at once', and adds the assertion expect(checkedSize(root), 'with no board, «Поле 6×6» keeps aria-checked from mount').toBe(6) in tests/play-page-size-control.test.ts:168. Mapping from the 3ef7338 commit message ('Spec clause reworded (contested aria-checked finding) ... the test now asserts that premise') and docs/current-state.md Phase C line ('evidence and wording, follow-up 3ef7338')."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_388c10c0-f21",
+      "title": "Task 3.7 is ticked, but step (j) (screenshot paths recorded in docs/current-state.md) is not done",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1b33ead8646ce1f9c6b8a72fcea827fe6e8800ab",
+      "evidence": "Archive commit 1b33ead adds to docs/current-state.md the 'Phase C update-controls-accessibility' line with the still paths docs/qa/update-controls-accessibility/375-mount-b43c855.jpg, 375-confirm-dialog-b43c855.jpg, 375-8x8-after-confirm-b43c855.jpg, 1280-confirm-dialog-keyboard-25aa306.jpg and 'observed, not verified: held NFR-11, NFR-12, NFR-13', and ticks task 3.6. Mapping from the 3ef7338 commit message ('Task 3.7(j) (paths in current-state) is done in the archive commit with 3.6') and the archive commit's diff."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_388c10c0-f21",
+      "title": "Step (i) of 3.7 ran neither a screen reader nor the accessibility inspector",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3ef7338732623533ac5fab88211e4fe9582bc57d",
+      "evidence": "3ef7338 adds 'Run 3' to docs/qa/update-controls-accessibility/README.md: step (i) re-run reading the computed accessible names from the browser's accessibility tree ('find over the tree, not the attribute') for an empty, a given and a hinted cell. Task 3.7(i) asks for 'a screen reader or the accessibility inspector', so the accessibility-tree read meets the step as written. No screen reader was run: the README says 'Still not done: no screen reader was run (held NFR-12, NOT-EARNED)'. Mapping from the 3ef7338 commit message ('step (i) now reads computed accessible names from the browser's accessibility tree ... No screen reader run (held NFR-12)')."
+    },
+    {
+      "id": "R2-F4",
+      "run": "wf_388c10c0-f21",
+      "title": "No test covers a generator failure after «Так, почати» for «Нова головоломка»",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Not done by the session's decision: the 3ef7338 commit message records 'Not done (optional per task 2.7, \"confirm by reading\"): a test of a generator failure after «Так, почати» for «Нова головоломка»; the size-change path is tested and both share newPuzzle's try/catch.' Task 2.7 of the archived tasks.md asks only to 'confirm by reading' that a failed generation after «Так, почати» keeps the previous board."
+    },
+    {
+      "id": "R2-F5",
+      "run": "wf_388c10c0-f21",
+      "title": "Keyboard-dialog screenshot shows the focus behaviour that fix 25aa306 replaced, and no screenshot shows the current behaviour",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3ef7338732623533ac5fab88211e4fe9582bc57d",
+      "evidence": "3ef7338 adds the still docs/qa/update-controls-accessibility/1280-confirm-dialog-keyboard-25aa306.jpg (keyboard-opened dialog, focus ring on «Скасувати») in README Run 3, and marks the old row 'focus ring on «Так, почати» (superseded by fix 25aa306, see run 3)' for 1280-confirm-dialog-keyboard-b43c855.jpg. Mapping from the 3ef7338 commit message ('Evidence run 3 at 25aa306: keyboard-opened dialog with the ring on «Скасувати» (1280 still) ... the b43c855 keyboard still is marked superseded')."
+    },
+    {
+      "id": "R2-F6",
+      "run": "wf_388c10c0-f21",
+      "title": "With no board shown after a failed mount generation, «Поле 6×6» still has aria-checked=\"true\"",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3ef7338732623533ac5fab88211e4fe9582bc57d",
+      "evidence": "Same resolution as R2-F1 (spec reworded to make the observed behaviour the specified one; test asserts aria-checked stays on 6 with no board, tests/play-page-size-control.test.ts:168). The session classified this as 'no code defect' (3ef7338 commit message: 'NOT clean (5 confirmed ...; 1 contested), no code defect'; autonomy-log row 74: 'not clean, no code defect')."
+    }
+  ],
+  "excluded": "wf_388c10c0-f21 per the file's dimension counts: 1 contested (correctness), 3 rejected (spec-compliance 1, visual 2). Note: confirmedTitles lists 6 titles while the counts give 5 confirmed (spec-compliance 4 + visual 1); see compilerNotes. Round 1 wf_c621c8e9-bc8 (5 confirmed minor, 1 contested; fix 25aa306) is not recorded in this file and is not dispositioned here.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-06-update-controls-accessibility/review-findings.json",
+    "openspec/changes/archive/2026-10-06-update-controls-accessibility/tasks.md (2.7, 3.6, 3.7) and RENUMBERED.md",
+    "docs/qa/update-controls-accessibility/README.md (runs 1 to 3)",
+    "docs/autonomy-log.md row 74",
+    "docs/current-state.md line 198 (Phase C)",
+    "git show 3ef7338732623533ac5fab88211e4fe9582bc57d",
+    "git show 1b33ead8646ce1f9c6b8a72fcea827fe6e8800ab",
+    "tests/play-page-retry.test.ts (later coverage check for R2-F4)"
+  ],
+  "compilerNotes": "(1) Six confirmedTitles but the counts give 5 confirmed + 1 contested; the 3ef7338 message says '5 confirmed: 1 major evidence, 4 minor; 1 contested' and calls the aria-checked finding contested. R2-F6 (correctness-phrased) is most likely the contested correctness finding that the orchestrator, persisting by hand, put into confirmedTitles; it is kept as an entry because the schema requires one entry per title. (2) Severity: the session says one confirmed finding was major (evidence) and four minor, without naming which; I could not map it, so all are 'unknown'. R2-F5 or R2-F3 are the likely candidates for the major. (3) R2-F1 and R2-F6 were closed by changing the spec, not the code; the caller may decide whether that counts as 'fixed' or should be a signed waiver. The behaviour is in src/ (aria-checked kept on «Поле 6×6» after a failed mount), but the session judged it intended and no code defect. (4) R2-F4 is a test gap, not a product defect; I searched later tests: tests/play-page-retry.test.ts ('Three run-outs keep everything', 'The retry covers the size change, «Нова головоломка» and the mount') covers a failure after confirmYes for a level change and a run-out retry for «Нова головоломка» on an untouched board, but I found no test of a generator failure after «Так, почати» for «Нова головоломка» specifically, so it stays waived. (5) fixCommits 3ef7338 and 1b33ead verified: cat-file -e ok, ancestors of HEAD (pre-rebase copies f2c71f3 and 0e37dd3 are not). Commit messages cite pre-rebase SHAs (25aa306, b43c855) and pre-renumbering ids (FR-60/FR-66, row 65)."
+}
