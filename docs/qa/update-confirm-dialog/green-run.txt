@@ -1,0 +1,136 @@
+update-confirm-dialog: green run after the port (tasks 4.1 to 4.4), the dialog session, 2026-10-12 (UTC+5:30)
+The port: a capability-implementer subagent (src/ui/style.css only), on top of faad484 (red tests 03c8f13, freeze faad484).
+
+================ 4.1 and 4.2: the unit suite (npx vitest run), 2026-10-12 13:39 ================
+ Test Files  80 passed (80)
+      Tests  1979 passed (1979)
+Before the port (src/ui/style.css of HEAD put back for one run, then the port restored): ⎯⎯⎯⎯⎯⎯ Failed Tests 24 ⎯⎯⎯⎯⎯⎯⎯ Tests 24 failed | 1955 passed (1979) -> the same 24 reds of red-run.txt turn green.
+jsdom 'Could not parse CSS stylesheet' lines: 10 after the port, 10 before (pre-existing noise, no test fails on it).
+
+================ 4.3: the port stays in its share ================
+== git diff -U0 src/ui/style.css
+diff --git a/src/ui/style.css b/src/ui/style.css
+index 33b0992..4e565b9 100644
+--- a/src/ui/style.css
++++ b/src/ui/style.css
+@@ -1 +1 @@
+-/* The colour tokens (FR-65, A-57 block 2): 32 names, light here and dark in the block below; the values are the appendix of A-57
++/* The colour tokens (FR-65, A-57 block 2): 33 names, light here and dark in the block below; the values are the appendix of A-57
+@@ -30,0 +31 @@
++  --color-violation-ink: #8f1d17;
+@@ -66,0 +68 @@
++  --color-violation-ink: #ffb4ab;
+@@ -612 +614 @@ button:focus-visible {
+-/* Confirmation dialog (ported in part from design/v0/app/binarka.css .confirm). */
++/* Confirmation dialog (ported from design/v0/app/binarka.css .confirm, A-62). */
+@@ -614 +616 @@ button:focus-visible {
+-  width: min(22rem, calc(100vw - 32px));
++  width: min(22rem, calc(100vw - 2 * var(--page-pad)));
+@@ -617 +619 @@ button:focus-visible {
+-  padding: 20px;
++  padding: 1.5rem;
+@@ -622 +624 @@ button:focus-visible {
+-  border-radius: 12px;
++  border-radius: var(--radius-l);
+@@ -634 +636 @@ button:focus-visible {
+-  margin: 0 0 20px;
++  margin: 0 0 1.5rem;
+@@ -648,0 +651,16 @@ button:focus-visible {
++  padding: 0 1rem;
++  border-width: 2px;
++  border-radius: var(--radius-m);
++  line-height: 1.2;
++}
++
++.confirm-buttons [data-confirm='yes'] {
++  color: var(--color-violation-ink);
++  background-color: var(--color-violation-bg);
++  border-color: var(--color-violation-border);
++}
++
++.confirm-buttons [data-confirm='no'] {
++  color: var(--color-primary-text);
++  background-color: var(--color-primary);
++  border-color: var(--color-primary);
+== the changed lines map to: l.1 the token-count comment; l.31 and l.68 the token in :root and :root[data-theme='dark'] (after --color-focus); l.614-624 .confirm (comment, width, padding, border-radius); l.636 .confirm p margin; l.651-666 .confirm-buttons button (padding, border-width, border-radius, line-height) and the two new rules [data-confirm='yes'] and [data-confirm='no']. No other rule.
+== filter: selectors of every rule that holds a changed line
+(comment outside a rule, line 1)
+:root
+:root[data-theme='dark']
+(comment outside a rule, line 614)
+.confirm
+.confirm p
+.confirm-buttons button
+(comment outside a rule, line 656)
+.confirm-buttons [data-confirm='yes']
+(comment outside a rule, line 662)
+.confirm-buttons [data-confirm='no']
+== git diff --stat 18e5f3f (main) against the working tree (the block so far: the folder fold, the red tests, the freeze, the port)
+ docs/qa/traceability-report.md                     |   4 +-
+ docs/qa/update-confirm-dialog/folder-audit.md      |  54 ++
+ docs/qa/update-confirm-dialog/red-run.txt          | 321 ++++++++++
+ docs/qa/update-confirm-dialog/refreeze.txt         |  77 +++
+ docs/qa/update-confirm-dialog/session-log.md       |  12 +
+ e2e/nfr-14-confirm-dialog.spec.ts                  | 520 +++++++++++++++
+ openspec/changes/update-confirm-dialog/design.md   |   8 +-
+ openspec/changes/update-confirm-dialog/proposal.md |  10 +-
+ openspec/changes/update-confirm-dialog/tasks.md    |  24 +-
+ quality/design-geometry.json                       | 706 ++++++++++++++++++++-
+ scripts/freeze-design-geometry.mjs                 |  42 +-
+ scripts/visual-block.mjs                           |  20 +-
+ src/ui/style.css                                   |  30 +-
+ tests/helpers/css.ts                               |  21 +-
+ tests/play-page-cause-stylesheet.test.ts           |   8 +-
+ tests/play-page-confirm-dialog-stylesheet.test.ts  | 418 ++++++++++++
+ tests/play-page-helpers.test.ts                    |  19 +-
+ tests/play-page-layout-geometry.test.ts            |   9 +-
+ tests/play-page-level-stylesheet.test.ts           |   6 +-
+ tests/play-page-palette-stylesheet.test.ts         |   4 +-
+ tests/play-page-panel-shell-stylesheet.test.ts     |   7 +-
+ tests/play-page-rules-panel-stylesheet.test.ts     |  10 +-
+ tests/play-page-setup-sheet-stylesheet.test.ts     |   8 +-
+ tests/play-page-stylesheet.test.ts                 |   8 +-
+ tests/play-page-theme-stylesheet.test.ts           |   9 +-
+ trace/ledger.jsonl                                 |   6 +
+ trace/trace.json                                   |   2 +
+ 27 files changed, 2301 insertions(+), 62 deletions(-)
+Note: docs/qa/traceability-report.md and trace/trace.json (FR-65 49 -> 50, FR-67 19 -> 20 test files: the new stylesheet test) were regenerated and staged by the pre-commit hook in 03c8f13, as in earlier commits on main (e.g. e4746ab, 56cf54b); they are hook output, accurate, not a share breach.
+== files outside the share (design/v0, playwright.config.ts, factory-lock.json, scripts/check-visual-parity-adapters.mjs, src/ui/play-page.ts, openspec/specs/, docs/requirements.md):
+  (none listed above = none changed)
+
+================ 4.4: npm run build, then npx playwright test --project=layout ================
+== port check before
+2026-10-12 13:38:30
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+== npm run build
+dist/assets/index-D4WnM0mv.js   35.36 kB │ gzip: 12.80 kB
+
+✓ built in 39ms
+== npx playwright test --project=layout (BINARKA_PORT_BASE=6373)
+  234 passed (20.0s)
+== per file
+== port check after
+2026-10-12 13:38:55
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+== the files of the layout project (npx playwright test --project=layout --list):
+   3 nfr-10-fit.spec.ts
+  18 nfr-10-header-fit.spec.ts
+  16 nfr-12-targets.spec.ts
+  11 nfr-14-backdrop.spec.ts
+   3 nfr-14-cause-mark.spec.ts
+  18 nfr-14-confirm-dialog.spec.ts
+  38 nfr-14-layout-geometry.spec.ts
+  27 nfr-14-palette.spec.ts
+  24 nfr-14-panel-shell.spec.ts
+  38 nfr-14-rules-panel.spec.ts
+  26 nfr-14-setup-sheet.spec.ts
+  12 nfr-18-flash.spec.ts
+Reading: 234 passed, 0 failed: nfr-14-confirm-dialog (18) green; nfr-14-layout-geometry, nfr-14-palette, nfr-14-backdrop, nfr-14-panel-shell, nfr-12-targets (the dialog buttons, l. 79-81), nfr-10-*, nfr-18-flash, nfr-14-rules-panel, nfr-14-setup-sheet, nfr-14-cause-mark green with no edit. docs/qa/e2e-report.json, rewritten by the reporter, reverted (this file is the evidence).

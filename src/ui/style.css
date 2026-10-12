@@ -1,4 +1,4 @@
-/* The colour tokens (FR-65, A-57 block 2): 32 names, light here and dark in the block below; the values are the appendix of A-57
+/* The colour tokens (FR-65, A-57 block 2): 33 names, light here and dark in the block below; the values are the appendix of A-57
    (design/v0/app/binarka.css with three recorded deviations: --color-cell-border and --color-given-border, --color-violation-text).
    The page always sets data-theme on <html> (the head step of index.html, then the page), so there is no media-query block. */
 :root {
@@ -28,6 +28,7 @@
   --color-success-glow: #2f6b3a73;
   --color-win-text: #1e2126;
   --color-focus: #1e2126;
+  --color-violation-ink: #8f1d17;
   --color-backdrop-soft: #46280f38;
   --color-backdrop-strong: #2d190a80;
   --color-surface-raised: #fffdf8;
@@ -64,6 +65,7 @@
   --color-success-glow: #8fd19a73;
   --color-win-text: #f1ede4;
   --color-focus: #f1ede4;
+  --color-violation-ink: #ffb4ab;
   --color-backdrop-soft: #08050273;
   --color-backdrop-strong: #08050299;
   --color-surface-raised: #2c2620;
@@ -609,17 +611,17 @@ button:focus-visible {
   outline-offset: -1px;
 }
 
-/* Confirmation dialog (ported in part from design/v0/app/binarka.css .confirm). */
+/* Confirmation dialog (ported from design/v0/app/binarka.css .confirm, A-62). */
 .confirm {
-  width: min(22rem, calc(100vw - 32px));
+  width: min(22rem, calc(100vw - 2 * var(--page-pad)));
   max-width: none;
   margin: auto;
-  padding: 20px;
+  padding: 1.5rem;
   box-sizing: border-box;
   border-width: 1px;
   border-style: solid;
   border-color: var(--color-control-border);
-  border-radius: 12px;
+  border-radius: var(--radius-l);
   background-color: var(--color-surface-raised);
   box-shadow: 0 1rem 2.5rem var(--color-shadow-panel);
   color: var(--color-text);
@@ -631,7 +633,7 @@ button:focus-visible {
 }
 
 .confirm p {
-  margin: 0 0 20px;
+  margin: 0 0 1.5rem;
   line-height: 1.5;
 }
 
@@ -646,6 +648,22 @@ button:focus-visible {
   flex: 1 1 auto;
   min-height: 2.75rem;
   font-weight: 700;
+  padding: 0 1rem;
+  border-width: 2px;
+  border-radius: var(--radius-m);
+  line-height: 1.2;
+}
+
+.confirm-buttons [data-confirm='yes'] {
+  color: var(--color-violation-ink);
+  background-color: var(--color-violation-bg);
+  border-color: var(--color-violation-border);
+}
+
+.confirm-buttons [data-confirm='no'] {
+  color: var(--color-primary-text);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* Rules panel (design/v0 binarka.css 805-962, 1018-1047, 1133-1152; FR-57/A-59): a bottom sheet below 48rem, a centred panel from 48rem. */
