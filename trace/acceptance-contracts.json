@@ -1007,8 +1007,8 @@
       {
         "method": "vision-verify",
         "mechanism": "npm:check:vision",
-        "artifact": null,
-        "status": "failing-artifact"
+        "artifact": "docs/qa/vision-report.md",
+        "status": "artifact-ok"
       }
     ],
     "NFR-12": [

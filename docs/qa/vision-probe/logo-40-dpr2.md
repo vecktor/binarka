@@ -4,11 +4,11 @@
 
 **Result:** asserted ✓
 
-**Video:** [16-logo-40.webm](16-logo-40.webm) · recorded by `scripts/record-demos.mjs` against its own `vite preview` of the built page.
+**Video:** [16-logo-40.webm](logo-40-dpr2.webm) · recorded by `scripts/record-demos.mjs` against its own `vite preview` of the built page.
 
 ## Assertions, in order
 
 1. NFR-15: the logo is drawn at 40×40 CSS px, device pixel ratio 2
 2. FR-72: the logo carries no text; its digits «1 0 / 0 1» are two bars and two rings
 
-![still](16-logo-40.png)
+![still](logo-40-dpr2.png)

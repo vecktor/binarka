@@ -1,0 +1,40 @@
+Mon Oct 12 16:48:40 +0530 2026
+$ npm run check:vision
+met        NFR-11 (14-cell-states-light, 15-cell-states-dark)
+
+Scope: 15 judged still(s) of 15 clip(s) in 1 manifest(s); 1 vision-verify requirement(s)
+Result: PASS
+exit 0
+
+$ node scripts/check-recordings.mjs --require-vision
+
+Scope: 15 clip(s) across 1 manifest(s)
+Result: PASS
+exit 0
+
+$ node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit 0
+
+$ npm run check:acceptance
+Result: PASS
+exit 0
+
+$ npm run check:acceptance:artifact
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.99
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.99
+Result: FAIL
+exit 1
+
+$ trace/acceptance-contracts.json, NFR-11 after check:acceptance:artifact
+    "NFR-11": [
+      {
+        "method": "vision-verify",
+        "mechanism": "npm:check:vision",
+        "artifact": "docs/qa/vision-report.md",
+        "status": "artifact-ok"
+      }
+
+The two artifact FAILs are NFR-14 and TC-13 pixel-diff (320-dark-setup 0.9238, the 28px setup shots; units DS and P-THR of the delivery plan), not this stream.

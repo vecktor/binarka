@@ -20,6 +20,7 @@
 //   docs/qa/demo-recordings/<id>.png    the settled still
 //   docs/qa/demo-recordings/<id>.md     the explainer (every assertion, in order)
 //   docs/qa/demo-recordings/manifest.json { kind, results: [{ id, title, proof, video, screenshot, explainer, asserted, assertions }] }
+// A clip marked `held: true` (its requirement is still held) is left out of the default run and the manifest; `--only <id>` records it.
 //
 // Run: `npm run qa:record-demos` (builds first). Options: `--only <id>[,<id>]` records those clips into the existing manifest;
 // `--vision-probe` writes only the NFR-11 probe still with the non-colour cues removed (docs/qa/vision-probe/), for the red run of
@@ -1275,6 +1276,10 @@ const CLIPS = [
   {
     id: '16-logo-40',
     title: 'NFR-15: the header logo at 40×40 CSS px',
+    // HELD (the user's decision, 2026-10-12): vision-judges found the 40 px logo not legible at ratio 1 and 2, so NFR-15 stays held and this
+    // clip is not in the default run or the manifest; its stills and verdicts are in docs/qa/vision-probe/. The logo-fix slice records it
+    // with `--only 16-logo-40` and moves NFR-15 when a fresh judge passes it.
+    held: true,
     proof: ['NFR-15', 'FR-72'],
     // device pixel ratio 2, the project's capture standard (quality/visual-parity.config.json): the user's decision of 2026-10-12;
     // the ratio 1 still failed the vision-judge and is kept as a known limitation (docs/qa/vision-probe/logo-40-dpr1*)
@@ -1422,7 +1427,7 @@ async function visionProbe(browser) {
 
 async function main() {
   const only = flagValue('--only')?.split(',');
-  const clips = only ? CLIPS.filter((c) => only.includes(c.id)) : CLIPS;
+  const clips = only ? CLIPS.filter((c) => only.includes(c.id)) : CLIPS.filter((c) => !c.held);
   if (only && clips.length !== only.length) throw new Error(`unknown clip id in --only ${only.join(',')}`);
   await startServer();
   const browser = await chromium.launch({ headless: true });
@@ -1437,7 +1442,7 @@ async function main() {
     const results = [];
     for (const clip of clips) results.push(await recordClip(browser, clip));
     await rm(join(OUT_DIR, 'raw'), { recursive: true, force: true });
-    const merged = CLIPS.map((c) => results.find((r) => r.id === c.id) ?? previous.find((r) => r.id === c.id)).filter(Boolean);
+    const merged = CLIPS.filter((c) => !c.held || only?.includes(c.id)).map((c) => results.find((r) => r.id === c.id) ?? previous.find((r) => r.id === c.id)).filter(Boolean);
     await writeFile(join(OUT_DIR, 'manifest.json'), `${JSON.stringify({ kind: 'demo', generatedBy: 'scripts/record-demos.mjs', results: merged }, null, 2)}\n`);
     console.log(`\nwrote ${results.length} clip(s) to ${OUT_DIR} (manifest: ${merged.length}). Validate: node scripts/check-recordings.mjs`);
     return results.every((r) => r.asserted) ? 0 : 1;

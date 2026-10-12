@@ -1,10 +1,10 @@
 {
   "generatedBy": "scripts/check-vision.mjs",
-  "met": false,
-  "result": "FAIL",
+  "met": true,
+  "result": "PASS",
   "scope": {
-    "clips": 16,
-    "judged": 16,
+    "clips": 15,
+    "judged": 15,
     "requirements": 1
   },
   "requirements": [
@@ -137,20 +137,7 @@
       "met": true,
       "readable": true,
       "notes": "The board renders in a dark scheme with legible digits. Each of the four states has a non-colour cue. Violation (row 3, columns 1-3): diagonal hatch fill, underlined digits and a solid border. Hinted cell (row 2, column 1): dashed border and an italic digit. Givens: lighter raised fill with bold upright digits. Player entries (row 5 column 6, row 6 column 4): thin-weight upright digits on a plain dark cell with no fill change. Each state differs from the other three by at least one of weight, border style, hatching, underline or italic. The thin orange player digits are the weakest, but they are still legible."
-    },
-    {
-      "id": "16-logo-40",
-      "proof": "NFR-15, FR-72",
-      "screenshot": "docs/qa/demo-recordings/16-logo-40.png",
-      "met": false,
-      "readable": true,
-      "notes": "At native size the logo (an orange-brown rounded square with sun-like rays, left of the dark title «Бінарка») carries no text. However, the four digits inside the 2×2 board show only as tiny pale marks. I could not clearly tell bars from rings, or confirm the order 1 0 / 0 1. The image also looks smaller than a DPR-2 capture would be. Re-record at true DPR 2 with a tight crop, and make the bar and ring strokes thicker with more contrast against the orange tile. The title is legible."
     }
   ],
-  "failures": [
-    {
-      "id": "16-logo-40",
-      "msg": "vision verdict is not met+readable (met false, readable true): At native size the logo (an orange-brown rounded square with sun-like rays, left of the dark title «Бінарка») carries no text. However, the four digits inside the 2×2 board show only as tiny pale marks. I could not clearly tell bars from rings, or confirm the order 1 0 / 0 1. The image also looks smaller than a DPR-2 capture would be. Re-record at true DPR 2 with a tight crop, and make the bar and ring strokes thicker with more contrast against the orange tile. The title is legible."
-    }
-  ]
+  "failures": []
 }

@@ -256,23 +256,6 @@
         "judgedAt": "2026-10-12T11:01:06Z",
         "judge": "vision-verify (fresh vision-judge)"
       }
-    },
-    {
-      "id": "16-logo-40",
-      "title": "NFR-15: the header logo at 40×40 CSS px",
-      "proof": "NFR-15, FR-72",
-      "video": "docs/qa/demo-recordings/16-logo-40.webm",
-      "screenshot": "docs/qa/demo-recordings/16-logo-40.png",
-      "explainer": "docs/qa/demo-recordings/16-logo-40.md",
-      "asserted": true,
-      "assertions": 2,
-      "vision": {
-        "met": false,
-        "readable": true,
-        "notes": "At native size the logo (an orange-brown rounded square with sun-like rays, left of the dark title «Бінарка») carries no text. However, the four digits inside the 2×2 board show only as tiny pale marks. I could not clearly tell bars from rings, or confirm the order 1 0 / 0 1. The image also looks smaller than a DPR-2 capture would be. Re-record at true DPR 2 with a tight crop, and make the bar and ring strokes thicker with more contrast against the orange tile. The title is legible.",
-        "judgedAt": "2026-10-12T11:15:20Z",
-        "judge": "vision-verify (fresh vision-judge)"
-      }
     }
   ]
 }
