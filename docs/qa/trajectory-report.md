@@ -5,7 +5,7 @@ archived slice took: review evidence, `Slice:` trailers, and module scope.
 It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
-Scope: 28 archived slice(s).
+Scope: 29 archived slice(s).
 Result: PASS, 27 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
@@ -38,6 +38,7 @@ Result: PASS, 27 warning(s)
 | 2026-10-11-update-page-backdrop | **unclean** | 6 | yes | ui |
 | 2026-10-11-update-panel-shell | **unclean** | 1 | yes | ui |
 | 2026-10-11-update-rules-panel | **unclean** | 6 | yes | ui |
+| 2026-10-12-update-setup-sheet | clean | 54 | yes | ui |
 
 ## Cross-slice module overlap
 
