@@ -1,0 +1,23 @@
+# PD-17 green proof, Mon Oct 12 21:26:40 +0530 2026
+
+## node scripts/check-coverage-ratchet.mjs
+Scope: 4 coverage metric(s)
+OK    lines 99.33% (baseline 99.33%)
+OK    statements 97.5% (baseline 97.5%)
+OK    functions 98.19% (baseline 98.19%)
+OK    branches 91.94% (baseline 91.94%)
+Result: PASS
+exit 0
+
+## node scripts/check-process-ratchet.mjs
+
+Scope: 4 guard(s) (phase 3, product code: yes)
+Result: PASS
+exit 0
+
+## node scripts/check-factory-integrity.mjs
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+
+Scope: 28 locked file(s)
+Result: PASS, 1 warning(s)
+exit 0

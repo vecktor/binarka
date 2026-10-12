@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-12T14:51:06.622Z",
-  "gitHead": "0383cc5f30f6e88271c6ba5979ee5655dd8dad29",
+  "createdAt": "2026-10-12T15:56:39.940Z",
+  "gitHead": "652d75308ca8b633c01a21cbdf3462d0e92cb1b6",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -11,9 +11,9 @@
     ".githooks/commit-msg": "c6427b364dbc15da31235e4c0f9a8ac74639b7f0512cadce95f301637387fb5c",
     ".githooks/pre-commit": "c64e18049003ddd126e8ac2c61c1ce759923977748f5f044ee34fc1c3212eaea",
     ".github/workflows/ci.yml": "e3e3c1130584443e66f761c48e5242a58abaf29f30e12d7757e6cefd06d45205",
-    "quality/coverage-baseline.json": "bad5d7096b4a86643815cd870761fef3eb8dc8fc02b3341fb7efe580cb13335a",
+    "quality/coverage-baseline.json": "58c168bc77413f8cf524f3865810f50701f5ad3a0d3d47d11ce4d2ecb578662a",
     "quality/eval-baseline.json": "93791bb00ddc72e7114105351fe3a55be0063c2976765ef4100f4bc135a88be8",
-    "quality/process-baseline.json": "c4138cf68d31420931034e59d580cc4db6fdd08550de95347c7396bd9b2923d5",
+    "quality/process-baseline.json": "972ff432c5b2178dbe6ea2f9b3549959df54bb1a8463717c47fcbfe1c94e8ccb",
     "quality/telemetry.config.json": "0c6068dc9b2b8c1560ef9d94ff0b5ff8d29adb510271bfa25a382267f77c79d0",
     "quality/visual-parity.config.json": "b3922c5d3064265509a6122ba35d14abcc1c4e2d003d53cf37439c54ef2478fb",
     "scripts/check-a11y.mjs": "25930dd0eefb2b70c4ca9b2733e89b712def89120f1b41ff2a215cc52a480f51",
@@ -32,6 +32,6 @@
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-16: quality/visual-parity.config.json names the NFR-14 reference the user moved to, review-set-17 (SHA1SUMS a33d4af3; design iteration 20, the tile logo of FR-72 as amended) (approved by the user 2026-10-12)"
+    "PD-17: quality/coverage-baseline.json ratcheted up by check-coverage-ratchet --update (99.33/97.5/98.19/91.94) and quality/process-baseline.json earned by check-process-ratchet --update (134 of 134, 0 vacuous) after a truthful green battery (approved by the user 2026-10-12)"
   ]
 }

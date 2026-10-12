@@ -1,0 +1,37 @@
+# PD-17 red proof, Mon Oct 12 21:26:18 +0530 2026, head 652d753
+
+## cat quality/coverage-baseline.json
+{
+  "lines": 94,
+  "statements": 91.32,
+  "functions": 92.1,
+  "branches": 87.12
+}
+
+## node scripts/check-coverage-ratchet.mjs (after npm run test:coverage at 21:12, docs/qa/gate-status-2026-10-12.txt)
+Scope: 4 coverage metric(s)
+INFO  lines improved 94% -> 99.33% — run with --update to ratchet the baseline
+INFO  statements improved 91.32% -> 97.5% — run with --update to ratchet the baseline
+INFO  functions improved 92.1% -> 98.19% — run with --update to ratchet the baseline
+INFO  branches improved 87.12% -> 91.94% — run with --update to ratchet the baseline
+Result: PASS
+exit 0
+
+## grep _template quality/process-baseline.json
+2:  "_template": true,
+7:    "after a truthful green run. While this file is absent (or still carries \"_template\": true,",
+
+## node scripts/check-process-ratchet.mjs
+
+Scope: 3 guard(s) (phase 3, product code: yes)
+Result: NOT-EARNED (pending baseline — earn it with --update after a truthful green run)
+exit 0
+
+## qa:verify at 21:22 (docs/qa/final-stream/qa-verify-1.txt)
+docs/qa/final-stream/qa-verify-1.txt:==> process-ratchet
+docs/qa/final-stream/qa-verify-1.txt:Overall result: NOT-EARNED (1 member(s) unearned)
+docs/qa/final-stream/qa-verify-1.txt:exit 1
+docs/qa/automated-verification-latest.md:- Overall result: NOT-EARNED (1 member(s) unearned)
+docs/qa/automated-verification-latest.md:| process-ratchet | `node scripts/check-process-ratchet.mjs` | NOT-EARNED | 0 |
+docs/qa/automated-verification-latest.md:## process-ratchet
+docs/qa/automated-verification-latest.md:Command: `node scripts/check-process-ratchet.mjs`
