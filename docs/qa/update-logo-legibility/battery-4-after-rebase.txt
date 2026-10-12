@@ -1,0 +1,78 @@
+# Battery after the rebase onto main 5959f43 (2026-10-12 18:18 +0530), HEAD 0e78c49; backup of the pre-rebase head: backup/logo-legibility-prerebase-6010cc1
+
+## npm run lint
+> binarka@0.1.0 lint
+> eslint .
+exit: 0
+
+## npm run test:run
+      Tests  1995 passed (1995)
+   Start at  18:18:44
+   Duration  70.11s (tests 72%, environment 20%, import 6%, transform 1%)
+    Isolate  81 workers spawned · ~851ms startup each (spawn + environment, per file)
+             at least ~6.81s faster with isolate: false — reuses workers across files instead of one per file
+exit: 0
+
+## npm run build
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-DIwVvqnQ.css  24.37 kB │ gzip:  4.92 kB
+dist/assets/index-CwxmSTGb.js   35.06 kB │ gzip: 12.69 kB
+✓ built in 35ms
+exit: 0
+
+## npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+Totals: 2 passed, 0 failed (2 items)
+exit: 0
+
+## npm run check:vision
+> node scripts/check-vision.mjs
+met        NFR-11 (14-cell-states-light, 15-cell-states-dark)
+met        NFR-15 (16-logo-40)
+Scope: 16 judged still(s) of 16 clip(s) in 1 manifest(s); 2 vision-verify requirement(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-recordings.mjs --require-vision
+Scope: 16 clip(s) across 1 manifest(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit: 0
+
+## npm run check:integrity
+> binarka@0.1.0 check:integrity
+> node scripts/check-factory-integrity.mjs
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 28 locked file(s)
+Result: PASS, 1 warning(s)
+exit: 0
+
+## npm run check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+Scope: 134 tagged requirement(s)
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+acceptance (existence): 134 contract(s) across 134 requirement(s) — 0 failure(s), 1 warning(s), 0 pending
+Result: PASS, 1 warning(s)
+exit: 0
+
+## node scripts/check-acceptance-methods.mjs --mode=artifact
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+acceptance (artifact): 134 contract(s) across 134 requirement(s) — 2 failure(s), 1 warning(s), 0 pending
+Result: FAIL, 1 warning(s)
+exit: 1
+
+## NFR-14 on the rebased tree (main has the PD-9 logo driver), BINARKA_PORT_BASE=6873, 2026-10-12 18:23 +0530
+npm run check:visual: Result FAIL, exit 1: 156 of 170 at 0.98. Failing: the 12 phone setup shots (signed SQ-5 departure, as on main) and, NEW,
+  logo-light 0.9426 and logo-dark 0.9427: the page draws G, review-set-14 holds the sun, which PD-9 measured at 1.0 on main
+  (docs/qa/improvements/PD-9-proof.txt). So on main the logo shots would pass; with this branch they fail until the combined reference set
+  (the user's decision of 2026-10-12: «Later: combined set after DS»). Output: check-visual-rebased.txt; the committed per-shot reports restored.
+npx playwright test e2e/nfr-14-*.spec.ts: 207 passed, exit 0.

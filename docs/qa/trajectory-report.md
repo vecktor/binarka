@@ -42,7 +42,7 @@ Result: PASS, 1 warning(s)
 | 2026-10-11-update-panel-shell | dispositioned | 1 | yes | ui |
 | 2026-10-11-update-rules-panel | dispositioned | 6 | yes | ui |
 | 2026-10-12-update-confirm-dialog | clean | 5 | yes | ui |
-| 2026-10-12-update-logo-legibility | clean | 14 | yes | ui |
+| 2026-10-12-update-logo-legibility | clean | 15 | yes | ui |
 | 2026-10-12-update-settings-panel | dispositioned | 12 | yes | ui |
 | 2026-10-12-update-setup-sheet | clean | 28 | yes | ui |
 

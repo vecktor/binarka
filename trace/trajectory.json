@@ -293,7 +293,7 @@
     {
       "slice": "2026-10-12-update-logo-legibility",
       "reviewEvidence": "clean",
-      "trailerCommits": 14,
+      "trailerCommits": 15,
       "libDomains": [
         "ui"
       ],
