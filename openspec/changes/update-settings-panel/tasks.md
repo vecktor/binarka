@@ -61,8 +61,8 @@ For the settings session of wave 2 of the parallel G2 plan (`docs/handoff/parall
 
 ## 9. Review gate
 
-- [ ] 9.1 Review gate on the block's commits (a fresh reviewer, not the author), with the vision verdict of 8.1 and the explanation of any fall from 7.3. Run ONLY with the user's yes; fix rounds need the user's approval. Evidence: `docs/qa/update-settings-panel/review-findings.json`; the user's yes recorded in `session-log.md`.
-- [ ] 9.2 Put to the user: the open points of `design.md` (the values beyond the draft's test list, the historical sentences, the walk's premise if it failed). Evidence: `session-log.md`.
+- [x] 9.1 Review gate on the block's commits (a fresh reviewer, not the author), with the vision verdict of 8.1 and the explanation of any fall from 7.3. Run ONLY with the user's yes; fix rounds need the user's approval. Evidence: `docs/qa/update-settings-panel/review-findings.json`; the user's yes recorded in `session-log.md`.
+- [x] 9.2 Put to the user: the open points of `design.md` (the values beyond the draft's test list, the historical sentences, the walk's premise if it failed). Evidence: `session-log.md`.
 
 ## 10. Rebase, archive and merge
 
