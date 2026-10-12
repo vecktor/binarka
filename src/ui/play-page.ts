@@ -492,7 +492,10 @@ export function mountPlayPage(root: HTMLElement, options: PlayPageOptions = {}):
   });
 
   setupStart.addEventListener('click', startMarked);
-  resetButton.addEventListener('click', () => { requestAction(resetBoard); });
+  resetButton.addEventListener('click', () => {
+    if (!hasEntries()) return; // an untouched board: Reset changes nothing, not even the hint sentence (FR-58)
+    requestAction(resetBoard);
+  });
   newButton.addEventListener('click', () => { requestAction(startNewPuzzle); });
   for (const [n, button] of sizeButtons) {
     button.addEventListener('click', () => {

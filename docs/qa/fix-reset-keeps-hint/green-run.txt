@@ -1,0 +1,23 @@
+# fix-reset-keeps-hint green run, Mon Oct 12 21:56:02 +0530 2026, src/ui/play-page.ts changed (reset press returns on a board without entries)
+
+## npx vitest run tests/play-page-rules-and-reset.test.ts
+ Test Files  1 passed (1)
+      Tests  22 passed (22)
+
+## npm run lint
+exit 0
+
+## npm run test:run
+ Test Files  82 passed (82)
+      Tests  2001 passed (2001)
+
+## npm run build
+exit 0
+
+## npm run test:coverage (ratchet)
+Scope: 4 coverage metric(s)
+OK    lines 99.33% (baseline 99.33%)
+OK    statements 97.51% (baseline 97.5%)
+OK    functions 98.19% (baseline 98.19%)
+OK    branches 91.96% (baseline 91.94%)
+Result: PASS

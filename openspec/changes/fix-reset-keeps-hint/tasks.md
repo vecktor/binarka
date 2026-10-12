@@ -9,7 +9,7 @@ Fix round 1 of the Phase 7 global review gate, stream F (branch `claude/friendly
 
 ## 2. Implement
 
-- [ ] 2.1 `src/ui/play-page.ts`: the reset press does nothing on a board without entries. Evidence: `docs/qa/fix-reset-keeps-hint/green-run.txt` (the file and the full unit suite).
+- [x] 2.1 `src/ui/play-page.ts`: the reset press does nothing on a board without entries. Evidence: `docs/qa/fix-reset-keeps-hint/green-run.txt` (the file and the full unit suite).
 
 ## 3. Review and archive
 
