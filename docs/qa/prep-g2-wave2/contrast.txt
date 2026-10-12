@@ -1,0 +1,10 @@
+light violink/vbg 7.34 violink/sr 8.77 vborder/sr 6.43 vborder/vbg 5.38 focus/vbg 13.29 | focus/prim 2.94 focus/cbg 15.88 focus/soft 12.96 focus/sr 15.88 | muted/cbg 7.17 muted/sr 7.17 text/soft 12.96 prim/soft 4.41 prim/cbg 5.40 prim/sr 5.40 cb/cbg 3.68 cb/sr 3.68 ptext/prim 5.40 focus/given 10.87
+dark violink/vbg 8.40 violink/sr 8.80 vborder/sr 6.54 vborder/vbg 6.24 focus/vbg 12.21 | focus/prim 1.88 focus/cbg 13.85 focus/soft 11.50 focus/sr 12.79 | muted/cbg 7.54 muted/sr 6.96 text/soft 11.50 prim/soft 6.13 prim/cbg 7.39 prim/sr 6.82 cb/cbg 4.13 cb/sr 3.81 ptext/prim 8.55 focus/given 8.17
+light cand #c75a1c vs focus 3.77 vs soft 3.43 vs card 4.21
+light cand #cf6420 vs focus 4.23 vs soft 3.07 vs card 3.76
+light cand #d06a28 vs focus 4.44 vs soft 2.92 vs card 3.58
+light cand #c4581a vs focus 3.66 vs soft 3.54 vs card 4.34
+dark cand #b0632c vs focus 3.85 vs soft 2.99 vs card 3.60
+dark cand #a85a24 vs focus 4.33 vs soft 2.66 vs card 3.20
+dark cand #9c5222 vs focus 4.93 vs soft 2.33 vs card 2.81
+dark cand #b86a30 vs focus 3.50 vs soft 3.29 vs card 3.96

@@ -1,0 +1,596 @@
+# Wave-2 prep: the 36 settings and confirm shots of review-set-14, classified by the gate's own per-pixel verdict (pixelmatch 8, threshold 0.1).
+# Command: npm run build && BINARKA_PORT_BASE=6273 node docs/qa/prep-g2-wave2/classify.mjs --save <scratchpad>/wave2-shots
+# Ran Mon Oct 12 08:17:16 +0530 2026 to 08:18:27 (the shell's date before and after); exit 0. Tree: claude/vigorous-darwin-wave2-prep at b290715 (= origin/main), built dist/. Own ports 6273-6277 (no lock); capture-ports after: all five free.
+# Every score equals run 12 (docs/qa/g2/check-visual-run-12.txt) to 4 places: the product pixels are the locked adapter's own capture().
+# 'by element' counts the failing device pixels inside the design's or the page's box of each element (first match in the listed order), else 'outside'.
+# 'style' lists the computed values that differ (design -> page). The five largest (element: reference colour | page colour) pairs follow.
+# Sampled: 36 shots (6 widths, 2 schemes, 5 states); never continuum. The product and diff PNGs stayed in the session scratchpad (regenerable).
+
+== 1024-dark-confirm: score 0.985 (run 12: 0.985), diff pixels 47259 of 3145728
+   by element (device px): no 23501, dialog 14107, yes 5389, text 4262
+   yes               design 361,398 151.23x44 | page 357,395 155.23x46
+                     style: lh 19.2px -> 24px; color rgb(255, 180, 171) -> rgb(241, 237, 228); bg rgb(63, 35, 32) -> rgb(36, 32, 27); bc rgb(255, 138, 125) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 520.23,398 142.77x44 | page 520.23,395 146.77x46
+                     style: lh 19.2px -> 24px; color rgb(26, 16, 7) -> rgb(241, 237, 228); bg rgb(243, 154, 91) -> rgb(36, 32, 27); bc rgb(243, 154, 91) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 361,326 302x48 | page 357,327 310x48
+   dialog            design 336,301 352x166 | page 336,306 352x156
+                     style: br 16px -> 12px; pad 24px -> 20px
+     20311	no: ref #f39a5b | page #24201b
+     3083	dialog: ref #2c2620 | page #0f0d0a
+     2990	dialog: ref #2c2620 | page #f1ede4
+     2727	dialog: ref #2c2620 | page #8a7f71
+     1839	text: ref #2c2620 | page #f1ede4
+== 1024-dark-settings-light: score 0.9918 (run 12: 0.9918), diff pixels 25948 of 3145728
+   by element (device px): language-checked 8526, panel 6429, settings-close 5989, theme-checked 2962, theme-control 1247, language-control 795
+   settings-close    design 386,305.5 318x44 | page 386,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 390,141.25 88.55x44 | page 390,141.25 88.83x44  (within 0.5px)
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 386,137.25 318x52 | page 386,137.25 318x52  (within 0.5px)
+   language-checked  design 390,233.5 153.5x44 | page 390,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 386,229.5 318x52 | page 386,229.5 318x52  (within 0.5px)
+   label-theme       design 386,113 318x20.25 | page 386,113 318x20.25  (within 0.5px)
+   panel             design 369,96 352x270.5 | page 369,96 352x274.5
+     2661	settings-close: ref #fffdf8 | page #8c8374
+     2646	language-checked: ref #b4460d | page #1e2126
+     2558	settings-close: ref #8c8374 | page #fffdf8
+     2396	language-checked: ref #fffdf8 | page #ddd3be
+     1879	theme-checked: ref #b4460d | page #1e2126
+== 1024-dark-settings: score 0.9807 (run 12: 0.9807), diff pixels 60765 of 3145728
+   by element (device px): language-checked 27990, theme-checked 21525, settings-close 5980, panel 3487, theme-control 1000, language-control 783
+   settings-close    design 386,305.5 318x44 | page 386,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 566.55,141.25 133.45x44 | page 563.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 386,137.25 318x52 | page 386,137.25 318x52  (within 0.5px)
+   language-checked  design 390,233.5 153.5x44 | page 390,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 386,229.5 318x52 | page 386,229.5 318x52  (within 0.5px)
+   label-theme       design 386,113 318x20.25 | page 386,113 318x20.25  (within 0.5px)
+   panel             design 369,96 352x270.5 | page 369,96 352x274.5
+     19474	language-checked: ref #3d2b1e | page #4d4438
+     16560	theme-checked: ref #3d2b1e | page #4d4438
+     2661	settings-close: ref #2c2620 | page #8a7f71
+     2646	language-checked: ref #f39a5b | page #f1ede4
+     2558	settings-close: ref #8a7f71 | page #2c2620
+== 1024-light-confirm: score 0.9836 (run 12: 0.9836), diff pixels 51739 of 3145728
+   by element (device px): no 23486, dialog 18558, yes 5397, text 4298
+   yes               design 361,398 151.23x44 | page 357,395 155.23x46
+                     style: lh 19.2px -> 24px; color rgb(143, 29, 23) -> rgb(30, 33, 38); bg rgb(251, 228, 225) -> rgb(255, 253, 248); bc rgb(179, 38, 30) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 520.23,398 142.77x44 | page 520.23,395 146.77x46
+                     style: lh 19.2px -> 24px; color rgb(255, 253, 248) -> rgb(30, 33, 38); bg rgb(180, 70, 13) -> rgb(255, 253, 248); bc rgb(180, 70, 13) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 361,326 302x48 | page 357,327 310x48
+   dialog            design 336,301 352x166 | page 336,306 352x156
+                     style: br 16px -> 12px; pad 24px -> 20px
+     20795	no: ref #b4460d | page #fffdf8
+     2990	dialog: ref #fffdf8 | page #1e2126
+     2715	dialog: ref #fffdf8 | page #8c8374
+     2148	yes: ref #b3261e | page #fffdf8
+     1852	text: ref #fffdf8 | page #1e2126
+== 1024-light-settings-dark: score 0.983 (run 12: 0.983), diff pixels 53547 of 3145728
+   by element (device px): language-checked 27990, theme-checked 14013, settings-close 5980, panel 3487, theme-control 1294, language-control 783
+   settings-close    design 386,305.5 318x44 | page 386,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 479.3,141.25 87.42x44 | page 478.23,141.25 87.73x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 386,137.25 318x52 | page 386,137.25 318x52  (within 0.5px)
+   language-checked  design 390,233.5 153.5x44 | page 390,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 386,229.5 318x52 | page 386,229.5 318x52  (within 0.5px)
+   label-theme       design 386,113 318x20.25 | page 386,113 318x20.25  (within 0.5px)
+   panel             design 369,96 352x270.5 | page 369,96 352x274.5
+     19474	language-checked: ref #3d2b1e | page #4d4438
+     10892	theme-checked: ref #3d2b1e | page #4d4438
+     2661	settings-close: ref #2c2620 | page #8a7f71
+     2646	language-checked: ref #f39a5b | page #f1ede4
+     2558	settings-close: ref #8a7f71 | page #2c2620
+== 1024-light-settings: score 0.9912 (run 12: 0.9912), diff pixels 27716 of 3145728
+   by element (device px): language-checked 8526, panel 6429, settings-close 5989, theme-checked 4974, theme-control 1003, language-control 795
+   settings-close    design 386,305.5 318x44 | page 386,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 566.55,141.25 133.45x44 | page 563.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 386,137.25 318x52 | page 386,137.25 318x52  (within 0.5px)
+   language-checked  design 390,233.5 153.5x44 | page 390,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 386,229.5 318x52 | page 386,229.5 318x52  (within 0.5px)
+   label-theme       design 386,113 318x20.25 | page 386,113 318x20.25  (within 0.5px)
+   panel             design 369,96 352x270.5 | page 369,96 352x274.5
+     2661	settings-close: ref #fffdf8 | page #8c8374
+     2646	language-checked: ref #b4460d | page #1e2126
+     2558	settings-close: ref #8c8374 | page #fffdf8
+     2396	language-checked: ref #fffdf8 | page #ddd3be
+     2386	theme-checked: ref #b4460d | page #1e2126
+== 1366-dark-settings-focus: score 0.9821 (run 12: 0.9821), diff pixels 63623 of 3551600
+   by element (device px): language-checked 27990, theme-checked 21329, settings-close 5980, panel 5478, theme-control 2063, language-control 783
+   settings-close    design 556,305.5 318x44 | page 556,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 736.55,141.25 133.45x44 | page 733.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 556,137.25 318x52 | page 556,137.25 318x52  (within 0.5px)
+   language-checked  design 560,233.5 153.5x44 | page 560,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 556,229.5 318x52 | page 556,229.5 318x52  (within 0.5px)
+   label-theme       design 556,113 318x20.25 | page 556,113 318x20.25  (within 0.5px)
+   panel             design 539,96 352x270.5 | page 539,96 352x274.5
+     19474	language-checked: ref #3d2b1e | page #4d4438
+     16560	theme-checked: ref #3d2b1e | page #4d4438
+     2661	settings-close: ref #2c2620 | page #8a7f71
+     2646	language-checked: ref #f39a5b | page #f1ede4
+     2558	settings-close: ref #8a7f71 | page #2c2620
+== 1366-dark-settings: score 0.9823 (run 12: 0.9823), diff pixels 62756 of 3551600
+   by element (device px): language-checked 27990, theme-checked 21525, settings-close 5980, panel 5478, theme-control 1000, language-control 783
+   settings-close    design 556,305.5 318x44 | page 556,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 736.55,141.25 133.45x44 | page 733.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 556,137.25 318x52 | page 556,137.25 318x52  (within 0.5px)
+   language-checked  design 560,233.5 153.5x44 | page 560,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 556,229.5 318x52 | page 556,229.5 318x52  (within 0.5px)
+   label-theme       design 556,113 318x20.25 | page 556,113 318x20.25  (within 0.5px)
+   panel             design 539,96 352x270.5 | page 539,96 352x274.5
+     19474	language-checked: ref #3d2b1e | page #4d4438
+     16560	theme-checked: ref #3d2b1e | page #4d4438
+     2661	settings-close: ref #2c2620 | page #8a7f71
+     2646	language-checked: ref #f39a5b | page #f1ede4
+     2558	settings-close: ref #8a7f71 | page #2c2620
+== 1366-light-settings-focus: score 0.9919 (run 12: 0.9919), diff pixels 28792 of 3551600
+   by element (device px): language-checked 8526, panel 6638, settings-close 5989, theme-checked 4778, theme-control 2066, language-control 795
+   settings-close    design 556,305.5 318x44 | page 556,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 736.55,141.25 133.45x44 | page 733.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 556,137.25 318x52 | page 556,137.25 318x52  (within 0.5px)
+   language-checked  design 560,233.5 153.5x44 | page 560,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 556,229.5 318x52 | page 556,229.5 318x52  (within 0.5px)
+   label-theme       design 556,113 318x20.25 | page 556,113 318x20.25  (within 0.5px)
+   panel             design 539,96 352x270.5 | page 539,96 352x274.5
+     2661	settings-close: ref #fffdf8 | page #8c8374
+     2646	language-checked: ref #b4460d | page #1e2126
+     2558	settings-close: ref #8c8374 | page #fffdf8
+     2396	language-checked: ref #fffdf8 | page #ddd3be
+     2386	theme-checked: ref #b4460d | page #1e2126
+== 1366-light-settings: score 0.9921 (run 12: 0.9921), diff pixels 27925 of 3551600
+   by element (device px): language-checked 8526, panel 6638, settings-close 5989, theme-checked 4974, theme-control 1003, language-control 795
+   settings-close    design 556,305.5 318x44 | page 556,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 736.55,141.25 133.45x44 | page 733.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 556,137.25 318x52 | page 556,137.25 318x52  (within 0.5px)
+   language-checked  design 560,233.5 153.5x44 | page 560,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 556,229.5 318x52 | page 556,229.5 318x52  (within 0.5px)
+   label-theme       design 556,113 318x20.25 | page 556,113 318x20.25  (within 0.5px)
+   panel             design 539,96 352x270.5 | page 539,96 352x274.5
+     2661	settings-close: ref #fffdf8 | page #8c8374
+     2646	language-checked: ref #b4460d | page #1e2126
+     2558	settings-close: ref #8c8374 | page #fffdf8
+     2396	language-checked: ref #fffdf8 | page #ddd3be
+     2386	theme-checked: ref #b4460d | page #1e2126
+== 1440-dark-confirm: score 0.9904 (run 12: 0.9904), diff pixels 49838 of 5184000
+   by element (device px): no 23501, dialog 16685, yes 5390, text 4262
+   yes               design 569,464 151.23x44 | page 565,461 155.23x46
+                     style: lh 19.2px -> 24px; color rgb(255, 180, 171) -> rgb(241, 237, 228); bg rgb(63, 35, 32) -> rgb(36, 32, 27); bc rgb(255, 138, 125) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 728.23,464 142.77x44 | page 728.23,461 146.77x46
+                     style: lh 19.2px -> 24px; color rgb(26, 16, 7) -> rgb(241, 237, 228); bg rgb(243, 154, 91) -> rgb(36, 32, 27); bc rgb(243, 154, 91) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 569,392 302x48 | page 565,393 310x48
+   dialog            design 544,367 352x166 | page 544,372 352x156
+                     style: br 16px -> 12px; pad 24px -> 20px
+     20311	no: ref #f39a5b | page #24201b
+     3229	dialog: ref #2c2620 | page #0f0d0a
+     2990	dialog: ref #2c2620 | page #f1ede4
+     2727	dialog: ref #2c2620 | page #8a7f71
+     1839	text: ref #2c2620 | page #f1ede4
+== 1440-dark-settings-light: score 0.995 (run 12: 0.995), diff pixels 26138 of 5184000
+   by element (device px): language-checked 8526, panel 6619, settings-close 5989, theme-checked 2962, theme-control 1247, language-control 795
+   settings-close    design 618,305.5 318x44 | page 618,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 622,141.25 88.55x44 | page 622,141.25 88.83x44  (within 0.5px)
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 618,137.25 318x52 | page 618,137.25 318x52  (within 0.5px)
+   language-checked  design 622,233.5 153.5x44 | page 622,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 618,229.5 318x52 | page 618,229.5 318x52  (within 0.5px)
+   label-theme       design 618,113 318x20.25 | page 618,113 318x20.25  (within 0.5px)
+   panel             design 601,96 352x270.5 | page 601,96 352x274.5
+     2661	settings-close: ref #fffdf8 | page #8c8374
+     2646	language-checked: ref #b4460d | page #1e2126
+     2558	settings-close: ref #8c8374 | page #fffdf8
+     2396	language-checked: ref #fffdf8 | page #ddd3be
+     1879	theme-checked: ref #b4460d | page #1e2126
+== 1440-dark-settings: score 0.988 (run 12: 0.988), diff pixels 62038 of 5184000
+   by element (device px): language-checked 27990, theme-checked 21525, settings-close 5980, panel 4760, theme-control 1000, language-control 783
+   settings-close    design 618,305.5 318x44 | page 618,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 798.55,141.25 133.45x44 | page 795.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 618,137.25 318x52 | page 618,137.25 318x52  (within 0.5px)
+   language-checked  design 622,233.5 153.5x44 | page 622,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 618,229.5 318x52 | page 618,229.5 318x52  (within 0.5px)
+   label-theme       design 618,113 318x20.25 | page 618,113 318x20.25  (within 0.5px)
+   panel             design 601,96 352x270.5 | page 601,96 352x274.5
+     19474	language-checked: ref #3d2b1e | page #4d4438
+     16560	theme-checked: ref #3d2b1e | page #4d4438
+     2661	settings-close: ref #2c2620 | page #8a7f71
+     2646	language-checked: ref #f39a5b | page #f1ede4
+     2558	settings-close: ref #8a7f71 | page #2c2620
+== 1440-light-confirm: score 0.9901 (run 12: 0.9901), diff pixels 51485 of 5184000
+   by element (device px): no 23486, dialog 18303, yes 5398, text 4298
+   yes               design 569,464 151.23x44 | page 565,461 155.23x46
+                     style: lh 19.2px -> 24px; color rgb(143, 29, 23) -> rgb(30, 33, 38); bg rgb(251, 228, 225) -> rgb(255, 253, 248); bc rgb(179, 38, 30) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 728.23,464 142.77x44 | page 728.23,461 146.77x46
+                     style: lh 19.2px -> 24px; color rgb(255, 253, 248) -> rgb(30, 33, 38); bg rgb(180, 70, 13) -> rgb(255, 253, 248); bc rgb(180, 70, 13) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 569,392 302x48 | page 565,393 310x48
+   dialog            design 544,367 352x166 | page 544,372 352x156
+                     style: br 16px -> 12px; pad 24px -> 20px
+     20795	no: ref #b4460d | page #fffdf8
+     2990	dialog: ref #fffdf8 | page #1e2126
+     2715	dialog: ref #fffdf8 | page #8c8374
+     2149	yes: ref #b3261e | page #fffdf8
+     1852	text: ref #fffdf8 | page #1e2126
+== 1440-light-settings-dark: score 0.9894 (run 12: 0.9894), diff pixels 54820 of 5184000
+   by element (device px): language-checked 27990, theme-checked 14013, settings-close 5980, panel 4760, theme-control 1294, language-control 783
+   settings-close    design 618,305.5 318x44 | page 618,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 711.3,141.25 87.42x44 | page 710.23,141.25 87.73x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 618,137.25 318x52 | page 618,137.25 318x52  (within 0.5px)
+   language-checked  design 622,233.5 153.5x44 | page 622,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 618,229.5 318x52 | page 618,229.5 318x52  (within 0.5px)
+   label-theme       design 618,113 318x20.25 | page 618,113 318x20.25  (within 0.5px)
+   panel             design 601,96 352x270.5 | page 601,96 352x274.5
+     19474	language-checked: ref #3d2b1e | page #4d4438
+     10892	theme-checked: ref #3d2b1e | page #4d4438
+     2661	settings-close: ref #2c2620 | page #8a7f71
+     2646	language-checked: ref #f39a5b | page #f1ede4
+     2558	settings-close: ref #8a7f71 | page #2c2620
+== 1440-light-settings: score 0.9946 (run 12: 0.9946), diff pixels 27906 of 5184000
+   by element (device px): language-checked 8526, panel 6619, settings-close 5989, theme-checked 4974, theme-control 1003, language-control 795
+   settings-close    design 618,305.5 318x44 | page 618,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 798.55,141.25 133.45x44 | page 795.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 618,137.25 318x52 | page 618,137.25 318x52  (within 0.5px)
+   language-checked  design 622,233.5 153.5x44 | page 622,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 618,229.5 318x52 | page 618,229.5 318x52  (within 0.5px)
+   label-theme       design 618,113 318x20.25 | page 618,113 318x20.25  (within 0.5px)
+   panel             design 601,96 352x270.5 | page 601,96 352x274.5
+     2661	settings-close: ref #fffdf8 | page #8c8374
+     2646	language-checked: ref #b4460d | page #1e2126
+     2558	settings-close: ref #8c8374 | page #fffdf8
+     2396	language-checked: ref #fffdf8 | page #ddd3be
+     2386	theme-checked: ref #b4460d | page #1e2126
+== 320-dark-confirm: score 0.918 (run 12: 0.918), diff pixels 73447 of 896000
+   by element (device px): no 42759, dialog 24133, yes 6555
+   yes               design 37,390 246x44 | page 37,388 246x46
+                     style: lh 19.2px -> 24px; color rgb(255, 180, 171) -> rgb(241, 237, 228); bg rgb(63, 35, 32) -> rgb(36, 32, 27); bc rgb(255, 138, 125) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 37,338 246x44 | page 37,334 246x46
+                     style: lh 19.2px -> 24px; color rgb(26, 16, 7) -> rgb(241, 237, 228); bg rgb(243, 154, 91) -> rgb(36, 32, 27); bc rgb(243, 154, 91) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 37,266 246x48 | page 37,266 246x48  (within 0.5px)
+   dialog            design 12,241 296x218 | page 16,245 288x210
+                     style: br 16px -> 12px; pad 24px -> 20px
+     36615	no: ref #f39a5b | page #24201b
+     5001	dialog: ref #2c2620 | page #f1ede4
+     3739	dialog: ref #2c2620 | page #8a7f71
+     3209	yes: ref #ff8a7d | page #24201b
+     3080	dialog: ref #2c2620 | page #0d0b08
+== 320-dark-settings-focus: score 0.9077 (run 12: 0.9077), diff pixels 82668 of 896000
+   by element (device px): language-checked 26380, theme-checked 20585, panel 17028, theme-control 8498, settings-close 5399, language-control 4180, label-theme 598
+   settings-close    design 17,640 286x44 | page 17,636 286x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 176.22,475.75 122.78x44 | page 173.56,471.75 125.44x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 17,471.75 286x52 | page 17,467.75 286x52
+   language-checked  design 21,568 137.5x44 | page 21,564 156.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 17,564 286x52 | page 17,560 286x52
+   label-theme       design 17,447.5 286x20.25 | page 17,443.5 286x20.25
+   panel             design 0,430.5 320x269.5 | page 0,418.5 320x281.5
+                     style: pad 16px -> 24px 16px 16px
+     15013	language-checked: ref #3d2b1e | page #4d4438
+     12949	theme-checked: ref #3d2b1e | page #4d4438
+     7478	panel: ref #100c0a | page #2c2620
+     2947	language-checked: ref #24201b | page #4d4438
+     2848	panel: ref #100c0b | page #2c2620
+== 320-dark-settings-light: score 0.9458 (run 12: 0.9458), diff pixels 48571 of 896000
+   by element (device px): panel 14972, language-checked 12410, theme-control 5627, settings-close 5407, theme-checked 5356, language-control 4194, label-theme 605
+   settings-close    design 17,640 286x44 | page 17,636 286x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 21,475.75 77.88x44 | page 21,471.75 78.16x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 17,471.75 286x52 | page 17,467.75 286x52
+   language-checked  design 21,568 137.5x44 | page 21,564 156.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 17,564 286x52 | page 17,560 286x52
+   label-theme       design 17,447.5 286x20.25 | page 17,443.5 286x20.25
+   panel             design 0,430.5 320x269.5 | page 0,418.5 320x281.5
+                     style: pad 16px -> 24px 16px 16px
+     2946	language-checked: ref #fffdf8 | page #ddd3be
+     2514	language-checked: ref #f6e3d4 | page #1e2126
+     2399	settings-close: ref #fffdf8 | page #8c8374
+     2286	settings-close: ref #8c8374 | page #fffdf8
+     1946	theme-control: ref #fffdf8 | page #8c8374
+== 320-dark-settings: score 0.9117 (run 12: 0.9117), diff pixels 79121 of 896000
+   by element (device px): language-checked 26380, theme-checked 20708, panel 17028, settings-close 5399, theme-control 4828, language-control 4180, label-theme 598
+   settings-close    design 17,640 286x44 | page 17,636 286x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 176.22,475.75 122.78x44 | page 173.56,471.75 125.44x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 17,471.75 286x52 | page 17,467.75 286x52
+   language-checked  design 21,568 137.5x44 | page 21,564 156.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 17,564 286x52 | page 17,560 286x52
+   label-theme       design 17,447.5 286x20.25 | page 17,443.5 286x20.25
+   panel             design 0,430.5 320x269.5 | page 0,418.5 320x281.5
+                     style: pad 16px -> 24px 16px 16px
+     15013	language-checked: ref #3d2b1e | page #4d4438
+     12949	theme-checked: ref #3d2b1e | page #4d4438
+     7478	panel: ref #100c0a | page #2c2620
+     2947	language-checked: ref #24201b | page #4d4438
+     2848	panel: ref #100c0b | page #2c2620
+== 320-light-confirm: score 0.9194 (run 12: 0.9194), diff pixels 72174 of 896000
+   by element (device px): no 42755, dialog 22858, yes 6561
+   yes               design 37,390 246x44 | page 37,388 246x46
+                     style: lh 19.2px -> 24px; color rgb(143, 29, 23) -> rgb(30, 33, 38); bg rgb(251, 228, 225) -> rgb(255, 253, 248); bc rgb(179, 38, 30) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 37,338 246x44 | page 37,334 246x46
+                     style: lh 19.2px -> 24px; color rgb(255, 253, 248) -> rgb(30, 33, 38); bg rgb(180, 70, 13) -> rgb(255, 253, 248); bc rgb(180, 70, 13) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 37,266 246x48 | page 37,266 246x48  (within 0.5px)
+   dialog            design 12,241 296x218 | page 16,245 288x210
+                     style: br 16px -> 12px; pad 24px -> 20px
+     38466	no: ref #b4460d | page #fffdf8
+     5001	dialog: ref #fffdf8 | page #1e2126
+     3722	dialog: ref #fffdf8 | page #8c8374
+     3209	yes: ref #b3261e | page #fffdf8
+     2861	dialog: ref #1e2126 | page #fffdf8
+== 320-light-settings-dark: score 0.9195 (run 12: 0.9195), diff pixels 72142 of 896000
+   by element (device px): language-checked 26380, panel 17028, theme-checked 12916, theme-control 5641, settings-close 5399, language-control 4180, label-theme 598
+   settings-close    design 17,640 286x44 | page 17,636 286x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 99.63,475.75 76.76x44 | page 98.57,471.75 77.05x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 17,471.75 286x52 | page 17,467.75 286x52
+   language-checked  design 21,568 137.5x44 | page 21,564 156.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 17,564 286x52 | page 17,560 286x52
+   label-theme       design 17,447.5 286x20.25 | page 17,443.5 286x20.25
+   panel             design 0,430.5 320x269.5 | page 0,418.5 320x281.5
+                     style: pad 16px -> 24px 16px 16px
+     15013	language-checked: ref #3d2b1e | page #4d4438
+     8053	theme-checked: ref #3d2b1e | page #4d4438
+     7478	panel: ref #100c0a | page #2c2620
+     2947	language-checked: ref #24201b | page #4d4438
+     2848	panel: ref #100c0b | page #2c2620
+== 320-light-settings-focus: score 0.939 (run 12: 0.939), diff pixels 54655 of 896000
+   by element (device px): panel 14972, language-checked 12410, theme-checked 8558, theme-control 8509, settings-close 5407, language-control 4194, label-theme 605
+   settings-close    design 17,640 286x44 | page 17,636 286x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 176.22,475.75 122.78x44 | page 173.56,471.75 125.44x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 17,471.75 286x52 | page 17,467.75 286x52
+   language-checked  design 21,568 137.5x44 | page 21,564 156.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 17,564 286x52 | page 17,560 286x52
+   label-theme       design 17,447.5 286x20.25 | page 17,443.5 286x20.25
+   panel             design 0,430.5 320x269.5 | page 0,418.5 320x281.5
+                     style: pad 16px -> 24px 16px 16px
+     2946	language-checked: ref #fffdf8 | page #ddd3be
+     2514	language-checked: ref #f6e3d4 | page #1e2126
+     2413	theme-control: ref #fffdf8 | page #1e2126
+     2399	settings-close: ref #fffdf8 | page #8c8374
+     2340	theme-checked: ref #f6e3d4 | page #1e2126
+== 320-light-settings: score 0.943 (run 12: 0.943), diff pixels 51109 of 896000
+   by element (device px): panel 14972, language-checked 12410, theme-checked 8681, settings-close 5407, theme-control 4840, language-control 4194, label-theme 605
+   settings-close    design 17,640 286x44 | page 17,636 286x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 176.22,475.75 122.78x44 | page 173.56,471.75 125.44x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 17,471.75 286x52 | page 17,467.75 286x52
+   language-checked  design 21,568 137.5x44 | page 21,564 156.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 17,564 286x52 | page 17,560 286x52
+   label-theme       design 17,447.5 286x20.25 | page 17,443.5 286x20.25
+   panel             design 0,430.5 320x269.5 | page 0,418.5 320x281.5
+                     style: pad 16px -> 24px 16px 16px
+     2946	language-checked: ref #fffdf8 | page #ddd3be
+     2514	language-checked: ref #f6e3d4 | page #1e2126
+     2399	settings-close: ref #fffdf8 | page #8c8374
+     2340	theme-checked: ref #f6e3d4 | page #1e2126
+     2286	settings-close: ref #8c8374 | page #fffdf8
+== 375-dark-confirm: score 0.959 (run 12: 0.959), diff pixels 49979 of 1218000
+   by element (device px): no 22664, dialog 17872, yes 5321, text 4122
+   yes               design 41,420 146.73x44 | page 37,417 150.73x46
+                     style: lh 19.2px -> 24px; color rgb(255, 180, 171) -> rgb(241, 237, 228); bg rgb(63, 35, 32) -> rgb(36, 32, 27); bc rgb(255, 138, 125) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 195.73,420 138.27x44 | page 195.73,417 142.27x46
+                     style: lh 19.2px -> 24px; color rgb(26, 16, 7) -> rgb(241, 237, 228); bg rgb(243, 154, 91) -> rgb(36, 32, 27); bc rgb(243, 154, 91) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 41,348 293x48 | page 37,349 301x48
+   dialog            design 16,323 343x166 | page 16,328 343x156
+                     style: br 16px -> 12px; pad 24px -> 20px
+     19543	no: ref #f39a5b | page #24201b
+     2918	dialog: ref #2c2620 | page #f1ede4
+     2655	dialog: ref #2c2620 | page #8a7f71
+     2249	dialog: ref #2c2620 | page #53351e
+     1755	text: ref #2c2620 | page #f1ede4
+== 375-dark-settings-light: score 0.9626 (run 12: 0.9626), diff pixels 45547 of 1218000
+   by element (device px): language-checked 13811, panel 7327, theme-control 6331, theme-checked 6317, settings-close 6291, language-control 4865, label-theme 605
+   settings-close    design 17,752 341x44 | page 17,748 341x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 21,587.75 96.21x44 | page 21,583.75 96.5x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 17,583.75 341x52 | page 17,579.75 341x52
+   language-checked  design 21,680 165x44 | page 21,676 183.81x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 17,676 341x52 | page 17,672 341x52
+   label-theme       design 17,559.5 341x20.25 | page 17,555.5 341x20.25
+   panel             design 0,534.5 375x277.5 | page 0,530.5 375x281.5
+     3058	language-checked: ref #fffdf8 | page #ddd3be
+     2839	settings-close: ref #fffdf8 | page #8c8374
+     2832	language-checked: ref #f6e3d4 | page #1e2126
+     2730	settings-close: ref #8c8374 | page #fffdf8
+     2312	theme-control: ref #fffdf8 | page #8c8374
+== 375-dark-settings: score 0.9336 (run 12: 0.9336), diff pixels 80840 of 1218000
+   by element (device px): language-checked 31455, theme-checked 24106, panel 7953, settings-close 6283, theme-control 5591, language-control 4854, label-theme 598
+   settings-close    design 17,752 341x44 | page 17,748 341x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 212.88,587.75 141.12x44 | page 210.23,583.75 143.77x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 17,583.75 341x52 | page 17,579.75 341x52
+   language-checked  design 21,680 165x44 | page 21,676 183.81x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 17,676 341x52 | page 17,672 341x52
+   label-theme       design 17,559.5 341x20.25 | page 17,555.5 341x20.25
+   panel             design 0,534.5 375x277.5 | page 0,530.5 375x281.5
+     18896	language-checked: ref #3d2b1e | page #4d4438
+     15467	theme-checked: ref #3d2b1e | page #4d4438
+     3188	panel: ref #0f0c0a | page #2c2620
+     3058	language-checked: ref #24201b | page #4d4438
+     2839	settings-close: ref #2c2620 | page #8a7f71
+== 375-light-confirm: score 0.9582 (run 12: 0.9582), diff pixels 50903 of 1218000
+   by element (device px): no 22652, dialog 18779, yes 5316, text 4156
+   yes               design 41,420 146.73x44 | page 37,417 150.73x46
+                     style: lh 19.2px -> 24px; color rgb(143, 29, 23) -> rgb(30, 33, 38); bg rgb(251, 228, 225) -> rgb(255, 253, 248); bc rgb(179, 38, 30) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 195.73,420 138.27x44 | page 195.73,417 142.27x46
+                     style: lh 19.2px -> 24px; color rgb(255, 253, 248) -> rgb(30, 33, 38); bg rgb(180, 70, 13) -> rgb(255, 253, 248); bc rgb(180, 70, 13) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 41,348 293x48 | page 37,349 301x48
+   dialog            design 16,323 343x166 | page 16,328 343x156
+                     style: br 16px -> 12px; pad 24px -> 20px
+     20010	no: ref #b4460d | page #fffdf8
+     2918	dialog: ref #fffdf8 | page #1e2126
+     2644	dialog: ref #fffdf8 | page #8c8374
+     2248	dialog: ref #fffdf8 | page #5c2709
+     2114	dialog: ref #fffdf8 | page #5b2709
+== 375-light-settings-dark: score 0.9394 (run 12: 0.9394), diff pixels 73762 of 1218000
+   by element (device px): language-checked 31455, theme-checked 16315, panel 7953, theme-control 6304, settings-close 6283, language-control 4854, label-theme 598
+   settings-close    design 17,752 341x44 | page 17,748 341x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 117.97,587.75 95.09x44 | page 116.9,583.75 95.39x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 17,583.75 341x52 | page 17,579.75 341x52
+   language-checked  design 21,680 165x44 | page 21,676 183.81x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 17,676 341x52 | page 17,672 341x52
+   label-theme       design 17,559.5 341x20.25 | page 17,555.5 341x20.25
+   panel             design 0,534.5 375x277.5 | page 0,530.5 375x281.5
+     18896	language-checked: ref #3d2b1e | page #4d4438
+     10639	theme-checked: ref #3d2b1e | page #4d4438
+     3188	panel: ref #0f0c0a | page #2c2620
+     3058	language-checked: ref #24201b | page #4d4438
+     2839	settings-close: ref #2c2620 | page #8a7f71
+== 375-light-settings: score 0.9604 (run 12: 0.9604), diff pixels 48208 of 1218000
+   by element (device px): language-checked 13811, theme-checked 9705, panel 7327, settings-close 6291, theme-control 5604, language-control 4865, label-theme 605
+   settings-close    design 17,752 341x44 | page 17,748 341x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 212.88,587.75 141.12x44 | page 210.23,583.75 143.77x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 17,583.75 341x52 | page 17,579.75 341x52
+   language-checked  design 21,680 165x44 | page 21,676 183.81x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 17,676 341x52 | page 17,672 341x52
+   label-theme       design 17,559.5 341x20.25 | page 17,555.5 341x20.25
+   panel             design 0,534.5 375x277.5 | page 0,530.5 375x281.5
+     3058	language-checked: ref #fffdf8 | page #ddd3be
+     2839	settings-close: ref #fffdf8 | page #8c8374
+     2832	language-checked: ref #f6e3d4 | page #1e2126
+     2730	settings-close: ref #8c8374 | page #fffdf8
+     2559	theme-checked: ref #f6e3d4 | page #1e2126
+== 768-dark-confirm: score 0.9849 (run 12: 0.9849), diff pixels 47583 of 3145728
+   by element (device px): no 23490, dialog 14448, yes 5383, text 4262
+   yes               design 233,526 151.23x44 | page 229,523 155.23x46
+                     style: lh 19.2px -> 24px; color rgb(255, 180, 171) -> rgb(241, 237, 228); bg rgb(63, 35, 32) -> rgb(36, 32, 27); bc rgb(255, 138, 125) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 392.23,526 142.77x44 | page 392.23,523 146.77x46
+                     style: lh 19.2px -> 24px; color rgb(26, 16, 7) -> rgb(241, 237, 228); bg rgb(243, 154, 91) -> rgb(36, 32, 27); bc rgb(243, 154, 91) -> rgb(138, 127, 113); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 233,454 302x48 | page 229,455 310x48
+   dialog            design 208,429 352x166 | page 208,434 352x156
+                     style: br 16px -> 12px; pad 24px -> 20px
+     20307	no: ref #f39a5b | page #24201b
+     2989	dialog: ref #2c2620 | page #f1ede4
+     2727	dialog: ref #2c2620 | page #8a7f71
+     1839	text: ref #2c2620 | page #f1ede4
+     1752	text: ref #f1ede4 | page #2c2620
+== 768-dark-settings-light: score 0.9917 (run 12: 0.9917), diff pixels 26194 of 3145728
+   by element (device px): language-checked 8526, panel 6675, settings-close 5989, theme-checked 2962, theme-control 1247, language-control 795
+   settings-close    design 306,305.5 318x44 | page 306,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 310,141.25 88.55x44 | page 310,141.25 88.83x44  (within 0.5px)
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 306,137.25 318x52 | page 306,137.25 318x52  (within 0.5px)
+   language-checked  design 310,233.5 153.5x44 | page 310,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 306,229.5 318x52 | page 306,229.5 318x52  (within 0.5px)
+   label-theme       design 306,113 318x20.25 | page 306,113 318x20.25  (within 0.5px)
+   panel             design 289,96 352x270.5 | page 289,96 352x274.5
+     2661	settings-close: ref #fffdf8 | page #8c8374
+     2646	language-checked: ref #b4460d | page #1e2126
+     2558	settings-close: ref #8c8374 | page #fffdf8
+     2396	language-checked: ref #fffdf8 | page #ddd3be
+     1879	theme-checked: ref #b4460d | page #1e2126
+== 768-dark-settings: score 0.9802 (run 12: 0.9802), diff pixels 62174 of 3145728
+   by element (device px): language-checked 27990, theme-checked 21525, settings-close 5980, panel 4896, theme-control 1000, language-control 783
+   settings-close    design 306,305.5 318x44 | page 306,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 486.55,141.25 133.45x44 | page 483.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 306,137.25 318x52 | page 306,137.25 318x52  (within 0.5px)
+   language-checked  design 310,233.5 153.5x44 | page 310,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 306,229.5 318x52 | page 306,229.5 318x52  (within 0.5px)
+   label-theme       design 306,113 318x20.25 | page 306,113 318x20.25  (within 0.5px)
+   panel             design 289,96 352x270.5 | page 289,96 352x274.5
+     19474	language-checked: ref #3d2b1e | page #4d4438
+     16560	theme-checked: ref #3d2b1e | page #4d4438
+     2661	settings-close: ref #2c2620 | page #8a7f71
+     2646	language-checked: ref #f39a5b | page #f1ede4
+     2558	settings-close: ref #8a7f71 | page #2c2620
+== 768-light-confirm: score 0.9837 (run 12: 0.9837), diff pixels 51360 of 3145728
+   by element (device px): no 23474, dialog 18197, yes 5391, text 4298
+   yes               design 233,526 151.23x44 | page 229,523 155.23x46
+                     style: lh 19.2px -> 24px; color rgb(143, 29, 23) -> rgb(30, 33, 38); bg rgb(251, 228, 225) -> rgb(255, 253, 248); bc rgb(179, 38, 30) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   no                design 392.23,526 142.77x44 | page 392.23,523 146.77x46
+                     style: lh 19.2px -> 24px; color rgb(255, 253, 248) -> rgb(30, 33, 38); bg rgb(180, 70, 13) -> rgb(255, 253, 248); bc rgb(180, 70, 13) -> rgb(140, 131, 116); bw 2px -> 1px; br 10px -> 6px; pad 0px 16px -> 10px 16px
+   text              design 233,454 302x48 | page 229,455 310x48
+   dialog            design 208,429 352x166 | page 208,434 352x156
+                     style: br 16px -> 12px; pad 24px -> 20px
+     20787	no: ref #b4460d | page #fffdf8
+     2988	dialog: ref #fffdf8 | page #1e2126
+     2716	dialog: ref #fffdf8 | page #8c8374
+     2143	yes: ref #b3261e | page #fffdf8
+     1852	text: ref #fffdf8 | page #1e2126
+== 768-light-settings-dark: score 0.9825 (run 12: 0.9825), diff pixels 54956 of 3145728
+   by element (device px): language-checked 27990, theme-checked 14013, settings-close 5980, panel 4896, theme-control 1294, language-control 783
+   settings-close    design 306,305.5 318x44 | page 306,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 399.3,141.25 87.42x44 | page 398.23,141.25 87.73x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   theme-control     design 306,137.25 318x52 | page 306,137.25 318x52  (within 0.5px)
+   language-checked  design 310,233.5 153.5x44 | page 310,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(61, 43, 30) -> rgb(77, 68, 56); bc rgb(243, 154, 91) -> rgb(241, 237, 228)
+   language-control  design 306,229.5 318x52 | page 306,229.5 318x52  (within 0.5px)
+   label-theme       design 306,113 318x20.25 | page 306,113 318x20.25  (within 0.5px)
+   panel             design 289,96 352x270.5 | page 289,96 352x274.5
+     19474	language-checked: ref #3d2b1e | page #4d4438
+     10892	theme-checked: ref #3d2b1e | page #4d4438
+     2661	settings-close: ref #2c2620 | page #8a7f71
+     2646	language-checked: ref #f39a5b | page #f1ede4
+     2558	settings-close: ref #8a7f71 | page #2c2620
+== 768-light-settings: score 0.9911 (run 12: 0.9911), diff pixels 27962 of 3145728
+   by element (device px): language-checked 8526, panel 6675, settings-close 5989, theme-checked 4974, theme-control 1003, language-control 795
+   settings-close    design 306,305.5 318x44 | page 306,305.5 318x48
+                     style: fw 600 -> 700; br 10px -> 6px; pad 1px 6px -> 10px 16px; pos sticky -> static
+   theme-checked     design 486.55,141.25 133.45x44 | page 483.89,141.25 136.11x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   theme-control     design 306,137.25 318x52 | page 306,137.25 318x52  (within 0.5px)
+   language-checked  design 310,233.5 153.5x44 | page 310,233.5 172.31x44
+                     style: fs 15px -> 16px; lh 18px -> 24px; bg rgb(246, 227, 212) -> rgb(221, 211, 190); bc rgb(180, 70, 13) -> rgb(30, 33, 38)
+   language-control  design 306,229.5 318x52 | page 306,229.5 318x52  (within 0.5px)
+   label-theme       design 306,113 318x20.25 | page 306,113 318x20.25  (within 0.5px)
+   panel             design 289,96 352x270.5 | page 289,96 352x274.5
+     2661	settings-close: ref #fffdf8 | page #8c8374
+     2646	language-checked: ref #b4460d | page #1e2126
+     2558	settings-close: ref #8c8374 | page #fffdf8
+     2396	language-checked: ref #fffdf8 | page #ddd3be
+     2386	theme-checked: ref #b4460d | page #1e2126
