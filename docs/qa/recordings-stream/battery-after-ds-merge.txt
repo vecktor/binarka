@@ -51,3 +51,29 @@ exit 1
 $ node scripts/check-factory-integrity.mjs
 Result: PASS, 1 warning(s)
 exit 0
+
+## After the merge commit 7c285fb (Mon Oct 12 19:01:33 +0530 2026)
+
+$ node scripts/check-trajectory.mjs --release
+Result: PASS, 1 warning(s)
+exit 0
+
+$ node scripts/check-trajectory.mjs --check-fresh
+Result: PASS, 1 warning(s)
+exit 0
+
+$ node scripts/check-traceability.mjs --check-fresh
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+exit 0
+
+$ node scripts/check-recordings.mjs --check-fresh --require-vision
+Result: PASS
+exit 0
+
+$ node scripts/check-vision.mjs --check-fresh
+Result: PASS
+exit 0
+
+$ node scripts/check-factory-integrity.mjs
+Result: PASS, 1 warning(s)
+exit 0
