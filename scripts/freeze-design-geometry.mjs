@@ -36,6 +36,15 @@
 // first; wait for dialog[open]), as the adapter's `confirm` driver does. No deviation: the key holds the design's `boxes` only. Its own provenance.
 // Sampling: 5 cases, light scheme, coverage sampled, never continuum.
 //
+// The key settingsPanel (update-settings-panel, G2 settings block): the open settings panel, its two controls, the chosen option of each and
+// «Закрити»; read by e2e/nfr-14-settings-panel.spec.ts. 7 explicit cases: <w>-light-settings at 320, 375, 768, 1024, 1366 and 1440 (the
+// design's /settings/ route, «Як у системі» chosen) and 375-light-settings-dark (/settings-dark/, «Темна» chosen, the design's dark tokens under
+// the light scheme). The design routes are open at load (a press would close them), so the design side only waits for :popover-open; the page
+// side replays the recorded afterLoad "open-settings" (press the settings button, wait for :popover-open) and, for the dark case, the recorded
+// storedTheme "dark" (localStorage['binarka.theme'] seeded by an init script before the load, as the capture adapter does for settings-dark).
+// Each case records the design's boxes of the six selectors and the design's computed paint of one unchosen and the chosen option of each
+// control plus each card's fill (the design's option is transparent over its card). Sampling: 7 cases, coverage sampled, never continuum.
+//
 // Usage: node scripts/freeze-design-geometry.mjs   (design/v0/out must be built; port BINARKA_PORT_BASE + 4 must be free, 4177 by default; scripts/capture-ports.mjs)
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
@@ -95,6 +104,18 @@ const RULES_CASES = [
 ];
 
 const CONFIRM_CASES = CONFIRM_WIDTHS.map((w) => ({ shot: `${w}-light-confirm`, width: bp(`${w}-light-confirm`).width, height: bp(`${w}-light-confirm`).height }));
+const SETTINGS_SELECTORS = [
+  '[data-section="settings"]',
+  '[data-control="theme"]',
+  '[data-control="language"]',
+  '[data-control="theme"] button[aria-checked="true"]',
+  '[data-control="language"] button[aria-checked="true"]',
+  '[data-action="settings-close"]',
+];
+const SETTINGS_CASES = [
+  ...['320', '375', '768', '1024', '1366', '1440'].map((w) => ({ shot: `${w}-light-settings`, width: bp(`${w}-light-settings`).width, height: bp(`${w}-light-settings`).height, state: 'settings', route: '/settings/' })),
+  { shot: '375-light-settings-dark', width: bp('375-light-settings-dark').width, height: bp('375-light-settings-dark').height, state: 'settings-dark', route: '/settings-dark/', storedTheme: 'dark' },
+];
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain' };
 const root = 'design/v0/out';
@@ -127,6 +148,7 @@ const out = [];
 const rulesOut = [];
 const setupOut = [];
 const confirmOut = [];
+const settingsOut = [];
 try {
   for (const c of cases) {
     const ctx = await browser.newContext({ ...devices['Desktop Chrome'], viewport: { width: c.width, height: c.height }, reducedMotion: 'reduce', colorScheme: 'light' });
@@ -257,6 +279,55 @@ try {
     confirmOut.push({ shot: c.shot, width: c.width, height: c.height, state: 'confirm', captureBoard: captureBoardFor('confirm'), afterLoad: 'open-confirm', boxes });
     await ctx.close();
   }
+  for (const c of SETTINGS_CASES) {
+    const ctx = await browser.newContext({ ...devices['Desktop Chrome'], viewport: { width: c.width, height: c.height }, reducedMotion: 'reduce', colorScheme: 'light' });
+    const page = await ctx.newPage();
+    await page.goto(`http://127.0.0.1:${PORT}${c.route}`, { waitUntil: 'load' });
+    await page.locator('[data-board]').waitFor();
+    await page.locator(`${SETTINGS_SELECTORS[0]}:popover-open`).waitFor(); // open at load; never press
+    const measured = await page.evaluate((sels) => {
+      const boxes = Object.fromEntries(sels.map((s) => {
+        const el = document.querySelector(s);
+        if (!el) return [s, null];
+        const r = el.getBoundingClientRect();
+        return [s, { x: r.x, y: r.y, w: r.width, h: r.height }];
+      }));
+      const paintOf = (s) => {
+        const el = document.querySelector(s);
+        if (!el) return null;
+        const cs = getComputedStyle(el);
+        return { color: cs.color, backgroundColor: cs.backgroundColor, borderTopColor: cs.borderTopColor, borderTopWidth: cs.borderTopWidth, fontWeight: cs.fontWeight, fontSize: cs.fontSize };
+      };
+      const fill = (s) => {
+        const el = document.querySelector(s);
+        return el ? { backgroundColor: getComputedStyle(el).backgroundColor } : null;
+      };
+      const paint = {
+        card: { theme: fill('[data-control="theme"]'), language: fill('[data-control="language"]') },
+        theme: { unchosen: paintOf('[data-control="theme"] button[aria-checked="false"]'), chosen: paintOf('[data-control="theme"] button[aria-checked="true"]') },
+        language: { unchosen: paintOf('[data-control="language"] button[aria-checked="false"]'), chosen: paintOf('[data-control="language"] button[aria-checked="true"]') },
+        theme_: document.documentElement.dataset.theme ?? null,
+      };
+      return { boxes, paint };
+    }, SETTINGS_SELECTORS);
+    const missing = SETTINGS_SELECTORS.filter((s) => measured.boxes[s] === null);
+    if (missing.length > 0) throw new Error(`${c.shot}: the design page lacks ${missing.join(', ')}`);
+    const { theme_: designTheme, ...paint } = measured.paint;
+    // The dark case must measure the design's dark tokens (the route sets them under the light scheme); a light page would freeze light paint.
+    if (designTheme !== (c.storedTheme ?? 'light')) throw new Error(`${c.shot}: the design page's theme is ${designTheme}, not ${c.storedTheme ?? 'light'}`);
+    settingsOut.push({
+      shot: c.shot,
+      width: c.width,
+      height: c.height,
+      state: c.state,
+      captureBoard: captureBoardFor(c.state),
+      afterLoad: 'open-settings',
+      ...(c.storedTheme ? { storedTheme: c.storedTheme } : {}),
+      boxes: measured.boxes,
+      paint,
+    });
+    await ctx.close();
+  }
 } finally {
   await browser.close();
   server.close();
@@ -345,6 +416,12 @@ const fixture = {
     provenance: keyProvenance('confirmDialog', confirmOut),
     cases: confirmOut,
   },
+  settingsPanel: {
+    selectors: SETTINGS_SELECTORS,
+    coverage: 'sampled',
+    provenance: keyProvenance('settingsPanel', settingsOut),
+    cases: settingsOut,
+  },
 };
 writeFileSync(OUT, `${JSON.stringify(fixture, null, 2)}\n`);
-console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors; setupSheet ${setupOut.length} cases (content-decided: ${fixture.setupSheet.deviations[0].contentDecidedCases.join(', ') || 'none'}); confirmDialog ${confirmOut.length} cases x ${CONFIRM_SELECTORS.length} selectors`);
+console.log(`wrote ${OUT}: ${out.length} cases x ${LAYOUT_SELECTORS.length} selectors, rulesPanel: ${rulesOut.length} cases x ${RULES_SELECTORS.length} selectors; setupSheet ${setupOut.length} cases (content-decided: ${fixture.setupSheet.deviations[0].contentDecidedCases.join(', ') || 'none'}); confirmDialog ${confirmOut.length} cases x ${CONFIRM_SELECTORS.length} selectors; settingsPanel ${settingsOut.length} cases x ${SETTINGS_SELECTORS.length} selectors`);

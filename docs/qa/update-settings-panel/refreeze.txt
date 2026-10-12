@@ -1,0 +1,75 @@
+# Refreeze: update-settings-panel (task 3.2, the key settingsPanel; before the dialog block has merged)
+
+Run by the settings session on its own ports (BINARKA_PORT_BASE=6473; the design server is 6477). Neither `scripts/freeze-design-geometry.mjs` nor `scripts/visual-block.mjs` is locked: `grep -c freeze-design-geometry factory-lock.json` prints 0, `grep -c visual-block factory-lock.json` prints 0. Under task 3.1 this freeze is redone on top of the dialog's file after the rebase (task 10.1); this one serves the red tests and the port.
+
+## Command and output (lsof of the five ports before and after; empty = free)
+
+```
+$ BINARKA_PORT_BASE=6473 node scripts/freeze-design-geometry.mjs
+Mon Oct 12 13:18:53 +0530 2026
+lsof 6473:
+lsof 6474:
+lsof 6475:
+lsof 6476:
+lsof 6477:
+design/v0/out/index.html
+wrote quality/design-geometry.json: 32 cases x 16 selectors, rulesPanel: 8 cases x 2 selectors; setupSheet 12 cases (content-decided: 320-light-setup, 375-light-setup, 1024-light-setup, 1366-light-setup, 375-light-setup-four, 768-light-setup-four, 1024-light-setup-four, 1440-light-setup-four); settingsPanel 7 cases x 6 selectors
+exit 0
+lsof 6473:
+lsof 6474:
+lsof 6475:
+lsof 6476:
+lsof 6477:
+Mon Oct 12 13:19:00 +0530 2026
+```
+
+## git diff --stat quality/design-geometry.json
+
+```
+ quality/design-geometry.json | 1389 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 1387 insertions(+), 2 deletions(-)
+```
+
+## The filter: removed lines (git diff -U0 quality/design-geometry.json | grep '^[-+]' | grep -v '^+++\|^---' | grep '^-')
+
+```
+-      "designBuildSha1": "c3f5f81e5dacbad72f6f26085a4750d4e695598c",
+-      "designBuildSha1": "d1193198f7b4e58f412f0ad576ca32683f99e1c4",
+```
+
+The only removed lines are the two `designBuildSha1` values of `rulesPanel.provenance` and `setupSheet.provenance`, which the script writes fresh on every run and which differ between worktrees (task 3.2: "`designBuildSha1` may differ between worktrees and is not compared"); both now name this worktree's build `829e3e06…`, the one `settingsPanel.provenance` records. A structural comparison (node, `git show HEAD:quality/design-geometry.json` against the file) prints:
+
+```
+$comment same
+provenance same
+tolerancePx same
+selectors same
+coverage same
+cases same
+rulesPanel same
+setupSheet same
+new keys ["settingsPanel"]
+rulesPanel.provenance.designCommit same
+rulesPanel.provenance.designCssSha1 same
+rulesPanel.provenance.designBuildSha1 DIFF
+rulesPanel.provenance.browser same
+setupSheet.provenance.designCommit same
+setupSheet.provenance.designCssSha1 same
+setupSheet.provenance.designBuildSha1 DIFF
+setupSheet.provenance.browser same
+```
+
+(`rulesPanel` and `setupSheet` are compared without their provenance on the first lines, then field by field.) So the top-level `provenance`, `cases`, `selectors`, `tolerancePx` and `coverage` and every case of `rulesPanel` and `setupSheet` are unchanged; `designCommit` and `designCssSha1` are unchanged everywhere.
+
+## The new key, summarised (panel box and «Закрити» box x,y,w,h in CSS px; the chosen theme option's design fill)
+
+```
+{"designCommit":"5e61bfd14de56bff4b3726db4ddd624fcd3c2e04","designCssSha1":"d1b1255f4dff205d15d64850096429cd377e5fbf","designBuildSha1":"829e3e06aafc03c5f0b7cae1bc831bbd6c1bea60","browser":"Playwright chromium 156.0.8078.4, devices[\"Desktop Chrome\"], reducedMotion reduce, colorScheme light"}
+320-light-settings 320x700 settings - panel 0,430.5,320,269.5 close 17,640,286,44 chosen-theme-bg rgb(246, 227, 212)
+375-light-settings 375x812 settings - panel 0,534.5,375,277.5 close 17,752,341,44 chosen-theme-bg rgb(246, 227, 212)
+768-light-settings 768x1024 settings - panel 289,96,352,270.5 close 306,305.5,318,44 chosen-theme-bg rgb(246, 227, 212)
+1024-light-settings 1024x768 settings - panel 369,96,352,270.5 close 386,305.5,318,44 chosen-theme-bg rgb(246, 227, 212)
+1366-light-settings 1366x650 settings - panel 539,96,352,270.5 close 556,305.5,318,44 chosen-theme-bg rgb(246, 227, 212)
+1440-light-settings 1440x900 settings - panel 601,96,352,270.5 close 618,305.5,318,44 chosen-theme-bg rgb(246, 227, 212)
+375-light-settings-dark 375x812 settings-dark dark panel 0,534.5,375,277.5 close 17,752,341,44 chosen-theme-bg rgb(61, 43, 30)
+```

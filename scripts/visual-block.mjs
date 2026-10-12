@@ -26,11 +26,16 @@
 // Blocks: layout (16 elements, states reached at mount) and rules (the open rules panel and «Зрозуміло», state `rules`: geometry
 // plus pixels; state `rules-techniques`: pixels only); setup (the setup sheet); confirm (update-confirm-dialog: the open confirmation dialog, its
 // text and its two buttons, state `confirm`: geometry plus pixels; the design route /confirm/ is open at load, the page side presses
-// «Нова головоломка» on the capture board and waits for dialog[open], as e2e/nfr-14-confirm-dialog.spec.ts replays afterLoad "open-confirm").
+// «Нова головоломка» on the capture board and waits for dialog[open], as e2e/nfr-14-confirm-dialog.spec.ts replays afterLoad "open-confirm");
+// settings (update-settings-panel: the open settings panel, its two controls, the chosen option of each and «Закрити», the six selectors of
+// the key settingsPanel; states settings, settings-light, settings-dark and settings-focus, geometry plus pixels: the design routes are open
+// at load, the page side presses the settings button and waits for :popover-open, and seeds the stored theme for settings-light and
+// settings-dark as the capture adapter does).
 //
 // Usage: npm run build && node scripts/visual-block.mjs --block layout [--shots a,b] [--states default,four] [--calibrate]
 //        node scripts/visual-block.mjs --block rules --shots 1366-light-rules   (or --states rules,rules-techniques)
 //        node scripts/visual-block.mjs --block confirm --states confirm
+//        node scripts/visual-block.mjs --block settings --states settings,settings-light,settings-dark,settings-focus
 //        [--out docs/qa/g2/blocks/<block>]
 // Ports (PD-4): BINARKA_PORT_BASE (default 4173) + 4 for the design build, + 3 for the page preview (geometry), + 1 for the
 // adapter's own preview (pixels); scripts/capture-ports.mjs lists them. Neither preview outlives this process (stopOnExit).
@@ -79,13 +84,25 @@ const BLOCKS = {
   setup: SETUP_SELECTORS,
   // The confirmation dialog (update-confirm-dialog): the same four selectors as the key confirmDialog of quality/design-geometry.json.
   confirm: CONFIRM_SELECTORS,
+  // The settings panel (update-settings-panel): the same six selectors as the key settingsPanel of quality/design-geometry.json.
+  settings: [
+    '[data-section="settings"]',
+    '[data-control="theme"]',
+    '[data-control="language"]',
+    '[data-control="theme"] button[aria-checked="true"]',
+    '[data-control="language"] button[aria-checked="true"]',
+    '[data-action="settings-close"]',
+  ],
 };
 // States whose geometry is measured on top of the pixels. `rules` (block rules only) opens the panel first: the design route
 // /rules/ is open at load (a press would close it), the product presses «Правила» and waits for :popover-open.
 // `rules-techniques` stays pixel-only: its design route is scrolled to the end by a script.
 const SHEET_STATES = new Set(['setup', 'setup-four']);
 // `confirm` (block confirm only) opens the dialog: the design route /confirm/ is open at load, the product presses «Нова головоломка».
-const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules', 'confirm', ...SHEET_STATES]);
+// The settings states (block settings only): the stored theme the page side seeds before the load, as the capture adapter does.
+const SETTINGS_THEME = { settings: null, 'settings-light': 'light', 'settings-dark': 'dark', 'settings-focus': null };
+const SETTINGS_STATES = new Set(Object.keys(SETTINGS_THEME));
+const GEOMETRY_STATES = new Set(['default', 'four', 'eight', 'level', 'win', 'rules', 'confirm', ...SHEET_STATES, ...SETTINGS_STATES]);
 
 const args = process.argv.slice(2);
 const flag = (name, d) => {
@@ -172,6 +189,7 @@ async function designBoxes(shot) {
     await page.locator('[data-board]').waitFor();
     if (blockName === 'rules') await page.waitForSelector('[data-section="rules"]:popover-open'); // open at load on /rules/; never press
     if (parseShot(shot.name).state === 'confirm') await page.locator('dialog[data-dialog="confirm"][open]').waitFor(); // open at load on /confirm/; never press
+    if (blockName === 'settings') await page.waitForSelector('[data-section="settings"]:popover-open'); // open at load on /settings*/; never press
     const sheetState = SHEET_STATES.has(parseShot(shot.name).state);
     if (sheetState) await page.locator('[data-section="setup"]:popover-open').waitFor();
     // The unmodified design: the pixel region and the calibration shot (the frozen reference is the unmodified design).
@@ -200,7 +218,7 @@ async function pageBoxes(shot, url) {
   const { state } = parseShot(shot.name);
   const { ctx, page } = await newPage(shot);
   try {
-    await page.addInitScript(({ start, board }) => {
+    await page.addInitScript(({ start, board, theme }) => {
       let a = start >>> 0;
       Math.random = () => {
         a = (a + 0x6d2b79f5) >>> 0;
@@ -210,7 +228,8 @@ async function pageBoxes(shot, url) {
         return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
       };
       if (board) window.__binarkaCaptureBoard = board;
-    }, { start: SEED, board: captureBoardFor(state) });
+      if (theme) window.localStorage.setItem('binarka.theme', theme);
+    }, { start: SEED, board: captureBoardFor(state), theme: blockName === 'settings' ? SETTINGS_THEME[state] ?? null : null });
     await page.goto(url, { waitUntil: 'load' });
     await page.locator('[data-board] [data-cell]').first().waitFor();
     if (blockName === 'rules') {
@@ -221,6 +240,10 @@ async function pageBoxes(shot, url) {
       // The capture board has entries, so «Нова головоломка» asks first (FR-67), as the adapter's `confirm` driver.
       await page.locator('[data-action="new"]').click();
       await page.locator('dialog[data-dialog="confirm"][open]').waitFor();
+    }
+    if (blockName === 'settings') {
+      await page.locator('[data-action="settings"]').click();
+      await page.waitForSelector('[data-section="settings"]:popover-open');
     }
     if (SHEET_STATES.has(state)) {
       await page.locator('[data-action="setup"]').click();
@@ -286,8 +309,10 @@ try {
       const live = PNG.sync.read(d.png);
       entry.calibration = live.width === ref.width && live.height === ref.height ? score(ref, live) : 'size differs';
     }
-    // the rules block measures state `rules` only (the panel is open there); no other block measures state `rules`; the same for confirm
-    if (GEOMETRY_STATES.has(state) && (blockName === 'rules') === (state === 'rules') && (blockName === 'confirm') === (state === 'confirm')) {
+    // the rules block measures state `rules` only (the panel is open there), the confirm block state `confirm` only, the settings block the
+    // settings states only; no other block measures those states
+    const own = blockName === 'rules' ? state === 'rules' : blockName === 'confirm' ? state === 'confirm' : blockName === 'settings' ? SETTINGS_STATES.has(state) : state !== 'rules' && state !== 'confirm' && !SETTINGS_STATES.has(state);
+    if (GEOMETRY_STATES.has(state) && own) {
       entry.geometry = geometry(d.geoBoxes, await pageBoxes(shot, preview.url));
       entry.geometryOff = entry.geometry.filter((g) => g.off).length;
       entry.unpaired = entry.geometry.filter((g) => g.unpaired).length;

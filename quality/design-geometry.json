@@ -10398,5 +10398,1390 @@
         }
       }
     ]
+  },
+  "settingsPanel": {
+    "selectors": [
+      "[data-section=\"settings\"]",
+      "[data-control=\"theme\"]",
+      "[data-control=\"language\"]",
+      "[data-control=\"theme\"] button[aria-checked=\"true\"]",
+      "[data-control=\"language\"] button[aria-checked=\"true\"]",
+      "[data-action=\"settings-close\"]"
+    ],
+    "coverage": "sampled",
+    "provenance": {
+      "designCommit": "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04",
+      "designCssSha1": "d1b1255f4dff205d15d64850096429cd377e5fbf",
+      "designBuildSha1": "829e3e06aafc03c5f0b7cae1bc831bbd6c1bea60",
+      "browser": "Playwright chromium 156.0.8078.4, devices[\"Desktop Chrome\"], reducedMotion reduce, colorScheme light"
+    },
+    "cases": [
+      {
+        "shot": "320-light-settings",
+        "width": 320,
+        "height": 700,
+        "state": "settings",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-settings",
+        "boxes": {
+          "[data-section=\"settings\"]": {
+            "x": 0,
+            "y": 430.5,
+            "w": 320,
+            "h": 269.5
+          },
+          "[data-control=\"theme\"]": {
+            "x": 17,
+            "y": 471.75,
+            "w": 286,
+            "h": 52
+          },
+          "[data-control=\"language\"]": {
+            "x": 17,
+            "y": 564,
+            "w": 286,
+            "h": 52
+          },
+          "[data-control=\"theme\"] button[aria-checked=\"true\"]": {
+            "x": 176.21875,
+            "y": 475.75,
+            "w": 122.78125,
+            "h": 44
+          },
+          "[data-control=\"language\"] button[aria-checked=\"true\"]": {
+            "x": 21,
+            "y": 568,
+            "w": 137.5,
+            "h": 44
+          },
+          "[data-action=\"settings-close\"]": {
+            "x": 17,
+            "y": 640,
+            "w": 286,
+            "h": 44
+          }
+        },
+        "paint": {
+          "card": {
+            "theme": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            },
+            "language": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            }
+          },
+          "theme": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          },
+          "language": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          }
+        }
+      },
+      {
+        "shot": "375-light-settings",
+        "width": 375,
+        "height": 812,
+        "state": "settings",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-settings",
+        "boxes": {
+          "[data-section=\"settings\"]": {
+            "x": 0,
+            "y": 534.5,
+            "w": 375,
+            "h": 277.5
+          },
+          "[data-control=\"theme\"]": {
+            "x": 17,
+            "y": 583.75,
+            "w": 341,
+            "h": 52
+          },
+          "[data-control=\"language\"]": {
+            "x": 17,
+            "y": 676,
+            "w": 341,
+            "h": 52
+          },
+          "[data-control=\"theme\"] button[aria-checked=\"true\"]": {
+            "x": 212.875,
+            "y": 587.75,
+            "w": 141.125,
+            "h": 44
+          },
+          "[data-control=\"language\"] button[aria-checked=\"true\"]": {
+            "x": 21,
+            "y": 680,
+            "w": 165,
+            "h": 44
+          },
+          "[data-action=\"settings-close\"]": {
+            "x": 17,
+            "y": 752,
+            "w": 341,
+            "h": 44
+          }
+        },
+        "paint": {
+          "card": {
+            "theme": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            },
+            "language": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            }
+          },
+          "theme": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          },
+          "language": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          }
+        }
+      },
+      {
+        "shot": "768-light-settings",
+        "width": 768,
+        "height": 1024,
+        "state": "settings",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-settings",
+        "boxes": {
+          "[data-section=\"settings\"]": {
+            "x": 289,
+            "y": 96,
+            "w": 352,
+            "h": 270.5
+          },
+          "[data-control=\"theme\"]": {
+            "x": 306,
+            "y": 137.25,
+            "w": 318,
+            "h": 52
+          },
+          "[data-control=\"language\"]": {
+            "x": 306,
+            "y": 229.5,
+            "w": 318,
+            "h": 52
+          },
+          "[data-control=\"theme\"] button[aria-checked=\"true\"]": {
+            "x": 486.546875,
+            "y": 141.25,
+            "w": 133.453125,
+            "h": 44
+          },
+          "[data-control=\"language\"] button[aria-checked=\"true\"]": {
+            "x": 310,
+            "y": 233.5,
+            "w": 153.5,
+            "h": 44
+          },
+          "[data-action=\"settings-close\"]": {
+            "x": 306,
+            "y": 305.5,
+            "w": 318,
+            "h": 44
+          }
+        },
+        "paint": {
+          "card": {
+            "theme": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            },
+            "language": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            }
+          },
+          "theme": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          },
+          "language": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          }
+        }
+      },
+      {
+        "shot": "1024-light-settings",
+        "width": 1024,
+        "height": 768,
+        "state": "settings",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-settings",
+        "boxes": {
+          "[data-section=\"settings\"]": {
+            "x": 369,
+            "y": 96,
+            "w": 352,
+            "h": 270.5
+          },
+          "[data-control=\"theme\"]": {
+            "x": 386,
+            "y": 137.25,
+            "w": 318,
+            "h": 52
+          },
+          "[data-control=\"language\"]": {
+            "x": 386,
+            "y": 229.5,
+            "w": 318,
+            "h": 52
+          },
+          "[data-control=\"theme\"] button[aria-checked=\"true\"]": {
+            "x": 566.546875,
+            "y": 141.25,
+            "w": 133.453125,
+            "h": 44
+          },
+          "[data-control=\"language\"] button[aria-checked=\"true\"]": {
+            "x": 390,
+            "y": 233.5,
+            "w": 153.5,
+            "h": 44
+          },
+          "[data-action=\"settings-close\"]": {
+            "x": 386,
+            "y": 305.5,
+            "w": 318,
+            "h": 44
+          }
+        },
+        "paint": {
+          "card": {
+            "theme": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            },
+            "language": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            }
+          },
+          "theme": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          },
+          "language": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          }
+        }
+      },
+      {
+        "shot": "1366-light-settings",
+        "width": 1366,
+        "height": 650,
+        "state": "settings",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-settings",
+        "boxes": {
+          "[data-section=\"settings\"]": {
+            "x": 539,
+            "y": 96,
+            "w": 352,
+            "h": 270.5
+          },
+          "[data-control=\"theme\"]": {
+            "x": 556,
+            "y": 137.25,
+            "w": 318,
+            "h": 52
+          },
+          "[data-control=\"language\"]": {
+            "x": 556,
+            "y": 229.5,
+            "w": 318,
+            "h": 52
+          },
+          "[data-control=\"theme\"] button[aria-checked=\"true\"]": {
+            "x": 736.546875,
+            "y": 141.25,
+            "w": 133.453125,
+            "h": 44
+          },
+          "[data-control=\"language\"] button[aria-checked=\"true\"]": {
+            "x": 560,
+            "y": 233.5,
+            "w": 153.5,
+            "h": 44
+          },
+          "[data-action=\"settings-close\"]": {
+            "x": 556,
+            "y": 305.5,
+            "w": 318,
+            "h": 44
+          }
+        },
+        "paint": {
+          "card": {
+            "theme": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            },
+            "language": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            }
+          },
+          "theme": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          },
+          "language": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          }
+        }
+      },
+      {
+        "shot": "1440-light-settings",
+        "width": 1440,
+        "height": 900,
+        "state": "settings",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-settings",
+        "boxes": {
+          "[data-section=\"settings\"]": {
+            "x": 601,
+            "y": 96,
+            "w": 352,
+            "h": 270.5
+          },
+          "[data-control=\"theme\"]": {
+            "x": 618,
+            "y": 137.25,
+            "w": 318,
+            "h": 52
+          },
+          "[data-control=\"language\"]": {
+            "x": 618,
+            "y": 229.5,
+            "w": 318,
+            "h": 52
+          },
+          "[data-control=\"theme\"] button[aria-checked=\"true\"]": {
+            "x": 798.546875,
+            "y": 141.25,
+            "w": 133.453125,
+            "h": 44
+          },
+          "[data-control=\"language\"] button[aria-checked=\"true\"]": {
+            "x": 622,
+            "y": 233.5,
+            "w": 153.5,
+            "h": 44
+          },
+          "[data-action=\"settings-close\"]": {
+            "x": 618,
+            "y": 305.5,
+            "w": 318,
+            "h": 44
+          }
+        },
+        "paint": {
+          "card": {
+            "theme": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            },
+            "language": {
+              "backgroundColor": "rgb(255, 253, 248)"
+            }
+          },
+          "theme": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          },
+          "language": {
+            "unchosen": {
+              "color": "rgb(95, 85, 73)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(30, 33, 38)",
+              "backgroundColor": "rgb(246, 227, 212)",
+              "borderTopColor": "rgb(180, 70, 13)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          }
+        }
+      },
+      {
+        "shot": "375-light-settings-dark",
+        "width": 375,
+        "height": 812,
+        "state": "settings-dark",
+        "captureBoard": {
+          "size": 6,
+          "level": 1,
+          "givens": [
+            [
+              1,
+              null,
+              null,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              null,
+              1,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              1
+            ],
+            [
+              0,
+              null,
+              0,
+              null,
+              0,
+              null
+            ],
+            [
+              null,
+              1,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              0,
+              null
+            ]
+          ],
+          "entries": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              1,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              0,
+              0,
+              0,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              0
+            ],
+            [
+              null,
+              null,
+              null,
+              1,
+              null,
+              null
+            ]
+          ]
+        },
+        "afterLoad": "open-settings",
+        "storedTheme": "dark",
+        "boxes": {
+          "[data-section=\"settings\"]": {
+            "x": 0,
+            "y": 534.5,
+            "w": 375,
+            "h": 277.5
+          },
+          "[data-control=\"theme\"]": {
+            "x": 17,
+            "y": 583.75,
+            "w": 341,
+            "h": 52
+          },
+          "[data-control=\"language\"]": {
+            "x": 17,
+            "y": 676,
+            "w": 341,
+            "h": 52
+          },
+          "[data-control=\"theme\"] button[aria-checked=\"true\"]": {
+            "x": 117.953125,
+            "y": 587.75,
+            "w": 95.09375,
+            "h": 44
+          },
+          "[data-control=\"language\"] button[aria-checked=\"true\"]": {
+            "x": 21,
+            "y": 680,
+            "w": 165,
+            "h": 44
+          },
+          "[data-action=\"settings-close\"]": {
+            "x": 17,
+            "y": 752,
+            "w": 341,
+            "h": 44
+          }
+        },
+        "paint": {
+          "card": {
+            "theme": {
+              "backgroundColor": "rgb(36, 32, 27)"
+            },
+            "language": {
+              "backgroundColor": "rgb(36, 32, 27)"
+            }
+          },
+          "theme": {
+            "unchosen": {
+              "color": "rgb(184, 176, 164)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(241, 237, 228)",
+              "backgroundColor": "rgb(61, 43, 30)",
+              "borderTopColor": "rgb(243, 154, 91)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          },
+          "language": {
+            "unchosen": {
+              "color": "rgb(184, 176, 164)",
+              "backgroundColor": "rgba(0, 0, 0, 0)",
+              "borderTopColor": "rgba(0, 0, 0, 0)",
+              "borderTopWidth": "2px",
+              "fontWeight": "500",
+              "fontSize": "15px"
+            },
+            "chosen": {
+              "color": "rgb(241, 237, 228)",
+              "backgroundColor": "rgb(61, 43, 30)",
+              "borderTopColor": "rgb(243, 154, 91)",
+              "borderTopWidth": "2px",
+              "fontWeight": "700",
+              "fontSize": "15px"
+            }
+          }
+        }
+      }
+    ]
   }
 }
