@@ -1,0 +1,109 @@
+{
+  "slice": "2026-10-11-update-page-backdrop",
+  "reviewFile": "openspec/changes/archive/2026-10-11-update-page-backdrop/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_4151f42d-f49 (fb03fdb..bf74837, review run 1, the only run; persisted by hand; fix round 1 on the user's «Fix all, then archive (Recommended)» in 155bfa2 (wording of tasks.md/design.md in the archive commit bdf37d3); no confirming run)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_4151f42d-f49",
+      "title": "Run 8 masking explanation is contradicted by its own numbers for the soft-dim drops (768-dark-setup-four, 768-dark-rules)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef",
+      "evidence": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef: docs/qa/visual-diff/README.md § Run 8 limits the masking cause to the strong-dim shots (64rem and wider), adds \"Not explained yet: the soft-dim drops\" for 768-dark-rules (0.9314 to 0.8882) and 768-dark-setup-four (0.9004 to 0.8674) and says the earlier claim is withdrawn after review run wf_4151f42d-f49; docs/qa/update-page-backdrop/block-backdrop.txt gains the same limitation. Mapping: the finding's own \"disposition\" field in the review file, autonomy-log row 163 (\"The claim is withdrawn; they are marked not explained\")."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_4151f42d-f49",
+      "title": "Task 5.2 is ticked, but block-backdrop.txt does not report the light rules shots from 64rem separately, and the task's count of six does not match the shot set",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef",
+      "evidence": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef: docs/qa/update-page-backdrop/block-backdrop.txt gains \"Review fix round 1\" listing the FIVE light rules shots from 64rem separately (1024-light-rules; 1366 and 1440 rules and rules-techniques) with their pixel scores. The \"six\" to \"five\" wording in tasks.md 5.2 and design.md was corrected in the archive commit bdf37d39832a3a5cd7a1b71f8e0dcf2a28d7046a (archived tasks.md/design.md diff: \"corrected from \\\"six\\\" in review fix round 1\"), not in 155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef. Mapping: the finding's \"disposition\" field (\"five shots listed separately in block-backdrop.txt; \\\"six\\\" corrected in tasks.md and design.md\"), autonomy-log row 163 (\"block-file notes (five shots, not six ...)\")."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_4151f42d-f49",
+      "title": "Dark-rules masking explanation does not cover the soft-backdrop (768) dark rules drop",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef",
+      "evidence": "Duplicate of R1-F1 (the file's disposition: \"fixed with the first finding (duplicate)\"). 155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef: docs/qa/visual-diff/README.md § Run 8 limits the masking cause to the strong-dim shots (64rem and wider), adds \"Not explained yet: the soft-dim drops\" for 768-dark-rules (0.9314 to 0.8882) and 768-dark-setup-four (0.9004 to 0.8674) and says the earlier claim is withdrawn after review run wf_4151f42d-f49; docs/qa/update-page-backdrop/block-backdrop.txt gains the same limitation. Mapping: the finding's own \"disposition\" field in the review file, autonomy-log row 163 (\"The claim is withdrawn; they are marked not explained\")."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_4151f42d-f49",
+      "title": "Run 8 masking explanation is stated as the established cause, but its own numbers do not explain the soft-backdrop falls (768-dark-rules, 768-dark-setup-four)",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef",
+      "evidence": "Duplicate of R1-F1 (the file's disposition: \"fixed with the first finding (duplicate)\"). 155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef: docs/qa/visual-diff/README.md § Run 8 limits the masking cause to the strong-dim shots (64rem and wider), adds \"Not explained yet: the soft-dim drops\" for 768-dark-rules (0.9314 to 0.8882) and 768-dark-setup-four (0.9004 to 0.8674) and says the earlier claim is withdrawn after review run wf_4151f42d-f49; docs/qa/update-page-backdrop/block-backdrop.txt gains the same limitation. Mapping: the finding's own \"disposition\" field in the review file, autonomy-log row 163 (\"The claim is withdrawn; they are marked not explained\")."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_4151f42d-f49",
+      "title": "check-visual-run-8.txt lacks the timestamp, commit, exit code and orphan check that the README's Run 8 section claims from it",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef",
+      "evidence": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef: docs/qa/g2/check-visual-run-8.txt gains a 4-line header (command, run times 08:24:28 to 08:26:50, exit 1, tree 4ee5607 plus uncommitted work identical in src/ to e82eb20, the lsof orphan check of ports 4173/4174/4176/4177); output unchanged. Mapping: the finding's \"disposition\" field, autonomy-log row 163 (\"a header for check-visual-run-8.txt\")."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_4151f42d-f49",
+      "title": "Rules dialog opens scrolled to the bottom: the 'Правила' heading and the three basic rules are out of view",
+      "severity": "major",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "16d42ad7a7b30ce699dc19678bb0926b34b133b0",
+      "evidence": "Fixed later by slice update-rules-panel (G2 block A), not in this slice: 16d42ad7a7b30ce699dc19678bb0926b34b133b0 (\"feat: rules panel ... it opens at its top\") adds to src/ui/play-page.ts two listeners that set rulesPanel.scrollTop = 0 on close (beforetoggle, newState 'closed') and on open (toggle, newState 'open'), commented \"FR-57/A-59: the sticky button keeps the first opening at the top\"; red test tests/play-page-rules-scroll-reset.test.ts written first (autonomy-log row 177, scrollTop 399 at 320x700 before the fix). Mapping: the finding's \"disposition\" field (\"out of scope: the known open bug of autonomy-log row 137 ... left for ... the rules-panel block\"), autonomy-log rows 137, 163, 177, delivery plan §2.4 (\"later fixed by block A update-rules-panel\")."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_4151f42d-f49",
+      "title": "Per-block evidence reports 'geometry within 0.5px' when no geometry was measured",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef",
+      "evidence": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef: docs/qa/update-page-backdrop/block-backdrop.txt adds that the tool's last line \"geometry within 0.5px (coverage: sampled)\" is its fixed footer and that in this run NO geometry was measured, so the file claims no geometry result. Mapping: the finding's \"disposition\" field, autonomy-log row 163 (\"no geometry measured\")."
+    },
+    {
+      "id": "R1-F8",
+      "run": "wf_4151f42d-f49",
+      "title": "The rules-techniques crops are byte-identical to the rules crops, so they add no evidence",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef",
+      "evidence": "155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef: docs/qa/update-page-backdrop/block-backdrop.txt adds that the rules-techniques crops are byte-identical to the rules crops (checked with cmp on 1366-dark and 1440-light) and add no separate evidence. Mapping: the finding's \"disposition\" field (\"noted in block-backdrop.txt (checked with cmp)\"), autonomy-log row 163 (\"identical crops\")."
+    }
+  ],
+  "excluded": "wf_4151f42d-f49: 4 contested, 5 rejected (not dispositioned). Note: two contested (the PNG reader treating unknown filter types as Paeth, reported twice) were fixed anyway in 155bfa2 (e2e/nfr-14-backdrop.spec.ts), and one contested (current-state.md saying the work may be uncommitted) is marked fixed in the file.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-11-update-page-backdrop/review-findings.json",
+    "docs/autonomy-log.md rows 137, 162, 163, 176, 177",
+    "docs/handoff/delivery-plan-2026-10-12.md §2.4",
+    "git show 155bfa27bdb88bdf53c5f403e4d1da6e46d9d6ef",
+    "git show bdf37d39832a3a5cd7a1b71f8e0dcf2a28d7046a (archive commit; archived tasks.md and design.md)",
+    "git show 16d42ad7a7b30ce699dc19678bb0926b34b133b0 (update-rules-panel port, src/ui/play-page.ts)",
+    "docs/qa/update-page-backdrop/block-backdrop.txt, docs/qa/g2/check-visual-run-8.txt, docs/qa/visual-diff/README.md"
+  ],
+  "compilerNotes": "The review file has no top-level clean field (shape {slice, runs[]}, persisted by hand); reviewClean is set false because the run confirmed 8 findings and there was no confirming run. Each finding carries its own \"disposition\" field in the file; all mappings follow it and autonomy-log row 163. Conflict between sources: delivery plan §2.4 says \"Three «major» entries are one defect\" (the Run 8 masking claim), but the file records only ONE of those three as major (R1-F4); R1-F1 and R1-F3 are minor. Severities here are copied from the file. R1-F6 (rules dialog opens at its bottom) is a product-behaviour defect (src/ui/play-page.ts), so productCodeDefect is true, though it predates this slice (row 137) and the file says \"no defect in the product code of this change\"; it is fixed by the later slice update-rules-panel in 16d42ad, verified (cat-file, ancestor of HEAD, diff adds the scrollTop resets). R1-F2: the block-file part is in 155bfa2, the \"six\"->\"five\" wording in tasks.md/design.md is in the archive commit bdf37d3 (also verified ancestor). All fix commits verified: git cat-file -e and git merge-base --is-ancestor HEAD succeed."
+}

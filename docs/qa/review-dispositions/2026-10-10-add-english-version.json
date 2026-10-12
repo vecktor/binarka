@@ -1,0 +1,171 @@
+{
+  "slice": "2026-10-10-add-english-version",
+  "reviewFile": "openspec/changes/archive/2026-10-10-add-english-version/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_68de0c7a-b11 (9f82cd7..e4b13d1, first run)",
+    "wf_c33587f5-bd8 (9f82cd7..57a8a4c, confirming run after fix round 1: red 69a143c, fix 57a8a4c)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_68de0c7a-b11",
+      "title": "Moving root.replaceChildren to the end of mount means a remount on the same root no longer drops the previous mount's theme listener",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "57a8a4cb75d457d7f104ec6e4fcdba1f2324b1c8",
+      "evidence": "57a8a4c adds `isGone = (control) => !control.isConnected || root.contains(control)` in src/ui/play-page.ts and uses it to drop replaced mounts from both the language and theme mount sets (with the system listener). Red test «A remount on the same root replaces the previous mount» in 69a143c (tests/play-page-language.test.ts; docs/qa/add-english-version/fix-round-1-red.txt). Mapping: the file's disposition ('fixed (code): isGone() ...'), the verdict ('fix round 1: red 69a143c, fix 57a8a4c') and autonomy-log row 132 ('one minor code defect: a same-root remount kept the previous mount ... fix 57a8a4c')."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_68de0c7a-b11",
+      "title": "hintSentence requires a full Hint with a sentence, so hint() builds placeholder objects",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "57a8a4cb75d457d7f104ec6e4fcdba1f2324b1c8",
+      "evidence": "57a8a4c moves `Sentenceless<T>` to src/engine/types.ts, changes `hintSentence(h: Hint, ...)` to `hintSentence(h: Sentenceless<Hint>, ...)` in src/engine/sentences.ts, and removes the `sentence: ''` placeholders in src/engine/hint.ts. Mapping: the file's disposition ('fixed (types): hintSentence takes Sentenceless<Hint>; no placeholder objects') and the 57a8a4c message."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_68de0c7a-b11",
+      "title": "Task 6.1 is ticked but the 1280 px stills and the README.md it requires are missing",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "57a8a4cb75d457d7f104ec6e4fcdba1f2324b1c8",
+      "evidence": "57a8a4c adds docs/qa/add-english-version/1280-{default,hint,panel,sheet}-en.png, 1280-panel-uk.png, README.md and browser-check-run-fix-round-1.txt (108 PASS). Mapping: the file's disposition ('fixed (evidence): 1280 and dark stills, README.md, browser-check-run-fix-round-1.txt (108 PASS)')."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_68de0c7a-b11",
+      "title": "NFR-13 scenario requires valid-lang to pass in the English default and hint states; the e2e checks it only with the settings panel open",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "69a143ccea1b56fc79f231e06532005aad8920ee",
+      "evidence": "69a143c amends the delta scenario «English states pass the sweep» in openspec/changes/add-english-version/specs/play-page/spec.md: the GIVEN adds 'with the settings panel open' and the THEN requires valid-lang only with the panel open, with the reason (inapplicable while the options are hidden). The measurement was later captured in docs/qa/add-english-version/valid-lang-measure.txt (2ccb938, see R2-F6). Mapping: the file's disposition ('fixed (spec): the scenario now names the panel-open state for valid-lang ... the test is unchanged') and the 69a143c message."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_68de0c7a-b11",
+      "title": "English wording differs from the signed appendix in five places; documented as audit refinements but not yet confirmed by the user",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "ccd53ed3ad3174f2c12426f0d4d24aaab107ead7",
+      "evidence": "ccd53ed records the user's confirmation of the five audit refinements in docs/requirements.md A-54 (and current-state.md, next-session.md), closing the 'not yet confirmed by the user' point; autonomy-log row 133 quotes the user, in chat at about 12:20: «approve all five, record it». The session's own disposition at archive time was 'recorded: the five audit refinements are named in Scope NOT delivered next to A-54 at the hand-off; design.md l.78 updated' (design.md change in 57a8a4c). Mapping: the file's disposition plus autonomy-log row 133."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_68de0c7a-b11",
+      "title": "tasks.md 2.1 and design.md list four whole-object toEqual files; only three changed",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "57a8a4cb75d457d7f104ec6e4fcdba1f2324b1c8",
+      "evidence": "57a8a4c edits openspec/changes/add-english-version/tasks.md task 2.1 and design.md decision 1 (one line each). Mapping: the file's disposition ('fixed (docs): tasks 2.1 and design.md say three files; hint-look-ahead l.113 is a guard')."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_68de0c7a-b11",
+      "title": "Green-run evidence for the post-eval test run is a narrative note, not captured output",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "57a8a4cb75d457d7f104ec6e4fcdba1f2324b1c8",
+      "evidence": "57a8a4c appends to docs/qa/add-english-version-green-run.txt a captured section ('== first review fix round ... captured output': npm run test:run 1652 passed, exit 0; check-eval-ratchet PASS, exit 0). Mapping: the file's disposition ('fixed (evidence): captured test:run and ratchet output with exit codes appended')."
+    },
+    {
+      "id": "R1-F8",
+      "run": "wf_68de0c7a-b11",
+      "title": "English UI has no screenshots in dark theme or at 1280 width, and no English hint shot at 320",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "evidence": "57a8a4c adds the dark stills 375-dark-{default,hint,panel,sheet}-en.png and 375-dark-panel-uk.png and the five 1280 stills; the README states the sampling ('Light, 375 ... Light, 1280 ... Dark, 375 ... 320: 320-header-en.png, 320-panel-en.png'). PARTIAL: no English hint still at 320 was added (see compilerNotes). Mapping: the file's disposition ('fixed (evidence): dark and 1280 stills added; the README says sampled and light/dark at 375, light at 1280').",
+      "partialFixCommit": "57a8a4cb75d457d7f104ec6e4fcdba1f2324b1c8",
+      "waiver": "Partly fixed: 57a8a4c added the dark stills at 375 and the 1280 stills. No English hint still at 320 was added; left as it is (stills illustrate, the e2e and the visual gate decide)."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_c33587f5-bd8",
+      "title": "The red run never showed the language-set half of the fix failing",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "2ccb9383bdbc794718051c75fe1de62a365c6f00",
+      "evidence": "2ccb938 appends to docs/qa/add-english-version/fix-round-1-red.txt the mutant run ('only the language-set cleanup was reverted ... × A remount on the same root replaces the previous mount ... the language half on the render'). Mapping: the file's disposition and the 2ccb938 message."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_c33587f5-bd8",
+      "title": "Orphaned JSDoc comment in hint.ts is separated from withData by a blank line",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "2ccb9383bdbc794718051c75fe1de62a365c6f00",
+      "evidence": "2ccb938 rewrites the JSDoc in src/engine/hint.ts, removes the blank line so it attaches to withData, and names the defaults (axis 'row', line 0, digit 0, empties 1, other 0, steps 0). Mapping: the file's disposition ('fixed: the comment is attached to withData and names the defaults')."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_c33587f5-bd8",
+      "title": "The fix-round green-run capture only covers test:run and the ratchet; the post-fix lint, build, e2e 116 and a11y 67 have no captured output",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "2ccb9383bdbc794718051c75fe1de62a365c6f00",
+      "evidence": "2ccb938 appends to docs/qa/add-english-version-green-run.txt the section 'after-run fixes of the confirming run wf_c33587f5-bd8' with lint, tsc, test:run, build, openspec validate, eval ratchet, traceability, test:e2e and check:a11y, each with its exit code. Mapping: the file's disposition."
+    },
+    {
+      "id": "R2-F4",
+      "run": "wf_c33587f5-bd8",
+      "title": "tasks.md evidence lines for 4.1-4.6 and 6.1 still cite the pre-fix-round artifacts",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "2ccb9383bdbc794718051c75fe1de62a365c6f00",
+      "evidence": "2ccb938 rewrites the 'Evidence of 4.1 to 4.6' line (captured after the fix round at 57a8a4c) and the 'Evidence of 6.1' line (browser-check-run-fix-round-1.txt, 108 PASS, README) in openspec/changes/add-english-version/tasks.md. Mapping: the file's disposition."
+    },
+    {
+      "id": "R2-F5",
+      "run": "wf_c33587f5-bd8",
+      "title": "Task 6.1 specifies a manual real-browser smoke test; the evidence is a scripted Playwright run",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "2ccb9383bdbc794718051c75fe1de62a365c6f00",
+      "evidence": "2ccb938 renames task 6.1 from '**Manual real-browser smoke test**' to '**Real-browser smoke test** (done as a scripted Playwright check on the built page via `vite preview`, not a manual pass ...; the manual pass is under Scope NOT delivered)' in tasks.md. Mapping: the file's disposition ('fixed (wording) ... the manual pass goes under Scope NOT delivered'). Note: this fixes the mismatch by rewording; the manual pass itself was not done."
+    },
+    {
+      "id": "R2-F6",
+      "run": "wf_c33587f5-bd8",
+      "title": "The NFR-13 amendment says valid-lang inapplicability was 'measured', but no evidence path is given",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "2ccb9383bdbc794718051c75fe1de62a365c6f00",
+      "evidence": "2ccb938 adds docs/qa/add-english-version/valid-lang-measure.txt (axe on the built page at 57a8a4c: panel closed valid-lang inapplicable, panel open passes) and cites it in the delta spec and in the e2e/nfr-13-a11y.spec.ts comment. Mapping: the file's disposition."
+    }
+  ],
+  "excluded": "Run wf_68de0c7a-b11: 1 contested (English eval covers only pair, sandwich and count; recorded as Scope NOT delivered) and 1 rejected. Run wf_c33587f5-bd8: 2 contested (both fixed anyway in 2ccb938: the duplicate green-run item, and Sentenceless exported from src/engine/index.ts) and 4 rejected.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-10-add-english-version/review-findings.json",
+    "docs/autonomy-log.md rows 132, 133",
+    "git show 69a143ccea1b56fc79f231e06532005aad8920ee (spec.md)",
+    "git show 57a8a4cb75d457d7f104ec6e4fcdba1f2324b1c8 (src/engine/*, src/ui/play-page.ts, design.md, tasks.md, green-run.txt, stills, README.md)",
+    "git show 2ccb9383bdbc794718051c75fe1de62a365c6f00 (fix-round-1-red.txt, valid-lang-measure.txt, green-run.txt, tasks.md, spec.md, e2e/nfr-13-a11y.spec.ts, src/engine/hint.ts, src/engine/index.ts, ADR-0005)",
+    "git show ccd53ed3ad3174f2c12426f0d4d24aaab107ead7 (docs/requirements.md A-54)",
+    "docs/qa/add-english-version/README.md at 57a8a4c"
+  ],
+  "compilerNotes": "R1-F8 is only PARTLY fixed: 57a8a4c adds the dark (375) and 1280 stills, but no English hint still at 320 exists (the 320 stills are 320-header-en.png and 320-panel-en.png only); the README declares the sample instead. The signer may prefer to treat the '320 hint shot' half as waived. R1-F5 is cited as fixed by the later user confirmation commit ccd53ed (same slice trailer, after the archive commit bb83b0e); at archive time the session had only recorded it under Scope NOT delivered. R2-F5 was closed by rewording task 6.1, not by doing the manual pass (the manual pass was moved to Scope NOT delivered). All run-2 fixes were made after the confirming run and not re-reviewed (the file's verdict). The only product-code defect (R1-F1) has a verified fix commit. | Main session: R1-F8 re-classified from fixed to waived (only part of its title is closed)."
+}

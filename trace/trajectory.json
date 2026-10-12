@@ -8,25 +8,28 @@
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-04-add-puzzle-engine",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 8,
       "libDomains": [
         "engine"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-04-add-rules-and-reset",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 20,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-04-add-size-selector",
@@ -35,7 +38,8 @@
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-04-update-hint-sentences",
@@ -44,34 +48,38 @@
       "libDomains": [
         "engine"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-06-add-hinted-cell",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 6,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-06-update-controls-accessibility",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 8,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-06-update-page-layout",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 17,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-08-add-page-accessibility",
@@ -80,16 +88,18 @@
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-08-reconcile-ux-accessibility",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 5,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-08-update-win-apostrophe",
@@ -98,159 +108,177 @@
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-09-add-difficulty-engine",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 3,
       "libDomains": [
         "engine"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-09-add-level-selector",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 3,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-09-add-logo",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 3,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-09-add-rule-solvable-generator",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 2,
       "libDomains": [
         "engine"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-09-fix-action-button-targets",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 5,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-10-add-capture-board",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 8,
       "libDomains": [
         "ui"
       ],
-      "processComplete": false
+      "processComplete": true,
+      "designWaived": true
     },
     {
       "slice": "2026-10-10-add-english-version",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 9,
       "libDomains": [
         "engine",
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-10-add-theme-switch",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 18,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-10-fix-size-option-focus-ring",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 3,
       "libDomains": [
         "ui"
       ],
-      "processComplete": false
+      "processComplete": true,
+      "designWaived": true
     },
     {
       "slice": "2026-10-10-update-page-layout-geometry",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 5,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-10-update-page-palette",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 7,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-10-update-segmented-focus-ring-wording",
-      "reviewEvidence": "missing",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 2,
       "libDomains": [],
-      "processComplete": false
+      "processComplete": true,
+      "designWaived": true
     },
     {
       "slice": "2026-10-10-update-setup-sheet-start",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 22,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-11-add-violation-cause",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 9,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-11-update-page-backdrop",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 6,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-11-update-panel-shell",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 1,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-11-update-rules-panel",
-      "reviewEvidence": "unclean",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 6,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-12-update-confirm-dialog",
@@ -259,16 +287,18 @@
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-12-update-settings-panel",
-      "reviewEvidence": "missing",
+      "reviewEvidence": "dispositioned",
       "trailerCommits": 20,
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     },
     {
       "slice": "2026-10-12-update-setup-sheet",
@@ -277,7 +307,8 @@
       "libDomains": [
         "ui"
       ],
-      "processComplete": true
+      "processComplete": true,
+      "designWaived": false
     }
   ],
   "overlaps": [
@@ -294,114 +325,6 @@
   ],
   "failures": [],
   "warnings": [
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-04-add-puzzle-engine: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-04-add-rules-and-reset: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-06-add-hinted-cell: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-06-update-controls-accessibility: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-06-update-page-layout: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-08-reconcile-ux-accessibility: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-09-add-difficulty-engine: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-09-add-level-selector: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-09-add-logo: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-09-add-rule-solvable-generator: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-09-fix-action-button-targets: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-10-add-capture-board: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "process",
-      "msg": "2026-10-10-add-capture-board: archived change is missing design.md and/or tasks.md"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-10-add-english-version: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-10-add-theme-switch: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-10-fix-size-option-focus-ring: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "process",
-      "msg": "2026-10-10-fix-size-option-focus-ring: archived change is missing design.md and/or tasks.md"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-10-update-page-layout-geometry: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-10-update-page-palette: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-10-update-segmented-focus-ring-wording: review-findings.json is missing (review must have run clean before archive)"
-    },
-    {
-      "check": "process",
-      "msg": "2026-10-10-update-segmented-focus-ring-wording: archived change is missing design.md and/or tasks.md"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-10-update-setup-sheet-start: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-11-add-violation-cause: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-11-update-page-backdrop: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-11-update-panel-shell: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-11-update-rules-panel: review-findings.json is unclean (review must have run clean before archive)"
-    },
-    {
-      "check": "review-evidence",
-      "msg": "2026-10-12-update-settings-panel: review-findings.json is missing (review must have run clean before archive)"
-    },
     {
       "check": "in-scope",
       "msg": "src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift"

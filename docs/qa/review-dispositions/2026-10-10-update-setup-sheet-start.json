@@ -1,0 +1,360 @@
+{
+  "slice": "2026-10-10-update-setup-sheet-start",
+  "reviewFile": "openspec/changes/archive/2026-10-10-update-setup-sheet-start/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_910d6e21-34b (6fcd8d5..e9e8df0 as recorded = 5835437..4f95922 after the re-sign of autonomy-log row 125; first run)",
+    "wf_d2edbb2b-4db (6fcd8d5..0c9da1f as recorded = 5835437..89f84bc after the re-sign; confirming run after fix round 1: 36c538b, eb27808)",
+    "wf_571919ed-94e (5835437..f0c10a7; confirming run after the user-approved second fix round: red c4bcc3f, fix 773cb6e)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_910d6e21-34b",
+      "title": "Footer-1 sticky row has no opaque strip: scrolled sheet content shows through the column gap and around the buttons (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "36c538b99a365630ce922d87eb7158f8df084c1e",
+      "evidence": "36c538b adds `.setup-sheet:popover-open::before` in src/ui/style.css, a sticky strip spanning the grid behind the footer row with `background-color: var(--color-control-bg)`; eb27808 then fixes the grid placement the strip disturbed (explicit rows and columns). The strip itself later caused run 2's focus-obscured defect (R2-F1), fixed in 773cb6e. Mapping: the 36c538b message ('Footer-1: one opaque sticky strip behind the footer row') and autonomy-log row 124 (fix round 3e4fd71, f9ddf47 = 36c538b, eb27808 by row 125)."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_910d6e21-34b",
+      "title": "syncControls doc comment is stale: aria-checked, aria-disabled and the reason now come from the marked choice, not size and level (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "36c538b99a365630ce922d87eb7158f8df084c1e",
+      "evidence": "36c538b rewrites the JSDoc in src/ui/play-page.ts to '/** The summary from the board shown (`size`, `level`); aria-checked, aria-disabled and the reason from the marked choice (FR-100). */'. Mapping: the 36c538b message ('syncControls comment')."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_910d6e21-34b",
+      "title": "Undocumented toggle 'open' branch resets the marked choice; it goes against design decision 1 and no test covers it (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "36c538b99a365630ce922d87eb7158f8df084c1e",
+      "evidence": "36c538b documents the branch in openspec/changes/update-setup-sheet-start/design.md decision 1 (d) and a code comment, and adds the jsdom test «An opening toggle alone shows the board shown (a coalesced close and reopen)» in tests/play-page-marked-choice.test.ts ('seen failing when the branch is removed'). Mapping: the 36c538b message and autonomy-log row 124 ('opening-toggle reset documented and tested')."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_910d6e21-34b",
+      "title": "tasks.md checkboxes do not match reality: completed steps are unticked, and 3.6's signed-commit step is not met (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "36c538b99a365630ce922d87eb7158f8df084c1e",
+      "evidence": "36c538b updates openspec/changes/update-setup-sheet-start/tasks.md (22 lines: ticks with evidence paths, 1.3 closed, 3.6 left open because the commits were unsigned). The signed-commit half closed with the re-sign of autonomy-log row 125; 1fb6010 records it in task 3.6 ('implemented in e9e8df0 (now 4f95922, signed by the re-sign, row 125)'). Mapping: the 36c538b message ('tasks.md: ticks with evidence paths; 1.3 closed ...; 3.6 left open because the commits are not yet signed')."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_910d6e21-34b",
+      "title": "Green-run evidence is a summary of a working-tree run and has no traceability check output (task 4.5) (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "89f84bc95e642fc0b7f69f04f4d8481e6062a23d",
+      "evidence": "89f84bc rewrites docs/qa/update-setup-sheet-start-green-run.txt as captured output at f9ddf47 (= eb27808), including '## node scripts/check-traceability.mjs' ('113 MVP FRs checked — 0 failure(s)') and the FR-100/FR-101 warnings. Mapping: the 89f84bc message ('battery at f9ddf47 in docs/qa/update-setup-sheet-start-green-run.txt'); 0c9da1f -> 89f84bc by autonomy-log row 125."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_910d6e21-34b",
+      "title": "Pending action is a closure, not the {size, level} pair of the data model; the syncControls doc comment is stale (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "36c538b99a365630ce922d87eb7158f8df084c1e",
+      "evidence": "36c538b aligns the design.md data model to the code ('`pending` (none, or the action that performs the change; for «Почати» it captures the marked pair `{ size, level }` ...)') and rewrites the syncControls comment (see R1-F2). Fixed by aligning the doc, not by changing the closure. Mapping: the 36c538b message ('syncControls comment and the design.md data model (the pending action captures the marked pair)')."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_910d6e21-34b",
+      "title": "No rendered screenshot of the changed setup sheet, so the visual lens is NOT-EARNED for this slice (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "89f84bc95e642fc0b7f69f04f4d8481e6062a23d",
+      "evidence": "89f84bc adds the real-browser check docs/qa/update-setup-sheet-start/ (README.md, browser-check-run.txt 57 PASS) with ten stills: 375-mount, 375-sheet-marked, 375-sheet-4x4, 375-confirm, 1280-mount, 1280-sheet-marked, 1280-sheet-4x4, 1280-confirm, 320x700-sheet-4x4, 1366x650-sheet-4x4. Mapping: the 89f84bc message and autonomy-log row 124 ('browser check 57 PASS')."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Sticky footer strip can hide the focused level option and its ring in a scrolling sheet (focus obscured) (major)",
+      "severity": "major",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "773cb6edb82147bb8afdc40655ad71b07db3ac00",
+      "evidence": "773cb6e adds `scroll-padding-bottom: calc(2.75rem + 48px)` on the open sheet and `margin-bottom: 24px` on the level group in src/ui/style.css; measured after: 0 of 6 focused options under the strip at 320x700, 1366x650, 320x568 and 375x667 (docs/qa/update-setup-sheet-start/focus-obscured-repro.txt, «After»). Red: c4bcc3f (jsdom scroll-padding check and the e2e focus-not-obscured walk). Mapping: autonomy-log rows 124 (the defect, reproduced) and 126 (red c4bcc3f, fix 773cb6e), the file's verdict ('confirms both earlier majors fixed')."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Footer buttons placed in grid-row 3, while the design spans them over every row so the sticky footer works (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "773cb6edb82147bb8afdc40655ad71b07db3ac00",
+      "evidence": "773cb6e changes the footer buttons in src/ui/style.css from `grid-row: 3` to `grid-row: 1 / -1` with `align-self: end`. Mapping: the 773cb6e message ('the two buttons span every row with align-self: end (as in the design ...)') and autonomy-log row 126 ('buttons spanning every row')."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Opaque strip band takes no pointer events, so taps on it reach the hidden level option underneath (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "773cb6edb82147bb8afdc40655ad71b07db3ac00",
+      "evidence": "773cb6e removes `pointer-events: none` from `.setup-sheet:popover-open::before` in src/ui/style.css (comment: 'a tap on it reaches no hidden option, because it takes the tap itself'). Mapping: the 773cb6e message ('the strip ... takes taps itself instead of passing them to a hidden option') and autonomy-log row 126."
+    },
+    {
+      "id": "R2-F4",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Task 2.5 ticked although its 'one signed commit' clause is not met, while 3.6 is left open for the same reason (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "The clause was met by the re-sign of autonomy-log row 125 (6fcd8d5 -> 5835437 and e9e8df0 -> 4f95922, signed); 1fb6010 records it in tasks.md: task 2.5 'Signed since the re-sign (row 125: 6fcd8d5 is now 5835437)' and task 3.6 'implemented in e9e8df0 (now 4f95922, signed by the re-sign, row 125)'. Before that, 6e88d4c had annotated 2.5 with 'The \"one signed commit\" clause is open'. Mapping: 1fb6010 message ('tasks.md annotations') and autonomy-log row 125."
+    },
+    {
+      "id": "R2-F5",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Another slice's artifact committed under this slice's trailer (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "The add-theme-switch changed-tests list (docs/qa/add-theme-switch/changed-tests.md) was committed in 89f84bc under `Slice: update-setup-sheet-start`, and that commit's message discloses it: 'Also the add-theme-switch changed-tests list (test-engineer, tasks 1.1-1.2)'. History is not rewritten (the re-sign of autonomy-log row 125 kept a linear, byte-identical tree; no squash), so the commit stays as it is. No per-finding disposition was recorded by the session; this waiver text is the compiler's summary of the commit message."
+    },
+    {
+      "id": "R2-F6",
+      "run": "wf_d2edbb2b-4db",
+      "title": "«Почати» drawn as an outlined button, not the design's primary fill (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a14e861f60cfff04081489b3aa99842863f83ba7",
+      "evidence": "Fixed by a LATER slice, update-setup-sheet (G2 block B): a14e861 changes `.setup-start` in src/ui/style.css from `border-color: var(--color-focus); color: var(--color-text); background-color: var(--color-control-bg)` to `border-color: var(--color-primary); color: var(--color-primary-text); background-color: var(--color-primary)` (message: 'filled «Почати»'). At this slice's archive it was an open user decision (docs/qa/update-setup-sheet-start/README.md, 'Open layout notes for G2 ... «Почати» is outlined, not the design's filled primary (a decision for the user)'); the user then said «Почати» should be filled (autonomy-log row 135) and placed it within G2 (row 137)."
+    },
+    {
+      "id": "R2-F7",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Sticky Footer-1 can hide a keyboard-focused level option when the sheet scrolls (no scroll-padding) (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "773cb6edb82147bb8afdc40655ad71b07db3ac00",
+      "evidence": "Same defect as R2-F1 (another reviewer's report): 773cb6e adds `scroll-padding-bottom: calc(2.75rem + 48px)` on the open sheet in src/ui/style.css; red in c4bcc3f; measured in docs/qa/update-setup-sheet-start/focus-obscured-repro.txt «After». Mapping: autonomy-log row 126."
+    },
+    {
+      "id": "R2-F8",
+      "run": "wf_d2edbb2b-4db",
+      "title": "The click-through strip lets clicks reach options hidden behind the opaque footer (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "773cb6edb82147bb8afdc40655ad71b07db3ac00",
+      "evidence": "Same as R2-F3: 773cb6e removes `pointer-events: none` from the strip in src/ui/style.css, so it takes taps itself. Mapping: the 773cb6e message and autonomy-log row 126 ('the strip fading and taking taps')."
+    },
+    {
+      "id": "R2-F9",
+      "run": "wf_d2edbb2b-4db",
+      "title": "«Почати» focus-indicator scenario is checked only in the unmarked sheet, not in the marked state the scenario names (major)",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "c4bcc3f5f2b6fc8fff09550cc980611436a7316f",
+      "evidence": "c4bcc3f extends the NFR-13 focus sweep in e2e/nfr-13-a11y.spec.ts: «Поле 8×8» and «Мозколамка» marked by clicks, then Tab from the last level option reaches «Почати» (`data-action` 'setup-start') and its focus ring is recorded (' (sheet with a marked choice)'). Mapping: the c4bcc3f message ('the NFR-13 sweep gains «Почати» focus in the marked state (green, a coverage fix for the second major finding)') and autonomy-log row 126."
+    },
+    {
+      "id": "R2-F10",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Task 6.1 is ticked, but two of its sub-steps were not exercised (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "The two sub-steps were never exercised because the layout made them impossible: a click on «Підказка» while the sheet is open (the sheet covers it at both sizes) and the cell light dismiss at 1280×800 (no empty cell outside the centred panel). The session recorded this as a waiver in task 6.1 (6e88d4c: 'Waived by the layout (noted in the README)') and in docs/qa/update-setup-sheet-start/README.md ('Not exercised (the layout makes them impossible, noted in the log; waived in task 6.1)', 1fb6010)."
+    },
+    {
+      "id": "R2-F11",
+      "run": "wf_d2edbb2b-4db",
+      "title": "An unrelated slice's evidence file was committed in this slice's evidence commit (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Same item as R2-F5 (another reviewer's report): docs/qa/add-theme-switch/changed-tests.md is in 89f84bc, whose message discloses it ('Also the add-theme-switch changed-tests list (test-engineer, tasks 1.1-1.2)'). History is kept as it is (no squash; the re-sign of autonomy-log row 125 was byte-identical and linear). No per-finding disposition was recorded by the session; this waiver text is the compiler's summary."
+    },
+    {
+      "id": "R2-F12",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Resting «Почати» looks like a checked option, not the primary action (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a14e861f60cfff04081489b3aa99842863f83ba7",
+      "evidence": "Same root as R2-F6: a14e861 (later slice update-setup-sheet, G2 block B) fills «Почати» with `background-color: var(--color-primary)` and `color: var(--color-primary-text)` in src/ui/style.css, while checked options use the soft fill (`--color-primary-soft`), so «Почати» no longer looks like a checked option. Decision trail: autonomy-log rows 135 ('«Почати» should be filled') and 137 (within G2)."
+    },
+    {
+      "id": "R2-F13",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Hard-edged footer strip cuts scrolled text mid-line; review-set-13 uses a fade (minor)",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "773cb6edb82147bb8afdc40655ad71b07db3ac00",
+      "evidence": "773cb6e changes the strip's `background-color: var(--color-control-bg)` to `background: linear-gradient(to bottom, transparent, var(--color-control-bg) 16px)` in src/ui/style.css ('scrolled content fades out above it'). Mapping: the 773cb6e message ('the strip fades in (as in the design)') and autonomy-log row 126 ('the strip fading')."
+    },
+    {
+      "id": "R2-F14",
+      "run": "wf_d2edbb2b-4db",
+      "title": "Centred sheet covers the summary and header at desktop heights (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a14e861f60cfff04081489b3aa99842863f83ba7",
+      "evidence": "Fixed by a LATER slice, update-setup-sheet (G2 block B): a14e861 changes the min-width 48rem `.setup-sheet` rule in src/ui/style.css from `margin: auto` (centred) to `margin: 6rem auto auto` (below the 6rem header), and on windows at least 44rem tall `margin: 9.75rem auto 0` (below the summary). The frozen geometry fixture checked by e2e/nfr-14-setup-sheet.spec.ts expects the sheet top at y=96 at 1366×650 and y=156 at 768, 1024 and 1440. On a short window (1366×650) the sheet still covers the summary from 6rem: that is the signed placement (A-60; docs/handoff/setup-sheet-amendment-draft-2026-10-11.md row S2). At this slice's archive it was a G2 layout note ('not FR defects', docs/qa/update-setup-sheet-start/README.md)."
+    },
+    {
+      "id": "R3-F1",
+      "run": "wf_571919ed-94e",
+      "title": "Unit check on scroll-padding-bottom accepts 60px, which does not clear the footer (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "1fb6010 raises the floor in tests/play-page-stylesheet.test.ts from `toBeGreaterThanOrEqual(60)` to `toBeGreaterThanOrEqual(92)` (calc(2.75rem + 48px), the measured need) and the scenario wording in all three change folders. Mapping: the 1fb6010 message and autonomy-log row 126 ('the jsdom floor raised to the measured 92 px')."
+    },
+    {
+      "id": "R3-F2",
+      "run": "wf_571919ed-94e",
+      "title": "Delta spec cites autonomy-log row 126, which does not exist (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "1fb6010 adds row 126 to docs/autonomy-log.md ('Second review-gate fix round of update-setup-sheet-start ...'), so the cite resolves. Mapping: the 1fb6010 message ('autonomy-log row 126 (which the specs already cite)')."
+    },
+    {
+      "id": "R3-F3",
+      "run": "wf_571919ed-94e",
+      "title": "The automated focus-not-obscured check skips 320x568, the worst case in the repro (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "1fb6010 adds `[320, 568]` and `[375, 667]` to the focus-not-obscured walk in e2e/nfr-13-a11y.spec.ts and to the scenario's GIVEN. Mapping: the 1fb6010 message ('The e2e focus-not-obscured walk gains 320x568 and 375x667 (40 passed)')."
+    },
+    {
+      "id": "R3-F4",
+      "run": "wf_571919ed-94e",
+      "title": "FR-65 requirement text cites autonomy-log row 126, which does not exist (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "Same as R3-F2: the FR-65 requirement text added in c4bcc3f cites row 126; 1fb6010 adds row 126 to docs/autonomy-log.md. Mapping: the 1fb6010 message."
+    },
+    {
+      "id": "R3-F5",
+      "run": "wf_571919ed-94e",
+      "title": "docs/current-state.md was not updated after the second fix round and now makes false claims (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "c0ce96fbdaaa8ac2613c26f4ec841af3c5a8a9b1",
+      "evidence": "c0ce96f updates docs/current-state.md to 06:37: phase 'slice update-setup-sheet-start ARCHIVED (2026-10-10, after the user-approved second fix round)', the phase S line with red c4bcc3f / fix 773cb6e, and drops the 'STOPPED' claims. Mapping: the c0ce96f message ('Task 7.1: docs/current-state.md, the handoff table (S done, T next), autonomy-log row 127') and tasks.md 7.1 ('docs/current-state.md (06:37)')."
+    },
+    {
+      "id": "R3-F6",
+      "run": "wf_571919ed-94e",
+      "title": "tasks.md annotations are stale after the re-sign and the second fix round (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "1fb6010 updates openspec/changes/update-setup-sheet-start/tasks.md: 2.5 and 3.6 cite the re-signed ids, 4.x cite the battery at 773cb6e, 5.1 records all three runs and both fix rounds. Mapping: the 1fb6010 message ('tasks.md annotations')."
+    },
+    {
+      "id": "R3-F7",
+      "run": "wf_571919ed-94e",
+      "title": "The jsdom scroll-padding floor (60 px) is below the value already measured to fail; the 24 px level-group margin the fix needs has no requirement (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "1fb6010 raises the jsdom floor to 92 px (tests/play-page-stylesheet.test.ts and the scenario wording, which now says 'the e2e walk decides the fit'). The margin half got its requirement later: the signed setup-sheet amendment c82191a (A-60, SQ-5 in docs/requirements.md) makes the level group's bottom margin a stated requirement and departure, at 28px (not 24px), because a smaller margin puts the last option's ring under the strip; e2e/nfr-14-setup-sheet.spec.ts checks the computed 28px. Mapping: the 1fb6010 message; docs/requirements.md A-60."
+    },
+    {
+      "id": "R3-F8",
+      "run": "wf_571919ed-94e",
+      "title": "The browser-check README still describes the tree before the second fix round (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "1fb6010 adds to docs/qa/update-setup-sheet-start/README.md the section 'Re-run after the second fix round (2026-10-10 about 06:20, tree 773cb6e ...): 57 PASS, 0 FAIL' with the focus measurements and new stills. Mapping: the 1fb6010 message ('the browser-check README refreshed to the 773cb6e run')."
+    },
+    {
+      "id": "R3-F9",
+      "run": "wf_571919ed-94e",
+      "title": "At 1366x650 the centred sheet cuts across the header: the «Бінарка» wordmark and the «Правила» button are half covered (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a14e861f60cfff04081489b3aa99842863f83ba7",
+      "evidence": "Fixed by a LATER slice, update-setup-sheet (G2 block B): a14e861 replaces the centring `margin: auto` with `margin: 6rem auto auto` for min-width 48rem in src/ui/style.css, so at 1366×650 the sheet starts at the 6rem (96 px) header's bottom edge; quality/design-geometry.json (setupSheet key, checked by e2e/nfr-14-setup-sheet.spec.ts) expects y=96 at 1366×650 in both states. At this slice's archive it was a G2 layout note ('Open layout notes for G2 ... at 1366×650 the centred sheet covers half of the header', docs/qa/update-setup-sheet-start/README.md, 1fb6010)."
+    },
+    {
+      "id": "R3-F10",
+      "run": "wf_571919ed-94e",
+      "title": "The centred desktop sheet moves about 14px when 4×4 is marked, so the size control shifts under the pointer (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "a14e861f60cfff04081489b3aa99842863f83ba7",
+      "evidence": "Fixed by a LATER slice, update-setup-sheet (G2 block B): a14e861 removes the vertical centring (`margin: auto` -> `margin: 6rem auto auto`, and `margin: 9.75rem auto 0` on windows at least 44rem tall), so the sheet's top is anchored and growth goes downward. The frozen expected boxes in quality/design-geometry.json (setupSheet, checked by e2e/nfr-14-setup-sheet.spec.ts in the 'default' and 'four' states) give the same top edge in both states at every desktop viewport: y=96 at 1366×650, y=156 at 768×1024, 1024×768 and 1440×900. The size control is the sheet's first row, so it no longer shifts. At this slice's archive it was a G2 layout note (docs/qa/update-setup-sheet-start/README.md). The box tests pass: docs/qa/update-setup-sheet/green-run.txt («All 12 box tests of e2e/nfr-14-setup-sheet.spec.ts pass (sheet edges within 0.5 px of expected ...)»; later «Layout 178 of 178 (all 26 tests of e2e/nfr-14-setup-sheet.spec.ts ...)»)."
+    },
+    {
+      "id": "R3-F11",
+      "run": "wf_571919ed-94e",
+      "title": "No still shows the fixed major finding: every scrolled-sheet still is at scrollTop 0 with no option focused near the strip (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "1fb6010 adds docs/qa/update-setup-sheet-start/320x700-focus-last-level.png and 1366x650-focus-last-level.png (the focused last level option above the strip, scrollTop 70 and 28) and cites them in the README. Mapping: the 1fb6010 message ('Stills of the focused last level option at 320x700 and 1366x650')."
+    },
+    {
+      "id": "R3-F12",
+      "run": "wf_571919ed-94e",
+      "title": "README.md for the browser check is stale after 773cb6e: wrong tree and old scroll measurements (minor)",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "1fb6010def982a113d55c3939ab5fc70041b0bdf",
+      "evidence": "Same as R3-F8: 1fb6010 refreshes docs/qa/update-setup-sheet-start/README.md to the 773cb6e run, with the new inner-scroll and focus measurements. Mapping: the 1fb6010 message."
+    }
+  ],
+  "excluded": "Run wf_910d6e21-34b: 2 contested (startMarked repeats the hasEntries branch, not changed; «Почати» drawn with secondary colours while task 1.3 was open) and 4 rejected. Run wf_d2edbb2b-4db: 0 contested, 1 rejected. Run wf_571919ed-94e: 1 contested (the run's own coverage summary, information only) and 1 rejected.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-10-update-setup-sheet-start/review-findings.json",
+    "openspec/changes/archive/2026-10-10-update-setup-sheet-start/tasks.md",
+    "docs/autonomy-log.md rows 124, 125, 126, 127, 135, 137",
+    "docs/qa/update-setup-sheet-start/README.md and focus-obscured-repro.txt at 1fb6010",
+    "docs/qa/update-setup-sheet-start-green-run.txt at 89f84bc",
+    "docs/handoff/setup-sheet-amendment-draft-2026-10-11.md (S2, SQ-5, A-60); docs/requirements.md A-60 (c82191a)",
+    "quality/design-geometry.json setupSheet cases; e2e/nfr-14-setup-sheet.spec.ts header",
+    "git show 36c538b99a365630ce922d87eb7158f8df084c1e, eb27808af02637aab79fdc0948a807753bbcdee7, 89f84bc95e642fc0b7f69f04f4d8481e6062a23d, 6e88d4c31d42b3b1bfb1ee635c8250c783bb7307, c4bcc3f5f2b6fc8fff09550cc980611436a7316f, 773cb6edb82147bb8afdc40655ad71b07db3ac00, e4f9857ec5af34dc8fa6d98f11b0dc66e7784df3, 1fb6010def982a113d55c3939ab5fc70041b0bdf, c0ce96fbdaaa8ac2613c26f4ec841af3c5a8a9b1, a14e861f60cfff04081489b3aa99842863f83ba7, c82191adc32e6a1034021040747650e499983aee",
+    "docs/qa/update-setup-sheet/green-run.txt"
+  ],
+  "compilerNotes": "Runs 1 and 2 cite pre-re-sign ids; mapped by autonomy-log row 125 (6fcd8d5->5835437, e9e8df0->4f95922, 3e4fd71->36c538b, f9ddf47->eb27808, 0c9da1f->89f84bc, f78fce5->6e88d4c). Only post-re-sign shas are cited; all are verified commits and ancestors of HEAD. The review file has NO per-finding dispositions (persisted by hand, rows 124/126); mappings come from commit messages, autonomy-log rows 124-127, tasks.md and the QA README. Several confirmed titles are duplicates from different reviewers: R2-F1 = R2-F7 (focus obscured), R2-F3 = R2-F8 (click-through strip), R2-F5 = R2-F11 (theme artifact in 89f84bc), R2-F6 ~ R2-F12 («Почати» paint), R3-F2 ~ R3-F4 (row 126 cite), R3-F8 = R3-F12 (README stale), R3-F1 ~ R3-F7 (jsdom floor). Five entries (R2-F6, R2-F12, R2-F14, R3-F9, R3-F10) were open G2 layout notes / user decisions at archive and are cited as fixed by the LATER slice update-setup-sheet (a14e861, G2 block B); R3-F10 (the 14px shift) was not re-measured as such: the evidence is the anchored top margin and the frozen expected boxes (same top in 'default' and 'four' states) that e2e/nfr-14-setup-sheet.spec.ts checks; the box tests are recorded green in docs/qa/update-setup-sheet/green-run.txt (all 12 box tests, later 26 of 26); I did not run the e2e myself. R2-F14: on short desktop windows (1366×650) the sheet still covers the summary button by the signed design (A-60, S2); only the header is clear. R3-F7: the margin requirement landed later as 28px (A-60, SQ-5), not the 24px of 773cb6e. Three entries are waived (R2-F5, R2-F11, R2-F10); for R2-F5/R2-F11 the session recorded no disposition, so the waiver text is the compiler's reading of the 89f84bc commit message — the signer should confirm. All product-code defects (R1-F1, R2-F1, R2-F2, R2-F3, R2-F7, R2-F8, R2-F13) have verified fix commits."
+}

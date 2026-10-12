@@ -1,0 +1,100 @@
+{
+  "slice": "2026-10-12-update-settings-panel",
+  "reviewFile": "docs/qa/update-settings-panel/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_9a5a34f4-ca8 (18e5f3f..23d8605, pre-rebase SHAs; review run 1, the only run; fix round 1 committed as 3ada092 and, after the rebase onto main 27cef3e, as 0946310; no confirming run)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_9a5a34f4-ca8",
+      "title": "Refreeze rewrites the provenance of rulesPanel and setupSheet, against the spec's 'no existing provenance field is changed'",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c",
+      "evidence": "Group A (3 reports). 0946310852b94ccbf6a75c688dc0674d9ee0fa6c: scripts/freeze-design-geometry.mjs keyProvenance() now throws \"the <key> cases differ from the recorded ones under the same designCommit and designCssSha1\" when a key's cases drifted under the same design, instead of silently rewriting its provenance (a key keeps its recorded provenance while designCommit/designCssSha1 match); e2e/nfr-14-settings-panel.spec.ts:158 new test \"adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet ...\" pins each key's case count, cases SHA-1 and designCommit/designCssSha1/designBuildSha1 to main's values at 18e5f3f. At HEAD quality/design-geometry.json has rulesPanel.provenance.designBuildSha1 c3f5f81e... and setupSheet d1193198... (the recorded values, not 829e3e06...). Mapping: the file's \"disposition\" field (\"A fixed (per-key provenance keep-and-guard, fixture restored and refrozen, new e2e pin)\"), docs/qa/update-settings-panel/fix-round-1.txt § A, session-log rows 10-13."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_9a5a34f4-ca8",
+      "title": "`--block settings` with the default `--states default` waits on a popover that never opens",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c",
+      "evidence": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c: scripts/visual-block.mjs adds BLOCK_STATES (rules and settings blocks default to their own states) and throws at once \"block <name> opens its panel only in the states ...\" for a foreign state; re-run recorded in docs/qa/update-settings-panel/visual-block-settings.txt (26 settings shots, pixel 1, geometry 0 of 6 off). Mapping: the file's \"disposition\" field (\"C fixed (block default states, clear error)\"), fix-round-1.txt § C."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_9a5a34f4-ca8",
+      "title": "Refreeze rewrote the provenance of two existing keys, which the boxes scenario forbids, and the fixture test does not check those keys",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c",
+      "evidence": "Group A (3 reports; this is the major one). 0946310852b94ccbf6a75c688dc0674d9ee0fa6c: scripts/freeze-design-geometry.mjs keyProvenance() now throws \"the <key> cases differ from the recorded ones under the same designCommit and designCssSha1\" when a key's cases drifted under the same design, instead of silently rewriting its provenance (a key keeps its recorded provenance while designCommit/designCssSha1 match); e2e/nfr-14-settings-panel.spec.ts:158 new test \"adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet ...\" pins each key's case count, cases SHA-1 and designCommit/designCssSha1/designBuildSha1 to main's values at 18e5f3f. At HEAD quality/design-geometry.json has rulesPanel.provenance.designBuildSha1 c3f5f81e... and setupSheet d1193198... (the recorded values, not 829e3e06...). Mapping: the file's \"disposition\" field (\"A fixed (per-key provenance keep-and-guard, fixture restored and refrozen, new e2e pin)\"), docs/qa/update-settings-panel/fix-round-1.txt § A, session-log rows 10-13."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_9a5a34f4-ca8",
+      "title": "The scroll-padding check in the short-window walk has never been seen to fail",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c",
+      "evidence": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c: adds docs/qa/update-settings-panel/fix-round-1.txt § B, a recorded mutation run exactly as the finding suggested: .settings:popover-open scroll-padding-bottom set to 0, the short-window walk fails 3 of 3 on the mask check (1024x360, 568x320, 667x375), then style.css restored and 3 of 3 pass; no assertion changed. Mapping: the file's \"disposition\" field (\"B evidenced by a mutation run (3 failed on the mask check, 3 passed restored)\"), session-log row 10 (B, major)."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_9a5a34f4-ca8",
+      "title": "The colour scan leaves out .settings::backdrop, which the scenario's wording seems to include",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c",
+      "evidence": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c: openspec/changes/update-settings-panel/specs/play-page/spec.md scenario «The settings paint adds no colour literal, token or pair» now says \"except .settings::backdrop, which «The backdrops take the design's translucent tokens» owns\" (the finding's first option; the test already read it that way). Mapping: the file's \"disposition\" field (\"D scenario wording\"), fix-round-1.txt § D."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_9a5a34f4-ca8",
+      "title": "Line reference in a DELIBERATE CHANGE comment no longer matches proposal.md",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c",
+      "evidence": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c: tests/play-page-theme-stylesheet.test.ts:252 the DELIBERATE CHANGE comment now cites 225-244 instead of 228-241. Mapping: the file's \"disposition\" field (\"E comment\"), fix-round-1.txt § E."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_9a5a34f4-ca8",
+      "title": "Refreeze changed two existing provenance fields, which the spec scenario forbids, and the e2e test that claims 'nothing else changes' does not check them",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "0946310852b94ccbf6a75c688dc0674d9ee0fa6c",
+      "evidence": "Group A (3 reports; this one cites quality/design-geometry.json:7169). 0946310852b94ccbf6a75c688dc0674d9ee0fa6c: scripts/freeze-design-geometry.mjs keyProvenance() now throws \"the <key> cases differ from the recorded ones under the same designCommit and designCssSha1\" when a key's cases drifted under the same design, instead of silently rewriting its provenance (a key keeps its recorded provenance while designCommit/designCssSha1 match); e2e/nfr-14-settings-panel.spec.ts:158 new test \"adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet ...\" pins each key's case count, cases SHA-1 and designCommit/designCssSha1/designBuildSha1 to main's values at 18e5f3f. At HEAD quality/design-geometry.json has rulesPanel.provenance.designBuildSha1 c3f5f81e... and setupSheet d1193198... (the recorded values, not 829e3e06...). Mapping: the file's \"disposition\" field (\"A fixed (per-key provenance keep-and-guard, fixture restored and refrozen, new e2e pin)\"), docs/qa/update-settings-panel/fix-round-1.txt § A, session-log rows 10-13. The fixture itself: the pre-rebase fix commit 3ada092 restored quality/design-geometry.json (4 lines) to the recorded provenance; after the rebase the fixture was refrozen on top of main's file (session-log row 13), so at HEAD the recorded values come through the rebased chain (fd6a0b4 on top of 605b7e5), not through 0946310852b94ccbf6a75c688dc0674d9ee0fa6c, which does not touch the fixture."
+    }
+  ],
+  "excluded": "wf_9a5a34f4-ca8: 3 contested, 4 rejected (not dispositioned). Note: the contested \"The walk checks the bottom of the panel but not the top\" (group F) was recorded as not delivered, item (8) of the ADDED requirement's list, on the user's «Record as not delivered» (fix-round-1.txt § F).",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "docs/qa/update-settings-panel/review-findings.json",
+    "docs/qa/update-settings-panel/fix-round-1.txt",
+    "docs/qa/update-settings-panel/session-log.md rows 9-15",
+    "docs/qa/update-settings-panel/visual-block-settings.txt",
+    "git show 0946310852b94ccbf6a75c688dc0674d9ee0fa6c",
+    "git show 3ada092d2dfac1f6a394b119910d690a4775d2a4 (pre-rebase original)",
+    "git log -- quality/design-geometry.json; quality/design-geometry.json at HEAD",
+    "e2e/nfr-14-settings-panel.spec.ts:158"
+  ],
+  "compilerNotes": "The review file has no top-level clean field (fields slice, workflow, runId, baseRef, headRef, confirmed, contested, rejected, disposition); reviewClean is set false because the run confirmed 7 findings. The review file is NOT in its archive folder: openspec/changes/archive/2026-10-12-update-settings-panel/ exists but holds only design.md, proposal.md, specs/, tasks.md; the file lives at docs/qa/update-settings-panel/review-findings.json. The fix round named in the brief, 3ada092, FAILS git merge-base --is-ancestor HEAD (it is on backup/update-settings-panel-pre-rebase only). The rebased copy 0946310852b94ccbf6a75c688dc0674d9ee0fa6c is an ancestor and is used for all seven entries. Its patches for scripts/visual-block.mjs, e2e/nfr-14-settings-panel.spec.ts, tests/play-page-theme-stylesheet.test.ts, the spec delta and fix-round-1.txt are identical to 3ada092; its freeze-design-geometry.mjs patch differs because main had already gained keyProvenance from update-confirm-dialog (605b7e5), so the rebased commit adds only the throw-on-drift guard; and it does not touch quality/design-geometry.json (3ada092 did). The file's confirmed findings carry no A-F labels; the mapping to groups A (entries 1, 3, 7), B (4), C (2), D (5), E (6) is by content against fix-round-1.txt and session-log row 10. \"No confirming run\" is taken from the brief and is consistent with the session log (no second run recorded); it was not otherwise verified."
+}

@@ -1,0 +1,220 @@
+{
+  "slice": "2026-10-09-add-difficulty-engine",
+  "reviewFile": "openspec/changes/archive/2026-10-09-add-difficulty-engine/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_14ba91fd-ac6 (f8d305a..5038c70, review run 1, before fix round 261782b)",
+    "wf_151b7f7c-5bc (5038c70..261782b, confirming run after 261782b; second small fix round in archive commit 3d64c9d by the user's choice (autonomy-log row 99), not re-reviewed)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_14ba91fd-ac6",
+      "title": "Green-run record falsely says the implementer added a test; it is a renamed red-phase test",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "261782bc74d9be25a9467fb605391c10331cd802",
+      "evidence": "docs/qa/add-difficulty-engine-green-run.txt gains «CORRECTION (review-gate wf_14ba91fd-ac6, finding confirmed): no test was added. The test «hint of the index is the hint of the engine …» … already existed in the red commit 1f8af34 …; task 2.8a only renamed it.» mapped by the compiler from rounds[0].dispositions[\"all confirmed findings\"] («fixed in 261782b: …») + 261782b diff and commit body."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_14ba91fd-ac6",
+      "title": "The 'hint of the index is the hint of the engine' test can never fail",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "261782bc74d9be25a9467fb605391c10331cd802",
+      "evidence": "tests/generator-run-out.test.ts: imports hint as engineHint from ../src/engine/hint and asserts expect(indexModule.hint).toBe(engineHint) (was .toBe(hint) of the same binding). mapped by the compiler from rounds[0].dispositions[\"all confirmed findings\"] («fixed in 261782b: …») + 261782b diff and commit body."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_14ba91fd-ac6",
+      "title": "InvalidLevelError says levels 2-4 need size 6 or 8, but sizes 10-16 are accepted at every level",
+      "severity": "minor",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "261782bc74d9be25a9467fb605391c10331cd802",
+      "evidence": "src/engine/types.ts InvalidLevelError message 'Levels 2 to 4 need a size of 6 or 8.' -> 'Levels 2 to 4 need a size of 6 or more.' mapped by the compiler from rounds[0].dispositions[\"all confirmed findings\"] («fixed in 261782b: …») + 261782b diff and commit body. Commit body: behaviour unchanged, only the text."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_14ba91fd-ac6",
+      "title": "Implementer-added test 'hint of the index is the hint of the engine' is vacuous",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "261782bc74d9be25a9467fb605391c10331cd802",
+      "evidence": "Duplicate of R1-F2: tests/generator-run-out.test.ts now compares the index export with src/engine/hint. mapped by the compiler from rounds[0].dispositions[\"all confirmed findings\"] («fixed in 261782b: …») + 261782b diff and commit body."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_14ba91fd-ac6",
+      "title": "Evidence misstates the implementer's test as 'ADDED': it was renamed from the red commit and is now a tautology",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "261782bc74d9be25a9467fb605391c10331cd802",
+      "evidence": "Duplicate of R1-F1: CORRECTION in docs/qa/add-difficulty-engine-green-run.txt. mapped by the compiler from rounds[0].dispositions[\"all confirmed findings\"] («fixed in 261782b: …») + 261782b diff and commit body."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_14ba91fd-ac6",
+      "title": "tasks.md section 1 (1.1 to 1.13) is still unticked although its artifacts exist",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "261782bc74d9be25a9467fb605391c10331cd802",
+      "evidence": "openspec/changes/add-difficulty-engine/tasks.md: 13 lines of section 1 change to [x] (1.1 to 1.13) with evidence. mapped by the compiler from rounds[0].dispositions[\"all confirmed findings\"] («fixed in 261782b: …») + 261782b diff and commit body."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_14ba91fd-ac6",
+      "title": "The differential test compares only {solved, steps}, while design decision 3 promises same cells, values and rules",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "261782bc74d9be25a9467fb605391c10331cd802",
+      "evidence": "openspec/changes/add-difficulty-engine/design.md decision 3 now says the differential test compares «same `{ solved, steps }`; both share `selectFill`, so cells, values and rules are not compared». mapped by the compiler from rounds[0].dispositions[\"all confirmed findings\"] («fixed in 261782b: …») + 261782b diff and commit body."
+    },
+    {
+      "id": "R1-F8",
+      "run": "wf_14ba91fd-ac6",
+      "title": "Residual wide typing helper tests/helpers/hint-type.ts is not in the design",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "261782bc74d9be25a9467fb605391c10331cd802",
+      "evidence": "openspec/changes/add-difficulty-engine/design.md adds «`tests/helpers/hint-type.ts` (task 2.8a): a typing-only identity cast …». mapped by the compiler from rounds[0].dispositions[\"all confirmed findings\"] («fixed in 261782b: …») + 261782b diff and commit body."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_151b7f7c-5bc",
+      "title": "Smoke step 3.8(e) fails its declared bound for 6x6, but smoke.txt marks it PASS by changing the criterion",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "docs/qa/add-difficulty-engine/smoke.txt (e) line now reads «FAILED against task 3.8(e) as written … CORRECTION (confirming review-gate wf_151b7f7c-5bc): this line first said «PASS for generation», which changed the criterion after the fact»; tasks.md 3.8(e) carries «[AMENDED 2026-10-09, autonomy-log row 99: … the CLI wall time is recorded, not gated]». The 500 ms CLI bound was re-scoped by the user's decision (row 99), not met. mapped by the compiler from the top-level dispositions[\"smoke 3.8(e) recorded PASS by changing its criterion (major)\"]."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_151b7f7c-5bc",
+      "title": "smoke.txt error transcript shows the old InvalidLevelError text that the same commit changed",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "smoke.txt adds «## (d) re-run at 261782b + working tree, 16:54» with «[--size 4 --level 2] … stderr: Levels 2 to 4 need a size of 6 or more.» mapped by the compiler from the top-level dispositions[\"README / task 2.1 size wording; smoke (d) stale error text (minor)\"]."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_151b7f7c-5bc",
+      "title": "Task 2.1 and the README still describe the old size wording",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "README.md: «exist for sizes … 8 only;» -> «need a size of 6 or more (tested … timed at 6 and 8; larger sizes are accepted but not claimed, FR-18)»; tasks.md 2.1 now shows the shipped text «levels 2 to 4 need a size of 6 or more (shipped text after the review fix round 261782b; was «… 6 or 8»)». mapped by the compiler from the top-level dispositions[\"README / task 2.1 size wording; …\"]."
+    },
+    {
+      "id": "R2-F4",
+      "run": "wf_151b7f7c-5bc",
+      "title": "solveByRules semantics changed without a red test; docstring and differential oracle now disagree with it",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Partly fixed, partly left: the four regression tests added in 3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1 (tests/generator-rule-solvable.test.ts) pin the new solveByRules semantics (closes «without a red test»); for the oracle the session recorded «the differential test compares {solved, steps} on boards that are subsets of a valid solution, where both agree» (mapped by the compiler from the top-level dispositions[\"solveByRules docstring/differential oracle vs new semantics (minor)\"]). The docstring was not changed.",
+      "evidence": "src/engine/rule-solve.ts lines 5-10 at HEAD still say «`solved` is true when no empty cell is left», while the code returns { solved: !broken } (changed in 261782b)."
+    },
+    {
+      "id": "R2-F5",
+      "run": "wf_151b7f7c-5bc",
+      "title": "Smoke step 3.8(g) no-rule check and (h) final-board screenshot are not satisfied as specified",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "(h) fixed in 3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1 (docs/qa/add-difficulty-engine/375-6x6-after-last-hint.jpg added, page-4x4-violation-broken-hint.jpg replaced); (g) left open by the session's recorded decision: «the no-rule sentence is verified by unit tests and the served module, not reached live in 30 scripted tries» (mapped by the compiler from the top-level dispositions[\"smoke (g) no-rule sentence not reached live; (h) …\"]; smoke.txt line 84 «Still not reached live: the no-rule sentence»)."
+    },
+    {
+      "id": "R2-F6",
+      "run": "wf_151b7f7c-5bc",
+      "title": "The two engine fixes have no regression tests: putting back the old rule-solve.ts and techniques.ts still passes all 1111 tests",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "tests/generator-rule-solvable.test.ts adds it.each of three full boards that break a rule -> {solved:false, steps:0} and a 6x6 board whose last forced fill makes a duplicate column -> {solved:false, steps:1}; src/engine/techniques.ts removes the unique-lines guard (identical to 5038c70). Commit body: shown failing on 5038c70's rule-solve.ts (4 failed). mapped by the compiler from the top-level dispositions[\"the two hardening fixes have no regression tests (major)\"]; autonomy-log row 99."
+    },
+    {
+      "id": "R2-F7",
+      "run": "wf_151b7f7c-5bc",
+      "title": "README says levels 2 to 4 are only for sizes 6 and 8, but the engine and CLI accept sizes 10 to 16, and the new error text says 'a size of 6 or more'",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "Duplicate wording of R2-F3: README.md now says levels 2 to 4 «need a size of 6 or more». mapped by the compiler from the top-level dispositions[\"README / task 2.1 size wording; …\"]."
+    },
+    {
+      "id": "R2-F8",
+      "run": "wf_151b7f7c-5bc",
+      "title": "smoke.txt (d) was captured at 5038c70 and still shows the old error text for --size 4 --level 2",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "Duplicate of R2-F2: smoke.txt (d) re-run at 16:54 with the new error text. mapped by the compiler from the top-level dispositions[\"README / task 2.1 size wording; smoke (d) stale error text (minor)\"]."
+    },
+    {
+      "id": "R2-F9",
+      "run": "wf_151b7f7c-5bc",
+      "title": "Smoke step 3.8(e) misses its stated 500 ms bound, yet smoke.txt marks it PASS 'for generation'",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "Duplicate of R2-F1: smoke.txt (e) CORRECTION to FAILED-as-written; task 3.8(e) amended by user decision (row 99). mapped by the compiler from the top-level dispositions[\"smoke 3.8(e) recorded PASS by changing its criterion (major)\"]."
+    },
+    {
+      "id": "R2-F10",
+      "run": "wf_151b7f7c-5bc",
+      "title": "Smoke step 3.8(h) asks for a screenshot of a board after the last hint; only a violation screenshot exists",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "docs/qa/add-difficulty-engine/375-6x6-after-last-hint.jpg added (smoke.txt «(h) screenshots, re-taken 16:55»: 6x6 finished by 27 hints, last hint sentence and win message visible). mapped by the compiler from the top-level dispositions[\"smoke (g) …; (h) screenshot after the last hint missing; …\"]."
+    },
+    {
+      "id": "R2-F11",
+      "run": "wf_151b7f7c-5bc",
+      "title": "Violation screenshot cited as FR-26 evidence leaves out the hint button and the FR-26 sentence",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1",
+      "evidence": "docs/qa/add-difficulty-engine/page-4x4-violation-broken-hint.jpg replaced (11732 -> 28159 bytes); smoke.txt: «Підказка» visible and the FR-26 sentence «Спершу виправте порушення правил, підсвічене на полі.» visible. mapped by the compiler from the top-level dispositions[\"…; violation shot without the sentence (minor)\"]."
+    }
+  ],
+  "excluded": "wf_14ba91fd-ac6: 2 contested (solveByRules solved-before-violation-check; technique 'unique' unforced 1 - o[p1]), 5 rejected. wf_151b7f7c-5bc: 1 contested (unique-lines guard dead code; accepted and removed in 3d64c9d), 5 rejected.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-09-add-difficulty-engine/review-findings.json",
+    "docs/autonomy-log.md rows 99, 100",
+    "docs/qa/add-difficulty-engine-green-run.txt",
+    "docs/qa/add-difficulty-engine/smoke.txt",
+    "openspec/changes/archive/2026-10-09-add-difficulty-engine/tasks.md",
+    "src/engine/rule-solve.ts (HEAD)",
+    "git show 261782bc74d9be25a9467fb605391c10331cd802",
+    "git show 3d64c9db1e9cfef8e5fbbfc2712b89357062c4c1"
+  ],
+  "compilerNotes": "LOUD: src/engine/rule-solve.ts docstring (lines 5-10 at HEAD) still says «`solved` is true when no empty cell is left», which is false since 261782b (returns solved: !broken). This is why R2-F4 is waived, not fixed. A comment, not behaviour, so not marked productCodeDefect; a one-line doc fix would close it. R1-F3 (InvalidLevelError text) is marked productCodeDefect: true by the compiler because it is wrong user-facing text in src/engine/types.ts, although the session and row 99 say «no correctness defect / no product defect». It is fixed in 261782b, so no open product-code defect. R2-F1/R2-F9 (3.8(e)) are \"fixed\" as evidence-honesty findings (smoke.txt now says FAILED as written); the 500 ms CLI bound itself was re-scoped by the user (row 99), not met. Two src/ behaviour changes came from CONTESTED, not confirmed, findings, so they are not entries: run 1 contested «solveByRules reports solved before checking whether the final fill caused a violation» (fixed in 261782b src/engine/rule-solve.ts, regression tests in 3d64c9d) and run 2 contested «unique-lines guard is dead code» (removed in 3d64c9d). Severity: run 1 all minor per 261782b body («8 minor confirmed»); run 2 major for the 3.8(e) pair and the regression-test finding per dispositions keys, minor otherwise. Mapping from finding titles to disposition keys is the compiler's; keys are paraphrases. All fix commits verified with cat-file, merge-base --is-ancestor HEAD and git show."
+}

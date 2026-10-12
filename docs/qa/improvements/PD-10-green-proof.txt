@@ -1,0 +1,48 @@
+# PD-10 green proof, 2026-10-12 16:39 +0530, stream P (claude/feynman-process, HEAD 6fef448 + the uncommitted PD-10 change), after the user's signatures (session log P11)
+
+## 1. node scripts/check-trajectory.mjs --release --check-fresh (writes nothing)
+WARN  [in-scope] src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift
+
+Scope: 31 archived slice(s)
+Result: PASS, 1 warning(s)
+# exit 0
+
+## 2. The report (default mode, regenerated): review evidence and design+tasks columns
+   7  clean | yes 
+   3  dispositioned | waived 
+  21  dispositioned | yes 
+
+## 3. Negative probe: node docs/qa/improvements/PD-10-probe.mjs docs/qa/review-dispositions/2026-10-04-add-puzzle-engine.json (synthetic signature; the signed file restored after)
+
+## A valid, signed copy
+
+## signature null
+FAIL  [review-evidence] 2026-10-04-add-puzzle-engine: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-04-add-puzzle-engine.json is not signed (signature is null) (review must have run clean before archive, or its findings be dispositioned and signed)
+
+## a fixCommit that does not exist
+FAIL  [review-evidence] 2026-10-04-add-puzzle-engine: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-04-add-puzzle-engine.json finding 1 ("tasks.md 5.3 still points to the deleted shim src/node-env.d"): fixCommit deadbeefdeadbeefdeadbeefdeadbeefdeadbeef does not exist (review must have run clean before archive, or its findings be dispositioned and signed)
+
+## a fixCommit that exists but is not on HEAD (3ada092, the pre-rebase settings fix)
+FAIL  [review-evidence] 2026-10-04-add-puzzle-engine: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-04-add-puzzle-engine.json finding 1 ("tasks.md 5.3 still points to the deleted shim src/node-env.d"): fixCommit 3ada092 is not an ancestor of HEAD (review must have run clean before archive, or its findings be dispositioned and signed)
+
+## a waived product-code defect
+FAIL  [review-evidence] 2026-10-04-add-puzzle-engine: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-04-add-puzzle-engine.json finding 1 ("tasks.md 5.3 still points to the deleted shim src/node-env.d"): a product-code defect cannot be waived (it needs a fix commit) (review must have run clean before archive, or its findings be dispositioned and signed)
+
+## a confirmed title left out (findings emptied)
+FAIL  [review-evidence] 2026-10-04-add-puzzle-engine: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-04-add-puzzle-engine.json 1 confirmed title(s) of openspec/changes/archive/2026-10-04-add-puzzle-engine/review-findings.json have no entry (first: "tasks.md 5.3 still points to the deleted shim src/node-env.d") (review must have run clean before archive, or its findings be dispositioned and signed)
+
+## a design waiver pointing at a missing file
+FAIL  [review-evidence] 2026-10-04-add-puzzle-engine: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-04-add-puzzle-engine.json designWaiver.pointsAt docs/no-such-file.md does not exist (review must have run clean before archive, or its findings be dispositioned and signed)
+
+# restored docs/qa/review-dispositions/2026-10-04-add-puzzle-engine.json (as it was)
+
+## 4. Battery on this tree (16:41): lint 0; unit 1993 of 1993; build 0; openspec strict 2 of 2; eval ratchet PASS. scripts/ is in eslint's globalIgnores (eslint.config.*:14), so check-trajectory.mjs was checked with node --check only.
+
+## 5. Integrity before the re-seal
+FAIL  [scripts/check-trajectory.mjs] gate-bearing file drift (hash drift) vs factory-lock.json with NO commit touching it whose message contains "Refs: PD-<n>". Gate scripts may only change through an approved improvement (executed red-to-green proof + human approval). Restore the locked file or land the approved "Refs: PD-<n>" commit.
+
+Scope: 27 locked file(s)
+Result: FAIL, 1 warning(s)
+## 6. After the re-seal (--init-lock --adaptation "PD-10: …")
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)

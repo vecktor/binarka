@@ -1,0 +1,77 @@
+{
+  "slice": "2026-10-11-add-violation-cause",
+  "reviewFile": "openspec/changes/archive/2026-10-11-add-violation-cause/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_00db6f47-604 (8bbe6e8..a9abb3f, review run 1, the only run; fix round 1 approved by the user «Fix 3-6, defer 1-2 (Recommended)», fix commit 60db15f, archive 269b66f; no confirming re-run)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_00db6f47-604",
+      "title": "The cause suffix logic is written twice, once in the Ukrainian cellLabel and once in the English table",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Deferred by the user's choice «Fix 3-6, defer 1-2 (Recommended)» on 2026-10-11 (autonomy-log row 167): per the review file's dispositionNote, \"a refactor with no behaviour change; the duplication predates this slice; both copies agree and the parity tests cover the samples\" (openspec/changes/archive/2026-10-11-add-violation-cause/review-findings.json). Both verifiers recorded it as a maintainability/drift risk, not a behavioural defect; it is still duplicated at src/ui/strings.ts:32 and :163 (no later commit touches that file after da6736d)."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_00db6f47-604",
+      "title": "«Accessible names at every size»: the test still pins the old cell-name grammar that the delta modified",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "60db15fe6c90bf0f17e2ea365baedf44ee570779",
+      "evidence": "tests/play-page-page-text.test.ts:73 regex gains the delta grammar `(, задано|(, підказка)?(, спричиняє порушення)?)` with a DELIBERATE CHANGE comment naming this finding. Mapping: review file dispositionNote (\"tests/play-page-page-text.test.ts:73 now states the delta's grammar ... review fix round 1\"), commit message of 60db15f, autonomy-log row 167."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_00db6f47-604",
+      "title": "docs/requirements.md FR-70 still says the English cause wording is \"to confirm\" after the user confirmed it",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "60db15fe6c90bf0f17e2ea365baedf44ee570779",
+      "evidence": "docs/requirements.md FR-70 row: \"(English wording to confirm in the slice, FR-111)\" replaced by \"(English wording confirmed by the user on 2026-10-11, autonomy-log row 164; FR-111)\". Mapping: review file dispositionNote, commit message of 60db15f, autonomy-log row 167."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_00db6f47-604",
+      "title": "current-state.md, committed in the same batch as the port, still says the port waits for a GPG unlock",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "269b66f1081a2135139caf78bc301d2cebcdca15",
+      "evidence": "docs/current-state.md Working-branch bullet: \"the port and its evidence wait for a GPG unlock (row 166)\" replaced by \"Every commit of this branch is GPG-signed (check with `git log --format=%G? 8bbe6e8..HEAD`); the port is `da6736d`\". The change is in the archive commit 269b66f, not in the fix-round commit 60db15f (which does not touch current-state.md). Mapping: review file dispositionNote (\"names the port commit da6736d (review fix round 1)\"), autonomy-log row 167, git show 269b66f -- docs/current-state.md."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_00db6f47-604",
+      "title": "The theme-and-size stills show the cause cell with the hover ring on, so the triangle is never seen on its own",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "60db15fe6c90bf0f17e2ea365baedf44ee570779",
+      "evidence": "The 10 theme-and-size stills under docs/qa/add-violation-cause/stills/smoke-*.png re-taken; docs/qa/add-violation-cause/smoke-four.mjs and smoke-sweep.mjs add `page.mouse.move(0, 0)` after the press (\"no hover ring in the stills\"); docs/qa/add-violation-cause/stills/vision-verdict.txt adds the second fresh judge, 10 of 10. Mapping: review file dispositionNote, commit message of 60db15f, autonomy-log row 167."
+    }
+  ],
+  "excluded": "wf_00db6f47-604: 1 contested (\"The checker runs twice per press...\", deferred by the user's choice; design.md decision 1), 5 rejected (rejected-by-verifier). Totals per the file's dimensions: correctness 1/1/1, spec-compliance 3/0/3, visual 1/0/1, security 0/0/0 (confirmed/contested/rejected).",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-11-add-violation-cause/review-findings.json",
+    "docs/autonomy-log.md rows 164, 167, 168",
+    "git show 60db15fe6c90bf0f17e2ea365baedf44ee570779 (fix round 1)",
+    "git show 269b66f1081a2135139caf78bc301d2cebcdca15 -- docs/current-state.md (archive)",
+    "git log -- src/ui/strings.ts",
+    "git log --all --grep='Slice: add-violation-cause'"
+  ],
+  "compilerNotes": "One waived finding is located in src/ (src/ui/strings.ts:32 and :163, duplicated cause-suffix logic). It is marked productCodeDefect: false because both verifiers call it a maintainability/drift risk with \"no behavioural defect\" (both copies agree) and the file's fixRound says noProductCodeChange: true; the main session may reclassify it if \"code under src/\" is read to include refactor findings, in which case it would be an OPEN item with no fix commit (none exists: src/ui/strings.ts is unchanged since da6736d). The current-state finding's dispositionNote says \"review fix round 1\", but the edit landed in the archive commit 269b66f (15 s after 60db15f); verified by diff. All fix commits pass cat-file -e and merge-base --is-ancestor HEAD."
+}

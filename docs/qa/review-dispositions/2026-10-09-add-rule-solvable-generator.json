@@ -1,0 +1,116 @@
+{
+  "slice": "2026-10-09-add-rule-solvable-generator",
+  "reviewFile": "openspec/changes/archive/2026-10-09-add-rule-solvable-generator/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_4a06e27d-331 (d4b83d3..f077dd4, review run 1, before fix round 760c3e5)",
+    "wf_c3a1873a-a60 (d4b83d3..760c3e5, confirming run after 760c3e5; its three findings fixed in archive commit 5b03b53, not re-reviewed)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_4a06e27d-331",
+      "title": "Test scaffold left in place: solveByRules is loaded through a runtime-built dynamic import with a hand-declared type",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "760c3e59456eecbc80497a44a06bc7036df12962",
+      "evidence": "tests/generator-rule-solvable.test.ts: the beforeAll runtime-built dynamic import and hand-declared SolveByRules type removed; «import { solveByRules } from '../src/engine/rule-solve'». mapped by the compiler from rounds[0].dispositions[\"dynamic import scaffold in solveByRules tests (confirmed x2, minor)\"]."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_4a06e27d-331",
+      "title": "Design decision 3 (dropping countSolutionsBudgeted from carving) is sound: confirmed, no defect",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Not a defect: the finding confirms design decision 3 is sound. Session disposition: «accepted: two verifiers confirmed the forced-fill argument; generator.ts comment now states the dependency on forced fills (hint.ts not edited, design.md)» (mapped by the compiler from rounds[0].dispositions[\"design decision 3 soundness (confirmed and contested x2, no defect)\"]); the comment is in 760c3e59456eecbc80497a44a06bc7036df12962 src/engine/generator.ts."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_4a06e27d-331",
+      "title": "Determinism, NFR timing bounds and engine purity verified unchanged",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Not a defect: a verification that determinism, timing bounds and engine purity are unchanged. Session disposition: «no change» (mapped by the compiler from rounds[0].dispositions[\"determinism, timing, purity; security (confirmed, no defect)\"])."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_4a06e27d-331",
+      "title": "Security checklist: no applicable surface (client-only vanilla TS engine)",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Not a defect: the security checklist found no applicable surface (client-only engine). Session disposition: «no change» (mapped by the compiler from rounds[0].dispositions[\"determinism, timing, purity; security (confirmed, no defect)\"])."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_4a06e27d-331",
+      "title": "solveByRules unit tests still use the red-phase runtime-built dynamic import after green",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "760c3e59456eecbc80497a44a06bc7036df12962",
+      "evidence": "Duplicate of R1-F1: static import from ../src/engine/rule-solve in tests/generator-rule-solvable.test.ts; red-run addendum in docs/qa/add-rule-solvable-generator-red-run.txt. mapped by the compiler from rounds[0].dispositions[\"dynamic import scaffold … (confirmed x2, minor)\"]."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_4a06e27d-331",
+      "title": "Scenario 2: the claim 'its unique solution is 1010/1001/0101/0110' is not fully asserted",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "760c3e59456eecbc80497a44a06bc7036df12962",
+      "evidence": "tests/generator-rule-solvable.test.ts scenario 2 adds expect(findViolations(solution)).toEqual([]) and expect(isSolved(solution)).toBe(true) on the pinned grid. mapped by the compiler from rounds[0].dispositions[\"scenario 2 unique solution not fully asserted (confirmed, minor)\"]."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_c3a1873a-a60",
+      "title": "docs/current-state.md was not updated for the green, review-gate and fix-round milestones",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "5b03b530d2f4bdaa96a498449ac02346c0d274e1",
+      "evidence": "docs/current-state.md: «Active change: none», phase line names F archived, new «Phase F add-rule-solvable-generator … red 6247183 … green f077dd4 …» line with evidence paths. mapped by the compiler from the top-level dispositions[\"current-state.md not updated for green, review and fix round (confirmed, minor, docs)\"]."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_c3a1873a-a60",
+      "title": "tasks.md: 3.6 and 3.7 are done in this commit but not ticked, and 3.1 to 3.5 have no ticks although the commit message claims the battery passed",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "5b03b530d2f4bdaa96a498449ac02346c0d274e1",
+      "evidence": "tasks.md (archived path) 3.1 to 3.9 ticked; docs/qa/add-rule-solvable-generator-battery.txt added (33 lines: lint, test:run, build, validate, check-traceability, eval ratchet). mapped by the compiler from the top-level dispositions[\"tasks.md 3.1 to 3.7 unticked; battery claim without a saved report (confirmed, minor, docs)\"]."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_c3a1873a-a60",
+      "title": "Green-run header still says the tests are unchanged after the fix round edited the test file",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "5b03b530d2f4bdaa96a498449ac02346c0d274e1",
+      "evidence": "docs/qa/add-rule-solvable-generator-green-run.txt gains «## Re-run after the fix round 760c3e5 (2026-10-09 12:09) The header above describes the run on f077dd4 …». mapped by the compiler from the top-level dispositions[\"green-run header says tests unchanged (confirmed, minor, docs)\"]."
+    }
+  ],
+  "excluded": "wf_4a06e27d-331: 3 contested (design decision 3 confirmed x2; task 2.7 ticked without evidence, fixed in 760c3e5), 4 rejected. wf_c3a1873a-a60: 4 contested (first-run findings not stored; red-run header; 3.6/3.7 vs current-state; smoke used npx vite), 3 rejected.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-09-add-rule-solvable-generator/review-findings.json",
+    "docs/autonomy-log.md row 85",
+    "docs/qa/add-rule-solvable-generator-green-run.txt",
+    "docs/qa/add-rule-solvable-generator-battery.txt",
+    "git show 760c3e59456eecbc80497a44a06bc7036df12962",
+    "git show 5b03b530d2f4bdaa96a498449ac02346c0d274e1"
+  ],
+  "compilerNotes": "R1-F2, R1-F3, R1-F4 are «confirmed» titles that are not defects (positive verifications recorded as findings by the review-gate). They are waived entries only because every confirmed title must have one; there is nothing to fix. LOUD, cross-slice: both runs of this slice REJECTED «solveByRules reports/returns solved:true for any full board, including one that breaks the rules». That rejection was wrong: the same defect was later fixed in add-difficulty-engine 261782b (src/engine/rule-solve.ts, solved: !broken) with regression tests in 3d64c9d whose comment says «the earlier solveByRules returned solved true for any full board». Not an entry here (rejected), but the user signing these waivers should know a real product-code defect passed this slice's review and was fixed by a later slice. No confirmed finding is a product-code defect (760c3e5: «no product defect»; the src/engine/generator.ts change is a comment). Mapping from titles to disposition keys is the compiler's."
+}

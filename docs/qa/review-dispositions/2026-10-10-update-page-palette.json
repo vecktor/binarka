@@ -1,0 +1,110 @@
+{
+  "slice": "2026-10-10-update-page-palette",
+  "reviewFile": "openspec/changes/archive/2026-10-10-update-page-palette/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_42e6a5ef-152 (51a0830..0f5f706, review run 1, the only run; persisted by hand; fix round 1 on the user's «Fix all, then archive» in 2fc41d5 and faf0b91; no confirming run, the user's choice)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_42e6a5ef-152",
+      "title": "The cited evidence for the per-block pixel claim is a crash log, not a score",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "faf0b913ede252e09e86f02b8775f47ee39aa6aa",
+      "evidence": "faf0b913ede252e09e86f02b8775f47ee39aa6aa: docs/qa/update-page-palette/block-palette.txt rewritten from the crash log to the real re-run output (per-shot pixel/geometry lines, port check, 04:36:44), tasks.md 3.5 reworded (\"geometry measured on 54 ... the 10 hint shots pixel only; ... 0.998 to 0.9994\", citing COR-2), docs/qa/visual-diff/README.md run 7 paragraph reworded the same way; correction COR-2 filed in the same commit (retro/corrections/002-review-run-wf-42e6a5ef-152-the-per-block-evidenc.correction.json, since dispositioned \"waived\" by the user with the note that the claim was withdrawn and the evidence re-run). Mapping: autonomy-log row 160 (\"the per-block tool re-run on a checked port with its real output; the wording corrected in tasks.md and the README\"; \"Filed as correction COR-2\"), faf0b91 subject \"real per-block evidence (COR-2)\", delivery plan 2026-10-12 §2.4 (\"The two majors are the same defect\")."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_42e6a5ef-152",
+      "title": "Comment on the post-win button rules says 'Weights only (geometry)' but the rules now set colours",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "faf0b913ede252e09e86f02b8775f47ee39aa6aa",
+      "evidence": "faf0b913ede252e09e86f02b8775f47ee39aa6aa: src/ui/style.css, the comment above .board-host[data-solved='true'] ~ .buttons button[data-action='new'] (line 405 at faf0b91, line 461 at HEAD) no longer says \"Weights only (geometry)\"; it now says the win swap of A-57 fills the new-puzzle button with the primary colour and mutes the hint button. Mapping: autonomy-log row 160 (\"the stale win-swap comment ... (faf0b91)\"), faf0b91 subject \"the win-swap comment\"."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_42e6a5ef-152",
+      "title": "The new .rules-button, .settings-button colour rule repeats the base button rule",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "faf0b913ede252e09e86f02b8775f47ee39aa6aa",
+      "evidence": "faf0b913ede252e09e86f02b8775f47ee39aa6aa: src/ui/style.css, the duplicate \".rules-button, .settings-button { border-color; background-color; color }\" rule (old lines 187-192) removed. Mapping: autonomy-log row 160 (\"a duplicate header-button rule (faf0b91)\"), faf0b91 subject \"the duplicate header rule\"."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_42e6a5ef-152",
+      "title": "Task 3.5 per-block evidence is a failed run; the claimed numbers are overstated",
+      "severity": "major",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "faf0b913ede252e09e86f02b8775f47ee39aa6aa",
+      "evidence": "Same defect as R1-F1 (delivery plan §2.4: \"The two majors are the same defect\"). faf0b913ede252e09e86f02b8775f47ee39aa6aa: docs/qa/update-page-palette/block-palette.txt rewritten from the crash log to the real re-run output (per-shot pixel/geometry lines, port check, 04:36:44), tasks.md 3.5 reworded (\"geometry measured on 54 ... the 10 hint shots pixel only; ... 0.998 to 0.9994\", citing COR-2), docs/qa/visual-diff/README.md run 7 paragraph reworded the same way; correction COR-2 filed in the same commit (retro/corrections/002-review-run-wf-42e6a5ef-152-the-per-block-evidenc.correction.json, since dispositioned \"waived\" by the user with the note that the claim was withdrawn and the evidence re-run). Mapping: autonomy-log row 160 (\"the per-block tool re-run on a checked port with its real output; the wording corrected in tasks.md and the README\"; \"Filed as correction COR-2\"), faf0b91 subject \"real per-block evidence (COR-2)\", delivery plan 2026-10-12 §2.4 (\"The two majors are the same defect\")."
+    },
+    {
+      "id": "R1-F5",
+      "run": "wf_42e6a5ef-152",
+      "title": "Task 3.3 ticked without an artifact for check:trace and check:acceptance",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "faf0b913ede252e09e86f02b8775f47ee39aa6aa",
+      "evidence": "faf0b913ede252e09e86f02b8775f47ee39aa6aa: docs/qa/update-page-palette/battery.txt gains a section \"Added after review run wf_42e6a5ef-152 (task 3.3 evidence)\" with the check:trace (0 failures, exit 0) and check:acceptance (PASS, exit 0) output; tasks.md 3.3 now cites battery.txt for both. Mapping: autonomy-log row 160 (\"check:trace and check:acceptance output saved\")."
+    },
+    {
+      "id": "R1-F6",
+      "run": "wf_42e6a5ef-152",
+      "title": "Smoke test 3.8 was run by the agent and departs from the written steps",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Not fixed and not explicitly waived by the session: neither fix commit (2fc41d5, faf0b91) touches docs/qa/update-page-palette/smoke-test.txt (last changed in 0f5f706), autonomy-log row 160 lists no action for it, and no human repeat of steps 2-8 is recorded. The deviation (run by the agent, 6x6 solved by 26 hint presses instead of a 4x4, no frame-by-frame no-flash check, hover and glow not covered) stays disclosed in smoke-test.txt and tasks.md 3.8; the slice was archived on the user's «Fix all, then archive» with task 4.3 (\"gated on the smoke test\") ticked. The fix round's fresh vision judge on 8 stills (docs/qa/update-page-palette/stills/vision-verdict.txt, 8 of 8 met) is not a repeat of the smoke test. Needs the user's waiver."
+    },
+    {
+      "id": "R1-F7",
+      "run": "wf_42e6a5ef-152",
+      "title": "Stale default #f9fafb left in the test helper addThemeColorMeta",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "2fc41d5064a7c4661fafd1b8928a18b5040d6ece",
+      "evidence": "2fc41d5064a7c4661fafd1b8928a18b5040d6ece: tests/helpers/play-page.ts:340 addThemeColorMeta default changed from '#f9fafb' to '#f7f3ea'. Mapping: autonomy-log row 160 (\"the helper's default page colour\"), 2fc41d5 subject \"helper default page colour\" and body \"stale default\"."
+    },
+    {
+      "id": "R1-F8",
+      "run": "wf_42e6a5ef-152",
+      "title": "The cited per-block pixel evidence is a crash log; the real block captures are not committed",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "faf0b913ede252e09e86f02b8775f47ee39aa6aa",
+      "evidence": "Same defect as R1-F1, seen by the visual reviewer. The evidence-pointer half is closed: faf0b913ede252e09e86f02b8775f47ee39aa6aa: docs/qa/update-page-palette/block-palette.txt rewritten from the crash log to the real re-run output (per-shot pixel/geometry lines, port check, 04:36:44), tasks.md 3.5 reworded (\"geometry measured on 54 ... the 10 hint shots pixel only; ... 0.998 to 0.9994\", citing COR-2), docs/qa/visual-diff/README.md run 7 paragraph reworded the same way; correction COR-2 filed in the same commit (retro/corrections/002-review-run-wf-42e6a5ef-152-the-per-block-evidenc.correction.json, since dispositioned \"waived\" by the user with the note that the claim was withdrawn and the evidence re-run). Mapping: autonomy-log row 160 (\"the per-block tool re-run on a checked port with its real output; the wording corrected in tasks.md and the README\"; \"Filed as correction COR-2\"), faf0b91 subject \"real per-block evidence (COR-2)\", delivery plan 2026-10-12 §2.4 (\"The two majors are the same defect\"). The \"real block captures are not committed\" half stays true by decision: tasks.md 3.5 still says the crops in docs/qa/g2/blocks/palette/ are \"not committed, 31 MB\"; the finding's own suggestion allowed replacing block-palette.txt with the successful re-run's output instead."
+    }
+  ],
+  "excluded": "wf_42e6a5ef-152: 2 contested, 3 rejected (not dispositioned). Note: the contested \"e2e wanted() applies a deviation's expected value without checking the design value it overrides\" was fixed anyway in 2fc41d5 (e2e/nfr-14-palette.spec.ts wanted() now checks d.design; docs/qa/update-page-palette/fix-round-1-deviation-check.txt).",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-10-update-page-palette/review-findings.json",
+    "docs/autonomy-log.md rows 159, 160",
+    "docs/handoff/delivery-plan-2026-10-12.md §2.4",
+    "git show 2fc41d5064a7c4661fafd1b8928a18b5040d6ece",
+    "git show faf0b913ede252e09e86f02b8775f47ee39aa6aa",
+    "git show f95653474473dbadf04865c606f0b6a8e5f826c0 (archive commit; tasks.md 4.1-4.3)",
+    "openspec/changes/archive/2026-10-10-update-page-palette/tasks.md",
+    "docs/qa/update-page-palette/ (block-palette.txt, battery.txt, smoke-test.txt, fix-round-1-deviation-check.txt, stills/vision-verdict.txt)",
+    "retro/corrections/002-review-run-wf-42e6a5ef-152-the-per-block-evidenc.correction.json"
+  ],
+  "compilerNotes": "The review file has no top-level clean field (shape {slice, runs[]}, persisted by hand); reviewClean is set false because the run confirmed 8 findings and there was no confirming run (delivery plan §2.4: \"Written correctly, both would say clean: false\"). The file does not record a fix per finding; every mapping comes from autonomy-log row 160, the subjects/bodies and diffs of 2fc41d5 and faf0b91, and tasks.md 4.1. R1-F6 (smoke test by the agent) has NO session-recorded disposition: not fixed, not waived; the user signs this waiver cold. R1-F2 and R1-F3 touch src/ui/style.css (a stale comment, a redundant rule) but are code-quality findings, not behaviour defects; the run note and row 160 say \"no product-code defect\", so productCodeDefect is false. Both are fixed in faf0b91 regardless. R1-F1, R1-F4 and R1-F8 are one defect (the crash-log evidence file), also filed as COR-2; the current-state.md \"Block 2\" line that the finding also named was updated in the archive commit f956534, not in faf0b91 (not separately checked line by line). Both fix commits verified: git cat-file -e and git merge-base --is-ancestor HEAD succeed."
+}

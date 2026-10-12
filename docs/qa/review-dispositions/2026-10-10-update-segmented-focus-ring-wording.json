@@ -1,0 +1,88 @@
+{
+  "slice": "2026-10-10-update-segmented-focus-ring-wording",
+  "reviewFile": "docs/qa/update-segmented-focus-ring-wording/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_94ea915a-989 (ed03a83..b864892; the post-archive review the user asked for on 2026-10-12, row P5): 3 confirmed, 5 contested, 4 rejected"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_94ea915a-989",
+      "title": "CSS comments still say the segmented ring is kept 'inside', which contradicts the corrected spec",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "A CSS comment only (no computed style, no pixel change): the three segmented rules in src/ui/style.css still say «keep it inside». The process stream changes no src/ file; left as it is unless the user asks a src session (F) to reword it.",
+      "file": "src/ui/style.css"
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_94ea915a-989",
+      "title": "green-run-2.txt test:run section has no pass/fail counts",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Historical evidence of 2026-10-10: the filtered test summary cannot be re-captured on that tree without re-running an old build. The run exited 0; every later battery runs the same test (tests/play-page-stylesheet.test.ts:252) and records its counts (for example docs/qa/delivery-plan/after-wave2/test-coverage.txt, 1993 of 1993)."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_94ea915a-989",
+      "title": "Autonomy-log row 141 places the shots in ring-geometry.txt, but they are separate PNG files",
+      "severity": "minor",
+      "verdict": "confirmed",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "A wrong pointer in autonomy-log row 141 (the shots are size-focus-unchecked-*.png, the measurements ring-geometry.txt). Past rows are not rewritten; the correct paths are recorded here and in the stream-P rows copied into the log at merge."
+    },
+    {
+      "id": "R1-C2",
+      "run": "wf_94ea915a-989",
+      "title": "The geometry the wording now states (3px ring, 3px gap and padding, 1px clear) is not pinned by any test. The base requirement still allows any width of 2px or more",
+      "severity": "minor",
+      "verdict": "contested",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Open as stated: no test pins the geometry (tests/play-page-stylesheet.test.ts:276 bounds the ring width at 2px or more; :314 pins only that the segmented rules change the offset). A new test is a tests/ change, outside the process stream; the user may instead ask F or a later slice to add it."
+    },
+    {
+      "id": "R1-C4",
+      "run": "wf_94ea915a-989",
+      "title": "The browser geometry evidence covers only the size control. The wording also makes the geometry claim for the theme and language options",
+      "severity": "minor",
+      "verdict": "contested",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "Open as stated: the 2026-10-10 browser measurement (docs/qa/fix-size-option-focus-ring/ring-geometry.txt) covers the size control only; the theme and language rules carry the same offset (tests/play-page-stylesheet.test.ts:314) but their geometry was not measured. Re-measuring is a capture outside this stream; the user may ask F to add it."
+    },
+    {
+      "id": "R1-C5",
+      "run": "wf_94ea915a-989",
+      "title": "Focused unchecked option and checked option show the same colour frame 1px apart; telling focus from selection rests on a faint fill and bold text",
+      "severity": "minor",
+      "verdict": "contested",
+      "productCodeDefect": false,
+      "outcome": "waived",
+      "waiver": "The known deferred design point C7 (the ring merging with the same-colour checked frame, autonomy-log rows 135 and 141): a design decision for the user, not a defect of this wording change."
+    }
+  ],
+  "excluded": "contested, not entries: «Coverage summary: 3 scenarios, 3 implemented…» (a coverage note, suggestion «No action»); «The CSS comments still say the ring is kept inside…» (the same finding as R1-F1, from the spec-compliance reviewer). Rejected: 4.",
+  "designWaiver": {
+    "reason": "A wording-only follow-up: the requirement text of the segmented ring was corrected to the measured geometry and one assertion added; no CSS changed and no design decision was taken (proposal.md and the spec delta hold it all). OpenSpec does not require design.md for such a change."
+  },
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»; «Sign all three (Recommended)», to the question «Sign the three design.md waivers? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md, and its designWaiver"
+  },
+  "compiledFrom": [
+    "docs/qa/update-segmented-focus-ring-wording/review-findings.json",
+    "docs/autonomy-log.md row 141",
+    "git show cc91685 b864892"
+  ],
+  "compilerNotes": "Compiled by the main stream-P session. Contested findings with substance are entries (the workflow says: treat contested as confirmed unless trivially wrong); a pure coverage note and a duplicate are excluded."
+}

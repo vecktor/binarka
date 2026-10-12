@@ -1,0 +1,108 @@
+{
+  "slice": "2026-10-09-add-level-selector",
+  "reviewFile": "openspec/changes/archive/2026-10-09-add-level-selector/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_72c2ffbc-d44 (3d64c9d..HEAD, uncommitted working tree on 3d64c9d; review run 1)",
+    "wf_007c5ad4-adc (3d64c9d..HEAD, uncommitted working tree on 3d64c9d after one fix round; confirming run)"
+  ],
+  "findings": [
+    {
+      "id": "R1-F1",
+      "run": "wf_72c2ffbc-d44",
+      "title": "Selected level is marked by colour alone (no ring, no weight/shape change), unlike the size control",
+      "severity": "unknown",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "041c183056523f3b3709b59eb6756729cd5ef2df",
+      "evidence": "041c183 adds src/ui/style.css `.level-control button .level-name::before` (the radio ring) and `.level-control button[aria-checked='true'] .level-name::before { box-shadow: inset 0 0 0 0.175rem ... }` (the dot), plus the delta scenario «The checked level has a cue besides colour» and its test in tests/play-page-level-stylesheet.test.ts. Mapping: review-file run-1 dispositions[0] ('fixed in the fix round ... ::before ring with an inset-box-shadow dot in src/ui/style.css') and the 041c183 commit message. The slice sat uncommitted until GPG was available (autonomy-log rows 101-102), so the fix-round edits are inside 041c183, not in a separate fix commit."
+    },
+    {
+      "id": "R1-F2",
+      "run": "wf_72c2ffbc-d44",
+      "title": "Task 2.3 is ticked, but its artifact (the per-test source list in the red-run file and the red commit message) does not exist",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "92de28fe9149a321301954f72531536dedf65a04",
+      "evidence": "92de28f adds docs/qa/add-level-selector/red-evidence.md (section 1 «Existing tests changed (file, test, change, source)») and its commit message carries the per-test source list ('Existing tests changed deliberately, each with its source: ...'). Mapping: review-file run-1 dispositions[1] ('list written to docs/qa/add-level-selector/red-evidence.md section 1 ... the list goes into the red commit message when the held commits are made')."
+    },
+    {
+      "id": "R1-F3",
+      "run": "wf_72c2ffbc-d44",
+      "title": "The task 2.4 guards list and the '18 mutants killed' claim have no evidence on disk",
+      "severity": "unknown",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "041c183056523f3b3709b59eb6756729cd5ef2df",
+      "evidence": "Sections 2 («Guards that pass before the change») and 3 (the 18-mutant list) of docs/qa/add-level-selector/red-evidence.md are in 92de28f; the script and raw output (docs/qa/add-level-selector/mutation/mutate.py, mut.json, prototype-play-page.ts.txt) are added in 041c183, which completes the evidence, so 041c183 is cited. Mapping: review-file run-1 dispositions[2] ('red-evidence.md sections 2 and 3; after run 2 also the script and raw output under docs/qa/add-level-selector/mutation/')."
+    },
+    {
+      "id": "R1-F4",
+      "run": "wf_72c2ffbc-d44",
+      "title": "The spec says a stylesheet pseudo-element draws the level radio ring, but style.css has no ring; the checked state is shown by colour only",
+      "severity": "unknown",
+      "productCodeDefect": true,
+      "outcome": "fixed",
+      "fixCommit": "041c183056523f3b3709b59eb6756729cd5ef2df",
+      "evidence": "Same fix as R1-F1: 041c183 adds the `.level-name::before` ring and the inset dot in src/ui/style.css that the spec describes. Mapping: review-file run-1 dispositions[0], which names both findings ('(2 findings)')."
+    },
+    {
+      "id": "R2-F1",
+      "run": "wf_007c5ad4-adc",
+      "title": "design.md decision 3 and task 3.4 still describe the toggle listener as it was before the fix",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "041c183056523f3b3709b59eb6756729cd5ef2df",
+      "evidence": "041c183 changes openspec/changes/add-level-selector/design.md decision 3 ('one guard' -> 'two guards', and the added paragraph 'Amended after the review-gate fix round (2026-10-09): a second guard ...') and tasks.md 3.4 (now ticked with the new behaviour). Mapping: review-file run-2 dispositions[0] ('fixed (doc only) after the confirming run, not re-reviewed')."
+    },
+    {
+      "id": "R2-F2",
+      "run": "wf_007c5ad4-adc",
+      "title": "Stale AMBIGUITY comment in the setup-sheet test after the spec was fixed from nine to eight buttons",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "041c183056523f3b3709b59eb6756729cd5ef2df",
+      "evidence": "041c183 replaces the '// AMBIGUITY (spec line 74 says \"exactly nine buttons in all\" ...' comment in tests/play-page-setup-sheet.test.ts with 'The spec says \"exactly eight buttons in all\" (corrected from \"nine\" after the red run, 2026-10-09)'; the assertion is unchanged. Mapping: review-file run-2 dispositions[1]."
+    },
+    {
+      "id": "R2-F3",
+      "run": "wf_007c5ad4-adc",
+      "title": "Mutation-run evidence points at an ephemeral scratchpad outside the repository",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "041c183056523f3b3709b59eb6756729cd5ef2df",
+      "evidence": "041c183 adds docs/qa/add-level-selector/mutation/mutate.py, mut.json and prototype-play-page.ts.txt; red-evidence.md section 3 (in 92de28f, written at commit time after the run) cites them. Mapping: review-file run-2 dispositions[2] ('mutate.py, mut.json and the prototype copied to docs/qa/add-level-selector/mutation/, red-evidence.md cites them; not re-reviewed')."
+    },
+    {
+      "id": "R2-F4",
+      "run": "wf_007c5ad4-adc",
+      "title": "Requirement text says 'in every case but one' and then lists two exceptions",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "041c183056523f3b3709b59eb6756729cd5ef2df",
+      "evidence": "041c183 changes openspec/changes/add-level-selector/specs/play-page/spec.md: 'in every case but one' -> 'in every case but two'. Mapping: review-file run-2 dispositions[3] (\"fixed: 'but two'; not re-reviewed\")."
+    }
+  ],
+  "excluded": "Run wf_72c2ffbc-d44: 4 contested (2 correctness, 2 spec-compliance) and 6 rejected (2 correctness, 4 spec-compliance). Run wf_007c5ad4-adc: 1 contested (spec-compliance) and 3 rejected (correctness). Some contested items were acted on anyway (run 1: light-dismiss focus fixed with tests in 041c183; run 2: spec wording aligned), per the file's dispositions.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-09-add-level-selector/review-findings.json",
+    "docs/autonomy-log.md rows 101, 102",
+    "git show 92de28fe9149a321301954f72531536dedf65a04 (message, stat, docs/qa/add-level-selector/red-evidence.md)",
+    "git show 041c183056523f3b3709b59eb6756729cd5ef2df (message, stat, src/ui/style.css, design.md, spec.md, tasks.md, tests/play-page-setup-sheet.test.ts)",
+    "git show fdfa5168cc1e1de21d2abe7a26908d06e15c9644 (stat)"
+  ],
+  "compilerNotes": "Both review runs ran on an uncommitted working tree on 3d64c9d (GPG locked, autonomy-log rows 101-102); every fix-round and after-run edit therefore first appears in the held commits 92de28f (tests, red evidence) and 041c183 (implementation, fix round, run-2 doc fixes), made at 21:43 on 2026-10-09. There is no separate fix-round commit; the cited commits are the first commits containing the fixed state. Run-1 severities are not recorded in the file (only dimensions: correctness 1 confirmed = the colour-only finding; spec-compliance 3), so they are 'unknown'; run 2 is 'all minor' per the file's summary. Run-2 fixes were not re-reviewed (recorded in the file)."
+}

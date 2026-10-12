@@ -1,0 +1,37 @@
+{
+  "slice": "2026-10-04-add-puzzle-engine",
+  "reviewFile": "openspec/changes/archive/2026-10-04-add-puzzle-engine/review-findings.json",
+  "reviewClean": false,
+  "runs": [
+    "wf_f8542286-f1c (step-14-s1-deps..HEAD, confirming run after fix round 1; the file has no runId field, the run is named in archived tasks.md 5.6 and autonomy-log row 18, generatedAt 2026-10-04T14:48:46Z = 20:18 UTC+5:30)"
+  ],
+  "findings": [
+    {
+      "id": "R2-F1",
+      "run": "wf_f8542286-f1c",
+      "title": "tasks.md 5.3 still points to the deleted shim src/node-env.d.ts",
+      "severity": "minor",
+      "productCodeDefect": false,
+      "outcome": "fixed",
+      "fixCommit": "4bb92b75e249fabc188db0739c79a140127dd96b",
+      "evidence": "Commit 4bb92b7 rewrites openspec/changes/add-puzzle-engine/tasks.md 5.3 from '(`tsc --noEmit` covers `tests/` and `src/node-env.d.ts`)' to '(`tsc --noEmit` covers `src/` and `tests/`; Node typings come from the user-approved `@types/node`)'; archived tasks.md line 52 holds the new text and line 55 (task 5.6) records 'confirming run wf_f8542286-f1c: 1 confirmed minor doc defect, fixed by hand, not re-run'. Mapping from archived tasks.md 5.6, the commit message of 4bb92b7 ('found one stale documentation line (fixed, not re-run ...)') and docs/autonomy-log.md row 18 ('1 confirmed minor documentation defect (stale line in tasks.md 5.3), fixed by hand, not re-run')."
+    }
+  ],
+  "excluded": "wf_f8542286-f1c: 0 contested, 0 rejected (all dimensions). Round 1 wf_01e59347-3e4 (3 confirmed minor fixed in 50840e8, 1 contested, 2 rejected per autonomy-log row 17) is not recorded in this file and is not dispositioned here.",
+  "designWaiver": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T16:35+05:30",
+    "channel": "chat, question form, stream P of wave 3 (claude/feynman-process); docs/qa/process-stream/session-log.md row P11",
+    "words": "«Sign all 24 as compiled (Recommended)», to the question «Sign the 24 review dispositions as compiled in docs/qa/review-dispositions/signing-sheet.md? …»",
+    "scope": "every entry of this file as compiled on 2026-10-12, as summarised in docs/qa/review-dispositions/signing-sheet.md"
+  },
+  "compiledFrom": [
+    "openspec/changes/archive/2026-10-04-add-puzzle-engine/review-findings.json",
+    "openspec/changes/archive/2026-10-04-add-puzzle-engine/tasks.md (lines 52, 55)",
+    "docs/autonomy-log.md rows 17, 18, M10",
+    "git show 4bb92b75e249fabc188db0739c79a140127dd96b",
+    "git log of the review file (4bb92b7, archive c074469)"
+  ],
+  "compilerNotes": "The review file carries no runId; the run is identified from tasks.md 5.6 and autonomy-log row 18. fixCommit 4bb92b7 verified: cat-file -e ok, ancestor of HEAD. The fix commit predates the archive commit c074469 and was never confirmed by a re-run (the session's own record says 'fixed by hand, not re-run')."
+}
