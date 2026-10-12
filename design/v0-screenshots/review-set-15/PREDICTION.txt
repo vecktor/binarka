@@ -1,0 +1,13 @@
+Prediction for review-set-15 (iteration 17, update-logo-legibility), written 2026-10-12 17:02 +0530 BEFORE the set was compared.
+
+Change: only the Logo and LogoDigit of design/v0/components/binarka-page.tsx (drawing B: r 24 circle, 16-unit cells,
+bars 4.5 x 11, rings rx 3.5 ry 5 stroke 3, shorter rays). The logo's box (its CSS size), colours and the layout do not change.
+
+Rule: a shot changes exactly when some part of the header logo is visible in it, including under a translucent backdrop;
+a shot where an opaque panel covers the whole logo is byte-identical to review-set-14. Within a changed shot the
+differing pixels lie inside the logo's box only (at most 64 x 64 CSS px, 128 x 128 device px).
+The two logo-sheet shots (logo-light, logo-dark: the mark at 40, 56 and 64 px) change.
+
+Precondition (capture determinism): a capture of today's design (before the change) must be byte-identical to
+review-set-14 on all 170 shots; if not, the differing shots are a harness or design-drift finding, reported, not
+attributed to the logo.

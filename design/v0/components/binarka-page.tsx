@@ -96,19 +96,20 @@ const IDLE_TEXT = 'Натискайте клітинки, щоб ставити 
 // so the logo needs no font.
 function LogoDigit({ digit, cx, cy }: { digit: 0 | 1; cx: number; cy: number }) {
   return digit === 1 ? (
-    <rect className="logo-digit" x={cx - 1.3} y={cy - 3.6} width="2.6" height="7.2" rx="1.3" />
+    <rect className="logo-digit" x={cx - 2.25} y={cy - 5.5} width="4.5" height="11" rx="2.25" />
   ) : (
-    <ellipse className="logo-digit-ring" cx={cx} cy={cy} rx="2.2" ry="3.1" strokeWidth="1.8" />
+    <ellipse className="logo-digit-ring" cx={cx} cy={cy} rx="3.5" ry="5" strokeWidth="3" />
   )
 }
 
 export function Logo({ size = 56 }: { size?: number }) {
-  // 2×2 mini board «1 0 / 0 1» inside the sun.
+  // 2×2 mini board «1 0 / 0 1» inside the sun. Iteration 17 (update-logo-legibility, the user's drawing B
+  // of 2026-10-12): 16-unit cells in an r 24 circle and short rays, so the digits read at 40 px (NFR-15).
   const cells: Array<{ x: number; y: number; digit: 0 | 1 }> = [
-    { x: 20.5, y: 20.5, digit: 1 },
-    { x: 32.5, y: 20.5, digit: 0 },
-    { x: 20.5, y: 32.5, digit: 0 },
-    { x: 32.5, y: 32.5, digit: 1 },
+    { x: 15, y: 15, digit: 1 },
+    { x: 33, y: 15, digit: 0 },
+    { x: 15, y: 33, digit: 0 },
+    { x: 33, y: 33, digit: 1 },
   ]
   return (
     <svg
@@ -124,26 +125,26 @@ export function Logo({ size = 56 }: { size?: number }) {
         return (
           <g key={angle} transform={`rotate(${angle} 32 32)`}>
             {index % 2 === 0 ? (
-              <rect x="30.6" y="2.5" width="2.8" height="8" rx="1.4" fill="currentColor" />
+              <rect x="30.4" y="0.5" width="3.2" height="6" rx="1.6" fill="currentColor" />
             ) : (
               <ellipse
                 cx="32"
-                cy="6.5"
-                rx="2.3"
-                ry="3.2"
+                cy="3.6"
+                rx="2.1"
+                ry="2.7"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.8"
+                strokeWidth="1.6"
               />
             )}
           </g>
         )
       })}
-      <circle cx="32" cy="32" r="19.5" fill="currentColor" />
+      <circle cx="32" cy="32" r="24" fill="currentColor" />
       {cells.map(({ x, y, digit }) => (
         <g key={`${x}-${y}`}>
-          <rect className="logo-cell" x={x} y={y} width="11" height="11" rx="2" />
-          <LogoDigit digit={digit} cx={x + 5.5} cy={y + 5.5} />
+          <rect className="logo-cell" x={x} y={y} width="16" height="16" rx="3" />
+          <LogoDigit digit={digit} cx={x + 8} cy={y + 8} />
         </g>
       ))}
     </svg>
