@@ -1,0 +1,177 @@
+# Requirements amendment draft: the settings panel takes the design's size, place and paint; the theme and language options take the segmented paint (2026-10-12)
+
+Status: **DRAFT, awaiting the user's signature.** Written by the wave-2 prep session (`vigorous-darwin-94147c`, branch `claude/vigorous-darwin-wave2-prep`) from about 08:21 (UTC+5:30) on 2026-10-12, at `main` `b290715`, mirroring section P of `docs/handoff/parallel-g2-plan-2026-10-11.md` for the second wave. A fresh independent auditor reads it before the user (section 10). Nothing under `src/` changes before the user signs. The confirmation dialog has its own draft (`docs/handoff/dialog-amendment-draft-2026-10-12.md`); both are signed in one sitting. This draft also carries the split between the two blocks and the question whether wave 2 needs a shared serial slice (section 9), and the NFR-14 phrase for both surfaces (section 2).
+
+## Basis
+
+- **The plan** (`docs/handoff/parallel-g2-plan-2026-10-11.md`, «Done when»: "Then the second wave (settings panel, dialog) is planned the same way"). Placed in this block by the user: **the checked option's frame against the focus ring** (theme and language options), «In the settings-panel block» (autonomy-log row 170 (5); first raised in row 135 (2): "doesn't matter for now, maybe later adjust the border colour").
+- **Run 12** (`docs/qa/g2/check-visual-run-12.txt`): 142 of 170 at 0.98. **10 settings shots fail, all at 320 and 375** (0.9077 to 0.9626); the 20 settings shots from 768 pass (0.9802 to 0.9950), several just over the line (`768-dark-settings` 0.9802, `1024-dark-settings` 0.9807).
+- **Evidence gathered for this draft:** `docs/qa/prep-g2-wave2/classify.txt` (the script `classify.mjs` next to it). It captures the page through the locked adapter's own `capture()`, so every one of the 36 settings and confirm scores equals run 12 to 4 places; it buckets the gate's own failing pixels (pixelmatch 8, threshold 0.1) by the element box they fall in and by colour pair, and it reads the boxes and computed styles of the panel's parts on the design build (`design/v0/out`, routes `/settings/`, `/settings-light/`, `/settings-dark/`, `/settings-focus/`) and on the page. Contrast figures: `docs/qa/prep-g2-wave2/contrast.txt` (`contrast.mjs`, the WCAG 2 formula of `tests/helpers/css.ts`).
+- **Today's page** (`src/ui/style.css`):
+  - `.settings` (l. 1236-1254): a bottom sheet, `max-height: 55dvh`, padding `24px 16px 16px`; **no rule at 22.5rem and below** (the design's padding-top 1rem is missing). From 48rem (l. 1260-1275): the design's dropdown under the header, `width: min(22rem, var(--column))`, `margin: 6rem 0 auto calc(50% + var(--column) / 2 - min(22rem, var(--column)))`, padding 16px, plus a cap `max-width: calc(100% - 2rem)` that the design text does not have. Fill, border and shadows come from the shell (`update-panel-shell`).
+  - `.theme-control` and `.language-control` (l. 1284-1367): the card (3px padding and gap, 1px `--color-control-border`, 10px radius, `--color-control-bg`) as the design. The options: `flex: 1 1 auto` for both, `--color-text`, the inherited 16px and line height 24px, weight 400. The checked option: `--color-given-bg` fill, a 2px `--color-focus` frame **and** an inset 1px `--color-focus` ring, weight 700. Focus: `outline-offset: -1px`.
+  - `.settings-close` (l. 1369-1376): `--color-surface-raised` fill (shell), `min-height: 2.75rem`, `margin-top: 8px`, a 2px border in the base `button` colour, **the base `button` padding `10px 16px` and radius 6px**, weight 700, not sticky.
+  - The size options in the sheet (block B, l. 569-610) already have the design's segmented paint: `--color-text-muted`, 0.9375rem, 500, line height 1.2; checked `--color-primary` frame on `--color-primary-soft`, `--color-text`, 700; `outline-offset: -1px`.
+- **The design** (`design/v0/app/binarka.css`, `review-set-14`):
+  - **One shared rule for the three segmented controls** (l. 377-421): `.size-control, .theme-control, .language-control` (the card: `padding 0.1875rem`, `gap 0.1875rem`, 1px `--cell-border`, `--radius-m`, `--surface`) and their buttons (`flex: 1 1 0`, `min-width: 0`, `min-height: 2.75rem`, `padding: 0 var(--space-2)`, 2px transparent border, radius `calc(var(--radius-m) - 0.1875rem)`, transparent fill, `--ink-muted`, 0.9375rem, weight 500, line height 1.2, `nowrap`); checked: `--primary` frame, `--primary-soft` fill, `--ink`, 700. The theme and language rings sit at `outline-offset: -1px` (l. 424-433, iteration 15). The theme options alone take `flex: 1 1 auto`, "so «Як у системі» never truncates" (l. 1094-1097); the language options keep `1 1 0` (two equal halves).
+  - **The panel** (l. 809-829, the shared phone rule of `.rules, .setup, .settings`): `max-height: 55dvh` (60vh fallback), padding `1.5rem 1rem calc(1rem + env(safe-area-inset-bottom))`; at 22.5rem and below `padding-top: 1rem` (l. 931-937). From 48rem (l. 1103-1117): the dropdown the page already has.
+  - **The labels** (l. 1080-1091): `--ink`, 0.9375rem, 700, line height 1.35, margin `0 0 0.25rem`; a control after a label has `margin-bottom: 1rem`. Ported.
+  - **«Закрити»** (l. 538-563, 1099-1101, shared with the setup sheet's): `position: sticky; bottom: 0`, the mask of two spread shadows in `--surface-raised`, `width: 100%`, `min-height: 2.75rem`, `margin-top: 0.5rem` (the panel's override of `--space-5`), 2px `--cell-border` (the page's `--color-control-border` values), `--radius-m`, `--surface-raised` fill, `--ink`, weight 600, and the browser's own button padding, so it is 44px tall.
+  - Hover (`filter`) and press (`translateY(1px)`) on the options and «Закрити» (l. 1234-1270), and the panel's slide (l. 1530-1625): not ported anywhere on the page (NFR-14 never captures them).
+- **The signed rules this touches:**
+  - FR-68: the settings panel's content and place ("a `popover`, … opened by the settings button"); no size.
+  - FR-117: "The options set their own text and background colours from the tokens with at least 4.5:1 in both themes, like the level buttons."
+  - FR-65: the theme and language options are in the `:focus-visible` list; FR-65 asks 3:1 for "the focus indicators … with adjacent colours".
+  - A-57: «Known failures left to later blocks: the ink ring across a checked `--primary` frame in the theme and language options (2.94 / 1.88, row 135).»
+  - The spec's «Cells and buttons show a visible, unobscured focus indicator» (`openspec/specs/play-page/spec.md:1939`) records three accepted adjacencies below 3:1 for the **cell** ring (PA-Q8), among them the ring against a hinted neighbour's `--color-primary` border (2.94, 1.88), "in each case the inner band of the ring stays on the plate at 10.65:1 or more".
+  - The spec's «The theme options set their own colours» (l. 3415): «A chosen option differs from an unchosen one by more than colour (a ring or a mark drawn by the stylesheet, WCAG 1.4.1)», with the scenario «The chosen option has a cue besides colour»: the checked rule "declares a `border-style`, `border-width`, `box-shadow` or `text-decoration` that the plain rule does not" (and the language twin). The design's checked rule declares none of these: its cues are the weight (700 against 500) and a frame that appears (a transparent 2px border becomes `--primary`).
+  - The spec's «Segmented options keep the focus ring inside the card» (l. 3824): one rule per control, `<control> button:focus-visible`, `outline-offset: -1px` and no other outline property.
+  - The spec's «Settings button and panel» (l. 2962): "the bottom sheet on the phone and the panel under the header at the right on tablet and desktop … are layout, covered by NFR-12 … and the held NFR-14 (`review-set-13`)". NFR-14 is not held any more and its reference is `review-set-14`.
+  - **Not covered by any test today:** the ring over the **checked size option's** frame. Block B gave the size options the `--color-primary` frame with the `-1px` ring (archived `2026-10-12-update-setup-sheet`), so the same 2.94 / 1.88 adjacency exists there since 2026-10-12, but A-57's known-failure sentence names the theme and language options only, and no focus-ring pair or accepted adjacency names the segmented controls (`tests/helpers/css.ts:669`). Said plainly: an unrecorded failure in another block's archived scope; the user decides how it is recorded (OQ-1).
+
+## Ids
+
+Checked by grep in `docs/requirements.md` and `docs/requirements-held.md` on 2026-10-12: the highest ids in use are **FR-120** and **A-60**. This draft adds **A-61** and amends **FR-65** (one clause), **FR-117** (one sentence), A-57's "known failures" sentence and **NFR-14** (one phrase, for both wave-2 surfaces). It adds no FR. It renumbers nothing. The dialog draft takes **A-62**.
+
+## 1. What changes for the player
+
+| # | Today | After the amendment (defaults) |
+|---|---|---|
+| T1 | Phone: the settings sheet is 4px taller than the design (8px more padding at 320 px, 12px in all), so everything in it sits a little higher. | The design's size: «Закрити» 44px tall, the design's top padding (1rem at 320 px and narrower). |
+| T2 | The chosen theme and language look "pressed in": a beige fill with a dark frame and an inner ring. | The chosen option is orange-framed on the soft orange fill, bold, as the chosen grid size in the setup sheet already is. The others are muted text. |
+| T3 | The two language options are as wide as their names. | Two equal halves, as the design. |
+| T4 | «Закрити» is an ordinary bold button. | The design's secondary «Закрити» (rounded like the cards, semi-bold), sticky at the panel's bottom with the mask, as the setup sheet's. |
+| T5 | Keyboard: the ring of a focused chosen option runs over its dark frame. | The ring runs over the orange frame; see OQ-1. |
+| T6 | Tablet and desktop: the dropdown under the header. | Unchanged in place and width. |
+
+## 2. Proposed rows
+
+### FR-65 (amended, one clause)
+
+> … the size buttons, the four level buttons and the summary button set their own text and background colours (existing tokens); **the theme and language options take the segmented paint of the size options (A-61): an unchosen option `--color-text-muted` on `--color-control-bg`, the chosen one `--color-text` on `--color-primary-soft` with a 2px `--color-primary` frame and weight 700; the keyboard ring of a chosen segmented option (size, theme or language) lies over that frame, an accepted adjacency below 3:1 (2.94 light, 1.88 dark), while its outer band stays on the card fill at 15.88 light and 13.85 dark (A-61, as the cell ring's accepted adjacencies);** the radio ring of a level button …
+>
+> (Under OQ-1 B the clause names the token `--color-option-checked` and its pairs instead of the accepted adjacency; under OQ-1 C the theme and language options keep their `--color-focus` frame and the clause names the size options only.)
+
+### FR-117 (amended, one sentence)
+
+> «The options set their own text and background colours from the tokens with at least 4.5:1 in both themes, like the level buttons» becomes «The options set their own text and background colours from the tokens with at least 4.5:1 in both themes (A-61: `--color-text-muted` on `--color-control-bg` 7.17 light and 7.54 dark; `--color-text` on `--color-primary-soft` 12.96 and 11.50); **a chosen option differs from an unchosen one by its weight (700 against 500) and by its frame (a transparent border becomes `--color-primary`: 4.41 light and 6.13 dark against its fill, 5.40 and 7.39 against the card)**.» The rest of FR-117 is unchanged.
+
+### A-57 (amended, the "known failures" sentence)
+
+> «Known failures left to later blocks: the ink ring across a checked `--primary` frame in the theme and language options (2.94 / 1.88, row 135).» becomes «The ink ring across a checked `--color-primary` frame in the size, theme and language options (2.94 / 1.88, rows 135 and 170) is an accepted adjacency (A-61).» (Under OQ-1 B: «… is closed by `--color-option-checked` (A-61).»)
+
+### NFR-14 (amended, one phrase; it covers both wave-2 surfaces)
+
+> … (bottom sheet on phones, the rules panel and the setup sheet placed as FR-57 and FR-96 say from 48rem, **the settings panel and the confirmation dialog as A-61 and A-62 say**), …
+>
+> The reference, the threshold and the mechanism are unchanged.
+
+## 3. New assumption
+
+> **A-61 (2026-10-12), the settings panel's size, place and paint (FR-68, FR-65, FR-117).** The values are the design's (`design/v0/app/binarka.css`, `review-set-14`). **Below 48rem** the panel is the shared bottom sheet: `max-height: 55dvh` with the `60vh` fallback, padding `1.5rem 1rem` plus the bottom safe-area inset, and at 22.5rem and narrower `padding-top: 1rem`. **From 48rem** the dropdown the page already has (width `min(22rem, column)`, 6rem from the top, its right edge on the column's right edge, padding 1rem, all four borders, the panel shadow); the page's cap of the window less 2rem stays (not in the design text; no shot reaches it, as RQ-2 of A-59). **The theme and language options take the size options' segmented paint and metrics** (one design rule for the three controls): `min-height: 2.75rem`, padding `0 0.5rem`, a 2px border, radius `calc(var(--radius-m) - 0.1875rem)`, `--color-text-muted` on `--color-control-bg` (the design's transparent option over the `--surface` card; the page states the card's colour, because the spec asks each option rule for a `var(--color-…)` fill), 0.9375rem, weight 500, line height 1.2, `nowrap`; chosen: a `--color-primary` frame on `--color-primary-soft`, `--color-text`, weight 700, no inset ring. The theme options grow by content (`flex: 1 1 auto`), the language options are equal halves (`flex: 1 1 0`). The page keeps one rule per control (the design's shared selector list is not copied, so block B's tests of `.size-control` stay as they are); a stylesheet test keeps the three rules equal in the shared declarations. **«Закрити»** is the setup sheet's «Закрити» without the grid: sticky at the bottom, the mask (two spread shadows in `--color-surface-raised`), `width: 100%`, `min-height: 2.75rem`, `margin-top: 0.5rem`, a 2px `--color-control-border` border, `--radius-m`, weight 600, and a padding that does not make it taller than 2.75rem. **The keyboard ring of a chosen segmented option** (size, theme, language; `outline-offset: -1px`) covers the outer pixel of the 2px frame, so its inner side touches the `--color-primary` frame (2.94 light, 1.88 dark) while its outer band lies on the card fill (15.88, 13.85): an accepted adjacency, as the cell ring's against a hinted neighbour (PA-Q8) (OQ-1 A). No gate shot shows it (`settings-focus` focuses «Темна» while «Як у системі» is chosen). Hover, press and the panel's motion are not ported (OQ-5). The settings panel adds no colour token (under OQ-1 A). **ASSUMPTION; ratified by the user's signature.**
+
+## 4. Cue and paint rules, with the reasoning
+
+| Element | Today | Proposed (design) | Contrast (light / dark) | Reasoning |
+|---|---|---|---|---|
+| Unchosen option | `--color-text` on `--color-control-bg`, 16px, 400, line height 24px | `--color-text-muted` on `--color-control-bg`, 0.9375rem, 500, 1.2 | 7.17 / 7.54 (pair in the list) | The design's segmented look, as the size options. |
+| Chosen option | `--color-given-bg` fill, 2px `--color-focus` frame, inset 1px `--color-focus` ring, 700 | `--color-primary-soft` fill, 2px `--color-primary` frame, `--color-text`, 700 | text 12.96 / 11.50; frame on its fill 4.41 / 6.13, on the card 5.40 / 7.39 (pairs in the list) | The design; the same look as the chosen grid size in the sheet. |
+| Cue besides colour | the inset ring (a `box-shadow` the plain rule lacks) | the weight (700 against 500) and the frame that appears | — | WCAG 1.4.1 asks that colour is not the only means; a weight change is a shape change of the text (the given cell's cue is weight too, ADR 0006 proposed). OQ-2. |
+| Ring on a chosen option | 3px `--color-focus` over a `--color-focus` frame (no visible edge between them) | 3px `--color-focus` over the `--color-primary` frame | 2.94 / 1.88 against the frame; 15.88 / 13.85 against the card | OQ-1. |
+| «Закрити» | base padding 10px 16px (48px tall), radius 6px, 700 | 44px tall, `--radius-m`, 600, sticky with the mask | text on the raised fill 15.88 / 12.79 (pair in the list) | The design's secondary close, as the sheet's. |
+
+## 5. Impact: spec, tests and files (change folder, after the signature)
+
+The change folder is `openspec/changes/update-settings-panel/` (proposed name).
+
+**Spec deltas** (`openspec/specs/play-page/spec.md`); the split is in section 9:
+
+| Delta | Requirement | Source |
+|---|---|---|
+| MODIFIED | «Settings button and panel» (l. 2962): the sentence "Where the button is drawn, the bottom sheet on the phone and the panel under the header at the right … the held NFR-14 (`review-set-13`)" becomes A-61's regimes and points at NFR-14 (not held, `review-set-14`); nothing else of the requirement changes | FR-68, A-61, NFR-14 |
+| MODIFIED | «The theme options set their own colours» (l. 3415): the cue sentence and the scenarios «The chosen option has a cue besides colour» and «The language options declare their colours and a cue» accept the weight and the appearing frame (OQ-2 A): the checked rule declares a `font-weight` of at least 700 and a `border-color` other than the plain rule's, the plain rule a `font-weight` of at most 500 and a transparent border; the 4.5:1 scenario stays | FR-117, FR-65, A-61 |
+| MODIFIED | «Cells and buttons show a visible, unobscured focus indicator» (l. 1939), under OQ-1 A: the accepted adjacencies gain the ring of a chosen segmented option over its `--color-primary` frame (the scenario «The ring's accepted adjacencies are recorded» already computes `--color-focus` against `--color-primary`; it gains `--color-focus` against `--color-control-bg`, at least 13.85) | FR-65, A-61 |
+| ADDED | «The settings panel takes the design's size, place and paint» (FR-68, FR-65, FR-117, A-61, NFR-14): the phone regime and the 22.5rem padding, the option metrics and paint for theme and language, the language halves, «Закрити»; a stylesheet test (including "the three segmented option rules agree on the shared declarations"), a geometry test against the design build and the pixel check of `scripts/visual-block.mjs` and `check:visual` | FR-68, A-61, NFR-14 |
+
+Not modified: «Segmented options keep the focus ring inside the card» (the three `-1px` rules stay, one per control); «The panels take the shared surface paint» (the fill of «Закрити» stays `--color-surface-raised`; its list of things "not delivered by the shell" stays a true record of the shell); «Main column layout geometry follows the design reference» (its scenario «The settings panel stays under the header, its right edge on the column's right edge from 48rem» must stay green); «The main column takes the design palette» (its sentence "the rest of their paint keeps its current token bindings until their own blocks" stays true).
+
+**Tests that change** (each because a changed row demands it):
+
+| File | Change | Source |
+|---|---|---|
+| The tests of «The theme options set their own colours» (`grep -l "theme-control button\[aria-checked" tests/`) | The cue assertion accepts the weight and the frame (OQ-2 A); the 4.5:1 assertions stay and pass with the new tokens | FR-117, A-61 |
+| The test of «The ring's accepted adjacencies are recorded» | Under OQ-1 A: gains `--color-focus` on `--color-control-bg` (≥ 13.85) | FR-65, A-61 |
+| `e2e/nfr-12-targets.spec.ts` (the settings panel's options and «Закрити»), `e2e/nfr-13-a11y.spec.ts` (the theme and language controls focused), `e2e/nfr-14-layout-geometry.spec.ts` (the settings panel from 48rem), `e2e/nfr-14-panel-shell.spec.ts` (the fill of «Закрити») | Unchanged in text; they must stay green | NFR-12, NFR-13, NFR-14 |
+
+**New tests** (red first, by the settings session's test-engineer):
+- e2e `e2e/nfr-14-settings-panel.spec.ts` (`@trace NFR-14`, `@trace FR-68`, `layout` project): the panel's box, the two controls, the chosen option of each and «Закрити» equal the design build's within 0.5 px at the sampled viewports of `review-set-14` (light: 320×700, 375×812, 768×1024, 1024×768, 1366×650, 1440×900; plus the chosen «Темна» of `/settings-dark/` at 375×812, so a chosen option other than «Як у системі» is measured); sampled, never continuum; the computed `color`, `background-color`, `border-color`, `font-weight` and `font-size` of an unchosen and a chosen option equal the design's in light and dark.
+- A stylesheet test: the `.settings` rule inside `@media (max-width: 22.5rem)` declares `padding-top: 1rem`; the theme and language option rules declare the paint of section 4 and agree with `.size-control button` on `min-height`, `padding`, `border-width`, `border-radius`, `font-size`, `font-weight`, `line-height`; the checked rules declare no `box-shadow`; `.language-control button` declares `flex: 1 1 0`; `.settings-close` declares `position: sticky`, `bottom: 0`, the mask in `--color-surface-raised`, `font-weight: 600`, `border-radius: var(--radius-m)`; no colour literal (the existing scan).
+
+**Files:** `src/ui/style.css` only (`.settings`, `.theme-control`, `.language-control`, `.settings-close`). No DOM change, no `src/ui/play-page.ts` change. `quality/design-geometry.json` gains settings-panel cases (refrozen by `scripts/freeze-design-geometry.mjs`; the design does not change). `scripts/visual-block.mjs` gains a `settings` block. No `design/v0` change under OQ-1 A.
+
+## 6. The design
+
+No design round under OQ-1 A or C: the design exists (`review-set-14`; iteration 14 wireframe B for the panel, iteration 15 for the `-1px` ring), reviewed and moved by the user (row 142). The reference does not move. Under OQ-1 B the token is a page-only deviation, recorded like the light cell border (A-57); no design round unless the user wants the reference to carry it.
+
+## 7. Pixel expectations: each failing shot of run 12
+
+Measured in `docs/qa/prep-g2-wave2/classify.txt` (device pixels; sampled).
+
+| Shot | Run 12 | What the failing pixels are |
+|---|---|---|
+| `375-light-settings` | 0.9604 | The sheet is 4px taller (281.5 against 277.5: «Закрити» 48 against 44, the base `button` padding), so every part sits 4px higher; the chosen option's paint (`--color-given-bg` and the dark frame against `--color-primary-soft` and the orange frame: 9705 px theme, 13811 px language, the wider language option 183.8 against 165 px); «Закрити»'s radius and weight (6291 px) |
+| `375-light-settings-dark` | 0.9394 | As above, with «Темна» chosen and the dark tokens inside the light page's shot: 31455 px in the chosen language option, 16315 in the chosen theme option |
+| `375-dark-settings`, `375-dark-settings-light` | 0.9336, 0.9626 | As `375-light-settings` in dark; the dark chosen fill `#4d4438` against `#3d2b1e` is the largest pair (18896 px in `375-dark-settings`) |
+| `320-light-settings`, `320-light-settings-focus` | 0.9430, 0.9390 | The sheet is 12px taller (281.5 against 269.5): the 4px of «Закрити» **plus the 8px top padding** of the missing 22.5rem rule; 14972 px fall in the panel's box outside its controls (the shifted labels and the 12px band at the sheet's top edge, where the design shows the backdrop over the page); then the chosen option's paint and «Закрити». In `-focus` the ring around «Темна» also sits 4px higher (8509 px in the theme control) |
+| `320-light-settings-dark`, `320-dark-settings`, `320-dark-settings-focus`, `320-dark-settings-light` | 0.9195, 0.9117, 0.9077, 0.9458 | As the 320 light shots, with the dark chosen fill; in dark the backdrop composite (`#100c0a`) against the page's sheet fill `#2c2620` is the largest panel pair (7478 px) |
+
+**Why the 768 and wider shots pass while the phone shots fail:** the same causes act there (the chosen option's paint, «Закрити» 4px taller), but from 48rem the panel hangs from the top, so a taller «Закрити» moves nothing above it, and the shots are 3.5 to 5.8 times larger, so the same few thousand pixels are a smaller share. Below 48rem the sheet grows upward from the bottom edge, so a few pixels of height move every line of it.
+
+**Expected after this block:** every settings shot rises; the 10 phone shots reach the floor if the box and the paint match (the per-block tool decides). No 0.98 claim per shot in this draft. If a settings shot does not rise, the block stops and explains it before the review gate.
+
+## 8. Questions for the user
+
+Defaults apply to "signed, use defaults", **except OQ-1, which needs an explicit answer** (and SP-1 of section 9).
+
+- **OQ-1, the focus ring over the chosen option's orange frame** (placed in this block by you, row 170 (5)). **Explicit answer.**
+  - **A (recommended):** the design's paint, and the ring over the orange frame is recorded as an **accepted adjacency** (2.94 light, 1.88 dark), as the cell ring's three (PA-Q8): the ring's outer band lies on the card fill at 15.88 / 13.85, so the ring itself stays clearly visible. It covers the size options too (block B gave them the same frame; today that is an unrecorded failure). No pixel cost (no shot shows a focused chosen option), no new token, no design round.
+  - **B:** a page-only frame colour for the chosen option of all three controls, a new token `--color-option-checked` (light `#c4581a`: 3.66 against the ring, 3.54 against the soft fill, 4.34 against the card; dark `#b86a30`: 3.50, 3.29, 3.96), your "adjust the border colour" (row 135). Cost: a recorded deviation from the design (like the cell border); a small, unmeasured pixel cost on the frames in every settings shot and in the setup sheet's size options (`setup*` shots); it changes block B's archived size-option paint (a change to another block's requirement, «The size buttons set their own colours…»); and both wave-2 blocks then add a token (section 9, SP-1).
+  - **C:** keep today's dark frame (and the inner ring) for theme and language only. Cost: a known pixel mismatch in every settings shot (the chosen option's frame and fill are part of the residual above), and the size options keep the unrecorded adjacency.
+- **OQ-2, the chosen option's cue besides colour.** **Default A:** the design's cues, the weight (700 against 500) and the frame that appears; the scenario that asks for a `border-style`, `border-width`, `box-shadow` or `text-decoration` changes deliberately. **B:** keep the page's inner 1px ring as an extra cue (a small pixel mismatch in every settings shot).
+- **OQ-3, one rule or three.** **Default:** three rules with the same values and a test that keeps them equal (block B's `.size-control` tests unchanged). Alternative: the design's one selector list (touches B's tests).
+- **OQ-4, the language options.** **Default:** equal halves, as the design (`flex: 1 1 0`). Alternative: keep them as wide as their names.
+- **OQ-5, hover, press and the panel's slide.** **Default:** not in this block (as RQ-4 and SQ-6; the gate captures with reduced motion and the pointer off the page).
+
+## 9. The split between the settings block and the dialog block, and the shared slice
+
+Written here and repeated in both change folders' `design.md`.
+
+**What the two blocks share.** Measured by grep of the baseline spec and by the two drafts:
+- No token is used by both surfaces. The dialog block declares `--color-violation-ink` (its one "later" row of the A-57 appendix). The settings block declares none under OQ-1 A or C (one, `--color-option-checked`, under OQ-1 B).
+- No geometry or paint rule of `src/ui/style.css` is shared: the settings block edits `.settings`, `.theme-control`, `.language-control`, `.settings-close`; the dialog block edits `.confirm` and `.confirm-buttons`. The `:root` blocks change only by the dialog's token (and under OQ-1 B the settings token).
+- Both add cases to `quality/design-geometry.json` (keys `settingsPanel` and `confirmDialog`) and a block to `scripts/visual-block.mjs` (`settings`, `confirm`): a mechanical conflict for whichever merges second.
+
+**SP-1, a shared serial slice first? Explicit answer.**
+- **A (recommended, under OQ-1 A or C):** **no shared slice.** Unlike wave 1 (whose four shell tokens and board-size hook were used by every surface), nothing here is used by both blocks. The two sessions start at once from `main` after this prep merges. Merge order: **the dialog block merges first** (it is smaller and owns the token pins), the settings block rebases onto it (expected conflicts: `quality/design-geometry.json`, `scripts/visual-block.mjs`, perhaps `src/ui/style.css` at neighbouring lines), re-runs its battery and a fresh `check:visual`, and merges. If the settings block is ready first, it may merge first instead on your word; the other rebases.
+- **B (only if OQ-1 B):** both blocks add a token, so both edit the token table of «Borders, cues and focus rings have enough contrast», `TOKEN_NAMES`, the pair list and the token-count pins in about nine test files (32 → 33 → 34). Either (B1) this prep session runs a tiny serial slice `update-overlay-tokens` that declares and binds both tokens before the sessions start (the shell pattern; about the size of `update-panel-shell`), or (B2) the dialog merges first and the settings block rebases over the pins (a known conflict in every pin file).
+
+**Requirements of `openspec/specs/play-page/spec.md`, each MODIFIED by exactly one folder:**
+
+| Requirement | Owner |
+|---|---|
+| «Borders, cues and focus rings have enough contrast» (the token table, the pair list, the counts) | the dialog block (`--color-violation-ink`, one pair); under SP-1 B1 the tiny slice; under B2 the dialog, then the settings block after its rebase |
+| «Cells and buttons show a visible, unobscured focus indicator» (the accepted adjacencies) | the settings block |
+| «Settings button and panel» | the settings block |
+| «The theme options set their own colours» | the settings block |
+| «Confirmation before discarding player entries» | the dialog block, only if its text changes (the draft adds a requirement instead) |
+| ADDED «The settings panel takes the design's size, place and paint» | the settings block |
+| ADDED «The confirmation dialog takes the design's size, place and paint» | the dialog block |
+| «The main column takes the design palette», «The backdrops take the design's translucent tokens», «The panels take the shared surface paint», «Segmented options keep the focus ring inside the card», «Main column layout geometry follows the design reference» | nobody: their text stays true after both blocks (each is checked again by the folder's auditor) |
+
+**Design freezes.** `quality/design-geometry.json` and `quality/design-paint.json` are refrozen by one stream at a time: the dialog block adds its cases first; the settings block adds its cases after rebasing onto the dialog's merge (or the user decides the order). The design does not change, so a refreeze adds cases and must not change any existing case (the provenance guard of `scripts/freeze-design-geometry.mjs`).
+
+**Shared files.** `src/ui/style.css`: each block only its own rules. `src/ui/play-page.ts`: neither block. The token and pair pins: the dialog block only (SP-1 A). Captures: each session sets its own `BINARKA_PORT_BASE` (for example 6373 and 6473), so no lock is needed (`node scripts/capture-ports.mjs`).
+
+## 10. Auditor findings: disposition
+
+Pending: a fresh independent auditor reads this draft before the user.
