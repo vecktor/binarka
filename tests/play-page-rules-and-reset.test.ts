@@ -273,4 +273,30 @@ describe.each(CASES)('@trace FR-58 reset at size $n', ({ n, pair, win, dirty, th
     expect(q(root, '[data-board]').getAttribute('data-size')).toBe(String(n));
     expect(checkedSize(root)).toBe(n);
   });
+
+  // Change fix-reset-keeps-hint (review gate wf_9bab3694-f50; the user: «Keep the message»): a hinted cell clicked back to
+  // empty leaves a board without entries, which is untouched, so Reset keeps the hint sentence (FR-58).
+  it('Reset on a board emptied again after a hint keeps the hint sentence and asks nothing', () => {
+    const { root } = mountAtSize(pair);
+    pressHint(root);
+    const hinted = root.querySelector<HTMLElement>('.cell-hinted');
+    expect(hinted, 'premise: the hint filled a cell').not.toBeNull();
+    const r = Number(hinted?.getAttribute('data-row'));
+    const c = Number(hinted?.getAttribute('data-col'));
+    const sentence = hintMessage(root);
+    expect(sentence, 'premise: the hint sentence is shown').not.toBe('');
+    clickCell(root, r, c, cellEl(root, r, c).textContent === '0' ? 2 : 1); // 0 -> 1 -> empty, or 1 -> empty
+    expect(cellEl(root, r, c).textContent, 'premise: the hinted cell is empty again').toBe('');
+    expect(hintMessage(root), 'premise: a click keeps the hint sentence').toBe(sentence);
+    const cellsBefore = snapshot(root);
+    const winBefore = winMessage(root);
+
+    pressReset(root);
+
+    expect(showModalCalls(), 'a board without entries asks nothing').toBe(0);
+    expect(dialogIsOpen(root)).toBe(false);
+    expect(snapshot(root)).toEqual(cellsBefore);
+    expect(hintMessage(root), 'the hint sentence stays').toBe(sentence);
+    expect(winMessage(root)).toBe(winBefore);
+  });
 });

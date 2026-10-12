@@ -1,0 +1,17 @@
+# fix-reset-keeps-hint red run, Mon Oct 12 21:55:34 +0530 2026, head 6b08d5a, src/ unchanged
+
+## npx openspec validate --all --strict
+✓ spec/play-page
+✓ spec/puzzle-engine
+Totals: 3 passed, 0 failed (3 items)
+
+## npx vitest run tests/play-page-rules-and-reset.test.ts
+     × Reset on a board emptied again after a hint keeps the hint sentence and asks nothing 21ms
+     × Reset on a board emptied again after a hint keeps the hint sentence and asks nothing 30ms
+     × Reset on a board emptied again after a hint keeps the hint sentence and asks nothing 69ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the hint sentence stays: expected '' to be 'Два нулі поспіль у рядку 2, тож поруч…' // Object.is equality
+AssertionError: the hint sentence stays: expected '' to be 'Два нулі поспіль у рядку 3, тож поруч…' // Object.is equality
+AssertionError: the hint sentence stays: expected '' to be 'Два нулі поспіль у рядку 8, тож поруч…' // Object.is equality
+ Test Files  1 failed (1)
+      Tests  3 failed | 19 passed (22)
