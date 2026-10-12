@@ -9,22 +9,22 @@ Result: PASS
 
 | Clip | Proves | Video bytes | Shot | Asserted | Vision |
 |---|---|---|---|---|---|
-| 01-play-board | FR-13, FR-14, FR-15, FR-31, FR-32, FR-33, FR-34, FR-63, FR-68, FR-71, FR-72 | 152040 | yes | yes | met |
-| 02-keyboard-a11y | FR-59, FR-60, FR-61, FR-62, FR-65, FR-69, FR-70 | 438243 | yes | yes | met |
-| 03-violations | FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-35, FR-36, FR-37, FR-38, FR-64, FR-120 | 576141 | yes | yes | met |
-| 04-capture-board-and-win | FR-8, FR-9, FR-10, FR-11, FR-12, FR-41, FR-119 | 403282 | yes | yes | met |
-| 05-hints-basic | FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, FR-26, FR-27, FR-39, FR-40, FR-66 | 917858 | yes | yes | met |
-| 06-hints-advanced | FR-74, FR-75, FR-76, FR-77, FR-78, FR-79, FR-80 | 359199 | yes | yes | met |
-| 07-levels-generator | FR-14, FR-15, FR-44, FR-82, FR-83, FR-88 | 487136 | yes | yes | met |
-| 08-setup-sheet | FR-43, FR-73, FR-87, FR-89, FR-91, FR-92, FR-95, FR-96, FR-97, FR-99, FR-100, FR-101 | 676863 | yes | yes | met |
-| 09-confirm-actions | FR-42, FR-58, FR-67, FR-90, FR-98 | 1124395 | yes | yes | met |
-| 10-rules-panel | FR-57, FR-93, FR-94 | 235130 | yes | yes | met |
-| 11-theme | FR-102, FR-103, FR-104, FR-105, FR-106, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118 | 997632 | yes | yes | met |
-| 12-english | FR-22, FR-40, FR-55, FR-56, FR-107, FR-108, FR-109, FR-110, FR-111, FR-112 | 680931 | yes | yes | met |
-| 13-cli-engine | FR-16, FR-17, FR-25, FR-28, FR-29, FR-30, FR-49, FR-50, FR-51, FR-52, FR-53, FR-54, FR-81, FR-84, FR-85, FR-86 | 1703000 | yes | yes | met |
-| 14-cell-states-light | NFR-11, FR-32, FR-64, FR-66 | 119769 | yes | yes | met |
-| 15-cell-states-dark | NFR-11, FR-32, FR-64, FR-66 | 114385 | yes | yes | met |
-| 16-logo-40 | NFR-15, FR-72 | 183331 | yes | yes | met |
+| 01-play-board | FR-13, FR-14, FR-15, FR-31, FR-32, FR-33, FR-34, FR-63, FR-68, FR-71, FR-72 | 151142 | yes | yes | met |
+| 02-keyboard-a11y | FR-59, FR-60, FR-61, FR-62, FR-65, FR-69, FR-70 | 370805 | yes | yes | met |
+| 03-violations | FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-35, FR-36, FR-37, FR-38, FR-64, FR-120 | 531144 | yes | yes | met |
+| 04-capture-board-and-win | FR-8, FR-9, FR-10, FR-11, FR-12, FR-41, FR-119 | 442136 | yes | yes | met |
+| 05-hints-basic | FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, FR-26, FR-27, FR-39, FR-40, FR-66 | 982557 | yes | yes | met |
+| 06-hints-advanced | FR-74, FR-75, FR-76, FR-77, FR-78, FR-79, FR-80 | 362417 | yes | yes | met |
+| 07-levels-generator | FR-14, FR-15, FR-44, FR-82, FR-83, FR-88 | 479609 | yes | yes | met |
+| 08-setup-sheet | FR-43, FR-73, FR-87, FR-89, FR-91, FR-92, FR-95, FR-96, FR-97, FR-99, FR-100, FR-101 | 731703 | yes | yes | met |
+| 09-confirm-actions | FR-42, FR-58, FR-67, FR-90, FR-98 | 1066823 | yes | yes | met |
+| 10-rules-panel | FR-57, FR-93, FR-94 | 236798 | yes | yes | met |
+| 11-theme | FR-102, FR-103, FR-104, FR-105, FR-106, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118 | 896257 | yes | yes | met |
+| 12-english | FR-22, FR-40, FR-55, FR-56, FR-107, FR-108, FR-109, FR-110, FR-111, FR-112 | 682209 | yes | yes | met |
+| 13-cli-engine | FR-16, FR-17, FR-25, FR-28, FR-29, FR-30, FR-49, FR-50, FR-51, FR-52, FR-53, FR-54, FR-81, FR-84, FR-85, FR-86 | 2121618 | yes | yes | met |
+| 14-cell-states-light | NFR-11, FR-32, FR-64, FR-66 | 110560 | yes | yes | met |
+| 15-cell-states-dark | NFR-11, FR-32, FR-64, FR-66 | 110102 | yes | yes | met |
+| 16-logo-40 | NFR-15, FR-72 | 145756 | yes | yes | met |
 
 ## Failures
 
