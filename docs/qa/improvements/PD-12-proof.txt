@@ -16,3 +16,7 @@
 Result: PASS, 2 warning(s)  (a WARN, not a FAIL: the drifted script already has a commit with "Refs: PD-10"; the integrity checker only fails a gate-script drift that no Refs: PD commit ever touched)
 ## 5. After the re-seal
 Result: PASS, 1 warning(s)
+
+## 6. Green
+- clean clone of origin at cf3e7dc (pushed 2026-10-12 17:04): check-trajectory --check-fresh PASS; --release --check-fresh PASS; check-traceability --check-fresh 0 failures (115 recording-evidence warnings, R's).
+- CI on PR 1 for cf3e7dc, run https://github.com/vecktor/binarka/actions/runs/38243572936 (read through the GitHub connector, check runs of PR 1, head sha cf3e7dc9449b826ee758844086b89b623b6d7ac7): job verify SUCCESS (11:35:01 to 11:38:01 UTC; the trajectory step and the steps after it: strict, audit, unit tests, build); job browser SUCCESS (11:35:01 to 11:36:40 UTC). GREEN.

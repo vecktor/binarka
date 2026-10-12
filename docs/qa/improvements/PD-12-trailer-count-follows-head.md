@@ -1,6 +1,6 @@
 # PD-12: the trajectory report depends on the local branches, so CI finds it stale
 
-Status: **APPROVED by the user** in chat on 2026-10-12 at about 17:02 (UTC+5:30): «approve PD-12 and push», after asking for a detailed explanation (session log `docs/qa/process-stream/session-log.md`, rows P16 and P17). Executed in the commit with `Refs: PD-12`. Drafted from 16:55 by stream P of wave 3 (`claude/feynman-process`), found by the first branch CI run of PD-11 (draft PR 1).
+Status: **APPROVED by the user** in chat on 2026-10-12 at about 17:02 (UTC+5:30): «approve PD-12 and push», after asking for a detailed explanation (session log `docs/qa/process-stream/session-log.md`, rows P16 and P17). Executed in the commit with `Refs: PD-12`; **green earned**: a clean clone passes, and CI run `38243572936` on `cf3e7dc` passed both jobs (`PD-12-proof.txt` § 6). Drafted from 16:55 by stream P of wave 3 (`claude/feynman-process`), found by the first branch CI run of PD-11 (draft PR 1).
 
 ## Defect
 
@@ -25,7 +25,7 @@ In a clean clone at the new head, `--check-fresh` and `--release --check-fresh` 
 ## As executed
 
 - `scripts/check-trajectory.mjs` (locked) line 199: `git log HEAD` instead of `git log --all`, with a comment naming this PD. The regenerated report equals the pre-measured one byte for byte; `--release --check-fresh` PASS here. Integrity WARN before (the script already has a `Refs: PD-10` commit), PASS after the re-seal.
-- Green in a clean clone and on CI: recorded in `PD-12-proof.txt` § 6 after the push.
+- Green: a clean clone at `cf3e7dc` passes `--check-fresh` and `--release --check-fresh`; CI run `38243572936` passed `verify` (all steps) and `browser` (`PD-12-proof.txt` § 6).
 
 ## Rollback
 
