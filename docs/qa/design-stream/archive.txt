@@ -1,0 +1,33 @@
+# Archive of update-setup-sheet-design-margin, 2026-10-12 18:34 +0530, on the user's «Archive now (Recommended)» (session log DS17).
+=== npx openspec archive update-setup-sheet-design-margin --yes
+
+Proposal warnings in proposal.md (non-blocking):
+  ⚠ Why section should not exceed 1000 characters
+Task status: ✓ Complete
+
+Specs to update:
+  play-page: update
+Applying changes to openspec/specs/play-page/spec.md:
+  ~ 1 modified
+Totals: + 0, ~ 1, - 0, → 0
+Specs updated successfully.
+Change 'update-setup-sheet-design-margin' archived as '2026-10-12-update-setup-sheet-design-margin'.
+exit=0
+=== the living requirement after the archive (old wording gone, new wording present)
+absent «stays 28px at every width, a departure»: 0
+absent «is within 0.5 px of the case's `expected` box»: 0
+absent «expectedDecidedBy`, the same»: 0
+present «is 28px at every width, as in the design»: 1
+present «levelMarginBottom»: 3
+present «review-set-16/*setup*.png»: 1
+=== diff --stat of the living spec
+ openspec/specs/play-page/spec.md | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+=== npx openspec validate --all --strict
+✓ spec/play-page
+✓ spec/puzzle-engine
+Totals: 2 passed, 0 failed (2 items)
+=== node scripts/check-trajectory.mjs --release (this slice)
+FAIL  [trailer] 2026-10-12-update-setup-sheet-design-margin: no commit carries a "Slice: update-setup-sheet-design-margin" trailer
+Scope: 32 archived slice(s)
+Result: FAIL, 1 warning(s)

@@ -71,8 +71,8 @@ interface Fixture {
   tolerancePx: number;
   selectors: string[];
   cases: { shot: string; state: string; captureBoard: unknown }[];
-  rulesPanel?: { cases: unknown[] };
-  setupSheet?: { cases: unknown[] };
+  rulesPanel?: { selectors: string[]; coverage: string; cases: unknown[] };
+  setupSheet?: { selectors: string[]; coverage: string; cases: unknown[] };
   confirmDialog?: ConfirmKey;
 }
 
@@ -119,14 +119,20 @@ const SAMPLING = {
 const PORT_BASE = process.env.BINARKA_PORT_BASE ? Number(process.env.BINARKA_PORT_BASE) : 4173;
 const FORBIDDEN_PORTS = [0, 1, 3, 4].map((offset) => PORT_BASE + offset);
 
-// The top-level fixture as it stood before this change: the key is ADDED, nothing else moves (tasks.md 3.1).
-const TOP_LEVEL_DESIGN_COMMIT = '5e61bfd14de56bff4b3726db4ddd624fcd3c2e04';
-const TOP_LEVEL_DESIGN_CSS_SHA1 = 'd1b1255f4dff205d15d64850096429cd377e5fbf';
-// SHA-1 of JSON.stringify of the keys rulesPanel and setupSheet as main 18e5f3f records them (cases, selectors, provenance, deviations): the
-// refreeze that adds confirmDialog must leave both byte-identical, provenance included (review gate of update-confirm-dialog, fix round 1).
-const UNCHANGED_KEY_SHA1: Record<'rulesPanel' | 'setupSheet', string> = {
-  rulesPanel: '0f2164d58abec6e740d6da18d987dbc787c722ad',
-  setupSheet: '6dc8dda1101585031e93471a6d5f1fa885ebf32c',
+// The top-level fixture as it stood before this change: the key is ADDED, nothing else moves (tasks.md 3.1). DELIBERATE CHANGE (design stream DS
+// of wave 3, 2026-10-12; A-60 amended and signed, the user moved the NFR-14 reference to review-set-15): the design hashes name design iteration
+// 17 (`41c5165`, the level group's 28px margin), which replaced `5e61bfd` / `d1b1255f…`, then 18 (`521ce03`, the setup sheet's scroll padding; the
+// reference moved to review-set-16, row DS14); the refreeze writes this design's provenance into every key.
+const TOP_LEVEL_DESIGN_COMMIT = '521ce035095b74d367ca326479c2b6ec77827448';
+const TOP_LEVEL_DESIGN_CSS_SHA1 = 'bef5279b57baeca456fa7a4c3ff0ddf0f9440e43';
+// SHA-1 of JSON.stringify of the CASES of the keys rulesPanel and setupSheet. It was the whole key (cases, selectors, provenance, deviations) as
+// main 18e5f3f recorded it, so that the refreeze adding confirmDialog left both byte-identical (review gate of update-confirm-dialog, fix round 1).
+// DELIBERATE CHANGE (design stream DS, 2026-10-12): a design change rewrites every key's provenance, so a whole-key pin can only be re-recorded,
+// which proves nothing. The cases are pinned instead: rulesPanel's are the ones main 18e5f3f recorded (the 28px moves no rules panel box);
+// setupSheet's are the iteration-17 refreeze's (no deviation, the design's own boxes; docs/qa/design-stream/refreeze.txt).
+const UNCHANGED_CASES_SHA1: Record<'rulesPanel' | 'setupSheet', string> = {
+  rulesPanel: 'f70bb8c08a4415002cdd011efb40153047b4a75d',
+  setupSheet: '6b0660d41c74152933cec0c605b95d057bf874db',
 };
 
 const isBox = (v: unknown): v is Box => {
@@ -286,18 +292,27 @@ test('@trace NFR-14 the design build is required and the coverage is declared: s
 // Part 1: the fixture
 // ---------------------------------------------------------------------------------------------------------
 
-// GUARD: green today. The key is ADDED; the 32 top-level shots, the selectors, the tolerance, the design hashes and the other two keys do not move.
-test('@trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes', () => {
+// GUARD. The key is ADDED; the 32 top-level shots, the selectors, the tolerance and the other two keys' cases do not move; the design hashes name
+// design iteration 18 (design stream DS, 2026-10-12).
+test('@trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes; the design hashes name design iteration 18', () => {
   expect(fixture.cases, 'the top-level cases of quality/design-geometry.json').toHaveLength(32);
   expect(fixture.cases.some((c) => c.shot.includes('confirm')), 'no confirm shot is among the top-level cases').toBe(false);
   expect(fixture.tolerancePx).toBe(0.5);
-  expect(fixture.provenance.designCommit, 'the top-level provenance keeps the design commit').toBe(TOP_LEVEL_DESIGN_COMMIT);
-  expect(fixture.provenance.designCssSha1, 'the top-level provenance keeps the design CSS hash').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+  expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 18').toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 18').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
   expect(fixture.rulesPanel?.cases, 'rulesPanel keeps its 8 cases').toHaveLength(8);
   expect(fixture.setupSheet?.cases, 'setupSheet keeps its 12 cases').toHaveLength(12);
+  // Review gate of the design stream DS (run wf_b4f0e083-6e6, contested finding): the case pins below do not cover the keys' selectors and
+  // coverage, which the whole-key pins did, so they are asserted here.
+  expect(fixture.rulesPanel?.selectors, 'rulesPanel keeps its selectors').toEqual(['[data-section="rules"]', '[data-section="rules"] .rules-close']);
+  expect(fixture.setupSheet?.selectors, 'setupSheet keeps its selectors').toEqual([
+    '[data-section="setup"]',
+    '[data-section="setup"] [data-control="level"] button:first-of-type .level-text',
+  ]);
+  expect([fixture.rulesPanel?.coverage, fixture.setupSheet?.coverage], 'both keys declare sampled coverage').toEqual(['sampled', 'sampled']);
   for (const key of ['rulesPanel', 'setupSheet'] as const) {
-    const sha1 = createHash('sha1').update(JSON.stringify(fixture[key])).digest('hex');
-    expect(sha1, `${key} is byte-identical to main 18e5f3f, provenance included (a refreeze keeps a key's recorded provenance while its cases are unchanged)`).toBe(UNCHANGED_KEY_SHA1[key]);
+    const sha1 = createHash('sha1').update(JSON.stringify(fixture[key]?.cases)).digest('hex');
+    expect(sha1, `${key}.cases are the pinned ones (rulesPanel: main 18e5f3f; setupSheet: the iteration-17 refreeze)`).toBe(UNCHANGED_CASES_SHA1[key]);
   }
   expect(fixture.selectors, 'the top-level selectors name no confirm element').not.toContain(DIALOG);
 });

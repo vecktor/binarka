@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-12T11:47:39.468Z",
-  "gitHead": "5262ab5e7f35a044a5706725635c1507b496890b",
+  "createdAt": "2026-10-12T13:28:11.823Z",
+  "gitHead": "5959f433a698d1a70972ab866ac0e15f0309c181",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -15,7 +15,7 @@
     "quality/eval-baseline.json": "93791bb00ddc72e7114105351fe3a55be0063c2976765ef4100f4bc135a88be8",
     "quality/process-baseline.json": "c4138cf68d31420931034e59d580cc4db6fdd08550de95347c7396bd9b2923d5",
     "quality/telemetry.config.json": "0c6068dc9b2b8c1560ef9d94ff0b5ff8d29adb510271bfa25a382267f77c79d0",
-    "quality/visual-parity.config.json": "4595574bc67185d90e09382360ad62c5e769b3f36ce55745256e2145dd4d2f17",
+    "quality/visual-parity.config.json": "321486b13d6b08a148f943c0d076b51688959dcadce6445c018792ac89e0f6fe",
     "scripts/check-a11y.mjs": "25930dd0eefb2b70c4ca9b2733e89b712def89120f1b41ff2a215cc52a480f51",
     "scripts/check-acceptance-methods.mjs": "9262665a654c5c2e66d2fdae3829c77f8b6587bd7eca29ad79d9c6aa0ff77660",
     "scripts/check-coverage-ratchet.mjs": "59c72ea1d727bc5f14009f29c5bf488c81fcf63275596d67ba78c1170633f46e",
@@ -32,6 +32,6 @@
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-13: scripts/check-vision.mjs (Phase H, the vision-verify mechanism) joins the lock so a change to it is tamper-evident (approved by the user 2026-10-12)"
+    "PD-15 (drafted as PD-13 before stream DS took PD-13 and PD-14): scripts/check-vision.mjs (Phase H, the vision-verify mechanism) joins the lock so a change to it is tamper-evident; re-sealed over DS's PD-14 seal at the merge (approved by the user 2026-10-12)"
   ]
 }

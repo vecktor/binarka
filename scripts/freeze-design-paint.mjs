@@ -29,6 +29,7 @@ import { extname, join, relative, resolve, sep } from 'node:path';
 import { chromium, devices } from 'playwright';
 import { captureBoardFor, parseShot } from './check-visual-parity-adapters.mjs';
 import { capturePorts } from './capture-ports.mjs';
+import { standInFor } from './reference-calibration.mjs';
 
 const PORT = capturePorts().design;
 const OUT = 'quality/design-paint.json';
@@ -338,7 +339,7 @@ const fixture = {
     designBuild: 'design/v0/out from `pnpm build` in design/v0 (design/README.md), not committed; designBuildSha1 covers every file of it',
     reference: config.referenceDir,
     referenceSha1sums: config.referenceSha1sums,
-    standIn: 'docs/qa/g2/harness-calibration.txt (the design build reproduces all 170 reference shots at 1.0000)',
+    standIn: standInFor(config.referenceDir),
     browser: `Playwright chromium ${browserVersion}, devices["Desktop Chrome"], viewport ${VIEWPORT.width}x${VIEWPORT.height}, reducedMotion reduce, colorScheme set per case on the context, no stored preference`,
     determinism: 'every case is measured twice in two fresh contexts and the two must be identical before this file is written',
   },

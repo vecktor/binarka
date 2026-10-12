@@ -1,0 +1,73 @@
+# Battery on the merge of main 44f4c8b (streams DS and R) into claude/logo-legibility (2026-10-12 19:05 +0530), before the merge commit; backup: backup/logo-legibility-premerge-47583a8
+
+## npm run lint
+> binarka@0.1.0 lint
+> eslint .
+exit: 0
+
+## npm run test:run
+   Start at  19:05:59
+   Duration  71.33s (tests 73%, environment 20%, import 6%, transform 1%)
+    Isolate  82 workers spawned · ~797ms startup each (spawn + environment, per file)
+             at least ~6.47s faster with isolate: false — reuses workers across files instead of one per file
+exit: 0
+
+## npm run build
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-DIwVvqnQ.css  24.37 kB │ gzip:  4.92 kB
+dist/assets/index-CwxmSTGb.js   35.06 kB │ gzip: 12.69 kB
+✓ built in 37ms
+exit: 0
+
+## npx openspec validate --all --strict
+- Validating...
+✓ spec/play-page
+✓ spec/puzzle-engine
+Totals: 2 passed, 0 failed (2 items)
+exit: 0
+
+## npm run check:vision
+met        NFR-11 (14-cell-states-light, 15-cell-states-dark)
+met        NFR-15 (16-logo-40)
+Scope: 16 judged still(s) of 16 clip(s) in 1 manifest(s); 2 vision-verify requirement(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-recordings.mjs --require-vision
+Scope: 16 clip(s) across 1 manifest(s)
+Result: PASS
+exit: 0
+
+## node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+exit: 0
+
+## npm run check:integrity
+> node scripts/check-factory-integrity.mjs
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 28 locked file(s)
+Result: PASS, 1 warning(s)
+exit: 0
+
+## npm run check:acceptance
+Scope: 134 tagged requirement(s)
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+acceptance (existence): 134 contract(s) across 134 requirement(s) — 0 failure(s), 1 warning(s), 0 pending
+Result: PASS, 1 warning(s)
+exit: 0
+
+## node scripts/check-trajectory.mjs --release
+FAIL  [trailer] 2026-10-12-update-setup-sheet-design-margin: no commit carries a "Slice: update-setup-sheet-design-margin" trailer
+Scope: 33 archived slice(s)
+wrote docs/qa/trajectory-report.md and trace/trajectory.json
+Result: FAIL, 1 warning(s)
+exit: 1
+
+## test totals: Test Files 82 passed, Tests 1998 passed (re-run for the count; DS added the reference-pin tests)
+## NFR-14 on the merged tree, reference review-set-16 (DS), BINARKA_PORT_BASE=6873, 2026-10-12 19:12 +0530
+npm run check:visual: Result FAIL, exit 1: 168 of 170 at 0.98. Failing only: logo-light 0.9426, logo-dark 0.9427 (the page draws G, set-16 holds
+  the sun; main alone is 170 of 170, commit 4fe210a). Lowest passing shot 0.9882. Output: check-visual-merge-main.txt; committed reports kept as main's.
+npx playwright test (all projects): 323 passed, exit 0.
+Paint fixture re-frozen from the merged design (DS iteration 18 + drawing G): only the logo keys and the provenance move (reference review-set-16).
+  Caveat: its generated standIn line says the design reproduces all 170 shots of set-16; with G it does so except in the logo's box.

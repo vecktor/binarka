@@ -1,0 +1,322 @@
+{
+  "generatedBy": "review-gate workflow (run wf_b4f0e083-6e6), persisted by hand by the design stream DS",
+  "persistedBy": "design stream DS of wave 3 (claude/youthful-bhabha-design28), 2026-10-12, from the workflow result (reviewEvidence was null: the scope names no active change folder); moved into the change folder so the archive carries it (docs/qa/review-dispositions/README.md, «Where a review file belongs»)",
+  "change": "update-setup-sheet-design-margin",
+  "archiveFolder": "openspec/changes/archive/2026-10-12-update-setup-sheet-design-margin (after the archive)",
+  "runId": "wf_b4f0e083-6e6",
+  "scope": "design stream DS of wave 3 (branch claude/youthful-bhabha-design28): design iterations 17 and 18 (design/v0/app/binarka.css), review-set-15 and review-set-16, PD-13 and PD-14 (quality/visual-parity.config.json re-pointed, factory-lock.json re-sealed), removal of the recorded setup-sheet deviation (scripts/setup-sheet-deviation.mjs -> scripts/setup-sheet.mjs; scripts/visual-block.mjs; scripts/freeze-design-geometry.mjs), the refrozen quality/design-geometry.json, the three changed e2e specs (e2e/nfr-14-setup-sheet.spec.ts, e2e/nfr-14-settings-panel.spec.ts, e2e/nfr-14-confirm-dialog.spec.ts), docs/requirements.md (NFR-14 row, A-60 signed wording), design/tools/capture-review-set.sh (port from BINARKA_PORT_BASE). Spec sources: docs/requirements.md A-60 and NFR-14; docs/handoff/delivery-plan-2026-10-12.md units DS-1 and DS-2; docs/qa/design-stream/session-log.md. Large binary review sets under design/v0-screenshots/ need no line review.",
+  "baseRef": "d25ca3c",
+  "headRef": "4fe210a",
+  "authorisedBy": "the user, question form 2026-10-12 about 17:36: «Yes, after green (Recommended)» (session log DS10)",
+  "agentCount": 42,
+  "summary": "Review gate for design stream DS of wave 3 (branch claude/youthful-bhabha-design28): design iterations 17 and 18 (design/v0/app/binarka.css), review-set-15 and review-set-16, PD-13 and PD-14 (quality/visual-parity.config.json re-pointed, factory-lock.json re-sealed), removal of the recorded setup-sheet deviation (scripts/setup-sheet-deviation.mjs -> scripts/setup-sheet.mjs; scripts/visual-block.mjs; scripts/freeze-design-geometry.mjs), the refrozen quality/design-geometry.json, the three changed e2e specs (e2e/nfr-14-setup-sheet.spec.ts, e2e/nfr-14-settings-panel.spec.ts, e2e/nfr-14-confirm-dialog.spec.ts), docs/requirements.md (NFR-14 row, A-60 signed wording), design/tools/capture-review-set.sh (port from BINARKA_PORT_BASE). Spec sources: docs/requirements.md A-60 and NFR-14; docs/handoff/delivery-plan-2026-10-12.md units DS-1 and DS-2; docs/qa/design-stream/session-log.md. Large binary review sets under design/v0-screenshots/ need no line review.: 10 confirmed, 2 contested (treat as confirmed unless trivially wrong), 7 rejected.",
+  "confirmedTitles": [
+    "OpenSpec play-page spec still requires the 28px departure, the recorded deviation, the `expected` boxes and `expectedDecidedBy`, which the changed tests and fixture now forbid",
+    "freeze-design-geometry.mjs: `standIn` is a hard-coded set-16 path, not derived from config.referenceDir. The same stale-string bug already hit this stream once",
+    "Stale 'the reference is review-set-15' in script header comments after the move to review-set-16",
+    "Living OpenSpec scenario «The sheet matches the design's box in a real browser» contradicted: spec still requires the `expected` box and an asserted 28px deviation, the test now asserts the opposite",
+    "Living OpenSpec scenario «The fixture adds one key and changes nothing else» contradicted: still requires recorded deviation, `expected` boxes, `expectedDecidedBy` and unchanged design hashes",
+    "Requirement body of the setup-sheet requirement still describes the 28px as a departure, the 24px/1rem guard and the injected rule",
+    "Stale reference-set mentions in the new and edited scripts' comments (review-set-15 where the reference is now 16)",
+    "freeze-design-geometry.mjs `standIn` is still a hard-coded set-16 path although the rest of the provenance derives from the config",
+    "No checker verifies `referenceSha1sums` against the reference set's SHA1SUMS (NFR-14 pin without a mechanism)",
+    "Focusing the sticky «Почати» button scrolls the 320px setup sheet 10px, cutting its top padding from about 16px to about 6px"
+  ],
+  "contestedTitles": [
+    "Geometry pins weakened from whole-key to cases-only, and are self-referential",
+    "Checklist areas not exercised by this diff"
+  ],
+  "clean": false,
+  "cleanNote": "10 confirmed and 2 contested findings. One fix round, commit a93262f (session log DS16); no confirming run. The findings are dispositioned in docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json (PD-10), which counts only once the user signs it.",
+  "confirmed": [
+    {
+      "title": "OpenSpec play-page spec still requires the 28px departure, the recorded deviation, the `expected` boxes and `expectedDecidedBy`, which the changed tests and fixture now forbid",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 4660,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "Line 4660 still says \"The level group's bottom margin stays 28px at every width, a departure from the design, said plainly (A-60, SQ-5). The design has 24px ... and 1rem at 22.5rem and narrower\". Lines 4756-4757 require the sheet to be compared with \"the case's `expected` box\" and that \"the key records the 28px deviation with its reason (A-60, SQ-5)\". Line 4773 requires `setupSheet` to hold \"the recorded deviation\", `expected` boxes and `expectedDecidedBy`. The changed e2e/nfr-14-setup-sheet.spec.ts now asserts `raw.deviations` and `c.expected` and `expectedDecidedBy` are `toBeUndefined()`, and `git diff --stat d25ca3c..HEAD -- openspec` is empty. The tests were changed to follow the signed A-60 wording, but the spec they trace to was not. That breaks the AGENTS.md rule that a test contradicting the spec is changed deliberately, with the spec. `openspec validate --strict` cannot detect this kind of semantic drift.",
+      "suggestion": "Add an OpenSpec change (or a delta in this stream) that rewrites the A-60 requirement paragraph and the scenarios at about lines 4756-4757 and 4773 to the signed wording: the design has 28px, no deviation, no `expected` box, each case records `levelMarginBottom`, and the page is compared with the design's own `boxes`. Also mention iteration 18's scroll-padding if a scenario names the reference set. Leave the archived changes as they are.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The spec drift is real. openspec/specs/play-page/spec.md still says the level group's bottom margin \"stays 28px ... a departure from the design\" (A-60, SQ-5). It still requires the `expected` box, the recorded deviation, and `expectedDecidedBy` in the `setupSheet` key. Its scenario says the test \"asserts that the key records the 28px deviation\". e2e/nfr-14-setup-sheet.spec.ts line 159 now asserts `raw.deviations` is `toBeUndefined()`, with the message \"setupSheet records no deviation (A-60: the level margin is 28px in the design)\". Line 182 asserts `expectedDecidedBy` is `toBeUndefined()`. `git diff --stat d25ca3c..HEAD -- openspec` printed nothing, so the spec was not changed alongside the tests. I read only the spec and these two test assertions. I did not check the fixture or the rest of the e2e file. The test and the spec now directly contradict each other, which AGENTS.md says must be resolved deliberately. Severity \"major\" is reasonable: the artifact is a normative spec, but nothing at runtime breaks.",
+        "I read the cited spec and the e2e test, and the drift is real. openspec/specs/play-page/spec.md still says the level group's bottom margin \"stays 28px ... a departure from the design\" (A-60, SQ-5). It still requires an `expected` box and a recorded deviation in the `setupSheet` key, including `expectedDecidedBy`. Its scenarios require the key to record the 28px deviation. e2e/nfr-14-setup-sheet.spec.ts lines 159, 172 and 182 now assert that `deviations`, `expected` and `expectedDecidedBy` are `toBeUndefined()`. `git diff --stat d25ca3c..HEAD -- openspec` is empty, so the spec was not updated alongside the tests. The tests and the spec directly contradict each other.\n\nThis is a spec and test inconsistency, not a runtime defect. A user or attacker cannot trigger it, and it could only mislead a future reader or the review gate. Because there is no user-facing impact, I would downgrade the severity."
+      ]
+    },
+    {
+      "title": "freeze-design-geometry.mjs: `standIn` is a hard-coded set-16 path, not derived from config.referenceDir. The same stale-string bug already hit this stream once",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 351,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`reference: config.referenceDir` is derived, but `standIn: 'docs/qa/design-stream/harness-calibration-set16.txt (...)'` is a literal. docs/qa/design-stream/refreeze.txt records that the first set-15 refreeze wrote a stale set-14 `standIn` for exactly this reason, and the fixture had to be restored and frozen again. The comment at lines 349-350 is already out of date: it lists only set 15 and set 14. The next reference move will write a provenance that names the wrong calibration, and no guard will catch it.",
+      "suggestion": "Derive the calibration path from the reference set id, e.g. a map keyed by `config.referenceDir.split('/').pop()`. Or throw when no calibration file names that set, so the freeze fails rather than recording a stale `standIn`.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. In scripts/freeze-design-geometry.mjs line 351, `standIn` is a hard-coded literal naming harness-calibration-set16.txt, while `reference` is derived from config.referenceDir. The comment at lines 349-350 lists only set 15 and set 14, so it is out of date. docs/qa/design-stream/refreeze.txt line 3 records the same bug: the first freeze wrote a stale set-14 standIn from a hard-coded string. Nothing validates standIn against config.referenceDir (only the two scripts and the quality/*.json fixtures and logs mention it). freeze-design-paint.mjs also hard-codes a set-14 path. The next reference move will silently record a wrong calibration pointer, so the severity is correctly minor. It is a latent maintainability problem, not a present wrong value, since the current literal is correct.",
+        "Confirmed at scripts/freeze-design-geometry.mjs:351: `reference` is derived from config.referenceDir but `standIn` is a literal naming the set16 calibration; the comment at 349-350 lists only set 15 and 14. docs/qa/design-stream/refreeze.txt records the same stale-literal bug hit once (set-14 standIn written during set-15 refreeze). No test or check script references standIn (only freeze scripts and docs), so nothing guards it. The mechanism is real, but it is a latent, low-impact maintainer-time provenance string issue, not user/attacker exploitable; it triggers only on the next reference move. Minor severity is apt."
+      ]
+    },
+    {
+      "title": "Stale 'the reference is review-set-15' in script header comments after the move to review-set-16",
+      "file": "scripts/setup-sheet.mjs",
+      "line": 6,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "scripts/setup-sheet.mjs:6 says \"the NFR-14 reference is review-set-15\" and scripts/visual-block.mjs:21 says \"the reference is review-set-15\". NFR-14, quality/visual-parity.config.json and the fixture's provenance all name review-set-16 (iteration 18). The comments were written in the iteration-17 commit and were not updated by the set-16 refreeze.",
+      "suggestion": "Say \"since design iteration 17 (review-set-15 onward)\", or drop the set id and point to config.referenceDir, so the comment does not go stale on every move.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed by reading the code. scripts/setup-sheet.mjs:6 says \"the NFR-14 reference is review-set-15\" and scripts/visual-block.mjs:21 says \"the reference is review-set-15\". quality/visual-parity.config.json sets referenceDir to design/v0-screenshots/review-set-16 and its comment says the reference moved from review-set-15 to review-set-16 (iteration 18). So both comments are stale. The impact is cosmetic: they are comments only, with no runtime effect. It is a real but minor correctness-of-documentation finding, and the suggestion (point to config.referenceDir) is sound.",
+        "Confirmed by grep. scripts/setup-sheet.mjs:6 says \"the NFR-14 reference is review-set-15\" and scripts/visual-block.mjs:21 says \"review-set-15\". quality/visual-parity.config.json has referenceDir \"design/v0-screenshots/review-set-16\". The comments are stale. This is a comment-only inaccuracy with no runtime effect, so it is minor and not exploitable. The stated severity is already appropriate."
+      ]
+    },
+    {
+      "title": "Living OpenSpec scenario «The sheet matches the design's box in a real browser» contradicted: spec still requires the `expected` box and an asserted 28px deviation, the test now asserts the opposite",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 4755,
+      "severity": "critical",
+      "confidence": "high",
+      "evidence": "Coverage: 12 scenarios: 9 implemented, 1 partial, 0 missing, 2 contradicted. The 9 implemented are DS-1, the DS-2 re-point, deviation removal, refreeze and battery/check:visual, the A-60 28px, the A-60 scroll-padding, NFR-14 at 170 of 170, and no src/ change. Spec 4755: «THEN each of the four edges of the sheet's box is within 0.5 px of the case's `expected` box». Spec 4757: «AND a miss is reported with ... the `expected` box ... and the test asserts that the key records the 28px deviation with its reason (A-60, SQ-5), so the departure is visible in the fixture and cannot widen silently». Code reality: e2e/nfr-14-setup-sheet.spec.ts:159 `expect(raw.deviations, 'setupSheet records no deviation ...').toBeUndefined()`, :172 asserts `c.expected` is undefined, and :324 compares the page with `c.boxes[SHEET]` (the design's own). The change is correct under the amended A-60 (docs/requirements.md, signed DS6). But openspec/specs/play-page/spec.md was not amended in d25ca3c..HEAD, and neither DS-2 in docs/handoff/delivery-plan-2026-10-12.md nor the session log lists the spec. The living spec and the test now say opposite things.",
+      "suggestion": "Open a small OpenSpec change (or a spec delta under this stream) that amends «The setup sheet takes the design's size, place and paint». The scenario should compare the sheet with the case's `boxes`, assert that the key records no deviation and each case's `levelMarginBottom` is 28px, and keep the page-side 28px AND. Run `npx openspec validate --all --strict` afterwards. Do not merge the stream as spec-clean until then.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The scenario in openspec/specs/play-page/spec.md still requires the sheet's edges to be within 0.5 px of the case's `expected` box. It also requires the test to assert that the key records the 28px deviation. The git diff of openspec/ over d25ca3c..HEAD is empty, so the spec was not amended. e2e/nfr-14-setup-sheet.spec.ts now asserts `deviations` is undefined and `expected` is undefined, and compares the page with `boxes`. The spec and the test therefore state opposite things. The line number is about right, since the scenario sits near 4755. Whether it is critical is debatable, because the change itself follows the amended A-60. This is a spec-drift finding, not a product bug, so I'd downgrade it.",
+        "Confirmed. openspec/specs/play-page/spec.md lines 4755-4757 still require the sheet to be within 0.5px of the case's `expected` box and require the test to assert the key records the 28px deviation. The e2e test (e2e/nfr-14-setup-sheet.spec.ts ~159-172) now asserts no `deviations` key and no `expected` box, and compares against the design's own `boxes`. No changes under openspec/ exist in d25ca3c..HEAD, so the living spec and the test contradict each other. The finding is a document-drift problem, not a user-facing defect, so \"critical\" overstates it. I would downgrade it to medium or high: it blocks spec-clean claims but has no runtime impact."
+      ]
+    },
+    {
+      "title": "Living OpenSpec scenario «The fixture adds one key and changes nothing else» contradicted: still requires recorded deviation, `expected` boxes, `expectedDecidedBy` and unchanged design hashes",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 4773,
+      "severity": "critical",
+      "confidence": "high",
+      "evidence": "Spec 4773: «the top-level `provenance` has the same `designCommit` and `designCssSha1` as before ... the recorded deviation (rule, design value, product value, reason, and the cases whose `decidedBy` is `content`) and exactly the 12 cases, each with its `boxes` (the design's), its `expected` boxes (the design with the 28px margin) and its `layout`: ... and `expectedDecidedBy`». Code reality: scripts/freeze-design-geometry.mjs no longer writes `deviations`, `expected` or `expectedDecidedBy` (diff at :250-254 and :399-404). quality/design-geometry.json setupSheet keys are [selectors, coverage, provenance, cases]. The top-level designCommit is now 521ce035… (iteration 18), not 5e61bfd. e2e/nfr-14-setup-sheet.spec.ts:182 asserts `expectedDecidedBy` is undefined.",
+      "suggestion": "Amend the scenario in the same spec delta. The key records `levelMarginBottom` per case and no deviation. The design hashes name the design the fixture is frozen from (iteration 18). The cross-iteration guard is the cases' SHA-1, pre-registered in docs/qa/design-stream/refreeze*.txt.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The living spec scenario at openspec/specs/play-page/spec.md:4769-4773 still requires an unchanged top-level designCommit, a recorded deviation, `expected` boxes, and `expectedDecidedBy`. The fixture and code no longer match: quality/design-geometry.json setupSheet keys are [selectors, coverage, provenance, cases]. Its case entries hold `levelMarginBottom` and `layout`, with no `expected`. The top-level provenance.designCommit is now 521ce035 (iteration 18). scripts/freeze-design-geometry.mjs comments (lines 33 and 41) say the key records no deviation and no `expected` box. e2e/nfr-14-setup-sheet.spec.ts:182 asserts `expectedDecidedBy` is undefined. No open change under openspec/changes carries a delta that amends the scenario; only the archive exists. The spec text is therefore stale against the code, tests and fixture. This is a real spec-compliance defect, but a documentation/spec drift rather than a runtime bug, so \"critical\" is overstated.",
+        "Confirmed: the living spec scenario at openspec/specs/play-page/spec.md:4773 still requires a recorded deviation, `expected` boxes, `expectedDecidedBy` and unchanged design hashes. The fixture quality/design-geometry.json setupSheet has only [selectors, coverage, provenance, cases] and a designCommit of 521ce035 (iteration 18), and e2e/nfr-14-setup-sheet.spec.ts:159 and :182 assert that `deviations` and `expectedDecidedBy` are undefined. The spec was not amended and no pending change delta exists. It is documentation drift in the spec, not a runtime or exploitable defect, so critical overstates it."
+      ]
+    },
+    {
+      "title": "Requirement body of the setup-sheet requirement still describes the 28px as a departure, the 24px/1rem guard and the injected rule",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 4660,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "Spec 4660: «The level group's bottom margin stays 28px at every width, a departure from the design, said plainly (A-60, SQ-5). The design has 24px ... the box test therefore compares the page with the design plus this one recorded deviation». 4662 item (4): «the design's 24px and 1rem margins of the level group (the 28px departure above)». 4664: «The script guards the injection ... fails unless it is 24px (16px at 22.5rem and narrower)». Code reality: design/v0/app/binarka.css now sets `margin-bottom: 1.75rem` in all three rules. scripts/setup-sheet.mjs exports LEVEL_MARGIN '28px'. Both scripts throw unless the design margin is 28px (freeze-design-geometry.mjs:187, visual-block.mjs:205). The spec also says the design has no scroll-padding; iteration 18 added `scroll-padding-bottom: calc(2.75rem + 48px)` to `.setup:popover-open` (binarka.css:587). docs/requirements.md A-60 was amended, but the normative spec text was not.",
+      "suggestion": "Rewrite paragraphs 4660-4664 to match the amended A-60: 28px as in the design (review-set-15/16), no injection, the guard throws on a non-28px design. Drop item (4) from the not-delivered list. Note that the design now carries the same scroll-padding-bottom as the page.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The spec paragraph near line 4660 still calls 28px a departure from a 24px/1rem design, describes an injected `.setup .level-control { margin-bottom: 28px }` rule with an `expected` box, and lists the 24px/1rem margins as not delivered. The code no longer matches. design/v0/app/binarka.css sets `margin-bottom: 1.75rem` with an 'Iteration 17: 28px' comment. scripts/freeze-design-geometry.mjs (header comment at line 33) says nothing is injected and the key records no deviation and no `expected` box. `scroll-padding-bottom: calc(2.75rem + 48px)` is in the design at line 587. The normative text is stale against the amended A-60.",
+        "Confirmed by reading the files. openspec/specs/play-page/spec.md still says the design has 24px (1rem at 22.5rem and narrower) and that the product's 28px is a recorded departure. It also lists \"the design's 24px and 1rem margins of the level group (the 28px departure above)\" as item (4) of the not-delivered list. But design/v0/app/binarka.css now sets margin-bottom: 1.75rem at lines 608, 1001 and 1047, which is 28px in all three rules. scripts/setup-sheet.mjs exports LEVEL_MARGIN = '28px'. The finding also reports that both freeze-design-geometry.mjs and visual-block.mjs throw unless the design margin is 28px; I did not open those two scripts. So the normative text contradicts the design source and the tooling. This is a real spec/code inconsistency. It affects what testers and spec readers are told, not runtime behavior. I did not check the injection or scroll-padding claims separately."
+      ]
+    },
+    {
+      "title": "Stale reference-set mentions in the new and edited scripts' comments (review-set-15 where the reference is now 16)",
+      "file": "scripts/setup-sheet.mjs",
+      "line": 6,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "scripts/setup-sheet.mjs:6: «the NFR-14 reference is review-set-15». scripts/visual-block.mjs:21: «(A-60 as amended and signed on 2026-10-12; the reference is review-set-15)». quality/visual-parity.config.json referenceDir is review-set-16 (PD-14).",
+      "suggestion": "Say «since review-set-15 (now review-set-16)», or name the config's referenceDir instead of a set number.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed against the code. scripts/setup-sheet.mjs line 6 says \"the NFR-14 reference is review-set-15\". scripts/visual-block.mjs lines 21-22 say \"the reference is review-set-15\". quality/visual-parity.config.json line 6 has referenceDir \"design/v0-screenshots/review-set-16\". Both comments use the present tense, so they are now stale. The impact is limited to comments with no runtime effect. The visual-block.mjs one could be read as historical, since it refers to the signing date, but it is still phrased as \"is\".",
+        "Both cited comments exist as quoted: scripts/setup-sheet.mjs line 6 says \"the NFR-14 reference is review-set-15\", and scripts/visual-block.mjs line 21 says \"the reference is review-set-15\". quality/visual-parity.config.json sets referenceDir to design/v0-screenshots/review-set-16, so the comments are stale. The claim is accurate, but it is a comment-only issue with no runtime effect and nothing a user or attacker could exploit. The text is partly historical, since it describes iteration 17 when review-set-15 was the reference. It is still misleading now, so it is a nit-level finding."
+      ]
+    },
+    {
+      "title": "freeze-design-geometry.mjs `standIn` is still a hard-coded set-16 path although the rest of the provenance derives from the config",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 351,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`standIn: 'docs/qa/design-stream/harness-calibration-set16.txt (...)'`, while `reference: config.referenceDir` and the `$comment` derive from config. The same hard-coded string already went stale once in this stream (docs/qa/design-stream/refreeze.txt: «the first wrote provenance.standIn naming the set-14 calibration (a hard-coded string)»; it needed a second refreeze).",
+      "suggestion": "Derive it from config.referenceDir, for example a lookup map from set id to calibration file. Or throw when the named calibration file does not mention config.referenceDir or referenceSha1sums, so the next reference move cannot write a stale standIn.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The hard-coded standIn string at scripts/freeze-design-geometry.mjs:351 is confirmed, while reference and $comment derive from config. Nothing validates it against config.referenceDir. refreeze.txt records that this exact string went stale once (set-14). It is correct today, so the defect is latent, matching the finding's minor severity.",
+        "Confirmed. scripts/freeze-design-geometry.mjs line 351 hard-codes `standIn` to the set-16 calibration path, while `reference` and `$comment` derive from config.referenceDir. docs/qa/design-stream/refreeze.txt line 3 records that the same hard-coded string went stale once and forced a second refreeze. Nothing guards it: the script does not check that the named calibration file matches config.referenceDir. It is correct today, since the config is on set-16 and harness-calibration-set16.txt exists. The next reference move would silently write stale provenance. The impact is a maintainer-facing provenance hazard, not user-facing or attacker-exploitable, so minor severity fits."
+      ]
+    },
+    {
+      "title": "No checker verifies `referenceSha1sums` against the reference set's SHA1SUMS (NFR-14 pin without a mechanism)",
+      "file": "quality/visual-parity.config.json",
+      "line": 8,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The NFR-14 row and the config both pin `80eb8022d84e1962a7203747f13bc75931747da0`. I verified it by hand: `shasum design/v0-screenshots/review-set-16/SHA1SUMS` = 80eb8022…. Session log DS8 records: «No checker verifies `referenceSha1sums` against the set's `SHA1SUMS` (grep of `scripts/`): noted as a gap, not fixed here.» The declared pin has no executable enforcement (AGENTS lesson declared-method-needs-mechanism).",
+      "suggestion": "Add the check through a PD (the checker and adapter are locked), or in an unlocked unit test under tests/. The test reads the config, hashes `${referenceDir}/SHA1SUMS`, and compares the hash with referenceSha1sums and with the NFR-14 row.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Grep of scripts/ and tests/ shows referenceSha1sums is only copied from the config into freeze fixtures (freeze-design-paint.mjs:340, freeze-design-geometry.mjs:348). Nothing hashes SHA1SUMS and compares it with the pin. The adapter doesn't reference it, and no test does either. The finding is accurate. It is a minor gap that the session log already notes.",
+        "I grepped scripts/, tests/ and e2e/ for referenceSha1sums and SHA1SUMS. The only reads of `referenceSha1sums` are in freeze-design-paint.mjs and freeze-design-geometry.mjs. Both copy it into a fixture's provenance block and never hash the file to compare. The adapters script mentions SHA1SUMS only in a comment, and no test touches it. The pin does match: `shasum` of design/v0-screenshots/review-set-16/SHA1SUMS gives 80eb8022…, the value in the config. So the pin is correct today, but no executable check keeps it so. A later edit to the reference set or the config would not be caught, which is the declared-method-needs-mechanism gap. The impact is low, because the value is correct and nothing user-facing breaks, so the finding's minor severity fits."
+      ]
+    },
+    {
+      "title": "Focusing the sticky «Почати» button scrolls the 320px setup sheet 10px, cutting its top padding from about 16px to about 6px",
+      "file": "docs/qa/design-stream/setup-marked-320/320-light-setup-marked-design-left-page-right.png",
+      "line": 0,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The side-by-side still (design on the left, page on the right) shows the «Поле 4×4 / 6×6 / 8×8» size control about 10 CSS px higher in the page capture. Its top border almost touches the sheet's rounded top edge. Iteration 18 copies this into the design: review-set-16/320-light-setup-marked.png and 320-dark-setup-marked.png are the only two CHANGED files in set-16 (AE=172496 and AE=236268). Cropping set-15 against set-16 at y=260..460 shows the gap above the size control shrinking from about 16px to about 6px. root-cause.txt explains why: with `scroll-padding-bottom: calc(2.75rem + 48px)`, focusing `setup-start` moves the sheet from scrollTop 0 to 10, its maximum. «Почати» sits in the sticky footer and is always visible, so the scroll gains nothing; it only eats the top padding. The diff images 320-light-setup-marked-diff.png and 320-dark-setup-marked-diff.png show every block shifted by the same amount (doubled outlines everywhere), so this is a uniform scroll, not a layout change. Nothing is clipped, so the effect is cosmetic, but the reference now treats this shrunken top padding as correct.",
+      "suggestion": "Keep the design and the product matching the product's scroll padding as signed (A-60), but write the side effect down where it will be seen: in the PD-14 or set-16 CHANGES notes, record that the 320 setup-marked stills are taken after the sheet scrolls to its end because the focused button is inside the region the scroll padding reserves. Separately, ask the user whether a focused footer button should scroll the sheet at all. One option is `scroll-margin-bottom: 0` combined with a negative scroll margin on `.setup-start` and `.setup-close`. Another is to apply the bottom padding only to the level options, for example with `scroll-margin-bottom` on `.level-control` options instead of `scroll-padding-bottom` on the sheet. Either keeps the WCAG 2.4.11 protection for the options without moving the sheet when focus lands on a footer button. That would be a signed product change, not something to quietly adjust in the design.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism holds up. src/ui/style.css:1064 sets `scroll-padding-bottom: calc(2.75rem + 48px)` on `.setup-sheet:popover-open`. The sheet's scrollHeight is 565 and its clientHeight is 555, so its maximum scrollTop is 10. The probe output in root-cause.txt shows scrollTop moving from 0 to 10 when the product scroll-padding is applied and `setup-start` is focused. Without that padding, scrollTop stays at 0. The sticky footer button is already visible, so the scroll gains nothing and only removes about 10px of the sheet's top padding. The page-versus-design scores in the same file (0.8853 light, 0.9069 dark, back to 1.0000 once the design copies the scroll-padding) match the claimed uniform shift. The effect is cosmetic, so the minor severity is appropriate. I did not re-open the images or re-run the probe, and I did not check the set-15 versus set-16 diff counts.",
+        "Confirmed by the committed probe (root-cause.txt): at 320x700 the product's `scroll-padding-bottom` (src/ui/style.css:1064) makes focusing `setup-start` move the sheet from scrollTop 0 to 10. This reproduces for a real user on a 320px screen, and the page-vs-design pixel scores confirm the shift. The effect is cosmetic: nothing is clipped, and the top padding drops from about 16px to about 6px. The finding is accurate, and it is minor."
+      ]
+    }
+  ],
+  "contested": [
+    {
+      "title": "Geometry pins weakened from whole-key to cases-only, and are self-referential",
+      "file": "e2e/nfr-14-confirm-dialog.spec.ts",
+      "line": 128,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "UNCHANGED_KEY_SHA1 pinned each whole key (cases, selectors, provenance, deviations). UNCHANGED_CASES_SHA1 now hashes only `.cases`. The setupSheet hash '6b0660d4…' is the iteration-17 refreeze's own output, so it only guards against later drift. It does not check that the output matches the reference. A later edit to a key's selectors, coverage or provenance no longer fails this guard. The comment is open about the change and the reasoning holds: a whole-key pin has to be re-recorded after any design change. Nothing here is exploitable; the weaker pin is an integrity gap only.",
+      "suggestion": "Keep the cases hash. Add separate pins for each key's `selectors` and `coverage`. Let the independent page-vs-design box comparison in the setup-sheet spec carry the correctness check, as it does now.",
+      "dimension": "security",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The code matches the description: the pin hashes only each key's cases, and the comment says so and gives the reason (a design change rewrites provenance, so a whole-key pin could only be re-recorded). The finding concedes it is not exploitable and its dimension is security. For correctness this is a design tradeoff, not a wrong mechanism. The guard still pins the cases, and the confirmDialog key's selectors are asserted separately. The setupSheet and rulesPanel selectors are not hash-pinned, so a drift there would not fail this guard. That gap is real but minor and was chosen on purpose. I could not confirm a defect in the mechanism.",
+        "I read e2e/nfr-14-confirm-dialog.spec.ts around line 128. The mechanism is real. UNCHANGED_CASES_SHA1 is described as the SHA-1 of the `.cases` of rulesPanel and setupSheet only. Its comment says it replaces a whole-key pin that covered cases, selectors, provenance and deviations. The setupSheet hash is documented as the iteration-17 refreeze's own output, so it guards against later drift, not against divergence from the reference. A later edit to a key's selectors, coverage or provenance would no longer trip this guard. This is not exploitable by a user or attacker. It is a test-integrity gap, and the weakening is deliberate, documented and tied to the amended A-60 and PD-14. A whole-key pin cannot survive a design change, because every refreeze rewrites provenance. I did not check whether other specs or check scripts pin selectors or coverage. Severity is minor at most, and the \"security\" dimension does not fit."
+      ]
+    },
+    {
+      "title": "Checklist areas not exercised by this diff",
+      "file": "docs/requirements.md",
+      "line": 184,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`git diff d25ca3c..HEAD -- src` lists no files, so no product code changed. The diff touches design CSS, build and freeze scripts, e2e specs, docs, JSON fixtures and screenshots only. It has no routes, server actions, authentication, sessions, SQL, HTML or CSV output, or uploads. The app is a client-only vanilla DOM game (the Stack section of AGENTS.md). Authorization, authentication, injection, abuse resistance and dependencies are all N/A and clean for this diff. No secrets or new dependencies were added. Scope checks: factory-lock.json and visual-parity.config.json changed minimally (referenceDir, referenceSha1sums, the $comment, and the lock hash and adaptation entry). The `setup-sheet-deviation.mjs` rename left no stale imports; the only grep hit outside docs is an archived review-findings file. The A-60 and NFR-14 wording matches the test changes.",
+      "suggestion": "None.",
+      "dimension": "security",
+      "verdict": "contested",
+      "verifierNotes": [
+        "I confirmed the central claim. `git diff --stat d25ca3c..HEAD -- src` prints nothing, so no product code changed. The changed files are design assets, screenshots and tooling. `package.json` has no diff, so no dependencies were added. The finding is informational only (suggestion: \"None\") and reports no defect. I did not check the freeze/lock, rename or spec-wording claims.",
+        "The finding reports no defect. It says the security checklist areas (auth, injection, uploads, secrets, dependencies) don't apply to this diff, and its own suggestion is \"None\". There is no exploitable or reproducible problem for a user or attacker to hit. The cited location, docs/requirements.md line 184, also isn't tied to any claimed flaw. I did not run `git diff` or open the files myself, so I could not independently confirm the claim that no product code changed. Under the default-to-refuted rule, I mark it refuted as a non-finding."
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "title": "quality/design-paint.json provenance still names the pre-iteration-17 design (5e61bfd / d1b1255f) while every geometry key now names 521ce03",
+      "file": "quality/design-paint.json",
+      "line": 5,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "`\"designCommit\": \"5e61bfd14de56bff4b3726db4ddd624fcd3c2e04\"` and `\"designCssSha1\": \"d1b1255f...\"` remain. The three specs and design-geometry.json moved to `521ce035...` / `bef5279b...`. Iterations 17 and 18 change only margin-bottom and scroll-padding-bottom, so the paint values are very probably still valid. Even so, the paint fixture's provenance no longer names the design the NFR-14 reference (review-set-16) was captured from, and DS-2 does not record that it was checked.",
+      "suggestion": "Either refreeze design-paint.json against iteration 18 and confirm its case hashes are unchanged (as was done for design-geometry.json), or record in the session log or refreeze notes that the paint fixture is unaffected by iterations 17 and 18 and why.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The provenance in quality/design-paint.json does still name 5e61bfd / d1b1255f, but no mechanism makes that wrong. The diff from 5e61bfd to 521ce03 in design/v0/app/binarka.css touches only margin-bottom (1rem or space-5 changed to 1.75rem) and scroll-padding-bottom on the setup sheet and levels footer. Neither is a paint property such as color or background, and the finding itself says the paint values are \"very probably still valid\". The consumers, e2e/nfr-14-palette.spec.ts and tests/play-page-palette-stylesheet.test.ts, only check that designCommit is a 40-hex string and compare the fixture's paint against the product. Nothing reads it as a freshness gate, so the stale pin cannot cause a wrong test result. The paint file's own comment says it covers the main column. What remains is a documentation-level provenance lag, and the finding is low confidence and minor.",
+        "The stale provenance is real. quality/design-paint.json still names designCommit 5e61bfd and designCssSha1 d1b1255f. design-geometry.json names 521ce03 and bef5279b, and the last commit touching the paint file is 954775f, before iterations 17 and 18. No harm follows from it, though. The paint file's own $comment calls it the paint stand-in for review-set-14. Its values are read by the palette spec and stylesheet test, and the finding itself concedes that iterations 17 and 18 only touched margin-bottom and scroll-padding-bottom, so paint is very probably unchanged. I did not re-run the paint freeze to confirm that. grep shows designCommit appears in the two quality files and in docs only, so no check compares the paint provenance against the geometry provenance. No user, attacker or gate outcome depends on the field. At most this is a documentation gap, and the finding offers no failure scenario."
+      ]
+    },
+    {
+      "title": "Deviation removal drops the old consistency checks on the setupSheet fixture, so it now relies on the freeze guard alone",
+      "file": "e2e/nfr-14-setup-sheet.spec.ts",
+      "line": 157,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The old fixture test checked that `expected` was the design box plus the margin growth, capped by max-height. It also checked the `deviations` list. Both are gone. They are replaced by `deviations` and `expected` being undefined, a per-case levelMarginBottom of '28px' (read from the fixture), and a page-side computed 28px assertion. A regression is still caught: the freeze and visual-block throw if the design's margin is not 28px, and the page is compared with the design's own boxes. The fixture's `levelMarginBottom` is a recorded string, though, so it can be hand-edited. The live design is checked only when the freeze script runs.",
+      "suggestion": "No action required. Optionally, pin `designBuildSha1` or the design CSS hash for the setupSheet key in this spec, so a hand-edited fixture is caught.",
+      "dimension": "security",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "I read e2e/nfr-14-setup-sheet.spec.ts around line 157. The spec does assert what the finding says: no `deviations`, no `expected`, `levelMarginBottom` is '28px' for each case, and the provenance fields are non-empty strings. The finding's own text says \"No action required\", and it describes a design trade-off, not a wrong mechanism. Removing the deviation was an intended spec change (A-60, amended 2026-10-12): the 28px margin is now the design's own value, so there is nothing to inject or record. The old consistency checks tested a computation that no longer exists. A hand-edited fixture is a risk for any recorded fixture, and the freeze script plus the page-versus-design box comparison remain the guards, which the finding concedes. It is also filed under the \"security\" dimension, which does not fit. I found no incorrect logic or false claim in the code.",
+        "The code at lines 120-200 matches the finding's description. The spec asserts that `deviations` and `expected` are undefined and that `levelMarginBottom` is '28px' for every shot. It only checks that the provenance hashes (`designCssSha1`, `designBuildSha1`) are non-empty strings. A hand-edited fixture could in principle pass. But the finding admits this needs a deliberate edit to a committed, reviewed file, and the fixture is regenerated by the freeze script, which throws if the design's margin is not 28px. No user or attacker can trigger this at runtime. The finding is also rated minor, says \"No action required\", and its only suggestion is optional hardening. The test file still has real checks: the exact set of shots, box validity, and the layout fields. As a real, reproducible defect it does not hold."
+      ]
+    },
+    {
+      "title": "Confirm-dialog and settings-panel fixture scenarios say other keys' provenance and design hashes are unchanged; the specs now pin iteration-18 hashes and only the cases",
+      "file": "openspec/specs/play-page/spec.md",
+      "line": 4849,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Spec 4849: «`cases`, `rulesPanel`, `setupSheet`, `selectors`, `designCommit`, `designCssSha1` and `tolerancePx` of the file are unchanged by its refreeze». Spec 4973: «no existing case, selector or provenance field of the file is changed by adding it». Code reality: e2e/nfr-14-confirm-dialog.spec.ts:126-136 replaces the whole-key SHA-1 (provenance included) of rulesPanel and setupSheet with a cases-only SHA-1, and the design hashes become 521ce035…/bef5279b…. The settings spec moves designBuildSha1 to e9519d48…. The scenarios can be read as scoped to their own change's refreeze, which makes them history. The DELIBERATE CHANGE comments explain the reason (a design change rewrites every key's provenance). This is a deliberate, documented loosening of the confirm-spec pin, not a silent one.",
+      "suggestion": "In the same spec delta, add one sentence to each scenario: a later design iteration rewrites every key's provenance, and the cross-change guard is the per-key cases SHA-1. That keeps the scenarios true going forward.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The code facts are accurate. e2e/nfr-14-confirm-dialog.spec.ts pins 521ce03… and bef5279b… as the design hashes, and it replaces the whole-key rulesPanel/setupSheet SHA-1 with a cases-only SHA-1. The spec line 4849 says those fields are \"unchanged by its refreeze\". The word \"its\" scopes that sentence to the confirm-dialog change's own refreeze, and the finding concedes this reading. Line 4973 is likewise scoped to \"adding it\" (the settingsPanel key). Both sentences describe that change's delta and stay true as history. A later design iteration rewriting provenance does not make them false, and the code comments document the loosening as deliberate. This is an optional wording suggestion with no wrong mechanism, so I can't confirm a correctness defect.",
+        "The cited code is as described. The e2e test pins a cases-only SHA-1 for rulesPanel and setupSheet, and the design hashes are the iteration-18 ones. But the spec sentences are scoped to the change's own refreeze: \"unchanged by its refreeze\" at spec line 4849, and \"no existing case, selector or provenance field of the file is changed by adding it\" at line 4973. They describe what adding the confirmDialog key (or the settings key) did at that point. They do not promise that later design iterations leave other keys' provenance alone. The test comments name the later change as deliberate: a design iteration rewrites every key's provenance, so the guard was moved to the per-key cases SHA-1. Nothing a user or attacker can do is affected. No behavior, test result or gate is wrong. At most the spec wording is stale history, and the finding itself concedes the scenarios can be read as scoped, so it is not an actual defect."
+      ]
+    },
+    {
+      "title": "Pins are not circular, with a caveat: setupSheet cases SHA-1 and designBuildSha1 come from the refreeze they guard",
+      "file": "e2e/nfr-14-confirm-dialog.spec.ts",
+      "line": 134,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "`UNCHANGED_CASES_SHA1.setupSheet = '6b0660d4…'` and both `designBuildSha1: 'e9519d48…'` in e2e/nfr-14-settings-panel.spec.ts:135-136 were filled from the refreeze output (DS9: PENDING-REFREEZE). On their own they only guard drift after the freeze. The non-circular evidence exists outside the spec. (1) docs/qa/design-stream/refreeze.txt shows all 12 new design boxes equal the old injected `expected` boxes at 0.00 px, and the four other case hashes were pre-registered (DS8) and came out UNCHANGED. (2) refreeze-set16.txt shows all five hashes unchanged across iteration 18. (3) The page-vs-design box tests in part 2 and the page-side `margin-bottom === '28px'` at e2e/nfr-14-setup-sheet.spec.ts:353 do not depend on the pin. The design hash pins are externally verifiable: `git show 521ce03:design/v0/app/binarka.css | shasum` = bef5279b… and equals the HEAD file.",
+      "suggestion": "Acceptable as is. Optionally add a pointer to docs/qa/design-stream/refreeze.txt next to the setupSheet pin, so a reader sees the 0.00 px equivalence that justifies the value.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding is a self-declared \"Acceptable as is\" observation with only an optional comment suggestion, not a claimed incorrect mechanism. I read the cited code. The pins exist at the stated locations (setupSheet casesSha1 6b0660d4…, designBuildSha1 e9519d48…, design CSS sha bef5279b…). The design CSS hash claim is verified: `git show 521ce03:design/v0/app/binarka.css | shasum` equals the HEAD file at bef5279b…. The code comments already point to docs/qa/design-stream/refreeze.txt. Nothing in the code is wrong, so there is no defect to confirm. Refuted as a defect.",
+        "The pins exist at the cited locations (setupSheet SHA-1 and designBuildSha1), but the finding is not a defect. It states the pins are not circular and calls the code \"Acceptable as is\", with only an optional comment suggestion. The code already comments the provenance, cites docs/qa/design-stream/refreeze.txt, and the cited evidence files exist. No real user or attacker can trigger a problem through this, so nothing is exploitable or reproducible."
+      ]
+    },
+    {
+      "title": "NFR-14 verify column still says «Fails today; NOT-EARNED» while the declared mechanism now reports PASS 170 of 170",
+      "file": "docs/requirements.md",
+      "line": 64,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Row text: «**Fails today; NOT-EARNED, never PASS, until every shot scores at least 0.98.** Open before convergence: the board shots need the design's fixture boards (... gap 1)». Evidence: docs/qa/design-stream/check-visual-set16.txt ends «Scope: 170 breakpoint(s) Result: PASS, 1 warning(s)», and DS15 says the reports were restored and only F commits them. The diff changed only the reference identifier, as the row's own clause «only the reference identifier is changed here» requires. Keeping the row conservative is defensible until F commits the per-shot reports, but the row and the evidence now disagree.",
+      "suggestion": "Leave the verdict to F as planned, but record the disposition explicitly, e.g. in docs/current-state.md: «NFR-14 170/170 on branch, docs/qa/design-stream/check-visual-set16.txt; the row updates when F commits docs/qa/visual-diff reports». If the row text needs a signature, draft it for the user.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding does not show anything wrong. The NFR-14 row (docs/requirements.md line 184) does still say «Fails today; NOT-EARNED, never PASS». The check-visual-set16.txt output in docs/qa/design-stream does end «Scope: 170 breakpoint(s) / Result: PASS, 1 warning(s)». But the commit that touched the row only changed the reference identifier to review-set-16. That matches the row's own clause that only the reference identifier changes in that commit. The finding also concedes that keeping the row conservative is defensible. Its premise that F has not committed per-shot reports is partly off: docs/qa/visual-diff holds 171 committed files, left over from an earlier run at 156 of 170. The repo's honesty rules (done-claims need evidence pointers, NOT-EARNED until exit-coded evidence is committed) make the conservative wording correct until F commits a fresh run. The suggestion is only a handoff note in docs/current-state.md, a process preference with no code or spec violation. The \"1 warning\" in the check output also means a flip to PASS would not be clearly justified by that file alone.",
+        "The row exists. It is NFR-14 at docs/requirements.md line 184, not line 64, and it still says \"Fails today; NOT-EARNED, never PASS, until every shot scores at least 0.98\". I found no real defect in it. The \"170 of 170 PASS\" evidence is docs/qa/design-stream/check-visual-set16.txt, which comes from the design stream. It is not the per-shot product comparison. The row itself says the board shots still lack the design's fixture boards (gap 1), and the finding itself says F commits the per-shot product reports later. The conservative NOT-EARNED wording is the process-honesty behaviour the project rules require: a PASS must not be claimed without committed product evidence. Leaving the row unchanged is correct. Nothing breaks for a user or an attacker. The only possible issue is that a handoff note is missing, which is a documentation suggestion and not a bug. I did not check docs/current-state.md for such a note, and its absence would not change the verdict."
+      ]
+    },
+    {
+      "title": "docs/current-state.md not updated for the two reference moves, PD-13/PD-14 and NFR-14 at 170 of 170",
+      "file": "docs/current-state.md",
+      "line": 33,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "current-state.md:33 still lists «move the design to 28px (the user moves the reference to a new `review-set-15`...)» as an open choice. The file is not in `git diff --stat d25ca3c..HEAD`. AGENTS.md: «Keep docs/current-state.md current when a meaningful milestone happens ... setup or validation expectations change». The session log says autonomy-log rows are copied at merge, but nothing says current-state.md is deferred the same way.",
+      "suggestion": "Update current-state.md before the merge. Record that the reference is review-set-16, PD-13/PD-14 are executed, the 28px deviation is removed, and NFR-14 is 170/170 on the branch, each with an evidence pointer (check-visual-set16.txt, PD-14-green-proof.txt, battery-set16.txt). Or record explicitly that the update is deferred to merge.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The facts are accurate. current-state.md is untouched on the branch, and line 33 still lists the 28px move and `review-set-15` under «Decided by the user» in the delivery-planning entry. But that is a dated historical record, not a live open choice, and the file's \"Last Updated\" header is stamped from the stream P merge. The repo's practice is to update current-state.md and the autonomy-log as the last step of a slice, immediately before the merge, not mid-branch. The session logs of update-rules-panel, update-setup-sheet, update-settings-panel, update-confirm-dialog and process-stream all show this (tasks 10.x or \"10.3: ... current-state, next-session ... then the merge\"). The design-stream branch is still pre-merge, so the handoff is not yet due. AGENTS.md says to keep the file current \"when a meaningful milestone happens\", but the branch has not reached its merge handoff step. The finding's own suggestion allows \"record explicitly that the update is deferred\". At worst this is a reminder for the merge-time handoff, not a defect in the code or branch. I could not confirm a mechanism that is actually wrong.",
+        "The project's own wave-3 start prompts (docs/handoff/delivery-wave3-start-prompts-2026-10-12.md:15) tell each stream not to edit docs/current-state.md, autonomy-log or next-session until it merges, and to update them at merge. The finding's premise (\"nothing says current-state.md is deferred\") is therefore wrong. Line 33 is also not an open choice. It sits in the \"Decided by the user\" list of a historical session record, so leaving it is not an error. The only gap is a documentation timing step that is scheduled for merge, and it affects no real user."
+      ]
+    },
+    {
+      "title": "A-60 names review-set-15 as the source of the design's values while the reference is now review-set-16 and the design gained the scroll-padding rule",
+      "file": "docs/requirements.md",
+      "line": 73,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "A-60: «The values are the design's (`design/v0/app/binarka.css`, `review-set-15`)». Iteration 18 (design/v0/app/binarka.css:582-587) added `scroll-padding-bottom: calc(2.75rem + 48px)` to the design's sheet. A-60 still reads «`scroll-padding-bottom` is re-derived if the footer or the padding changes» as a product-only value. DS14 decided deliberately to leave A-60 unchanged («it names set 15 as where the 28px came in, which stays true»). It is accurate for the margin but slightly stale for the sheet's values as a whole.",
+      "suggestion": "No action needed without the user's signature. If A-60 is touched again, note that the design matches the page's scroll-padding-bottom since iteration 18 (review-set-16).",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The citations are accurate. A-60 (docs/requirements.md:354) says \"review-set-15\", and design/v0/app/binarka.css:582-587 has the iteration-18 `scroll-padding-bottom: calc(2.75rem + 48px)`. But this is not a defect in the spec. The product's src/ui/style.css:1064 uses the identical value, so A-60's statement that `scroll-padding-bottom` is re-derived if the footer or padding changes is still true and consistent with the design. The \"review-set-15\" reference is dated to where the 28px margin came in, and that origin stays true. The finding itself says \"No action needed\" and calls the staleness \"slight\", and the design stream (DS14) left it unchanged on purpose. No requirement, test or behaviour is wrong, so the claimed mechanism is not a correctness problem.",
+        "I read A-60 (docs/requirements.md:354) and design/v0/app/binarka.css:575-587. The quotes are accurate. A-60 cites review-set-15, and the design sheet gained `scroll-padding-bottom: calc(2.75rem + 48px)` in iteration 18. That does not produce a defect a user or attacker could hit. A-60 states that the product re-derives `scroll-padding-bottom` if the footer or padding changes. The CSS comment says iteration 18's value is \"the product's value\", so the two already agree. The `review-set-15` citation is where the 28px margin came in, which stays true. The finding itself concedes that DS14 left the wording as it is on purpose and that \"No action needed without the user's signature\". It is wording drift in a signed spec, with no behaviour, correctness or compliance consequence, so I am not confirming a problem that can occur."
+      ]
+    }
+  ]
+}

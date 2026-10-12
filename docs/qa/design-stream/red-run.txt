@@ -1,0 +1,402 @@
+# Red run, 2026-10-12 17:31 +0530, design stream DS part 2: the three changed specs BEFORE any script change and before the refreeze (quality/design-geometry.json as on main d25ca3c).
+# Command: npm run build; BINARKA_PORT_BASE=6773 npx playwright test e2e/nfr-14-setup-sheet.spec.ts e2e/nfr-14-settings-panel.spec.ts e2e/nfr-14-confirm-dialog.spec.ts --reporter=line
+# Expected red: 5 fixture tests (the design hashes of iteration 17, the PENDING-REFREEZE pins, no deviation / no expected box / levelMarginBottom 28px in setupSheet)
+# and the 8 box tests whose design box was content-decided (the old contentDecidedCases: 320, 375, 1024, 1366 setup; 375, 768, 1024, 1440 setup-four): the page (28px) against the design's own 24px / 1rem boxes.
+# Each change traces to A-60 as amended and signed on 2026-10-12 (session log DS6) and the user's move of the reference to review-set-15.
+
+
+Running 66 tests using 5 workers
+
+[1/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:368:3 › @trace NFR-14 @trace FR-67 375-light-confirm (375x812): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[2/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:296:1 › @trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes; the design hashes name design iteration 17
+[3/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:368:3 › @trace NFR-14 @trace FR-67 320-light-confirm (320x700): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[4/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:273:1 › @trace NFR-14 the design build is required and the coverage is declared: sampling dimensions, coverage sampled, the stricter instruments named, nothing beyond a sample claimed
+[5/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:312:1 › @trace NFR-14 @trace FR-67 the fixture holds the key confirmDialog: the four selectors, sampled coverage, its own provenance and the 5 cases with the recorded structure
+  1) [layout] › e2e/nfr-14-confirm-dialog.spec.ts:296:1 › @trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes; the design hashes name design iteration 17 
+
+    Error: the top-level provenance names the design commit of iteration 17
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "41c51651e832cae79b58ce7b492a3550e43f19da"
+    Received: "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04"
+
+      298 |   expect(fixture.cases.some((c) => c.shot.includes('confirm')), 'no confirm shot is among the top-level cases').toBe(false);
+      299 |   expect(fixture.tolerancePx).toBe(0.5);
+    > 300 |   expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 17').toBe(TOP_LEVEL_DESIGN_COMMIT);
+          |                                                                                                               ^
+      301 |   expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 17').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+      302 |   expect(fixture.rulesPanel?.cases, 'rulesPanel keeps its 8 cases').toHaveLength(8);
+      303 |   expect(fixture.setupSheet?.cases, 'setupSheet keeps its 12 cases').toHaveLength(12);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-confirm-dialog.spec.ts:300:111
+
+    Error Context: test-results/nfr-14-confirm-dialog--tra-6ee69-es-name-design-iteration-17-layout/error-context.md
+
+
+[6/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:368:3 › @trace NFR-14 @trace FR-67 1024-light-confirm (1024x768): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[7/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:368:3 › @trace NFR-14 @trace FR-67 1440-light-confirm (1440x900): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[8/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:368:3 › @trace NFR-14 @trace FR-67 768-light-confirm (768x1024): the open dialog, its text and its two buttons match the design's boxes within the fixture's tolerance
+[9/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:543:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 320x700: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[10/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:543:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 375x812: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[11/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:543:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 768x1024: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[12/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:543:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 1024x768: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[13/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:478:3 › paint: both buttons against the design build › @trace NFR-14 the design server listens on a port chosen by the operating system, not on one the page preview or the capture tools bind
+[14/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:491:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border
+[15/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:543:3 › @trace NFR-14 @trace FR-67 @trace NFR-12 1440x900: both dialog buttons are at least 44 px wide and 44 px tall (within the tolerance)
+[16/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:491:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border
+[17/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:491:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border
+[18/66] [layout] › e2e/nfr-14-confirm-dialog.spec.ts:491:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border
+[19/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:150:1 › @trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 17, review-set-15)
+  2) [layout] › e2e/nfr-14-settings-panel.spec.ts:150:1 › @trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 17, review-set-15) 
+
+    Error: the top-level provenance names the design commit of iteration 17
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "41c51651e832cae79b58ce7b492a3550e43f19da"
+    Received: "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04"
+
+      152 |   expect(fixture.tolerancePx).toBe(TOLERANCE);
+      153 |   expect(fixture.selectors).toEqual(TOP_LEVEL_SELECTORS);
+    > 154 |   expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 17').toBe(TOP_LEVEL_DESIGN_COMMIT);
+          |                                                                                                               ^
+      155 |   expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 17').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+      156 | });
+      157 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-settings-panel.spec.ts:154:111
+
+    Error Context: test-results/nfr-14-settings-panel--tra-70a1a-iteration-17-review-set-15--layout/error-context.md
+
+
+[20/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:177:1 › @trace NFR-14 @trace FR-68 the fixture holds the key settingsPanel: selectors, sampled coverage, its own provenance and exactly the 7 cases
+[21/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:256:5 › 320-light-settings (320x700) › @trace NFR-14 @trace FR-68 320-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[22/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:278:5 › 320-light-settings (320x700) › @trace NFR-14 @trace FR-68 320-light-settings: the two language options are equal halves (widths within 0.5 px)
+[23/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:256:5 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[24/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:287:7 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: an unchosen and a chosen option of each control have the design's computed paint
+[25/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:278:5 › 375-light-settings (375x812) › @trace NFR-14 @trace FR-68 375-light-settings: the two language options are equal halves (widths within 0.5 px)
+[26/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:256:5 › 768-light-settings (768x1024) › @trace NFR-14 @trace FR-68 768-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[27/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:278:5 › 768-light-settings (768x1024) › @trace NFR-14 @trace FR-68 768-light-settings: the two language options are equal halves (widths within 0.5 px)
+[28/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:256:5 › 1024-light-settings (1024x768) › @trace NFR-14 @trace FR-68 1024-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[29/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:278:5 › 1024-light-settings (1024x768) › @trace NFR-14 @trace FR-68 1024-light-settings: the two language options are equal halves (widths within 0.5 px)
+[30/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:256:5 › 1366-light-settings (1366x650) › @trace NFR-14 @trace FR-68 1366-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[31/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:278:5 › 1366-light-settings (1366x650) › @trace NFR-14 @trace FR-68 1366-light-settings: the two language options are equal halves (widths within 0.5 px)
+[32/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:256:5 › 1440-light-settings (1440x900) › @trace NFR-14 @trace FR-68 1440-light-settings: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[33/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:278:5 › 1440-light-settings (1440x900) › @trace NFR-14 @trace FR-68 1440-light-settings: the two language options are equal halves (widths within 0.5 px)
+[34/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:256:5 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: the open panel, the two controls, the chosen option of each and «Закрити» match the design's boxes within 0.5 px
+[35/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:161:1 › @trace NFR-14 @trace FR-68 adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet, and settingsPanel names the same design
+[36/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:278:5 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: the two language options are equal halves (widths within 0.5 px)
+  3) [layout] › e2e/nfr-14-settings-panel.spec.ts:161:1 › @trace NFR-14 @trace FR-68 adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet, and settingsPanel names the same design 
+
+    Error: rulesPanel.provenance.designCommit
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "41c51651e832cae79b58ce7b492a3550e43f19da"
+    Received: "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04"
+
+      167 |     expect(key.cases, `${other.key}.cases`).toHaveLength(other.count);
+      168 |     expect(createHash('sha1').update(JSON.stringify(key.cases)).digest('hex'), `${other.key}.cases are the recorded ones`).toBe(other.casesSha1);
+    > 169 |     expect(key.provenance.designCommit, `${other.key}.provenance.designCommit`).toBe(TOP_LEVEL_DESIGN_COMMIT);
+          |                                                                                 ^
+      170 |     expect(key.provenance.designCssSha1, `${other.key}.provenance.designCssSha1`).toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+      171 |     expect(key.provenance.designBuildSha1, `${other.key}.provenance.designBuildSha1 is the recorded one, not rewritten by a refreeze`).toBe(other.designBuildSha1);
+      172 |   }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-settings-panel.spec.ts:169:81
+
+    Error Context: test-results/nfr-14-settings-panel--tra-83307-Panel-names-the-same-design-layout/error-context.md
+
+
+[37/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:375:5 › 667x375 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 667x375: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port)
+[38/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:375:5 › 568x320 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 568x320: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port)
+[39/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:375:5 › 1024x360 (dropdown) short-window focus walk › @trace NFR-14 @trace FR-65 1024x360: Tab through the panel keeps «Закрити» stuck inside the panel and every focused option clear of its mask (mask clause: GUARD before the port; stuck clause: red before the port)
+[40/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:134:1 › @trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 17, review-set-15)
+  4) [layout] › e2e/nfr-14-setup-sheet.spec.ts:134:1 › @trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 17, review-set-15) 
+
+    Error: the top-level provenance names the design commit of iteration 17
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "41c51651e832cae79b58ce7b492a3550e43f19da"
+    Received: "5e61bfd14de56bff4b3726db4ddd624fcd3c2e04"
+
+      137 |   expect(fixture.tolerancePx).toBe(0.5);
+      138 |   expect(fixture.selectors).toEqual(TOP_LEVEL_SELECTORS);
+    > 139 |   expect(fixture.provenance.designCommit, 'the top-level provenance names the design commit of iteration 17').toBe(TOP_LEVEL_DESIGN_COMMIT);
+          |                                                                                                               ^
+      140 |   expect(fixture.provenance.designCssSha1, 'the top-level provenance names the design CSS hash of iteration 17').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+      141 | });
+      142 |
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:139:111
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--d4b18-iteration-17-review-set-15--layout/error-context.md
+
+
+[41/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 320-light-setup (320x700): the open setup sheet matches the design's box within the fixture's tolerance
+[42/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 320-light-setup-four (320x700): the open setup sheet matches the design's box within the fixture's tolerance
+[43/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 375-light-setup (375x812): the open setup sheet matches the design's box within the fixture's tolerance
+[44/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 375-light-setup-four (375x812): the open setup sheet matches the design's box within the fixture's tolerance
+  5) [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 320-light-setup (320x700): the open setup sheet matches the design's box within the fixture's tolerance 
+
+    Error: 320-light-setup: 1 problem(s)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "320-light-setup [data-section=\"setup\"]: page 0.00,144.00 320.00x556.00, design's 0.00,146.31 320.00x553.69 (decided by content); off at top 144.00 vs 146.31",
+    + ]
+
+      353 |         problems.push(`${shot}: the computed margin-bottom of ${LEVEL_GROUP} is ${String(m.levelMarginBottom)}, not 28px`);
+      354 |       }
+    > 355 |       expect(problems, `${shot}: ${problems.length} problem(s)`).toEqual([]);
+          |                                                                  ^
+      356 |     });
+      357 |   }
+      358 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:355:66
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--6325a-hin-the-fixture-s-tolerance-layout/error-context.md
+
+
+  6) [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 375-light-setup (375x812): the open setup sheet matches the design's box within the fixture's tolerance 
+
+    Error: 375-light-setup: 1 problem(s)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "375-light-setup [data-section=\"setup\"]: page 0.00,272.98 375.00x539.02, design's 0.00,276.98 375.00x535.02 (decided by content); off at top 272.98 vs 276.98",
+    + ]
+
+      353 |         problems.push(`${shot}: the computed margin-bottom of ${LEVEL_GROUP} is ${String(m.levelMarginBottom)}, not 28px`);
+      354 |       }
+    > 355 |       expect(problems, `${shot}: ${problems.length} problem(s)`).toEqual([]);
+          |                                                                  ^
+      356 |     });
+      357 |   }
+      358 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:355:66
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--f29d4-hin-the-fixture-s-tolerance-layout/error-context.md
+
+
+  7) [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 375-light-setup-four (375x812): the open setup sheet matches the design's box within the fixture's tolerance 
+
+    Error: 375-light-setup-four: 1 problem(s)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "375-light-setup-four [data-section=\"setup\"]: page 0.00,238.09 375.00x573.91, design's 0.00,242.09 375.00x569.91 (decided by content); off at top 238.09 vs 242.09",
+    + ]
+
+      353 |         problems.push(`${shot}: the computed margin-bottom of ${LEVEL_GROUP} is ${String(m.levelMarginBottom)}, not 28px`);
+      354 |       }
+    > 355 |       expect(problems, `${shot}: ${problems.length} problem(s)`).toEqual([]);
+          |                                                                  ^
+      356 |     });
+      357 |   }
+      358 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:355:66
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--c6ddb-hin-the-fixture-s-tolerance-layout/error-context.md
+
+
+[45/66] [layout] › e2e/nfr-14-settings-panel.spec.ts:287:7 › 375-light-settings-dark (375x812) › @trace NFR-14 @trace FR-68 375-light-settings-dark: an unchosen and a chosen option of each control have the design's computed paint
+[46/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:143:1 › @trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, no deviation (the design has the 28px, A-60) and the 12 cases
+  8) [layout] › e2e/nfr-14-setup-sheet.spec.ts:143:1 › @trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, no deviation (the design has the 28px, A-60) and the 12 cases 
+
+    Error: setupSheet records no deviation (A-60: the level margin is 28px in the design)
+
+    expect(received).toBeUndefined()
+
+    Received: [{"contentDecidedCases": ["320-light-setup", "375-light-setup", "1024-light-setup", "1366-light-setup", "375-light-setup-four", "768-light-setup-four", "1024-light-setup-four", "1440-light-setup-four"], "design": "24px; 1rem at 22.5rem and narrower", "product": "28px", "reason": "A-60, SQ-5: the focus ring of the last option under the footer strip", "rule": ".setup .level-control { margin-bottom }"}]
+
+      156 |   // A-60 (amended 2026-10-12): the 28px is the design's own value, so nothing is injected and nothing is recorded as a departure.
+      157 |   const raw = key as unknown as Record<string, unknown>;
+    > 158 |   expect(raw.deviations, 'setupSheet records no deviation (A-60: the level margin is 28px in the design)').toBeUndefined();
+          |                                                                                                            ^
+      159 |
+      160 |   for (const shot of EXPECTED_SHOTS) {
+      161 |     const c = key.cases.find((x) => x.shot === shot);
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:158:108
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--8cb88--28px-A-60-and-the-12-cases-layout/error-context.md
+
+
+[47/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 768-light-setup (768x1024): the open setup sheet matches the design's box within the fixture's tolerance
+[48/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 768-light-setup-four (768x1024): the open setup sheet matches the design's box within the fixture's tolerance
+[49/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1366-light-setup (1366x650): the open setup sheet matches the design's box within the fixture's tolerance
+[50/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1024-light-setup (1024x768): the open setup sheet matches the design's box within the fixture's tolerance
+  9) [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1366-light-setup (1366x650): the open setup sheet matches the design's box within the fixture's tolerance 
+
+    Error: 1366-light-setup: 1 problem(s)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "1366-light-setup [data-section=\"setup\"]: page 467.00,96.00 432.00x521.13, design's 467.00,96.00 432.00x517.13 (decided by content); off at bottom 617.13 vs 613.13",
+    + ]
+
+      353 |         problems.push(`${shot}: the computed margin-bottom of ${LEVEL_GROUP} is ${String(m.levelMarginBottom)}, not 28px`);
+      354 |       }
+    > 355 |       expect(problems, `${shot}: ${problems.length} problem(s)`).toEqual([]);
+          |                                                                  ^
+      356 |     });
+      357 |   }
+      358 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:355:66
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--17c02-hin-the-fixture-s-tolerance-layout/error-context.md
+
+
+[51/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1440-light-setup (1440x900): the open setup sheet matches the design's box within the fixture's tolerance
+  10) [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 768-light-setup-four (768x1024): the open setup sheet matches the design's box within the fixture's tolerance 
+
+    Error: 768-light-setup-four: 1 problem(s)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "768-light-setup-four [data-section=\"setup\"]: page 127.00,156.00 514.00x556.02, design's 127.00,156.00 514.00x552.02 (decided by content); off at bottom 712.02 vs 708.02",
+    + ]
+
+      353 |         problems.push(`${shot}: the computed margin-bottom of ${LEVEL_GROUP} is ${String(m.levelMarginBottom)}, not 28px`);
+      354 |       }
+    > 355 |       expect(problems, `${shot}: ${problems.length} problem(s)`).toEqual([]);
+          |                                                                  ^
+      356 |     });
+      357 |   }
+      358 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:355:66
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--c90fa-hin-the-fixture-s-tolerance-layout/error-context.md
+
+
+[52/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1024-light-setup-four (1024x768): the open setup sheet matches the design's box within the fixture's tolerance
+[53/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 320x700 default: the open setup sheet cuts no idle line
+  11) [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1024-light-setup (1024x768): the open setup sheet matches the design's box within the fixture's tolerance 
+
+    Error: 1024-light-setup: 1 problem(s)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "1024-light-setup [data-section=\"setup\"]: page 303.00,156.00 418.00x521.13, design's 303.00,156.00 418.00x517.13 (decided by content); off at bottom 677.13 vs 673.13",
+    + ]
+
+      353 |         problems.push(`${shot}: the computed margin-bottom of ${LEVEL_GROUP} is ${String(m.levelMarginBottom)}, not 28px`);
+      354 |       }
+    > 355 |       expect(problems, `${shot}: ${problems.length} problem(s)`).toEqual([]);
+          |                                                                  ^
+      356 |     });
+      357 |   }
+      358 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:355:66
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--b38c7-hin-the-fixture-s-tolerance-layout/error-context.md
+
+
+[54/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 375x812 default: the open setup sheet cuts no idle line
+[55/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 375x812 four: the open setup sheet cuts no idle line
+  12) [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1024-light-setup-four (1024x768): the open setup sheet matches the design's box within the fixture's tolerance 
+
+    Error: 1024-light-setup-four: 1 problem(s)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "1024-light-setup-four [data-section=\"setup\"]: page 303.00,156.00 418.00x556.02, design's 303.00,156.00 418.00x552.02 (decided by content); off at bottom 712.02 vs 708.02",
+    + ]
+
+      353 |         problems.push(`${shot}: the computed margin-bottom of ${LEVEL_GROUP} is ${String(m.levelMarginBottom)}, not 28px`);
+      354 |       }
+    > 355 |       expect(problems, `${shot}: ${problems.length} problem(s)`).toEqual([]);
+          |                                                                  ^
+      356 |     });
+      357 |   }
+      358 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:355:66
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--f5848-hin-the-fixture-s-tolerance-layout/error-context.md
+
+
+[56/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1366-light-setup-four (1366x650): the open setup sheet matches the design's box within the fixture's tolerance
+[57/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 768x1024 four: the open setup sheet ends below the button row and cuts no idle line
+[58/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1440-light-setup-four (1440x900): the open setup sheet matches the design's box within the fixture's tolerance
+[59/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 1024x768 default: the open setup sheet ends below the button row and cuts no idle line
+[60/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 320x700 four: the open setup sheet cuts no idle line
+[61/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 1024x768 four: the open setup sheet ends below the button row and cuts no idle line
+[62/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 1366x650 default: the open setup sheet ends below the button row and cuts no idle line
+[63/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 1366x650 four: the open setup sheet ends below the button row and cuts no idle line
+[64/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 1440x900 default: the open setup sheet ends below the button row and cuts no idle line
+  13) [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1440-light-setup-four (1440x900): the open setup sheet matches the design's box within the fixture's tolerance 
+
+    Error: 1440-light-setup-four: 1 problem(s)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "1440-light-setup-four [data-section=\"setup\"]: page 487.00,156.00 466.00x556.02, design's 487.00,156.00 466.00x552.02 (decided by content); off at bottom 712.02 vs 708.02",
+    + ]
+
+      353 |         problems.push(`${shot}: the computed margin-bottom of ${LEVEL_GROUP} is ${String(m.levelMarginBottom)}, not 28px`);
+      354 |       }
+    > 355 |       expect(problems, `${shot}: ${problems.length} problem(s)`).toEqual([]);
+          |                                                                  ^
+      356 |     });
+      357 |   }
+      358 | }
+        at /Users/vecktor/projects/fwdays/exam/binarka/.claude/worktrees/youthful-bhabha-16df8e/e2e/nfr-14-setup-sheet.spec.ts:355:66
+
+    Error Context: test-results/nfr-14-setup-sheet--trace--88970-hin-the-fixture-s-tolerance-layout/error-context.md
+
+
+[65/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 768x1024 default: the open setup sheet ends below the button row and cuts no idle line
+[66/66] [layout] › e2e/nfr-14-setup-sheet.spec.ts:367:5 › @trace NFR-14 @trace FR-96 1440x900 four: the open setup sheet ends below the button row and cuts no idle line
+  13 failed
+    [layout] › e2e/nfr-14-confirm-dialog.spec.ts:296:1 › @trace NFR-14 @trace FR-67 the fixture keeps its 32 top-level shots, tolerance, design hashes and the keys rulesPanel (8 cases) and setupSheet (12 cases): the key is ADDED, nothing else changes; the design hashes name design iteration 17 
+    [layout] › e2e/nfr-14-settings-panel.spec.ts:150:1 › @trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 17, review-set-15) 
+    [layout] › e2e/nfr-14-settings-panel.spec.ts:161:1 › @trace NFR-14 @trace FR-68 adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet, and settingsPanel names the same design 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:134:1 › @trace NFR-14 @trace FR-96 the fixture keeps its 32 top-level shots, selectors, tolerance and design hashes (the key is ADDED; the design hashes name design iteration 17, review-set-15) 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:143:1 › @trace NFR-14 @trace FR-96 the fixture holds the key setupSheet: selectors, sampled coverage, its own provenance, no deviation (the design has the 28px, A-60) and the 12 cases 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 320-light-setup (320x700): the open setup sheet matches the design's box within the fixture's tolerance 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 375-light-setup (375x812): the open setup sheet matches the design's box within the fixture's tolerance 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 375-light-setup-four (375x812): the open setup sheet matches the design's box within the fixture's tolerance 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 768-light-setup-four (768x1024): the open setup sheet matches the design's box within the fixture's tolerance 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1024-light-setup (1024x768): the open setup sheet matches the design's box within the fixture's tolerance 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1024-light-setup-four (1024x768): the open setup sheet matches the design's box within the fixture's tolerance 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1366-light-setup (1366x650): the open setup sheet matches the design's box within the fixture's tolerance 
+    [layout] › e2e/nfr-14-setup-sheet.spec.ts:313:5 › @trace NFR-14 @trace FR-96 1440-light-setup-four (1440x900): the open setup sheet matches the design's box within the fixture's tolerance 
+  53 passed (9.3s)

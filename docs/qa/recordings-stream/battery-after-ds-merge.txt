@@ -1,0 +1,79 @@
+Mon Oct 12 18:58:20 +0530 2026
+merge of origin/main 89716c5 (DS) into claude/wilbur-recordings, uncommitted, lock re-sealed (PD-15)
+
+$ npm run lint
+exit 0
+
+$ npm run test:run
+ Test Files  82 passed (82)
+      Tests  1996 passed (1996)
+exit 0
+
+$ npm run build
+exit 0
+
+$ npx openspec validate --all --strict
+Totals: 2 passed, 0 failed (2 items)
+exit 0
+
+$ node scripts/check-eval-ratchet.mjs
+Result: PASS
+exit 0
+
+$ node scripts/check-recordings.mjs --require-vision
+Result: PASS
+exit 0
+
+$ node scripts/check-vision.mjs
+Result: PASS
+exit 0
+
+$ node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+exit 0
+
+$ node scripts/check-trajectory.mjs --release
+FAIL  [review-evidence] 2026-10-12-update-setup-sheet-design-margin: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json finding 1 ("OpenSpec play-page spec still requires the 28px departure, t"): fixCommit a93262f is not an ancestor of HEAD (review must have run clean before archive, or its findings be dispositioned and signed)
+FAIL  [trailer] 2026-10-12-update-setup-sheet-design-margin: no commit carries a "Slice: update-setup-sheet-design-margin" trailer
+Result: FAIL, 1 warning(s)
+exit 1
+
+$ node scripts/check-acceptance-methods.mjs --mode=existence
+Result: PASS, 1 warning(s)
+exit 0
+
+$ node scripts/check-acceptance-methods.mjs --mode=artifact
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+Result: FAIL, 1 warning(s)
+exit 1
+
+$ node scripts/check-factory-integrity.mjs
+Result: PASS, 1 warning(s)
+exit 0
+
+## After the merge commit 7c285fb (Mon Oct 12 19:01:33 +0530 2026)
+
+$ node scripts/check-trajectory.mjs --release
+Result: PASS, 1 warning(s)
+exit 0
+
+$ node scripts/check-trajectory.mjs --check-fresh
+Result: PASS, 1 warning(s)
+exit 0
+
+$ node scripts/check-traceability.mjs --check-fresh
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+exit 0
+
+$ node scripts/check-recordings.mjs --check-fresh --require-vision
+Result: PASS
+exit 0
+
+$ node scripts/check-vision.mjs --check-fresh
+Result: PASS
+exit 0
+
+$ node scripts/check-factory-integrity.mjs
+Result: PASS, 1 warning(s)
+exit 0

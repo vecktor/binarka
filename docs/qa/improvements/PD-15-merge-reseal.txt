@@ -1,0 +1,27 @@
+# PD-15 re-seal in the merge with origin/main 89716c5 (stream DS)
+Mon Oct 12 18:58:11 +0530 2026
+
+## Before: the merged tree with DS lock (27 files)
+WARN  [scripts/check-vision.mjs] gate-bearing file exists but is NOT in factory-lock.json — reseal via --init-lock in an approved "Refs: PD-<n>" commit so it becomes tamper-evident too.
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 27 locked file(s)
+Result: PASS, 2 warning(s)
+
+## Re-seal
+Locked 28 gate-bearing file(s) into factory-lock.json (gitHead: 5959f433a698d1a70972ab866ac0e15f0309c181).
+Scope: 28 locked file(s)
+Result: PASS, 1 warning(s)
+
+## Lock diff against DS seal
+-  "createdAt": "2026-10-12T12:33:23.403Z",
+-  "gitHead": "e61e6a8d873111ecc49cf5cfef66414b09080aef",
++  "createdAt": "2026-10-12T13:28:11.823Z",
++  "gitHead": "5959f433a698d1a70972ab866ac0e15f0309c181",
++    "scripts/check-vision.mjs": "d257c6e0d2f897ba24d71b306c5d05e84cffa6035cf4de1a6aba7cab23d65669",
+-    "PD-14: quality/visual-parity.config.json names the NFR-14 reference the user moved to, review-set-16 (SHA1SUMS 80eb8022; design iteration 18, the setup sheet's scroll padding) (approved by the user 2026-10-12)"
++    "PD-15 (drafted as PD-13 before stream DS took PD-13 and PD-14): scripts/check-vision.mjs (Phase H, the vision-verify mechanism) joins the lock so a change to it is tamper-evident; re-sealed over DS's PD-14 seal at the merge (approved by the user 2026-10-12)"
+
+## After
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+Scope: 28 locked file(s)
+Result: PASS, 1 warning(s)

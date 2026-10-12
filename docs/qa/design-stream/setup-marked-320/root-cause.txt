@@ -1,0 +1,10 @@
+# 320-*-setup-marked root cause, 2026-10-12 17:48 +0530 (design stream DS part 2). Run from the repo root: BINARKA_PORT_BASE=6773 node docs/qa/design-stream/setup-marked-320/probe-scroll.mjs; node docs/qa/design-stream/setup-marked-320/probe-sim.mjs <dir with compare.mjs product captures>
+
+## probe-scroll.mjs: the design's sheet at 320x700 (scrollTop, scrollHeight, clientHeight, focused element), as is and with the product's scroll-padding-bottom
+setup              as is {"scrollTop":0,"scrollHeight":565,"clientHeight":555,"active":"BODY"} | with the product scroll-padding and focus re-applied {"scrollTop":0,"scrollHeight":565,"clientHeight":555,"active":"BODY"}
+setup-marked       as is {"scrollTop":0,"scrollHeight":565,"clientHeight":555,"active":"setup-start"} | with the product scroll-padding and focus re-applied {"scrollTop":10,"scrollHeight":565,"clientHeight":555,"active":"setup-start"}
+setup-marked-four  as is {"scrollTop":0,"scrollHeight":617,"clientHeight":555,"active":"BODY"} | with the product scroll-padding and focus re-applied {"scrollTop":0,"scrollHeight":617,"clientHeight":555,"active":"BODY"}
+
+## probe-sim.mjs: scores (pixelmatch 0.1, gate capture method) — page = the locked adapter's capture (docs/qa/delivery-plan/sq5/compare.mjs)
+320-light-setup-marked | design as is vs set-15 ref 1.0000 | page vs set-15 ref 0.8853 | page vs design with the scroll-padding 1.0000
+320-dark-setup-marked | design as is vs set-15 ref 1.0000 | page vs set-15 ref 0.9069 | page vs design with the scroll-padding 1.0000

@@ -102,7 +102,7 @@ function LogoDigit({ digit, cx, cy }: { digit: 0 | 1; cx: number; cy: number }) 
 }
 
 export function Logo({ size = 56 }: { size?: number }) {
-  // 2×2 mini board «1 0 / 0 1» on a rounded square tile. Iteration 18 (update-logo-legibility, the user's
+  // 2×2 mini board «1 0 / 0 1» on a rounded square tile. Iteration 20 (update-logo-legibility, the user's
   // drawing G of 2026-10-12, FR-72 amended): no sun; 26-unit cells, so the digits read at 40 px (NFR-15).
   const cells: Array<{ x: number; y: number; digit: 0 | 1 }> = [
     { x: 4, y: 4, digit: 1 },

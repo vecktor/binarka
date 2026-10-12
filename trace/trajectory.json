@@ -293,7 +293,7 @@
     {
       "slice": "2026-10-12-update-logo-legibility",
       "reviewEvidence": "clean",
-      "trailerCommits": 15,
+      "trailerCommits": 16,
       "libDomains": [
         "ui"
       ],
@@ -319,6 +319,14 @@
       ],
       "processComplete": true,
       "designWaived": false
+    },
+    {
+      "slice": "2026-10-12-update-setup-sheet-design-margin",
+      "reviewEvidence": "unclean",
+      "trailerCommits": 0,
+      "libDomains": [],
+      "processComplete": true,
+      "designWaived": false
     }
   ],
   "overlaps": [
@@ -335,6 +343,14 @@
   ],
   "failures": [],
   "warnings": [
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-12-update-setup-sheet-design-margin: review-findings.json is unclean; docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json finding 1 (\"OpenSpec play-page spec still requires the 28px departure, t\"): fixCommit a93262f is not an ancestor of HEAD (review must have run clean before archive, or its findings be dispositioned and signed)"
+    },
+    {
+      "check": "trailer",
+      "msg": "2026-10-12-update-setup-sheet-design-margin: no commit carries a \"Slice: update-setup-sheet-design-margin\" trailer"
+    },
     {
       "check": "in-scope",
       "msg": "src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift"

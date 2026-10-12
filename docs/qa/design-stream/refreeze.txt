@@ -1,0 +1,26 @@
+# Refreeze of quality/design-geometry.json, 2026-10-12 17:38 +0530 (design stream DS part 2), after PD-13 (the config names review-set-15).
+# node scripts/freeze-design-geometry.mjs on BINARKA_PORT_BASE 6773 (design 6777), design/v0/out built from 41c5165 (iteration 17), Playwright chromium 156.0.8078.4.
+# The freeze ran twice: the first wrote provenance.standIn naming the set-14 calibration (a hard-coded string), so the script now names
+# docs/qa/design-stream/harness-calibration-set15.txt; the fixture was restored from main and frozen again. Both runs gave the same case hashes.
+
+## Pre-registered (session log DS8): SHA-1 of JSON.stringify(cases) must be unchanged
+top            8a24d09f9e4ccdcdfde1956eaf940c3bf37d9460 UNCHANGED
+rulesPanel     f70bb8c08a4415002cdd011efb40153047b4a75d UNCHANGED
+confirmDialog  e340c90f5d6dcad4db552acf2e7d78767da889c9 UNCHANGED
+settingsPanel  f2c108cc8bc301e8c8ba52d18dbea09c639c3227 UNCHANGED
+setupSheet     6b0660d41c74152933cec0c605b95d057bf874db (was 8a3992e41569ea4cbdc6f80feb5c0fe0c005abed): changed, as intended
+whole setupSheet key 30fcd5f50f7fca1313d580e9e996b57d26348a8f; designBuildSha1 80a0ac97673a11806926647c73cea86a06e40674
+
+## setupSheet: the new design boxes against the old `expected` boxes (the old design with the injected 28px), the old design boxes, max abs edge delta in px
+320-light-setup        margin 28px  sheet vs old expected 0.00  vs old design 2.31  description vs old expected 0.00  decidedBy max-height (old content, old expected max-height)
+375-light-setup        margin 28px  sheet vs old expected 0.00  vs old design 4.00  description vs old expected 0.00  decidedBy content (old content, old expected content)
+768-light-setup        margin 28px  sheet vs old expected 0.00  vs old design 0.00  description vs old expected 0.00  decidedBy min-height (old min-height, old expected min-height)
+1024-light-setup       margin 28px  sheet vs old expected 0.00  vs old design 4.00  description vs old expected 0.00  decidedBy content (old content, old expected content)
+1366-light-setup       margin 28px  sheet vs old expected 0.00  vs old design 4.00  description vs old expected 0.00  decidedBy content (old content, old expected content)
+1440-light-setup       margin 28px  sheet vs old expected 0.00  vs old design 0.00  description vs old expected 0.00  decidedBy min-height (old min-height, old expected min-height)
+320-light-setup-four   margin 28px  sheet vs old expected 0.00  vs old design 0.00  description vs old expected 0.00  decidedBy max-height (old max-height, old expected max-height)
+375-light-setup-four   margin 28px  sheet vs old expected 0.00  vs old design 4.00  description vs old expected 0.00  decidedBy content (old content, old expected content)
+768-light-setup-four   margin 28px  sheet vs old expected 0.00  vs old design 4.00  description vs old expected 0.00  decidedBy content (old content, old expected content)
+1024-light-setup-four  margin 28px  sheet vs old expected 0.00  vs old design 4.00  description vs old expected 0.00  decidedBy content (old content, old expected content)
+1366-light-setup-four  margin 28px  sheet vs old expected 0.00  vs old design 0.00  description vs old expected 0.00  decidedBy max-height (old max-height, old expected max-height)
+1440-light-setup-four  margin 28px  sheet vs old expected 0.00  vs old design 4.00  description vs old expected 0.00  decidedBy content (old content, old expected content)
