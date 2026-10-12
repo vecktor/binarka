@@ -1033,8 +1033,7 @@
     {
       "id": "FR-59",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1156,8 +1155,7 @@
     {
       "id": "FR-65",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1273,8 +1271,7 @@
     {
       "id": "FR-68",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1323,8 +1320,7 @@
     {
       "id": "FR-71",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1372,8 +1368,7 @@
     {
       "id": "FR-87",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1510,8 +1505,7 @@
     {
       "id": "FR-95",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1526,8 +1520,7 @@
     {
       "id": "FR-96",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1547,8 +1540,7 @@
     {
       "id": "FR-97",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1581,8 +1573,7 @@
     {
       "id": "FR-99",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1628,8 +1619,7 @@
     {
       "id": "FR-101",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1662,8 +1652,7 @@
     {
       "id": "FR-102",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1727,8 +1716,7 @@
     {
       "id": "FR-107",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1779,8 +1767,7 @@
     {
       "id": "FR-111",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1841,8 +1828,7 @@
     {
       "id": "FR-117",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1878,8 +1864,7 @@
     {
       "id": "FR-119",
       "specs": [
-        "openspec/specs/play-page/spec.md",
-        "openspec/changes/update-settings-panel/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -2393,10 +2378,6 @@
     {
       "check": "recording-evidence",
       "msg": "FR-55 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "active-changes",
-      "msg": "active change \"update-settings-panel\" is not archived"
     }
   ]
 }

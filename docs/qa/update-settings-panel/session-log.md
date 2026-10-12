@@ -18,3 +18,23 @@ Times are UTC+5:30, each read from `date` before it was written (M22, M26, M29, 
 | 12 | 2026-10-12 14:11 | Fix round 1 committed (`3ada092`) after the user unlocked GPG. Task 9.2: the open points of `design.md` were put to the user in rows 3, 9 and 10 (open point 1: «Keep both»; open point 2: the reword kept, «keep the reword»; open point 3: the walk's premise held at all three windows, nothing to ask; the 0px margin: «Add 2px margin»; the top edge: «Record as not delivered»). Tasks 9.1 and 9.2 ticked. Next: wait for the dialog block to merge into `main` (task 10.1). | «gpg cached» | `review-findings.json`, `fix-round-1.txt`, this log |
 | 13 | 2026-10-12 14:43 to 14:53 | Rebase onto `main` `27cef3e` (the dialog block merged and pushed): backup branch `backup/update-settings-panel-pre-rebase`, `git rebase -S`, nine commits re-signed; conflicts resolved by hand (freeze script and visual-block merged; the fixture refrozen on top of the dialog's file, never hand-merged; run 13 renamed to the pre-rebase file; README and visual-diff README merged; generated reports from main; the ledger as a union); the dialog's `keyProvenance` merged with this block's stricter drift guard; the list copies refreshed from main's change; unit 1993 of 1993. | «the dialog has merged, rebase now» | `rebase-1.txt` |
 | 14 | 2026-10-12 14:53 to 14:59 | Task 10.2: the whole battery on the rebased tree (unit 1993, e2e 323, a11y 67, all exit 0) and `check:visual` run 14: 156 of 170 (the dialog's run 13: 146); all 26 settings shots 1.0000, no other shot changed. Tasks 3.1, 10.1 and 10.2 ticked. | — | `battery.txt` (post-rebase section), `docs/qa/g2/check-visual-run-14.txt`, `run-vs-previous.txt` § Run 14 |
+
+## Commits of this block (task 0.4), after the rebase onto `main` `27cef3e` (all signed: `git log --format=%G?` prints G for each; trailers `Slice: update-settings-panel`, `Refs: FR-68, FR-65, FR-117` on each; no `--no-verify`, no squash; the pre-rebase SHAs are in `rebase-1.txt`)
+
+```
+a92d586 G docs: settings block after the rebase: battery re-run and check:visual run 14 (156 of 170; all 26 settings shots 1.0000, nothing else moved)
+71108fd G test: after the rebase onto main (the dialog block): the token and pair list copies refreshed from main (33 names, 42 pairs); rebase record
+1618f5d G chore: ledger lines before the rebase onto main (the dialog block)
+aaa0bb9 G docs: settings block review gate closed (tasks 9.1, 9.2); waiting for the dialog block to merge
+0946310 G fix: review gate round 1 (per-key freeze provenance guard and pin, mask-check mutation evidence, visual-block block states, scenario wording
+acde2f3 G fix: settings scroll padding 2px over the signed minimum (the walk had 0px to spare), on the user's word
+b114b84 G docs: settings block evidence: check:visual run 13 (152 of 170; all 26 settings shots 1.0000), visual-block, smoke test, vision verdict, tas
+4a13277 G feat: settings panel takes the design's size, place and paint (phone padding, segmented options, sticky close with mask, scroll padding)
+fd6a0b4 G chore: freeze the settingsPanel key (7 cases) and add the settings block to visual-block
+e4ec2c7 G test: settings panel red first (stylesheet, e2e geometry, paint, halves, short-window walk); three deliberate test changes
+b0e2d94 G spec: update-settings-panel re-audit at 18e5f3f folded (F2-F5); F1 reword kept on the user's word
+```
+
+| # | Date, time | What happened | The user's words | Evidence |
+|---|---|---|---|---|
+| 15 | 2026-10-12 from 14:59 (the `date` before writing this row: 15:01) | Task 10.3: `npx openspec archive update-settings-panel --yes` (+1 ADDED, ~4 MODIFIED into `openspec/specs/play-page/spec.md`); `openspec validate --all --strict` 2 of 2. Task 10.4 put to the user (question form): merge into local `main`, no push. Task 10.5: autonomy-log rows 201 to 204 (after row 200, the last on `main`), `docs/current-state.md` and `docs/handoff/next-session.md` updated; then local `main` fast-forwarded. | «Merge into local main (Recommended)» | the archive folder; `docs/autonomy-log.md` rows 201-204; `docs/current-state.md`; `docs/handoff/next-session.md` |

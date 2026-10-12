@@ -262,6 +262,15 @@
       "processComplete": true
     },
     {
+      "slice": "2026-10-12-update-settings-panel",
+      "reviewEvidence": "missing",
+      "trailerCommits": 18,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
       "slice": "2026-10-12-update-setup-sheet",
       "reviewEvidence": "clean",
       "trailerCommits": 56,
@@ -388,6 +397,10 @@
     {
       "check": "review-evidence",
       "msg": "2026-10-11-update-rules-panel: review-findings.json is unclean (review must have run clean before archive)"
+    },
+    {
+      "check": "review-evidence",
+      "msg": "2026-10-12-update-settings-panel: review-findings.json is missing (review must have run clean before archive)"
     },
     {
       "check": "in-scope",
