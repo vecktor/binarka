@@ -1,0 +1,42 @@
+$ node docs/qa/improvements/PD-8-threshold-probe.mjs 1 0.985 0.975
+# GREEN, run 2026-10-12 16:07 +0530, the real checker with the changed quality/telemetry.config.json (option A), before the re-seal
+# docs/qa/visual-diff/1024-dark-confirm/report.json on HEAD: score 1
+
+## probe score 1: exit 1
+acceptance (artifact): 132 contract(s) across 132 requirement(s) — 2 failure(s), 1 warning(s), 0 pending
+Result: FAIL, 1 warning(s)
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+trace NFR-14 pixel-diff: failing-artifact
+trace TC-13 pixel-diff: failing-artifact
+
+## probe score 0.985: exit 1
+acceptance (artifact): 132 contract(s) across 132 requirement(s) — 2 failure(s), 1 warning(s), 0 pending
+Result: FAIL, 1 warning(s)
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+trace NFR-14 pixel-diff: failing-artifact
+trace TC-13 pixel-diff: failing-artifact
+
+## probe score 0.975: exit 1
+acceptance (artifact): 132 contract(s) across 132 requirement(s) — 2 failure(s), 1 warning(s), 0 pending
+Result: FAIL, 1 warning(s)
+WARN  [config] token "pixel-diff": config lowers threshold 0.99 -> 0.98 — a loosened built-in acceptance bar (review quality/telemetry.config.json)
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/1024-dark-confirm/report.json: score 0.975 is below threshold 0.98
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/1024-dark-confirm/report.json: score 0.975 is below threshold 0.98
+trace NFR-14 pixel-diff: failing-artifact
+trace TC-13 pixel-diff: failing-artifact
+
+# restored: git status --porcelain docs/qa/visual-diff/1024-dark-confirm/report.json trace/acceptance-contracts.json -> (empty)
+## integrity before re-seal
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+
+Scope: 27 locked file(s)
+Result: PASS, 2 warning(s)
+## after the re-seal (--init-lock --adaptation "PD-8: …")
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)
