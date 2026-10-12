@@ -6,9 +6,15 @@
 
 ## Last Updated
 
-- **Date and time:** 2026-10-12 17:11 (UTC+5:30; Kyiv 14:41)
-- **Working branch:** `main` (stream P of wave 3, worktree `.claude/worktrees/amazing-feynman-337579`, branch `claude/feynman-process`, merged by the user as PR 1 `0cfc35f` and pushed with this handoff; rows 211 to 217).
-- **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 wave 3, stream P (process; rows 211 to 217), START HERE:**
+- **Date and time:** 2026-10-12 17:22 (UTC+5:30; Kyiv 14:52)
+- **Working branch:** local `main` (stream R of wave 3, worktree `.claude/worktrees/eloquent-wilbur-ab7f62`, branch `claude/wilbur-recordings`, fast-forwarded into local `main` on the user's word, **not pushed**; rows 218 to 223). `origin/main` is `d25ca3c` (P).
+- **Current phase:** no factory phase is claimed (the header claims G3, below). **2026-10-12 wave 3, stream R (recordings and Phase H; rows 218 to 223), START HERE:**
+  - **Done** (session log `docs/qa/recordings-stream/session-log.md` R1 to R8):
+    - **Recordings:** `npm run qa:record-demos` (builds, then `scripts/record-demos.mjs` on its own preview at BINARKA_PORT_BASE + 3) writes 15 clips to `docs/qa/demo-recordings/` that drive the page and the CLI and assert the **115 MVP FRs** against the engine; `check-recordings --require-vision` PASS, `check-traceability --release --strict-tests --strict-recordings` 0 failures (`docs/qa/recordings-stream/battery-after-rebase.txt`). FR-25 and FR-50 are asserted on the engine and shown in the CLI clip (no page path).
+    - **Phase H:** `npm run check:vision` (`scripts/check-vision.mjs`, locked by **PD-13**); seen failing (`docs/qa/vision-red-run.txt`); fresh vision-judges met 15 of 15 stills; **NFR-11 moved into `docs/requirements.md`** and met (light and dark).
+  - **Scope NOT delivered by R:** **NFR-15 is NOT met and stays held**: the 40 px logo was judged not legible at device pixel ratio 1 and 2 (`docs/qa/vision-probe/logo-40-verdicts.json`); its fix is a `src/` slice, started by the user as `claude/logo-legibility`; the clip `16-logo-40` is held in the recorder until then. `gate:status` and `qa-verify` call `check-recordings` without `--require-vision` (locked), so their green is not vision-verified by itself.
+  - **Next:** DS part 2 (rebase onto this `main`), the NFR-15 logo slice, then F. The acceptance artifact check still FAILs only on NFR-14 and TC-13 pixel-diff (320-dark-setup 0.9238 < 0.98, DS's unit).
+  Earlier: **2026-10-12 wave 3, stream P (process; rows 211 to 217), START HERE:**
   - **Done, each with a red proof, the user's approval, a `Refs: PD-n` commit and a lock re-seal** (`docs/qa/improvements/`, session log `docs/qa/process-stream/session-log.md` P1 to P18):
     - **PD-8:** the acceptance check reads 0.98 for NFR-14 pixel-diff (`PD-8-green-proof.txt`). A 0.985 report now passes; 0.975 fails.
     - **PD-9:** a `logo` driver in the capture adapter; logo-dark 1 and logo-light 1 on base 6573 (`PD-9-proof.txt` § 4). The committed `docs/qa/visual-diff/logo-*` reports still say `score: null`: only F commits the 170 reports.
