@@ -16,5 +16,5 @@ Spec delta for the design stream DS of wave 3 (branch `claude/youthful-bhabha-de
 ## 3. Review and archive
 
 - [x] 3.1 Review gate (the user's yes, row DS10): run `wf_b4f0e083-6e6`, 10 confirmed; one fix round. Evidence: `docs/qa/design-stream/review-findings.json`, `docs/qa/design-stream/fix-round-1.txt`.
-- [ ] 3.2 The user signs the disposition `docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json` (PD-10) and decides on the archive.
-- [ ] 3.3 Archive with `npx openspec archive update-setup-sheet-design-margin` on the user's yes.
+- [x] 3.2 The user signs the disposition `docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json` (PD-10) and decides on the archive. Evidence: its `signature` («Sign as compiled (Recommended)»; «Archive now (Recommended)»), `docs/qa/design-stream/session-log.md` row DS17.
+- [x] 3.3 Archive with `npx openspec archive update-setup-sheet-design-margin` on the user's yes. Evidence: `docs/qa/design-stream/archive.txt`.

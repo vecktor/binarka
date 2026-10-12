@@ -150,7 +150,13 @@
       "file": "e2e/nfr-14-confirm-dialog.spec.ts"
     }
   ],
-  "signature": null,
+  "signature": {
+    "signedBy": "Serhii Romaniv (the user)",
+    "signedAt": "2026-10-12T18:34+05:30",
+    "channel": "chat, question form, design stream DS of wave 3 (claude/youthful-bhabha-design28); docs/qa/design-stream/session-log.md row DS17",
+    "words": "«Sign as compiled (Recommended)», to the question «Sign the review disposition of the design stream (PD-10)? … 11 entries, all fixed by a93262f except one waived …»",
+    "scope": "every entry of this file as compiled on 2026-10-12 (11 entries: 10 fixed by a93262f, 1 waived) and its exclusion"
+  },
   "compiledFrom": [
     "openspec/changes/update-setup-sheet-design-margin/review-findings.json",
     "git show a93262f",

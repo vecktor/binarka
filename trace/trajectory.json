@@ -309,6 +309,14 @@
       ],
       "processComplete": true,
       "designWaived": false
+    },
+    {
+      "slice": "2026-10-12-update-setup-sheet-design-margin",
+      "reviewEvidence": "dispositioned",
+      "trailerCommits": 0,
+      "libDomains": [],
+      "processComplete": true,
+      "designWaived": false
     }
   ],
   "overlaps": [
@@ -326,8 +334,8 @@
   "failures": [],
   "warnings": [
     {
-      "check": "review-evidence",
-      "msg": "docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json names no archived slice"
+      "check": "trailer",
+      "msg": "2026-10-12-update-setup-sheet-design-margin: no commit carries a \"Slice: update-setup-sheet-design-margin\" trailer"
     },
     {
       "check": "in-scope",

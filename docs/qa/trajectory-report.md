@@ -8,7 +8,7 @@ signed waiver stands for a missing design.md (PD-10).
 It does NOT verify test-first ordering or test integrity (not derivable from
 one-commit-per-slice history) — those are graded by the trajectory-eval workflow.
 
-Scope: 31 archived slice(s).
+Scope: 32 archived slice(s).
 Result: PASS, 2 warning(s)
 
 | Slice | Review evidence | Trailer commits | design+tasks | lib domains touched |
@@ -44,6 +44,7 @@ Result: PASS, 2 warning(s)
 | 2026-10-12-update-confirm-dialog | clean | 5 | yes | ui |
 | 2026-10-12-update-settings-panel | dispositioned | 12 | yes | ui |
 | 2026-10-12-update-setup-sheet | clean | 28 | yes | ui |
+| 2026-10-12-update-setup-sheet-design-margin | dispositioned | **0** | yes | - |
 
 ## Cross-slice module overlap
 
@@ -55,5 +56,5 @@ None.
 
 ## Warnings
 
-- **review-evidence**: docs/qa/review-dispositions/2026-10-12-update-setup-sheet-design-margin.json names no archived slice
+- **trailer**: 2026-10-12-update-setup-sheet-design-margin: no commit carries a "Slice: update-setup-sheet-design-margin" trailer
 - **in-scope**: src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift
