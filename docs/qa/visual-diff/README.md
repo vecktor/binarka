@@ -59,6 +59,51 @@ Before PD-3 (run 1): 7 product shots captured twice: 7 of 7 byte-identical ([`do
 7. **Orphaned previews (PD-4, 2026-10-11, session C).** A capture stopped by a signal, or dying before `close()`, left its `vite preview` listening (the clean close never leaked). Since PD-4 the adapter and `scripts/visual-block.mjs` run `vite` under `node` and stop it on exit and on SIGINT, SIGTERM and SIGHUP; SIGKILL leftovers and Playwright's preview: `node scripts/capture-ports.mjs --stop` (this worktree's only). The ports come from `BINARKA_PORT_BASE` (default 4173: e2e +0, gate +1, page +3, design +4).
 8. **A failed capture overwrites a scored report** (`score: null`), with any adapter. **Closed by PD-6** (`docs/qa/improvements/PD-6-failed-capture-overwrites-evidence.md`): the checker stages each run and copies it here unless a capture or diff failure would replace a scored report; such a run FAILS and names its folder. Shots that never had a score (the logo shots) do not block the copy.
 
+## Run 14 (after update-settings-panel, G2 settings block, wave 2, rebased onto the dialog block)
+
+`docs/qa/g2/check-visual-run-14.txt`, 2026-10-12 14:56 to 14:58 (UTC+5:30), exit 1: **156 of 170 at 0.98** (run 13: 146). The settings session, branch `claude/musing-bhaskara-settings` rebased onto `main` `27cef3e` (`docs/qa/update-settings-panel/rebase-1.txt`); its own ports (`BINARKA_PORT_BASE=6473`), nothing listening on 6473 to 6477 before or after.
+
+- **All 26 settings shots rose against run 13, each to 1.0000**, the 10 phone shots among them (0.9077 to 0.9626 in runs 12 and 13). **No shot of any other state changed** (0 fell; the ten confirm shots stay at 1.0000). Each settings score equals the settings session's pre-rebase run (section below), so the rebase changed no settings pixel (`docs/qa/update-settings-panel/run-vs-previous.txt` § Run 14).
+- The 12 shots under 0.98 are the phone setup shots of runs 12 and 13 (the signed 28px departure, SQ-5, A-60); the two logo shots still have no state driver.
+- Coverage is sampled (the 170 reference shots; the short windows where the panel scrolls are covered only by the three windows of the focus walk in `e2e/nfr-14-settings-panel.spec.ts`).
+
+By state (mean change against run 13; shots that fell):
+
+| State | Scheme | Run 13 at 0.98 | Run 14 at 0.98 | Lowest run 14 | Highest run 14 | Mean change | Fell |
+|---|---|---|---|---|---|---|---|
+| confirm | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| confirm | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | light | 6 of 6 | 6 of 6 | 0.9985 | 0.9996 | +0.0000 | 0 |
+| eight | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| eight | light | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| rules-techniques | dark | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules-techniques | light | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | dark | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | light | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| settings-dark | light | 3 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0372 | 0 |
+| settings-focus | dark | 1 of 2 | 2 of 2 | 1.0000 | 1.0000 | +0.0551 | 0 |
+| settings-focus | light | 1 of 2 | 2 of 2 | 1.0000 | 1.0000 | +0.0346 | 0 |
+| settings-light | dark | 3 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0226 | 0 |
+| settings | dark | 4 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0373 | 0 |
+| settings | light | 4 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0213 | 0 |
+| setup-four | dark | 5 of 6 | 5 of 6 | 0.9388 | 1.0000 | +0.0000 | 0 |
+| setup-four | light | 5 of 6 | 5 of 6 | 0.9306 | 1.0000 | +0.0000 | 0 |
+| setup-marked-four | dark | 5 of 6 | 5 of 6 | 0.9387 | 1.0000 | +0.0000 | 0 |
+| setup-marked-four | light | 5 of 6 | 5 of 6 | 0.9311 | 1.0000 | +0.0000 | 0 |
+| setup-marked | dark | 4 of 6 | 4 of 6 | 0.9054 | 1.0000 | +0.0000 | 0 |
+| setup-marked | light | 4 of 6 | 4 of 6 | 0.8755 | 1.0000 | +0.0000 | 0 |
+| setup | dark | 4 of 6 | 4 of 6 | 0.9238 | 1.0000 | +0.0000 | 0 |
+| setup | light | 4 of 6 | 4 of 6 | 0.9218 | 1.0000 | +0.0000 | 0 |
+| win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+
 ## Run 13 (after update-confirm-dialog, G2 dialog block, wave 2)
 
 `docs/qa/g2/check-visual-run-13.txt`, 2026-10-12 13:47 to 13:49 (UTC+5:30), exit 1: **146 of 170 at 0.98** (run 12: 142). The dialog session, branch `claude/laughing-snyder-dialog` at `714c543` (the port `f5a5582` on `main` `18e5f3f`; not yet merged), its own ports `BINARKA_PORT_BASE=6373`; nothing listened on 6373 to 6377 before or after.
