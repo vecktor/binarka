@@ -1,0 +1,23 @@
+# Green run, update-logo-legibility task 2.2 (2026-10-12 16:59 +0530), drawing B in src/ui/logo.ts
+## npm run lint
+
+> binarka@0.1.0 lint
+> eslint .
+
+exit: 0
+## npm run test:run
+ Test Files  81 passed (81)
+      Tests  1995 passed (1995)
+   Start at  16:59:57
+   Duration  71.85s (tests 72%, environment 21%, import 6%, transform 1%)
+
+    Isolate  81 workers spawned · ~877ms startup each (spawn + environment, per file)
+             at least ~7.02s faster with isolate: false — reuses workers across files instead of one per file
+
+## npm run build
+computing gzip size...
+dist/index.html                  1.51 kB │ gzip:  0.63 kB
+dist/assets/index-DIwVvqnQ.css  24.37 kB │ gzip:  4.92 kB
+dist/assets/index-B9MeUi-6.js   35.33 kB │ gzip: 12.79 kB
+
+✓ built in 34ms
