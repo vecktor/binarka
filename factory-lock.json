@@ -1,6 +1,6 @@
 {
-  "createdAt": "2026-10-12T11:34:06.641Z",
-  "gitHead": "1ae4f34dc6543ecf4b971532e7f40abb86d4a86d",
+  "createdAt": "2026-10-12T11:47:39.468Z",
+  "gitHead": "5262ab5e7f35a044a5706725635c1507b496890b",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
     ".claude/workflows/review-gate.js": "8a99cf7f4a08c421a1f3d09e6ac284934af67602ce7f4d6a60ca743dc3f02856",
@@ -25,12 +25,13 @@
     "scripts/check-recordings.mjs": "447628eccba1a88860d5b2cfb8f4fff9b09050edd0141476a31bcddc66fe3a54",
     "scripts/check-traceability.mjs": "10dfdb95743c685e31f0a1cdb2d4cbef0d728315097efd93544346330250fadf",
     "scripts/check-trajectory.mjs": "ed3f32aa3b26537d24f2748ae587fb835dc3053639c460ed6503cde0631dfcd6",
+    "scripts/check-vision.mjs": "d257c6e0d2f897ba24d71b306c5d05e84cffa6035cf4de1a6aba7cab23d65669",
     "scripts/check-visual-fidelity.mjs": "1fe3a499c1e4074b370496148cc27bc9a99de0d06580ac42059363c869a62c91",
     "scripts/check-visual-parity-adapters.mjs": "cdd70e852f21767c136356472aa9e75e7f1a6ab0f1c22d5c39367689d2d54680",
     "scripts/gate-status.mjs": "07617acbbd6ae513bcc7675478e920bd86ff2c765ae1b2ebc2ab27dad50e5fae",
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-12: check-trajectory counts Slice: trailers on HEAD's history instead of every ref, so the committed report is fresh in a clean clone (approved by the user 2026-10-12)"
+    "PD-13: scripts/check-vision.mjs (Phase H, the vision-verify mechanism) joins the lock so a change to it is tamper-evident (approved by the user 2026-10-12)"
   ]
 }

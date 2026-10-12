@@ -1,0 +1,51 @@
+Mon Oct 12 17:18:07 +0530 2026
+HEAD 5262ab5 on origin/main d25ca3c, lock re-sealed (uncommitted)
+
+$ npm run lint
+exit 0
+
+$ npm run test:run
+ Test Files  81 passed (81)
+      Tests  1993 passed (1993)
+exit 0
+
+$ npm run build
+exit 0
+
+$ npx openspec validate --all --strict
+Totals: 2 passed, 0 failed (2 items)
+exit 0
+
+$ node scripts/check-eval-ratchet.mjs
+Result: PASS
+exit 0
+
+$ node scripts/check-recordings.mjs --require-vision
+Result: PASS
+exit 0
+
+$ node scripts/check-vision.mjs
+Result: PASS
+exit 0
+
+$ node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
+traceability: 115 MVP FRs checked — 0 failure(s), 0 warning(s)
+exit 0
+
+$ node scripts/check-trajectory.mjs --release
+Result: PASS, 1 warning(s)
+exit 0
+
+$ node scripts/check-acceptance-methods.mjs --mode=existence
+Result: PASS, 1 warning(s)
+exit 0
+
+$ node scripts/check-acceptance-methods.mjs --mode=artifact
+FAIL  [NFR-14] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+FAIL  [TC-13] pixel-diff: docs/qa/visual-diff/320-dark-setup/report.json: score 0.9238 is below threshold 0.98
+Result: FAIL, 1 warning(s)
+exit 1
+
+$ node scripts/check-factory-integrity.mjs
+Result: PASS, 1 warning(s)
+exit 0
