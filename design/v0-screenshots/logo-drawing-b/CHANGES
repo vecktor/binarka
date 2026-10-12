@@ -1,4 +1,4 @@
-# review-set-15 against review-set-14, by pixels (iteration 17, update-logo-legibility; written 2026-10-12 17:12 +0530)
+# logo-drawing-b against review-set-14, by pixels (iteration 17, update-logo-legibility; written 2026-10-12 17:12 +0530)
 # CHANGED: differs; changed px = differing device pixels (exact RGBA, pngjs); box = bounding box of the differing pixels, in device px.
 # Determinism: a capture of the design BEFORE the logo change equals review-set-14 on 170 of 170 (recapture-of-set-14.SHA1SUMS;
 #   4 shots (1024/1440 x light/dark eight) timed out in the first pass and were recaptured alone, identical). run-2.SHA1SUMS equals SHA1SUMS 170 of 170.

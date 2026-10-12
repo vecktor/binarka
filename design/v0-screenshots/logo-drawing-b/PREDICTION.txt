@@ -1,4 +1,4 @@
-Prediction for review-set-15 (iteration 17, update-logo-legibility), written 2026-10-12 17:02 +0530 BEFORE the set was compared.
+Prediction for logo-drawing-b (iteration 17, update-logo-legibility), written 2026-10-12 17:02 +0530 BEFORE the set was compared.
 
 Change: only the Logo and LogoDigit of design/v0/components/binarka-page.tsx (drawing B: r 24 circle, 16-unit cells,
 bars 4.5 x 11, rings rx 3.5 ry 5 stroke 3, shorter rays). The logo's box (its CSS size), colours and the layout do not change.

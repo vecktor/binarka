@@ -20,8 +20,8 @@ Order of work: section 1 (tests) is written FIRST from the delta spec and seen r
 ## 3. Design mirror (the user's yes of 2026-10-12)
 
 - [x] 3.1 `design/v0/components/binarka-page.tsx`: `Logo` and `LogoDigit` get the same coordinates; nothing else changes. `design/README.md` gains the iteration entry. Evidence: commit `04b3036`.
-- [x] 3.2 Build the design (`design/v0`, `pnpm build`), serve `out/` on 127.0.0.1:4173, write the prediction (every shot with the header or the logo sheet changes; every other shot is byte-identical), capture `design/v0-screenshots/review-set-15/` twice with `design/tools/capture-review-set.sh` and compare (`SHA1SUMS`, `run-2.SHA1SUMS`, `CHANGES` against `review-set-14`). Evidence: `design/v0-screenshots/review-set-15/PREDICTION.txt`, `CHANGES`.
-- [ ] 3.3 Ask the user whether to move the NFR-14 reference to `review-set-15` (only the user moves it). Until then report the shot changes against `review-set-14`. Evidence: `session-log.md`.
+- [x] 3.2 Build the design (`design/v0`, `pnpm build`), serve `out/` on 127.0.0.1:4173, write the prediction (every shot with the header or the logo sheet changes; every other shot is byte-identical), capture `design/v0-screenshots/logo-drawing-b/` twice with `design/tools/capture-review-set.sh` and compare (`SHA1SUMS`, `run-2.SHA1SUMS`, `CHANGES` against `review-set-14`). Evidence: `design/v0-screenshots/logo-drawing-b/PREDICTION.txt`, `CHANGES`.
+- [ ] 3.3 Ask the user whether to move the NFR-14 reference to `logo-drawing-b` (only the user moves it). Until then report the shot changes against `review-set-14`. Evidence: `session-log.md`.
 
 ## 4. Recording and vision (after the rebase)
 

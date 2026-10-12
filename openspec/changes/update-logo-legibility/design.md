@@ -34,12 +34,12 @@ Why these floors: they sit just under the chosen drawing, so the test fails on t
 ## Pixel expectations (NFR-14)
 
 - The logo's box (CSS size) and the logo shapes' `fill`, `stroke` and `color` do not change, so `quality/design-geometry.json` and `quality/design-paint.json` hold; `e2e/nfr-14-*` browser tests that read them should not move.
-- Pixels: every shot with the header shows the new logo. Against `review-set-14` these shots differ in the logo's area only (at most 64 × 64 CSS px, 128 × 128 device px, of a shot of at least 320 × 700); the two `logo-*` shots differ entirely in the logo marks. The new set `review-set-15` is captured from the mirrored design; its prediction: every shot that shows the header or the logo sheet changes, every other shot is byte-identical. Only the user moves the reference.
+- Pixels: every shot with the header shows the new logo. Against `review-set-14` these shots differ in the logo's area only (at most 64 × 64 CSS px, 128 × 128 device px, of a shot of at least 320 × 700); the two `logo-*` shots differ entirely in the logo marks. The new set `logo-drawing-b` is captured from the mirrored design; its prediction: every shot that shows the header or the logo sheet changes, every other shot is byte-identical. Only the user moves the reference.
 
 ## Sequencing
 
 1. Spec and red tests on this branch (base `claude/wilbur-recordings` at `496c0a9`).
-2. Drawing (`src/ui/logo.ts`) to green; design mirror and `review-set-15`.
+2. Drawing (`src/ui/logo.ts`) to green; design mirror and `logo-drawing-b`.
 3. Rebase onto `claude/wilbur-recordings` after its held-clip work is committed (ledger merged as a union).
 4. Record `16-logo-40` (`--only`), one vision-verify run with a fresh vision-judge; no re-runs to shop for a pass.
 5. If met: remove `held`, move NFR-15 (one logged commit), run the checks.
