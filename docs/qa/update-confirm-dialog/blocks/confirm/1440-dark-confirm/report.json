@@ -1,0 +1,84 @@
+{
+  "shot": "1440-dark-confirm",
+  "block": "confirm",
+  "geometry": [
+    {
+      "sel": "dialog[data-dialog=\"confirm\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 544,
+        "y": 367,
+        "w": 352,
+        "h": 166
+      },
+      "product": {
+        "x": 544,
+        "y": 367,
+        "w": 352,
+        "h": 166
+      }
+    },
+    {
+      "sel": "dialog[data-dialog=\"confirm\"] p",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 569,
+        "y": 392,
+        "w": 302,
+        "h": 48
+      },
+      "product": {
+        "x": 569,
+        "y": 392,
+        "w": 302,
+        "h": 48
+      }
+    },
+    {
+      "sel": "[data-confirm=\"yes\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 569,
+        "y": 464,
+        "w": 151.234375,
+        "h": 44
+      },
+      "product": {
+        "x": 569,
+        "y": 464,
+        "w": 151.234375,
+        "h": 44
+      }
+    },
+    {
+      "sel": "[data-confirm=\"no\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 728.234375,
+        "y": 464,
+        "w": 142.765625,
+        "h": 44
+      },
+      "product": {
+        "x": 728.234375,
+        "y": 464,
+        "w": 142.765625,
+        "h": 44
+      }
+    }
+  ],
+  "geometryOff": 0,
+  "unpaired": 0,
+  "maxDelta": 0,
+  "region": {
+    "x": 1088,
+    "y": 734,
+    "w": 704,
+    "h": 332
+  },
+  "pixel": 1
+}

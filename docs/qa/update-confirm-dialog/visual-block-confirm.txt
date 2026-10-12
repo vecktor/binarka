@@ -1,0 +1,31 @@
+# visual-block --block confirm (task 7.1), the dialog session; tree 714c543 (port f5a5582); BINARKA_PORT_BASE=6373
+== port check before
+2026-10-12 13:47:12 +0530
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 
+== npm run build
+✓ built in 45ms
+== node scripts/visual-block.mjs --block confirm --states confirm --out docs/qa/update-confirm-dialog/blocks/confirm
+1024-dark-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1024-light-confirm             pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1440-dark-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1440-light-confirm             pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+320-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+320-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+375-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+375-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+768-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+768-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+
+Block confirm: 10 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+== port check after
+2026-10-12 13:47:27 +0530
+lsof -nP -iTCP:6373 -sTCP:LISTEN: 
+lsof -nP -iTCP:6374 -sTCP:LISTEN: 
+lsof -nP -iTCP:6375 -sTCP:LISTEN: 
+lsof -nP -iTCP:6376 -sTCP:LISTEN: 
+lsof -nP -iTCP:6377 -sTCP:LISTEN: 

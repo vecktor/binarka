@@ -1,0 +1,84 @@
+{
+  "shot": "320-light-confirm",
+  "block": "confirm",
+  "geometry": [
+    {
+      "sel": "dialog[data-dialog=\"confirm\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 12,
+        "y": 241,
+        "w": 296,
+        "h": 218
+      },
+      "product": {
+        "x": 12,
+        "y": 241,
+        "w": 296,
+        "h": 218
+      }
+    },
+    {
+      "sel": "dialog[data-dialog=\"confirm\"] p",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 37,
+        "y": 266,
+        "w": 246,
+        "h": 48
+      },
+      "product": {
+        "x": 37,
+        "y": 266,
+        "w": 246,
+        "h": 48
+      }
+    },
+    {
+      "sel": "[data-confirm=\"yes\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 37,
+        "y": 390,
+        "w": 246,
+        "h": 44
+      },
+      "product": {
+        "x": 37,
+        "y": 390,
+        "w": 246,
+        "h": 44
+      }
+    },
+    {
+      "sel": "[data-confirm=\"no\"]",
+      "delta": 0,
+      "off": false,
+      "design": {
+        "x": 37,
+        "y": 338,
+        "w": 246,
+        "h": 44
+      },
+      "product": {
+        "x": 37,
+        "y": 338,
+        "w": 246,
+        "h": 44
+      }
+    }
+  ],
+  "geometryOff": 0,
+  "unpaired": 0,
+  "maxDelta": 0,
+  "region": {
+    "x": 24,
+    "y": 482,
+    "w": 592,
+    "h": 436
+  },
+  "pixel": 1
+}

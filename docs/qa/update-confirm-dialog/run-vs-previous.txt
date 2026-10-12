@@ -1,0 +1,58 @@
+update-confirm-dialog: run 13 against run 12, by shot (task 7.3), the dialog session, 2026-10-12 (UTC+5:30)
+Run 12: docs/qa/g2/check-visual-run-12.txt (the last run on main 18e5f3f / 9304d2c). Run 13: docs/qa/g2/check-visual-run-13.txt (Mon Oct 12 13:47:38 +0530 2026 to Mon Oct 12 13:49:58 +0530 2026, exit 1, BINARKA_PORT_BASE=6373).
+Method: every PASS/FAIL line of both files parsed (`node docs/qa/update-confirm-dialog/compare-runs.mjs docs/qa/g2/check-visual-run-13.txt list` and `... table`; it reads the PASS/FAIL lines, so the run file header is ignored), shot by shot.
+
+The ten confirm shots (run 12 -> run 13):
+  1024-dark-confirm      0.9850 -> 1.0000  ROSE  at 0.98
+  1024-light-confirm     0.9836 -> 1.0000  ROSE  at 0.98
+  1440-dark-confirm      0.9904 -> 1.0000  ROSE  at 0.98
+  1440-light-confirm     0.9901 -> 1.0000  ROSE  at 0.98
+  320-dark-confirm       0.9180 -> 1.0000  ROSE  at 0.98
+  320-light-confirm      0.9194 -> 1.0000  ROSE  at 0.98
+  375-dark-confirm       0.9590 -> 1.0000  ROSE  at 0.98
+  375-light-confirm      0.9582 -> 1.0000  ROSE  at 0.98
+  768-dark-confirm       0.9849 -> 1.0000  ROSE  at 0.98
+  768-light-confirm      0.9837 -> 1.0000  ROSE  at 0.98
+Every other shot: 160 (158 scored): fell 0; rose 0; equal 158; unscored in both runs 2 (logo-dark, logo-light, no state driver, Known gaps 2).
+At 0.98: run 12 142 of 170, run 13 146 of 170.
+
+By state (the table copied into docs/qa/visual-diff/README.md § Run 13):
+| State | Scheme | Run 12 at 0.98 | Run 13 at 0.98 | Lowest run 13 | Highest run 13 | Mean change | Fell |
+|---|---|---|---|---|---|---|---|
+| confirm | dark | 3 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0325 | 0 |
+| confirm | light | 3 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0330 | 0 |
+| default | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| default | light | 6 of 6 | 6 of 6 | 0.9985 | 0.9996 | +0.0000 | 0 |
+| eight | dark | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| eight | light | 6 of 6 | 6 of 6 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| four | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| hint | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| level | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| rules-techniques | dark | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules-techniques | light | 4 of 4 | 4 of 4 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | dark | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| rules | light | 6 of 6 | 6 of 6 | 0.9913 | 0.9970 | +0.0000 | 0 |
+| settings-dark | light | 3 of 5 | 3 of 5 | 0.9195 | 0.9894 | +0.0000 | 0 |
+| settings-focus | dark | 1 of 2 | 1 of 2 | 0.9077 | 0.9821 | +0.0000 | 0 |
+| settings-focus | light | 1 of 2 | 1 of 2 | 0.9390 | 0.9919 | +0.0000 | 0 |
+| settings-light | dark | 3 of 5 | 3 of 5 | 0.9458 | 0.9950 | +0.0000 | 0 |
+| settings | dark | 4 of 6 | 4 of 6 | 0.9117 | 0.9880 | +0.0000 | 0 |
+| settings | light | 4 of 6 | 4 of 6 | 0.9430 | 0.9946 | +0.0000 | 0 |
+| setup-four | dark | 5 of 6 | 5 of 6 | 0.9388 | 1.0000 | +0.0000 | 0 |
+| setup-four | light | 5 of 6 | 5 of 6 | 0.9306 | 1.0000 | +0.0000 | 0 |
+| setup-marked-four | dark | 5 of 6 | 5 of 6 | 0.9387 | 1.0000 | +0.0000 | 0 |
+| setup-marked-four | light | 5 of 6 | 5 of 6 | 0.9311 | 1.0000 | +0.0000 | 0 |
+| setup-marked | dark | 4 of 6 | 4 of 6 | 0.9054 | 1.0000 | +0.0000 | 0 |
+| setup-marked | light | 4 of 6 | 4 of 6 | 0.8755 | 1.0000 | +0.0000 | 0 |
+| setup | dark | 4 of 6 | 4 of 6 | 0.9238 | 1.0000 | +0.0000 | 0 |
+| setup | light | 4 of 6 | 4 of 6 | 0.9218 | 1.0000 | +0.0000 | 0 |
+| win | dark | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+| win | light | 5 of 5 | 5 of 5 | 1.0000 | 1.0000 | +0.0000 | 0 |
+
+Per block (docs/qa/update-confirm-dialog/visual-block-confirm.txt; docs/qa/update-confirm-dialog/blocks/confirm/summary.json): visual-block --block confirm --states confirm,
+10 shots, pixel 1 in the dialog's crop at every shot, geometry off 0 of 4, unpaired 0, max delta 0 px (the five light shots and the five dark ones).
+
+Reading: every one of the ten confirm shots rose (the condition of task 7.3); the four phone shots, below 0.98 in run 12, now pass, as design.md expected if the box and the paint match; no shot of any other state fell or moved, so there is no fall to explain. Coverage: sampled (the 170 reference shots).
