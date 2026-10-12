@@ -1,0 +1,7 @@
+$ node scripts/check-recordings.mjs
+# run 2026-10-12 13:08 +0530 on 9304d2c
+NOT-EARNED  [recordings] Scope 0: no recorded clips while product code exists (app/src/lib/server/packages/pages/components) — recordings NOT-EARNED, never a bare PASS over an empty evidence base
+
+Scope: 0 clip(s) across 0 manifest(s)
+Result: NOT-EARNED
+# exit 1

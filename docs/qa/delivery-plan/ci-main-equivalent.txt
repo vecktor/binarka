@@ -1,0 +1,20 @@
+# CI-on-main equivalent (.github/workflows/ci.yml lines 28-35), run locally
+# run 2026-10-12 13:18 +0530 on 9304d2c
+$ node scripts/check-traceability.mjs --check-fresh
+traceability: 115 MVP FRs checked — 0 failure(s), 117 warning(s)
+# exit 0
+$ node scripts/check-traceability.mjs --release
+FAIL  [active-changes] active change "update-confirm-dialog" is not archived
+FAIL  [active-changes] active change "update-settings-panel" is not archived
+traceability: 115 MVP FRs checked — 2 failure(s), 115 warning(s)
+# exit 1
+$ node scripts/check-trajectory.mjs --check-fresh
+Result: PASS, 27 warning(s)
+# exit 0
+$ node scripts/check-trajectory.mjs --release
+FAIL  [review-evidence] 2026-10-04-add-puzzle-engine: review-findings.json is unclean (review must have run clean before archive)
+FAIL  [review-evidence] 2026-10-04-add-rules-and-reset: review-findings.json is unclean (review must have run clean before archive)
+FAIL  [review-evidence] 2026-10-06-add-hinted-cell: review-findings.json is unclean (review must have run clean before archive)
+FAIL  [review-evidence] 2026-10-06-update-controls-accessibility: review-findings.json is unclean (review must have run clean before archive)
+Result: FAIL, 1 warning(s)
+# exit 1

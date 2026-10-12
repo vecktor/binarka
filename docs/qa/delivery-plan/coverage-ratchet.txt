@@ -1,0 +1,6 @@
+$ node scripts/check-coverage-ratchet.mjs
+# run 2026-10-12 13:08 +0530 on 9304d2c
+SKIP  coverage/coverage-summary.json not found — no coverage yet (run `npm run test:coverage`). Nothing to ratchet.
+Scope: 0 coverage metric(s)
+Result: SKIP-pending
+# exit 0

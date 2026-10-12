@@ -1,0 +1,6 @@
+$ node scripts/check-process-ratchet.mjs
+# run 2026-10-12 13:09 +0530 on 9304d2c
+
+Scope: 3 guard(s) (phase 3, product code: yes)
+Result: NOT-EARNED (pending baseline — earn it with --update after a truthful green run)
+# exit 0

@@ -1,0 +1,7 @@
+$ node scripts/check-eval-ratchet.mjs
+# run 2026-10-12 13:10 +0530 on 9304d2c
+Scope: 6 eval case(s)
+OK    hint-clarity 92.7 (baseline 92.7)
+OK    hint-clarity-en 90 (baseline 90)
+Result: PASS
+# exit 0

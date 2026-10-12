@@ -1,0 +1,43 @@
+$ npm run test:coverage
+# run 2026-10-12 13:10 +0530 on 9304d2c
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+Could not parse CSS stylesheet
+
+ Test Files  79 passed (79)
+      Tests  1949 passed (1949)
+   Start at  13:10:18
+   Duration  101.09s (tests 81%, environment 13%, import 5%, transform 1%, worker 1%)
+
+    Isolate  79 workers spawned · ~736ms startup each (spawn + environment, per file)
+             at least ~5.73s faster with isolate: false — reuses workers across files instead of one per file
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|------------------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s            
+-------------------|---------|----------|---------|---------|------------------------------
+All files          |   97.51 |    91.96 |   98.19 |   99.33 |                              
+ src               |   83.87 |    57.89 |      60 |      96 |                              
+  cli.ts           |   82.14 |    58.82 |      60 |   95.65 | 23                           
+  main.ts          |     100 |       50 |     100 |     100 | 5                            
+ src/engine        |   97.15 |    92.04 |   98.66 |   98.95 |                              
+  generator.ts     |   93.57 |     87.5 |     100 |     100 | 14,31-34,47-49,54,59,76-106  
+  hint.ts          |     100 |     87.5 |     100 |     100 | 20-24                        
+  rule-solve.ts    |   92.85 |    85.71 |     100 |     100 | 17                           
+  sentences.ts     |     100 |    96.82 |     100 |     100 | 49,97                        
+  solver.ts        |   94.64 |    86.41 |     100 |   96.51 | 73,117-118                   
+  techniques.ts    |   99.18 |    95.09 |     100 |     100 | 81,97-98,113,186,281,297-299 
+  types.ts         |      80 |      100 |      80 |      80 | 63-64                        
+ src/ui            |    98.5 |    94.29 |     100 |   99.81 |                              
+  play-page.ts     |   98.27 |    92.77 |     100 |   99.77 | 533                          
+  seed.ts          |   85.71 |      100 |     100 |     100 |                              
+  strings.ts       |     100 |     90.9 |     100 |     100 | 82,189                       
+-------------------|---------|----------|---------|---------|------------------------------
+
+=============================== Coverage summary ===============================
+Statements   : 97.51% ( 1297/1330 )
+Branches     : 91.96% ( 687/747 )
+Functions    : 98.19% ( 163/166 )
+Lines        : 99.33% ( 1050/1057 )
+================================================================================
+# exit 0

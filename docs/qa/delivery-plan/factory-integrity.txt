@@ -1,0 +1,7 @@
+$ node scripts/check-factory-integrity.mjs
+# run 2026-10-12 13:09 +0530 on 9304d2c
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+
+Scope: 27 locked file(s)
+Result: PASS, 1 warning(s)
+# exit 0
