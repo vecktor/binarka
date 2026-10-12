@@ -1,0 +1,166 @@
+{
+  "kind": "demo",
+  "generatedBy": "scripts/record-demos.mjs",
+  "results": [
+    {
+      "id": "01-play-board",
+      "title": "The play page shows a generated puzzle: givens, cycling cells, header, logo, messages",
+      "proof": "FR-13, FR-14, FR-15, FR-31, FR-32, FR-33, FR-34, FR-63, FR-68, FR-71, FR-72",
+      "video": "docs/qa/demo-recordings/01-play-board.webm",
+      "screenshot": "docs/qa/demo-recordings/01-play-board.png",
+      "explainer": "docs/qa/demo-recordings/01-play-board.md",
+      "asserted": true,
+      "assertions": 11
+    },
+    {
+      "id": "02-keyboard-a11y",
+      "title": "Cells are buttons: Tab order, Enter and Space, labels, roles and the focus ring",
+      "proof": "FR-59, FR-60, FR-61, FR-62, FR-65, FR-69, FR-70",
+      "video": "docs/qa/demo-recordings/02-keyboard-a11y.webm",
+      "screenshot": "docs/qa/demo-recordings/02-keyboard-a11y.png",
+      "explainer": "docs/qa/demo-recordings/02-keyboard-a11y.md",
+      "asserted": true,
+      "assertions": 10
+    },
+    {
+      "id": "03-violations",
+      "title": "The rule checker on the page: runs, counts and identical lines are highlighted, live",
+      "proof": "FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-35, FR-36, FR-37, FR-38, FR-64, FR-120",
+      "video": "docs/qa/demo-recordings/03-violations.webm",
+      "screenshot": "docs/qa/demo-recordings/03-violations.png",
+      "explainer": "docs/qa/demo-recordings/03-violations.md",
+      "asserted": true,
+      "assertions": 18
+    },
+    {
+      "id": "04-capture-board-and-win",
+      "title": "Capture boards, the solver count and the win message",
+      "proof": "FR-8, FR-9, FR-10, FR-11, FR-12, FR-41, FR-119",
+      "video": "docs/qa/demo-recordings/04-capture-board-and-win.webm",
+      "screenshot": "docs/qa/demo-recordings/04-capture-board-and-win.png",
+      "explainer": "docs/qa/demo-recordings/04-capture-board-and-win.md",
+      "asserted": true,
+      "assertions": 9
+    },
+    {
+      "id": "05-hints-basic",
+      "title": "Hints: pair, sandwich and count, the hinted cell, the broken-rule sentence, solving by hints",
+      "proof": "FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, FR-26, FR-27, FR-39, FR-40, FR-66",
+      "video": "docs/qa/demo-recordings/05-hints-basic.webm",
+      "screenshot": "docs/qa/demo-recordings/05-hints-basic.png",
+      "explainer": "docs/qa/demo-recordings/05-hints-basic.md",
+      "asserted": true,
+      "assertions": 22
+    },
+    {
+      "id": "06-hints-advanced",
+      "title": "Hints: line balance, unique lines and look-ahead, the lowest technique first",
+      "proof": "FR-74, FR-75, FR-76, FR-77, FR-78, FR-79, FR-80",
+      "video": "docs/qa/demo-recordings/06-hints-advanced.webm",
+      "screenshot": "docs/qa/demo-recordings/06-hints-advanced.png",
+      "explainer": "docs/qa/demo-recordings/06-hints-advanced.md",
+      "asserted": true,
+      "assertions": 10
+    },
+    {
+      "id": "07-levels-generator",
+      "title": "Levels: an 8×8 «Мозколамка» and a 6×6 «Головоломка» are exactly their level, with one solution",
+      "proof": "FR-14, FR-15, FR-44, FR-82, FR-83, FR-88",
+      "video": "docs/qa/demo-recordings/07-levels-generator.webm",
+      "screenshot": "docs/qa/demo-recordings/07-levels-generator.png",
+      "explainer": "docs/qa/demo-recordings/07-levels-generator.md",
+      "asserted": true,
+      "assertions": 12
+    },
+    {
+      "id": "08-setup-sheet",
+      "title": "The setup sheet: summary button, marking a size and a level, the 4×4 rule, closing and «Почати»",
+      "proof": "FR-43, FR-73, FR-87, FR-89, FR-91, FR-92, FR-95, FR-96, FR-97, FR-99, FR-100, FR-101",
+      "video": "docs/qa/demo-recordings/08-setup-sheet.webm",
+      "screenshot": "docs/qa/demo-recordings/08-setup-sheet.png",
+      "explainer": "docs/qa/demo-recordings/08-setup-sheet.md",
+      "asserted": true,
+      "assertions": 13
+    },
+    {
+      "id": "09-confirm-actions",
+      "title": "«Нова головоломка», «Скинути» and «Почати» ask before discarding moves",
+      "proof": "FR-42, FR-58, FR-67, FR-90, FR-98",
+      "video": "docs/qa/demo-recordings/09-confirm-actions.webm",
+      "screenshot": "docs/qa/demo-recordings/09-confirm-actions.png",
+      "explainer": "docs/qa/demo-recordings/09-confirm-actions.md",
+      "asserted": true,
+      "assertions": 10
+    },
+    {
+      "id": "10-rules-panel",
+      "title": "The rules panel: three rules and three harder techniques, every text from strings.ts",
+      "proof": "FR-57, FR-93, FR-94",
+      "video": "docs/qa/demo-recordings/10-rules-panel.webm",
+      "screenshot": "docs/qa/demo-recordings/10-rules-panel.png",
+      "explainer": "docs/qa/demo-recordings/10-rules-panel.md",
+      "asserted": true,
+      "assertions": 4
+    },
+    {
+      "id": "11-theme",
+      "title": "The theme: light, dark or the system, applied before the first paint, stored, safe when storage fails",
+      "proof": "FR-102, FR-103, FR-104, FR-105, FR-106, FR-113, FR-114, FR-115, FR-116, FR-117, FR-118",
+      "video": "docs/qa/demo-recordings/11-theme.webm",
+      "screenshot": "docs/qa/demo-recordings/11-theme.png",
+      "explainer": "docs/qa/demo-recordings/11-theme.md",
+      "asserted": true,
+      "assertions": 13
+    },
+    {
+      "id": "12-english",
+      "title": "English: the language switch re-renders every text in place, hints included",
+      "proof": "FR-22, FR-40, FR-55, FR-56, FR-107, FR-108, FR-109, FR-110, FR-111, FR-112",
+      "video": "docs/qa/demo-recordings/12-english.webm",
+      "screenshot": "docs/qa/demo-recordings/12-english.png",
+      "explainer": "docs/qa/demo-recordings/12-english.md",
+      "asserted": true,
+      "assertions": 11
+    },
+    {
+      "id": "13-cli-engine",
+      "title": "The CLI (npm run cli) prints puzzles and English errors; engine calls with no page or CLI path",
+      "proof": "FR-16, FR-17, FR-25, FR-28, FR-29, FR-30, FR-49, FR-50, FR-51, FR-52, FR-53, FR-54, FR-81, FR-84, FR-85, FR-86",
+      "video": "docs/qa/demo-recordings/13-cli-engine.webm",
+      "screenshot": "docs/qa/demo-recordings/13-cli-engine.png",
+      "explainer": "docs/qa/demo-recordings/13-cli-engine.md",
+      "asserted": true,
+      "assertions": 16
+    },
+    {
+      "id": "14-cell-states-light",
+      "title": "NFR-11, light: a violation, a given, a player entry and the hinted cell, each with a non-colour cue",
+      "proof": "NFR-11, FR-32, FR-64, FR-66",
+      "video": "docs/qa/demo-recordings/14-cell-states-light.webm",
+      "screenshot": "docs/qa/demo-recordings/14-cell-states-light.png",
+      "explainer": "docs/qa/demo-recordings/14-cell-states-light.md",
+      "asserted": true,
+      "assertions": 5
+    },
+    {
+      "id": "15-cell-states-dark",
+      "title": "NFR-11, dark: a violation, a given, a player entry and the hinted cell, each with a non-colour cue",
+      "proof": "NFR-11, FR-32, FR-64, FR-66",
+      "video": "docs/qa/demo-recordings/15-cell-states-dark.webm",
+      "screenshot": "docs/qa/demo-recordings/15-cell-states-dark.png",
+      "explainer": "docs/qa/demo-recordings/15-cell-states-dark.md",
+      "asserted": true,
+      "assertions": 5
+    },
+    {
+      "id": "16-logo-40",
+      "title": "NFR-15: the header logo at 40×40 CSS px",
+      "proof": "NFR-15, FR-72",
+      "video": "docs/qa/demo-recordings/16-logo-40.webm",
+      "screenshot": "docs/qa/demo-recordings/16-logo-40.png",
+      "explainer": "docs/qa/demo-recordings/16-logo-40.md",
+      "asserted": true,
+      "assertions": 2
+    }
+  ]
+}

@@ -12,7 +12,7 @@
     "cli": "tsx src/cli.ts",
     "test:coverage": "vitest run --coverage",
     "qa:verify": "node scripts/qa-verify.mjs",
-    "qa:record-demos": "node scripts/record-demos.mjs",
+    "qa:record-demos": "npm run build && node scripts/record-demos.mjs",
     "check:trace": "node scripts/check-traceability.mjs",
     "check:coverage": "node scripts/check-coverage-ratchet.mjs",
     "check:eval": "node scripts/check-eval-ratchet.mjs",

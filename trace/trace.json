@@ -170,7 +170,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-2",
@@ -181,7 +183,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-3",
@@ -192,7 +196,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-4",
@@ -203,7 +209,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-5",
@@ -214,7 +222,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-6",
@@ -225,7 +235,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-7",
@@ -236,7 +248,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-8",
@@ -247,7 +261,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-9",
@@ -258,7 +274,9 @@
       "tests": [
         "tests/rules.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-10",
@@ -270,7 +288,9 @@
         "tests/solver.test.ts",
         "tests/solver.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-11",
@@ -282,7 +302,9 @@
         "tests/solver.test.ts",
         "tests/solver.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-12",
@@ -294,7 +316,9 @@
         "tests/solver.test.ts",
         "tests/solver.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-13",
@@ -307,7 +331,9 @@
         "tests/generator-level.test.ts",
         "tests/generator.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-14",
@@ -324,7 +350,9 @@
         "tests/generator-level1-golden.test.ts",
         "tests/generator.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-15",
@@ -336,7 +364,9 @@
         "tests/generator-level.test.ts",
         "tests/generator-unique.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-16",
@@ -347,7 +377,9 @@
       "tests": [
         "tests/generator.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-17",
@@ -358,7 +390,9 @@
       "tests": [
         "tests/generator.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-49",
@@ -369,7 +403,9 @@
       "tests": [
         "tests/generator.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-50",
@@ -380,7 +416,9 @@
       "tests": [
         "tests/generator.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-51",
@@ -397,7 +435,9 @@
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-81",
@@ -410,7 +450,9 @@
         "tests/generator-level.test.ts",
         "tests/generator-run-out.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-82",
@@ -422,7 +464,9 @@
         "tests/generator-level.test.ts",
         "tests/generator-level.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-83",
@@ -433,7 +477,9 @@
       "tests": [
         "tests/generator-level.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-84",
@@ -448,7 +494,9 @@
         "tests/generator-run-out.test.ts",
         "tests/play-page-retry.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-19",
@@ -459,7 +507,9 @@
       "tests": [
         "tests/hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-20",
@@ -470,7 +520,9 @@
       "tests": [
         "tests/hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-21",
@@ -481,7 +533,9 @@
       "tests": [
         "tests/hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-22",
@@ -495,7 +549,9 @@
         "tests/hint-sentences.test.ts",
         "tests/hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-23",
@@ -509,7 +565,9 @@
         "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-24",
@@ -521,7 +579,9 @@
         "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-25",
@@ -534,7 +594,9 @@
         "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-26",
@@ -547,7 +609,9 @@
         "tests/hint-order-ceiling.test.ts",
         "tests/hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-27",
@@ -563,7 +627,9 @@
         "tests/generator-rule-solvable.test.ts",
         "tests/generator-rule-solvable.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-56",
@@ -577,7 +643,9 @@
         "tests/hint.test.ts",
         "tests/play-page-language.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-74",
@@ -589,7 +657,9 @@
       "tests": [
         "tests/hint-line-balance.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-75",
@@ -600,7 +670,9 @@
       "tests": [
         "tests/hint-unique-lines.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-76",
@@ -614,7 +686,9 @@
         "tests/hint-budget.test.ts",
         "tests/hint-look-ahead.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-77",
@@ -634,7 +708,9 @@
         "tests/play-page-level-hint.test.ts",
         "tests/play-page-level-hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-78",
@@ -648,7 +724,9 @@
         "tests/hint-sentences-techniques.test.ts",
         "tests/hint-sentences-techniques.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-79",
@@ -662,7 +740,9 @@
         "tests/hint-sentences-techniques.test.ts",
         "tests/hint-unique-lines.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-80",
@@ -677,7 +757,9 @@
         "tests/hint-sentences-techniques.test.ts",
         "tests/hint-sentences-techniques.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-112",
@@ -699,7 +781,9 @@
         "tests/hint.test.ts",
         "evals/cases/hint-clarity-en.eval.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-28",
@@ -710,7 +794,9 @@
       "tests": [
         "tests/cli.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-29",
@@ -721,7 +807,9 @@
       "tests": [
         "tests/cli.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-30",
@@ -732,7 +820,9 @@
       "tests": [
         "tests/cli.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-52",
@@ -743,7 +833,9 @@
       "tests": [
         "tests/cli.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-53",
@@ -754,7 +846,9 @@
       "tests": [
         "tests/cli.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-54",
@@ -765,7 +859,9 @@
       "tests": [
         "tests/cli.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-85",
@@ -781,7 +877,9 @@
         "tests/generator-level1-golden.test.ts",
         "tests/generator-level1-golden.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-86",
@@ -794,7 +892,9 @@
         "tests/cli-level.test.ts",
         "tests/cli-level.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-31",
@@ -807,7 +907,9 @@
         "tests/main-entry.test.ts",
         "tests/play-page-rendering.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-32",
@@ -818,7 +920,9 @@
       "tests": [
         "tests/play-page-rendering.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-33",
@@ -832,7 +936,9 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-keyboard.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-34",
@@ -844,7 +950,9 @@
         "tests/play-page-click-cycle.test.ts",
         "tests/play-page-semantics.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-35",
@@ -856,7 +964,9 @@
         "tests/play-page-highlighting.test.ts",
         "tests/play-page-semantics.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-36",
@@ -868,7 +978,9 @@
         "tests/play-page-highlighting.test.ts",
         "tests/play-page-semantics.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-37",
@@ -880,7 +992,9 @@
         "tests/play-page-highlighting.test.ts",
         "tests/play-page-semantics.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-38",
@@ -893,7 +1007,9 @@
         "tests/play-page-layout-geometry.test.ts",
         "tests/play-page-semantics.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-39",
@@ -905,7 +1021,9 @@
         "tests/play-page-hint.test.ts",
         "tests/play-page-level-hint.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-40",
@@ -922,7 +1040,9 @@
         "tests/play-page-level-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-41",
@@ -934,7 +1054,9 @@
         "tests/play-page-english-text.test.ts",
         "tests/play-page-win.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-42",
@@ -953,7 +1075,9 @@
         "tests/play-page-new-puzzle-and-seed.test.ts",
         "tests/play-page-new-puzzle-and-seed.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-43",
@@ -987,7 +1111,9 @@
         "tests/play-page-size-selector.test.ts",
         "tests/play-page-size-selector.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-57",
@@ -1008,7 +1134,9 @@
         "tests/play-page-techniques.test.ts",
         "tests/play-page-techniques.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-58",
@@ -1028,7 +1156,9 @@
         "tests/play-page-rules-and-reset.test.ts",
         "tests/play-page-rules-and-reset.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-59",
@@ -1052,7 +1182,9 @@
         "tests/play-page-setup-sheet.test.ts",
         "tests/play-page-setup-sheet.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-60",
@@ -1068,7 +1200,9 @@
         "tests/play-page-semantics.test.ts",
         "tests/play-page-settings.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-61",
@@ -1101,7 +1235,9 @@
         "tests/play-page-semantics.test.ts",
         "tests/play-page-stylesheet.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-62",
@@ -1115,7 +1251,9 @@
         "tests/play-page-semantics.test.ts",
         "tests/play-page-settings.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-63",
@@ -1131,7 +1269,9 @@
         "tests/play-page-semantics.test.ts",
         "tests/play-page-stylesheet.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-64",
@@ -1150,7 +1290,9 @@
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-violation-cause.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-65",
@@ -1211,7 +1353,9 @@
         "tests/play-page-stylesheet.test.ts",
         "tests/play-page-theme-stylesheet.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-66",
@@ -1236,7 +1380,9 @@
         "tests/play-page-marked-choice.test.ts",
         "tests/play-page-marked-choice.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-67",
@@ -1266,7 +1412,9 @@
         "tests/play-page-start-button.test.ts",
         "tests/play-page-start-button.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-68",
@@ -1285,7 +1433,9 @@
         "tests/play-page-settings.test.ts",
         "tests/ui-strings.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-69",
@@ -1298,7 +1448,9 @@
         "tests/play-page-cells.test.ts",
         "tests/play-page-cells.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-70",
@@ -1315,7 +1467,9 @@
         "tests/play-page-english-text.test.ts",
         "tests/play-page-violation-cause.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-71",
@@ -1329,7 +1483,9 @@
         "tests/play-page-layout.test.ts",
         "tests/play-page-layout.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-72",
@@ -1342,7 +1498,9 @@
         "tests/play-page-logo.test.ts",
         "tests/play-page-logo.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-73",
@@ -1363,7 +1521,9 @@
         "tests/play-page-marked-choice.test.ts",
         "tests/play-page-size-control.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-87",
@@ -1377,7 +1537,9 @@
         "tests/play-page-level-stylesheet.test.ts",
         "tests/play-page-level-stylesheet.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-88",
@@ -1399,7 +1561,9 @@
         "tests/play-page-start-button.test.ts",
         "tests/play-page-start-button.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-89",
@@ -1412,7 +1576,9 @@
         "tests/play-page-level-control.test.ts",
         "tests/play-page-level-control.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-90",
@@ -1425,7 +1591,9 @@
         "tests/play-page-level-interplay.test.ts",
         "tests/play-page-level-interplay.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-91",
@@ -1442,7 +1610,9 @@
         "tests/play-page-marked-choice.test.ts",
         "tests/play-page-wcag.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-92",
@@ -1457,7 +1627,9 @@
         "tests/play-page-level-interplay.test.ts",
         "tests/play-page-size-control.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-93",
@@ -1469,7 +1641,9 @@
         "tests/play-page-techniques.test.ts",
         "tests/play-page-techniques.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-94",
@@ -1488,7 +1662,9 @@
         "tests/ui-strings.test.ts",
         "tests/ui-strings.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-44",
@@ -1500,7 +1676,9 @@
         "tests/play-page-level-control.test.ts",
         "tests/play-page-level-control.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-95",
@@ -1515,7 +1693,9 @@
         "tests/play-page-setup-sheet.test.ts",
         "tests/play-page-setup-sheet.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-96",
@@ -1535,7 +1715,9 @@
         "tests/play-page-setup-sheet.test.ts",
         "tests/play-page-start-button.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-97",
@@ -1553,7 +1735,9 @@
         "tests/play-page-start-button.test.ts",
         "tests/play-page-start-button.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-98",
@@ -1568,7 +1752,9 @@
         "tests/play-page-start-button.test.ts",
         "tests/play-page-start-button.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-99",
@@ -1581,7 +1767,9 @@
         "tests/play-page-level-control.test.ts",
         "tests/play-page-setup-sheet-stylesheet.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-100",
@@ -1614,7 +1802,9 @@
         "tests/play-page-theme.test.ts",
         "tests/play-page-wcag.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-101",
@@ -1647,7 +1837,9 @@
         "tests/play-page-techniques.test.ts",
         "tests/ui-strings.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-102",
@@ -1661,7 +1853,9 @@
         "tests/play-page-wcag.test.ts",
         "tests/ui-strings.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-103",
@@ -1674,7 +1868,9 @@
         "tests/play-page-keyboard.test.ts",
         "tests/play-page-theme.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-104",
@@ -1687,7 +1883,9 @@
         "tests/play-page-theme-stylesheet.test.ts",
         "tests/play-page-theme.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-105",
@@ -1699,7 +1897,9 @@
         "tests/play-page-preferences.test.ts",
         "tests/play-page-theme.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-106",
@@ -1711,7 +1911,9 @@
         "tests/index-html.test.ts",
         "tests/play-page-theme.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-107",
@@ -1725,7 +1927,9 @@
         "tests/play-page-theme-stylesheet.test.ts",
         "tests/ui-strings.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-108",
@@ -1736,7 +1940,9 @@
       "tests": [
         "tests/play-page-language.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-109",
@@ -1749,7 +1955,9 @@
         "tests/main-entry.test.ts",
         "tests/play-page-language.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-110",
@@ -1762,7 +1970,9 @@
         "tests/hint-language.test.ts",
         "tests/play-page-language.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-111",
@@ -1775,7 +1985,9 @@
         "tests/play-page-wcag.test.ts",
         "tests/ui-strings.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-113",
@@ -1788,7 +2000,9 @@
         "tests/main-entry.test.ts",
         "tests/play-page-preferences.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-114",
@@ -1800,7 +2014,9 @@
         "tests/index-html.test.ts",
         "tests/play-page-preferences.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-115",
@@ -1812,7 +2028,9 @@
         "tests/index-html.test.ts",
         "tests/play-page-preferences.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-116",
@@ -1823,7 +2041,9 @@
       "tests": [
         "tests/index-html.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-117",
@@ -1847,7 +2067,9 @@
         "tests/play-page-theme-stylesheet.test.ts",
         "tests/play-page-wcag.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-118",
@@ -1859,7 +2081,9 @@
         "tests/play-page-language.test.ts",
         "tests/play-page-theme.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-119",
@@ -1884,7 +2108,9 @@
         "tests/play-page-capture-board.test.ts",
         "tests/play-page-violation-cause.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-120",
@@ -1902,7 +2128,9 @@
         "tests/play-page-violation-cause.test.ts",
         "tests/play-page-violation-cause.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     },
     {
       "id": "FR-55",
@@ -1914,470 +2142,11 @@
         "tests/play-page-english-text.test.ts",
         "tests/play-page-language.test.ts"
       ],
-      "recordings": []
+      "recordings": [
+        "docs/qa/demo-recordings/manifest.json"
+      ]
     }
   ],
   "failures": [],
-  "warnings": [
-    {
-      "check": "recording-evidence",
-      "msg": "FR-1 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-2 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-3 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-4 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-5 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-6 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-7 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-8 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-9 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-10 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-11 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-12 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-13 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-14 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-15 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-16 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-17 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-49 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-50 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-51 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-81 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-82 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-83 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-84 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-19 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-20 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-21 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-22 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-23 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-24 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-25 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-26 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-27 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-56 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-74 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-75 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-76 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-77 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-78 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-79 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-80 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-112 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-28 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-29 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-30 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-52 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-53 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-54 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-85 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-86 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-31 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-32 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-33 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-34 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-35 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-36 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-37 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-38 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-39 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-40 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-41 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-42 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-43 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-57 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-58 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-59 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-60 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-61 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-62 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-63 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-64 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-65 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-66 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-67 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-68 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-69 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-70 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-71 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-72 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-73 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-87 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-88 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-89 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-90 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-91 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-92 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-93 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-94 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-44 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-95 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-96 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-97 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-98 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-99 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-100 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-101 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-102 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-103 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-104 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-105 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-106 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-107 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-108 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-109 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-110 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-111 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-113 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-114 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-115 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-116 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-117 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-118 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-119 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-120 is not referenced by any recording manifest under docs/qa/"
-    },
-    {
-      "check": "recording-evidence",
-      "msg": "FR-55 is not referenced by any recording manifest under docs/qa/"
-    }
-  ]
+  "warnings": []
 }
