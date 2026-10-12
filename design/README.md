@@ -582,3 +582,11 @@ The user decided this on 2026-10-12 in the question form (Q1 «Move design to 28
   2. (minor) At 320×700 the sheet now reaches its cap (`100dvh - 9rem`) and scrolls about 8px at rest. The last-card-to-footer gap shows about 20px until scrolled. The footer and every card are fully visible.
   3. (note) The design has no `scroll-padding-bottom`; the product has `calc(2.75rem + 48px)`. No shot shows a focused last option above the footer, so the design itself does not prove the ring clears it.
   4. (note) The 22.5rem and 48rem rules now repeat the base value. They are kept, with history comments, as the iteration's three-rule change.
+
+## Pixel reference: moved to review-set-15 (2026-10-12 about 16:18 UTC+5:30, design stream DS, `docs/qa/design-stream/session-log.md` row DS6)
+
+The user moved the NFR-14 pixel reference from `review-set-14/` to `review-set-15/` in the question form ("Yes, move to set 15 (Recommended)"), after the independent design review of iteration 17 ("ready with polish", no blocking finding). In the same form the user signed the amended A-60 wording ("Sign as written (Recommended)"): the 28px level margin stops being a departure from the design. `SHA1SUMS` in the set has its own SHA-1 `c561f87dd67aba246e1f2dbd1014561b26f6ff0a`; `run-2.SHA1SUMS` matches 170 of 170. Against set 14, 30 setup shots change and 140 are byte-identical, as predicted. `review-set-14/` stays in the repository as history.
+
+The re-point of the NFR-14 row and of `quality/visual-parity.config.json` (a locked file: a PD with a re-seal), the removal of the recorded deviation and the refreeze of `setupSheet` follow in part 2 of the design stream, after the process stream P has merged. Until then the checks still read `review-set-14/`.
+
+Accepted with the move, open ("Accept, record as open (Recommended)"): the 1024×768 sheet edge 1 to 2 px above the first hint line, the 320×700 sheet scrolling about 8px at rest, no `scroll-padding-bottom` in the design, and the two media rules that repeat the base value (Iteration 17, review items 1 to 4). The product already shows the first two at its 28px.
