@@ -32,3 +32,39 @@ Block settings: 26 shot(s), geometry within 0.5px (coverage: sampled)
 exit 0
 lsof after (empty = free):
 end Mon Oct 12 13:27:56 +0530 2026
+
+## Re-run after the review gate fix round 1 (finding C: the block's own states by default; and after the 2px margin of 23d8605)
+$ BINARKA_PORT_BASE=6473 node scripts/visual-block.mjs --block settings --out docs/qa/update-settings-panel/blocks/settings   (no --states)
+start Mon Oct 12 14:05:11 +0530 2026
+lsof before (empty = free):
+1024-dark-settings-light       pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1024-dark-settings             pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1024-light-settings-dark       pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1024-light-settings            pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1366-dark-settings-focus       pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1366-dark-settings             pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1366-light-settings-focus      pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1366-light-settings            pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1440-dark-settings-light       pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1440-dark-settings             pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1440-light-settings-dark       pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+1440-light-settings            pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+320-dark-settings-focus        pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+320-dark-settings-light        pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+320-dark-settings              pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+320-light-settings-dark        pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+320-light-settings-focus       pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+320-light-settings             pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+375-dark-settings-light        pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+375-dark-settings              pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+375-light-settings-dark        pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+375-light-settings             pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+768-dark-settings-light        pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+768-dark-settings              pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+768-light-settings-dark        pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+768-light-settings             pixel 1 geometry off 0/6, unpaired 0, max delta 0px
+
+Block settings: 26 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+lsof after (empty = free):
+end Mon Oct 12 14:05:45 +0530 2026

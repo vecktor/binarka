@@ -1,0 +1,231 @@
+{
+  "slice": "update-settings-panel",
+  "workflow": "review-gate",
+  "runId": "wf_9a5a34f4-ca8",
+  "baseRef": "18e5f3f",
+  "headRef": "23d8605",
+  "ranAt": "2026-10-12 13:45 to 13:54 (UTC+5:30)",
+  "authorisedBy": "the user, «Yes, run it now», 2026-10-12 about 13:42 (session-log row 9)",
+  "agentCount": 32,
+  "summary": [
+    "14 unique findings across 4 dimensions",
+    "confirmed: 7, contested: 3, rejected: 4"
+  ],
+  "confirmed": [
+    {
+      "title": "Refreeze rewrites the provenance of rulesPanel and setupSheet, against the spec's 'no existing provenance field is changed'",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 357,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The keep-recorded guard only covers the top-level `provenance` and `cases`. `rulesPanel.provenance` and `setupSheet.provenance` are always rebuilt from `freshProvenance`, so this refreeze changed both `designBuildSha1` values (c3f5f81e… and d1193198… became 829e3e06…, see the quality/design-geometry.json diff). The ADDED scenario «The panel, the controls and «Закрити» match the design build's boxes» says 'no existing case, selector or provenance field of the file is changed by adding it', and design.md decision 10 says the same. Only tasks.md 3.2 waives designBuildSha1. Also, the guard throws on drift in the top-level `cases` but rewrites drifted `rulesPanel`/`setupSheet` cases silently under a fresh hash. The only check that they did not move is a hand-run filter in refreeze.txt.",
+      "suggestion": "Either keep each sub-key's recorded provenance when designCommit and designCssSha1 match, and throw when its cases differ (the same guard the top-level key has), or reword the spec scenario to exempt `designBuildSha1` as tasks.md does. Consider making the e2e fixture test assert that rulesPanel and setupSheet are unchanged apart from designBuildSha1.",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "Confirmed. The script keeps the recorded provenance only for the top-level `provenance` and `cases`. The `rulesPanel` and `setupSheet` provenance blocks are always rebuilt from `freshProvenance`. The quality/design-geometry.json diff shows both `designBuildSha1` values (c3f5f81e... and d1193198...) rewritten to 829e3e06.... The ADDED spec scenario (play-page/spec.md:405) and design.md decision 10 both say no existing provenance field changes. Only tasks.md 3.2 says `designBuildSha1` may differ and is not compared. The drift guard throws on top-level `cases` only, so drifted `rulesPanel` and `setupSheet` cases would be written under a fresh hash without any error. This is a minor spec/doc mismatch with a narrow impact on metadata. Earlier specs also define sub-key provenance as 'of the run that froze it', which partly explains the behavior.",
+        "The code confirms the mechanism. In scripts/freeze-design-geometry.mjs the keep-recorded guard only reassigns the top-level `provenance` and compares only the top-level `cases` (lines ~340-357). The `rulesPanel`, `setupSheet` and `settingsPanel` blocks always take `freshProvenance`, including `designBuildSha1`, and their cases are never compared with the recorded ones. Any drift in those cases would be written silently under the fresh hash. The spec scenario (play-page spec.md:405) and design.md decision 10 both say no existing provenance field is changed, while tasks.md 3.2 says `designBuildSha1` may differ and is not compared. The spec and the task text therefore disagree, and the script has no guard for the sub-keys. The impact is small: it is a freeze-tooling and spec-wording inconsistency, and the run affects no user-facing behaviour. Minor severity fits."
+      ]
+    },
+    {
+      "title": "`--block settings` with the default `--states default` waits on a popover that never opens",
+      "file": "scripts/visual-block.mjs",
+      "line": 183,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`states` defaults to `default`. For `blockName === 'settings'`, `designBoxes` runs `page.waitForSelector('[data-section=\"settings\"]:popover-open')` on the design route `/`, where the panel is closed. The run then fails with a 30s Playwright timeout instead of a clear message. The `own` logic also gives no geometry for non-settings states in this block.",
+      "suggestion": "When `--block settings` is used, default `--states` to `settings,settings-light,settings-dark,settings-focus`, or reject shots whose state is not in SETTINGS_STATES with a clear error (the same applies to the rules block and `rules`).",
+      "dimension": "correctness",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism is real. `states` defaults to `default` (line 109). With no `--shots`, line 112 selects the config shots whose state is `default`, and nothing checks that they fit the block. For `--block settings`, `designBoxes` (line 183) then waits for `[data-section=\"settings\"]:popover-open` on the design route for the `default` state. That is the closed-panel page, so the wait hangs until Playwright's 30s timeout. `own` (line 300) gives no geometry for non-settings states in the settings block. The header usage line shows the settings block is always invoked with an explicit `--states`, which is why the severity is only minor. I did not run the script. I only read the code, and I did not check which route `designRoute('default')` returns.",
+        "The mechanism is real. In scripts/visual-block.mjs, `--states` defaults to 'default' (line 109), so `--block settings` with no `--states` selects the shots whose state is `default`. `designBoxes` (line 177) loads the design at `/`, since `designRoute('default')` is '/'. Line 183 then runs `page.waitForSelector('[data-section=\"settings\"]:popover-open')` unconditionally for the settings block. The panel is closed on `/`, so the wait times out after Playwright's 30s default and the run fails with a generic timeout instead of a clear message. Nothing guards this: there is no early validation that the states belong to SETTINGS_STATES. The same applies to `--block rules` with the default states (line 182). It is a developer-tool usability problem, not a user-facing bug. The documented usage always passes `--states`, so the impact is small. Minor severity is appropriate."
+      ]
+    },
+    {
+      "title": "Refreeze rewrote the provenance of two existing keys, which the boxes scenario forbids, and the fixture test does not check those keys",
+      "file": "scripts/freeze-design-geometry.mjs",
+      "line": 357,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "Scenario «The panel, the controls and «Закрити» match the design build's boxes» says: \"no existing case, selector or provenance field of the file is changed by adding it\". I diffed quality/design-geometry.json between 18e5f3f and 23d8605 field by field. rulesPanel.provenance.designBuildSha1 changed from c3f5f81e… to 829e3e06…, and setupSheet.provenance.designBuildSha1 changed from d1193198… to 829e3e06…. The freeze script always writes freshProvenance into rulesPanel, setupSheet and settingsPanel (lines 357-361, 368-372, 388-392). Only the top-level provenance is kept as recorded (lines 330-345). docs/qa/update-settings-panel/refreeze.txt:40 and session-log row 5 say this happened and point to task 3.2 (\"designBuildSha1 may differ between worktrees and is not compared\"), but the spec scenario has no such exception. The test e2e/nfr-14-settings-panel.spec.ts:140 is titled \"the key is ADDED, nothing else changes\", yet it pins only the top-level cases count, selectors, tolerance, designCommit and designCssSha1. It does not look at the rulesPanel or setupSheet keys at all, so it cannot catch this. Both keys now name a build hash that did not measure their boxes (the boxes are the same).",
+      "suggestion": "Pick one. (a) Change the scenario to say that a refreeze may refresh designBuildSha1 of the other keys, matching task 3.2. (b) Change the freeze script to keep the recorded provenance of rulesPanel and setupSheet when designCommit and designCssSha1 are unchanged and their cases match, as it already does for the top level. In either case, extend the fixture test at e2e/nfr-14-settings-panel.spec.ts:140 to pin the rulesPanel and setupSheet cases and their provenance fields (designBuildSha1 excepted if you choose (a)), so the title is true.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The mechanism holds. The scenario in openspec/changes/update-settings-panel/specs/play-page/spec.md:405 says no existing case, selector or provenance field of the file is changed by adding the key. design.md:32 repeats this and cites the script's provenance guard. In scripts/freeze-design-geometry.mjs, the guard keeps only the top-level `provenance` as recorded. The `rulesPanel`, `setupSheet` and `settingsPanel` provenance blocks are always written from `freshProvenance` (lines 357-361, 368-372, 388-392). The git diff of quality/design-geometry.json between 18e5f3f and 23d8605 shows rulesPanel `designBuildSha1` changing from c3f5f81e to 829e3e06 and setupSheet `designBuildSha1` changing from d1193198 to 829e3e06. The test e2e/nfr-14-settings-panel.spec.ts:140 is titled \"the key is ADDED, nothing else changes\", but it checks only the top-level cases count, tolerance, selectors, designCommit and designCssSha1. It never checks the rulesPanel or setupSheet provenance, so it cannot catch this. The literal spec violation is real. The impact is small, because only a build hash was rewritten and the boxes are unchanged, so I downgrade the severity.",
+        "Confirmed by reading the code and diffing the fixture. The freeze script (scripts/freeze-design-geometry.mjs, lines 357-392) always writes freshProvenance into rulesPanel, setupSheet and settingsPanel. Only the top-level provenance is kept as recorded. `git diff 18e5f3f 23d8605 -- quality/design-geometry.json` shows designBuildSha1 changed in rulesPanel (c3f5f81e to 829e3e06) and in setupSheet (d1193198 to 829e3e06). The spec scenario at openspec/changes/update-settings-panel/specs/play-page/spec.md:405 says no existing case, selector or provenance field is changed by adding the key, and it names no exception. design.md line 32 says the same. The fixture test at e2e/nfr-14-settings-panel.spec.ts:140 pins only the top-level cases count, selectors, tolerance, designCommit and designCssSha1. It never reads rulesPanel or setupSheet, so it cannot catch this. The violation is real and reproducible on every refreeze run from a worktree whose build hash differs. The practical impact is small: the boxes are unchanged, and only the build-hash field of two sibling keys moved, a field the author already documents as differing between worktrees. So I downgrade from major."
+      ]
+    },
+    {
+      "title": "The scroll-padding check in the short-window walk has never been seen to fail",
+      "file": "e2e/nfr-14-settings-panel.spec.ts",
+      "line": 380,
+      "severity": "major",
+      "confidence": "high",
+      "evidence": "Scenario «On a short window a focused option stays clear of «Закрити»» says: \"for each focused option the bottom of its focus ring ... is at or above the top of «Закрити»'s mask\". This is the only assertion that shows .settings:popover-open { scroll-padding-bottom } does its job. The test header (lines 24-26) calls this check a GUARD before the port. In the red run, the three walks fail only on the stuck-button check: red-run.txt:77 reads \"«Закрити» (386.3 to 434.3) is not inside the panel\". The sticky button and the scroll padding were added in the same commit, 946d665, so the mask check went straight from unable to fail to passing. No recorded run shows it failing, for example with the button sticky and the scroll padding removed. smoke-test.txt step 7 found 0px to spare at the signed minimum, which suggests the padding matters, but that is not a failing run.",
+      "suggestion": "Add one recorded run with scroll-padding-bottom removed (or set to 0) while the button stays sticky, and show that the walk fails on the mask check at 667×375, 568×320 and 1024×360. Append it to green-run.txt or smoke-test.txt, then restore the value. Do not change the assertion.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The finding is accurate as an evidence gap. The mask clause at e2e/nfr-14-settings-panel.spec.ts:~380 is a sound assertion: it compares the ring bottom with the mask top. The test header calls it a GUARD before the port. The red run (red-run.txt) fails the walks on the stuck-button clause only, so the mask clause never failed in any recorded run. Searching docs/qa/update-settings-panel for the mask failure text (\"below the top of\") returns no recorded run. The nearest evidence is analytic or at the bound. folder-audit.md finding 2 says a 60px padding \"fails the folder's own walk\", but that is a computed argument, not a run. smoke-test.txt shows 0px clearance at 568x320 and 1024x360, so the padding is at its limit there. green-run.txt:241 records the padding raised by 2px for that reason, again with no failing run. There is no recorded run with scroll-padding-bottom removed while the button stays sticky. The assertion itself is not wrong and the code is not defective. This is a missing mutation proof, so I downgrade the severity.",
+        "The factual claim holds. In e2e/nfr-14-settings-panel.spec.ts the walk's mask check (ringBottom > maskTop) is separate from the stuck-button check. red-run.txt shows the three walks failing only on the stuck-button clause. Line 70 of that file says the ring clause passes in the red run. The sticky button and the scroll padding came in together in 946d665, so no recorded run has the button sticky and the padding removed. green-run.txt and smoke-test.txt only show the walk passing. Commit 23d8605 raised the padding after the walk had 0px to spare, which also isn't a failing run. The mask clause has no recorded failing run. Two things limit the finding. A separate vitest scenario, which red-run.txt shows failing, checks the declared scroll-padding-bottom value in the stylesheet. And the smoke test showing rings ending exactly at the mask top with the padding in place suggests the check would trip without it. This is a gap in test evidence, not a defect a user can hit, so it is real but not major."
+      ]
+    },
+    {
+      "title": "The colour scan leaves out .settings::backdrop, which the scenario's wording seems to include",
+      "file": "tests/play-page-settings-panel-stylesheet.test.ts",
+      "line": 444,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Scenario «The settings paint adds no colour literal, token or pair» scans `.settings` … \"(each with its state and pseudo rules)\". The test drops any selector containing `::backdrop` (inScan, lines 443-445), citing folder-audit note 12. The rule today, .settings::backdrop { background-color: var(--color-backdrop-soft) }, would pass the scan anyway, so this is a narrower reading than the spec's words, not a hidden failure.",
+      "suggestion": "Change the scenario to name the exclusion (\"pseudo rules except ::backdrop, which «The backdrops take the design's translucent tokens» owns\"), or drop the exclusion from the scan.",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The test does what the finding says. At tests/play-page-settings-panel-stylesheet.test.ts:443-445, `inScan` drops any selector containing `::backdrop`. The scenario at spec.md:390 says the scan covers `.settings`, `.settings:popover-open` and the other listed rules \"each with its state and pseudo rules\". `.settings::backdrop` is a pseudo rule of `.settings`, so the test reads the spec more narrowly than its words. The only rule affected, style.css:1258, is `background-color: var(--color-backdrop-soft)`, a declared token, so it would pass the scan. No failure is hidden. This is a wording mismatch only, so I downgrade it.",
+        "The code excludes `::backdrop` selectors in `inScan` (lines 443-445). The test's own comment says this follows folder-audit note 12. The spec scenario lists `.settings` \"each with its state and pseudo rules\" and names no exclusion. So the test's scan is narrower than the spec's wording, as the finding says. The finding itself admits the real rule would pass the scan anyway, so no hidden failure is possible today. There is no user-facing exploit, only a small wording mismatch between spec and test. The mismatch is real and the minor severity is right. I could not refute it."
+      ]
+    },
+    {
+      "title": "Line reference in a DELIBERATE CHANGE comment no longer matches proposal.md",
+      "file": "tests/play-page-theme-stylesheet.test.ts",
+      "line": 248,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The comment says \"proposal.md Impact row tests/play-page-theme-stylesheet.test.ts:228-241\". The proposal row now reads \"225-227 (the reading comment), 228-244\". The test changes themselves are honest: they are marked DELIBERATE CHANGE, failed first in red-run.txt:61-63, kept the 4.5:1 checks, and match the MODIFIED cue scenarios. Only the reference is out of date.",
+      "suggestion": "Update the comment to name the current proposal row (225-244).",
+      "dimension": "spec-compliance",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "The finding holds. The DELIBERATE CHANGE comment in tests/play-page-theme-stylesheet.test.ts (lines 247-248) cites the proposal.md Impact row as \"tests/play-page-theme-stylesheet.test.ts:228-241\". The Impact row in openspec/changes/update-settings-panel/proposal.md line 45 now reads \"225-227 (the reading comment), 228-244\". The cited range is out of date. It is cosmetic only: the test logic is unaffected.",
+        "Confirmed. The test comment at line 248 cites \"proposal.md Impact row tests/play-page-theme-stylesheet.test.ts:228-241\". The current proposal.md row (openspec/changes/update-settings-panel/proposal.md:45) reads \"225-227 (the reading comment), 228-244\", so the cited range is stale. This is a real but cosmetic documentation mismatch. It has no runtime or user impact and nothing can exploit it, which fits the finding's minor severity."
+      ]
+    },
+    {
+      "title": "Refreeze changed two existing provenance fields, which the spec scenario forbids, and the e2e test that claims 'nothing else changes' does not check them",
+      "file": "quality/design-geometry.json",
+      "line": 7169,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "The scenario «The panel, the controls and «Закрити» match the design build's boxes» (spec.md ~l.405) says 'no existing case, selector or provenance field of the file is changed by adding it'. `git diff 18e5f3f..23d8605 -- quality/design-geometry.json` shows exactly two removed lines: `rulesPanel.provenance.designBuildSha1` went from c3f5f81e… to 829e3e06… and `setupSheet.provenance.designBuildSha1` went from d1193198… to 829e3e06…. This happens because scripts/freeze-design-geometry.mjs (l.357-372) always writes freshProvenance into those keys. refreeze.txt and session-log row 5 record this and cite the carve-out in task 3.2 ('designBuildSha1 … is not compared'), but the signed scenario text has no such carve-out. The e2e test 'the fixture keeps its 32 top-level shots … (the key is ADDED, nothing else changes)' (e2e/nfr-14-settings-panel.spec.ts:140) checks only the top-level cases count, selectors, tolerance, designCommit and designCssSha1. It never reads rulesPanel or setupSheet. So the 'nothing else changes' half of the scenario is backed only by a manual comparison in refreeze.txt, not by an exit-coded check.",
+      "suggestion": "Choose one: (a) reword the scenario to exempt designBuildSha1, which varies between worktrees, as task 3.2 already does; or (b) make the freeze keep the recorded rulesPanel and setupSheet provenance when their cases are byte-equal, as it already does for the top-level provenance. In either case, extend the Part 1 e2e test to assert that rulesPanel and setupSheet (cases, selectors, and provenance designCommit and designCssSha1) equal a pinned baseline, so the test's title is enforced.",
+      "dimension": "visual",
+      "verdict": "confirmed",
+      "verifierNotes": [
+        "I could confirm each factual claim in the finding.\n\n- **Provenance diff:** `git diff 18e5f3f..23d8605 -- quality/design-geometry.json` shows `designBuildSha1` changed in two existing blocks. `rulesPanel` went from c3f5f81e… to 829e3e06…, and `setupSheet` from d1193198… to 829e3e06…. Both are existing provenance fields.\n- **Spec text:** the play-page spec scenario at l.405 says \"no existing case, selector or provenance field of the file is changed by adding it\". It has no `designBuildSha1` exemption.\n- **e2e test:** the Part 1 test at `e2e/nfr-14-settings-panel.spec.ts:140` is titled \"nothing else changes\". It checks only the top-level case count, `tolerancePx`, selectors, `designCommit` and `designCssSha1`. It never reads `rulesPanel` or `setupSheet`.\n\nThe finding is therefore accurate: the scenario is violated as written, and its \"nothing else changes\" half has no exit-coded check. The impact is small. `designBuildSha1` is build-environment metadata that varies between worktrees, and the existing top-level `designCommit` and `designCssSha1` are guarded. I kept the severity at minor.",
+        "Confirmed by the diff of 18e5f3f..23d8605 on quality/design-geometry.json. `rulesPanel.provenance.designBuildSha1` changed (c3f5f81e… to 829e3e06…) and `setupSheet.provenance.designBuildSha1` changed (d1193198… to 829e3e06…). Spec scenario line 405 of openspec/changes/update-settings-panel/specs/play-page/spec.md says no existing provenance field of the file is changed, and it has no carve-out for designBuildSha1. The e2e test at e2e/nfr-14-settings-panel.spec.ts:140 claims \"nothing else changes\" but checks only the top-level cases count, selectors, tolerance, designCommit and designCssSha1. It never reads rulesPanel or setupSheet. The mismatch is real and reproducible, and it affects only provenance metadata and test coverage, not product behaviour, so minor severity is right."
+      ]
+    }
+  ],
+  "contested": [
+    {
+      "title": "The walk checks the bottom of the panel but not the top",
+      "file": "openspec/changes/update-settings-panel/specs/play-page/spec.md",
+      "line": 414,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "FR-65 asks for an \"unobscured\" focus ring. The walk scenario checks only the bottom: the ring against «Закрити»'s mask. smoke-test.txt:29 records a computed case at 568×320, after a script hid the panel and the window was resized while it was closed, where «Світла»'s ring sits about 2px above the panel's inner top edge, so it would be clipped. The user's own flow did not reproduce it, and the file says \"the top edge is not covered by any scenario\". .settings:popover-open has no scroll-padding-top, and the walk never tabs backwards.",
+      "suggestion": "Either say in the scenario, or in the not-delivered list, that the top edge is outside this block's proof, or add a reverse walk (Shift+Tab) that checks each ring's top against the panel's inner top edge.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The scenario at spec.md:414 (\"On a short window a focused option stays clear of «Закрити»\") only asserts the ring bottom against «Закрити»'s mask. It walks forward with Tab only and never checks the panel's top edge. src/ui/style.css has scroll-padding-bottom on .settings:popover-open (line 1266) and no scroll-padding-top. smoke-test.txt step 7 records the 568×320 computed case, where «Світла»'s ring sits about 2px above the panel's inner top edge. It also says \"the top edge is not covered by any scenario (the walk checks the bottom mask only)\". Caveats: the real keyboard flow, including Shift+Tab, showed no clipping (24px below the top). The spec's not-delivered item (5) says short-window fit is \"not proven\", which partly covers the gap. So the finding is a real, minor scope/documentation gap in FR-65's \"unobscured\" claim, not a functional defect proven by a real flow. Severity minor is right.",
+        "The finding cannot be confirmed as a problem a real user would hit. The 2px top-edge clipping was seen only once, as a computed value, after a script hid the panel and the window was resized while it was closed. smoke-test.txt:29 says the user's own flow did not reproduce it. Tab to «Світла» and Shift+Tab back up from the language row both left the ring 24px inside the panel's top edge, whole. Scrolling the focused element into view is the browser's job, so no `scroll-padding-top` is needed in those flows. The `scroll-padding-bottom` rule at style.css:1266 exists because the sticky «Закрити» footer overlays the bottom; nothing overlays the top. The remaining point is a documentation gap, and the observation is already recorded in docs/qa/update-settings-panel/smoke-test.txt, which says the top edge is not covered by any scenario. That is not a defect or an exploitable bug."
+      ]
+    },
+    {
+      "title": "Coverage summary: 49 scenarios: 47 implemented, 1 partial, 0 missing, 1 contradicted",
+      "file": "openspec/changes/update-settings-panel/specs/play-page/spec.md",
+      "line": 309,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "Count: ADDED 13 scenarios, MODIFIED «Cells and buttons…» 8, «Settings button and panel» 9, «The theme options set their own colours» 4, «The setup sheet…» 15. Partial: the short-window walk (its mask check was never seen to fail). Contradicted at clause level: the boxes scenario's \"no existing … provenance field … changed\". What holds: the style.css diff touches only .settings, .settings:popover-open, the 22.5rem block, .theme-control button*, .language-control button* and .settings-close, with no :root, .confirm* or .size-control edits. Every value matches the ADDED requirement's table. The red run fails on assertions (red-run.txt:46-100). The GUARD tests are labelled correctly and pass by design. Run 13 shows all 10 phone settings shots up and no shot down (run-vs-previous.txt). The vision verdict is 15 of 15. visual-block.mjs only adds the settings states and does not change the geometry selection of the other blocks. docs/mvp-capability-plan.md does not mention the settings capability, so there is no FR list to cross-check, and NFR-12 and NFR-13 are enforced through nfr-12-targets and check:a11y (battery.txt). Ticked tasks all have artifacts, and the unticked ones (0.4, 3.1, 9.x, 10.x) are correctly still open.",
+      "suggestion": "No action beyond the findings above.",
+      "dimension": "spec-compliance",
+      "verdict": "contested",
+      "verifierNotes": [
+        "The claimed contradiction is real. The spec scenario at line 405 says that adding the key changes no existing case, selector or provenance field. The diff of quality/design-geometry.json between 23d8605~5 and 23d8605 changes `designBuildSha1` inside two existing key provenances. These are at lines 7165 and 8196 and sit before the settings key, so they belong to the existing rulesPanel and setupSheet keys. The values changed from c3f5f81e... and d1193198... to 829e3e06... in both places. That is a modification of existing provenance fields. This could be a legitimate refreeze, since line 306 of the spec calls the script-kept designBuildSha1 a \"recorded\" value, but it does not match the no-existing-provenance-change clause at line 405. I did not verify the other counts in the summary (49 scenarios, 47 implemented). The finding is minor and its own suggestion is \"no action\", so it is only a low-severity spec-compliance note.",
+        "The finding is a coverage summary, not a defect. Its own suggestion is \"No action beyond the findings above\". It names no problem that a real user or attacker could trigger. It is a spec-compliance bookkeeping note about a design-parity CSS change, so exploitability does not apply. The cited line (spec.md:309) falls in the ADDED requirement text, which matches the quoted table (phone padding, 22.5rem block, option rules). I checked only this spec text. I did not check the claimed \"contradicted\" boxes clause or the \"partial\" mask check, so I could not positively confirm either. The default is refuted when the mechanism can't be confirmed."
+      ]
+    },
+    {
+      "title": "Short-window focus walk covers only the bottom mask and forward Tab; no scroll-padding-top, so a focused option's ring can sit at or past the panel's top edge (seen in the smoke test)",
+      "file": "e2e/nfr-14-settings-panel.spec.ts",
+      "line": 346,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "`.settings:popover-open` sets only `scroll-padding-bottom`. The rings of the options have `outline-offset: -1px` and a 3px width, so they reach 2px outside the option box, above it as well as below. When focus scrolling brings an option in from above (Shift+Tab, or reopening a panel that kept its scroll), the browser can align the option's top with the scrollport edge, and the top 2px of the ring are then clipped by the panel. smoke-test.txt step 7 records exactly this at 568x320: the panel 'scrolled to 53, which puts «Світла»'s ring about 2px above the panel's inner top edge … the top edge is not covered by any scenario (the walk checks the bottom mask only)'. The e2e walk only presses Tab forward and only asserts `ringBottom <= close.top - 16`. It has no Shift+Tab pass and no check that `rect.top - 2 >= panel.top + border`.",
+      "suggestion": "Add a reverse (Shift+Tab) pass to the short-window walk, and assert at every step that the ring's top (rect.top - 2px) is at or below the panel's inner top edge. If that goes red, declare a small `scroll-padding-top` (for example 4px) on `.settings:popover-open`, through a spec change, since FR-65 says 'unobscured'. Until then, record the top edge as an explicit known gap rather than leaving it only as a smoke-test observation.",
+      "dimension": "visual",
+      "verdict": "contested",
+      "verifierNotes": [
+        "I confirmed the gap in the code. `.settings:popover-open` (src/ui/style.css:1265-1266) sets only `scroll-padding-bottom`, with no `scroll-padding-top`. The walk in e2e/nfr-14-settings-panel.spec.ts presses Tab forward only. It also asserts only `ringBottom <= close.top - MASK`, and `RING_BELOW_OPTION` is the only ring allowance. It has no Shift+Tab pass and no top-edge check. The smoke-test.txt note, line 29, says in its own words that the top edge is not covered by any scenario. When the browser scrolls a partly clipped option in from above, it aligns the option's top with the scrollport edge. The 3px ring with -1px offset then reaches 2px outside the box, so about 2px of the ring would be clipped. That mechanism is plausible. It is also weaker than the finding implies. The recorded 53px scroll came from an artificial state, a panel hidden by a script and resized while closed. In the real keyboard flow the smoke test records the ring 24px below the panel top, whole. Reaching the clipped state would take a mouse-wheel scroll that leaves an option partly clipped at the top, followed by Shift+Tab. I did not run it. This is a test-coverage gap with a low-probability visual defect behind it, so minor severity and medium confidence fit.",
+        "The coverage gap is real. The walk in e2e/nfr-14-settings-panel.spec.ts presses only forward Tab and asserts only the bottom mask. `.settings:popover-open` in src/ui/style.css declares only `scroll-padding-bottom`. But the finding does not show that a real user hits a clipped ring. Its own cited evidence, docs/qa/update-settings-panel/smoke-test.txt line 29, says the roughly 2px top overshoot came from a panel that a script had hidden and resized while closed, and that it was \"computed, not seen in a shot\". The same entry then repeats the user's own flow. The reopened panel kept its scroll, and Tab to «Світла» left the ring 24px below the panel's top, whole. Shift+Tab back up from the language row gave the same 24px. Chromium's focus scrolling centers the target when it is off-screen, so the nearest-edge alignment the finding assumes does not occur in these flows. I found no reachable user flow that clips the ring. What is left is an untested edge condition that the project already recorded as a known observation. The finding also marks its own confidence as medium, and the worst case is a 2px ring clip."
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "title": "The e2e fixture test does not check the 'nothing else changes' clause for the other sub-keys",
+      "file": "e2e/nfr-14-settings-panel.spec.ts",
+      "line": 140,
+      "severity": "minor",
+      "confidence": "medium",
+      "evidence": "The test title says 'the key is ADDED, nothing else changes', but it only checks the top-level `cases` count, `tolerancePx`, `selectors`, `designCommit` and `designCssSha1`. It never reads `rulesPanel` or `setupSheet`, and it does not check that `settingsPanel.provenance.designCommit` and `designCssSha1` match the top level (it only checks they are non-empty strings, lines 155-158). A refreeze that moved a rules or setup case, or froze settings from a different design commit, would still pass this test.",
+      "suggestion": "Assert that `settingsPanel.provenance.designCommit` and `designCssSha1` equal the top-level ones. Pin the case counts and shot names of `rulesPanel` and `setupSheet`, or a hash of their cases, so the 'nothing else changes' claim is checked by the test and not only by refreeze.txt.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The test at line 140 does check what the finding says it checks: 32 top-level cases, tolerance, selectors and the top-level design hashes. That part is accurate, but it does not show a defect. The 'nothing else changes' idea for rulesPanel is already covered by its own spec, e2e/nfr-14-rules-panel.spec.ts, which reads that key. The finding's suggestion to also pin setupSheet and the sub-key provenance is a request for a stronger test, not a wrong mechanism. In the fixture, settingsPanel.provenance.designCommit and designCssSha1 do equal the top-level values, so nothing is wrong today. The finding only describes a hypothetical future regression that this test would not catch, and the title phrase is a loose label, not an assertion that the test fails to do its stated job. It is not a correctness bug in the code.",
+        "The cited lines match the finding. The test at line 140 checks the top-level cases, tolerance, selectors and design hashes, and line 157 only checks that the settingsPanel provenance fields are non-empty strings. But this is a test-completeness nit, not something that can occur for a real user or attacker. The sibling specs e2e/nfr-14-rules-panel.spec.ts and e2e/nfr-14-setup-sheet.spec.ts already check the rulesPanel and setupSheet keys against the same fixture, so a moved case there would fail in its own spec. The suggested equality between the settings and top-level provenance is also not required. A key frozen later could legitimately carry a different design commit, and the test deliberately checks only that its provenance is present. I did not run a refreeze to confirm nothing else slips through. My refutation rests on the sibling specs and on the provenance point being by design."
+      ]
+    },
+    {
+      "title": "No scroll-padding-top: on Shift+Tab or a kept scroll position, a focused option's ring can be clipped at the panel's top edge, and the walk never checks the top",
+      "file": "src/ui/style.css",
+      "line": 1265,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "`.settings:popover-open` only reserves `scroll-padding-bottom`. When focus scrolling brings an option in from above, the browser lines up its border box with the scrollport's top edge, so the 2px of the ring outside the box (`outline-offset: -1px`, 3px) can fall outside the clip. smoke-test.txt step 7 records exactly this: «Світла»'s ring ended about 2px above the panel's inner top edge after a reopen kept the old scroll position. The e2e walk (lines 368-385) only presses Tab forward from a fresh load and only checks the ring's bottom against the mask, so neither Shift+Tab nor the kept scroll position is covered.",
+      "suggestion": "Add a small `scroll-padding-top` (at least 2px, for the ring) to `.settings:popover-open`. Extend the walk with a Shift+Tab pass and a reopen after the panel was scrolled, asserting that the ring top (rect.top - 2) is at or below the panel's inner top.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The mechanism is real in principle, since `.settings:popover-open` has only `scroll-padding-bottom` (style.css ~1265). But the cited evidence does not support it. smoke-test.txt line 29 says the \"2px above the inner top edge\" case came from a scripted state: the panel was hidden and resized while closed, and the figure was \"computed, not seen in a shot\". The same entry then repeats the case through a real user flow. Tab to \"English\", Escape, Enter on the gear, Tab: the reopened panel kept its scroll (101.5), Tab to «Світла» scrolled it to 26, and the ring sat 24px below the panel's top, whole (zoomed). Shift+Tab back up from the language row gave the same 24px. Browsers scroll a focused element into view with center-if-needed, not nearest-edge, so the ring is not pinned to the top edge. When the panel scrolls to its top, the 1.5rem (or 1rem) top padding keeps the first option's ring clear. The 1024×360 dropdown walk also shows every ring at least 42.3px below the top. I found no reproducible clipping in a real flow. The missing top check is only a test-coverage gap, not a demonstrated defect.",
+        "The code facts hold. `.settings:popover-open` sets only `scroll-padding-bottom` (style.css ~1265), and the walk checks the bottom only. But I can't confirm the clipping mechanism for a real user. smoke-test.txt step 7 says the ~2px figure was \"computed, not seen\". It came from an artificial setup where the panel was hidden by a script and resized while closed. The same step repeats the real flow: Tab to English, Escape, Enter on the gear, Tab. The reopened panel kept its scroll, and Tab to «Світла» scrolled it so the ring sat 24px below the panel's top, whole. Shift+Tab back up gave the same 24px. The finding's own evidence therefore records no clipping in a real flow. The browser's focus scroll also doesn't line the border box up with the top edge when the element is off-screen, so a clipped ring isn't demonstrated. At most this is a missing test and hardening item, not a reproducible defect."
+      ]
+    },
+    {
+      "title": "The scroll-padding comment and design text still give 2px for the ring while the rule declares 4px",
+      "file": "src/ui/style.css",
+      "line": 1262,
+      "severity": "minor",
+      "confidence": "low",
+      "evidence": "The rule declares `calc(2.75rem + 2rem + 4px + env(safe-area-inset-bottom))`. The ADDED requirement's prose still gives the reservation as 'the padding, the button and its 1rem mask, plus the 2px the focus ring reaches', and the stylesheet test only enforces the 78px minimum. The 2px of slack is held only by the walk's three sampled windows, and a later edit back down to 78px would pass every stylesheet test.",
+      "suggestion": "If the 2px of slack is now the decided value (the user's word), record it in the spec scenario (for example 'at least … 4px') so the stylesheet test pins it. Otherwise note in the requirement that 80px is a deliberate margin above the 78px floor.",
+      "dimension": "correctness",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The claimed mechanism is not wrong. The CSS comment at style.css:1259-1261 already explains the 4px: the ring reaches 2px below the option, and \"2px more keep the ring off the mask's edge (the signed minimum fits it exactly)\". So the comment is not stale. The spec and test both set 78px as a floor, using \"at least\" wording, and 80px satisfies that. The finding does not describe a defect. It only notes that the 2px of extra margin is not pinned by a test, which is a process preference. It is not an incorrect behaviour or a spec contradiction. The finding itself rates confidence as low, and the suggestion is optional.",
+        "The finding is not a reproducible defect. The CSS comment at style.css ~1258 is already consistent with the rule: it says the ring reaches 2px and that \"2px more keep the ring off the mask's edge (the signed minimum fits it exactly)\". It explains the 4px, so the stale-comment claim is wrong. The spec says \"at least ... 2px\" and the test enforces a floor of at least 78px. The 80px value satisfies both, so no behaviour breaks. A later edit back to 78px would still meet the signed spec minimum and the user-visible requirement. No real user or attacker is affected. The only remaining point is that the test does not pin the extra 2px margin. That is a documentation/test-strictness preference, not a correctness problem."
+      ]
+    },
+    {
+      "title": "Most of the evidence was produced before the final style change in 23d8605",
+      "file": "docs/qa/update-settings-panel/green-run.txt",
+      "line": 239,
+      "severity": "minor",
+      "confidence": "high",
+      "evidence": "Commit 23d8605 changed .settings:popover-open { scroll-padding-bottom } from calc(2.75rem + 2rem + 2px + env(safe-area-inset-bottom)) to calc(… + 4px + …). This still satisfies the spec's \"at least\", and the stylesheet test's 78px reading passes at 80px. The addendum at green-run.txt:239-241 re-ran only vitest, the build and `playwright --project=layout`. These were not re-run after the change: lint, `openspec validate`, check:trace, check:acceptance, the full test:e2e, check:a11y (battery.txt) and the gate run 13 (docs/qa/g2/check-visual-run-13.txt, taken at 189a8d7). The argument that no gate shot scrolls the panel holds, and task 10.2 re-runs everything, but battery.txt and run 13 read as if they cover the current tree.",
+      "suggestion": "Add a note to battery.txt and run-vs-previous.txt that they were taken at 189a8d7, before 23d8605, and point to task 10.2's re-run. Do not write a current-tree claim until that re-run is done.",
+      "dimension": "spec-compliance",
+      "verdict": "rejected",
+      "verifierNotes": [
+        "The finding's central claim is that battery.txt and run 13 \"read as if they cover the current tree\". The files don't read that way. battery.txt line 1 says \"first run, before the rebase onto the dialog block\". Line 3 names the exact tree: `claude/musing-bhaskara-settings` at `18e5f3f` plus uncommitted changes, with a timestamp. run-vs-previous.txt calls run 13 \"this block, before the rebase onto the dialog block\". green-run.txt's addendum (lines 239-241) spells out what changed in 23d8605 (2px to 4px). It lists exactly what was re-run: vitest, build, and the layout project. It also says no gate shot scrolls the panel, so no shot's pixels can move. It defers the fresh check:visual to task 10.2. That is the disclosure the finding asks for. The finding does not show a false claim of current-tree coverage or an unbacked \"done\" statement. The missing batch re-run is a scheduled follow-up (task 10.2), not an incorrect claim. At most this is a cosmetic wish to repeat the commit hash in two more files, not a mechanism error. I could not positively confirm that the evidence is misleading.",
+        "The facts are true: after 23d8605 only vitest, the build and the layout project were re-run. But the evidence does not read as covering the current tree. battery.txt's header says \"first run, before the rebase onto the dialog block\" and names tree `18e5f3f` plus uncommitted work, so it already states its own baseline. The addendum at green-run.txt:239-241 says exactly what was re-run after the change. It also says no gate shot scrolls the panel, so check:visual pixels cannot move, and it defers the full re-check to task 10.2 after the rebase. No unbacked current-tree claim is made. Nothing here can break for a user or attacker. The suggested note would be cosmetic, and the staleness is already disclosed."
+      ]
+    }
+  ],
+  "disposition": "Fix round 1 on the user's word (session-log row 10: «Fix A–E as proposed»; F «Record as not delivered»): A fixed (per-key provenance keep-and-guard, fixture restored and refrozen, new e2e pin), B evidenced by a mutation run (3 failed on the mask check, 3 passed restored), C fixed (block default states, clear error), D scenario wording, E comment, F recorded as not delivered item (8); the 4 rejected left. Evidence: docs/qa/update-settings-panel/fix-round-1.txt"
+}

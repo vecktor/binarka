@@ -1,6 +1,7 @@
 // @trace NFR-14
 // @trace FR-68
 // @trace FR-65
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
@@ -124,6 +125,12 @@ const TOP_LEVEL_SELECTORS = [
 ];
 const TOP_LEVEL_DESIGN_COMMIT = '5e61bfd14de56bff4b3726db4ddd624fcd3c2e04';
 const TOP_LEVEL_DESIGN_CSS_SHA1 = 'd1b1255f4dff205d15d64850096429cd377e5fbf';
+// Review gate fix round 1, finding A: the other blocks' keys, pinned as their recorded cases (SHA-1 of JSON.stringify of the parsed cases,
+// read from main's quality/design-geometry.json at 18e5f3f) and recorded provenance, so adding settingsPanel can change neither.
+const OTHER_KEYS = [
+  { key: 'rulesPanel', count: 8, casesSha1: 'f70bb8c08a4415002cdd011efb40153047b4a75d', designBuildSha1: 'c3f5f81e5dacbad72f6f26085a4750d4e695598c' },
+  { key: 'setupSheet', count: 12, casesSha1: '8a3992e41569ea4cbdc6f80feb5c0fe0c005abed', designBuildSha1: 'd1193198f7b4e58f412f0ad576ca32683f99e1c4' },
+] as const;
 
 const isBox = (v: unknown): v is Box => {
   if (typeof v !== 'object' || v === null) return false;
@@ -143,6 +150,25 @@ test('@trace NFR-14 @trace FR-68 the fixture keeps its 32 top-level shots, selec
   expect(fixture.selectors).toEqual(TOP_LEVEL_SELECTORS);
   expect(fixture.provenance.designCommit, 'the top-level provenance keeps the design commit').toBe(TOP_LEVEL_DESIGN_COMMIT);
   expect(fixture.provenance.designCssSha1, 'the top-level provenance keeps the design CSS hash').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+});
+
+// DELIBERATE CHANGE (update-settings-panel, review gate fix round 1, finding A; the scenario «The panel, the controls and «Закрити» match the
+// design build's boxes»: "no existing case, selector or provenance field of the file is changed by adding it"): the first freeze rewrote the
+// designBuildSha1 of rulesPanel and setupSheet; the script now keeps each key's recorded provenance and fails on drifted cases.
+test('@trace NFR-14 @trace FR-68 adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet, and settingsPanel names the same design', () => {
+  const raw = fixture as unknown as Record<string, { cases: unknown[]; provenance: Record<string, string> } | undefined>;
+  for (const other of OTHER_KEYS) {
+    const key = raw[other.key];
+    expect(key, `quality/design-geometry.json keeps the key ${other.key}`).toBeDefined();
+    if (key === undefined) continue;
+    expect(key.cases, `${other.key}.cases`).toHaveLength(other.count);
+    expect(createHash('sha1').update(JSON.stringify(key.cases)).digest('hex'), `${other.key}.cases are the recorded ones`).toBe(other.casesSha1);
+    expect(key.provenance.designCommit, `${other.key}.provenance.designCommit`).toBe(TOP_LEVEL_DESIGN_COMMIT);
+    expect(key.provenance.designCssSha1, `${other.key}.provenance.designCssSha1`).toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
+    expect(key.provenance.designBuildSha1, `${other.key}.provenance.designBuildSha1 is the recorded one, not rewritten by a refreeze`).toBe(other.designBuildSha1);
+  }
+  expect(fixture.settingsPanel?.provenance.designCommit, `settingsPanel names the top-level design commit (${FREEZE})`).toBe(TOP_LEVEL_DESIGN_COMMIT);
+  expect(fixture.settingsPanel?.provenance.designCssSha1, 'settingsPanel names the top-level design CSS hash').toBe(TOP_LEVEL_DESIGN_CSS_SHA1);
 });
 
 test('@trace NFR-14 @trace FR-68 the fixture holds the key settingsPanel: selectors, sampled coverage, its own provenance and exactly the 7 cases', () => {

@@ -114,11 +114,17 @@ const selectors = BLOCKS[blockName];
 if (!selectors) throw new Error(`unknown block "${blockName}" (known: ${Object.keys(BLOCKS).join(', ')})`);
 const calibrate = args.includes('--calibrate');
 const outDir = flag('--out', `docs/qa/g2/blocks/${blockName}`);
-const states = (flag('--states', 'default')).split(',');
+// Each block's own states by default (review gate fix round 1 of update-settings-panel, finding C: `--block settings` alone waited 30 s on a
+// closed panel); a state the block cannot open fails at once with the block's states named.
+const BLOCK_STATES = { rules: ['rules', 'rules-techniques'], settings: Object.keys(SETTINGS_THEME) };
+const states = (flag('--states', (BLOCK_STATES[blockName] ?? ['default']).join(','))).split(',');
 const allShots = config.breakpoints.map((b) => b);
 const wanted = flag('--shots', null)?.split(',');
 const shots = allShots.filter((b) => (wanted ? wanted.includes(b.name) : states.includes(parseShot(b.name).state)));
 if (shots.length === 0) throw new Error('no shots selected');
+const OPEN_STATES = { rules: new Set(['rules', 'rules-techniques']), settings: SETTINGS_STATES };
+const foreign = OPEN_STATES[blockName] ? shots.filter((b) => !OPEN_STATES[blockName].has(parseShot(b.name).state)).map((b) => b.name) : [];
+if (foreign.length > 0) throw new Error(`block ${blockName} opens its panel only in the states ${[...OPEN_STATES[blockName]].join(', ')}; not in ${foreign.join(', ')}`);
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.txt': 'text/plain', '.json': 'application/json', '.woff2': 'font/woff2' };
 function serveDesign() {

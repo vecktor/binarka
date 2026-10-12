@@ -257,3 +257,19 @@ Running 67 tests using 5 workers
 exit 0
 
 ```
+
+## Re-run after the review gate fix round 1 (2026-10-12, 14:07 to 14:09 UTC+5:30; tree 23d8605 plus the fix round, uncommitted)
+
+| Command | Exit | Result |
+|---|---|---|
+| `npm run lint` | 0 | clean |
+| `npm run test:run` | 0 | 80 files, 1963 tests |
+| `npm run build` | 0 | built |
+| `npx openspec validate --all --strict` | 0 | 4 passed |
+| `node scripts/check-eval-ratchet.mjs` | 0 | PASS |
+| `npm run check:trace` | 0 | 115 FRs, 0 failures |
+| `npm run check:acceptance` | 0 | PASS |
+| `BINARKA_PORT_BASE=6473 npm run test:e2e` | 0 | 305 passed (304 + fix A's test) |
+| `BINARKA_PORT_BASE=6473 npm run check:a11y` | 0 | 67 passed |
+
+Ports 6473-6477 free before and after. The gate run 13 was taken before `23d8605` (the 2px margin) and before this round; no gate shot scrolls the panel, and task 10.2 re-runs `check:visual` after the rebase.

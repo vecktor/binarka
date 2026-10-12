@@ -1,0 +1,49 @@
+# Review gate fix round 1: update-settings-panel (task 9.1)
+
+The gate (`review-findings.json`, run `wf_9a5a34f4-ca8` on `18e5f3f..23d8605`) returned 7 confirmed, 3 contested and 4 rejected findings, grouped A to F. The user's word (2026-10-12, session-log row 10): «Fix A–E as proposed», and for F «Record as not delivered». Done by the settings session on 2026-10-12, 14:02 to 14:06 (UTC+5:30), on ports 6473 to 6477 (lsof printed nothing before or after each capture).
+
+## A (major, 3 reports): the refreeze rewrote rulesPanel's and setupSheet's designBuildSha1
+
+- `scripts/freeze-design-geometry.mjs`: a per-key rule `keyProvenance(key, cases)`: a key keeps its recorded provenance while designCommit and designCssSha1 are unchanged, and only if this run measured the same cases; drifted cases under the same design throw; a key the file lacks takes this run's provenance (the header comment says so).
+- `quality/design-geometry.json` restored to `git show 18e5f3f:quality/design-geometry.json` and refrozen with the fixed script (`BINARKA_PORT_BASE=6473 node scripts/freeze-design-geometry.mjs`, 14:03, exit 0). `git diff -U0 18e5f3f -- quality/design-geometry.json | grep '^-' | grep -v '^---'` prints nothing: no line of the base file is removed; `git diff --stat 18e5f3f`: 1385 insertions, 0 deletions (the key settingsPanel only).
+- The guard seen to fail: one recorded rulesPanel box tampered (320-light-rules, the panel's y + 1), the freeze run: exit 1, "Error: the rulesPanel cases differ from the recorded ones under the same designCommit and designCssSha1 …"; the file restored from the good copy.
+- `e2e/nfr-14-settings-panel.spec.ts`: a new test (DELIBERATE CHANGE comment) «adding settingsPanel changes no case and no provenance field of rulesPanel and setupSheet, and settingsPanel names the same design»: each key's case count, the SHA-1 of its cases and its designCommit, designCssSha1 and designBuildSha1 pinned to `main`'s values at `18e5f3f`. Red on the fixture of HEAD `23d8605` (1 failed: "rulesPanel.provenance.designBuildSha1 is the recorded one … Expected c3f5f81e… Received 829e3e06…"), green on the refrozen fixture (1 passed).
+
+## B (major): the walk's mask check had never been seen to fail
+
+Mutation run, no assertion changed: `.settings:popover-open { scroll-padding-bottom }` set to `0` (the only changed line, `git diff -U0`: `-  scroll-padding-bottom: calc(2.75rem + 2rem + 4px + env(safe-area-inset-bottom));` `+  scroll-padding-bottom: 0;`), `npm run build`, `BINARKA_PORT_BASE=6473 npx playwright test --project=layout e2e/nfr-14-settings-panel.spec.ts -g short-window`: **3 failed**, each on the mask check (the button stays stuck):
+
+```
+"step 4 (language #0 «Українська\"): the ring's bottom 360.3 is below the top of «Закрити»'s mask 299.0",
+"step 5 (language #1 «English\"): the ring's bottom 360.3 is below the top of «Закрити»'s mask 299.0",
+"step 4 (language #0 «Українська\"): the ring's bottom 321.5 is below the top of «Закрити»'s mask 244.0",
+"step 5 (language #1 «English\"): the ring's bottom 321.5 is below the top of «Закрити»'s mask 244.0",
+"step 4 (language #0 «Українська\"): the ring's bottom 279.5 is below the top of «Закрити»'s mask 267.0",
+"step 5 (language #1 «English\"): the ring's bottom 279.5 is below the top of «Закрити»'s mask 267.0",
+✘  1 [layout] › e2e/nfr-14-settings-panel.spec.ts:372:5 › 1024x360 (dropdown) short-window focus walk › @trace NFR-14 @trace FR-65 1024x360: Tab through the panel
+✘  2 [layout] › e2e/nfr-14-settings-panel.spec.ts:372:5 › 568x320 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 568x320: Tab through the pan
+✘  3 [layout] › e2e/nfr-14-settings-panel.spec.ts:372:5 › 667x375 (bottom sheet) short-window focus walk › @trace NFR-14 @trace FR-65 667x375: Tab through the pan
+3 failed
+```
+
+Then `git checkout src/ui/style.css` (`git diff --quiet HEAD -- src/ui/style.css` true), `npm run build`, the same command: **3 passed**. `docs/qa/e2e-report.json` restored.
+
+## C (minor): `--block settings` with no `--states` waited 30 s on a closed panel
+
+`scripts/visual-block.mjs`: the rules and settings blocks default to their own states (`BLOCK_STATES`; the layout and setup blocks keep `default`), and a shot whose state the block cannot open fails at once. `--block settings --states default`: exit 1 at once, "Error: block settings opens its panel only in the states settings, settings-light, settings-dark, settings-focus; not in 1024-dark-default, …". `--block settings` with no `--states`: the 26 settings shots, each pixel 1 and geometry 0 of 6 off (`visual-block-settings.txt`, the re-run section, 14:05).
+
+## D (minor): the colour scan's ::backdrop exclusion was not named
+
+The scenario «The settings paint adds no colour literal, token or pair» now says "except `.settings::backdrop`, which «The backdrops take the design's translucent tokens» owns and scans" (`openspec/changes/update-settings-panel/specs/play-page/spec.md`); the test already reads it that way. `npx openspec validate update-settings-panel --strict`: valid.
+
+## E (minor): a stale line reference
+
+`tests/play-page-theme-stylesheet.test.ts`:249, the DELIBERATE CHANGE comment, now cites the proposal row `225-244`.
+
+## F (contested): the walk does not check the top edge
+
+Recorded as not delivered, item (8) of the ADDED requirement's list, with the smoke-test evidence (step 7) and the user's decision.
+
+## The four rejected findings
+
+Left as the verifiers rejected them (`review-findings.json`, `rejected`). The first (the fixture test does not check the other keys) is covered by fix A's test anyway.

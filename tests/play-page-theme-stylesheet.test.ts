@@ -249,7 +249,7 @@ describe('The theme options set their own colours', () => {
   });
 
   // DELIBERATE CHANGE (update-settings-panel, delta «The theme options set their own colours», scenario «The chosen option has a cue besides colour»; proposal.md Impact row
-  // tests/play-page-theme-stylesheet.test.ts:228-241, source FR-117, A-61): the reading changes. It was "the checked rule declares a border-style, border-width, box-shadow or
+  // tests/play-page-theme-stylesheet.test.ts:225-244, source FR-117, A-61): the reading changes. It was "the checked rule declares a border-style, border-width, box-shadow or
   // text-decoration that the plain rule does not"; it is now "the checked rule declares a font-weight of at least 700 and a border-color other than the plain rule's, and the plain
   // rule declares a font-weight of at most 500 and a transparent border-color" (the design's cues: the weight and the appearing frame; the inner ring goes). The 4.5:1 test above
   // and the colour declarations stay. Red today: the plain rule declares no font-weight.
