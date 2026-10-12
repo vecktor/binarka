@@ -121,7 +121,7 @@ Also expected to conflict for the second block: `quality/design-geometry.json`, 
 3. **DQ-4 alternative.** The presentation sentence could also be put in «Confirmation before discarding player entries»; the default (signed) leaves that behaviour requirement unchanged.
 4. **No focus-ring wording change.** The focus-ring bullet of «Borders…» says the panels' and the dialog's fill is "where the ring of «Зрозуміло», «Закрити» and the options is drawn"; the dialog buttons' rings lie on the same fill and the pair already exists. The bullet is left as it is.
 5. **Historical sentences carried verbatim.** The count-only delta of «The panels take the shared surface paint» copies its not-delivered items (1) and (2) unchanged: they say the settings panel's «Закрити» is not sticky and its paint is "the second wave". They describe what the shell change did and are read as history (the settings draft, section 5; `docs/qa/update-settings-panel/folder-audit.md` finding 6); this folder does not reword the settings block's work.
-6. **A stale "held" in a behaviour requirement** (dialog folder audit, finding 12): «Confirmation before discarding player entries» says the dialog's place is "covered by the held NFR-13 and NFR-14". Open for the user (`docs/qa/update-confirm-dialog/folder-audit.md`).
+6. **A stale "held" in a behaviour requirement** (dialog folder audit, finding 12): «Confirmation before discarding player entries» says the dialog's place is "covered by the held NFR-13 and NFR-14". The user chose «Fix the sentence» (2026-10-12, about 12:30): the folder MODIFIES that one sentence of «Confirmation before discarding player entries»; nothing else of that requirement changes (`docs/qa/update-confirm-dialog/folder-audit.md`).
 
 ## What was checked
 

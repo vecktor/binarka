@@ -97,7 +97,7 @@ Repeated from section 9 of the settings draft; the same text is in the `design.m
 2. **Historical sentences left as they are.** «The panels take the shared surface paint» says «Закрити» of the settings panel is not sticky (what the shell change did); the setup-sheet requirement's not-delivered item (1) says the theme and language options' paint is the second wave. Both are read as history (the first by the draft, the second by the same reading) and not edited, so as not to touch another block's requirement text beyond the two signed sentences.
 3. **The focus walk's premises** at 667×375, 568×320 and 1024×360 are asserted (the panel scrolls; «Закрити» is stuck at the panel's bottom, so the walk cannot pass because the button scrolled away); if the panel does not scroll at one of them, the user is asked (the window changes, not the premise).
 4. **The scenario «The settings panel follows the column from 48rem»** (in «Main column layout geometry follows the design reference») keeps its name and text and must stay green; the new geometry scenario has its own name.
-5. **The scenario rename** named in "What was checked": the user may keep the old heading with a body that no longer fits it, or accept the new one.
+5. **The scenario rename** named in "What was checked": decided by the user on 2026-10-12 at about 12:33, «Rename as written» (the new heading stays true; the comments at `tests/play-page-setup-sheet-stylesheet.test.ts:584` and `:598` follow it; `docs/qa/update-settings-panel/folder-audit.md` note 9).
 
 ## What was checked
 

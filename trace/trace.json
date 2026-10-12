@@ -940,7 +940,8 @@
     {
       "id": "FR-42",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -959,7 +960,8 @@
     {
       "id": "FR-43",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1015,7 +1017,8 @@
     {
       "id": "FR-58",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1221,7 +1224,8 @@
     {
       "id": "FR-66",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1426,7 +1430,8 @@
     {
       "id": "FR-90",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1570,7 +1575,8 @@
     {
       "id": "FR-98",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1599,7 +1605,8 @@
     {
       "id": "FR-100",
       "specs": [
-        "openspec/specs/play-page/spec.md"
+        "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md"
       ],
       "planned": true,
       "tests": [
@@ -1633,6 +1640,7 @@
       "id": "FR-101",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md",
         "openspec/changes/update-settings-panel/specs/play-page/spec.md"
       ],
       "planned": true,
@@ -1785,6 +1793,7 @@
       "id": "FR-111",
       "specs": [
         "openspec/specs/play-page/spec.md",
+        "openspec/changes/update-confirm-dialog/specs/play-page/spec.md",
         "openspec/changes/update-settings-panel/specs/play-page/spec.md"
       ],
       "planned": true,

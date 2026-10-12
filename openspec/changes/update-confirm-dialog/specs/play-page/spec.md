@@ -496,6 +496,114 @@ Traces: NFR-14, FR-57, FR-65, A-59, A-26, A-20, A-62
 - **WHEN** a reader looks for the sampling dimensions
 - **THEN** the file names the viewports (the 8 cases) and the board sizes as its sampling dimensions, declares coverage `sampled`, names `scripts/visual-block.mjs` (block `rules`) and `npm run check:visual` as the stricter instruments, and claims neither all widths, all board sizes nor a pixel floor
 
+### Requirement: Confirmation before discarding player entries
+
+«Нова головоломка», «Почати» and «Скинути» SHALL ask for confirmation only when the board has player entries (FR-67). A change of size or level is no longer an action of its own: it happens only through «Почати» (FR-101), and marking a size or a level asks for nothing (FR-100). A player entry is a non-given cell that is not empty; a cell filled by a hint counts as one (A-8); a board that was just solved has entries, so the confirmation is also asked after a win (A-29). The confirmation SHALL be a native `<dialog>` `[data-dialog="confirm"]`, created once at mount inside the page root, outside the board element and outside the sequence of «Page document order» (it follows the rules panel), closed at mount, and opened with `showModal()`. It SHALL hold the text «Почати заново? Ваші ходи на цьому полі буде втрачено.» ("Start over? Your moves on this board will be lost." in English mode, with the buttons "Yes, start over" and "Cancel", FR-111) and exactly two `<button type="button">`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати». «Так, почати» SHALL close the dialog (calling `close()`) and then perform the pending action exactly as it would on an untouched board. «Скасувати», and Escape (the dialog's `cancel` and `close` events with no button pressed), SHALL close the dialog and leave unchanged the board, the size and the level (`aria-checked`), the summary, the hint message, the win message, the highlights and `cell-hinted`; no seed is taken and the generator is not called. A cancelled action is dropped: it is never performed later. On a board with no player entries the action happens at once and `showModal()` is never called. When the pending action is the press of «Почати», the sheet is closed first and then the dialog opens, and «Скасувати» (which drops the pending action), Escape and «Так, почати» end with focus on the summary button (FR-98, see «Sheet and confirmation»). The pending action is the marked size and level taken at the press of «Почати». Reading rule: wherever another requirement of this capability says that pressing «Нова головоломка», changing the size, changing the level or pressing «Скинути» has an effect (for example «Highlighting follows every board change», «Hint message stays until the next hint or a new puzzle» and the size steps of «Board rendering and default size»), the effect happens when the action is performed: at once on a board without player entries, after «Так, почати» on a board with entries; a requested but unperformed action has no effect. The dialog SHALL have `aria-labelledby` naming the `id` of the element that holds its text (unique per mount), so assistive technology announces the question (A-20). When the page opens the dialog it SHALL move focus to «Скасувати» (after `showModal()`), so that the safe choice is the default and two key presses cannot discard the player's moves (A-20; the user's decision of 2026-10-06, review round 1). Where the dialog is drawn and its look are the design's (A-62; see «The confirmation dialog takes the design's size, place and paint»); its focus ring is NFR-13 and its pixels NFR-14 (neither is held any more; the user's word on the wave-2 folder audit, 2026-10-12).
+
+Traces: FR-67, FR-42, FR-43, FR-58, FR-66, FR-90, FR-98, FR-100, FR-101, FR-111
+
+#### Scenario: The dialog at mount
+
+- **GIVEN** the page has just been mounted
+- **WHEN** the test reads `[data-dialog="confirm"]`
+- **THEN** exactly one such `dialog` element exists in the root, it has no `open` attribute, it is not inside `[data-board]` or the header or the message area, and it follows the rules panel in document order
+- **AND** its text includes «Почати заново? Ваші ходи на цьому полі буде втрачено.»
+- **AND** it contains exactly two `button` elements of `type="button"`: `[data-confirm="yes"]` with the text «Так, почати» and `[data-confirm="no"]` with the text «Скасувати»
+- **AND** the `showModal` spy has not been called
+
+#### Scenario: The dialog is named by its question and opens on «Скасувати»
+
+- **GIVEN** a mounted page with a fixture puzzle on which the player has clicked one non-given cell
+- **WHEN** the test reads the dialog, and then the player presses «Нова головоломка»
+- **THEN** the dialog's `aria-labelledby` names an element inside the dialog whose text is «Почати заново? Ваші ходи на цьому полі буде втрачено.», and two mounts give two different ids
+- **AND** after the press the dialog is open and the focused element of the document is `[data-confirm="no"]`
+
+#### Scenario: No player entries means no dialog
+
+- **GIVEN** a mounted 6x6 fixture board with no player entries (only givens), the `showModal` and `close` methods of `HTMLDialogElement.prototype` installed as spies that set and remove the `open` attribute (jsdom has neither), and a counting seed source and a `generate` spy
+- **WHEN** the player does each of the actions in this table, each from a freshly mounted page
+
+| Action | Expected effect at once |
+|--------|-------------------------|
+| presses «Нова головоломка» | a new puzzle of size 6 from the next seed |
+| chooses «Поле 4×4» | a 4x4 board from the next seed, `aria-checked="true"` on «Поле 4×4» |
+| chooses «Задачка» | a 6x6 board of level 2 from the next seed, `aria-checked="true"` on «Задачка» |
+| presses «Скинути» | no cell, class or message changes |
+
+- **THEN** the `showModal` spy was never called, the dialog has no `open` attribute, and the expected effect of the row happened
+
+#### Scenario: A board with entries asks first and changes nothing yet
+
+- **GIVEN** a mounted 6x6 fixture board on which the player has clicked one non-given cell to `1`, has pressed «Підказка» so that a hint filled another cell (`cell-hinted`) and a hint sentence is shown, with cells carrying `cell-violation`, and a counting seed source and a `generate` spy whose counts are read now
+- **WHEN** the player does each of the actions in this table, each from a freshly prepared page
+
+| Action |
+|--------|
+| presses «Нова головоломка» |
+| chooses «Поле 8×8» (the injected generator returns an 8x8 fixture) |
+| chooses «Задачка» (the injected generator returns a 6x6 fixture) |
+| presses «Скинути» |
+
+- **THEN** `showModal` was called exactly once and the dialog has the `open` attribute
+- **AND** every cell keeps its text, `[data-board]` keeps `data-size="6"`, `aria-checked="true"` stays on «Поле 6×6» and on «Розминка», `[data-message="hint"]` and `[data-message="win"]` keep their text, the set of `cell-violation` cells and the `cell-hinted` cell are unchanged
+- **AND** the seed-source call count and the generator call count equal the counts read before the press
+
+#### Scenario: «Так, почати» closes the dialog and then performs the action
+
+- **GIVEN** the page of the previous scenario with the dialog open for each action of the table
+- **WHEN** the player presses `[data-confirm="yes"]`
+
+| Action pending | Expected effect |
+|----------------|-----------------|
+| «Нова головоломка» | a 6x6 board generated from the next seed (one seed taken, one generator call), no player entries |
+| «Поле 8×8» | an 8x8 board (`data-size="8"`, 64 cells), `aria-checked="true"` on «Поле 8×8» only, one seed taken |
+| «Задачка» | a 6x6 board generated from the next seed with level 2 (one seed taken, one generator call with level 2), `aria-checked="true"` on «Задачка» only, the summary reads `6×6 · Задачка` |
+| «Скинути» | every non-given cell empty, every given kept, `data-size="6"`, no seed taken, no generator call |
+
+- **THEN** the `close` spy was called once and the dialog has no `open` attribute
+- **AND** the expected effect of the row happened, `[data-message="hint"]` and `[data-message="win"]` have empty text content, no cell has `cell-hinted`, and the `cell-violation` cells are exactly those the rule checker reports for the board shown
+
+#### Scenario: «Скасувати» leaves everything unchanged
+
+- **GIVEN** the page of the scenario «A board with entries asks first and changes nothing yet» with the dialog open for each action of that table
+- **WHEN** the player presses `[data-confirm="no"]`
+- **THEN** the `close` spy was called once and the dialog has no `open` attribute
+- **AND** every cell keeps its text, `[data-board]` keeps `data-size="6"`, `aria-checked="true"` stays on «Поле 6×6» and on «Розминка», both messages keep their text, the set of `cell-violation` cells and the `cell-hinted` cell are unchanged
+- **AND** the seed-source call count and the generator call count equal the counts read before the press, and `showModal` was called exactly once in all
+
+#### Scenario: Escape leaves everything unchanged and drops the action
+
+- **GIVEN** the page of the previous scenario with the dialog open after pressing «Нова головоломка»
+- **WHEN** the test dispatches a `cancel` event and then a `close` event on the dialog (what a browser does for Escape), pressing no button
+- **THEN** the board, the size, the messages, the highlights and `cell-hinted` are unchanged, and neither the seed source nor the generator was called again
+- **AND** pressing «Нова головоломка» again opens the dialog a second time (`showModal` called twice in all) and pressing `[data-confirm="yes"]` then performs exactly one new puzzle (one seed taken)
+
+#### Scenario: A hint-filled cell counts as a player entry
+
+- **GIVEN** a mounted fixture board on which the player has only pressed «Підказка» once, so the one non-empty non-given cell was filled by the hint
+- **WHEN** the player presses «Нова головоломка»
+- **THEN** `showModal` was called once and the board is unchanged until `[data-confirm="yes"]` is pressed
+
+#### Scenario: A solved board still asks (A-29)
+
+- **GIVEN** a fixture puzzle whose solution the test knows, solved by clicks so that the win message is shown
+- **WHEN** the player presses «Скинути», and in separate runs «Нова головоломка», the button of another size and the button of another level
+- **THEN** each time `showModal` was called once, and the board and the win message are unchanged until `[data-confirm="yes"]` is pressed
+
+#### Scenario: Entries that were cleared again do not count
+
+- **GIVEN** a mounted fixture board on which the player clicked a non-given cell three times (it shows empty again) and clicked a given cell
+- **WHEN** the player presses «Нова головоломка»
+- **THEN** `showModal` was never called and a new puzzle was generated at once
+
+#### Scenario: «Почати» asks, marking does not
+
+- **GIVEN** a mounted 6x6 fixture board with player entries, the `showModal` spy, a counting seed source and a `generate` spy with the counts read now, and the sheet opened
+- **WHEN** the player marks «Поле 8×8» and «Задачка» (two marking presses), and then presses «Почати»
+- **THEN** after the two marking presses `showModal` was never called and the counts equal the counts read now
+- **AND** after «Почати» `showModal` was called once, the dialog has the `open` attribute and the board is still 6x6 with its cell texts
+- **AND** after `[data-confirm="yes"]` exactly one seed was taken and the generator was called once, with size 8 and level 2
+
 ## ADDED Requirements
 
 ### Requirement: The confirmation dialog takes the design's size, place and paint
