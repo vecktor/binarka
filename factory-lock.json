@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-10-12T11:13:33.949Z",
+  "createdAt": "2026-10-12T11:14:42.457Z",
   "gitHead": "6fef448247ac5cd46992300f9230d22caccb8218",
   "files": {
     ".claude/workflows/eval-suite.js": "b25b34804b22cfb2da0e31a2209d2fd6d1519a482597c35495719eb961c75fbb",
@@ -10,7 +10,7 @@
     ".claude/workflows/vision-verify.js": "84c893a066088a158d308a3a21cf7cd3b44fdefb4f503ef9bd85507b7364fc69",
     ".githooks/commit-msg": "c6427b364dbc15da31235e4c0f9a8ac74639b7f0512cadce95f301637387fb5c",
     ".githooks/pre-commit": "c64e18049003ddd126e8ac2c61c1ce759923977748f5f044ee34fc1c3212eaea",
-    ".github/workflows/ci.yml": "cee3717d47aaf745fd1b080446dce63387305a0c98bb44266940c626512803f6",
+    ".github/workflows/ci.yml": "e3e3c1130584443e66f761c48e5242a58abaf29f30e12d7757e6cefd06d45205",
     "quality/coverage-baseline.json": "bad5d7096b4a86643815cd870761fef3eb8dc8fc02b3341fb7efe580cb13335a",
     "quality/eval-baseline.json": "93791bb00ddc72e7114105351fe3a55be0063c2976765ef4100f4bc135a88be8",
     "quality/process-baseline.json": "c4138cf68d31420931034e59d580cc4db6fdd08550de95347c7396bd9b2923d5",
@@ -31,6 +31,6 @@
     "scripts/qa-verify.mjs": "e43c63ea79c92abc6394ca13a4e65524d5d631311ad21e879f8108ce2e3ceaf0"
   },
   "adaptations": [
-    "PD-10: check-trajectory accepts a signed review disposition (docs/qa/review-dispositions/) for a review that is not clean and a signed waiver for a missing design.md, and names misplaced or clean-less review files (approved by the user 2026-10-12)"
+    "PD-11: CI gains a browser job (ubuntu) running check:a11y and the font-independent e2e files, with the design built on the runner; the geometry specs stay local (approved by the user 2026-10-12)"
   ]
 }

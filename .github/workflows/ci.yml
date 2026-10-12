@@ -1,5 +1,8 @@
 # CI: mirrors the local gates. If it isn't green here, it isn't done.
-# Adapted from the Project Factory template for ADR-0001 (no DB, no Playwright, no coverage tooling).
+# Adapted from the Project Factory template for ADR-0001 (no DB, no coverage tooling).
+# The browser job (PD-11) runs the Playwright checks whose result does not depend on the system font: the a11y project and the
+# font-independent e2e files. The geometry specs compare text-hugging boxes with values frozen on macOS within 0.5px, so they stay
+# local, like check:visual (docs/qa/improvements/PD-11-browser-checks-in-ci.md).
 name: ci
 
 on:
@@ -51,4 +54,47 @@ jobs:
           path: |
             docs/qa/traceability-report.md
             trace/trace.json
+          if-no-files-found: ignore
+
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - name: Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      # The paint specs compare the page with the design build (design/v0/out, not committed). design/v0 pins pnpm 12.3.4, which
+      # does not run on Node 22; pnpm 10 reads its lockfile (design/README.md), so it is installed on the runner only.
+      - name: Design build
+        working-directory: design/v0
+        env:
+          npm_config_manage_package_manager_versions: 'false'
+        run: |
+          npm install --global pnpm@10.32.1
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Accessibility (NFR-13)
+        run: npm run check:a11y
+      - name: Font-independent e2e (NFR-12, NFR-14 paint, NFR-18)
+        run: >-
+          npx playwright test --project=layout
+          e2e/nfr-12-targets.spec.ts e2e/nfr-14-backdrop.spec.ts e2e/nfr-14-cause-mark.spec.ts
+          e2e/nfr-14-palette.spec.ts e2e/nfr-14-panel-shell.spec.ts e2e/nfr-18-flash.spec.ts
+
+      - name: Upload Playwright evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-evidence
+          path: |
+            docs/qa/e2e-report.json
+            docs/qa/a11y-report.json
+            test-results/
           if-no-files-found: ignore

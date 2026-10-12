@@ -1,0 +1,21 @@
+# PD-11 proof, 2026-10-12 16:44 +0530, stream P (claude/feynman-process), macOS, BINARKA_PORT_BASE=6573
+
+## 1. Red: .github/workflows/ci.yml on origin/main 2762e31 has no browser step
+6:  push:
+11:  verify:
+# (only the 'verify' job; no playwright, test:e2e or check:a11y line)
+
+## 2. Local measurements (wave3/): without design/v0/out 12 failed, 12 did not run, 299 passed; with it e2e 323 of 323, a11y 67 of 67
+
+## 3. The new job's e2e command, run locally (16:44)
+$ npx playwright test --project=layout e2e/nfr-12-targets.spec.ts e2e/nfr-14-backdrop.spec.ts e2e/nfr-14-cause-mark.spec.ts e2e/nfr-14-palette.spec.ts e2e/nfr-14-panel-shell.spec.ts e2e/nfr-18-flash.spec.ts
+  93 passed (12.9s)
+
+## 4. Integrity before the re-seal
+
+Scope: 27 locked file(s)
+Result: FAIL, 1 warning(s)
+## 5. After the re-seal
+Result: PASS, 1 warning(s)
+
+## 6. Green: the branch CI run (pending: push and draft PR on the user's word, given 16:35)

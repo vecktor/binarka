@@ -1,0 +1,17 @@
+# e2e on base 6573 with design/v0/out moved aside (as on a CI runner that does not build the design), 2026-10-12 16:19 +0530, HEAD 6fef448
+  ✘   52 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:268:1 › @trace NFR-14 the design build is required and the coverage is declared: sampling dimensions, coverage sampled, the stricter instruments named, nothing beyond a sample claimed (0ms)
+  ✘   64 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:472:3 › paint: both buttons against the design build › @trace NFR-14 the design server listens on a port chosen by the operating system, not on one the page preview or the capture tools bind (0ms)
+  ✘   67 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:485:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (0ms)
+  ✘   66 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:485:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 375x812: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (0ms)
+  ✘   68 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:485:9 › paint: both buttons against the design build › dark scheme › @trace NFR-14 @trace FR-67 @trace FR-65 dark 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (0ms)
+  ✘   71 [layout] › e2e/nfr-14-confirm-dialog.spec.ts:485:9 › paint: both buttons against the design build › light scheme › @trace NFR-14 @trace FR-67 @trace FR-65 light 1024x768: «Так, почати» and «Скасувати» take the design's color, background-color, border-top-color and 2px border (0ms)
+  ✘  135 [layout] › e2e/nfr-14-panel-shell.spec.ts:299:1 › @trace NFR-14 the design build is required and the coverage is declared: sampling dimensions, coverage sampled, the stricter instruments named (1ms)
+  ✘  141 [layout] › e2e/nfr-14-panel-shell.spec.ts:326:3 › paint: the four surfaces against the design build › @trace NFR-14 the design server listens on a port chosen by the operating system, not on one the page preview or the capture tools bind (0ms)
+  ✘  142 [layout] › e2e/nfr-14-panel-shell.spec.ts:340:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light confirm 375x812: the fill, the border colour and the shadow equal the design's (0ms)
+  ✘  146 [layout] › e2e/nfr-14-panel-shell.spec.ts:340:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark confirm 375x812: the fill, the border colour and the shadow equal the design's (0ms)
+  ✘  157 [layout] › e2e/nfr-14-panel-shell.spec.ts:340:11 › paint: the four surfaces against the design build › light scheme › @trace NFR-14 @trace FR-65 light confirm 1024x768: the fill, the border colour and the shadow equal the design's (0ms)
+  ✘  162 [layout] › e2e/nfr-14-panel-shell.spec.ts:340:11 › paint: the four surfaces against the design build › dark scheme › @trace NFR-14 @trace FR-65 dark confirm 1024x768: the fill, the border colour and the shadow equal the design's (2ms)
+  12 failed
+  12 did not run
+  299 passed (32.7s)
+# exit 1
