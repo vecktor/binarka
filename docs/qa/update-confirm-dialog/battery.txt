@@ -122,3 +122,35 @@ lsof -nP -iTCP:6377 -sTCP:LISTEN:
   nfr-13-a11y.spec.ts › 1280x800 dark › NFR-13 axe: no violation in the confirmation state :: passed
   The keyboard sweep (e2e/nfr-13-a11y.spec.ts l. 96-106) opens the dialog by the keyboard and expects the focus rings of 'confirm yes' and 'confirm no' among the reached controls: passed (in the 67).
 Output filtered: the per-FR WARN lines of check:trace (recording-evidence, review-evidence, process, in-scope, active-changes) and jsdom's 'Could not parse CSS stylesheet' noise are left out; every exit code is shown. docs/qa/e2e-report.json (reporter output) reverted; docs/qa/traceability-report.md and trace/trace.json regenerated with no change.
+
+
+######## 9.1 archive, 2026-10-12 14:35 (UTC+5:30); gates: battery.txt (5.1-5.4) re-run in fix-round-1.txt and fix-round-2.txt, smoke-test.txt (6.1), run 13 with no fall (7.2, 7.3), review gate clean after round 2 (8.2)
+== npx openspec archive update-confirm-dialog --yes
+  ⚠ Why section should not exceed 1000 characters
+Task status: 27/33 tasks
+Warning: 6 incomplete task(s) found. Continuing due to --yes flag.
+
+Specs to update:
+  play-page: update
+Applying changes to openspec/specs/play-page/spec.md:
+  + 1 added
+  ~ 5 modified
+Totals: + 1, ~ 5, - 0, → 0
+Specs updated successfully.
+Change 'update-confirm-dialog' archived as '2026-10-12-update-confirm-dialog'.
+exit 0
+== npx openspec validate --all --strict
+✓ spec/puzzle-engine
+✓ change/update-settings-panel
+Totals: 3 passed, 0 failed (3 items)
+== npm run check:trace
+> node scripts/check-traceability.mjs
+traceability: 115 MVP FRs checked — 1 failure(s), 116 warning(s)
+wrote docs/qa/traceability-report.md and trace/trace.json
+== npm run check:acceptance
+> binarka@0.1.0 check:acceptance
+> node scripts/check-acceptance-methods.mjs --mode=existence
+acceptance (existence): 132 contract(s) across 132 requirement(s) — 0 failure(s), 0 warning(s), 0 pending
+Result: PASS
+(the check:trace failure above was the 6 open tasks of the archived tasks.md (0.2, 0.3, 9.1, 10.1-10.3), ticked in the same commit; the re-run follows)
+== npm run check:trace after ticking (2026-10-12 14:36): traceability: 115 MVP FRs checked — 0 failure(s), 116 warning(s)

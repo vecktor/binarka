@@ -253,6 +253,15 @@
       "processComplete": true
     },
     {
+      "slice": "2026-10-12-update-confirm-dialog",
+      "reviewEvidence": "clean",
+      "trailerCommits": 5,
+      "libDomains": [
+        "ui"
+      ],
+      "processComplete": true
+    },
+    {
       "slice": "2026-10-12-update-setup-sheet",
       "reviewEvidence": "clean",
       "trailerCommits": 56,
