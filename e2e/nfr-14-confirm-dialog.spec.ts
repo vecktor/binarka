@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import type { Server } from 'node:http';
+import { connect } from 'node:net';
 import type { AddressInfo } from 'node:net';
 import { extname, join, resolve, sep } from 'node:path';
 import { expect, test } from '@playwright/test';
@@ -194,9 +195,25 @@ async function startDesignServer(): Promise<{ server: Server; url: string; port:
 async function stopDesignServer(server: Server | null): Promise<void> {
   if (server === null) return;
   server.closeAllConnections();
-  await new Promise<void>((done) => {
-    server.close(() => {
-      done();
+  // A close error (e.g. ERR_SERVER_NOT_RUNNING) fails the hook instead of being swallowed (review gate of update-confirm-dialog, fix round 2).
+  await new Promise<void>((done, fail) => {
+    server.close((error) => {
+      if (error) fail(error);
+      else done();
+    });
+  });
+}
+
+/** True when a TCP connection to the port is refused (nothing listens there any more). */
+function connectionRefused(port: number): Promise<boolean> {
+  return new Promise((done) => {
+    const socket = connect({ port, host: '127.0.0.1' });
+    socket.once('connect', () => {
+      socket.destroy();
+      done(false);
+    });
+    socket.once('error', (error: NodeJS.ErrnoException) => {
+      done(error.code === 'ECONNREFUSED');
     });
   });
 }
@@ -444,9 +461,11 @@ test.describe('paint: both buttons against the design build', () => {
 
   test.afterAll(async () => {
     const server = design?.server ?? null;
+    const port = design?.port ?? null;
     await stopDesignServer(server);
-    // The scenario's clause "closed after the run" is checked, not assumed (review gate of update-confirm-dialog, fix round 1).
-    if (server !== null) expect(server.listening, 'the design server is closed after the run').toBe(false);
+    // The scenario's clause "closed after the run" is checked, not assumed: after the awaited close a new connection to the port is refused
+    // (server.listening alone turns false as soon as close() is called; review gate of update-confirm-dialog, fix rounds 1 and 2).
+    if (port !== null) expect(await connectionRefused(port), `a connection to the design server's port ${port} is refused after the run`).toBe(true);
     design = null;
   });
 

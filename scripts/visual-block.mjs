@@ -320,10 +320,13 @@ try {
 }
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, 'summary.json'), `${JSON.stringify({ block: blockName, tolerancePx: TOLERANCE_PX, pixelThreshold: PIXEL_THRESHOLD, coverage: 'sampled', shots: results.map(({ geometry: _g, ...rest }) => rest) }, null, 2)}\n`);
-// A shot that measured nothing (no geometry and no pixel region, e.g. a closed dialog on a state that never opens it) is not a pass: absence of
-// evidence is never success (AGENTS.md; review gate of update-confirm-dialog, fix round 1).
-const empty = results.filter((e) => !e.geometry && e.pixel === undefined).map((e) => e.shot);
+// A shot that measured nothing is not a pass: absence of evidence is never success (AGENTS.md; review gate of update-confirm-dialog, fix rounds 1
+// and 2). It measured something only with a pixel region, or with at least one geometry pair whose box is non-empty on either side; a closed
+// dialog or a closed sheet gives 0x0 boxes on both sides (e.g. --block setup on state default), which compares nothing.
+const nonEmpty = (b) => Boolean(b && (b.w > 0 || b.h > 0));
+const measured = (e) => e.pixel !== undefined || (e.geometry ?? []).some((g) => nonEmpty(g.design) || nonEmpty(g.product));
+const empty = results.filter((e) => !measured(e)).map((e) => e.shot);
 const done = empty.length === 0 && results.every((e) => (e.geometry ? e.geometryOff === 0 && e.unpaired === 0 : true));
-if (empty.length) console.log(`\nNOTHING MEASURED for block ${blockName} on ${empty.length} shot(s): ${empty.join(', ')} (no geometry and no pixel region; pass the block's own state, e.g. --block confirm --states confirm)`);
+if (empty.length) console.log(`\nNOTHING MEASURED for block ${blockName} on ${empty.length} shot(s): ${empty.join(', ')} (no pixel region and no geometry pair with a non-empty box; pass the block's own state, e.g. --block confirm --states confirm or --block setup --states setup,setup-four)`);
 console.log(`\nBlock ${blockName}: ${results.length} shot(s), geometry ${done ? 'within' : 'NOT within'} ${TOLERANCE_PX}px${empty.length ? `, ${empty.length} measured nothing` : ''} (coverage: sampled)`);
 process.exit(done ? 0 : 1);

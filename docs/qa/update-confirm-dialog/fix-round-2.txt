@@ -1,0 +1,84 @@
+update-confirm-dialog: review gate fix round 2 (the user's «Yes, fix both», session-log.md row 20), the dialog session, 2026-10-12 (UTC+5:30)
+Round 1: docs/qa/update-confirm-dialog/review-findings.json (rounds[1]: 3 confirmed, 0 contested, 4 rejected). No src/ change.
+
+Fix 1 (major and minor, confirmed twice): scripts/visual-block.mjs counts a shot as measured only with a pixel region or at least one geometry pair
+  whose box is non-empty on either side; all-0x0 geometry (a closed sheet or dialog) is NOTHING MEASURED and the run exits 1.
+Fix 2 (minor, confirmed): e2e/nfr-14-confirm-dialog.spec.ts: stopDesignServer rejects on a close() error; the afterAll asserts that a new TCP
+  connection to the design server's port is refused after the awaited close (server.listening alone flips at close()).
+
+================ verification ================
+== port check before
+2026-10-12 14:29:30
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+build ok
+
+== node scripts/visual-block.mjs --block setup --shots 375-light-default --out <scratchpad>/fix2/...
+375-light-default              pixel n/a geometry off 0/2, unpaired 0, max delta 0px
+NOTHING MEASURED for block setup on 1 shot(s): 375-light-default (no pixel region and no geometry pair with a non-empty box; pass the block's own state, e.g. --block confirm --states confirm or --block setup --states setup,setup-four)
+Block setup: 1 shot(s), geometry NOT within 0.5px, 1 measured nothing (coverage: sampled)
+exit 1
+
+== node scripts/visual-block.mjs --block confirm --shots 375-light-default --out <scratchpad>/fix2/...
+375-light-default              pixel n/a geometry n/a (state reached by a driver)
+NOTHING MEASURED for block confirm on 1 shot(s): 375-light-default (no pixel region and no geometry pair with a non-empty box; pass the block's own state, e.g. --block confirm --states confirm or --block setup --states setup,setup-four)
+Block confirm: 1 shot(s), geometry NOT within 0.5px, 1 measured nothing (coverage: sampled)
+exit 1
+
+== node scripts/visual-block.mjs --block confirm --states confirm --out <scratchpad>/fix2/...
+1024-dark-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1024-light-confirm             pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1440-dark-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+1440-light-confirm             pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+320-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+320-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+375-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+375-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+768-dark-confirm               pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+768-light-confirm              pixel 1 geometry off 0/4, unpaired 0, max delta 0px
+Block confirm: 10 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+
+== node scripts/visual-block.mjs --block setup --shots 375-light-setup,768-light-setup-four --out <scratchpad>/fix2/...
+375-light-setup                pixel 0.8885 geometry off 0/2, unpaired 0, max delta 0px
+768-light-setup-four           pixel 0.9825 geometry off 0/2, unpaired 0, max delta 0px
+Block setup: 2 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+
+== node scripts/visual-block.mjs --block rules --shots 1366-light-rules,1366-light-rules-techniques --out <scratchpad>/fix2/...
+1366-light-rules-techniques    pixel 0.9885 geometry n/a (state reached by a driver)
+1366-light-rules               pixel 0.9885 geometry off 0/2, unpaired 0, max delta 0px
+Block rules: 2 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+
+== node scripts/visual-block.mjs --block layout --shots 375-light-default --out <scratchpad>/fix2/...
+375-light-default              pixel 0.9981 geometry off 0/16, unpaired 0, max delta 0px
+Block layout: 1 shot(s), geometry within 0.5px (coverage: sampled)
+exit 0
+
+== the refused-connection check against an open and a closed server (node, the same logic as connectionRefused)
+open server: refused = false (the e2e assertion would FAIL)
+after the awaited close: refused = true (the e2e assertion passes)
+close() of a server that never listened gives ERR_SERVER_NOT_RUNNING (stopDesignServer now rejects on it)
+== port check after
+2026-10-12 14:29:58
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+
+================ suites ================
+== port check before
+2026-10-12 14:30:08
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+== npm run lint
+exit 0
+== npx tsc --noEmit -p .
+exit 0
+== npm run test:run
+ Test Files  80 passed (80)
+      Tests  1979 passed (1979)
+== npm run test:e2e
+  301 passed (42.9s)
+== npx playwright test --project=layout e2e/nfr-14-confirm-dialog.spec.ts
+  18 passed (5.3s)
+== port check after
+2026-10-12 14:32:53
+6373:[] 6374:[] 6375:[] 6376:[] 6377:[] 
+docs/qa/e2e-report.json (reporter output) reverted.
