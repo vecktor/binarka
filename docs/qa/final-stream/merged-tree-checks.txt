@@ -1,0 +1,47 @@
+# checks on the merged tree fa7faf4, Tue Oct 13 13:11:44 +0530 2026
+
+## node scripts/check-factory-integrity.mjs
+WARN  [hooks] gap: core.hooksPath is "/Users/vecktor/projects/fwdays/exam/binarka/.githooks" — .githooks/ exists but git will never run it; run `git config core.hooksPath .githooks`.
+
+Scope: 28 locked file(s)
+Result: PASS, 2 warning(s)
+exit 0
+
+## node scripts/check-trajectory.mjs --release --check-fresh
+WARN  [in-scope] src/engine/ modified by 5 slices (2026-10-04-add-puzzle-engine, 2026-10-04-update-hint-sentences, 2026-10-09-add-difficulty-engine, 2026-10-09-add-rule-solvable-generator, 2026-10-10-add-english-version) — review for scope drift
+
+Scope: 34 archived slice(s)
+Result: PASS, 1 warning(s)
+exit 0
+
+## npm run lint
+
+> binarka@0.1.0 lint
+> eslint .
+
+exit 0
+
+## npm run build
+dist/assets/index-DIwVvqnQ.css  24.37 kB │ gzip:  4.92 kB
+dist/assets/index-Dl6lRbkA.js   35.07 kB │ gzip: 12.70 kB
+
+✓ built in 59ms
+exit 0
+
+## npm run test:coverage && npm run gate:status
+      Tests  2001 passed (2001)
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s            
+Branches     : 91.96% ( 687/747 )
+Lines        : 99.33% ( 1047/1054 )
+Gate status (three-valued deterministic checks — judgment criteria sit on top, verify those by hand):
+
+  G0  PASS           scaffold + loop installed
+  G1  needs sign-off requirements signed off
+  G2  PASS           baseline specs  [traceability]
+  G3  needs sign-off capability plan + acceptance methods exist  [acceptance-methods --mode=existence]
+  G4  PASS           per-slice  [traceability · trajectory · acceptance-methods --mode=artifact · factory-integrity]
+  G5  PASS           hardening (coverage)  [coverage-ratchet]
+  G6  PASS           QA proof  [recordings · eval-ratchet · acceptance-methods --mode=artifact · visual-fidelity]
+  G7  PASS           release  [traceability --release --strict-tests --strict-recordings · trajectory --release --check-fresh · recordings · acceptance-methods --mode=artifact · factory-integrity]
+  G8  PASS           UAT (trace regressions)  [traceability]
+Result: PASS
